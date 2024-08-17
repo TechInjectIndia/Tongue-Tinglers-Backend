@@ -1,0 +1,35 @@
+export const RESPONSE_TYPE = {
+    SUCCESS: "Success",
+    ERROR: "Error",
+};
+
+export const ERROR_MESSAGE = {
+    ADMIN_NOT_EXISTS: "User does not exist",
+    INVALID_LOGIN_REQUEST: "Invalid Email or Password",
+    INVALID_CAPTCHA: "Invalid Captcha",
+    UNAUTHORIZED_REQUEST: "Unauthorized Access",
+    INVALID_TOKEN: "Invalid Token",
+    INVALID_REQUEST: "Invalid Request",
+    ROLE_EXISTS: "Role already exists",
+    ROLE_NOT_EXISTS: "Role does not exist",
+    ADMIN_EXISTS: "Admin already exists",
+    USER_EXISTS: "User already exists",
+    USER_NOT_EXISTS: "User does not exist",
+    INTERNAL_SERVER_ERROR: "Internal server error",
+    ROLE_ASSIGNED_TO_ADMIN: "This role is assigned and cannot be deleted",
+};
+
+export const SUCCESS_MESSAGE = {
+    LOGGED_IN: "Logged In",
+    ROLES_FETCHED: "Roles fetched successfully",
+    ROLE_CREATED: "Role created successfully",
+    ROLE_UPDATED: "Role updated successfully",
+    ROLE_DELETED: "Role deleted successfully",
+    ROLE_FETCHED: "Role fetched successfully",
+    ADMINS_FETCHED: "Admin users fetched successfully",
+    ADMIN_CREATED: "Admin user created successfully",
+    ADMIN_UPDATED: "Admin user updated successfully",
+    ADMIN_DELETED: "Admin user moved to trash successfully",
+    ADMIN_FETCHED: "Admin user fetched successfully",
+    PROFILE_UPDATED: "Profile updated successfully",
+};

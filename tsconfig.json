@@ -29,8 +29,8 @@
       "database/*": [
         "./database/*"
       ],
-      "helpers/*": [
-        "./helpers/*"
+      "libraries/*": [
+        "libraries/*"
       ],
       "interfaces/*": [
         "./interfaces/*"
@@ -53,7 +53,7 @@
   "include": [
     "./server/**/*",
     "./app.ts"
-  ],
+, "types", "database", "config", "constants", "routes", "libraries"  ],
   "exclude": [
     "node_modules"
   ]

@@ -1,6 +1,11 @@
 const { DataTypes } = require("sequelize");
 import { sequelize } from "../../config";
 
+// passwordChangedAt: Date,
+// passwordResetToken: String,
+// passwordResetExpires: Date,
+// cart : 
+// wishlist :
 export const Admin = sequelize.define(
     "admins",
     {
@@ -22,7 +27,7 @@ export const Admin = sequelize.define(
             type: DataTypes.STRING,
         },
         role: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
         },
         profile_photo: {
             type: DataTypes.STRING,

@@ -6,6 +6,10 @@ import {
     TAddAdmin,
     TEditAdmin,
     TEditAdminProfile,
+    TFranchisee,
+    TAddFranchisee,
+    TEditFranchisee,
+    TEditFranchiseeProfile,
     TRoleFilters,
     TRolesList,
     TAddRole,
@@ -14,30 +18,30 @@ import {
     TPermissionFilters,
     TPermissionsList,
 } from "../../../types";
-import { Admin as AdminModel, Roles, Permissions } from "../../../database/schema";
+import { Admin as AdminModel, Roles, Permissions, Franchisee } from "../../../database/schema";
 
 export class Admin {
     constructor() { }
 
     public async getRoleByName(name: string): Promise<TRole | any> {
-        const data = await Roles.findAll({
+        const data = await Roles.findOne({
             where: {
                 name,
             },
         });
-        return data ? data[0] : null;
+        return data;
     }
 
     public async getRoleById(id: number): Promise<TRole | any> {
-        const data = await Roles.findAll({
+        const data = await Roles.findOne({
             where: {
                 id,
             },
         });
-        return data ? data[0] : null;
+        return data;
     }
 
-    public async getRoles(filters: TRoleFilters): Promise<TRolesList | any> {
+    public async listRoles(filters: TRoleFilters): Promise<TRolesList | any> {
         const total = await Roles.count({
             where: {
                 name: {
@@ -242,23 +246,43 @@ export class Admin {
     }
 
     public async getPermissionByName(name: string): Promise<TPermission | any> {
-        const data = await Permissions.findAll({
+        const data = await Permissions.findOne({
             where: {
                 name,
             },
         });
-        return data ? data[0] : null;
+        return data;
     }
 
     public async getPermissionById(id: number): Promise<TPermission | any> {
-        const data = await Permissions.findAll({
+        const data = await Permissions.findOne({
             where: {
                 id,
             },
         });
-        return data ? data[0] : null;
+        return data;
     }
 
+    public async listPermissions(filters: TPermissionFilters): Promise<TPermissionsList | any> {
+        const total = await Permissions.count({
+            where: {
+                name: {
+                    [Op.like]: `%${filters.search}%`,
+                },
+            },
+        });
+        const data = await Permissions.findAll({
+            order: [filters?.sorting],
+            offset: filters.offset,
+            limit: filters.limit,
+            where: {
+                name: {
+                    [Op.like]: `%${filters.search}%`,
+                },
+            },
+        });
+        return { total, data };
+    }
     public async getPermissions(filters: TPermissionFilters): Promise<TPermissionsList | any> {
         const total = await Permissions.count({
             where: {
@@ -310,5 +334,141 @@ export class Admin {
             },
         });
         return data ?? null;
+    }
+    
+    public async getDeletedFranchisees(filters: TListFilters): Promise<any | null> {
+        const total = await Franchisee.count({
+            where: {
+                email: {
+                    [Op.like]: `%${filters.search}%`,
+                },
+                deletedAt: { [Op.not]: null },
+            },
+            paranoid: false,
+        });
+        const data = await Franchisee.findAll({
+            attributes: [
+                "id",
+                "email",
+                "full_name",
+                "contact_number",
+                "phone_code",
+                "address",
+                "last_login_at",
+                "last_login_ip",
+                "createdAt",
+                "active",
+            ],
+            order: [filters?.sorting],
+            offset: filters.offset,
+            limit: filters.limit,
+            where: {
+                email: {
+                    [Op.like]: `%${filters.search}%`,
+                },
+                deletedAt: { [Op.not]: null },
+            },
+            paranoid: false,
+        });
+        return { total, data };
+    }
+
+    public async getFranchisees(filters: TListFilters): Promise<any | null> {
+        const total = await Franchisee.count({
+            where: {
+                email: {
+                    [Op.like]: `%${filters.search}%`,
+                },
+            },
+        });
+        const data = await Franchisee.findAll({
+            attributes: [
+                "id",
+                "email",
+                "full_name",
+                "contact_number",
+                "phone_code",
+                "address",
+                "last_login_at",
+                "last_login_ip",
+                "createdAt",
+                "active",
+            ],
+            order: [filters?.sorting],
+            offset: filters.offset,
+            limit: filters.limit,
+            where: {
+                email: {
+                    [Op.like]: `%${filters.search}%`,
+                },
+            },
+        });
+        return { total, data };
+    }
+
+    public async addFranchisee(data: TAddFranchisee): Promise<TFranchisee | any> {
+        return await Franchisee.create(data);
+    }
+
+    public async editFranchisee(
+        id: number,
+        data: TEditFranchisee
+    ): Promise<TFranchisee | any> {
+        return await Franchisee.update(data, {
+            where: {
+                id,
+            },
+        });
+    }
+    
+    public async getFranchiseeByEmail(email: string): Promise<TFranchisee | any> {
+        const data = await Franchisee.findOne({
+            attributes: [
+                "id",
+                "email",
+                "full_name",
+                "contact_number",
+                "phone_code",
+                "address",
+                "last_login_at",
+                "last_login_ip",
+                "createdAt",
+                "active",
+            ],
+            where: {
+                email,
+            },
+        });
+        return data;
+    }
+
+    public async getFranchiseeById(id: number): Promise<TFranchisee | any> {
+        const data = await Franchisee.findOne({
+            attributes: [
+                "id",
+                "email",
+                "full_name",
+                "contact_number",
+                "phone_code",
+                "address",
+                "last_login_at",
+                "last_login_ip",
+                "createdAt",
+                "active",
+            ],
+            where: {
+                id,
+            },
+        });
+        return data;
+    }
+
+    public async deleteFranchisee(ids: number[]): Promise<TRole | any> {
+        const response = await Franchisee.destroy({
+            where: {
+                id: ids,
+            },
+        });
+        return response;
     }
 }

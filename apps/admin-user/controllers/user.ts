@@ -52,8 +52,7 @@ export default class AdminController {
             const active = get(req?.body, "active", 1);
 
             const existingAdmin = await new Auth().getAdminByEmail(email);
-
-            if (!isEmpty(existingAdmin)) {
+            if (existingAdmin) {
                 return res
                     .status(400)
                     .send(
@@ -65,7 +64,6 @@ export default class AdminController {
             }
 
             const hashedPassword = await createPassword(password);
-
             await new Admin().addAdmin({
                 email,
                 password: hashedPassword,
@@ -86,6 +84,7 @@ export default class AdminController {
                     )
                 );
         } catch (err) {
+            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

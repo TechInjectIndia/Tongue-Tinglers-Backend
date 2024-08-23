@@ -31,10 +31,63 @@ const options = {
                     "bearerFormat": "JWT"
                 }
             }
-        }
+        },
+        tags: [
+            {
+                name: 'Admin > AUTH'
+            },
+            {
+                name: 'Franchise > AUTH'
+            },
+            {
+                name: 'Admin > Users'
+            },
+            {
+                name: 'Admin > Franchise'
+            },
+            {
+                name: 'Admin > Permissions'
+            },
+            {
+                name: 'Admin > Roles'
+            },
+            {
+                name: 'Admin > Ecommerce > Products'
+            },
+            {
+                name: 'Admin > Ecommerce > Product > Category'
+            },
+            {
+                name: 'Admin > Ecommerce > Product > Tags'
+            },
+            {
+                name: 'Admin > Ecommerce > Product > Orders'
+            },
+            {
+                name: 'Admin > Ecommerce > Product > Orders > Invoices'
+            },
+            {
+                name: 'Admin > Logs > Audit-logs'
+            },
+            {
+                name: 'Admin > Logs > Email-logs'
+            },
+            {
+                name: 'Admin > Lead'
+            },
+            {
+                name: 'Admin > Lead > Follow Ups'
+            }]
     },
     // looks for configuration in specified directories
-    apis: ['./server/routes/*.ts'],
+    apis: [
+        './routes/*.ts',
+        './apps/admin-auth/api/*.ts',
+        './apps/franchise-auth/api/*.ts',
+        './apps/admin-user/api/*.ts',
+        './apps/ecommerce/api/*.ts',
+        './apps/lead/api/*.ts'
+    ],
 }
 const swaggerSpec = swaggerJsdoc(options)
 function swaggerDocs(app, port) {

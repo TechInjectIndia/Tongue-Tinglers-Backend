@@ -8,7 +8,7 @@ export const Roles = sequelize.define("admin_roles", {
     },
     description: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
     },
     role_permissions: {  // 'Roles & Permissions relations'
         type: DataTypes.TEXT,

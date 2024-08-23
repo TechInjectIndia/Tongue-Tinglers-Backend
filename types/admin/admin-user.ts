@@ -1,61 +1,5 @@
 const { OrderItem } = require("sequelize");
 
-// Role type Starts
-export type TRole = {
-  id: number;
-  name: string;
-  active: number;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-export type TAddRole = {
-  name: string;
-  active: number;
-};
-
-export type TRolesList = {
-  total: number;
-  data: TRole;
-};
-
-export type TRoleFilters = {
-  offset: number;
-  limit: number;
-  search?: string;
-  sorting?: typeof OrderItem;
-  trashOnly?: string;
-};
-// Role type Ends
-
-// Permissions type Starts
-export type TPermission = {
-  id: number;
-  name: string;
-  active: number;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-export type TAddPermission = {
-  name: string;
-  active: number;
-};
-
-export type TPermissionsList = {
-  total: number;
-  data: TRole;
-};
-
-export type TPermissionFilters = {
-  offset: number;
-  limit: number;
-  search?: string;
-  sorting?: typeof OrderItem;
-  trashOnly?: string;
-};
-// Permissions type Ends
-
 // Admin User type Starts
 export type TAdmin = {
   id: number;
@@ -110,14 +54,6 @@ export type TEditAdminProfile = {
   address: string;
 };
 // Admin User type Ends
-
-export type TListFilters = {
-  offset: number;
-  limit: number;
-  search?: string;
-  sorting?: typeof OrderItem;
-  trashOnly?: string;
-};
 
 export type TUpdateAdminToken = {
   user_id: number;

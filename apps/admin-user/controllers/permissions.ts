@@ -4,8 +4,39 @@ import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { Admin } from '../models';
 
-export default class PermissionsController {
-    static async getPermissions(req: Request, res: Response, next: NextFunction) {
+export default class PermissionsController {    
+    static async get(req: Request, res: Response, next: NextFunction) {
+        try {
+            const id = get(req?.params, "id", "");
+            const isExistPermission = await new Admin().getPermissionById(id as number);
+            if (!isExistPermission) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS
+                        )
+                    );
+            }
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.CREATED,
+                        isExistPermission
+                    )
+                );
+        } catch (err) {
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    static async list(req: Request, res: Response, next: NextFunction) {
         try {
             const size = get(req?.query, "size", 10);
             const skip = get(req?.query, "skip", 1);
@@ -14,7 +45,7 @@ export default class PermissionsController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const Permissions = await new Admin().getPermissions({
+            const roles = await new Admin().listPermissions({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -28,17 +59,18 @@ export default class PermissionsController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        Permissions
+                        roles
                     )
                 );
         } catch (err) {
+            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
 
-    static async addPermission(req: Request, res: Response, next: NextFunction) {
+    static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const name = get(req?.body, "name", "");
             const active = get(req?.body, "active", 1);
@@ -56,7 +88,6 @@ export default class PermissionsController {
             }
 
             const Permission = await new Admin().addPermission({ name, active });
-
             return res
                 .status(200)
                 .send(
@@ -73,7 +104,7 @@ export default class PermissionsController {
         }
     }
 
-    static async editPermission(req: Request, res: Response, next: NextFunction) {
+    static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
             const name = get(req?.body, "name", "");
@@ -110,39 +141,7 @@ export default class PermissionsController {
         }
     }
 
-    static async getPermission(req: Request, res: Response, next: NextFunction) {
-        try {
-            const id = get(req?.params, "id", "");
-            const Permission = await new Admin().getPermissionById(id as number);
-
-            if (isEmpty(Permission)) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS
-                        )
-                    );
-            }
-
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FETCHED,
-                        Permission
-                    )
-                );
-        } catch (err) {
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
-        }
-    }
-
-    static async deletePermission(req: Request, res: Response, next: NextFunction) {
+    static async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const ids = get(req?.body, "ids", "");
 
@@ -153,7 +152,7 @@ export default class PermissionsController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.UPDATED
+                            ERROR_MESSAGE.NOT_EXISTS
                         )
                     );
             }

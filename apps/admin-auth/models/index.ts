@@ -8,12 +8,12 @@ export class Auth {
     constructor() {}
 
     public async getAdminByEmail(email: string): Promise<TAdmin | any> {
-        const data = await AdminModel.findAll({
+        const data = await AdminModel.findOne({
             where: {
                 email,
             },
         });
-        return data ? data[0] : null;
+        return data;
     }
 
     public async updateRefreshToken(data: TUpdateAdminToken): Promise<boolean> {

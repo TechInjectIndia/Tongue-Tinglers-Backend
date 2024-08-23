@@ -3,9 +3,50 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { Admin } from '../models';
+const { Op } = require("sequelize");
 
 export default class RolesController {
-    static async getRoles(req: Request, res: Response, next: NextFunction) {
+    static async addRole(req: Request, res: Response, next: NextFunction) {
+        try {
+            const name = get(req?.body, "name", "");
+            const active = get(req?.body, "active", 1);
+            const permissions = get(req?.body, "role_permissions", {});
+
+            let role_permissions: any = '';
+            if (permissions != '') {
+                role_permissions = JSON.parse(permissions);
+            }
+            const existingRole = await new Admin().getRoleByName(name);
+            if (existingRole) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.ROLE_EXISTS
+                        )
+                    );
+            }
+
+            const role = await new Admin().addRole({ name, active, role_permissions });
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.ROLE_CREATED,
+                        role
+                    )
+                );
+        } catch (err) {
+            console.log(err)
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    static async listRoles(req: Request, res: Response, next: NextFunction) {
         try {
             const size = get(req?.query, "size", 10);
             const skip = get(req?.query, "skip", 1);
@@ -14,7 +55,7 @@ export default class RolesController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const roles = await new Admin().getRoles({
+            const roles = await new Admin().listRoles({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -32,41 +73,7 @@ export default class RolesController {
                     )
                 );
         } catch (err) {
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
-        }
-    }
-
-    static async addRole(req: Request, res: Response, next: NextFunction) {
-        try {
-            const name = get(req?.body, "name", "");
-            const active = get(req?.body, "active", 1);
-            const existingRole = await new Admin().getRoleByName(name);
-
-            if (!isEmpty(existingRole)) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.ROLE_EXISTS
-                        )
-                    );
-            }
-
-            const role = await new Admin().addRole({ name, active });
-
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.ROLE_CREATED,
-                        role
-                    )
-                );
-        } catch (err) {
+            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -78,7 +85,12 @@ export default class RolesController {
             const id = get(req?.params, "id", "");
             const name = get(req?.body, "name", "");
             const active = get(req?.body, "active", 1);
+            const permissions = get(req?.body, "role_permissions", {});
 
+            let role_permissions: any = '';
+            if (permissions != '') {
+                role_permissions = JSON.parse(permissions);
+            }
             const existingRole = await new Admin().getRoleById(id as number);
 
             if (isEmpty(existingRole)) {
@@ -92,7 +104,7 @@ export default class RolesController {
                     );
             }
 
-            const role = await new Admin().editRole(id, { name, active });
+            const role = await new Admin().editRole(id, { name, active, role_permissions });
 
             return res
                 .status(200)
@@ -136,6 +148,7 @@ export default class RolesController {
                     )
                 );
         } catch (err) {
+            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

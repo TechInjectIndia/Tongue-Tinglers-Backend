@@ -3,7 +3,7 @@ import { get, isEmpty } from "lodash";
 import { TEditFranchisee, TEditFranchiseeProfile } from "../../../types";
 import { sendResponse, createPassword } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { Admin } from '../models';
+import { Admin } from '../models/franchise';
 
 export default class FranchiseeController {
     static async getFranchisees(req: Request, res: Response, next: NextFunction) {
@@ -187,35 +187,35 @@ export default class FranchiseeController {
         }
     }
 
-    static async editProfile(req: Request, res: Response, next: NextFunction) {
-        try {
-            const id = get(req, "user_id", "");
-            const full_name = get(req?.body, "full_name", "");
-            const contact_number = get(req?.body, "contact_number", "");
-            const phone_code = get(req?.body, "phone_code", "");
-            const address = get(req?.body, "address", "");
+    // static async editProfile(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //         const id = get(req, "user_id", "");
+    //         const full_name = get(req?.body, "full_name", "");
+    //         const contact_number = get(req?.body, "contact_number", "");
+    //         const phone_code = get(req?.body, "phone_code", "");
+    //         const address = get(req?.body, "address", "");
 
-            let payload: TEditFranchiseeProfile = {
-                full_name,
-                contact_number,
-                phone_code,
-                address,
-            };
+    //         let payload: TEditFranchiseeProfile = {
+    //             full_name,
+    //             contact_number,
+    //             phone_code,
+    //             address,
+    //         };
 
-            await new Admin().editProfile(id, payload);
+    //         await new Admin().editProfile(id, payload);
 
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED
-                    )
-                );
-        } catch (err) {
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
-        }
-    }
+    //         return res
+    //             .status(200)
+    //             .send(
+    //                 sendResponse(
+    //                     RESPONSE_TYPE.SUCCESS,
+    //                     SUCCESS_MESSAGE.UPDATED
+    //                 )
+    //             );
+    //     } catch (err) {
+    //         return res.status(500).send({
+    //             message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+    //         });
+    //     }
+    // }
 }

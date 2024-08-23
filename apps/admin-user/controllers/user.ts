@@ -3,7 +3,7 @@ import { get, isEmpty } from "lodash";
 import { TEditAdmin, TEditAdminProfile } from "../../../types";
 import { sendResponse, createPassword } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { Admin } from '../models';
+import { Admin } from '../models/user';
 import { Auth } from '../../admin-auth/models';
 
 export default class AdminController {

@@ -8,7 +8,10 @@ const FRONTEND = '/';
 // ====== Admin app imports ======
 import { adminAuth } from '../middlewares/auth';
 import adminAuthRouter from "../apps/admin-auth/api";
-import adminRouter from "../apps/admin-user/api";
+import franchiseRouter from "../apps/admin-user/api/franchise";
+import rolesRouter from "../apps/admin-user/api/roles";
+import permissionsRouter from "../apps/admin-user/api/permissions";
+import adminUsersRouter from "../apps/admin-user/api/user";
 import productRouter from "../apps/ecommerce/api/products";
 import productCategoryRouter from "../apps/ecommerce/api/category";
 import orderRouter from "../apps/ecommerce/api/orders";
@@ -19,8 +22,10 @@ import followUpsRouter from "../apps/lead/api/followups";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/auth`, adminAuthRouter);
-router.use(`${ADMIN}`, adminAuth, adminRouter);
-// router.use(`${ADMIN}/food-menu`, adminAuth, productRouter);
+router.use(`${ADMIN}/users`, adminAuth, adminUsersRouter);
+router.use(`${ADMIN}/permissions`, adminAuth, permissionsRouter);
+router.use(`${ADMIN}/roles`, adminAuth, rolesRouter);
+router.use(`${ADMIN}/franchise`, adminAuth, franchiseRouter);
 // router.use(`${ADMIN}/profile`, adminAuth, productRouter);
 // router.use(`${ADMIN}/settings`, adminAuth, productRouter);
 // router.use(`${ADMIN}/payments/settings`, adminAuth, productRouter);
@@ -30,6 +35,7 @@ router.use(`${ADMIN}`, adminAuth, adminRouter);
 // router.use(`${ADMIN}/analytics/orders`, adminAuth, productRouter);
 // router.use(`${ADMIN}/analytics/leads`, adminAuth, productRouter);
 // router.use(`${ADMIN}/analytics/retort-supply`, adminAuth, productRouter);
+// router.use(`${ADMIN}/food-menu`, adminAuth, productRouter);
 router.use(`${ADMIN}/product`, adminAuth, productRouter);
 router.use(`${ADMIN}/product/category`, adminAuth, productCategoryRouter);
 router.use(`${ADMIN}/product/order`, adminAuth, orderRouter);

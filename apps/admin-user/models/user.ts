@@ -217,15 +217,6 @@ export class Admin {
         });
     }
 
-    public async getRoleAssigneeByRoleId(ids: string[]): Promise<any> {
-        const data = await AdminModel.findAll({
-            where: {
-                role: ids,
-            },
-        });
-        return data ?? null;
-    }
-
     public async restoreAdmin(ids: number[]): Promise<TRole | any> {
         const response = await AdminModel.restore({
             where: {

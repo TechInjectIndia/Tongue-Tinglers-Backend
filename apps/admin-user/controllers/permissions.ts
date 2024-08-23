@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { Admin } from '../models';
+import { Admin } from '../models/permissions';
 
 export default class PermissionsController {    
     static async get(req: Request, res: Response, next: NextFunction) {

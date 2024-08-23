@@ -43,6 +43,27 @@ const options = {
                 name: 'Admin > Users'
             },
             {
+                name: 'Admin > User > Payments'
+            },
+            {
+                name: 'Admin > User > Profile'
+            },
+            {
+                name: 'Admin > User > Settings'
+            },
+            {
+                name: 'Admin > Testimonials '
+            },
+            {
+                name: 'Admin > Reviews '
+            },
+            {
+                name: 'Admin > Analytics '
+            },
+            {
+                name: 'Admin > Menu '
+            },
+            {
                 name: 'Admin > Franchise'
             },
             {

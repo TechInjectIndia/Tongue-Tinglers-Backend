@@ -18,6 +18,13 @@ import orderRouter from "../apps/ecommerce/api/orders";
 import productTagRouter from "../apps/ecommerce/api/tags";
 import leadRouter from "../apps/lead/api/lead";
 import followUpsRouter from "../apps/lead/api/followups";
+import profileRouter from "../apps/admin-user/api/profile";
+import settingsRouter from "../apps/admin-user/api/settings";
+import paymentsRouter from "../apps/payments/api";
+// import reviewsRouter from "../apps/reviews/api/";
+// import testimonialsRouter from "../apps/testimonials/api/";
+// import analyticsRouter from "../apps/analytics/api";
+// import menuRouter from "../apps/menu/api/";
 // ====== Admin app imports ======
 
 // ====== Admin routes ======
@@ -26,16 +33,18 @@ router.use(`${ADMIN}/users`, adminAuth, adminUsersRouter);
 router.use(`${ADMIN}/permissions`, adminAuth, permissionsRouter);
 router.use(`${ADMIN}/roles`, adminAuth, rolesRouter);
 router.use(`${ADMIN}/franchise`, adminAuth, franchiseRouter);
-// router.use(`${ADMIN}/profile`, adminAuth, productRouter);
-// router.use(`${ADMIN}/settings`, adminAuth, productRouter);
-// router.use(`${ADMIN}/payments/settings`, adminAuth, productRouter);
-// router.use(`${ADMIN}/payments`, adminAuth, productRouter);
-// router.use(`${ADMIN}/reviews`, adminAuth, productRouter);
-// router.use(`${ADMIN}/testimonials`, adminAuth, productRouter);
-// router.use(`${ADMIN}/analytics/orders`, adminAuth, productRouter);
-// router.use(`${ADMIN}/analytics/leads`, adminAuth, productRouter);
+
+router.use(`${ADMIN}/profile`, adminAuth, profileRouter);
+router.use(`${ADMIN}/settings`, adminAuth, settingsRouter);
+router.use(`${ADMIN}/payments/settings`, adminAuth, paymentsRouter);
+router.use(`${ADMIN}/payments`, adminAuth, paymentsRouter);
+// router.use(`${ADMIN}/reviews`, adminAuth, reviewsRouter);
+// router.use(`${ADMIN}/testimonials`, adminAuth, testimonialsRouter);
+// router.use(`${ADMIN}/analytics/orders`, adminAuth, analyticsRouter);
+// router.use(`${ADMIN}/analytics/leads`, adminAuth, analyticsRouter);
 // router.use(`${ADMIN}/analytics/retort-supply`, adminAuth, productRouter);
-// router.use(`${ADMIN}/food-menu`, adminAuth, productRouter);
+// router.use(`${ADMIN}/menu`, adminAuth, menuRouter);
+
 router.use(`${ADMIN}/product`, adminAuth, productRouter);
 router.use(`${ADMIN}/product/category`, adminAuth, productCategoryRouter);
 router.use(`${ADMIN}/product/order`, adminAuth, orderRouter);

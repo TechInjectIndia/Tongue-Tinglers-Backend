@@ -16,6 +16,7 @@ export * from "./ecommerce/tag.model";
 export * from "./ecommerce/tag_image.model";
 // ecommerce model ends
 
+
 // lead model starts
 export * from "./lead/lead.model";
 export * from "./lead/followups.model";
@@ -24,3 +25,6 @@ export * from "./lead/followups.model";
 // franchisee model starts
 export * from "./franchisee/franchisee.model";
 // franchisee model ends
+
+
+export * from "./payments/payments";

@@ -1,9 +1,10 @@
-import {DataTypes} from "sequelize";
-import {sequelize} from "../../../config";
+import { DataTypes } from "sequelize";
+import { sequelize } from "../../../config";
+import { TProductCategory } from "../../../types/ecommerce";
 
-const {BOOLEAN, INTEGER, STRING, DATE, TEXT, DECIMAL} = DataTypes;
+const { BOOLEAN, INTEGER, STRING, DATE, TEXT, DECIMAL } = DataTypes;
 
-export const Category = sequelize.define<>('categories', {
+export const Category = sequelize.define("categories", {
     id: {
         type: INTEGER,
         primaryKey: true,
@@ -28,12 +29,12 @@ export const Category = sequelize.define<>('categories', {
         type: DATE,
         allowNull: false,
         defaultValue: new Date(),
-        field: 'created_at'
+        field: "created_at",
     },
     updatedAt: {
         type: DATE,
         allowNull: false,
         defaultValue: new Date(),
-        field: 'updated_at'
+        field: "updated_at",
     },
 });

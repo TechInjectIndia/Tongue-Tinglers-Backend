@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+import {DataTypes} from "sequelize"
 import { sequelize } from "../../../config";
 const { STRING, TEXT, DATE, INTEGER } = DataTypes;
 
@@ -18,5 +18,5 @@ export const AssignLogsModel = sequelize.define("assign_logs", {
     description: { // Detailed record of the activity.
         type: TEXT,
         allowNull: false,
-    },    
+    },
 });

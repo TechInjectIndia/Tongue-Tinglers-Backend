@@ -3,10 +3,19 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { ProductModel } from '../models/products';
-const slugify = require('slugify');
+import slugify from "slugify";
 
-export default class ProductsController {
-    static async create(req: Request, res: Response, next: NextFunction) {
+export interface IProductsController {
+    create(req: Request, res: Response, next: NextFunction): Promise<Response>
+    list(req: Request, res: Response, next: NextFunction) : Promise<Response>
+    update(req: Request, res: Response, next: NextFunction) : Promise<Response>
+    get(req: Request, res: Response, next: NextFunction) : Promise<Response>
+    delete(req: Request, res: Response, next: NextFunction) : Promise<Response>
+}
+
+export default class ProductsController implements IProductsController {
+
+    async create(req: Request, res: Response, next: NextFunction) {
         try {
             const name = get(req?.body, "name", "");
             const createProduct = req?.body;
@@ -36,13 +45,14 @@ export default class ProductsController {
                 );
         } catch (err) {
             console.log(err)
+            //
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
 
-    static async list(req: Request, res: Response, next: NextFunction) {
+     async list(req: Request, res: Response, next: NextFunction) {
         try {
             const size = get(req?.query, "size", 10);
             const skip = get(req?.query, "skip", 1);
@@ -76,7 +86,7 @@ export default class ProductsController {
         }
     }
 
-    static async update(req: Request, res: Response, next: NextFunction) {
+     async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
             const existingProduct = await new ProductModel().getProductById(id as number);
@@ -113,7 +123,7 @@ export default class ProductsController {
         }
     }
 
-    static async get(req: Request, res: Response, next: NextFunction) {
+     async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
             const Product = await new ProductModel().getProductById(id as number);
@@ -146,7 +156,7 @@ export default class ProductsController {
         }
     }
 
-    static async delete(req: Request, res: Response, next: NextFunction) {
+     async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const ids = get(req?.body, "ids", "");
 

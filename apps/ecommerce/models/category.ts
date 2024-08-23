@@ -28,7 +28,7 @@ export class ProductCategoryModel {
         return data;
     }
 
-    public async list(filters: TProductCategoryFilters): Promise<TProductCategorysList | any> {
+    public async list(filters: TProductCategoryFilters): Promise<TProductCategorysList> {
         const total = await Category.count({
             where: {
                 name: {

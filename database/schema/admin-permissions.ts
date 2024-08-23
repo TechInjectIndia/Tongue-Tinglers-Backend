@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+import {DataTypes} from "sequelize"
 import { sequelize } from "../../config";
 
 export const Permissions = sequelize.define("admin_permissions", {

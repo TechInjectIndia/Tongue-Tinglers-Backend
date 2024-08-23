@@ -1,6 +1,7 @@
 import * as express from "express";
 import ProductsController from "../controllers/products";
 import * as ProductsValidation from "../validations/products";
+import {Controllers} from "../controllers";
 
 const router = express.Router();
 
@@ -36,7 +37,7 @@ const {
  *            properties:
  *              name:
  *                type: string
- *                default: product12 
+ *                default: product12
  *              description:
  *                type: text
  *                default: desc
@@ -48,7 +49,7 @@ const {
  *                default: 10
  *              active:
  *                type: boolean
- *                default: 0 
+ *                default: 0
  *     responses:
  *       '200':
  *         description: products created successfully
@@ -56,7 +57,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/product/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all products
@@ -111,7 +112,7 @@ const {
  *         description: Unauthorized
  *       '404':
  *         description: products not found
- * 
+ *
  * /api/admin/product/update/{id}:
  *   put:
  *     summary: Update a Product
@@ -163,7 +164,7 @@ const {
  *         description: Unauthorized
  *       '404':
  *         description: products not found
- * 
+ *
  * /api/admin/product/delete:
  *   delete:
  *     summary: Delete a Product
@@ -190,11 +191,12 @@ const {
  *       '404':
  *         description: products not found
  */
-router.post("/create", validateCreateProductsBody, ProductsController.create);
-router.get("/list", validateListProductsQuery, ProductsController.list);
-router.get("/get/:id", validateEditProductsParams, ProductsController.get);
-router.put("/update/:id", validateEditProductsParams, validateEditProductsBody, ProductsController.update);
-router.delete("/delete", validateEditMultipleIdsBody, ProductsController.delete);
+const productController = Controllers.productsController;
+router.post("/create", validateCreateProductsBody, productController.create);
+router.get("/list", validateListProductsQuery, productController.list);
+router.get("/get/:id", validateEditProductsParams, productController.get);
+router.put("/update/:id", validateEditProductsParams, validateEditProductsBody, productController.update);
+router.delete("/delete", validateEditMultipleIdsBody, productController.delete);
 // ====== Products Ends ======
 
 export default router;

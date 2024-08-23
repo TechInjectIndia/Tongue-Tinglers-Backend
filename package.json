@@ -55,6 +55,7 @@
     }
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "tsconfig-paths": "^4.2.0"
   }
 }

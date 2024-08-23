@@ -1,8 +1,9 @@
-const { DataTypes } = require("sequelize");
-import { sequelize } from "../../../config";
-const { BOOLEAN, INTEGER, STRING, DATE, TEXT, DECIMAL } = DataTypes;
+import {DataTypes} from "sequelize";
+import {sequelize} from "../../../config";
 
-export const Category = sequelize.define('categories', {
+const {BOOLEAN, INTEGER, STRING, DATE, TEXT, DECIMAL} = DataTypes;
+
+export const Category = sequelize.define<>('categories', {
     id: {
         type: INTEGER,
         primaryKey: true,

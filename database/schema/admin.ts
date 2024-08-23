@@ -1,10 +1,10 @@
-const { DataTypes } = require("sequelize");
+import {DataTypes} from "sequelize"
 import { sequelize } from "../../config";
 
 // passwordChangedAt: Date,
 // passwordResetToken: String,
 // passwordResetExpires: Date,
-// cart : 
+// cart :
 // wishlist :
 export const Admin = sequelize.define(
     "admins",

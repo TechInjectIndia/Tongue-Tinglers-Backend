@@ -3,7 +3,7 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { ProductCategoryModel } from '../models/category';
-const slugify = require('slugify');
+import slugify from "slugify";
 
 export default class ProductCategory {
     static async create(req: Request, res: Response, next: NextFunction) {

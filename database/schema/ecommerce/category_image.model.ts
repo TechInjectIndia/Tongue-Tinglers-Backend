@@ -1,7 +1,7 @@
-const { DataTypes } = require("sequelize");
-import { sequelize } from "../../../config";
+import {DataTypes} from "sequelize";
+import {sequelize} from "../../../config";
 
-export const CategoryImange = sequelize.define('category_images', {
+export const CategoryImage = sequelize.define('category_images', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,

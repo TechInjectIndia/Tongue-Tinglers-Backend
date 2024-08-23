@@ -1,9 +1,9 @@
-const { DataTypes } = require("sequelize");
+import {DataTypes} from "sequelize"
 import { sequelize } from "../../../config";
 const { BOOLEAN, INTEGER, STRING, DATE, TEXT, DECIMAL } = DataTypes;
 
-// totalRatings 
-// ratings 
+// totalRatings
+// ratings
 // discount
 // sold
 export const Product = sequelize.define('products', {

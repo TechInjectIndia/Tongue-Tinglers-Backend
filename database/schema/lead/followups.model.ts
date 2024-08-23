@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+import {DataTypes} from "sequelize"
 import { sequelize } from "../../../config";
 const { STRING, TEXT, DATE, INTEGER } = DataTypes;
 const STATUS = {

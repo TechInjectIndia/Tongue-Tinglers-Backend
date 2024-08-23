@@ -4,7 +4,7 @@ const options = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'Tongue tinglers Api',
+            title: 'Tongue Tinglers Api',
             description: "API endpoints",
             contact: {
                 name: "",

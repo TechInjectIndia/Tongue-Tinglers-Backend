@@ -8,9 +8,10 @@ export default class WebLeadController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const createLead = req?.body;
-            let getAttributes: any = '*';
+            let getAttributes: any = '';
             const whereName = 'email'
             const whereVal = get(req?.body, "email", "");
+
             const existingLead = await new LeadModel().getLeadByAttr(whereName, whereVal, getAttributes);
             if (existingLead) {
                 return res

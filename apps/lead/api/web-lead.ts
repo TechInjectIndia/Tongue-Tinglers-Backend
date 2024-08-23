@@ -11,7 +11,7 @@ const {
 // ====== Web Lead Starts ======
 /**
  * @swagger
- * /api/frontend/lead/create:
+ * /api/lead/create:
  *   post:
  *     summary: Create a new Lead
  *     tags: [Frontend > Lead]

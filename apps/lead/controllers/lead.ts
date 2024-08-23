@@ -9,7 +9,7 @@ export default class LeadController {
         try {
             const createLead = req?.body;
 
-            let getAttributes: any = '*';
+            let getAttributes: any = '';
             const whereName = 'email'
             const whereVal = req?.body?.email;
             const existingLead = await new LeadModel().getLeadByAttr(whereName, whereVal, getAttributes);
@@ -80,7 +80,7 @@ export default class LeadController {
         try {
             const id = get(req?.params, "id", "");
 
-            let getAttributes: any = '*';
+            let getAttributes: any = '';
             const whereName = 'id'
             const whereVal = id;
             const existingLead = await new LeadModel().getLeadByAttr(whereName, whereVal, getAttributes);

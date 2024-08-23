@@ -19,9 +19,9 @@ export const ERROR_MESSAGE = {
     USER_NOT_EXISTS: "User does not exist",
     INTERNAL_SERVER_ERROR: "Internal server error",
     ROLE_ASSIGNED_TO_ADMIN: "This role is assigned and cannot be deleted",
-    EXISTS: "Permission already exists",
-    NOT_EXISTS: "Permission does not exists",
-    UPDATED: "Permissions updated successfully",
+    EXISTS: "already exists",
+    NOT_EXISTS: "does not exists",
+    UPDATED: "updated successfully",
 };
 
 export const SUCCESS_MESSAGE = {

@@ -1,24 +1,24 @@
 import * as express from "express";
-import LeadController from "../controllers/lead";
-import * as LeadValidation from "../validations/lead";
+import TestimonialsController from "../controllers/testimonials";
+import * as TestimonialsValidation from "../validations/testimonials";
 
 const router = express.Router();
 
 const {
-  validateCreateLeadBody,
-  validateEditLeadBody,
-  validateEditLeadParams,
-  validateListLeadQuery,
+  validateCreateTestimonialsBody,
+  validateEditTestimonialsBody,
+  validateEditTestimonialsParams,
+  validateListTestimonialsQuery,
   validateEditMultipleIdsBody,
-} = LeadValidation;
+} = TestimonialsValidation;
 
-// ====== Lead Starts ======
+// ====== Testimonials Starts ======
 /**
  * @swagger
- * /api/admin/lead/create:
+ * /api/admin/Testimonials/create:
  *   post:
- *     summary: Create a new Lead
- *     tags: [Admin > Lead]
+ *     summary: Create a new Testimonials
+ *     tags: [Admin > Testimonials]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -41,7 +41,7 @@ const {
  *            properties:
  *              name:
  *                type: string
- *                default: Adminlead 
+ *                default: AdminTestimonials 
  *              city:
  *                type: text
  *                default: city
@@ -71,16 +71,16 @@ const {
  *                default: 0
  *     responses:
  *       '200':
- *         description: Lead created successfully
+ *         description: Testimonials created successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/lead/list?size={size}&skip={skip}:
+ * /api/admin/Testimonials/list?size={size}&skip={skip}:
  *   get:
- *     summary: Get all Lead
- *     tags: [Admin > Lead]
+ *     summary: Get all Testimonials
+ *     tags: [Admin > Testimonials]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -100,15 +100,15 @@ const {
  *         description: How many Rows want to skip
  *     responses:
  *       '200':
- *         description: Lead retrieved successfully
+ *         description: Testimonials retrieved successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * /api/admin/lead/get/{id}:
+ * /api/admin/Testimonials/get/{id}:
  *   get:
- *     summary: Get a lead by ID
- *     tags: [Admin > Lead]
+ *     summary: Get a Testimonials by ID
+ *     tags: [Admin > Testimonials]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -118,24 +118,24 @@ const {
  *         default: 1
  *         schema:
  *           type: string
- *         description: ID of the lead to retrieve
+ *         description: ID of the Testimonials to retrieve
  *     responses:
  *       '200':
- *         description: Lead retrieved successfully
+ *         description: Testimonials retrieved successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: string
- *               description: ID of the Lead to retrieve
+ *               description: ID of the Testimonials to retrieve
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Lead not found
+ *         description: Testimonials not found
  * 
- * /api/admin/lead/update/{id}:
+ * /api/admin/Testimonials/update/{id}:
  *   put:
- *     summary: Update a lead
- *     tags: [Admin > Lead]
+ *     summary: Update a Testimonials
+ *     tags: [Admin > Testimonials]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -145,7 +145,7 @@ const {
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the Lead to update
+ *         description: ID of the Testimonials to update
  *     requestBody:
  *       required: true
  *       content:
@@ -166,7 +166,7 @@ const {
  *            properties:
  *              name:
  *                type: string
- *                default: Lead 
+ *                default: Testimonials 
  *              city:
  *                type: text
  *                default: city
@@ -196,18 +196,18 @@ const {
  *                default: 0 
  *     responses:
  *       '200':
- *         description: Lead updated successfully
+ *         description: Testimonials updated successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Lead not found
+ *         description: Testimonials not found
  * 
- * /api/admin/lead/delete:
+ * /api/admin/Testimonials/delete:
  *   delete:
- *     summary: Delete a lead
- *     tags: [Admin > Lead]
+ *     summary: Delete a Testimonials
+ *     tags: [Admin > Testimonials]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -224,17 +224,17 @@ const {
  *                default: [1]
  *     responses:
  *       '200':
- *         description: lead deleted successfully
+ *         description: Testimonials deleted successfully
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Lead not found
+ *         description: Testimonials not found
  */
-router.post("/create", validateCreateLeadBody, LeadController.add);
-router.get("/list", validateListLeadQuery, LeadController.list);
-router.get("/get/:id", validateEditLeadParams, LeadController.get);
-router.put("/update/:id", validateEditLeadParams, validateEditLeadBody, LeadController.update);
-router.delete("/delete", validateEditMultipleIdsBody, LeadController.delete);
-// ====== Lead Ends ======
+router.post("/create", validateCreateTestimonialsBody, TestimonialsController.add);
+router.get("/list", validateListTestimonialsQuery, TestimonialsController.list);
+router.get("/get/:id", validateEditTestimonialsParams, TestimonialsController.get);
+router.put("/update/:id", validateEditTestimonialsParams, validateEditTestimonialsBody, TestimonialsController.update);
+router.delete("/delete", validateEditMultipleIdsBody, TestimonialsController.delete);
+// ====== Testimonials Ends ======
 
 export default router;

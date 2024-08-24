@@ -2,18 +2,18 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { LeadModel } from '../models/lead';
+import { TestimonialsModel } from '../models/testimonials';
 
-export default class LeadController {
+export default class TestimonialsController {
     static async add(req: Request, res: Response, next: NextFunction) {
         try {
-            const createLead = req?.body;
+            const createTestimonials = req?.body;
 
             let getAttributes: any = '';
             const whereName = 'email'
             const whereVal = req?.body?.email;
-            const existingLead = await new LeadModel().getLeadByAttr(whereName, whereVal, getAttributes);
-            if (existingLead) {
+            const existingTestimonials = await new TestimonialsModel().getTestimonialsByAttr(whereName, whereVal, getAttributes);
+            if (existingTestimonials) {
                 return res
                     .status(400)
                     .send(
@@ -24,14 +24,14 @@ export default class LeadController {
                     );
             }
 
-            const Lead = await new LeadModel().add(createLead);
+            const Testimonials = await new TestimonialsModel().add(createTestimonials);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.CREATED,
-                        Lead
+                        Testimonials
                     )
                 );
         } catch (err) {
@@ -51,7 +51,7 @@ export default class LeadController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const Leads = await new LeadModel().list({
+            const Testimonialss = await new TestimonialsModel().list({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -65,7 +65,7 @@ export default class LeadController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        Leads
+                        Testimonialss
                     )
                 );
         } catch (err) {
@@ -83,9 +83,9 @@ export default class LeadController {
             let getAttributes: any = '';
             const whereName = 'id'
             const whereVal = id;
-            const existingLead = await new LeadModel().getLeadByAttr(whereName, whereVal, getAttributes);
+            const existingTestimonials = await new TestimonialsModel().getTestimonialsByAttr(whereName, whereVal, getAttributes);
 
-            if (isEmpty(existingLead)) {
+            if (isEmpty(existingTestimonials)) {
                 return res
                     .status(400)
                     .send(
@@ -96,9 +96,9 @@ export default class LeadController {
                     );
             }
             
-            const updateLead = req?.body;
-            delete updateLead.id
-            const Lead = await new LeadModel().update(id, updateLead);
+            const updateTestimonials = req?.body;
+            delete updateTestimonials.id
+            const Testimonials = await new TestimonialsModel().update(id, updateTestimonials);
 
             return res
                 .status(200)
@@ -106,7 +106,7 @@ export default class LeadController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
-                        Lead
+                        Testimonials
                     )
                 );
         } catch (err) {
@@ -123,9 +123,9 @@ export default class LeadController {
             let getAttributes: any = '*';
             const whereName = 'id'
             const whereVal = id;
-            const existingLead = await new LeadModel().getLeadByAttr(whereName, whereVal, getAttributes);
+            const existingTestimonials = await new TestimonialsModel().getTestimonialsByAttr(whereName, whereVal, getAttributes);
 
-            if (isEmpty(existingLead)) {
+            if (isEmpty(existingTestimonials)) {
                 return res
                     .status(400)
                     .send(
@@ -142,7 +142,7 @@ export default class LeadController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        existingLead
+                        existingTestimonials
                     )
                 );
         } catch (err) {
@@ -157,14 +157,14 @@ export default class LeadController {
         try {
             const ids = get(req?.body, "ids", "");
 
-            const Lead = await new LeadModel().delete(ids);
+            const Testimonials = await new TestimonialsModel().delete(ids);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.DELETED,
-                        Lead
+                        Testimonials
                     )
                 );
         } catch (err) {

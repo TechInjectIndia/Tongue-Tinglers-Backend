@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
-const createLeadBody = Joi.object().keys({
+const createMenuBody = Joi.object().keys({
     name: Joi.string().required(),
     city: Joi.string().required(),
     state: Joi.string().required(),
@@ -15,13 +15,13 @@ const createLeadBody = Joi.object().keys({
     status: Joi.number().required(),
 });
 
-export const validateCreateLeadBody = async (
+export const validateCreateMenuBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, createLeadBody, "body");
+) => validateReq(req, res, next, createMenuBody, "body");
 
-const editLeadBody = Joi.object().keys({
+const editMenuBody = Joi.object().keys({
     name: Joi.string().required(),
     city: Joi.string().required(),
     state: Joi.string().required(),
@@ -34,34 +34,34 @@ const editLeadBody = Joi.object().keys({
     status: Joi.number().required(),
 });
 
-export const validateEditLeadBody = async (
+export const validateEditMenuBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, editLeadBody, "body");
+) => validateReq(req, res, next, editMenuBody, "body");
 
-const editLeadParams = Joi.object().keys({
+const editMenuParams = Joi.object().keys({
     id: Joi.string().required(),
 });
 
-export const validateEditLeadParams = async (
+export const validateEditMenuParams = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, editLeadParams, "params");
+) => validateReq(req, res, next, editMenuParams, "params");
 
-const listLeadQuery = Joi.object().keys({
+const listMenuQuery = Joi.object().keys({
     size: Joi.number().required(),
     skip: Joi.number().required(),
     search: Joi.string().optional().allow(""),
     sorting: Joi.string().optional().allow(""),
 });
 
-export const validateListLeadQuery = async (
+export const validateListMenuQuery = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, listLeadQuery, "query");
+) => validateReq(req, res, next, listMenuQuery, "query");
 
 const editMultipleIdsBody = Joi.object().keys({
     ids: Joi.array().min(1).required(),

@@ -1,24 +1,24 @@
 import * as express from "express";
-import LeadController from "../controllers/lead";
-import * as LeadValidation from "../validations/lead";
+import MenuController from "../controllers/menu";
+import * as MenuValidation from "../validations/menu";
 
 const router = express.Router();
 
 const {
-  validateCreateLeadBody,
-  validateEditLeadBody,
-  validateEditLeadParams,
-  validateListLeadQuery,
+  validateCreateMenuBody,
+  validateEditMenuBody,
+  validateEditMenuParams,
+  validateListMenuQuery,
   validateEditMultipleIdsBody,
-} = LeadValidation;
+} = MenuValidation;
 
-// ====== Lead Starts ======
+// ====== Menu Starts ======
 /**
  * @swagger
- * /api/admin/lead/create:
+ * /api/admin/menu/create:
  *   post:
- *     summary: Create a new Lead
- *     tags: [Admin > Lead]
+ *     summary: Create a new Menu
+ *     tags: [Admin > Menu]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -41,7 +41,7 @@ const {
  *            properties:
  *              name:
  *                type: string
- *                default: Adminlead 
+ *                default: AdminMenu 
  *              city:
  *                type: text
  *                default: city
@@ -71,16 +71,16 @@ const {
  *                default: 0
  *     responses:
  *       '200':
- *         description: Lead created successfully
+ *         description: Menu created successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/lead/list?size={size}&skip={skip}:
+ * /api/admin/menu/list?size={size}&skip={skip}:
  *   get:
- *     summary: Get all Lead
- *     tags: [Admin > Lead]
+ *     summary: Get all Menu
+ *     tags: [Admin > Menu]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -100,15 +100,15 @@ const {
  *         description: How many Rows want to skip
  *     responses:
  *       '200':
- *         description: Lead retrieved successfully
+ *         description: Menu retrieved successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * /api/admin/lead/get/{id}:
+ * /api/admin/menu/get/{id}:
  *   get:
- *     summary: Get a lead by ID
- *     tags: [Admin > Lead]
+ *     summary: Get a Menu by ID
+ *     tags: [Admin > Menu]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -118,24 +118,24 @@ const {
  *         default: 1
  *         schema:
  *           type: string
- *         description: ID of the lead to retrieve
+ *         description: ID of the Menu to retrieve
  *     responses:
  *       '200':
- *         description: Lead retrieved successfully
+ *         description: Menu retrieved successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: string
- *               description: ID of the Lead to retrieve
+ *               description: ID of the Menu to retrieve
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Lead not found
+ *         description: Menu not found
  * 
- * /api/admin/lead/update/{id}:
+ * /api/admin/menu/update/{id}:
  *   put:
- *     summary: Update a lead
- *     tags: [Admin > Lead]
+ *     summary: Update a Menu
+ *     tags: [Admin > Menu]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -145,7 +145,7 @@ const {
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the Lead to update
+ *         description: ID of the Menu to update
  *     requestBody:
  *       required: true
  *       content:
@@ -166,7 +166,7 @@ const {
  *            properties:
  *              name:
  *                type: string
- *                default: Lead 
+ *                default: Menu 
  *              city:
  *                type: text
  *                default: city
@@ -196,18 +196,18 @@ const {
  *                default: 0 
  *     responses:
  *       '200':
- *         description: Lead updated successfully
+ *         description: Menu updated successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Lead not found
+ *         description: Menu not found
  * 
- * /api/admin/lead/delete:
+ * /api/admin/menu/delete:
  *   delete:
- *     summary: Delete a lead
- *     tags: [Admin > Lead]
+ *     summary: Delete a Menu
+ *     tags: [Admin > Menu]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -224,17 +224,17 @@ const {
  *                default: [1]
  *     responses:
  *       '200':
- *         description: lead deleted successfully
+ *         description: Menu deleted successfully
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Lead not found
+ *         description: Menu not found
  */
-router.post("/create", validateCreateLeadBody, LeadController.add);
-router.get("/list", validateListLeadQuery, LeadController.list);
-router.get("/get/:id", validateEditLeadParams, LeadController.get);
-router.put("/update/:id", validateEditLeadParams, validateEditLeadBody, LeadController.update);
-router.delete("/delete", validateEditMultipleIdsBody, LeadController.delete);
-// ====== Lead Ends ======
+router.post("/create", validateCreateMenuBody, MenuController.add);
+router.get("/list", validateListMenuQuery, MenuController.list);
+router.get("/get/:id", validateEditMenuParams, MenuController.get);
+router.put("/update/:id", validateEditMenuParams, validateEditMenuBody, MenuController.update);
+router.delete("/delete", validateEditMultipleIdsBody, MenuController.delete);
+// ====== Menu Ends ======
 
 export default router;

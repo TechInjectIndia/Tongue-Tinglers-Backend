@@ -1,18 +1,18 @@
 const { Op } = require("sequelize");
 import {
-    TLead,
-    TLeadFilters,
-    TLeadsList,
-    TAddLead,
-} from "../../../types/lead";
-import { Lead } from "../../../database/schema";
+    TAnalytics,
+    TAnalyticsFilters,
+    TAnalyticssList,
+    TAddAnalytics,
+} from "../../../types/analytics";
+import { Payments } from "../../../database/schema";
 
-export class LeadModel {
+export class AnalyticsModel {
     constructor() { }
 
-    public async getLeadByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TLead | any> {
+    public async getAnalyticsByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TAnalytics | any> {
         const whereAttributes = { [whereName]: whereVal }
-        const data = await Lead.findOne({
+        const data = await Payments.findOne({
             raw: true,
             attributes: getAttributes,
             where: whereAttributes
@@ -20,15 +20,15 @@ export class LeadModel {
         return data;
     }
 
-    public async list(filters: TLeadFilters): Promise<TLeadsList | any> {
-        const total = await Lead.count({
+    public async list(filters: TAnalyticsFilters): Promise<TAnalyticssList | any> {
+        const total = await Payments.count({
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Lead.findAll({
+        const data = await Payments.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -41,13 +41,13 @@ export class LeadModel {
         return { total, data };
     }
 
-    public async add(data: TAddLead): Promise<TLead | any> {
-        const response = await Lead.create(data);
+    public async add(data: TAddAnalytics): Promise<TAnalytics | any> {
+        const response = await Payments.create(data);
         return response;
     }
 
-    public async update(id: number, data: TAddLead): Promise<TLead | any> {
-        const response = await Lead.update(data, {
+    public async update(id: number, data: TAddAnalytics): Promise<TAnalytics | any> {
+        const response = await Payments.update(data, {
             where: {
                 id,
             },
@@ -55,8 +55,8 @@ export class LeadModel {
         return response;
     }
 
-    public async delete(ids: number[]): Promise<TLead | any> {
-        const response = await Lead.destroy({
+    public async delete(ids: number[]): Promise<TAnalytics | any> {
+        const response = await Payments.destroy({
             where: {
                 id: ids,
             },

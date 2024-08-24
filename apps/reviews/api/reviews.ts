@@ -1,24 +1,24 @@
 import * as express from "express";
-import LeadController from "../controllers/lead";
-import * as LeadValidation from "../validations/lead";
+import ReviewsController from "../controllers/reviews";
+import * as ReviewsValidation from "../validations/reviews";
 
 const router = express.Router();
 
 const {
-  validateCreateLeadBody,
-  validateEditLeadBody,
-  validateEditLeadParams,
-  validateListLeadQuery,
+  validateCreateReviewsBody,
+  validateEditReviewsBody,
+  validateEditReviewsParams,
+  validateListReviewsQuery,
   validateEditMultipleIdsBody,
-} = LeadValidation;
+} = ReviewsValidation;
 
-// ====== Lead Starts ======
+// ====== Reviews Starts ======
 /**
  * @swagger
- * /api/admin/lead/create:
+ * /api/admin/Reviews/create:
  *   post:
- *     summary: Create a new Lead
- *     tags: [Admin > Lead]
+ *     summary: Create a new Reviews
+ *     tags: [Admin > Reviews]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -41,7 +41,7 @@ const {
  *            properties:
  *              name:
  *                type: string
- *                default: Adminlead 
+ *                default: AdminReviews 
  *              city:
  *                type: text
  *                default: city
@@ -71,16 +71,16 @@ const {
  *                default: 0
  *     responses:
  *       '200':
- *         description: Lead created successfully
+ *         description: Reviews created successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/lead/list?size={size}&skip={skip}:
+ * /api/admin/Reviews/list?size={size}&skip={skip}:
  *   get:
- *     summary: Get all Lead
- *     tags: [Admin > Lead]
+ *     summary: Get all Reviews
+ *     tags: [Admin > Reviews]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -100,15 +100,15 @@ const {
  *         description: How many Rows want to skip
  *     responses:
  *       '200':
- *         description: Lead retrieved successfully
+ *         description: Reviews retrieved successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * /api/admin/lead/get/{id}:
+ * /api/admin/Reviews/get/{id}:
  *   get:
- *     summary: Get a lead by ID
- *     tags: [Admin > Lead]
+ *     summary: Get a Reviews by ID
+ *     tags: [Admin > Reviews]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -118,24 +118,24 @@ const {
  *         default: 1
  *         schema:
  *           type: string
- *         description: ID of the lead to retrieve
+ *         description: ID of the Reviews to retrieve
  *     responses:
  *       '200':
- *         description: Lead retrieved successfully
+ *         description: Reviews retrieved successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: string
- *               description: ID of the Lead to retrieve
+ *               description: ID of the Reviews to retrieve
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Lead not found
+ *         description: Reviews not found
  * 
- * /api/admin/lead/update/{id}:
+ * /api/admin/Reviews/update/{id}:
  *   put:
- *     summary: Update a lead
- *     tags: [Admin > Lead]
+ *     summary: Update a Reviews
+ *     tags: [Admin > Reviews]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -145,7 +145,7 @@ const {
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the Lead to update
+ *         description: ID of the Reviews to update
  *     requestBody:
  *       required: true
  *       content:
@@ -166,7 +166,7 @@ const {
  *            properties:
  *              name:
  *                type: string
- *                default: Lead 
+ *                default: Reviews 
  *              city:
  *                type: text
  *                default: city
@@ -196,18 +196,18 @@ const {
  *                default: 0 
  *     responses:
  *       '200':
- *         description: Lead updated successfully
+ *         description: Reviews updated successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Lead not found
+ *         description: Reviews not found
  * 
- * /api/admin/lead/delete:
+ * /api/admin/Reviews/delete:
  *   delete:
- *     summary: Delete a lead
- *     tags: [Admin > Lead]
+ *     summary: Delete a Reviews
+ *     tags: [Admin > Reviews]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -224,17 +224,17 @@ const {
  *                default: [1]
  *     responses:
  *       '200':
- *         description: lead deleted successfully
+ *         description: Reviews deleted successfully
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Lead not found
+ *         description: Reviews not found
  */
-router.post("/create", validateCreateLeadBody, LeadController.add);
-router.get("/list", validateListLeadQuery, LeadController.list);
-router.get("/get/:id", validateEditLeadParams, LeadController.get);
-router.put("/update/:id", validateEditLeadParams, validateEditLeadBody, LeadController.update);
-router.delete("/delete", validateEditMultipleIdsBody, LeadController.delete);
-// ====== Lead Ends ======
+router.post("/create", validateCreateReviewsBody, ReviewsController.add);
+router.get("/list", validateListReviewsQuery, ReviewsController.list);
+router.get("/get/:id", validateEditReviewsParams, ReviewsController.get);
+router.put("/update/:id", validateEditReviewsParams, validateEditReviewsBody, ReviewsController.update);
+router.delete("/delete", validateEditMultipleIdsBody, ReviewsController.delete);
+// ====== Reviews Ends ======
 
 export default router;

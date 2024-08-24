@@ -1,18 +1,18 @@
 const { Op } = require("sequelize");
 import {
-    TLead,
-    TLeadFilters,
-    TLeadsList,
-    TAddLead,
-} from "../../../types/lead";
-import { Lead } from "../../../database/schema";
+    TMenu,
+    TMenuFilters,
+    TMenusList,
+    TAddMenu,
+} from "../../../types/menu";
+import { Menu } from "../../../database/schema";
 
-export class LeadModel {
+export class MenuModel {
     constructor() { }
 
-    public async getLeadByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TLead | any> {
+    public async getMenuByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TMenu | any> {
         const whereAttributes = { [whereName]: whereVal }
-        const data = await Lead.findOne({
+        const data = await Menu.findOne({
             raw: true,
             attributes: getAttributes,
             where: whereAttributes
@@ -20,15 +20,15 @@ export class LeadModel {
         return data;
     }
 
-    public async list(filters: TLeadFilters): Promise<TLeadsList | any> {
-        const total = await Lead.count({
+    public async list(filters: TMenuFilters): Promise<TMenusList | any> {
+        const total = await Menu.count({
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Lead.findAll({
+        const data = await Menu.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -41,13 +41,13 @@ export class LeadModel {
         return { total, data };
     }
 
-    public async add(data: TAddLead): Promise<TLead | any> {
-        const response = await Lead.create(data);
+    public async add(data: TAddMenu): Promise<TMenu | any> {
+        const response = await Menu.create(data);
         return response;
     }
 
-    public async update(id: number, data: TAddLead): Promise<TLead | any> {
-        const response = await Lead.update(data, {
+    public async update(id: number, data: TAddMenu): Promise<TMenu | any> {
+        const response = await Menu.update(data, {
             where: {
                 id,
             },
@@ -55,8 +55,8 @@ export class LeadModel {
         return response;
     }
 
-    public async delete(ids: number[]): Promise<TLead | any> {
-        const response = await Lead.destroy({
+    public async delete(ids: number[]): Promise<TMenu | any> {
+        const response = await Menu.destroy({
             where: {
                 id: ids,
             },

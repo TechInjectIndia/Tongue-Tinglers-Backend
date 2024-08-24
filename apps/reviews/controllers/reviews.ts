@@ -2,22 +2,36 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { FollowUpsModel } from '../models/followup';
+import { ReviewsModel } from '../models/reviews';
 
-export default class FollowUpsController {
+export default class ReviewsController {
     static async add(req: Request, res: Response, next: NextFunction) {
         try {
-            const name = get(req?.body, "name", "");
-            const createFollowUps = req?.body;
+            const createReviews = req?.body;
 
-            const FollowUps = await new FollowUpsModel().add(createFollowUps);
+            let getAttributes: any = '';
+            const whereName = 'email'
+            const whereVal = req?.body?.email;
+            const existingReviews = await new ReviewsModel().getReviewsByAttr(whereName, whereVal, getAttributes);
+            if (existingReviews) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.EXISTS
+                        )
+                    );
+            }
+
+            const Reviews = await new ReviewsModel().add(createReviews);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.CREATED,
-                        FollowUps
+                        Reviews
                     )
                 );
         } catch (err) {
@@ -37,7 +51,7 @@ export default class FollowUpsController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const FollowUpss = await new FollowUpsModel().list({
+            const Reviewss = await new ReviewsModel().list({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -51,7 +65,7 @@ export default class FollowUpsController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        FollowUpss
+                        Reviewss
                     )
                 );
         } catch (err) {
@@ -65,11 +79,13 @@ export default class FollowUpsController {
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-            const updateFollowUps = req?.body;
-            delete updateFollowUps.id
-            const existingFollowUps = await new FollowUpsModel().getFollowUpById(id as number);
 
-            if (isEmpty(existingFollowUps)) {
+            let getAttributes: any = '';
+            const whereName = 'id'
+            const whereVal = id;
+            const existingReviews = await new ReviewsModel().getReviewsByAttr(whereName, whereVal, getAttributes);
+
+            if (isEmpty(existingReviews)) {
                 return res
                     .status(400)
                     .send(
@@ -79,8 +95,10 @@ export default class FollowUpsController {
                         )
                     );
             }
-
-            const FollowUps = await new FollowUpsModel().update(id, updateFollowUps);
+            
+            const updateReviews = req?.body;
+            delete updateReviews.id
+            const Reviews = await new ReviewsModel().update(id, updateReviews);
 
             return res
                 .status(200)
@@ -88,7 +106,7 @@ export default class FollowUpsController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
-                        FollowUps
+                        Reviews
                     )
                 );
         } catch (err) {
@@ -101,9 +119,13 @@ export default class FollowUpsController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-            const FollowUps = await new FollowUpsModel().getFollowUpById(id as number);
 
-            if (isEmpty(FollowUps)) {
+            let getAttributes: any = '*';
+            const whereName = 'id'
+            const whereVal = id;
+            const existingReviews = await new ReviewsModel().getReviewsByAttr(whereName, whereVal, getAttributes);
+
+            if (isEmpty(existingReviews)) {
                 return res
                     .status(400)
                     .send(
@@ -120,7 +142,7 @@ export default class FollowUpsController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        FollowUps
+                        existingReviews
                     )
                 );
         } catch (err) {
@@ -135,14 +157,14 @@ export default class FollowUpsController {
         try {
             const ids = get(req?.body, "ids", "");
 
-            const FollowUps = await new FollowUpsModel().delete(ids);
+            const Reviews = await new ReviewsModel().delete(ids);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.DELETED,
-                        FollowUps
+                        Reviews
                     )
                 );
         } catch (err) {

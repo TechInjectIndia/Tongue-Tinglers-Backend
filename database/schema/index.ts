@@ -28,3 +28,6 @@ export * from "./franchisee/franchisee.model";
 
 
 export * from "./payments/payments";
+export * from "./reviews/reviews";
+export * from "./testimonials/testimonials";
+export * from "./menu/menu";

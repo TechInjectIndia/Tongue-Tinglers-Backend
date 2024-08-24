@@ -1,24 +1,24 @@
 import * as express from "express";
-import LeadController from "../controllers/lead";
-import * as LeadValidation from "../validations/lead";
+import AnalyticsController from "../controllers/analytics";
+import * as AnalyticsValidation from "../validations/analytics";
 
 const router = express.Router();
 
 const {
-  validateCreateLeadBody,
-  validateEditLeadBody,
-  validateEditLeadParams,
-  validateListLeadQuery,
+  validateCreateAnalyticsBody,
+  validateEditAnalyticsBody,
+  validateEditAnalyticsParams,
+  validateListAnalyticsQuery,
   validateEditMultipleIdsBody,
-} = LeadValidation;
+} = AnalyticsValidation;
 
-// ====== Lead Starts ======
+// ====== Analytics Starts ======
 /**
  * @swagger
- * /api/admin/lead/create:
+ * /api/admin/Analytics/create:
  *   post:
- *     summary: Create a new Lead
- *     tags: [Admin > Lead]
+ *     summary: Create a new Analytics
+ *     tags: [Admin > Analytics]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -41,7 +41,7 @@ const {
  *            properties:
  *              name:
  *                type: string
- *                default: Adminlead 
+ *                default: AdminAnalytics 
  *              city:
  *                type: text
  *                default: city
@@ -71,16 +71,16 @@ const {
  *                default: 0
  *     responses:
  *       '200':
- *         description: Lead created successfully
+ *         description: Analytics created successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/lead/list?size={size}&skip={skip}:
+ * /api/admin/Analytics/list?size={size}&skip={skip}:
  *   get:
- *     summary: Get all Lead
- *     tags: [Admin > Lead]
+ *     summary: Get all Analytics
+ *     tags: [Admin > Analytics]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -100,15 +100,15 @@ const {
  *         description: How many Rows want to skip
  *     responses:
  *       '200':
- *         description: Lead retrieved successfully
+ *         description: Analytics retrieved successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * /api/admin/lead/get/{id}:
+ * /api/admin/Analytics/get/{id}:
  *   get:
- *     summary: Get a lead by ID
- *     tags: [Admin > Lead]
+ *     summary: Get a Analytics by ID
+ *     tags: [Admin > Analytics]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -118,24 +118,24 @@ const {
  *         default: 1
  *         schema:
  *           type: string
- *         description: ID of the lead to retrieve
+ *         description: ID of the Analytics to retrieve
  *     responses:
  *       '200':
- *         description: Lead retrieved successfully
+ *         description: Analytics retrieved successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: string
- *               description: ID of the Lead to retrieve
+ *               description: ID of the Analytics to retrieve
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Lead not found
+ *         description: Analytics not found
  * 
- * /api/admin/lead/update/{id}:
+ * /api/admin/Analytics/update/{id}:
  *   put:
- *     summary: Update a lead
- *     tags: [Admin > Lead]
+ *     summary: Update a Analytics
+ *     tags: [Admin > Analytics]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -145,7 +145,7 @@ const {
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the Lead to update
+ *         description: ID of the Analytics to update
  *     requestBody:
  *       required: true
  *       content:
@@ -166,7 +166,7 @@ const {
  *            properties:
  *              name:
  *                type: string
- *                default: Lead 
+ *                default: Analytics 
  *              city:
  *                type: text
  *                default: city
@@ -196,18 +196,18 @@ const {
  *                default: 0 
  *     responses:
  *       '200':
- *         description: Lead updated successfully
+ *         description: Analytics updated successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Lead not found
+ *         description: Analytics not found
  * 
- * /api/admin/lead/delete:
+ * /api/admin/Analytics/delete:
  *   delete:
- *     summary: Delete a lead
- *     tags: [Admin > Lead]
+ *     summary: Delete a Analytics
+ *     tags: [Admin > Analytics]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -224,17 +224,17 @@ const {
  *                default: [1]
  *     responses:
  *       '200':
- *         description: lead deleted successfully
+ *         description: Analytics deleted successfully
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Lead not found
+ *         description: Analytics not found
  */
-router.post("/create", validateCreateLeadBody, LeadController.add);
-router.get("/list", validateListLeadQuery, LeadController.list);
-router.get("/get/:id", validateEditLeadParams, LeadController.get);
-router.put("/update/:id", validateEditLeadParams, validateEditLeadBody, LeadController.update);
-router.delete("/delete", validateEditMultipleIdsBody, LeadController.delete);
-// ====== Lead Ends ======
+router.post("/create", validateCreateAnalyticsBody, AnalyticsController.add);
+router.get("/list", validateListAnalyticsQuery, AnalyticsController.list);
+router.get("/get/:id", validateEditAnalyticsParams, AnalyticsController.get);
+router.put("/update/:id", validateEditAnalyticsParams, validateEditAnalyticsBody, AnalyticsController.update);
+router.delete("/delete", validateEditMultipleIdsBody, AnalyticsController.delete);
+// ====== Analytics Ends ======
 
 export default router;

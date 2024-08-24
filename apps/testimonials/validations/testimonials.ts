@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
-const createLeadBody = Joi.object().keys({
+const createTestimonialsBody = Joi.object().keys({
     name: Joi.string().required(),
     city: Joi.string().required(),
     state: Joi.string().required(),
@@ -15,13 +15,13 @@ const createLeadBody = Joi.object().keys({
     status: Joi.number().required(),
 });
 
-export const validateCreateLeadBody = async (
+export const validateCreateTestimonialsBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, createLeadBody, "body");
+) => validateReq(req, res, next, createTestimonialsBody, "body");
 
-const editLeadBody = Joi.object().keys({
+const editTestimonialsBody = Joi.object().keys({
     name: Joi.string().required(),
     city: Joi.string().required(),
     state: Joi.string().required(),
@@ -34,34 +34,34 @@ const editLeadBody = Joi.object().keys({
     status: Joi.number().required(),
 });
 
-export const validateEditLeadBody = async (
+export const validateEditTestimonialsBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, editLeadBody, "body");
+) => validateReq(req, res, next, editTestimonialsBody, "body");
 
-const editLeadParams = Joi.object().keys({
+const editTestimonialsParams = Joi.object().keys({
     id: Joi.string().required(),
 });
 
-export const validateEditLeadParams = async (
+export const validateEditTestimonialsParams = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, editLeadParams, "params");
+) => validateReq(req, res, next, editTestimonialsParams, "params");
 
-const listLeadQuery = Joi.object().keys({
+const listTestimonialsQuery = Joi.object().keys({
     size: Joi.number().required(),
     skip: Joi.number().required(),
     search: Joi.string().optional().allow(""),
     sorting: Joi.string().optional().allow(""),
 });
 
-export const validateListLeadQuery = async (
+export const validateListTestimonialsQuery = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, listLeadQuery, "query");
+) => validateReq(req, res, next, listTestimonialsQuery, "query");
 
 const editMultipleIdsBody = Joi.object().keys({
     ids: Joi.array().min(1).required(),

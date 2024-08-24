@@ -21,10 +21,10 @@ import followUpsRouter from "../apps/lead/api/followups";
 import profileRouter from "../apps/admin-user/api/profile";
 import settingsRouter from "../apps/admin-user/api/settings";
 import paymentsRouter from "../apps/payments/api";
-// import reviewsRouter from "../apps/reviews/api/";
-// import testimonialsRouter from "../apps/testimonials/api/";
-// import analyticsRouter from "../apps/analytics/api";
-// import menuRouter from "../apps/menu/api/";
+import reviewsRouter from "../apps/reviews/api/reviews";
+import testimonialsRouter from "../apps/testimonials/api/testimonials";
+import analyticsRouter from "../apps/analytics/api/analytics";
+import menuRouter from "../apps/menu/api/menu";
 // ====== Admin app imports ======
 
 // ====== Admin routes ======
@@ -38,12 +38,12 @@ router.use(`${ADMIN}/profile`, adminAuth, profileRouter);
 router.use(`${ADMIN}/settings`, adminAuth, settingsRouter);
 router.use(`${ADMIN}/payments/settings`, adminAuth, paymentsRouter);
 router.use(`${ADMIN}/payments`, adminAuth, paymentsRouter);
-// router.use(`${ADMIN}/reviews`, adminAuth, reviewsRouter);
-// router.use(`${ADMIN}/testimonials`, adminAuth, testimonialsRouter);
-// router.use(`${ADMIN}/analytics/orders`, adminAuth, analyticsRouter);
-// router.use(`${ADMIN}/analytics/leads`, adminAuth, analyticsRouter);
-// router.use(`${ADMIN}/analytics/retort-supply`, adminAuth, productRouter);
-// router.use(`${ADMIN}/menu`, adminAuth, menuRouter);
+router.use(`${ADMIN}/reviews`, adminAuth, reviewsRouter);
+router.use(`${ADMIN}/testimonials`, adminAuth, testimonialsRouter);
+router.use(`${ADMIN}/analytics/orders`, adminAuth, analyticsRouter);
+router.use(`${ADMIN}/analytics/leads`, adminAuth, analyticsRouter);
+router.use(`${ADMIN}/analytics/retort-supply`, adminAuth, productRouter);
+router.use(`${ADMIN}/menu`, adminAuth, menuRouter);
 
 router.use(`${ADMIN}/product`, adminAuth, productRouter);
 router.use(`${ADMIN}/product/category`, adminAuth, productCategoryRouter);

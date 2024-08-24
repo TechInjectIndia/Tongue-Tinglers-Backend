@@ -1,14 +1,9 @@
 import {Op} from "sequelize";
-import {
-    TProduct,
-    TProductFilters,
-    TProductsList,
-    TAddProduct,
-} from "../../../types/ecommerce";
+import { TProduct, TProductFilters, TProductsList, TAddProduct } from "../../../types/ecommerce";
 import { Product } from "../../../database/schema";
 
 export class ProductModel {
-    constructor() { }
+    constructor() {}
 
     public async create(data: TAddProduct): Promise<TProduct | any> {
         const response = await Product.create(data);

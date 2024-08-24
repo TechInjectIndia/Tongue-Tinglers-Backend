@@ -2,22 +2,23 @@ import {
     TFranchiseeLogin,
     TUpdateFranchiseeToken,
 } from "../../../types";
-import { Franchisee } from "../../../database/schema";
+import { User as UserModel } from "../../../database/schema";
 
 export class Auth {
     constructor() {}
 
     public async getFranchiseeByEmail(email: string): Promise<TFranchiseeLogin | any> {
-        const data = await Franchisee.findOne({
+        const data = await UserModel.findOne({
             where: {
                 email,
+                user_type: 1
             },
         });
         return data;
     }
 
     public async updateRefreshToken(data: TUpdateFranchiseeToken): Promise<boolean> {
-        await Franchisee.update(
+        await UserModel.update(
             {
                 refresh_token: data.refresh_token,
                 last_login_at: data.last_login_at,
@@ -38,10 +39,11 @@ export class Auth {
           }
         | any
     > {
-        const data = await Franchisee.findOne({
+        const data = await UserModel.findOne({
             attributes: ["password"],
             where: {
                 id,
+                user_type: 1
             },
         });
         return data;

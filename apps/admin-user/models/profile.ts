@@ -3,7 +3,7 @@ import {
     TProfile,
     TEditProfile
 } from "../../../types/";
-import { Admin as ProfileModel } from "../../../database/schema";
+import { User as UserModel } from "../../../database/schema";
 
 export class Admin {
     constructor() { }
@@ -12,15 +12,16 @@ export class Admin {
         id: number,
         data: TEditProfile
     ): Promise<TProfile | any> {
-        return await ProfileModel.update(data, {
+        return await UserModel.update(data, {
             where: {
                 id,
+                user_type: 0
             },
         });
     }
 
     public async get(id: number): Promise<TProfile | any> {
-        const data = await ProfileModel.findOne({
+        const data = await UserModel.findOne({
             attributes: [
                 "id",
                 "email",
@@ -35,6 +36,7 @@ export class Admin {
             ],
             where: {
                 id,
+                user_type: 0
             },
         });
         return data;

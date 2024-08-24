@@ -5,15 +5,16 @@ import {
     TRolesList,
     TAddRole,
 } from "../../../types";
-import { Admin as AdminModel, Roles, Permissions, Franchisee } from "../../../database/schema";
+import { User as UserModel, Roles } from "../../../database/schema";
 
 export class Admin {
     constructor() { }
 
     public async getRoleAssigneeByRoleId(ids: string[]): Promise<any> {
-        const data = await AdminModel.findAll({
+        const data = await UserModel.findAll({
             where: {
                 role: ids,
+                user_type: 0
             },
         });
         return data ?? null;

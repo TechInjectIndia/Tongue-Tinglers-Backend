@@ -3,7 +3,7 @@ import {
     TSettings,
     TEditSettings
 } from "../../../types";
-import { Admin as SettingsModel } from "../../../database/schema";
+import { User as UserModel } from "../../../database/schema";
 
 export class Admin {
     constructor() { }
@@ -12,7 +12,7 @@ export class Admin {
         id: number,
         data: TEditSettings
     ): Promise<TSettings | any> {
-        return await SettingsModel.update(data, {
+        return await UserModel.update(data, {
             where: {
                 id,
             },
@@ -20,7 +20,7 @@ export class Admin {
     }
 
     public async get(id: number): Promise<TSettings | any> {
-        const data = await SettingsModel.findOne({
+        const data = await UserModel.findOne({
             attributes: [
                 "id",
                 "email",
@@ -35,6 +35,7 @@ export class Admin {
             ],
             where: {
                 id,
+                user_type: 0
             },
         });
         return data;

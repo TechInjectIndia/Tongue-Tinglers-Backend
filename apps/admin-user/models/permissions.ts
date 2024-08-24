@@ -5,7 +5,7 @@ import {
     TPermissionFilters,
     TPermissionsList,
 } from "../../../types";
-import { Admin as AdminModel, Roles, Permissions, Franchisee } from "../../../database/schema";
+import { User as UserModel, Permissions } from "../../../database/schema";
 
 export class Admin {
     constructor() { }
@@ -94,9 +94,10 @@ export class Admin {
     }
 
     public async getPermissionAssigneeByPermissionId(ids: string[]): Promise<any> {
-        const data = await AdminModel.findAll({
+        const data = await UserModel.findAll({
             where: {
                 role: ids,
+                user_type: 0
             },
         });
         return data ?? null;

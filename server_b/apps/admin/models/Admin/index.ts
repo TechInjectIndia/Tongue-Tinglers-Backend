@@ -10,7 +10,7 @@ import {
     TRolesList,
     TEditAdminProfile,
 } from "apps/admin/controllers/admin/admin.types";
-import { AdminRole, Admin as AdminModel } from "database/schema";
+import { AdminRole, User as UserModel } from "database/schema";
 
 export class Admin {
     constructor() {}

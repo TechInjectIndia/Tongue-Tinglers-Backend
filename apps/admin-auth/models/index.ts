@@ -2,22 +2,23 @@ import {
     TAdmin,
     TUpdateAdminToken,
 } from "../../../types";
-import { Admin as AdminModel } from "../../../database/schema";
+import { User as UserModel } from "../../../database/schema";
 
 export class Auth {
     constructor() {}
 
     public async getAdminByEmail(email: string): Promise<TAdmin | any> {
-        const data = await AdminModel.findOne({
+        const data = await UserModel.findOne({
             where: {
                 email,
+                user_type: 0
             },
         });
         return data;
     }
 
     public async updateRefreshToken(data: TUpdateAdminToken): Promise<boolean> {
-        await AdminModel.update(
+        await UserModel.update(
             {
                 refresh_token: data.refresh_token,
                 last_login_at: data.last_login_at,
@@ -26,6 +27,7 @@ export class Auth {
             {
                 where: {
                     id: data.user_id,
+                    user_type: 0
                 },
             }
         );
@@ -38,10 +40,11 @@ export class Auth {
           }
         | any
     > {
-        const data = await AdminModel.findAll({
+        const data = await UserModel.findAll({
             attributes: ["password"],
             where: {
                 id,
+                user_type: 0
             },
         });
         return data ? data[0] : null;

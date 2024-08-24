@@ -1,5 +1,5 @@
 // Admin model starts
-export * from "./admin";
+export * from "./user/user.model";
 export * from "./admin-roles";
 export * from "./admin-permissions";
 // Admin model ends
@@ -16,16 +16,10 @@ export * from "./ecommerce/tag.model";
 export * from "./ecommerce/tag_image.model";
 // ecommerce model ends
 
-
 // lead model starts
 export * from "./lead/lead.model";
 export * from "./lead/followups.model";
 // lead model ends
-
-// franchisee model starts
-export * from "./franchisee/franchisee.model";
-// franchisee model ends
-
 
 export * from "./payments/payments";
 export * from "./reviews/reviews";

@@ -4,24 +4,24 @@ import {
     TFranchisee,
     TAddFranchisee,
     TEditFranchisee,
-    TEditFranchiseeProfile,
 } from "../../../types";
-import { Admin as AdminModel, Roles, Permissions, Franchisee } from "../../../database/schema";
+import { User as UserModel } from "../../../database/schema";
 
 export class Admin {
     constructor() { }
     
     public async getDeletedFranchisees(filters: TListFilters): Promise<any | null> {
-        const total = await Franchisee.count({
+        const total = await UserModel.count({
             where: {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
+                user_type: 1,
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
         });
-        const data = await Franchisee.findAll({
+        const data = await UserModel.findAll({
             attributes: [
                 "id",
                 "email",
@@ -41,6 +41,7 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
+                user_type: 1,
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
@@ -49,14 +50,15 @@ export class Admin {
     }
 
     public async getFranchisees(filters: TListFilters): Promise<any | null> {
-        const total = await Franchisee.count({
+        const total = await UserModel.count({
             where: {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
+                user_type: 1
             },
         });
-        const data = await Franchisee.findAll({
+        const data = await UserModel.findAll({
             attributes: [
                 "id",
                 "email",
@@ -76,20 +78,21 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
+                user_type: 1
             },
         });
         return { total, data };
     }
 
     public async addFranchisee(data: TAddFranchisee): Promise<TFranchisee | any> {
-        return await Franchisee.create(data);
+        return await UserModel.create({...data, user_type: 1});
     }
 
     public async editFranchisee(
         id: number,
         data: TEditFranchisee
     ): Promise<TFranchisee | any> {
-        return await Franchisee.update(data, {
+        return await UserModel.update(data, {
             where: {
                 id,
             },
@@ -97,7 +100,7 @@ export class Admin {
     }
     
     public async getFranchiseeByEmail(email: string): Promise<TFranchisee | any> {
-        const data = await Franchisee.findOne({
+        const data = await UserModel.findOne({
             attributes: [
                 "id",
                 "email",
@@ -112,13 +115,14 @@ export class Admin {
             ],
             where: {
                 email,
+                user_type: 1
             },
         });
         return data;
     }
 
     public async getFranchiseeById(id: number): Promise<TFranchisee | any> {
-        const data = await Franchisee.findOne({
+        const data = await UserModel.findOne({
             attributes: [
                 "id",
                 "email",
@@ -133,13 +137,14 @@ export class Admin {
             ],
             where: {
                 id,
+                user_type: 1
             },
         });
         return data;
     }
 
     public async deleteFranchisee(ids: number[]): Promise<TFranchisee | any> {
-        const response = await Franchisee.destroy({
+        const response = await UserModel.destroy({
             where: {
                 id: ids,
             },

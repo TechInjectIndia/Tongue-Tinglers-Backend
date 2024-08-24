@@ -1,13 +1,8 @@
 const { DataTypes } = require("sequelize");
-import { sequelize } from "../../config";
+import { sequelize } from "../../../config";
 
-// passwordChangedAt: Date,
-// passwordResetToken: String,
-// passwordResetExpires: Date,
-// cart : 
-// wishlist :
-export const Admin = sequelize.define(
-    "admins",
+export const User = sequelize.define(
+    "users",
     {
         email: {
             type: DataTypes.STRING,
@@ -48,5 +43,17 @@ export const Admin = sequelize.define(
             type: DataTypes.BOOLEAN,
             allowNull: false,
         },
+        refferal_id: {
+            type: DataTypes.STRING,
+        },
+        refferal_by: {
+            type: DataTypes.STRING,
+        },
+        additional_info: {
+            type: DataTypes.TEXT,
+        },
+        user_type: {
+            type: DataTypes.ENUM(0, 1, 2) // 0 => admin, 1 => franchisee, 2 => customer
+        }
     }
 );

@@ -3,7 +3,7 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { Admin } from '../models/roles';
-const { Op } = require("sequelize");
+import {Op} from "sequelize";
 
 export default class RolesController {
     static async addRole(req: Request, res: Response, next: NextFunction) {

@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+import {Op} from "sequelize";
 import {
     TProductCategory,
     TProductCategoryFilters,
@@ -49,7 +49,7 @@ export class ProductCategoryModel {
         return { total, data };
     }
 
-    public async create(data: TAddProductCategory): Promise<TProductCategory | any> {
+    public async create(data: TAddProductCategory): Promise<TProductCategory> {
         const response = await Category.create(data);
         return response;
     }

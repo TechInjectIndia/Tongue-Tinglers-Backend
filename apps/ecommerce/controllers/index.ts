@@ -1,10 +1,11 @@
-import ProductsController, {IProductsController} from "./products";
+import ProductsController, {IBaseController} from "./products";
+import {TProduct} from "../../../types/ecommerce";
 
 export class Controllers {
 
-    private static _productsController: IProductsController;
+    private static _productsController: IBaseController<TProduct>;
 
-    static get productsController(): IProductsController {
+    static get productsController(): IBaseController<TProduct> {
         if (!this._productsController) {
             this._productsController = new ProductsController();
         }

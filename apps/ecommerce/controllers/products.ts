@@ -5,15 +5,15 @@ import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constant
 import { ProductModel } from '../models/products';
 import slugify from "slugify";
 
-export interface IProductsController {
-    create(req: Request, res: Response, next: NextFunction): Promise<Response>
-    list(req: Request, res: Response, next: NextFunction) : Promise<Response>
-    update(req: Request, res: Response, next: NextFunction) : Promise<Response>
-    get(req: Request, res: Response, next: NextFunction) : Promise<Response>
-    delete(req: Request, res: Response, next: NextFunction) : Promise<Response>
+export interface IBaseController<T> {
+    create(req: Request, res: Response, next: NextFunction): Promise<Response<T>>
+    list(req: Request, res: Response, next: NextFunction) : Promise<Response<T[]>>
+    update(req: Request, res: Response, next: NextFunction) : Promise<Response<T>>
+    get(req: Request, res: Response, next: NextFunction) : Promise<Response<T>>
+    delete(req: Request, res: Response, next: NextFunction) : Promise<Response<T>>
 }
 
-export default class ProductsController implements IProductsController {
+export default class ProductsController implements IBaseController<any> {
 
     async create(req: Request, res: Response, next: NextFunction) {
         try {

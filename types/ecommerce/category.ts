@@ -1,7 +1,7 @@
 const { OrderItem } = require("sequelize");
 
 // ProductCategory type Starts
-export type TProductCategory = {
+export interface TProductCategory {
   id: number;
   name: string;
   description: string;

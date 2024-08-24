@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+import {Op} from "sequelize";
 import {
     TRole,
     TListFilters,
@@ -326,7 +326,7 @@ export class Admin {
         });
         return data ?? null;
     }
-    
+
     public async getDeletedFranchisees(filters: TListFilters): Promise<any | null> {
         const total = await Franchisee.count({
             where: {
@@ -411,7 +411,7 @@ export class Admin {
             },
         });
     }
-    
+
     public async getFranchiseeByEmail(email: string): Promise<TFranchisee | any> {
         const data = await Franchisee.findOne({
             attributes: [

@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+import {Op} from "sequelize";
 import {
     TListFilters,
     TFranchisee,
@@ -10,7 +10,7 @@ import { Admin as AdminModel, Roles, Permissions, Franchisee } from "../../../da
 
 export class Admin {
     constructor() { }
-    
+
     public async getDeletedFranchisees(filters: TListFilters): Promise<any | null> {
         const total = await Franchisee.count({
             where: {
@@ -95,7 +95,7 @@ export class Admin {
             },
         });
     }
-    
+
     public async getFranchiseeByEmail(email: string): Promise<TFranchisee | any> {
         const data = await Franchisee.findOne({
             attributes: [

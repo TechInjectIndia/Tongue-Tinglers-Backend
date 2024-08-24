@@ -4,9 +4,10 @@ import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { ProductCategoryModel } from '../models/category';
 import slugify from "slugify";
+import type {IBaseController} from "./products";
 
-export default class ProductCategory {
-    static async create(req: Request, res: Response, next: NextFunction) {
+export default class ProductCategory implements IBaseController<ProductCategory> {
+    async create(req: Request, res: Response, next: NextFunction) {
         try {
             const name = get(req?.body, "name", "");
             const active = get(req?.body, "active", 1);
@@ -43,7 +44,7 @@ export default class ProductCategory {
         }
     }
 
-    static async list(req: Request, res: Response, next: NextFunction) {
+    async list(req: Request, res: Response, next: NextFunction) {
         try {
             const size = get(req?.query, "size", 10);
             const skip = get(req?.query, "skip", 1);
@@ -77,7 +78,7 @@ export default class ProductCategory {
         }
     }
 
-    static async update(req: Request, res: Response, next: NextFunction) {
+     async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
             const name = get(req?.body, "name", "");
@@ -116,7 +117,7 @@ export default class ProductCategory {
         }
     }
 
-    static async get(req: Request, res: Response, next: NextFunction) {
+     async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
             const Product = await new ProductCategoryModel().getProductCategoryById(id as number);
@@ -149,7 +150,7 @@ export default class ProductCategory {
         }
     }
 
-    static async delete(req: Request, res: Response, next: NextFunction) {
+     async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const ids = get(req?.body, "ids", "");
 

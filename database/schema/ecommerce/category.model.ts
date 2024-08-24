@@ -1,39 +1,71 @@
-import {DataTypes} from "sequelize";
-import {sequelize} from "../../../config";
+import { DataTypes, Model, Optional } from "sequelize";
+import { sequelize } from "../../../config";
 
-const {BOOLEAN, INTEGER, STRING, DATE, TEXT, DECIMAL} = DataTypes;
+// Define the attributes for the Category model
+interface CategoryAttributes {
+    id: number;
+    name: string;
+    slug: string;
+    description?: string;
+    active: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
 
-export const Category = sequelize.define<>('categories', {
+// Define the creation attributes for the Category model
+// Since `id`, `createdAt`, and `updatedAt` are auto-generated,
+// they are optional when creating a new Category.
+interface CategoryCreationAttributes extends Optional<CategoryAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+
+// Define the Category model class
+class Category extends Model<CategoryAttributes, CategoryCreationAttributes> implements CategoryAttributes {
+    public id!: number;
+    public name!: string;
+    public slug!: string;
+    public description?: string;
+    public active!: boolean;
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+}
+
+// Define the model using Sequelize's define method
+Category.init({
     id: {
-        type: INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
     name: {
-        type: STRING(50),
+        type: DataTypes.STRING(50),
         allowNull: false,
     },
     slug: {
-        type: STRING(50),
+        type: DataTypes.STRING(50),
         allowNull: false,
     },
     description: {
-        type: STRING(50),
+        type: DataTypes.STRING(50),
     },
     active: {
-        type: BOOLEAN,
+        type: DataTypes.BOOLEAN,
         allowNull: false,
     },
     createdAt: {
-        type: DATE,
+        type: DataTypes.DATE,
         allowNull: false,
         defaultValue: new Date(),
         field: 'created_at'
     },
     updatedAt: {
-        type: DATE,
+        type: DataTypes.DATE,
         allowNull: false,
         defaultValue: new Date(),
         field: 'updated_at'
     },
+}, {
+    sequelize,
+    tableName: 'categories',
+    timestamps: true,
 });
+
+export { Category };

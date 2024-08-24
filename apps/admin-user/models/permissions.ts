@@ -97,7 +97,7 @@ export class Admin {
         const data = await UserModel.findAll({
             where: {
                 role: ids,
-                user_type: 0
+                user_type: '0'
             },
         });
         return data ?? null;

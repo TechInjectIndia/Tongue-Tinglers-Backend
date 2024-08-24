@@ -90,7 +90,7 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: 0,
+                user_type: '0',
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
@@ -117,7 +117,7 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: 0,
+                user_type: '0',
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
@@ -131,7 +131,7 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: 0,
+                user_type: '0',
             },
         });
         const data = await UserModel.findAll({
@@ -156,14 +156,14 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: 0
+                user_type: '0'
             },
         });
         return { total, data };
     }
 
     public async addAdmin(data: TAddAdmin): Promise<TAdmin | any> {
-        return await UserModel.create({...data, user_type: 0});
+        return await UserModel.create({...data, user_type: '0'});
     }
 
     public async editAdmin(
@@ -173,13 +173,13 @@ export class Admin {
         return await UserModel.update(data, {
             where: {
                 id,
-                user_type: 0
+                user_type: '0'
             },
         });
     }
 
     public async getAdminById(id: number): Promise<TAdmin | any> {
-        const data = await UserModel.findAll({
+        const data = await UserModel.findOne({
             attributes: [
                 "id",
                 "email",
@@ -196,10 +196,15 @@ export class Admin {
             ],
             where: {
                 id,
-                user_type: 0
+                user_type: '0'
             },
         });
-        return data ? data[0] : null;
+        const role = await Roles.findOne({
+            where: {
+                id: data?.dataValues?.role
+            }
+        })
+        return {...data?.dataValues, permissions: role?.dataValues?.role_permissions ?? ''};
     }
 
     public async deleteAdmin(ids: number[]): Promise<TRole | any> {
@@ -327,7 +332,7 @@ export class Admin {
         const data = await UserModel.findAll({
             where: {
                 role: ids,
-                user_type: 0
+                user_type: '0'
             },
         });
         return data ?? null;
@@ -339,7 +344,7 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: 1,
+                user_type: '1',
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
@@ -364,7 +369,7 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: 1,
+                user_type: '1',
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
@@ -378,7 +383,7 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: 1
+                user_type: '1'
             },
         });
         const data = await UserModel.findAll({
@@ -401,14 +406,14 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: 1
+                user_type: '1'
             },
         });
         return { total, data };
     }
 
     public async addFranchisee(data: TAddFranchisee): Promise<TFranchisee | any> {
-        return await UserModel.create({...data, user_type: 1});
+        return await UserModel.create({...data, user_type: '1'});
     }
 
     public async editFranchisee(
@@ -438,7 +443,7 @@ export class Admin {
             ],
             where: {
                 email,
-                user_type: 1
+                user_type: '1'
             },
         });
         return data;
@@ -460,7 +465,7 @@ export class Admin {
             ],
             where: {
                 id,
-                user_type: 1
+                user_type: '1'
             },
         });
         return data;

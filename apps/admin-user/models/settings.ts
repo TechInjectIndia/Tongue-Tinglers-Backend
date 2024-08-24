@@ -35,7 +35,7 @@ export class Admin {
             ],
             where: {
                 id,
-                user_type: 0
+                user_type: '0'
             },
         });
         return data;

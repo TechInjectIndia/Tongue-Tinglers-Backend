@@ -38,7 +38,7 @@ const {
  *                default: AdminRole 
  *              role_permissions:
  *                type: text
- *                default: "{}"
+ *                default: "{'user':['add','edit']}"
  *              active:
  *                type: boolean
  *                default: 0 
@@ -131,6 +131,9 @@ const {
  *              name:
  *                type: string
  *                default: AdminRoleNew
+ *              role_permissions:
+ *                type: text
+ *                default: "{'user':['add','edit']}"
  *              active:
  *                type: string
  *                default: 1
@@ -161,7 +164,7 @@ const {
  *            properties:
  *              ids:
  *                type: array
- *                default: [1]
+ *                default: ["1"]
  *     responses:
  *       '200':
  *         description: role deleted successfully

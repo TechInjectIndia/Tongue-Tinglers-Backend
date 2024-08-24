@@ -1,6 +1,5 @@
 const { OrderItem } = require("sequelize");
 
-// Admin User type Starts
 export type TAdmin = {
   id: number;
   email: string;

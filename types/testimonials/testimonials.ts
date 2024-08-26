@@ -2,33 +2,22 @@ const { OrderItem } = require("sequelize");
 
 // Testimonials type Starts
 export type TTestimonials = {
-  id: number;
-  city: string,
-  state: string,
-  zip_code: string,
-  country: string,
-  phone_number: string,
-  email: string,
-  address: string,
-  additional_info: string,
-  status: number,
-  createdAt: Date;
-  updatedAt: Date;
+  testimonial_text: string,
+  rating: number,
+  date_submitted: string,
+  approved: number,
+  testimonial_type: number,
 };
 
 export type TAddTestimonials = {
-  city: string,
-  state: string,
-  zip_code: string,
-  country: string,
-  phone_number: string,
-  email: string,
-  address: string,
-  additional_info: string,
-  status: number,
+  testimonial_text: string,
+  rating: number,
+  date_submitted: string,
+  approved: number,
+  testimonial_type: number,
 };
 
-export type TTestimonialssList = {
+export type TTestimonialsList = {
   total: number;
   data: TTestimonials;
 };

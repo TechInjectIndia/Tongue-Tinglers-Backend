@@ -3,16 +3,11 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
 const createTestimonialsBody = Joi.object().keys({
-    name: Joi.string().required(),
-    city: Joi.string().required(),
-    state: Joi.string().required(),
-    zip_code: Joi.string().required(),
-    country: Joi.string().required(),
-    phone_number: Joi.string().required(),
-    email: Joi.string().required(),
-    address: Joi.string().required(),
-    additional_info: Joi.string().required(),
-    status: Joi.number().required(),
+    testimonial_text: Joi.string().required(),
+    rating: Joi.number().required(),
+    date_submitted: Joi.string().required(),
+    approved: Joi.number().required(),
+    testimonial_type: Joi.string().required(),
 });
 
 export const validateCreateTestimonialsBody = async (
@@ -22,16 +17,11 @@ export const validateCreateTestimonialsBody = async (
 ) => validateReq(req, res, next, createTestimonialsBody, "body");
 
 const editTestimonialsBody = Joi.object().keys({
-    name: Joi.string().required(),
-    city: Joi.string().required(),
-    state: Joi.string().required(),
-    zip_code: Joi.string().required(),
-    country: Joi.string().required(),
-    phone_number: Joi.string().required(),
-    email: Joi.string().required(),
-    address: Joi.string().required(),
-    additional_info: Joi.string().required(),
-    status: Joi.number().required(),
+    testimonial_text: Joi.string().required(),
+    rating: Joi.number().required(),
+    date_submitted: Joi.string().required(),
+    approved: Joi.number().required(),
+    testimonial_type: Joi.string().required(),
 });
 
 export const validateEditTestimonialsBody = async (

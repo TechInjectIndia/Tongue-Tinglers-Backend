@@ -52,16 +52,16 @@ const options = {
                 name: 'Admin > User > Settings'
             },
             {
-                name: 'Admin > Testimonials '
+                name: 'Admin > Testimonials'
             },
             {
-                name: 'Admin > Reviews '
+                name: 'Admin > Reviews'
             },
             {
-                name: 'Admin > Analytics '
+                name: 'Admin > Analytics'
             },
             {
-                name: 'Admin > Menu '
+                name: 'Admin > Menu'
             },
             {
                 name: 'Admin > Franchise'
@@ -107,7 +107,12 @@ const options = {
         './apps/franchise-auth/api/*.ts',
         './apps/admin-user/api/*.ts',
         './apps/ecommerce/api/*.ts',
-        './apps/lead/api/*.ts'
+        './apps/lead/api/*.ts',
+        './apps/testimonials/api/*.ts',
+        './apps/reviews/api/*.ts',
+        './apps/payments/api/*.ts',
+        './apps/menu/api/*.ts',
+        './apps/analytics/api/*.ts'
     ],
 }
 const swaggerSpec = swaggerJsdoc(options)

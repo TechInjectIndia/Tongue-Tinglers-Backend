@@ -15,7 +15,7 @@ const {
 // ====== Testimonials Starts ======
 /**
  * @swagger
- * /api/admin/Testimonials/create:
+ * /api/admin/testimonials/create:
  *   post:
  *     summary: Create a new Testimonials
  *     tags: [Admin > Testimonials]
@@ -28,47 +28,27 @@ const {
  *           schema:
  *            type: object
  *            required:
- *              - name
- *              - city
- *              - zip_code
- *              - state
- *              - country
- *              - phone_number
- *              - email
- *              - address
- *              - additional_info
- *              - status
+ *              - testimonial_text
+ *              - rating
+ *              - date_submitted
+ *              - approved
+ *              - testimonial_type
  *            properties:
- *              name:
+ *              testimonial_text:
  *                type: string
  *                default: AdminTestimonials 
- *              city:
- *                type: text
- *                default: city
- *              zip_code:
- *                type: text
- *                default: zip_code
- *              state:
- *                type: text
- *                default: state
- *              country:
- *                type: text
- *                default: country
- *              phone_number:
- *                type: text
- *                default: phone_number
- *              email:
- *                type: text
- *                default: email
- *              address:
- *                type: text
- *                default: address
- *              additional_info:
- *                type: text
- *                default: additional_info
- *              status:
- *                type: boolean
+ *              rating:
+ *                type: number
  *                default: 0
+ *              date_submitted:
+ *                type: date
+ *                default: 2/02/2024
+ *              approved:
+ *                type: number
+ *                default: 0
+ *              testimonial_type:
+ *                type: text
+ *                default: 'product'
  *     responses:
  *       '200':
  *         description: Testimonials created successfully
@@ -77,7 +57,7 @@ const {
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/Testimonials/list?size={size}&skip={skip}:
+ * /api/admin/testimonials/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all Testimonials
  *     tags: [Admin > Testimonials]
@@ -105,7 +85,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * /api/admin/Testimonials/get/{id}:
+ * /api/admin/testimonials/get/{id}:
  *   get:
  *     summary: Get a Testimonials by ID
  *     tags: [Admin > Testimonials]
@@ -117,7 +97,7 @@ const {
  *         required: true
  *         default: 1
  *         schema:
- *           type: string
+ *           type: number
  *         description: ID of the Testimonials to retrieve
  *     responses:
  *       '200':
@@ -125,14 +105,14 @@ const {
  *         content:
  *           application/json:
  *             schema:
- *               type: string
+ *               type: number
  *               description: ID of the Testimonials to retrieve
  *       '401':
  *         description: Unauthorized
  *       '404':
  *         description: Testimonials not found
  * 
- * /api/admin/Testimonials/update/{id}:
+ * /api/admin/testimonials/update/{id}:
  *   put:
  *     summary: Update a Testimonials
  *     tags: [Admin > Testimonials]
@@ -153,47 +133,27 @@ const {
  *           schema:
  *            type: object
  *            required:
- *              - name
- *              - city
- *              - zip_code
- *              - state
- *              - country
- *              - phone_number
- *              - email
- *              - address
- *              - additional_info
- *              - status
+ *              - testimonial_text
+ *              - rating
+ *              - date_submitted
+ *              - approved
+ *              - testimonial_type
  *            properties:
- *              name:
+ *              testimonial_text:
  *                type: string
- *                default: Testimonials 
- *              city:
+ *                default: AdminTestimonials 
+ *              rating:
+ *                type: number
+ *                default: 0
+ *              date_submitted:
+ *                type: date
+ *                default: "2/02/2024"
+ *              approved:
+ *                type: number
+ *                default: 0
+ *              testimonial_type:
  *                type: text
- *                default: city
- *              zip_code:
- *                type: text
- *                default: zip_code
- *              state:
- *                type: text
- *                default: state
- *              country:
- *                type: text
- *                default: country
- *              phone_number:
- *                type: text
- *                default: phone_number
- *              email:
- *                type: text
- *                default: email
- *              address:
- *                type: text
- *                default: address
- *              additional_info:
- *                type: text
- *                default: additional_info
- *              status:
- *                type: boolean
- *                default: 0 
+ *                default: 'product'
  *     responses:
  *       '200':
  *         description: Testimonials updated successfully
@@ -204,7 +164,7 @@ const {
  *       '404':
  *         description: Testimonials not found
  * 
- * /api/admin/Testimonials/delete:
+ * /api/admin/testimonials/delete:
  *   delete:
  *     summary: Delete a Testimonials
  *     tags: [Admin > Testimonials]

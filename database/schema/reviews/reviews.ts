@@ -7,12 +7,34 @@ export const Reviews = sequelize.define("reviews", {
         type: INTEGER,
         allowNull: false,
     },
-    timestamp: { // When the activity occurred.
-        type: STRING,
-        allowNull: false,
-    },
-    description: { // Detailed record of the activity.
+    ReviewText: { // The content of the review
         type: TEXT,
         allowNull: false,
-    },    
+        field: 'review_text'
+    },
+    Rating: { // Rating given in the review (usually 1 to 5)
+        type: INTEGER,
+        allowNull: false,
+        field: 'rating'
+    },
+    ReviewDate: { // Date and time when the review was submitted
+        type: INTEGER,
+        allowNull: false,
+        field: 'review_date'
+    },
+    Approved: { // Whether the review has been approved 
+        type: INTEGER,
+        allowNull: false,
+        field: 'approved'
+    },
+    ItemID: { // Identifier for the item being reviewed (e.g., product, service)
+        type: INTEGER,
+        allowNull: false,
+        field: 'item_id'
+    },
+    ItemType: { // Type of item being reviewed (e.g., product, service)
+        type: INTEGER,
+        allowNull: false,
+        field: 'item_type'
+    },
 });

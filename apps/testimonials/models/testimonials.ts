@@ -2,7 +2,7 @@ const { Op } = require("sequelize");
 import {
     TTestimonials,
     TTestimonialsFilters,
-    TTestimonialssList,
+    TTestimonialsList,
     TAddTestimonials,
 } from "../../../types/testimonials";
 import { Testimonials } from "../../../database/schema";
@@ -20,10 +20,10 @@ export class TestimonialsModel {
         return data;
     }
 
-    public async list(filters: TTestimonialsFilters): Promise<TTestimonialssList | any> {
+    public async list(filters: TTestimonialsFilters): Promise<TTestimonialsList | any> {
         const total = await Testimonials.count({
             where: {
-                name: {
+                testimonial_text: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
@@ -33,7 +33,7 @@ export class TestimonialsModel {
             offset: filters.offset,
             limit: filters.limit,
             where: {
-                name: {
+                testimonial_text: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
@@ -41,7 +41,7 @@ export class TestimonialsModel {
         return { total, data };
     }
 
-    public async add(data: TAddTestimonials): Promise<TTestimonials | any> {
+    public async add(data: TAddTestimonials): Promise<TAddTestimonials | any> {
         const response = await Testimonials.create(data);
         return response;
     }

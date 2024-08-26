@@ -8,21 +8,7 @@ export default class TestimonialsController {
     static async add(req: Request, res: Response, next: NextFunction) {
         try {
             const createTestimonials = req?.body;
-
-            let getAttributes: any = '';
-            const whereName = 'email'
-            const whereVal = req?.body?.email;
-            const existingTestimonials = await new TestimonialsModel().getTestimonialsByAttr(whereName, whereVal, getAttributes);
-            if (existingTestimonials) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.EXISTS
-                        )
-                    );
-            }
+            createTestimonials.user_id = 1 // pending
 
             const Testimonials = await new TestimonialsModel().add(createTestimonials);
             return res
@@ -35,7 +21,6 @@ export default class TestimonialsController {
                     )
                 );
         } catch (err) {
-            console.log(err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -80,22 +65,6 @@ export default class TestimonialsController {
         try {
             const id = get(req?.params, "id", "");
 
-            let getAttributes: any = '';
-            const whereName = 'id'
-            const whereVal = id;
-            const existingTestimonials = await new TestimonialsModel().getTestimonialsByAttr(whereName, whereVal, getAttributes);
-
-            if (isEmpty(existingTestimonials)) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS
-                        )
-                    );
-            }
-            
             const updateTestimonials = req?.body;
             delete updateTestimonials.id
             const Testimonials = await new TestimonialsModel().update(id, updateTestimonials);
@@ -119,8 +88,7 @@ export default class TestimonialsController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-
-            let getAttributes: any = '*';
+            let getAttributes: any = '';
             const whereName = 'id'
             const whereVal = id;
             const existingTestimonials = await new TestimonialsModel().getTestimonialsByAttr(whereName, whereVal, getAttributes);
@@ -146,7 +114,7 @@ export default class TestimonialsController {
                     )
                 );
         } catch (err) {
-            console.log(err);
+            console.log(">>>>>>>>>>>>>>>>>>>>>", err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

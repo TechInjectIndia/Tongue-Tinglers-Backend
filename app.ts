@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import dotenvExpand from "dotenv-expand";
+import sgMail from "@sendgrid/mail";
 import { CONFIG } from "./config";
 import swaggerDocs from './swagger';
 import express from "express";
@@ -21,6 +22,9 @@ declare global {
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
+
+// Set sendgrid api key
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Database connection
 connectToDatabase();

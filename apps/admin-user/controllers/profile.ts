@@ -1,17 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { TEditProfile } from "../../../types";
-import { sendResponse, createPassword } from "../../../libraries";
+import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { Admin } from '../models/profile';
 
 export default class ProfileController {
     static async getProfile(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
-            const existingFranchisee = await new Admin().get(id as number);
+            const id = get(req, "user_id", "");
+            const getProfileData = await new Admin().get(id as number);
 
-            if (isEmpty(existingFranchisee)) {
+            if (isEmpty(getProfileData)) {
                 return res
                     .status(400)
                     .send(
@@ -23,14 +23,14 @@ export default class ProfileController {
             }
 
             return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FETCHED,
-                        existingFranchisee
-                    )
-                );
+            .status(200)
+            .send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.FETCHED,
+                    getProfileData
+                )
+            );
         } catch (err) {
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -53,14 +53,15 @@ export default class ProfileController {
                 address,
             };
 
-            await new Admin().editProfile(id, payload);
+            const profileUpdate = await new Admin().editProfile(id, payload);
 
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED
+                        SUCCESS_MESSAGE.UPDATED,
+                        profileUpdate
                     )
                 );
         } catch (err) {

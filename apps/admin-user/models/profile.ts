@@ -22,6 +22,7 @@ export class Admin {
 
     public async get(id: number): Promise<TProfile | any> {
         const data = await UserModel.findOne({
+            raw: true,
             attributes: [
                 "id",
                 "email",

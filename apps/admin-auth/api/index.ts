@@ -27,8 +27,10 @@ const { login } = AuthController;
  *            properties:
  *              email:
  *                type: string
+ *                default: admin@gmail.com
  *              password:
  *                type: string
+ *                default: admin
  *     responses:
  *       '200':
  *         description: Admin logged in successfully

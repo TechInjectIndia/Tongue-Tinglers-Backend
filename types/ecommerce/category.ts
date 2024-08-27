@@ -1,6 +1,7 @@
-const { OrderItem } = require("sequelize");
 
 // ProductCategory type Starts
+
+import { OrderItem } from "../../database/schema/ecommerce/order_item.model";
 
 export interface TProductCategoryFilters {
   offset: number;
@@ -14,28 +15,11 @@ export interface TAddProductCategory {
   name: string;
   slug: string;
   description: string;
-  active?: boolean;
+  active: boolean;
 };
 
-export interface TProductCategory extends TAddProductCategory, Partial<TProductCategoryFilters> {
+export interface TProductCategory extends TAddProductCategory {
   id: number;
   createdAt: Date;
   updatedAt: Date;
-  offset?: number;
-  limit?: number;
 };
-
-// export type TAddProductCategory = {
-//   name: string;
-//   slug: string;
-//   description: string;
-//   active: number;
-// };
-
-// export type TProductCategorysList = {
-//   total: number;
-//   data: TProductCategory;
-// };
-
-
-// ProductCategory type Ends

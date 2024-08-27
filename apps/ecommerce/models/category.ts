@@ -1,16 +1,12 @@
-import {Op} from "sequelize";
-import {
-    TProductCategory,
-    TProductCategoryFilters,
-    TProductCategorysList,
-    TAddProductCategory,
-} from "../../../types/ecommerce";
-import { Category } from "../../../database/schema";
+import { Op } from "sequelize";
+
+import { Category, ProductCategoryAttributes } from "../../../database/schema";
+import { TAddProductCategory, TProductCategoryFilters } from "../../../types/ecommerce";
 
 export class ProductCategoryModel {
     constructor() { }
 
-    public async getProductCategoryByName(name: string): Promise<TProductCategory | any> {
+    public async getProductCategoryByName(name: string): Promise<Category> {
         const data = await Category.findOne({
             where: {
                 name,
@@ -19,7 +15,7 @@ export class ProductCategoryModel {
         return data;
     }
 
-    public async getProductCategoryById(id: number): Promise<TProductCategory | any> {
+    public async getProductCategoryById(id: number): Promise<Category> {
         const data = await Category.findOne({
             where: {
                 id,
@@ -28,7 +24,7 @@ export class ProductCategoryModel {
         return data;
     }
 
-    public async list(filters: TProductCategoryFilters): Promise<TProductCategorysList> {
+    public async list(filters: TProductCategoryFilters): Promise<Category[]> {
         const total = await Category.count({
             where: {
                 name: {
@@ -46,15 +42,15 @@ export class ProductCategoryModel {
                 },
             },
         });
-        return { total, data };
+        return data;
     }
 
-    public async create(data: TAddProductCategory): Promise<TProductCategory> {
+    public async create(data: TAddProductCategory): Promise<Category> {
         const response = await Category.create(data);
         return response;
     }
 
-    public async update(id: number, data: TAddProductCategory): Promise<TProductCategory | any> {
+    public async update(id: number, data: TAddProductCategory): Promise<[affectedCount: number]> {
         const response = await Category.update(data, {
             where: {
                 id,
@@ -63,7 +59,7 @@ export class ProductCategoryModel {
         return response;
     }
 
-    public async delete(ids: number[]): Promise<TProductCategory | any> {
+    public async delete(ids: number[]): Promise<number> {
         const response = await Category.destroy({
             where: {
                 id: ids,

@@ -8,7 +8,7 @@ require("./database/schema");
 declare global {
   interface BigInt {
     /** Convert to BigInt to string form in JSON.stringify */
-    toJSON: () => string;
+toJSON: () => string;
   }
 }
 BigInt.prototype.toJSON = function () {

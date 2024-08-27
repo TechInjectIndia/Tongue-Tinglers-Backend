@@ -1,65 +1,22 @@
 const { Op } = require("sequelize");
 import {
-    TFollowUp,
-    TFollowUpFilters,
-    TFollowUpsList,
-    TAddFollowUp,
-} from "../../../types/lead/followup";
-import { FollowUps } from "../../../database/schema";
+    TLead,
+} from "../../../types/lead/lead";
+import { Lead } from "../../../database/schema";
 
 export class FollowUpsModel {
     constructor() { }
 
-    public async getFollowUpById(id: number): Promise<TFollowUp | any> {
-        const data = await FollowUps.findOne({
+    public async getFollowUpsToday(startDate: any, endDate: any, getAttributes: any = '*'): Promise<TLead | any> {
+        const data = await Lead.findOne({
+            raw: true,
+            attributes: getAttributes,
             where: {
-                id,
-            },
+                follow_date: {
+                    [Op.between]: [startDate, endDate]
+                }
+            }
         });
         return data;
-    }
-
-    public async list(filters: TFollowUpFilters): Promise<TFollowUpsList | any> {
-        const total = await FollowUps.count({
-            where: {
-                title: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
-        });
-        const data = await FollowUps.findAll({
-            order: [filters?.sorting],
-            offset: filters.offset,
-            limit: filters.limit,
-            where: {
-                title: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
-        });
-        return { total, data };
-    }
-
-    public async add(data: TAddFollowUp): Promise<TFollowUp | any> {
-        const response = await FollowUps.create(data);
-        return response;
-    }
-
-    public async update(id: number, data: TAddFollowUp): Promise<TFollowUp | any> {
-        const response = await FollowUps.update(data, {
-            where: {
-                id,
-            },
-        });
-        return response;
-    }
-
-    public async delete(ids: number[]): Promise<TFollowUp | any> {
-        const response = await FollowUps.destroy({
-            where: {
-                id: ids,
-            },
-        });
-        return response;
     }
 }

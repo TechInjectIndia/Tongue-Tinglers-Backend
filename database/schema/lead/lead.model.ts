@@ -14,8 +14,10 @@ export const Lead = sequelize.define('leads', {
     email: STRING,
     address: STRING,
     additional_info: TEXT,
-    lead_source: TEXT,
-    lead_assign_to: INTEGER,
+    source: STRING,
+    follow_date: DATE,
+    created_by: INTEGER,
+    assigned_to: INTEGER,
     status: {
         type: INTEGER,
         field: 'status',

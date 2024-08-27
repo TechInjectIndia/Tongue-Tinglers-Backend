@@ -1,5 +1,7 @@
 const { Op } = require("sequelize");
 import {
+    TLeadStatus,
+    TAssignLead,
     TLead,
     TLeadFilters,
     TLeadsList,
@@ -9,6 +11,16 @@ import { Lead } from "../../../database/schema";
 
 export class LeadModel {
     constructor() { }
+
+    public async getLeadStatus(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TLeadStatus | any> {
+        const whereAttributes = { [whereName]: whereVal }
+        const data = await Lead.findOne({
+            raw: true,
+            attributes: getAttributes,
+            where: whereAttributes
+        });
+        return data;
+    }
 
     public async getLeadByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TLead | any> {
         const whereAttributes = { [whereName]: whereVal }
@@ -47,6 +59,15 @@ export class LeadModel {
     }
 
     public async update(id: number, data: TAddLead): Promise<TLead | any> {
+        const response = await Lead.update(data, {
+            where: {
+                id,
+            },
+        });
+        return response;
+    }
+
+    public async assignLeadToUser(id: number, data: TAssignLead): Promise<TLead | any> {
         const response = await Lead.update(data, {
             where: {
                 id,

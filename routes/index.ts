@@ -40,8 +40,8 @@ router.use(`${ADMIN}/profile`, adminAuth, profileRouter);
 
 router.use(`${ADMIN}/settings`, adminAuth, settingsRouter);
 
-router.use(`${ADMIN}/payments/settings`, adminAuth, paymentsRouter);
 router.use(`${ADMIN}/payments`, adminAuth, paymentsRouter);
+router.use(`${ADMIN}/payments/settings`, adminAuth, paymentsRouter);
 
 router.use(`${ADMIN}/analytics/orders`, adminAuth, analyticsRouter);
 router.use(`${ADMIN}/analytics/leads`, adminAuth, analyticsRouter);
@@ -54,19 +54,21 @@ router.use(`${ADMIN}/product/category`, adminAuth, productCategoryRouter);
 router.use(`${ADMIN}/product/order`, adminAuth, orderRouter);
 router.use(`${ADMIN}/product/tag`, adminAuth, productTagRouter);
 router.use(`${ADMIN}/lead`, adminAuth, leadRouter);
-router.use(`${ADMIN}/lead/followup`, adminAuth, followUpsRouter);
+router.use(`${ADMIN}/followup`, adminAuth, followUpsRouter);
 // ====== Admin routes ======
 
 
 // ====== Franchise imports ======
 import { franchiseAuth } from '../middlewares/auth';
 import franchiseAuthRouter from "../apps/franchise-auth/api";
+import franchiseProfileRouter from "../apps/franchise-user/api/profile";
+import franchiseSettingsRouter from "../apps/franchise-user/api/settings";
 // ====== Franchise imports ======
 
 // ====== Franchise auth routes ======
 router.use(`${FRANCHISE}/auth`, franchiseAuthRouter);
-// router.use(`${FRANCHISE}/profile`, franchiseAuth, productRouter);
-// router.use(`${FRANCHISE}/settings`, franchiseAuth, productRouter);
+router.use(`${FRANCHISE}/profile`, franchiseAuth, franchiseProfileRouter);
+router.use(`${FRANCHISE}/settings`, franchiseAuth, franchiseSettingsRouter);
 // router.use(`${FRANCHISE}/order`, franchiseAuth, productRouter);
 // router.use(`${FRANCHISE}/invoice`, franchiseAuth, productRouter);
 // router.use(`${FRANCHISE}/analytics/orders`, franchiseAuth, productRouter);

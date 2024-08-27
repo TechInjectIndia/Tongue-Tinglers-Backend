@@ -5,6 +5,89 @@ import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constant
 import { LeadModel } from '../models/lead';
 
 export default class LeadController {
+
+    static async getLeadStatus(req: Request, res: Response, next: NextFunction) {
+        try {
+            const id = get(req?.params, "id", "");
+            let getAttributes: any = ['status'];
+            const whereName = 'id'
+            const whereVal = id;
+            const existingLead = await new LeadModel().getLeadStatus(whereName, whereVal, getAttributes);
+            
+            if (isEmpty(existingLead)) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS
+                        )
+                    );
+            }
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        existingLead
+                    )
+                );
+        } catch (err) {
+            console.log(err);
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    static async assignLeadToAdminUser(req: Request, res: Response, next: NextFunction) {
+        try {
+            // check if user id assinegd by and assigned to is user
+            // add details in logs
+            const id = get(req?.body, "lead_id", "");
+            const assigned_by = get(req, "user_id", "");
+            const assigned_to = get(req?.body, "assigned_to", "");
+            
+            let getAttributes: any = '';
+            const whereName = 'id'
+            const whereVal = id;
+            const existingLead = await new LeadModel().getLeadByAttr(whereName, whereVal, getAttributes);
+
+            if (isEmpty(existingLead)) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS
+                        )
+                    );
+            }
+
+            const assignLead: any = {};
+            assignLead.assigned_to = assigned_to
+            
+            const Lead = await new LeadModel().assignLeadToUser(id, assignLead);
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPDATED,
+                        Lead
+                    )
+                );
+        } catch (err) {
+            // console.log('err', err)
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     static async add(req: Request, res: Response, next: NextFunction) {
         try {
             const createLead = req?.body;
@@ -24,6 +107,11 @@ export default class LeadController {
                     );
             }
 
+            const id = get(req, "user_id", "");
+            createLead.created_by = id
+            createLead.assigned_to = id
+            createLead.source = "Admin"
+
             const Lead = await new LeadModel().add(createLead);
             return res
                 .status(200)
@@ -35,7 +123,6 @@ export default class LeadController {
                     )
                 );
         } catch (err) {
-            console.log(err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -95,7 +182,7 @@ export default class LeadController {
                         )
                     );
             }
-            
+
             const updateLead = req?.body;
             delete updateLead.id
             const Lead = await new LeadModel().update(id, updateLead);
@@ -120,7 +207,7 @@ export default class LeadController {
         try {
             const id = get(req?.params, "id", "");
 
-            let getAttributes: any = '*';
+            let getAttributes: any = '';
             const whereName = 'id'
             const whereVal = id;
             const existingLead = await new LeadModel().getLeadByAttr(whereName, whereVal, getAttributes);

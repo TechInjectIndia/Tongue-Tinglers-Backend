@@ -18,7 +18,6 @@ export * from "./ecommerce/tag_image.model";
 
 // lead model starts
 export * from "./lead/lead.model";
-export * from "./lead/followups.model";
 // lead model ends
 
 export * from "./payments/payments";

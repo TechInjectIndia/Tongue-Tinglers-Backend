@@ -1,6 +1,10 @@
 const { OrderItem } = require("sequelize");
 
 // Lead type Starts
+export type TLeadStatus = {
+  status: number,
+};
+
 export type TLead = {
   id: number;
   city: string,
@@ -14,6 +18,11 @@ export type TLead = {
   status: number,
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type TAssignLead = {
+  assigned_to: number;
+  assigned_by: number;
 };
 
 export type TAddLead = {

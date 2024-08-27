@@ -2,6 +2,27 @@ import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
+const statusLeadBody = Joi.object().keys({
+    // id: Joi.number().required(),
+});
+
+export const validateLeadStatusBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, statusLeadBody, "body");
+
+const assignLeadBody = Joi.object().keys({
+    id: Joi.number().required(),
+    assigned_to: Joi.number().required(),
+});
+
+export const validateAssignLeadBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, assignLeadBody, "body");
+
 const createLeadBody = Joi.object().keys({
     name: Joi.string().required(),
     city: Joi.string().required(),

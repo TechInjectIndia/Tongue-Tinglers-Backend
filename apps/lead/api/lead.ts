@@ -5,6 +5,8 @@ import * as LeadValidation from "../validations/lead";
 const router = express.Router();
 
 const {
+  validateLeadStatusBody,
+  validateAssignLeadBody,
   validateCreateLeadBody,
   validateEditLeadBody,
   validateEditLeadParams,
@@ -105,6 +107,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
+ * 
  * /api/admin/lead/get/{id}:
  *   get:
  *     summary: Get a lead by ID
@@ -162,6 +165,7 @@ const {
  *              - email
  *              - address
  *              - additional_info
+ *              - follow_date
  *              - status
  *            properties:
  *              name:
@@ -191,6 +195,9 @@ const {
  *              additional_info:
  *                type: text
  *                default: additional_info
+ *              follow_date:
+ *                type: string
+ *                default: "02/02/2024"
  *              status:
  *                type: boolean
  *                default: 0 
@@ -229,12 +236,74 @@ const {
  *         description: Unauthorized
  *       '404':
  *         description: Lead not found
+ * 
+ * /api/admin/lead/assign-lead:
+ *   put:
+ *     summary: Assign lead to other users
+ *     tags: [Admin > Lead]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - id
+ *              - assigned_to
+ *            properties:
+ *              id:
+ *                type: number
+ *                default: 3
+ *              assigned_to:
+ *                type: number
+ *                default: 1
+ *     responses:
+ *       '200':
+ *         description: Lead updated successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Lead not found
+ * 
+ * /api/admin/lead/get-status/{id}:
+ *   get:
+ *     summary: Get a lead by ID
+ *     tags: [Admin > Lead]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         default: 1
+ *         schema:
+ *           type: number
+ *         description: ID of the lead to retrieve
+ *     responses:
+ *       '200':
+ *         description: Lead status retreived successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: number
+ *               description: ID of the Lead to retrieve
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Lead not found
  */
 router.post("/create", validateCreateLeadBody, LeadController.add);
 router.get("/list", validateListLeadQuery, LeadController.list);
 router.get("/get/:id", validateEditLeadParams, LeadController.get);
 router.put("/update/:id", validateEditLeadParams, validateEditLeadBody, LeadController.update);
 router.delete("/delete", validateEditMultipleIdsBody, LeadController.delete);
+
+router.put("/assign-lead", validateAssignLeadBody, LeadController.assignLeadToAdminUser);
+router.get("/get-status/:id", validateEditLeadParams, validateLeadStatusBody, LeadController.getLeadStatus);
 // ====== Lead Ends ======
 
 export default router;

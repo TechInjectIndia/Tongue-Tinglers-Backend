@@ -58,7 +58,13 @@ const options = {
                 name: 'Admin > Reviews'
             },
             {
-                name: 'Admin > Analytics'
+                name: 'Admin > Analytics > Leads'
+            },
+            {
+                name: 'Admin > Analytics > Orders'
+            },
+            {
+                name: 'Admin > Analytics > Retort'
             },
             {
                 name: 'Admin > Menu'

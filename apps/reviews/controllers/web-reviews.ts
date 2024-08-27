@@ -2,36 +2,39 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { AnalyticsModel } from '../models/analytics';
+import { ReviewsModel } from '../models/reviews';
 
-export default class AnalyticsController {
+export default class WebReviewsController {
     static async add(req: Request, res: Response, next: NextFunction) {
         try {
-            const createAnalytics = req?.body;
+            const createReviews = req?.body;
+            const user_id = get(req, "user_id", "");
+            createReviews.user_id = user_id
+            
+            // condition based on product id already exist - pending
+            // let getAttributes: any = '';
+            // const whereName = 'email'
+            // const whereVal = req?.body?.email;
+            // const existingReviews = await new ReviewsModel().getReviewsByAttr(whereName, whereVal, getAttributes);
+            // if (existingReviews) {
+            //     return res
+            //         .status(400)
+            //         .send(
+            //             sendResponse(
+            //                 RESPONSE_TYPE.ERROR,
+            //                 ERROR_MESSAGE.EXISTS
+            //             )
+            //         );
+            // }
 
-            let getAttributes: any = '';
-            const whereName = 'email'
-            const whereVal = req?.body?.email;
-            const existingAnalytics = await new AnalyticsModel().getAnalyticsByAttr(whereName, whereVal, getAttributes);
-            if (existingAnalytics) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.EXISTS
-                        )
-                    );
-            }
-
-            const Analytics = await new AnalyticsModel().add(createAnalytics);
+            const Reviews = await new ReviewsModel().add(createReviews);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.CREATED,
-                        Analytics
+                        Reviews
                     )
                 );
         } catch (err) {
@@ -51,7 +54,7 @@ export default class AnalyticsController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const Analyticss = await new AnalyticsModel().list({
+            const Reviewss = await new ReviewsModel().list({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -65,7 +68,7 @@ export default class AnalyticsController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        Analyticss
+                        Reviewss
                     )
                 );
         } catch (err) {
@@ -83,9 +86,9 @@ export default class AnalyticsController {
             let getAttributes: any = '';
             const whereName = 'id'
             const whereVal = id;
-            const existingAnalytics = await new AnalyticsModel().getAnalyticsByAttr(whereName, whereVal, getAttributes);
+            const existingReviews = await new ReviewsModel().getReviewsByAttr(whereName, whereVal, getAttributes);
 
-            if (isEmpty(existingAnalytics)) {
+            if (isEmpty(existingReviews)) {
                 return res
                     .status(400)
                     .send(
@@ -96,9 +99,9 @@ export default class AnalyticsController {
                     );
             }
             
-            const updateAnalytics = req?.body;
-            delete updateAnalytics.id
-            const Analytics = await new AnalyticsModel().update(id, updateAnalytics);
+            const updateReviews = req?.body;
+            delete updateReviews.id
+            const Reviews = await new ReviewsModel().update(id, updateReviews);
 
             return res
                 .status(200)
@@ -106,7 +109,7 @@ export default class AnalyticsController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
-                        Analytics
+                        Reviews
                     )
                 );
         } catch (err) {
@@ -120,12 +123,12 @@ export default class AnalyticsController {
         try {
             const id = get(req?.params, "id", "");
 
-            let getAttributes: any = '*';
+            let getAttributes: any = '';
             const whereName = 'id'
             const whereVal = id;
-            const existingAnalytics = await new AnalyticsModel().getAnalyticsByAttr(whereName, whereVal, getAttributes);
+            const existingReviews = await new ReviewsModel().getReviewsByAttr(whereName, whereVal, getAttributes);
 
-            if (isEmpty(existingAnalytics)) {
+            if (isEmpty(existingReviews)) {
                 return res
                     .status(400)
                     .send(
@@ -142,7 +145,7 @@ export default class AnalyticsController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        existingAnalytics
+                        existingReviews
                     )
                 );
         } catch (err) {
@@ -157,14 +160,14 @@ export default class AnalyticsController {
         try {
             const ids = get(req?.body, "ids", "");
 
-            const Analytics = await new AnalyticsModel().delete(ids);
+            const Reviews = await new ReviewsModel().delete(ids);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.DELETED,
-                        Analytics
+                        Reviews
                     )
                 );
         } catch (err) {

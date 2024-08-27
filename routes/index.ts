@@ -23,7 +23,9 @@ import settingsRouter from "../apps/admin-user/api/settings";
 import paymentsRouter from "../apps/payments/api";
 import reviewsRouter from "../apps/reviews/api/reviews";
 import testimonialsRouter from "../apps/testimonials/api/testimonials";
-import analyticsRouter from "../apps/analytics/api/analytics";
+import leadsAnalyticsRouter from "../apps/analytics/api/lead-analytics";
+import ordersAnalyticsRouter from "../apps/analytics/api/orders-analytics";
+import retortAnalyticsRouter from "../apps/analytics/api/retort-analytics";
 import menuRouter from "../apps/menu/api/menu";
 // ====== Admin app imports ======
 
@@ -38,16 +40,15 @@ router.use(`${ADMIN}/testimonials`, adminAuth, testimonialsRouter);
 router.use(`${ADMIN}/reviews`, adminAuth, reviewsRouter);
 router.use(`${ADMIN}/profile`, adminAuth, profileRouter);
 
-router.use(`${ADMIN}/settings`, adminAuth, settingsRouter);
+router.use(`${ADMIN}/settings`, adminAuth, settingsRouter); // pending
 
-router.use(`${ADMIN}/payments`, adminAuth, paymentsRouter);
-router.use(`${ADMIN}/payments/settings`, adminAuth, paymentsRouter);
+router.use(`${ADMIN}/payments`, adminAuth, paymentsRouter); // pending
 
-router.use(`${ADMIN}/analytics/orders`, adminAuth, analyticsRouter);
-router.use(`${ADMIN}/analytics/leads`, adminAuth, analyticsRouter);
-router.use(`${ADMIN}/analytics/retort-supply`, adminAuth, productRouter);
+router.use(`${ADMIN}/analytics/leads`, adminAuth, leadsAnalyticsRouter); // pending
+router.use(`${ADMIN}/analytics/orders`, adminAuth, ordersAnalyticsRouter); // pending
+router.use(`${ADMIN}/analytics/retort-supply`, adminAuth, retortAnalyticsRouter); // pending
 
-router.use(`${ADMIN}/menu`, adminAuth, menuRouter);
+router.use(`${ADMIN}/menu`, adminAuth, menuRouter); // pending
 
 router.use(`${ADMIN}/product`, adminAuth, productRouter);
 router.use(`${ADMIN}/product/category`, adminAuth, productCategoryRouter);
@@ -63,31 +64,37 @@ import { franchiseAuth } from '../middlewares/auth';
 import franchiseAuthRouter from "../apps/franchise-auth/api";
 import franchiseProfileRouter from "../apps/franchise-user/api/profile";
 import franchiseSettingsRouter from "../apps/franchise-user/api/settings";
+import orderFranchaiseAnalyticsRouter from "../apps/analytics/api/web/orders-analytics";
+import retortFranchaiseAnalyticsRouter from "../apps/analytics/api/web/retort-analytics";
 // ====== Franchise imports ======
 
 // ====== Franchise auth routes ======
 router.use(`${FRANCHISE}/auth`, franchiseAuthRouter);
-router.use(`${FRANCHISE}/profile`, franchiseAuth, franchiseProfileRouter);
-router.use(`${FRANCHISE}/settings`, franchiseAuth, franchiseSettingsRouter);
-// router.use(`${FRANCHISE}/order`, franchiseAuth, productRouter);
-// router.use(`${FRANCHISE}/invoice`, franchiseAuth, productRouter);
-// router.use(`${FRANCHISE}/analytics/orders`, franchiseAuth, productRouter);
-// router.use(`${FRANCHISE}/analytics/retort-supply`, franchiseAuth, productRouter);
+router.use(`${FRANCHISE}/profile`, franchiseAuth, franchiseProfileRouter); // pending
+router.use(`${FRANCHISE}/settings`, franchiseAuth, franchiseSettingsRouter); // pending
+// router.use(`${FRANCHISE}/order`, franchiseAuth, productRouter); // pending
+// router.use(`${FRANCHISE}/invoice`, franchiseAuth, productRouter); // pending
+
+router.use(`${FRANCHISE}/analytics/orders`, franchiseAuth, orderFranchaiseAnalyticsRouter); // pending
+router.use(`${FRANCHISE}/analytics/retort`, franchiseAuth, retortFranchaiseAnalyticsRouter); // pending
 // ====== Franchise auth routes ======
 
 // ====== Frontend imports ======
 // import { customerAuth } from '../middlewares/auth';
 // import customerAuthRouter from "../apps/customer-auth/api";
 import webLeadRouter from "../apps/lead/api/web-lead";
+import webTestimonialsRouter from "../apps/testimonials/api/web-testimonials";
+import webReviewsRouter from "../apps/reviews/api/web-reviews";
+import webProductsRouter from "../apps/ecommerce/api/products";
 // ====== Frontend imports ======
 
 // ====== Frontend routes ======
 router.use(`${FRONTEND}lead`, webLeadRouter);
 // router.use(`${FRONTEND}auth`, webLeadRouter); // login & registration
 // router.use(`${FRONTEND}food-menu`, webLeadRouter);
-// router.use(`${FRONTEND}reviews`, webLeadRouter);
-// router.use(`${FRONTEND}testimonials`, webLeadRouter);
-// router.use(`${FRONTEND}product`, webLeadRouter); // list, single , new & upcoming products
+router.use(`${FRONTEND}reviews`, webReviewsRouter); // pending
+router.use(`${FRONTEND}testimonials`, webTestimonialsRouter); // pending
+router.use(`${FRONTEND}product`, webProductsRouter); // pending
 // ====== Frontend routes ======
 
 export default router;

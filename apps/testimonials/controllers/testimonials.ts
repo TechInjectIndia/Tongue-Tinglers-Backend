@@ -10,7 +10,6 @@ export default class TestimonialsController {
             const createTestimonials = req?.body;
             const user_id = get(req, "user_id", "");
             createTestimonials.user_id = user_id
-
             const Testimonials = await new TestimonialsModel().add(createTestimonials);
             return res
                 .status(200)
@@ -115,7 +114,6 @@ export default class TestimonialsController {
                     )
                 );
         } catch (err) {
-            console.log(">>>>>>>>>>>>>>>>>>>>>", err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

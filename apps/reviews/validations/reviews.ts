@@ -3,16 +3,11 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
 const createReviewsBody = Joi.object().keys({
-    name: Joi.string().required(),
-    city: Joi.string().required(),
-    state: Joi.string().required(),
-    zip_code: Joi.string().required(),
-    country: Joi.string().required(),
-    phone_number: Joi.string().required(),
-    email: Joi.string().required(),
-    address: Joi.string().required(),
-    additional_info: Joi.string().required(),
-    status: Joi.number().required(),
+    review_text: Joi.string().required(),
+    rating: Joi.number().required(),
+    approved: Joi.number().required(),
+    item_id: Joi.number().required(),
+    item_type: Joi.string().required(),
 });
 
 export const validateCreateReviewsBody = async (
@@ -22,16 +17,11 @@ export const validateCreateReviewsBody = async (
 ) => validateReq(req, res, next, createReviewsBody, "body");
 
 const editReviewsBody = Joi.object().keys({
-    name: Joi.string().required(),
-    city: Joi.string().required(),
-    state: Joi.string().required(),
-    zip_code: Joi.string().required(),
-    country: Joi.string().required(),
-    phone_number: Joi.string().required(),
-    email: Joi.string().required(),
-    address: Joi.string().required(),
-    additional_info: Joi.string().required(),
-    status: Joi.number().required(),
+    review_text: Joi.string().required(),
+    rating: Joi.number().required(),
+    approved: Joi.number().required(),
+    item_id: Joi.number().required(),
+    item_type: Joi.string().required(),
 });
 
 export const validateEditReviewsBody = async (

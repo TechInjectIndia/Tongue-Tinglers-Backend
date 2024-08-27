@@ -3,29 +3,16 @@ const { OrderItem } = require("sequelize");
 // Reviews type Starts
 export type TReviews = {
   id: number;
-  city: string,
-  state: string,
-  zip_code: string,
-  country: string,
-  phone_number: string,
-  email: string,
-  address: string,
-  additional_info: string,
-  status: number,
+  review_text: string;
+  rating: number;
+  approved: number;
+  item_id: number;
+  item_type: string;
   createdAt: Date;
   updatedAt: Date;
 };
 
 export type TAddReviews = {
-  city: string,
-  state: string,
-  zip_code: string,
-  country: string,
-  phone_number: string,
-  email: string,
-  address: string,
-  additional_info: string,
-  status: number,
 };
 
 export type TReviewssList = {

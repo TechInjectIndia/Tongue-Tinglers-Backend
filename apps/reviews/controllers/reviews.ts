@@ -8,21 +8,24 @@ export default class ReviewsController {
     static async add(req: Request, res: Response, next: NextFunction) {
         try {
             const createReviews = req?.body;
-
-            let getAttributes: any = '';
-            const whereName = 'email'
-            const whereVal = req?.body?.email;
-            const existingReviews = await new ReviewsModel().getReviewsByAttr(whereName, whereVal, getAttributes);
-            if (existingReviews) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.EXISTS
-                        )
-                    );
-            }
+            const user_id = get(req, "user_id", "");
+            createReviews.user_id = user_id
+            
+            // condition based on product id already exist - pending
+            // let getAttributes: any = '';
+            // const whereName = 'email'
+            // const whereVal = req?.body?.email;
+            // const existingReviews = await new ReviewsModel().getReviewsByAttr(whereName, whereVal, getAttributes);
+            // if (existingReviews) {
+            //     return res
+            //         .status(400)
+            //         .send(
+            //             sendResponse(
+            //                 RESPONSE_TYPE.ERROR,
+            //                 ERROR_MESSAGE.EXISTS
+            //             )
+            //         );
+            // }
 
             const Reviews = await new ReviewsModel().add(createReviews);
             return res
@@ -120,7 +123,7 @@ export default class ReviewsController {
         try {
             const id = get(req?.params, "id", "");
 
-            let getAttributes: any = '*';
+            let getAttributes: any = '';
             const whereName = 'id'
             const whereVal = id;
             const existingReviews = await new ReviewsModel().getReviewsByAttr(whereName, whereVal, getAttributes);

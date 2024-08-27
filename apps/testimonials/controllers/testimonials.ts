@@ -8,7 +8,8 @@ export default class TestimonialsController {
     static async add(req: Request, res: Response, next: NextFunction) {
         try {
             const createTestimonials = req?.body;
-            createTestimonials.user_id = 1 // pending
+            const user_id = get(req, "user_id", "");
+            createTestimonials.user_id = user_id
 
             const Testimonials = await new TestimonialsModel().add(createTestimonials);
             return res

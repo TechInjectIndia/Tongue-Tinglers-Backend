@@ -23,7 +23,7 @@ export class ReviewsModel {
     public async list(filters: TReviewsFilters): Promise<TReviewssList | any> {
         const total = await Reviews.count({
             where: {
-                name: {
+                review_text: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
@@ -33,7 +33,7 @@ export class ReviewsModel {
             offset: filters.offset,
             limit: filters.limit,
             where: {
-                name: {
+                review_text: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },

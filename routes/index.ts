@@ -35,11 +35,11 @@ router.use(`${ADMIN}/roles`, adminAuth, rolesRouter);
 router.use(`${ADMIN}/franchise`, adminAuth, franchiseRouter);
 
 router.use(`${ADMIN}/testimonials`, testimonialsRouter);
+router.use(`${ADMIN}/reviews`, reviewsRouter);
 router.use(`${ADMIN}/profile`, adminAuth, profileRouter);
 router.use(`${ADMIN}/settings`, adminAuth, settingsRouter);
 router.use(`${ADMIN}/payments/settings`, adminAuth, paymentsRouter);
 router.use(`${ADMIN}/payments`, adminAuth, paymentsRouter);
-router.use(`${ADMIN}/reviews`, adminAuth, reviewsRouter);
 router.use(`${ADMIN}/analytics/orders`, adminAuth, analyticsRouter);
 router.use(`${ADMIN}/analytics/leads`, adminAuth, analyticsRouter);
 router.use(`${ADMIN}/analytics/retort-supply`, adminAuth, productRouter);

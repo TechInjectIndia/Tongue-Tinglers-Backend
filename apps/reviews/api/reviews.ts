@@ -15,9 +15,9 @@ const {
 // ====== Reviews Starts ======
 /**
  * @swagger
- * /api/admin/Reviews/create:
+ * /api/admin/reviews/create:
  *   post:
- *     summary: Create a new Reviews
+ *     summary: Create a new Review
  *     tags: [Admin > Reviews]
  *     security:
  *       - bearerAuth: []
@@ -28,47 +28,27 @@ const {
  *           schema:
  *            type: object
  *            required:
- *              - name
- *              - city
- *              - zip_code
- *              - state
- *              - country
- *              - phone_number
- *              - email
- *              - address
- *              - additional_info
- *              - status
+ *              - review_text
+ *              - rating
+ *              - approved
+ *              - item_id
+ *              - item_type
  *            properties:
- *              name:
+ *              review_text:
  *                type: string
  *                default: AdminReviews 
- *              city:
- *                type: text
- *                default: city
- *              zip_code:
- *                type: text
- *                default: zip_code
- *              state:
- *                type: text
- *                default: state
- *              country:
- *                type: text
- *                default: country
- *              phone_number:
- *                type: text
- *                default: phone_number
- *              email:
- *                type: text
- *                default: email
- *              address:
- *                type: text
- *                default: address
- *              additional_info:
- *                type: text
- *                default: additional_info
- *              status:
- *                type: boolean
+ *              rating:
+ *                type: number
+ *                default: 1
+ *              approved:
+ *                type: number
  *                default: 0
+ *              item_id:
+ *                type: number
+ *                default: 12
+ *              item_type:
+ *                type: text
+ *                default: "product"
  *     responses:
  *       '200':
  *         description: Reviews created successfully
@@ -77,7 +57,7 @@ const {
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/Reviews/list?size={size}&skip={skip}:
+ * /api/admin/reviews/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all Reviews
  *     tags: [Admin > Reviews]
@@ -105,9 +85,9 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * /api/admin/Reviews/get/{id}:
+ * /api/admin/reviews/get/{id}:
  *   get:
- *     summary: Get a Reviews by ID
+ *     summary: Get a Review by ID
  *     tags: [Admin > Reviews]
  *     security:
  *       - bearerAuth: []
@@ -132,9 +112,9 @@ const {
  *       '404':
  *         description: Reviews not found
  * 
- * /api/admin/Reviews/update/{id}:
+ * /api/admin/reviews/update/{id}:
  *   put:
- *     summary: Update a Reviews
+ *     summary: Update a Review
  *     tags: [Admin > Reviews]
  *     security:
  *       - bearerAuth: []
@@ -153,47 +133,27 @@ const {
  *           schema:
  *            type: object
  *            required:
- *              - name
- *              - city
- *              - zip_code
- *              - state
- *              - country
- *              - phone_number
- *              - email
- *              - address
- *              - additional_info
- *              - status
+ *              - review_text
+ *              - rating
+ *              - approved
+ *              - item_id
+ *              - item_type
  *            properties:
- *              name:
+ *              review_text:
  *                type: string
- *                default: Reviews 
- *              city:
+ *                default: AdminReviews 
+ *              rating:
+ *                type: number
+ *                default: 1
+ *              approved:
+ *                type: number
+ *                default: 0
+ *              item_id:
+ *                type: number
+ *                default: 12
+ *              item_type:
  *                type: text
- *                default: city
- *              zip_code:
- *                type: text
- *                default: zip_code
- *              state:
- *                type: text
- *                default: state
- *              country:
- *                type: text
- *                default: country
- *              phone_number:
- *                type: text
- *                default: phone_number
- *              email:
- *                type: text
- *                default: email
- *              address:
- *                type: text
- *                default: address
- *              additional_info:
- *                type: text
- *                default: additional_info
- *              status:
- *                type: boolean
- *                default: 0 
+ *                default: "product"
  *     responses:
  *       '200':
  *         description: Reviews updated successfully
@@ -204,7 +164,7 @@ const {
  *       '404':
  *         description: Reviews not found
  * 
- * /api/admin/Reviews/delete:
+ * /api/admin/reviews/delete:
  *   delete:
  *     summary: Delete a Reviews
  *     tags: [Admin > Reviews]

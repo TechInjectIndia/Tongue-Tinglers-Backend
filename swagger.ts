@@ -107,6 +107,12 @@ const options = {
             },
             {
                 name: 'Frontend > Ecommerce > Products'
+            },
+            {
+                name: 'Frontend > Reviews'
+            },
+            {
+                name: 'Frontend > Testimonials'
             }
         ]
     },

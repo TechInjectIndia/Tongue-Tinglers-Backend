@@ -10,23 +10,7 @@ export default class WebReviewsController {
             const createReviews = req?.body;
             const user_id = get(req, "user_id", "");
             createReviews.user_id = user_id
-            
-            // condition based on product id already exist - pending
-            // let getAttributes: any = '';
-            // const whereName = 'email'
-            // const whereVal = req?.body?.email;
-            // const existingReviews = await new ReviewsModel().getReviewsByAttr(whereName, whereVal, getAttributes);
-            // if (existingReviews) {
-            //     return res
-            //         .status(400)
-            //         .send(
-            //             sendResponse(
-            //                 RESPONSE_TYPE.ERROR,
-            //                 ERROR_MESSAGE.EXISTS
-            //             )
-            //         );
-            // }
-
+            // Check if it is customer
             const Reviews = await new ReviewsModel().add(createReviews);
             return res
                 .status(200)
@@ -79,46 +63,6 @@ export default class WebReviewsController {
         }
     }
 
-    static async update(req: Request, res: Response, next: NextFunction) {
-        try {
-            const id = get(req?.params, "id", "");
-
-            let getAttributes: any = '';
-            const whereName = 'id'
-            const whereVal = id;
-            const existingReviews = await new ReviewsModel().getReviewsByAttr(whereName, whereVal, getAttributes);
-
-            if (isEmpty(existingReviews)) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS
-                        )
-                    );
-            }
-            
-            const updateReviews = req?.body;
-            delete updateReviews.id
-            const Reviews = await new ReviewsModel().update(id, updateReviews);
-
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED,
-                        Reviews
-                    )
-                );
-        } catch (err) {
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
-        }
-    }
-
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
@@ -155,26 +99,4 @@ export default class WebReviewsController {
             });
         }
     }
-
-    static async delete(req: Request, res: Response, next: NextFunction) {
-        try {
-            const ids = get(req?.body, "ids", "");
-
-            const Reviews = await new ReviewsModel().delete(ids);
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.DELETED,
-                        Reviews
-                    )
-                );
-        } catch (err) {
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
-        }
-    }
-
 }

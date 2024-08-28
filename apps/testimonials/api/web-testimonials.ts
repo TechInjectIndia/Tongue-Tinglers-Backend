@@ -1,6 +1,6 @@
 import * as express from "express";
 import WebTestimonialsController from "../controllers/web-testimonials";
-import * as TestimonialsValidation from "../validations/testimonials";
+import * as TestimonialsValidation from "../validations/web-testimonials";
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ const {
 // ====== Testimonials Starts ======
 /**
  * @swagger
- * /api/testimonials/get?size={size}&skip={skip}:
+ * /api/testimonials/get?size={size}&skip={skip}&rating={rating}:
  *   get:
  *     summary: Get all Testimonials
  *     tags: [Frontend > Testimonials]
@@ -28,6 +28,13 @@ const {
  *       - in: query
  *         name: skip
  *         default: 0
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: How many Rows want to skip
+ *       - in: query
+ *         name: rating
+ *         default: 2
  *         required: true
  *         schema:
  *           type: integer

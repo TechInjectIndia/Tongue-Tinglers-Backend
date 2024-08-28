@@ -29,4 +29,13 @@ export type TTestimonialsFilters = {
   sorting?: typeof OrderItem;
   trashOnly?: string;
 };
+
+export type TTestimonialsFiltersFrontend = {
+  offset: number;
+  limit: number;
+  rating: number;
+  search?: string;
+  sorting?: typeof OrderItem;
+  trashOnly?: string;
+};
 // Testimonials type Ends

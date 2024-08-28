@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 import { sequelize } from "../../../config";
-const { STRING, TEXT, INTEGER } = DataTypes;
+const { STRING, TEXT, INTEGER, BOOLEAN } = DataTypes;
 
 export const Testimonials = sequelize.define("testimonials", {
     user_id: { // Refers to the Users table.

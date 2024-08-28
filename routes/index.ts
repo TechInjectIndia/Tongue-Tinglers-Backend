@@ -86,9 +86,9 @@ import webProductsRouter from "../apps/ecommerce/api/web/products";
 router.use(`${FRONTEND}lead`, webLeadRouter);
 // router.use(`${FRONTEND}auth`, webLeadRouter); // login & registration
 // router.use(`${FRONTEND}food-menu`, webLeadRouter);
-router.use(`${FRONTEND}reviews`, webReviewsRouter); // pending
-router.use(`${FRONTEND}testimonials`, webTestimonialsRouter); // pending
-router.use(`${FRONTEND}product`, webProductsRouter); // pending
+router.use(`${FRONTEND}reviews`, webReviewsRouter); //             // Check if it is customer validation penmding
+router.use(`${FRONTEND}testimonials`, webTestimonialsRouter);
+router.use(`${FRONTEND}product`, webProductsRouter);
 // ====== Frontend routes ======
 
 export default router;

@@ -1,62 +1,22 @@
 import * as express from "express";
-import ProductsController from "../../controllers/products";
-import * as ProductsValidation from "../../validations/products";
+import ProductsController from "../../controllers/web/products";
+import * as ProductsValidation from "../../validations/web/products";
 
 const router = express.Router();
 const {
-  validateEditProductsParams,
+  validatTypeProductsParams,
+  validateSingleProductsParams,
+  validateSearchProductsParams,
   validateListProductsQuery,
 } = ProductsValidation;
 
 // ====== Products Starts ======
 /**
  * @swagger
- * /api/admin/product/create:
- *   post:
- *     summary: Create a new products
- *     tags: [Admin > Ecommerce > Products]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *            type: object
- *            required:
- *              - name
- *              - description
- *              - price
- *              - stock
- *              - active
- *            properties:
- *              name:
- *                type: string
- *                default: product12 
- *              description:
- *                type: text
- *                default: desc
- *              price:
- *                type: text
- *                default: 123.00
- *              stock:
- *                type: integer
- *                default: 10
- *              active:
- *                type: boolean
- *                default: 0 
- *     responses:
- *       '200':
- *         description: products created successfully
- *       '400':
- *         description: Invalid request body
- *       '401':
- *         description: Unauthorized
- * 
- * /api/admin/product/list?size={size}&skip={skip}:
+ * /api/product/all?size={size}&skip={skip}:
  *   get:
  *     summary: Get all products
- *     tags: [Admin > Ecommerce > Products]
+ *     tags: [Frontend > Ecommerce > Products]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -81,20 +41,28 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * /api/admin/product/get/{id}:
+ * 
+ * /api/product/get/type:
  *   get:
- *     summary: Get a Product by ID
- *     tags: [Admin > Ecommerce > Products]
+ *     summary: Get a Product by Tag
+ *     tags: [Frontend > Ecommerce > Products]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: id
+ *       - in: query
+ *         name: limit
  *         required: true
  *         default: 1
  *         schema:
  *           type: string
- *         description: ID of the Product to retrieve
+ *         description: Limit of the Products to retrieve
+ *       - in: query
+ *         name: type
+ *         required: true
+ *         default: new
+ *         schema:
+ *           type: string
+ *         description: (new or upcoming) Type of the Products to retrieve
  *     responses:
  *       '200':
  *         description: products retrieved successfully
@@ -102,96 +70,72 @@ const {
  *           application/json:
  *             schema:
  *               type: string
- *               description: ID of the products to retrieve
+ *               description: limit of the products to retrieve
  *       '401':
  *         description: Unauthorized
  *       '404':
  *         description: products not found
  * 
- * /api/admin/product/update/{id}:
- *   put:
- *     summary: Update a Product
- *     tags: [Admin > Ecommerce > Products]
+ * /api/product/{slug}:
+ *   get:
+ *     summary: Get a Product by slug
+ *     tags: [Frontend > Ecommerce > Products]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
- *         default: 1
+ *         name: slug
  *         required: true
+ *         default: 1
  *         schema:
  *           type: string
- *         description: ID of the products to update
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *            type: object
- *            required:
- *              - name
- *              - description
- *              - price
- *              - stock
- *              - active
- *            properties:
- *              name:
- *                type: string
- *                default: AdminProductNew
- *              description:
- *                type: string
- *                default: descr
- *              price:
- *                type: number
- *                default: 178
- *              stock:
- *                type: number
- *                default: 52
- *              active:
- *                type: string
- *                default: 1
+ *         description: Slug of the Product to retrieve
  *     responses:
  *       '200':
- *         description: products updated successfully
- *       '400':
- *         description: Invalid request body
+ *         description: product retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               description: Slug of the product to retrieve
  *       '401':
  *         description: Unauthorized
  *       '404':
  *         description: products not found
  * 
- * /api/admin/product/delete:
- *   delete:
- *     summary: Delete a Product
- *     tags: [Admin > Ecommerce > Products]
+ * /api/product/search?search={search}:
+ *   get:
+ *     summary: Get Products by search
+ *     tags: [Frontend > Ecommerce > Products]
  *     security:
  *       - bearerAuth: []
- *     requestBody:
- *      required: true
- *      content:
- *        application/json:
- *           schema:
- *            type: object
- *            required:
- *              - ids
- *            properties:
- *              ids:
- *                type: array
- *                default: [1]
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         required: true
+ *         default: 1
+ *         schema:
+ *           type: string
+ *         description: Products by search to retrieve
  *     responses:
  *       '200':
- *         description: Product deleted successfully
+ *         description: products retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               description: Products by search to retrieve
  *       '401':
  *         description: Unauthorized
  *       '404':
  *         description: products not found
+ * 
  */
 
 router.get("/all", validateListProductsQuery, ProductsController.list);
-router.get("/get/new", validateEditProductsParams, ProductsController.get);
-router.get("/get/upcoming", validateEditProductsParams, ProductsController.get);
-router.get("/:id", validateEditProductsParams, ProductsController.get);
-
+router.get("/get/type/", validatTypeProductsParams, ProductsController.getByType);
+router.get("/search", validateSearchProductsParams, ProductsController.search);
+router.get("/:slug", validateSingleProductsParams, ProductsController.get);
 // ====== Products Ends ======
 
 export default router;

@@ -12,6 +12,11 @@ require("./database/schema");
 const helmet = require('helmet');
 const helmetCsp = require('helmet-csp');
 const rateLimit = require('express-rate-limit');
+
+const xss = require('xss-clean');
+const { JSDOM } = require('jsdom');
+const DOMPurify = require('dompurify')(new JSDOM().window);
+
 const { RateLimiterMemory } = require('rate-limiter-flexible');
 const rateLimiter = new RateLimiterMemory({
   points: 10, // Number of points
@@ -60,8 +65,7 @@ const limiter = rateLimit({
 });
 
 const server = express();
-
-server.use(async (req, res, next) => {
+server.use(async (req, res, next) => { // Purpose: A more flexible rate limiter than express-rate-limit, suitable for different types of stores (e.g., Redis).
   try {
     await rateLimiter.consume(req.ip);
     next();
@@ -72,19 +76,18 @@ server.use(async (req, res, next) => {
 
 server.use(express.urlencoded({ limit: "10mb", extended: true }));
 server.use(express.json({ limit: "10mb" }));
-server.use(helmet());
-server.use(
-  helmetCsp({
+server.use(helmet()); // Purpose: Adds various HTTP headers to help protect your app from common web
+server.use(helmetCsp({ // Purpose: Provides a Content Security Policy (CSP) middleware for Helmet to help prevent XSS attacks.
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "trusted-cdn.com"],
       // Additional directives
     }
-  })
-);
+  }));
+server.use(xss()); // Purpose: Middleware for Express to sanitize user input for XSS attacks.
 server.use(expressSanitizer());
-server.use(limiter);
-server.use(cors(corsOptions));
+server.use(limiter); // Purpose: Limits repeated requests to public APIs and/or endpoints, which helps to prevent
+server.use(cors(corsOptions)); // Purpose: Provides a middleware for enabling Cross-Origin Resource Sharing (CORS) with various
 server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");
 server.use("/api", router);

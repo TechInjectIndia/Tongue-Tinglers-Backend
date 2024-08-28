@@ -1,70 +1,71 @@
 const { DataTypes } = require("sequelize");
 import { sequelize } from "../../../config";
+const { BOOLEAN, STRING, DATE, TEXT, ENUM } = DataTypes;
 
 export const User = sequelize.define(
     "users",
     {
         email: {
-            type: DataTypes.STRING,
+            type: STRING,
             allowNull: false,
         },
         password: {
-            type: DataTypes.STRING,
+            type: STRING,
             allowNull: true,
         },
         full_name: {
-            type: DataTypes.STRING,
+            type: STRING,
             allowNull: true,
         },
         contact_number: {
-            type: DataTypes.STRING,
+            type: STRING,
             allowNull: true,
         },
         phone_code: {
-            type: DataTypes.STRING,
+            type: STRING,
             allowNull: true,
         },
         role: {
-            type: DataTypes.STRING,
+            type: STRING,
         },
         profile_photo: {
-            type: DataTypes.STRING,
+            type: STRING,
             allowNull: true,
         },
         address: {
-            type: DataTypes.STRING,
+            type: STRING,
             allowNull: true,
         },
         last_login_at: {
-            type: DataTypes.DATE,
+            type: DATE,
             allowNull: true,
         },
         last_login_ip: {
-            type: DataTypes.STRING,
+            type: STRING,
             allowNull: true,
         },
         refresh_token: {
-            type: DataTypes.STRING,
+            type: STRING,
             allowNull: true,
         },
         active: {
-            type: DataTypes.BOOLEAN,
+            type: BOOLEAN,
             allowNull: false,
         },
         refferal_id: {
-            type: DataTypes.STRING,
+            type: STRING,
             allowNull: true,
         },
         refferal_by: {
-            type: DataTypes.STRING,
+            type: STRING,
             allowNull: true,
         },
         additional_info: {
-            type: DataTypes.TEXT,
+            type: TEXT,
             allowNull: true,
         },
         user_type: {
-            type: DataTypes.ENUM('0', '1', '2') // 0 => admin, 1 => franchisee, 2 => customer
+            type: ENUM('0', '1', '2') // 0 => admin, 1 => franchisee, 2 => customer
         }
     }
 );

@@ -1,14 +1,13 @@
 const { DataTypes } = require("sequelize");
 import { sequelize } from "../../../config";
+const { INTEGER, DATE, STRING } = DataTypes;
 
 export const ProductCategory = sequelize.define('products_categories', {
 
-    productId: {
-        type: DataTypes.INTEGER,
-        field: 'productId',
+    product_id: {
+        type: INTEGER,
     },
-    categoryId: {
-        type: DataTypes.INTEGER,
-        field: 'categoryId'
+    category_id: {
+        type: INTEGER,
     },
 });

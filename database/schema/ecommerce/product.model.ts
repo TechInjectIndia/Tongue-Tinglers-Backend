@@ -1,22 +1,16 @@
 const { DataTypes } = require("sequelize");
 import { sequelize } from "../../../config";
 const { BOOLEAN, INTEGER, STRING, DATE, TEXT, DECIMAL } = DataTypes;
+const PRODUCT_TYPE = {
+    new: 'New',
+    upcoming: 'Upcoming',
+};
 
-// totalRatings 
-// ratings 
-// discount
-// sold
 export const Product = sequelize.define('products', {
-    id: {
-        type: INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
     name: {
         type: STRING(50),
         allowNull: false,
     },
-
     slug: {
         type: STRING(50),
         allowNull: false,
@@ -28,9 +22,25 @@ export const Product = sequelize.define('products', {
         type: DECIMAL(20, 2),
         allowNull: false,
     },
+    type: {
+        type: STRING,
+        values: [PRODUCT_TYPE.new, PRODUCT_TYPE.upcoming]
+    },
     stock: {
         type: INTEGER,
         allowNull: false,
+    },
+    total_ratings: {
+        type: INTEGER,
+    },
+    ratings: {
+        type: INTEGER,
+    },
+    discount: {
+        type: INTEGER,
+    },
+    sold: {
+        type: INTEGER,
     },
     active: {
         type: BOOLEAN,

@@ -6,10 +6,8 @@ const router = express.Router();
 
 const {
   validateCreateReviewsBody,
-  validateEditReviewsBody,
   validateEditReviewsParams,
   validateListReviewsQuery,
-  validateEditMultipleIdsBody,
 } = ReviewsValidation;
 
 // ====== Reviews Starts ======
@@ -193,8 +191,6 @@ const {
 router.post("/create", validateCreateReviewsBody, WebReviewsController.add);
 router.get("/list", validateListReviewsQuery, WebReviewsController.list);
 router.get("/get/:id", validateEditReviewsParams, WebReviewsController.get);
-router.put("/update/:id", validateEditReviewsParams, validateEditReviewsBody, WebReviewsController.update);
-router.delete("/delete", validateEditMultipleIdsBody, WebReviewsController.delete);
 // ====== Reviews Ends ======
 
 export default router;

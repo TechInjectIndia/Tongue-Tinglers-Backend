@@ -1,45 +1,41 @@
 const { DataTypes } = require("sequelize");
 import { sequelize } from "../../../config";
+const { INTEGER, STRING, DATE } = DataTypes;
 
 export const CategoryImange = sequelize.define('category_images', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
     categoryId: {
-        type: DataTypes.STRING,
+        type: STRING,
         allowNull: false,
         field: 'categoryId'
     },
     fileName: {
-        type: DataTypes.STRING,
+        type: STRING,
         allowNull: false,
         field: 'file_name'
     },
     filePath: {
-        type: DataTypes.STRING,
+        type: STRING,
         allowNull: false,
         field: 'file_path'
     },
     originalName: {
-        type: DataTypes.STRING,
+        type: STRING,
         allowNull: false,
         field: 'original_name'
     },
     fileSize: {
-        type: DataTypes.INTEGER,
+        type: INTEGER,
         allowNull: false,
         field: 'file_size'
     },
     createdAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
         defaultValue: new Date(),
         field: 'created_at'
     },
     updatedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
         defaultValue: new Date(),
         field: 'updated_at'

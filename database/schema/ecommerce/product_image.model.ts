@@ -4,32 +4,27 @@ const { INTEGER, STRING, TEXT } = DataTypes;
 
 export const ProductImage = sequelize.define('product_images', {
     id: {
-        type: DataTypes.INTEGER,
+        type: INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
-    productId: {
-        type: DataTypes.STRING,
+    product_id: {
+        type: STRING,
         allowNull: true,
-        field: 'productId'
     },
-    fileName: {
-        type: DataTypes.STRING,
+    file_name: {
+        type: STRING,
         allowNull: false,
-        field: 'file_name'
     },
-    filePath: {
-        type: DataTypes.STRING,
+    file_path: {
+        type: STRING,
         allowNull: false,
-        field: 'file_path'
     },
-    originalName: {
-        type: DataTypes.STRING,
+    original_name: {
+        type: STRING,
         allowNull: false,
-        field: 'original_name'
     },
-    fileSize: {
-        type: DataTypes.INTEGER, allowNull: false,
-        field: 'file_size'
+    file_size: {
+        type: INTEGER, allowNull: false,
     },
 });

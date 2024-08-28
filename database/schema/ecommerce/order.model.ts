@@ -9,10 +9,6 @@ const ORDER_STATUS = {
     cancelled: 'Cancelled',
 };
 
-//shippingAddress
-//paymentMethod
-// totalPrice
-// paymentMethod
 export const Order = sequelize.define('orders', {
     id: {
         type: INTEGER,
@@ -20,24 +16,29 @@ export const Order = sequelize.define('orders', {
         allowNull: false,
         autoIncrement: true,
     },
-    orderId: {
+    order_id: {
         type: STRING,
         unique: true,
-        field: 'order_id'
     },
-    userId: {
+    user_id: {
         type: INTEGER,
         allowNull: true,
-        field: 'userId',
     },
-    trackingNumber: {
+    tracking_number: {
         type: STRING,
         unique: true,
-        field: 'tracking_number'
     },
-    orderStatus: {
+    shipping_address: {
+        type: STRING,
+    },
+    payment_method: {
+        type: STRING,
+    },
+    totalPrice: {
         type: INTEGER,
-        field: 'order_status',
+    },
+    order_status: {
+        type: INTEGER,
         values: [ORDER_STATUS.processed, ORDER_STATUS.delivered, ORDER_STATUS.shipped]
     },
 });

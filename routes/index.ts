@@ -79,7 +79,7 @@ router.use(`${FRANCHISE}/analytics/retort`, franchiseAuth, retortFranchaiseAnaly
 import webLeadRouter from "../apps/lead/api/web-lead";
 import webTestimonialsRouter from "../apps/testimonials/api/web-testimonials";
 import webReviewsRouter from "../apps/reviews/api/web-reviews";
-import webProductsRouter from "../apps/ecommerce/api/products";
+import webProductsRouter from "../apps/ecommerce/api/web/products";
 // ====== Frontend imports ======
 
 // ====== Frontend routes ======

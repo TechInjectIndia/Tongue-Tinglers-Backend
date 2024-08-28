@@ -1,45 +1,35 @@
 const { DataTypes } = require("sequelize");
 import { sequelize } from "../../../config";
-const { INTEGER, STRING, TEXT } = DataTypes;
+const { INTEGER, STRING, TEXT, DATE } = DataTypes;
 
 export const TagImage = sequelize.define('tag_images', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
-    tagId: {
-        type: DataTypes.STRING,
+    tag_id: {
+        type: STRING,
         allowNull: true,
-        field: 'tagId'
     },
-    fileName: {
-        type: DataTypes.STRING,
+    file_name: {
+        type: STRING,
         allowNull: false,
-        field: 'file_name'
     },
-    filePath: {
-        type: DataTypes.STRING,
+    file_path: {
+        type: STRING,
         allowNull: false,
-        field: 'file_path'
     },
-    originalName: {
-        type: DataTypes.STRING,
+    original_name: {
+        type: STRING,
         allowNull: false,
-        field: 'original_name'
     },
-    fileSize: {
-        type: DataTypes.INTEGER, allowNull: false,
-        field: 'file_size'
+    file_size: {
+        type: INTEGER, allowNull: false,
     },
     createdAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
         defaultValue: new Date(),
         field: 'created_at'
     },
     updatedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
         defaultValue: new Date(),
         field: 'updated_at'

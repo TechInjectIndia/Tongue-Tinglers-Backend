@@ -3,11 +3,6 @@ import { sequelize } from "../../../config";
 const { BOOLEAN, INTEGER, STRING, DATE, TEXT, DECIMAL } = DataTypes;
 
 export const Category = sequelize.define('categories', {
-    id: {
-        type: INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
     name: {
         type: STRING(50),
         allowNull: false,

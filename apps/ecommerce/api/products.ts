@@ -31,6 +31,7 @@ const {
  *              - name
  *              - description
  *              - price
+ *              - type
  *              - stock
  *              - active
  *            properties:
@@ -40,6 +41,9 @@ const {
  *              description:
  *                type: text
  *                default: desc
+ *              type:
+ *                type: text
+ *                default: new
  *              price:
  *                type: text
  *                default: 123.00
@@ -85,6 +89,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
+ * 
  * /api/admin/product/get/{id}:
  *   get:
  *     summary: Get a Product by ID

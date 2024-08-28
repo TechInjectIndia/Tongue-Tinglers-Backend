@@ -5,6 +5,7 @@ import { validateReq } from "../../../libraries";
 const createProductsBody = Joi.object().keys({
     name: Joi.string().required(),
     description: Joi.string().required(),
+    type: Joi.string().required(),
     price: Joi.number().required(),
     stock: Joi.number().required(),
     active: Joi.number().required(),
@@ -19,6 +20,7 @@ export const validateCreateProductsBody = async (
 const editProductsBody = Joi.object().keys({
     name: Joi.string().required(),
     description: Joi.string().required(),
+    type: Joi.string().required(),
     price: Joi.number().required(),
     stock: Joi.number().required(),
     active: Joi.number().required(),

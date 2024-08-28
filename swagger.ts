@@ -104,7 +104,11 @@ const options = {
             },
             {
                 name: 'Admin > Lead > Follow Ups'
-            }]
+            },
+            {
+                name: 'Frontend > Ecommerce > Products'
+            }
+        ]
     },
     // looks for configuration in specified directories
     apis: [
@@ -113,6 +117,7 @@ const options = {
         './apps/franchise-auth/api/*.ts',
         './apps/admin-user/api/*.ts',
         './apps/ecommerce/api/*.ts',
+        './apps/ecommerce/api/web/*.ts',
         './apps/lead/api/*.ts',
         './apps/testimonials/api/*.ts',
         './apps/reviews/api/*.ts',

@@ -15,6 +15,7 @@ export type TProduct = {
 export type TAddProduct = {
   data: {
     name: string;
+    type: string;
     description: string;
     price: string;
     stock: string;
@@ -33,5 +34,10 @@ export type TProductFilters = {
   search?: string;
   sorting?: typeof OrderItem;
   trashOnly?: string;
+};
+
+export type TProductSearch = {
+  search?: string;
+  sorting?: typeof OrderItem;
 };
 // Product type Ends

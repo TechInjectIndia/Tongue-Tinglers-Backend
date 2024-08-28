@@ -35,21 +35,15 @@ router.use(`${ADMIN}/users`, adminAuth, adminUsersRouter);
 router.use(`${ADMIN}/permissions`, adminAuth, permissionsRouter);
 router.use(`${ADMIN}/roles`, adminAuth, rolesRouter);
 router.use(`${ADMIN}/franchise`, adminAuth, franchiseRouter);
-
 router.use(`${ADMIN}/testimonials`, adminAuth, testimonialsRouter);
 router.use(`${ADMIN}/reviews`, adminAuth, reviewsRouter);
 router.use(`${ADMIN}/profile`, adminAuth, profileRouter);
-
 router.use(`${ADMIN}/settings`, adminAuth, settingsRouter); // pending
-
 router.use(`${ADMIN}/payments`, adminAuth, paymentsRouter); // pending
-
 router.use(`${ADMIN}/analytics/leads`, adminAuth, leadsAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/orders`, adminAuth, ordersAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/retort-supply`, adminAuth, retortAnalyticsRouter); // pending
-
 router.use(`${ADMIN}/menu`, adminAuth, menuRouter); // pending
-
 router.use(`${ADMIN}/product`, adminAuth, productRouter);
 router.use(`${ADMIN}/product/category`, adminAuth, productCategoryRouter);
 router.use(`${ADMIN}/product/order`, adminAuth, orderRouter);

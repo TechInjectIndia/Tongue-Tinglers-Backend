@@ -40,6 +40,9 @@ const options = {
                 name: 'Franchise > AUTH'
             },
             {
+                name: 'Customer > AUTH'
+            },
+            {
                 name: 'Admin > Users'
             },
             {
@@ -121,6 +124,7 @@ const options = {
         './routes/*.ts',
         './apps/admin-auth/api/*.ts',
         './apps/franchise-auth/api/*.ts',
+        './apps/customer-auth/api/*.ts',
         './apps/admin-user/api/*.ts',
         './apps/ecommerce/api/*.ts',
         './apps/ecommerce/api/web/*.ts',

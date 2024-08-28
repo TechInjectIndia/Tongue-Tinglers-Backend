@@ -5,7 +5,7 @@ import * as AnalyticsValidation from "../validations/analytics";
 const router = express.Router();
 
 const {
-  validateListAnalyticsQuery,
+  validateGetMetricsQuery,
 } = AnalyticsValidation;
 
 // ====== Analytics Leads Starts ======
@@ -41,7 +41,7 @@ const {
  *         description: Unauthorized
  */
 
-router.get("/lead-sources", LeadAnalyticsController.leadSources);
+router.get("/lead-sources", validateGetMetricsQuery, LeadAnalyticsController.leadSources);
 router.get("/conversion-rate", LeadAnalyticsController.conversionRate);
 router.get("/sales-pipeline", LeadAnalyticsController.salesPipeline);
 // ====== Analytics Leads Ends ======

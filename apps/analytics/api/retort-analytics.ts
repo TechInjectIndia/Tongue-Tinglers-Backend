@@ -1,6 +1,6 @@
 import * as express from "express";
 import RetortAnalyticsController from "../controllers/retort-analytics";
-import * as AnalyticsValidation from "../validations/analytics";
+import * as AnalyticsValidation from "../validations/retort-analytics";
 
 const router = express.Router();
 

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { AnalyticsModel } from '../models/lead-analytics';
+import { AnalyticsModel } from '../models/retort-analytics';
 
 export default class RetortAnalyticsController {
     static async list(req: Request, res: Response, next: NextFunction) {

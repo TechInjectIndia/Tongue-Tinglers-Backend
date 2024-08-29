@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { AnalyticsModel } from '../models/lead-analytics';
+import { AnalyticsModel } from '../models/orders-analytics';
 
 export default class OrdersAnalyticsController {
 

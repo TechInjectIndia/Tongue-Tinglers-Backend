@@ -1,6 +1,6 @@
 import * as express from "express";
-import LeadAnalyticsController from "../controllers/lead-analytics";
-import * as AnalyticsValidation from "../validations/lead-analytics";
+import LeadAnalyticsController from "../../controllers/lead-analytics";
+import * as AnalyticsValidation from "../../validations/lead-analytics";
 
 const router = express.Router();
 

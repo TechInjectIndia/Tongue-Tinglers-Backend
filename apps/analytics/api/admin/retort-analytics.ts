@@ -1,6 +1,6 @@
 import * as express from "express";
-import OrdersAnalyticsController from "../controllers/orders-analytics";
-import * as AnalyticsValidation from "../validations/orders-analytics";
+import RetortAnalyticsController from "../../controllers/retort-analytics";
+import * as AnalyticsValidation from "../../validations/retort-analytics";
 
 const router = express.Router();
 
@@ -8,13 +8,13 @@ const {
   validateListAnalyticsQuery,
 } = AnalyticsValidation;
 
-// ====== Analytics Orders Starts ======
+// ====== Analytics Retort Starts ======
 /**
  * @swagger
- * /api/admin/analytics/orders?range={range}:
+ * /api/admin/analytics/retort?range={range}:
  *   get:
  *     summary: Get analytics
- *     tags: [Admin > Analytics > Orders]
+ *     tags: [Admin > Analytics > Retort]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -34,7 +34,7 @@ const {
  *       '401':
  *         description: Unauthorized
  */
-router.get("/", validateListAnalyticsQuery, OrdersAnalyticsController.getOrdersCount);
-// ====== Analytics Orders Ends ======
+router.get("/list", validateListAnalyticsQuery, RetortAnalyticsController.list);
+// ====== Analytics Retort Ends ======
 
 export default router;

@@ -34,10 +34,10 @@ const options = {
         },
         tags: [
             {
-                name: 'AUTH'
+                name: 'AUTH' // auth starts
             },
             {
-                name: 'Admin > Users'
+                name: 'Admin > Users' // admin starts
             },
             {
                 name: 'Admin > User > Payments'
@@ -103,7 +103,7 @@ const options = {
                 name: 'Admin > Lead > Follow Ups'
             },
             {
-                name: 'Frontend > Ecommerce > Products'
+                name: 'Frontend > Ecommerce > Products' // frontend starts
             },
             {
                 name: 'Frontend > Reviews'
@@ -112,7 +112,10 @@ const options = {
                 name: 'Frontend > Testimonials'
             },
             {
-                name: 'Franchise > Ecommerce > Orders'
+                name: 'Franchise > Ecommerce > Orders' // franchise starts
+            },
+            {
+                name: 'Franchise > Profile'
             }
         ]
     },

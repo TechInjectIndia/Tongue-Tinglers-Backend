@@ -1,22 +1,22 @@
 import * as express from "express";
 import SettingsController from "../controllers/settings";
-import * as FranchiseValidation from "../validations/settings";
+import * as CustomerValidation from "../validations/settings";
 
 const router = express.Router();
 
 const {
   validateEditSettingsParams,
   validateEditSettingsBody,
-} = FranchiseValidation;
+} = CustomerValidation;
 
 const { editSettings, getSettings, } = SettingsController;
 // ====== Settings Start ======
 /**
  * @swagger
- * /api/franchise/settings:
+ * /api/customer/settings:
  *   get:
  *     summary: Get a Settings by ID
- *     tags: [Franchise > Settings]
+ *     tags: [Customer > Settings]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -40,10 +40,10 @@ const { editSettings, getSettings, } = SettingsController;
  *       '404':
  *         description: Settings not found
  * 
- * /api/franchise/Settings/update:
+ * /api/customer/Settings/update:
  *   put:
  *     summary: Update a Settings
- *     tags: [Franchise > Settings]
+ *     tags: [Customer > Settings]
  *     security:
  *       - bearerAuth: []
  *     parameters:

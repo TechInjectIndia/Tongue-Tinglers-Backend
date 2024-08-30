@@ -1,21 +1,21 @@
 import * as express from "express";
 import ProfileController from "../controllers/profile";
-import * as FranchiseValidation from "../validations/profile";
+import * as CustomerValidation from "../validations/profile";
 
 const router = express.Router();
 
 const {
   validateEditProfileBody,
-} = FranchiseValidation;
+} = CustomerValidation;
 
 const { editProfile, getProfile, } = ProfileController;
 // ====== Profile Start ======
 /**
  * @swagger
- * /api/franchise/profile:
+ * /api/customer/profile:
  *   get:
  *     summary: Get a Profile
- *     tags: [Franchise > Profile]
+ *     tags: [Customer > Profile]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -28,10 +28,10 @@ const { editProfile, getProfile, } = ProfileController;
  *       '404':
  *         description: Profile not found
  * 
- * /api/franchise/profile/:
+ * /apiCcustomer/profile/:
  *   put:
  *     summary: Update a Profile
- *     tags: [Franchise > Profile]
+ *     tags: [Customer > Profile]
  *     security:
  *       - bearerAuth: []
  *     parameters:

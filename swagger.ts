@@ -85,10 +85,10 @@ const options = {
                 name: 'Admin > Ecommerce > Product > Tags'
             },
             {
-                name: 'Admin > Ecommerce > Product > Orders'
+                name: 'Admin > Ecommerce > Orders'
             },
             {
-                name: 'Admin > Ecommerce > Product > Orders > Invoices'
+                name: 'Admin > Ecommerce > Invoices'
             },
             {
                 name: 'Admin > Logs > Audit-logs'
@@ -110,6 +110,9 @@ const options = {
             },
             {
                 name: 'Frontend > Testimonials'
+            },
+            {
+                name: 'Franchise > Ecommerce > Orders'
             }
         ]
     },
@@ -122,6 +125,7 @@ const options = {
         './apps/customer-user/api/*.ts',
         './apps/ecommerce/api/*.ts',
         './apps/ecommerce/api/web/*.ts',
+        './apps/ecommerce/api/franchise/*.ts',
         './apps/lead/api/*.ts',
         './apps/testimonials/api/*.ts',
         './apps/reviews/api/*.ts',

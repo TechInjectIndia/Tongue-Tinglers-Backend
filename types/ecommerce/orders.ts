@@ -3,8 +3,8 @@ const { OrderItem } = require("sequelize");
 // Order type Starts
 export type TOrder = {
   id: number;
-  orderId: string;
-  userId: number;
+  order_id: string;
+  user_id: number;
   trackingNumber: string;
   orderStatus: string;
   createdAt: Date;
@@ -27,4 +27,9 @@ export type TOrderFilters = {
   sorting?: typeof OrderItem;
   trashOnly?: string;
 };
+
+export type TOrderStatus = {
+  status: number,
+};
+
 // Order type Ends

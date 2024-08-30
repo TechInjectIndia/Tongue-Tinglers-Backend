@@ -3,7 +3,7 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
 const editOrderBody = Joi.object().keys({
-    userId: Joi.string().required(),
+    user_id: Joi.string().required(),
 });
 
 export const validateEditOrderBody = async (

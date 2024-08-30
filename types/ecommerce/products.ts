@@ -4,6 +4,7 @@ const { OrderItem } = require("sequelize");
 export type TProduct = {
   id: number;
   name: string;
+  type: string;
   description: string;
   price: string;
   stock: string;

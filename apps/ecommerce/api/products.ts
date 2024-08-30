@@ -41,12 +41,12 @@ const {
  *              description:
  *                type: text
  *                default: desc
- *              type:
- *                type: text
- *                default: new
  *              price:
  *                type: text
  *                default: 123.00
+ *              type:
+ *                type: text
+ *                default: New
  *              stock:
  *                type: integer
  *                default: 10
@@ -141,6 +141,7 @@ const {
  *              - name
  *              - description
  *              - price
+ *              - type
  *              - stock
  *              - active
  *            properties:
@@ -153,6 +154,9 @@ const {
  *              price:
  *                type: number
  *                default: 178
+ *              type:
+ *                type: text
+ *                default: Upcoming
  *              stock:
  *                type: number
  *                default: 52

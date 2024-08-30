@@ -47,7 +47,7 @@ router.use(`${ADMIN}/analytics/leads`, leadsAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/orders`, ordersAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // pending
 router.use(`${ADMIN}/menu`, auth, menuRouter); // pending
-router.use(`${ADMIN}/product`, auth, productRouter);
+router.use(`${ADMIN}/product`, productRouter);
 router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
 router.use(`${ADMIN}/product/order`, auth, orderRouter);
 router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
@@ -58,18 +58,19 @@ router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 // ====== Franchise imports ======
 import franchiseProfileRouter from "../apps/franchise-user/api/profile";
 import franchiseSettingsRouter from "../apps/franchise-user/api/settings";
-import orderFranchaiseAnalyticsRouter from "../apps/analytics/api/web/orders-analytics";
-import retortFranchaiseAnalyticsRouter from "../apps/analytics/api/web/retort-analytics";
+import orderFranchiseAnalyticsRouter from "../apps/analytics/api/web/orders-analytics";
+import retortFranchiseAnalyticsRouter from "../apps/analytics/api/web/retort-analytics";
+import orderFranchiseRouter from "../apps/ecommerce/api/franchise/orders";
 // ====== Franchise imports ======
 
 // ====== Franchise auth routes ======
 router.use(`${FRANCHISE}/profile`, auth, franchiseProfileRouter); // pending
 router.use(`${FRANCHISE}/settings`, auth, franchiseSettingsRouter); // pending
-// router.use(`${FRANCHISE}/order`, auth, productRouter); // pending
+router.use(`${FRANCHISE}/order`, orderFranchiseRouter);
 // router.use(`${FRANCHISE}/invoice`, auth, productRouter); // pending
 
-router.use(`${FRANCHISE}/analytics/orders`, auth, orderFranchaiseAnalyticsRouter); // pending
-router.use(`${FRANCHISE}/analytics/retort`, auth, retortFranchaiseAnalyticsRouter); // pending
+router.use(`${FRANCHISE}/analytics/orders`, auth, orderFranchiseAnalyticsRouter); // pending
+router.use(`${FRANCHISE}/analytics/retort`, auth, retortFranchiseAnalyticsRouter); // pending
 // ====== Franchise auth routes ======
 
 // ====== Frontend imports ======

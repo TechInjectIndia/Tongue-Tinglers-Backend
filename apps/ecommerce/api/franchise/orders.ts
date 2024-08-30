@@ -1,11 +1,10 @@
 import * as express from "express";
-import OrderController from "../controllers/orders";
-import * as OrderValidation from "../validations/orders";
+import OrderController from "../../controllers/franchise/orders";
+import * as OrderValidation from "../../validations/orders";
 
 const router = express.Router();
 
 const {
-  validateEditOrderBody,
   validateEditOrderParams,
   validateListOrderQuery,
 } = OrderValidation;
@@ -13,10 +12,10 @@ const {
 // ====== order Starts ======
 /**
  * @swagger
- * /api/admin/product/order/list?size={size}&skip={skip}:
+ * /api/franchise/order/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all Order
- *     tags: [Admin > Ecommerce > Orders]
+ *     tags: [Franchise > Ecommerce > Orders]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -41,10 +40,11 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * /api/admin/product/order/get/{id}:
+ * 
+ * /api/franchise/order/get/{id}:
  *   get:
  *     summary: Get a order by ID
- *     tags: [Admin > Ecommerce > Orders]
+ *     tags: [Franchise > Ecommerce > Orders]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -68,48 +68,36 @@ const {
  *       '404':
  *         description: Order not found
  * 
- * /api/admin/product/order/update/{id}:
- *   put:
- *     summary: Update a order
- *     tags: [Admin > Ecommerce > Orders]
+ * /api/franchise/order/get-status/{id}:
+ *   get:
+ *     summary: Get Order by ID
+ *     tags: [Franchise > Ecommerce > Orders]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
+ *         default: 1
  *         schema:
- *           type: string
- *         description: ID of the Order to update
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *            type: object
- *            required:
- *              - name
- *              - active
- *            properties:
- *              name:
- *                type: string
- *                default: AdminorderNew
- *              active:
- *                type: string
- *                default: 1
+ *           type: number
+ *         description: ID of the Order to retrieve
  *     responses:
  *       '200':
- *         description: Order updated successfully
- *       '400':
- *         description: Invalid request body
+ *         description: Order status retreived successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: number
+ *               description: ID of the Order to retrieve
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Order not found
+ *         description: Lead not found
  */
 router.get("/list", validateListOrderQuery, OrderController.list);
 router.get("/get/:id", validateEditOrderParams, OrderController.get);
-router.put("/update/:id", validateEditOrderParams, validateEditOrderBody, OrderController.update);
+router.get("/get-status/:id", validateEditOrderParams, OrderController.getOrderStatus);
 // ====== order Ends ======
 
 export default router;

@@ -3,18 +3,19 @@ import {
     TOrder,
     TOrderFilters,
     TOrdersList,
-    TAddOrder,
-} from "../../../types/ecommerce";
-import { Order } from "../../../database/schema";
+    TOrderStatus
+} from "../../../../types/ecommerce";
+import { Order } from "../../../../database/schema";
 
 export class OrderModel {
     constructor() { }
 
-    public async getOrderByName(name: string): Promise<TOrder | any> {
+    public async getOrderByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TOrderStatus | any> {
+        const whereAttributes = { [whereName]: whereVal }
         const data = await Order.findOne({
-            where: {
-                name,
-            },
+            raw: true,
+            attributes: getAttributes,
+            where: whereAttributes
         });
         return data;
     }
@@ -49,21 +50,4 @@ export class OrderModel {
         return { total, data };
     }
 
-    public async update(id: number, data: TAddOrder): Promise<TOrder | any> {
-        const response = await Order.update(data, {
-            where: {
-                id,
-            },
-        });
-        return response;
-    }
-
-    public async delete(ids: number[]): Promise<TOrder | any> {
-        const response = await Order.destroy({
-            where: {
-                id: ids,
-            },
-        });
-        return response;
-    }
 }

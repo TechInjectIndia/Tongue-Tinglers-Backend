@@ -16,20 +16,17 @@ export const OrderItem = sequelize.define('order_items', {
         type: STRING(50),
         allowNull: false,
     },
-    userId: {
+    user_id: {
         type: INTEGER,
         allowNull: true,
-        field: 'user_id',
     },
-    orderId: {
+    order_id: {
         type: INTEGER,
         allowNull: false,
-        field: 'order_id',
     },
-    productId: {
+    product_id: {
         type: INTEGER,
         allowNull: true,
-        field: 'product_id',
     },
     price: {
         // type: DECIMAL(20, 2),
@@ -39,9 +36,5 @@ export const OrderItem = sequelize.define('order_items', {
     quantity: {
         type: INTEGER,
         allowNull: true,
-    },
-    productType: { // retort or product
-        type: INTEGER,
-        allowNull: false,
     },
 });

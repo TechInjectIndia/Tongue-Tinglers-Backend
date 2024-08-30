@@ -1,13 +1,44 @@
 import {
-    TAdmin,
-    TUpdateAdminToken,
+    TUser,
+    TUpdateUserToken,
+    TUpdateUserPassword
 } from "../../../types";
 import { User as UserModel } from "../../../database/schema";
 
 export class Auth {
-    constructor() {}
+    constructor() { }
 
-    public async getAdminByEmail(email: string): Promise<TAdmin | any> {
+    public async changePassword(data: TUpdateUserPassword): Promise<boolean> {
+        await UserModel.update(
+            {
+                password: data.password,
+            },
+            {
+                where: {
+                    id: data.user_id,
+                },
+            }
+        );
+        return true;
+    }
+
+    public async getUserPassword(id: number): Promise<
+        | {
+            password: string;
+        }
+        | any
+    > {
+        const data = await UserModel.findAll({
+            raw: true,
+            attributes: ["password"],
+            where: {
+                id,
+            },
+        });
+        return data;
+    }
+
+    public async getUserByEmail(email: string): Promise<TUser | any> {
         const data = await UserModel.findOne({
             where: {
                 email,
@@ -17,7 +48,7 @@ export class Auth {
         return data;
     }
 
-    public async updateRefreshToken(data: TUpdateAdminToken): Promise<boolean> {
+    public async updateRefreshToken(data: TUpdateUserToken): Promise<boolean> {
         await UserModel.update(
             {
                 refresh_token: data.refresh_token,
@@ -27,26 +58,9 @@ export class Auth {
             {
                 where: {
                     id: data.user_id,
-                    user_type: '0'
                 },
             }
         );
         return true;
-    }
-
-    public async getAdminPassword(id: number): Promise<
-        | {
-              password: string;
-          }
-        | any
-    > {
-        const data = await UserModel.findAll({
-            attributes: ["password"],
-            where: {
-                id,
-                user_type: '0'
-            },
-        });
-        return data ? data[0] : null;
     }
 }

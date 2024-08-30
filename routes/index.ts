@@ -43,8 +43,8 @@ router.use(`${ADMIN}/reviews`, auth, reviewsRouter);
 router.use(`${ADMIN}/profile`, auth, profileRouter);
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
 router.use(`${ADMIN}/payments`, auth, paymentsRouter); // pending
-router.use(`${ADMIN}/analytics/leads`, leadsAnalyticsRouter); // pending
-router.use(`${ADMIN}/analytics/orders`, ordersAnalyticsRouter); // pending
+router.use(`${ADMIN}/analytics/leads`, leadsAnalyticsRouter);
+router.use(`${ADMIN}/analytics/orders`, ordersAnalyticsRouter);
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // pending
 router.use(`${ADMIN}/menu`, auth, menuRouter); // pending
 router.use(`${ADMIN}/product`, productRouter);

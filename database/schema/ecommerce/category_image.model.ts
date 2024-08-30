@@ -3,30 +3,25 @@ import { sequelize } from "../../../config";
 const { INTEGER, STRING, DATE } = DataTypes;
 
 export const CategoryImange = sequelize.define('category_images', {
-    categoryId: {
+    category_id: {
         type: STRING,
         allowNull: false,
-        field: 'categoryId'
     },
-    fileName: {
+    file_name: {
         type: STRING,
         allowNull: false,
-        field: 'file_name'
     },
-    filePath: {
+    file_path: {
         type: STRING,
         allowNull: false,
-        field: 'file_path'
     },
-    originalName: {
+    original_name: {
         type: STRING,
         allowNull: false,
-        field: 'original_name'
     },
-    fileSize: {
+    file_size: {
         type: INTEGER,
         allowNull: false,
-        field: 'file_size'
     },
     createdAt: {
         type: DATE,

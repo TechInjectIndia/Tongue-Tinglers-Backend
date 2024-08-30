@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { TEditAdmin, TEditAdminProfile } from "../../../types";
+import { TEditUser, TEditUserProfile } from "../../../types";
 import { sendResponse, createPassword } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { Admin } from '../models/user';
@@ -51,7 +51,7 @@ export default class AdminController {
             const address = get(req?.body, "address", "");
             const active = get(req?.body, "active", 1);
 
-            const existingAdmin = await new Auth().getAdminByEmail(email);
+            const existingAdmin = await new Auth().getUserByEmail(email);
             if (existingAdmin) {
                 return res
                     .status(400)
@@ -103,7 +103,7 @@ export default class AdminController {
             const address = get(req?.body, "address", "");
             const active = get(req?.body, "active", 1);
 
-            let payload: TEditAdmin = {
+            let payload: TEditUser = {
                 email,
                 full_name,
                 contact_number,
@@ -196,7 +196,7 @@ export default class AdminController {
             const phone_code = get(req?.body, "phone_code", "");
             const address = get(req?.body, "address", "");
 
-            let payload: TEditAdminProfile = {
+            let payload: TEditUserProfile = {
                 full_name,
                 contact_number,
                 phone_code,

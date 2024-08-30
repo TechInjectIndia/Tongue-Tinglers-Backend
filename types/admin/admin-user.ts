@@ -1,6 +1,6 @@
 const { OrderItem } = require("sequelize");
 
-export type TAdmin = {
+export type TUser = {
   id: number;
   email: string;
   password?: string;
@@ -18,7 +18,7 @@ export type TAdmin = {
   updatedAt: Date;
 };
 
-export type TAddAdmin = {
+export type TAddUser = {
   email: string;
   password: string;
   full_name: string;
@@ -29,7 +29,7 @@ export type TAddAdmin = {
   active: number;
 };
 
-export type TEditAdmin = {
+export type TEditUser = {
   email?: string;
   password?: string;
   full_name?: string;
@@ -41,27 +41,27 @@ export type TEditAdmin = {
 };
 
 
-export type TAdminsList = {
+export type TUsersList = {
   total: number;
-  data: TAdmin;
+  data: TUser;
 };
 
-export type TEditAdminProfile = {
+export type TEditUserProfile = {
   full_name: string;
   contact_number: string;
   phone_code: string;
   address: string;
 };
-// Admin User type Ends
+// User User type Ends
 
-export type TUpdateAdminToken = {
+export type TUpdateUserToken = {
   user_id: number;
   refresh_token: string;
   last_login_at: Date;
   last_login_ip: string;
 };
 
-export type TUpdateAdminProfile = {
+export type TUpdateUserProfile = {
   user_id: string;
   full_name: string;
   contact_number: string;
@@ -69,7 +69,7 @@ export type TUpdateAdminProfile = {
   address: string;
 };
 
-export type TUpdateAdminPassword = {
+export type TUpdateUserPassword = {
   user_id: string;
   password: string;
 };

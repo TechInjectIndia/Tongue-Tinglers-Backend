@@ -1,5 +1,5 @@
 import { RESPONSE_TYPE } from "../constants";
-import { TAdmin } from "../types";
+import { TUser } from "../types";
 
 export const sendResponse = (type: string, message: string, data?: any) => {
     return {
@@ -9,7 +9,7 @@ export const sendResponse = (type: string, message: string, data?: any) => {
     };
 };
 
-export const createAdminUserResponse = (user: TAdmin) => {
+export const createUserResponse = (user: TUser) => {
     let userDetails = {
         id: user.id,
         email: user.email,

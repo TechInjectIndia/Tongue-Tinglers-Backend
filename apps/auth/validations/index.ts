@@ -12,3 +12,14 @@ export const validateLoginBody = async (
     res: Response,
     next: NextFunction
 ) => validateReq(req, res, next, loginBody, "body");
+
+const changePasswordBody = Joi.object().keys({
+    old_password: Joi.string().required(),
+    new_password: Joi.string().required(),
+});
+
+export const validateChangePasswordBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, changePasswordBody, "body");

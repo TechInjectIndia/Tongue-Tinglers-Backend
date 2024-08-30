@@ -1,4 +1,5 @@
-const { Op } = require("sequelize");
+const { Sequelize } = require('sequelize');
+
 import {
     TAnalytics,
     TAnalyticsFilters,
@@ -11,18 +12,35 @@ export class AnalyticsModel {
     constructor() { }
 
     public async leadSources(startDate: Date, endDate: Date): Promise<TAnalyticssList | any> {
-        // Get leads get by website, facebook source
-        Lead.findAll({
+        const data = await Lead.findAll({
+            attributes: [
+                'source',
+                [Sequelize.fn('COUNT', Sequelize.col('source')), 'count']
+            ],
             where: {
                 createdAt: {
-                    [Op.between]: [startDate, endDate]
+                    [Sequelize.between]: [startDate, endDate]
                 },
-            }
+            },
+            group: 'source'
         });
+        return data;
     }
 
-    public async conversionRate(filters: TAnalyticsFilters): Promise<TAnalyticssList | any> {
-        // Get leads which are converted
+    public async conversionRate(startDate: Date, endDate: Date): Promise<TAnalyticssList | any> {
+        const data = await Lead.findAll({
+            attributes: [
+                'status',
+                [Sequelize.fn('COUNT', Sequelize.col('status')), 'count']
+            ],
+            where: {
+                createdAt: {
+                    [Sequelize.between]: [startDate, endDate]
+                },
+            },
+            group: 'status'
+        });
+        return data;
     }
 
     public async salesPipeline(filters: TAnalyticsFilters): Promise<TAnalyticssList | any> {

@@ -1,6 +1,5 @@
-const { Op } = require("sequelize");
+const { Sequelize } = require('sequelize');
 import {
-    TAnalyticsFilters,
     TAnalyticssList,
 } from "../../../types/analytics";
 import { Order } from "../../../database/schema";
@@ -9,13 +8,17 @@ export class AnalyticsModel {
     constructor() { }
 
     public async orderCountByDateWise(startDate: Date, endDate: Date): Promise<TAnalyticssList | any> {
-        // Get orders Count in a period
         Order.findAll({
+            attributes: [
+                'order_status',
+                [Sequelize.fn('COUNT', Sequelize.col('order_status')), 'count']
+            ],
             where: {
                 createdAt: {
-                    [Op.between]: [startDate, endDate]
+                    [Sequelize.between]: [startDate, endDate]
                 },
-            }
+            },
+            group: 'order_status'
         });
     }
 }

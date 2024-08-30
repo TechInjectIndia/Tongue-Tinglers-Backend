@@ -21,7 +21,7 @@ export const Lead = sequelize.define('leads', {
     assigned_to: INTEGER,
     status: {
         type: ENUM,
-        values: ['New']
+        values: ['New', 'Converted']
     },
     createdAt: {
         type: DATE,

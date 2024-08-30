@@ -21,7 +21,12 @@ export const Testimonials = sequelize.define("testimonials", {
         allowNull: false,
         defaultValue: 0,
     },
-    testimonial_type: { // This could be used to categorize the type of testimonial, such as for a product, service, etc.
+    item_id: { // Identifier for the item being reviewed (e.g., franchise id)
+        type: INTEGER,
+        allowNull: false,
+    },
+    item_type: { // Type of item being reviewed (e.g., franchise)
         type: STRING,
+        allowNull: false,
     },
 });

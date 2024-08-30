@@ -16,10 +16,6 @@ export const OrderItem = sequelize.define('order_items', {
         type: STRING(50),
         allowNull: false,
     },
-    user_id: {
-        type: INTEGER,
-        allowNull: true,
-    },
     order_id: {
         type: INTEGER,
         allowNull: false,

@@ -1,8 +1,7 @@
 const { DataTypes } = require("sequelize");
 import { sequelize } from "../../../config";
-const { INTEGER, DATE, STRING } = DataTypes;
+const { INTEGER, DATE, STRING, ENUM } = DataTypes;
 const ORDER_STATUS = {
-    pending: 'Pending',
     processed: 'Processing',
     delivered: 'Delivered',
     shipped: 'Shipped',
@@ -10,16 +9,6 @@ const ORDER_STATUS = {
 };
 
 export const Order = sequelize.define('orders', {
-    id: {
-        type: INTEGER,
-        primaryKey: true,
-        allowNull: false,
-        autoIncrement: true,
-    },
-    order_id: {
-        type: STRING,
-        unique: true,
-    },
     user_id: {
         type: INTEGER,
         allowNull: true,
@@ -34,12 +23,12 @@ export const Order = sequelize.define('orders', {
     payment_method: {
         type: STRING,
     },
-    totalPrice: {
+    total_price: {
         type: INTEGER,
     },
     order_status: {
-        type: INTEGER,
-        values: [ORDER_STATUS.processed, ORDER_STATUS.delivered, ORDER_STATUS.shipped]
+        type: ENUM,
+        values: [ORDER_STATUS.processed, ORDER_STATUS.delivered, ORDER_STATUS.shipped, ORDER_STATUS.shipped, ORDER_STATUS.cancelled]
     },
 });
 

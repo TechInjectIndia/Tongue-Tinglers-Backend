@@ -65,7 +65,8 @@ export const User = sequelize.define(
             allowNull: true,
         },
         user_type: {
-            type: ENUM('0', '1', '2') // 0 => admin, 1 => franchisee, 2 => customer
-        }
+            type: ENUM,
+            values: ['Admin','Franchisee','Customer',]
+        },
     }
 );

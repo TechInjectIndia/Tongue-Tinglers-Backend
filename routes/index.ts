@@ -43,8 +43,8 @@ router.use(`${ADMIN}/reviews`, auth, reviewsRouter);
 router.use(`${ADMIN}/profile`, auth, profileRouter);
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
 router.use(`${ADMIN}/payments`, auth, paymentsRouter); // pending
-router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter); // pending
-router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter); // pending
+router.use(`${ADMIN}/analytics/leads`, leadsAnalyticsRouter); // pending
+router.use(`${ADMIN}/analytics/orders`, ordersAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // pending
 router.use(`${ADMIN}/menu`, auth, menuRouter); // pending
 router.use(`${ADMIN}/product`, auth, productRouter);
@@ -54,7 +54,6 @@ router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
 router.use(`${ADMIN}/lead`, auth, leadRouter);
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 // ====== Admin routes ======
-
 
 // ====== Franchise imports ======
 import franchiseProfileRouter from "../apps/franchise-user/api/profile";
@@ -83,9 +82,9 @@ import webProductsRouter from "../apps/ecommerce/api/web/products";
 
 // ====== Frontend routes ======
 router.use(`${FRONTEND}lead`, webLeadRouter);
-router.use(`${FRONTEND}auth`, customerAuthRouter); // login (done) & registration (pending)
+router.use(`${FRONTEND}auth`, customerAuthRouter); // registration (pending)
 // router.use(`${FRONTEND}food-menu`, webLeadRouter);
-router.use(`${FRONTEND}reviews`, webReviewsRouter); //             // Check if it is customer validation penmding
+router.use(`${FRONTEND}reviews`, webReviewsRouter); // Check if it is customer validation pending
 router.use(`${FRONTEND}testimonials`, webTestimonialsRouter);
 router.use(`${FRONTEND}product`, webProductsRouter);
 // ====== Frontend routes ======

@@ -5,33 +5,27 @@ import * as AnalyticsValidation from "../validations/lead-analytics";
 const router = express.Router();
 
 const {
-  validateGetMetricsQuery,
+  validateListAnalyticsQuery,
 } = AnalyticsValidation;
 
 // ====== Analytics Leads Starts ======
 /**
  * @swagger
- * /api/admin/analytics/leads/lead-sources?start_date={start_date}&end_date={end_date}:
+ * /api/admin/analytics/leads/lead-sources?range={range}:
  *   get:
- *     summary: Get all ProductCategory
+ *     summary: Get analytics
  *     tags: [Admin > Analytics > Leads]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: start_date
- *         default: "02/02/2024"
+ *         name: range
+ *         default: Week
  *         required: true
  *         schema:
  *           type: string
- *         description: start_date of the retreived data
- *       - in: query
- *         name: end_date
- *         default: "05/02/2024"
- *         required: true
- *         schema:
- *           type: string
- *         description: How many Rows want to end_date
+ *           enum: [ "Week", "Month", "Year"]
+ *         description: Get order analytics
  *     responses:
  *       '200':
  *         description: Product Category retrieved successfully
@@ -41,7 +35,7 @@ const {
  *         description: Unauthorized
  */
 
-router.get("/lead-sources", validateGetMetricsQuery, LeadAnalyticsController.leadSources);
+router.get("/lead-sources", validateListAnalyticsQuery, LeadAnalyticsController.leadSources);
 router.get("/conversion-rate", LeadAnalyticsController.conversionRate);
 router.get("/sales-pipeline", LeadAnalyticsController.salesPipeline);
 // ====== Analytics Leads Ends ======

@@ -40,7 +40,7 @@ const {
  *       '401':
  *         description: Unauthorized
  */
-router.get("/list", validateListAnalyticsQuery, OrdersAnalyticsController.list);
+router.get("/list", validateListAnalyticsQuery, OrdersAnalyticsController.getOrdersCount);
 // ====== Analytics Orders Ends ======
 
 export default router;

@@ -11,27 +11,21 @@ const {
 // ====== Analytics Orders Starts ======
 /**
  * @swagger
- * /api/admin/analytics/orders?size={size}&skip={skip}:
+ * /api/admin/analytics/orders?range={range}:
  *   get:
- *     summary: Get all ProductCategory
+ *     summary: Get analytics
  *     tags: [Admin > Analytics > Orders]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: size
- *         default: 10
+ *         name: range
+ *         default: Week
  *         required: true
  *         schema:
- *           type: integer
- *         description: Size of the retreived data
- *       - in: query
- *         name: skip
- *         default: 0
- *         required: true
- *         schema:
- *           type: integer
- *         description: How many Rows want to skip
+ *           type: string
+ *           enum: [ "Week", "Month", "Year"]
+ *         description: Get order analytics
  *     responses:
  *       '200':
  *         description: Product Category retrieved successfully
@@ -40,7 +34,7 @@ const {
  *       '401':
  *         description: Unauthorized
  */
-router.get("/list", OrdersAnalyticsController.list);
+router.get("/", validateListAnalyticsQuery, OrdersAnalyticsController.getOrdersCount);
 // ====== Analytics Orders Ends ======
 
 export default router;

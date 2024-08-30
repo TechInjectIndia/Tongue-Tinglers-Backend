@@ -10,14 +10,13 @@ import { Lead } from "../../../database/schema";
 export class AnalyticsModel {
     constructor() { }
 
-    public async leadSources(filters: TAnalyticsFilters): Promise<TAnalyticssList | any> {
+    public async leadSources(startDate: Date, endDate: Date): Promise<TAnalyticssList | any> {
         // Get leads get by website, facebook source
-
         Lead.findAll({
             where: {
-                column: {
-                    [Op.contains]: [{ id: '1' }]
-                }
+                createdAt: {
+                    [Op.between]: [startDate, endDate]
+                },
             }
         });
     }

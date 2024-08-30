@@ -3,10 +3,9 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
 export const DATEFILTERS = {
-    LastMonth: 'Last Month',
-    ThisMonth: 'This Month',
-    LastWeek: 'Last Week',
-    ThisWeek: 'This Week'
+    Week: 'Week',
+    Month: 'Month',
+    Year: 'Year',
 }
 
 const getMetricsQuery = Joi.object().keys({
@@ -15,7 +14,7 @@ const getMetricsQuery = Joi.object().keys({
         .optional().allow(''),
 });
 
-export const validateGetMetricsQuery = async (
+export const validateListAnalyticsQuery = async (
     req: Request,
     res: Response,
     next: NextFunction

@@ -1,32 +1,21 @@
 const { Op } = require("sequelize");
 import {
-    TAnalytics,
     TAnalyticsFilters,
     TAnalyticssList,
-    TAddAnalytics,
 } from "../../../types/analytics";
-import { Lead } from "../../../database/schema";
+import { Order } from "../../../database/schema";
 
 export class AnalyticsModel {
     constructor() { }
 
-    public async leadSources(filters: TAnalyticsFilters): Promise<TAnalyticssList | any> {
-        // Get leads get by website, facebook source
-
-        Lead.findAll({
+    public async orderCountByDateWise(startDate: Date, endDate: Date): Promise<TAnalyticssList | any> {
+        // Get orders Count in a period
+        Order.findAll({
             where: {
-                column: {
-                    [Op.contains]: [{ id: '1' }]
-                }
+                createdAt: {
+                    [Op.between]: [startDate, endDate]
+                },
             }
         });
-    }
-
-    public async conversionRate(filters: TAnalyticsFilters): Promise<TAnalyticssList | any> {
-        // Get leads which are converted
-    }
-
-    public async salesPipeline(filters: TAnalyticsFilters): Promise<TAnalyticssList | any> {
-
     }
 }

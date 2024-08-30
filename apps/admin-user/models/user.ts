@@ -163,7 +163,7 @@ export class Admin {
     }
 
     public async addAdmin(data: TAddAdmin): Promise<TAdmin | any> {
-        return await UserModel.create({...data, user_type: '0'});
+        return await UserModel.create({ ...data, user_type: '0' });
     }
 
     public async editAdmin(
@@ -204,7 +204,7 @@ export class Admin {
                 id: data?.dataValues?.role
             }
         })
-        return {...data?.dataValues, permissions: role?.dataValues?.role_permissions ?? ''};
+        return { ...data?.dataValues, permissions: role?.dataValues?.role_permissions ?? '' };
     }
 
     public async deleteAdmin(ids: number[]): Promise<TRole | any> {
@@ -337,7 +337,7 @@ export class Admin {
         });
         return data ?? null;
     }
-    
+
     public async getDeletedFranchisees(filters: TListFilters): Promise<any | null> {
         const total = await UserModel.count({
             where: {
@@ -413,7 +413,7 @@ export class Admin {
     }
 
     public async addFranchisee(data: TAddFranchisee): Promise<TFranchisee | any> {
-        return await UserModel.create({...data, user_type: '1'});
+        return await UserModel.create({ ...data, user_type: '1' });
     }
 
     public async editFranchisee(
@@ -426,7 +426,7 @@ export class Admin {
             },
         });
     }
-    
+
     public async getFranchiseeByEmail(email: string): Promise<TFranchisee | any> {
         const data = await UserModel.findOne({
             attributes: [
@@ -480,3 +480,84 @@ export class Admin {
         return response;
     }
 }
+
+
+
+
+
+// interface by @Nitesh 
+
+
+// The UserDetails interface tracks user information with fields for creation, update, and deletion logs, including createdBy, createdAt, updatedBy, updatedAt, deletedBy, and deletedAt. The roles field is an array of ADMIN_ROLES enums, accommodating multiple roles per user. The cart interface is a placeholder for future definition. This setup supports a single login endpoint and handles various user types and statuses, ensuring soft deletion and audit trail capabilities.
+
+
+interface UserDetails {
+    id: string;
+    createdBy: string;
+    createdAt: Date;
+    firstName: string;
+    lastName: string;
+    nameForSearch: string;
+    email: string;
+    userName: string;
+    phoneNumber: string;
+    type: USER_TYPE;
+    status: USER_STATUS;
+    cart: cart[];
+    updatedBy: string | null;
+    updatedAt: Date | null;
+    deletedBy: string | null;
+    deletedAt: Date | null;
+    roles: null | ADMIN_ROLES;
+    profile: Profile | null
+    address: Array<Address>
+}
+
+interface Address {
+    title: string;
+    address: string;
+    state: string;
+    city: string;
+    country: string;
+    zipCode: string;
+    firstName: string;
+    lastName: string | null;
+    email: string;
+    phone: string | null;
+    gstin: string | null;
+}
+
+interface Profile {
+    url: string;
+    alt: string;
+}
+
+
+enum ADMIN_ROLES {
+    // Super Admin has all access
+    SUPER_ADMIN = "SUPER_ADMIN",
+
+    // Product Roles
+    PRODUCT_LIST = "PRODUCT_LIST",
+    PRODUCT_CREATE = "PRODUCT_CREATE",
+    PRODUCT_UPDATE = "PRODUCT_UPDATE",
+    PRODUCT_DELETE = "PRODUCT_DELETE",
+}
+
+interface cart {
+
+}
+
+enum USER_TYPE {
+    B2C = "B2C",
+    ADMIN = "admin",
+    FRANCHISE = "franchise",
+}
+
+enum USER_STATUS {
+    "ACTIVE" = "active",
+    "INACTIVE" = "inactive",
+    "DELETED" = "deleted",
+}
+
+

@@ -1,19 +1,18 @@
 import * as express from "express";
-import franchiseAuthController from "../controllers";
+import AuthController from "../controllers";
 import * as AuthValidation from "../validations";
 
 const router = express.Router();
+const { validateLoginBody } = AuthValidation;
+const { login } = AuthController;
 
-const { validateLoginFranchiseBody } = AuthValidation;
-const { login } = franchiseAuthController;
-
-// ====== Franchise Auth Start ======
+// ====== Auth Start ======
 /**
  * @swagger
- * /api/franchise/auth/login:
+ * /api/auth/login:
  *   post:
  *     summary: login
- *     tags: [Franchise > AUTH]
+ *     tags: [AUTH]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -28,16 +27,18 @@ const { login } = franchiseAuthController;
  *            properties:
  *              email:
  *                type: string
+ *                default: admin@gmail.com
  *              password:
  *                type: string
+ *                default: admin
  *     responses:
  *       '200':
- *         description: Franchise logged in successfully
+ *         description: logged in successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  */
-router.post("/login", validateLoginFranchiseBody, login);
+router.post("/login", validateLoginBody, login);
 
 export default router;

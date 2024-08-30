@@ -2,8 +2,18 @@ import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
+export const SOURCEFILTER = {
+    Admin: 'Admin',
+    Website: 'Website',
+    Others: 'Others'
+}
+
+export const LEADSTATUSFILTER = {
+    New: 'New',
+}
+
 const statusLeadBody = Joi.object().keys({
-    // id: Joi.number().required(),
+    id: Joi.number().required(),
 });
 
 export const validateLeadStatusBody = async (
@@ -25,15 +35,16 @@ export const validateAssignLeadBody = async (
 
 const createLeadBody = Joi.object().keys({
     name: Joi.string().required(),
+    source: Joi.string().valid(...Object.values(SOURCEFILTER)).optional().allow(''),
     city: Joi.string().required(),
     state: Joi.string().required(),
     zip_code: Joi.string().required(),
     country: Joi.string().required(),
     phone_number: Joi.string().required(),
-    email: Joi.string().required(),
+    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
     address: Joi.string().required(),
     additional_info: Joi.string().required(),
-    status: Joi.number().required(),
+    status: Joi.string().valid(...Object.values(LEADSTATUSFILTER)).optional().allow(''),
 });
 
 export const validateCreateLeadBody = async (
@@ -49,10 +60,10 @@ const editLeadBody = Joi.object().keys({
     zip_code: Joi.string().required(),
     country: Joi.string().required(),
     phone_number: Joi.string().required(),
-    email: Joi.string().required(),
     address: Joi.string().required(),
     additional_info: Joi.string().required(),
-    status: Joi.number().required(),
+    follow_date: Joi.date().iso().required(),
+    status: Joi.string().valid(...Object.values(LEADSTATUSFILTER)).optional().allow(''),
 });
 
 export const validateEditLeadBody = async (
@@ -62,7 +73,7 @@ export const validateEditLeadBody = async (
 ) => validateReq(req, res, next, editLeadBody, "body");
 
 const editLeadParams = Joi.object().keys({
-    id: Joi.string().required(),
+    id: Joi.number().required(),
 });
 
 export const validateEditLeadParams = async (

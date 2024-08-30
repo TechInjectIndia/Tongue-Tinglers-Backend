@@ -16,7 +16,7 @@ export const validateListFranchiseeQuery = async (
 ) => validateReq(req, res, next, listFranchiseeQuery, "query");
 
 const createFranchiseeBody = Joi.object().keys({
-    email: Joi.string().email().required(),
+    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
     password: Joi.string().required(),
     full_name: Joi.string().required(),
     contact_number: Joi.string().required(),
@@ -42,7 +42,7 @@ export const validateEditFranchiseeParams = async (
 ) => validateReq(req, res, next, editFranchiseeParams, "params");
 
 const editFranchiseeBody = Joi.object().keys({
-    email: Joi.string().email().required(),
+    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
     full_name: Joi.string().required(),
     contact_number: Joi.string().required(),
     phone_code: Joi.string().required(),

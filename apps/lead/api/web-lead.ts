@@ -25,6 +25,7 @@ const {
  *            type: object
  *            required:
  *              - name
+ *              - source
  *              - city
  *              - zip_code
  *              - state
@@ -37,7 +38,10 @@ const {
  *            properties:
  *              name:
  *                type: string
- *                default: Adminlead 
+ *                default: lead 
+ *              source:
+ *                type: text
+ *                default: Website
  *              city:
  *                type: text
  *                default: city

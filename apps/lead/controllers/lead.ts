@@ -13,7 +13,7 @@ export default class LeadController {
             const whereName = 'id'
             const whereVal = id;
             const existingLead = await new LeadModel().getLeadStatus(whereName, whereVal, getAttributes);
-            
+
             if (isEmpty(existingLead)) {
                 return res
                     .status(400)
@@ -46,11 +46,11 @@ export default class LeadController {
         try {
             // check if user id assinegd by and assigned to is user
             // add details in logs
-            const id = get(req?.body, "lead_id", "");
+            const id = get(req?.body, "id", "");
             const assigned_by = get(req, "user_id", "");
             const assigned_to = get(req?.body, "assigned_to", "");
-            
-            let getAttributes: any = '';
+
+            let getAttributes: any = ['*'];
             const whereName = 'id'
             const whereVal = id;
             const existingLead = await new LeadModel().getLeadByAttr(whereName, whereVal, getAttributes);
@@ -67,8 +67,9 @@ export default class LeadController {
             }
 
             const assignLead: any = {};
+            assignLead.assigned_by = assigned_by
             assignLead.assigned_to = assigned_to
-            
+
             const Lead = await new LeadModel().assignLeadToUser(id, assignLead);
 
             return res

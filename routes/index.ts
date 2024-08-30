@@ -5,9 +5,13 @@ const ADMIN = '/admin';
 const FRANCHISE = '/franchise';
 const FRONTEND = '/';
 
+// ====== Auth app imports ======
+import { auth } from '../middlewares/auth';
+import authRouter from "../apps/auth/api";
+router.use(`/auth`, authRouter);
+// ====== Auth app imports ======
+
 // ====== Admin app imports ======
-import { adminAuth } from '../middlewares/auth';
-import adminAuthRouter from "../apps/admin-auth/api";
 import franchiseRouter from "../apps/admin-user/api/franchise";
 import rolesRouter from "../apps/admin-user/api/roles";
 import permissionsRouter from "../apps/admin-user/api/permissions";
@@ -30,32 +34,29 @@ import menuRouter from "../apps/menu/api/menu";
 // ====== Admin app imports ======
 
 // ====== Admin routes ======
-router.use(`${ADMIN}/auth`, adminAuthRouter);
-router.use(`${ADMIN}/users`, adminAuth, adminUsersRouter);
-router.use(`${ADMIN}/permissions`, adminAuth, permissionsRouter);
-router.use(`${ADMIN}/roles`, adminAuth, rolesRouter);
-router.use(`${ADMIN}/franchise`, adminAuth, franchiseRouter);
-router.use(`${ADMIN}/testimonials`, adminAuth, testimonialsRouter);
-router.use(`${ADMIN}/reviews`, adminAuth, reviewsRouter);
-router.use(`${ADMIN}/profile`, adminAuth, profileRouter);
-router.use(`${ADMIN}/settings`, adminAuth, settingsRouter); // pending
-router.use(`${ADMIN}/payments`, adminAuth, paymentsRouter); // pending
-router.use(`${ADMIN}/analytics/leads`, adminAuth, leadsAnalyticsRouter); // pending
-router.use(`${ADMIN}/analytics/orders`, adminAuth, ordersAnalyticsRouter); // pending
-router.use(`${ADMIN}/analytics/retort-supply`, adminAuth, retortAnalyticsRouter); // pending
-router.use(`${ADMIN}/menu`, adminAuth, menuRouter); // pending
-router.use(`${ADMIN}/product`, adminAuth, productRouter);
-router.use(`${ADMIN}/product/category`, adminAuth, productCategoryRouter);
-router.use(`${ADMIN}/product/order`, adminAuth, orderRouter);
-router.use(`${ADMIN}/product/tag`, adminAuth, productTagRouter);
-router.use(`${ADMIN}/lead`, adminAuth, leadRouter);
-router.use(`${ADMIN}/followup`, adminAuth, followUpsRouter);
+router.use(`${ADMIN}/users`, auth, adminUsersRouter);
+router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
+router.use(`${ADMIN}/roles`, auth, rolesRouter);
+router.use(`${ADMIN}/franchise`, auth, franchiseRouter);
+router.use(`${ADMIN}/testimonials`, auth, testimonialsRouter);
+router.use(`${ADMIN}/reviews`, auth, reviewsRouter);
+router.use(`${ADMIN}/profile`, auth, profileRouter);
+router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
+router.use(`${ADMIN}/payments`, auth, paymentsRouter); // pending
+router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter); // pending
+router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter); // pending
+router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // pending
+router.use(`${ADMIN}/menu`, auth, menuRouter); // pending
+router.use(`${ADMIN}/product`, auth, productRouter);
+router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
+router.use(`${ADMIN}/product/order`, auth, orderRouter);
+router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
+router.use(`${ADMIN}/lead`, auth, leadRouter);
+router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 // ====== Admin routes ======
 
 
 // ====== Franchise imports ======
-import { franchiseAuth } from '../middlewares/auth';
-import franchiseAuthRouter from "../apps/franchise-auth/api";
 import franchiseProfileRouter from "../apps/franchise-user/api/profile";
 import franchiseSettingsRouter from "../apps/franchise-user/api/settings";
 import orderFranchaiseAnalyticsRouter from "../apps/analytics/api/web/orders-analytics";
@@ -63,19 +64,17 @@ import retortFranchaiseAnalyticsRouter from "../apps/analytics/api/web/retort-an
 // ====== Franchise imports ======
 
 // ====== Franchise auth routes ======
-router.use(`${FRANCHISE}/auth`, franchiseAuthRouter); // signup by admin (pending)
-router.use(`${FRANCHISE}/profile`, franchiseAuth, franchiseProfileRouter); // pending
-router.use(`${FRANCHISE}/settings`, franchiseAuth, franchiseSettingsRouter); // pending
-// router.use(`${FRANCHISE}/order`, franchiseAuth, productRouter); // pending
-// router.use(`${FRANCHISE}/invoice`, franchiseAuth, productRouter); // pending
+router.use(`${FRANCHISE}/profile`, auth, franchiseProfileRouter); // pending
+router.use(`${FRANCHISE}/settings`, auth, franchiseSettingsRouter); // pending
+// router.use(`${FRANCHISE}/order`, auth, productRouter); // pending
+// router.use(`${FRANCHISE}/invoice`, auth, productRouter); // pending
 
-router.use(`${FRANCHISE}/analytics/orders`, franchiseAuth, orderFranchaiseAnalyticsRouter); // pending
-router.use(`${FRANCHISE}/analytics/retort`, franchiseAuth, retortFranchaiseAnalyticsRouter); // pending
+router.use(`${FRANCHISE}/analytics/orders`, auth, orderFranchaiseAnalyticsRouter); // pending
+router.use(`${FRANCHISE}/analytics/retort`, auth, retortFranchaiseAnalyticsRouter); // pending
 // ====== Franchise auth routes ======
 
 // ====== Frontend imports ======
-import { customerAuth } from '../middlewares/auth';
-import customerAuthRouter from "../apps/customer-auth/api";
+import customerAuthRouter from "../apps/customer-user/api";
 import webLeadRouter from "../apps/lead/api/web-lead";
 import webTestimonialsRouter from "../apps/testimonials/api/web-testimonials";
 import webReviewsRouter from "../apps/reviews/api/web-reviews";

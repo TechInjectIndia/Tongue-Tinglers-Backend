@@ -13,7 +13,7 @@ export const validateEditSettingsParams = async (
 ) => validateReq(req, res, next, editSettingsParams, "params");
 
 const editSettingsBody = Joi.object().keys({
-    email: Joi.string().email().required(),
+    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
     full_name: Joi.string().required(),
     contact_number: Joi.string().required(),
     phone_code: Joi.string().required(),

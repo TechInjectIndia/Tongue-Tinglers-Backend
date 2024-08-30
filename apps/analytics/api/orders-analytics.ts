@@ -11,7 +11,7 @@ const {
 // ====== Analytics Orders Starts ======
 /**
  * @swagger
- * /api/admin/orders?size={size}&skip={skip}:
+ * /api/admin/analytics/orders?size={size}&skip={skip}:
  *   get:
  *     summary: Get all ProductCategory
  *     tags: [Admin > Analytics > Orders]
@@ -40,7 +40,7 @@ const {
  *       '401':
  *         description: Unauthorized
  */
-router.get("/list", validateListAnalyticsQuery, OrdersAnalyticsController.list);
+router.get("/list", OrdersAnalyticsController.list);
 // ====== Analytics Orders Ends ======
 
 export default router;

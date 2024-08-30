@@ -1,9 +1,7 @@
 const { DataTypes } = require("sequelize");
 import { sequelize } from "../../../config";
-const { STRING, TEXT, DATE, INTEGER } = DataTypes;
-const LEAD_STATUS = {
-    new: 'New',
-};
+const { STRING, TEXT, DATE, INTEGER, ENUM } = DataTypes;
+
 export const Lead = sequelize.define('leads', {
     name: STRING,
     city: STRING,
@@ -14,14 +12,16 @@ export const Lead = sequelize.define('leads', {
     email: STRING,
     address: STRING,
     additional_info: TEXT,
-    source: STRING,
+    source: {
+        type: ENUM,
+        values: ['Admin', 'Website', 'Others']
+    },
     follow_date: DATE,
     created_by: INTEGER,
     assigned_to: INTEGER,
     status: {
-        type: INTEGER,
-        field: 'status',
-        values: [LEAD_STATUS.new]
+        type: ENUM,
+        values: ['New']
     },
     createdAt: {
         type: DATE,

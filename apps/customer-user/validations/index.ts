@@ -3,7 +3,7 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
 const loginCustomerBody = Joi.object().keys({
-    email: Joi.string().email().required(),
+    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
     password: Joi.string().required(),
 });
 

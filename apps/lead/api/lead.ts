@@ -31,6 +31,7 @@ const {
  *            type: object
  *            required:
  *              - name
+ *              - source
  *              - city
  *              - zip_code
  *              - state
@@ -45,32 +46,35 @@ const {
  *                type: string
  *                default: Adminlead 
  *              city:
- *                type: text
+ *                type: string
  *                default: city
+ *              source:
+ *                type: string
+ *                default: Admin
  *              zip_code:
- *                type: text
+ *                type: string
  *                default: zip_code
  *              state:
- *                type: text
+ *                type: string
  *                default: state
  *              country:
- *                type: text
+ *                type: string
  *                default: country
  *              phone_number:
- *                type: text
+ *                type: string
  *                default: phone_number
  *              email:
- *                type: text
+ *                type: string
  *                default: email
  *              address:
- *                type: text
+ *                type: string
  *                default: address
  *              additional_info:
  *                type: text
  *                default: additional_info
  *              status:
- *                type: boolean
- *                default: 0
+ *                type: string
+ *                default: New
  *     responses:
  *       '200':
  *         description: Lead created successfully
@@ -120,7 +124,7 @@ const {
  *         required: true
  *         default: 1
  *         schema:
- *           type: string
+ *           type: number
  *         description: ID of the lead to retrieve
  *     responses:
  *       '200':
@@ -128,7 +132,7 @@ const {
  *         content:
  *           application/json:
  *             schema:
- *               type: string
+ *               type: number
  *               description: ID of the Lead to retrieve
  *       '401':
  *         description: Unauthorized
@@ -157,12 +161,12 @@ const {
  *            type: object
  *            required:
  *              - name
+ *              - source
  *              - city
  *              - zip_code
  *              - state
  *              - country
  *              - phone_number
- *              - email
  *              - address
  *              - additional_info
  *              - follow_date
@@ -172,35 +176,33 @@ const {
  *                type: string
  *                default: Lead 
  *              city:
- *                type: text
+ *                type: string
  *                default: city
  *              zip_code:
- *                type: text
+ *                type: string
  *                default: zip_code
  *              state:
- *                type: text
+ *                type: string
  *                default: state
  *              country:
- *                type: text
+ *                type: string
  *                default: country
  *              phone_number:
- *                type: text
+ *                type: string
  *                default: phone_number
- *              email:
- *                type: text
- *                default: email
  *              address:
- *                type: text
+ *                type: string
  *                default: address
  *              additional_info:
  *                type: text
  *                default: additional_info
  *              follow_date:
  *                type: string
- *                default: "02/02/2024"
+ *                format: date
+ *                example: "2018-08-28"
  *              status:
- *                type: boolean
- *                default: 0 
+ *                type: string
+ *                default: New
  *     responses:
  *       '200':
  *         description: Lead updated successfully
@@ -303,7 +305,7 @@ router.put("/update/:id", validateEditLeadParams, validateEditLeadBody, LeadCont
 router.delete("/delete", validateEditMultipleIdsBody, LeadController.delete);
 
 router.put("/assign-lead", validateAssignLeadBody, LeadController.assignLeadToAdminUser);
-router.get("/get-status/:id", validateEditLeadParams, validateLeadStatusBody, LeadController.getLeadStatus);
+router.get("/get-status/:id", validateEditLeadParams, LeadController.getLeadStatus);
 // ====== Lead Ends ======
 
 export default router;

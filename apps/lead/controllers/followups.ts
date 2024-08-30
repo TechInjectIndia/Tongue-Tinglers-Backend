@@ -10,12 +10,13 @@ export default class FollowUpsController {
         try {
             let startDate = get(req?.query, "start_date", "");
             let endDate = get(req?.query, "end_date", "");
+            let assigned_to = get(req, "user_id", "");
 
             startDate = new Date(startDate);
             endDate = new Date(endDate);
             let getAttributes: any = ['*'];
 
-            const existingLead = await new FollowUpsModel().getFollowUpsToday(startDate, endDate, getAttributes);
+            const existingLead = await new FollowUpsModel().getFollowUpsToday(startDate, endDate, assigned_to, getAttributes);
 
             if (isEmpty(existingLead)) {
                 return res

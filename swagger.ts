@@ -34,13 +34,7 @@ const options = {
         },
         tags: [
             {
-                name: 'Admin > AUTH'
-            },
-            {
-                name: 'Franchise > AUTH'
-            },
-            {
-                name: 'Customer > AUTH'
+                name: 'AUTH'
             },
             {
                 name: 'Admin > Users'
@@ -122,10 +116,10 @@ const options = {
     // looks for configuration in specified directories
     apis: [
         './routes/*.ts',
-        './apps/admin-auth/api/*.ts',
-        './apps/franchise-auth/api/*.ts',
-        './apps/customer-auth/api/*.ts',
+        './apps/auth/api/*.ts',
         './apps/admin-user/api/*.ts',
+        './apps/franchise-user/api/*.ts',
+        './apps/customer-user/api/*.ts',
         './apps/ecommerce/api/*.ts',
         './apps/ecommerce/api/web/*.ts',
         './apps/lead/api/*.ts',

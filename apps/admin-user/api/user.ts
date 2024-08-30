@@ -19,7 +19,7 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  * @swagger
  * /api/admin/users/create:
  *   post:
- *     summary: Create a new Admin
+ *     summary: Create a new User
  *     tags: [Admin > Users]
  *     security:
  *       - bearerAuth: []
@@ -58,7 +58,7 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *                default: 0 
  *     responses:
  *       '200':
- *         description: Admin created successfully
+ *         description: User created successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
@@ -66,7 +66,7 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  * 
  * /api/admin/users/list?size={size}&skip={skip}:
  *   get:
- *     summary: Get all Admin
+ *     summary: Get all Users
  *     tags: [Admin > Users]
  *     security:
  *       - bearerAuth: []
@@ -87,14 +87,15 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *         description: How many Rows want to skip
  *     responses:
  *       '200':
- *         description: Admin retrieved successfully
+ *         description: Users retrieved successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
+ * 
  * /api/admin/users/get/{id}:
  *   get:
- *     summary: Get a admin by ID
+ *     summary: Get a User by ID
  *     tags: [Admin > Users]
  *     security:
  *       - bearerAuth: []
@@ -105,23 +106,23 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *         default: 1
  *         schema:
  *           type: string
- *         description: ID of the admin to retrieve
+ *         description: ID of the User to retrieve
  *     responses:
  *       '200':
- *         description: Admin retrieved successfully
+ *         description: User retrieved successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: string
- *               description: ID of the Admin to retrieve
+ *               description: ID of the User to retrieve
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Admin not found
+ *         description: User not found
  * 
  * /api/admin/users/update/{id}:
  *   put:
- *     summary: Update a admin
+ *     summary: Update a User
  *     tags: [Admin > Users]
  *     security:
  *       - bearerAuth: []
@@ -131,7 +132,7 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the Admin to update
+ *         description: ID of the User to update
  *     requestBody:
  *       required: true
  *       content:
@@ -164,17 +165,17 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *                default: 0 
  *     responses:
  *       '200':
- *         description: Admin updated successfully
+ *         description: User updated successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Admin not found
+ *         description: User not found
  * 
  * /api/admin/users/delete:
  *   delete:
- *     summary: Delete a admin
+ *     summary: Delete a User
  *     tags: [Admin > Users]
  *     security:
  *       - bearerAuth: []
@@ -196,7 +197,7 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Admin not found
+ *         description: User not found
  */
 router.post("/create", validateCreateAdminBody, addAdmin);
 router.get("/list", validateListAdminQuery, getAdmins);

@@ -50,7 +50,8 @@ export default class AdminController {
             const role = get(req?.body, "role", 0);
             const address = get(req?.body, "address", "");
             const active = get(req?.body, "active", 1);
-
+            const user_type = 'Admin';
+            
             const existingAdmin = await new Auth().getUserByEmail(email);
             if (existingAdmin) {
                 return res
@@ -73,6 +74,7 @@ export default class AdminController {
                 role,
                 address,
                 active,
+                user_type
             });
 
             return res

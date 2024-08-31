@@ -18,7 +18,7 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: '0',
+                user_type: 'Admin',
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
@@ -45,7 +45,7 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: '0',
+                user_type: 'Admin',
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
@@ -59,7 +59,7 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: '0',
+                user_type: 'Admin',
             },
         });
         const data = await UserModel.findAll({
@@ -84,14 +84,14 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: '0'
+                user_type: 'Admin'
             },
         });
         return { total, data };
     }
 
     public async addAdmin(data: TAddUser): Promise<TUser | any> {
-        return await UserModel.create({...data, user_type: '0'});
+        return await UserModel.create({...data, user_type: 'Admin'});
     }
 
     public async editAdmin(
@@ -101,7 +101,7 @@ export class Admin {
         return await UserModel.update(data, {
             where: {
                 id,
-                user_type: '0'
+                user_type: 'Admin'
             },
         });
     }
@@ -124,7 +124,7 @@ export class Admin {
             ],
             where: {
                 id,
-                user_type: '0'
+                user_type: 'Admin'
             },
         });
         const role = await Roles.findOne({

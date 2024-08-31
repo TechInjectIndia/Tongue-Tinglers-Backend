@@ -15,7 +15,7 @@ export class Admin {
         return await UserModel.update(data, {
             where: {
                 id,
-                user_type: '0'
+                user_type: 'Admin'
             },
         });
     }
@@ -37,7 +37,7 @@ export class Admin {
             ],
             where: {
                 id,
-                user_type: '0'
+                user_type: 'Admin'
             },
         });
         return data;

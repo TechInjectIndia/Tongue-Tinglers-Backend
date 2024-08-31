@@ -47,9 +47,6 @@ export const User = sequelize.define(
             type: STRING,
             allowNull: true,
         },
-        active: {
-            type: BOOLEAN,
-        },
         refferal_id: {
             type: STRING,
             allowNull: true,
@@ -64,7 +61,10 @@ export const User = sequelize.define(
         },
         user_type: {
             type: ENUM,
-            values: ['Admin','Franchisee','Customer',]
+            values: ['Admin', 'Franchise', 'Customer',]
+        },
+        active: {
+            type: BOOLEAN,
         },
     }
 );

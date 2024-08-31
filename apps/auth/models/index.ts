@@ -42,7 +42,7 @@ export class Auth {
         const data = await UserModel.findOne({
             where: {
                 email,
-                user_type: '0'
+                user_type: 'Admin'
             },
         });
         return data;

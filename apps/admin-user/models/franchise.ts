@@ -16,7 +16,7 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: '1',
+                user_type: 'Franchise',
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
@@ -41,7 +41,7 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: '1',
+                user_type: 'Franchise',
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
@@ -55,7 +55,7 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: '1'
+                user_type: 'Franchise'
             },
         });
         const data = await UserModel.findAll({
@@ -78,14 +78,14 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: '1'
+                user_type: 'Franchise'
             },
         });
         return { total, data };
     }
 
     public async addFranchisee(data: TAddFranchisee): Promise<TFranchisee | any> {
-        return await UserModel.create({...data, user_type: '1'});
+        return await UserModel.create({...data, user_type: 'Franchise'});
     }
 
     public async editFranchisee(
@@ -115,7 +115,7 @@ export class Admin {
             ],
             where: {
                 email,
-                user_type: '1'
+                user_type: 'Franchise'
             },
         });
         return data;
@@ -137,7 +137,7 @@ export class Admin {
             ],
             where: {
                 id,
-                user_type: '1'
+                user_type: 'Franchise'
             },
         });
         return data;

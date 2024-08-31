@@ -26,6 +26,7 @@ export type TAddUser = {
   phone_code: string;
   role: number;
   address: string;
+  user_type: string;
   active: number;
 };
 

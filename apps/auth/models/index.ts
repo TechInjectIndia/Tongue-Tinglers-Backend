@@ -28,7 +28,7 @@ export class Auth {
         }
         | any
     > {
-        const data = await UserModel.findAll({
+        const data = await UserModel.findOne({
             raw: true,
             attributes: ["password"],
             where: {

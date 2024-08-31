@@ -64,6 +64,7 @@
     }
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "tsconfig-paths": "^4.2.0"
   }
 }

@@ -35,7 +35,7 @@ import retortAnalyticsRouter from "../apps/analytics/api/admin/retort-analytics"
 import menuRouter from "../apps/menu/api/menu";
 
 // ====== Admin routes ======
-router.use(`${ADMIN}/users`, auth, adminUsersRouter);
+router.use(`${ADMIN}/users`, adminUsersRouter);
 router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
 router.use(`${ADMIN}/roles`, auth, rolesRouter);
 router.use(`${ADMIN}/franchise`, auth, franchiseRouter);

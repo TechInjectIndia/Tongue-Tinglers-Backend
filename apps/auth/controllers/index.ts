@@ -113,6 +113,7 @@ export default class AuthController {
                     )
                 );
         } catch (err) {
+            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

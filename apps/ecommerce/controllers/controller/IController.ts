@@ -1,4 +1,5 @@
-import { NextFunction } from "express";
+import { NextFunction, Response } from "express";
+import {TQueryFilters} from "../../../../types/ecommerce";
 
 /**
  * IController interface defines a set of common methods that should be implemented
@@ -12,12 +13,13 @@ import { NextFunction } from "express";
  * This also allows you to define custom methods specific to a controller
  * if needed in their specific child interfaces.
  */
-interface IController {
-    create(req: Request, res: Response, next: NextFunction): Promise<Response>;
-    list(req: Request, res: Response, next: NextFunction): Promise<Response>;
-    update(req: Request, res: Response, next: NextFunction): Promise<Response>;
-    get(req: Request, res: Response, next: NextFunction): Promise<Response>;
-    delete(req: Request, res: Response, next: NextFunction): Promise<Response>;
+interface IController<T,F extends TQueryFilters> {
+    create(req: Request, res: Response, next: NextFunction): Promise<Response<T>>;
+    list(filters:F): Promise<Response<T[]>>;
+    update(req: Request, res: Response, next: NextFunction): Promise<Response<T>>;
+    get(req: Request, res: Response, next: NextFunction): Promise<Response<T>>;
+    delete(req: Request, res: Response, next: NextFunction): Promise<Response<T>>;
 }
 
 export default IController;
+

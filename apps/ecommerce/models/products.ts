@@ -1,5 +1,5 @@
 import {Op} from "sequelize";
-import { TProduct, TProductFilters, TProductsList, TAddProduct } from "../../../types/ecommerce";
+import { TProduct, TQueryFilters, TProductsList, TAddProduct } from "../../../types/ecommerce";
 import { Product } from "../../../database/schema";
 
 export class ProductModel {
@@ -28,7 +28,7 @@ export class ProductModel {
         return data;
     }
 
-    public async list(filters: TProductFilters): Promise<TProductsList | any> {
+    public async list(filters: TQueryFilters): Promise<TProductsList | any> {
         const total = await Product.count({
             where: {
                 name: {

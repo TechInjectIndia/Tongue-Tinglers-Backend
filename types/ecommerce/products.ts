@@ -27,11 +27,15 @@ export type TProductsList = {
   data: TProduct;
 };
 
-export type TProductFilters = {
+export type TQueryFilters = {
   offset: number;
   limit: number;
   search?: string;
   sorting?: typeof OrderItem;
   trashOnly?: string;
 };
+
+export interface TProductCategoryQueryFilters extends TQueryFilters {
+    type:string
+}
 // Product type Ends

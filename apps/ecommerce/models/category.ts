@@ -1,9 +1,34 @@
 import { Op } from "sequelize";
 import { CategoryModel } from "../../../database/schema";
-import { TAddProductCategory, TProductCategory, TProductCategoryFilters } from "../../../types/ecommerce";
+import {
+    TAddProductCategory,
+    TProductCategory,
+    TProductCategoryFilters,
+    TProductCategoryQueryFilters
+} from "../../../types/ecommerce";
+import IBaseRepo from "../controllers/controller/IController";
+import { Response, NextFunction } from "express";
 
-export class ProductCategoryRepo {
-    constructor() { }
+export class ProductCategoryRepo
+    implements IBaseRepo<TProductCategory, TProductCategoryQueryFilters> {
+    constructor() {
+    }
+
+    create(req: Request, res: Response<any, Record<string, any>>, next: NextFunction): Promise<Response<TProductCategory>> {
+        throw new Error("Method not implemented.");
+    }
+    list(filters: TProductCategoryQueryFilters): Promise<Response<TProductCategory[]>> {
+        throw new Error("Method not implemented.");
+    }
+    update(req: Request, res: Response<any, Record<string, any>>, next: NextFunction): Promise<Response<TProductCategory>> {
+        throw new Error("Method not implemented.");
+    }
+    get(req: Request, res: Response<any, Record<string, any>>, next: NextFunction): Promise<Response<TProductCategory>> {
+        throw new Error("Method not implemented.");
+    }
+    delete(req: Request, res: Response<any, Record<string, any>>, next: NextFunction): Promise<Response<TProductCategory>> {
+        throw new Error("Method not implemented.");
+    }
 
     // Retrieve a product category by its name
     public async getProductCategoryByName(name: string): Promise<TProductCategory | null> {
@@ -20,40 +45,40 @@ export class ProductCategoryRepo {
     }
 
     // List product categories with filters
-    public async list(filters: TProductCategoryFilters): Promise<TProductCategory[]> {
-        const { search = '', limit = 10, offset = 0, sorting = [['createdAt', 'DESC']] } = filters;
+    // public async list(filters: TProductCategoryQueryFilters): Promise<TProductCategory[]> {
+    //     const { search = '', limit = 10, offset = 0, sorting = [['createdAt', 'DESC']] } = filters;
+    //
+    //     const categories = await CategoryModel.findAll({
+    //         where: {
+    //             name: {
+    //                 [Op.like]: `%${search}%`,
+    //             },
+    //         },
+    //         limit,
+    //         offset,
+    //     });
+    //
+    //     return categories.map(category => category.toJSON() as TProductCategory);
+    // }
 
-        const categories = await CategoryModel.findAll({
-            where: {
-                name: {
-                    [Op.like]: `%${search}%`,
-                },
-            },
-            limit,
-            offset,
-        });
-
-        return categories.map(category => category.toJSON() as TProductCategory);
-    }
-
-    // Create a new product category
-    public async create(data: TAddProductCategory): Promise<TProductCategory> {
-        const category = await CategoryModel.create(data);
-        return category.toJSON() as TProductCategory;
-    }
-
-    // Update a product category by its ID
-    public async update(id: number, data: TAddProductCategory): Promise<[affectedCount: number]> {
-        const res = await CategoryModel.update(data, {
-            where: { id },
-        });
-        return res;
-    }
-
-    // Delete product categories by their IDs
-    public async delete(ids: number[]): Promise<number> {
-        return await CategoryModel.destroy({
-            where: { id: ids },
-        });
-    }
+    // // Create a new product category
+    // public async create(data: TAddProductCategory): Promise<TProductCategory> {
+    //     const category = await CategoryModel.create(data);
+    //     return category.toJSON() as TProductCategory;
+    // }
+    //
+    // // Update a product category by its ID
+    // public async update(id: number, data: TAddProductCategory): Promise<[affectedCount: number]> {
+    //     const res = await CategoryModel.update(data, {
+    //         where: { id },
+    //     });
+    //     return res;
+    // }
+    //
+    // // Delete product categories by their IDs
+    // public async delete(ids: number[]): Promise<number> {
+    //     return await CategoryModel.destroy({
+    //         where: { id: ids },
+    //     });
+    // }
 }

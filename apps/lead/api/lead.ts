@@ -273,7 +273,7 @@ const {
  * 
  * /api/admin/lead/get-status/{id}:
  *   get:
- *     summary: Get a lead by ID
+ *     summary: Get status for lead
  *     tags: [Admin > Lead]
  *     security:
  *       - bearerAuth: []

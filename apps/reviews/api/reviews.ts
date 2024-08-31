@@ -136,8 +136,6 @@ const {
  *              - review_text
  *              - rating
  *              - approved
- *              - item_id
- *              - item_type
  *            properties:
  *              review_text:
  *                type: string
@@ -148,12 +146,6 @@ const {
  *              approved:
  *                type: number
  *                default: 0
- *              item_id:
- *                type: number
- *                default: 12
- *              item_type:
- *                type: text
- *                default: "product"
  *     responses:
  *       '200':
  *         description: Reviews updated successfully
@@ -190,7 +182,8 @@ const {
  *       '404':
  *         description: Reviews not found
  */
-router.post("/create", validateCreateReviewsBody, ReviewsController.add);
+
+router.post("/create", validateCreateReviewsBody, ReviewsController.create);
 router.get("/list", validateListReviewsQuery, ReviewsController.list);
 router.get("/get/:id", validateEditReviewsParams, ReviewsController.get);
 router.put("/update/:id", validateEditReviewsParams, validateEditReviewsBody, ReviewsController.update);

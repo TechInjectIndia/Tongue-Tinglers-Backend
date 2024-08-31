@@ -3,29 +3,31 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { ReviewsModel } from '../models/reviews';
+import { ProductModel } from '../../ecommerce/models/products';
 
 export default class ReviewsController {
-    static async add(req: Request, res: Response, next: NextFunction) {
+    static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const createReviews = req?.body;
             const user_id = get(req, "user_id", "");
             createReviews.user_id = user_id
-            
-            // condition based on product id already exist - pending
-            // let getAttributes: any = '';
-            // const whereName = 'email'
-            // const whereVal = req?.body?.email;
-            // const existingReviews = await new ReviewsModel().getReviewsByAttr(whereName, whereVal, getAttributes);
-            // if (existingReviews) {
-            //     return res
-            //         .status(400)
-            //         .send(
-            //             sendResponse(
-            //                 RESPONSE_TYPE.ERROR,
-            //                 ERROR_MESSAGE.EXISTS
-            //             )
-            //         );
-            // }
+            const item_type = get(req?.body, "item_type", '');
+
+            if (item_type == 'product') {
+                const item_id = get(req?.body, "item_id", "");
+                const Product = await new ProductModel().getProductById(item_id as number);
+
+                if (isEmpty(Product)) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `Product ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
+                }
+            }
 
             const Reviews = await new ReviewsModel().add(createReviews);
             return res
@@ -82,8 +84,7 @@ export default class ReviewsController {
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-
-            let getAttributes: any = '';
+            let getAttributes: any = ['*'];
             const whereName = 'id'
             const whereVal = id;
             const existingReviews = await new ReviewsModel().getReviewsByAttr(whereName, whereVal, getAttributes);
@@ -98,7 +99,7 @@ export default class ReviewsController {
                         )
                     );
             }
-            
+
             const updateReviews = req?.body;
             delete updateReviews.id
             const Reviews = await new ReviewsModel().update(id, updateReviews);

@@ -4,6 +4,7 @@ import {
     TUpdateUserPassword
 } from "../../../types";
 import { User as UserModel } from "../../../database/schema";
+import { USER_TYPE } from '../../../interfaces';
 
 export class Auth {
     constructor() { }
@@ -42,7 +43,7 @@ export class Auth {
         const data = await UserModel.findOne({
             where: {
                 email,
-                user_type: 'Admin'
+                type: USER_TYPE.ADMIN
             },
         });
         return data;

@@ -21,8 +21,6 @@ const { editProfile, getProfile, } = ProfileController;
  *     responses:
  *       '200':
  *         description: Profile retrieved successfully
- *         content:
- *           application/json:
  *       '401':
  *         description: Unauthorized
  *       '404':

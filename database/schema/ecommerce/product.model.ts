@@ -2,24 +2,24 @@ const { DataTypes } = require("sequelize");
 import { sequelize } from "../../../config";
 const { BOOLEAN, INTEGER, STRING, ENUM, TEXT, DECIMAL } = DataTypes;
 const PRODUCT_TYPE = {
-    new: 'New',
-    upcoming: 'Upcoming',
+    new: 'new',
+    upcoming: 'upcoming',
 };
 
 export const Product = sequelize.define('products', {
     name: {
-        type: STRING(50),
+        type: STRING,
         allowNull: false,
     },
     slug: {
-        type: STRING(50),
+        type: STRING,
         allowNull: false,
     },
     description: {
         type: TEXT,
     },
     price: {
-        type: DECIMAL(20, 2),
+        type: INTEGER,
         allowNull: false,
     },
     type: {

@@ -23,10 +23,8 @@ export const Testimonials = sequelize.define("testimonials", {
     },
     item_id: { // Identifier for the item being reviewed (e.g., franchise id)
         type: INTEGER,
-        allowNull: false,
     },
     item_type: { // Type of item being reviewed (e.g., franchise)
         type: STRING,
-        allowNull: false,
     },
 });

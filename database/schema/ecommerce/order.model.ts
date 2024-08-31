@@ -15,7 +15,6 @@ export const Order = sequelize.define('orders', {
     },
     tracking_number: {
         type: STRING,
-        unique: true,
     },
     shipping_address: {
         type: STRING,
@@ -28,7 +27,7 @@ export const Order = sequelize.define('orders', {
     },
     order_status: {
         type: ENUM,
-        values: [ORDER_STATUS.processed, ORDER_STATUS.delivered, ORDER_STATUS.shipped, ORDER_STATUS.shipped, ORDER_STATUS.cancelled]
+        values: [ORDER_STATUS.processed, ORDER_STATUS.delivered, ORDER_STATUS.shipped, ORDER_STATUS.cancelled]
     },
 });
 

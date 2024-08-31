@@ -7,7 +7,6 @@ export const User = sequelize.define(
     {
         email: {
             type: STRING,
-            allowNull: false,
         },
         password: {
             type: STRING,
@@ -50,7 +49,6 @@ export const User = sequelize.define(
         },
         active: {
             type: BOOLEAN,
-            allowNull: false,
         },
         refferal_id: {
             type: STRING,

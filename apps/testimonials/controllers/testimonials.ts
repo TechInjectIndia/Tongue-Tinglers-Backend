@@ -3,14 +3,35 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { TestimonialsModel } from '../models/testimonials';
+import { ProductModel } from '../../ecommerce/models/products';
 
 export default class TestimonialsController {
-    static async add(req: Request, res: Response, next: NextFunction) {
+    static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const createTestimonials = req?.body;
+            const item_type = get(req?.body, "item_type", '');
+
             const user_id = get(req, "user_id", "");
             createTestimonials.user_id = user_id
+            if (item_type == 'product') {
+                const item_id = get(req?.body, "item_id", "");
+                const Product = await new ProductModel().getProductById(item_id as number);
+    
+                if (isEmpty(Product)) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `Product ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
+                }
+            }
+
             const Testimonials = await new TestimonialsModel().add(createTestimonials);
+
+            // check if  franchise or product exist
             return res
                 .status(200)
                 .send(

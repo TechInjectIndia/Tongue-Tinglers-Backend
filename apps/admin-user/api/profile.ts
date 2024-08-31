@@ -69,7 +69,6 @@ const { editProfile, getProfile, } = ProfileController;
  *         description: Unauthorized
  *       '404':
  *         description: Profile not found
- * 
  */
 router.get("/", getProfile);
 router.put("/", validateEditProfileBody, editProfile);

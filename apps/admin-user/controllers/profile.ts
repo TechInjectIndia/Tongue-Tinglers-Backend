@@ -10,7 +10,6 @@ export default class ProfileController {
         try {
             const id = get(req, "user_id", "");
             const getProfileData = await new Admin().get(id as number);
-            console.log(getProfileData);
 
             if (isEmpty(getProfileData)) {
                 return res

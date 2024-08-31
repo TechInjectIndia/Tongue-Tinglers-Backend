@@ -32,7 +32,8 @@ const {
  *              - rating
  *              - date_submitted
  *              - approved
- *              - testimonial_type
+ *              - item_id
+ *              - item_type
  *            properties:
  *              testimonial_text:
  *                type: string
@@ -46,9 +47,12 @@ const {
  *              approved:
  *                type: number
  *                default: 0
- *              testimonial_type:
+ *              item_id:
+ *                type: number
+ *                default: 1
+ *              item_type:
  *                type: text
- *                default: 'product'
+ *                default: product
  *     responses:
  *       '200':
  *         description: Testimonials created successfully
@@ -137,7 +141,6 @@ const {
  *              - rating
  *              - date_submitted
  *              - approved
- *              - testimonial_type
  *            properties:
  *              testimonial_text:
  *                type: string
@@ -151,9 +154,6 @@ const {
  *              approved:
  *                type: number
  *                default: 0
- *              testimonial_type:
- *                type: text
- *                default: 'product'
  *     responses:
  *       '200':
  *         description: Testimonials updated successfully
@@ -190,7 +190,7 @@ const {
  *       '404':
  *         description: Testimonials not found
  */
-router.post("/create", validateCreateTestimonialsBody, TestimonialsController.add);
+router.post("/create", validateCreateTestimonialsBody, TestimonialsController.create);
 router.get("/list", validateListTestimonialsQuery, TestimonialsController.list);
 router.get("/get/:id", validateEditTestimonialsParams, TestimonialsController.get);
 router.put("/update/:id", validateEditTestimonialsParams, validateEditTestimonialsBody, TestimonialsController.update);

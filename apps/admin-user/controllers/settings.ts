@@ -8,7 +8,7 @@ import { Admin } from '../models/settings';
 export default class SettingsController {
     static async getSettings(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req, "user_id", "");
             const existingFranchisee = await new Admin().get(id as number);
 
             if (isEmpty(existingFranchisee)) {

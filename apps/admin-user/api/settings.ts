@@ -1,13 +1,7 @@
 import * as express from "express";
 import SettingsController from "../controllers/settings";
-import * as AdminValidation from "../validations/settings";
 
 const router = express.Router();
-
-const {
-  validateEditSettingsParams,
-  validateEditSettingsBody,
-} = AdminValidation;
 
 const { editSettings, getSettings, } = SettingsController;
 // ====== Settings Start ======
@@ -15,26 +9,13 @@ const { editSettings, getSettings, } = SettingsController;
  * @swagger
  * /api/admin/settings:
  *   get:
- *     summary: Get a Settings by ID
+ *     summary: Get Settings
  *     tags: [Admin > User > Settings]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         default: 1
- *         schema:
- *           type: string
- *         description: ID of the Settings to retrieve
  *     responses:
  *       '200':
  *         description: Settings retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: string
- *               description: ID of the Settings to retrieve
  *       '401':
  *         description: Unauthorized
  *       '404':
@@ -93,8 +74,8 @@ const { editSettings, getSettings, } = SettingsController;
  *         description: Settings not found
  * 
  */
-router.get("/", validateEditSettingsParams, getSettings);
-router.put("/", validateEditSettingsParams, validateEditSettingsBody, editSettings);
+router.get("/", getSettings);
+router.put("/", editSettings);
 // ====== Settings Routes Ends ======
 
 export default router;

@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 import { sequelize } from "../../../config";
-const { STRING, TEXT, INTEGER, BOOLEAN } = DataTypes;
+const { STRING, TEXT, INTEGER, ENUM, BOOLEAN } = DataTypes;
 
 export const Testimonials = sequelize.define("testimonials", {
     user_id: { // Refers to the Users table.
@@ -16,15 +16,14 @@ export const Testimonials = sequelize.define("testimonials", {
     date_submitted: { // The date and time when the testimonial was submitted.
         type: STRING,
     },
-    approved: { // A boolean field to indicate if the testimonial has been approved (useful if testimonials need to be moderated).
+    approved: { // To indicate if the testimonial has been approved (useful if testimonials need to be moderated).
         type: INTEGER,
-        allowNull: false,
-        defaultValue: 0,
     },
     item_id: { // Identifier for the item being reviewed (e.g., franchise id)
         type: INTEGER,
     },
-    item_type: { // Type of item being reviewed (e.g., franchise)
-        type: STRING,
+    item_type: {// Type of item being reviewed (e.g., franchise)
+        type: ENUM,
+        values: ['product', 'franchise']
     },
 });

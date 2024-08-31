@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { TEditUser, TEditUserProfile } from "../../../types";
 import { sendResponse, createPassword } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { Admin } from '../models/user';
 import { Auth } from '../../auth/models';
+import { USER_TYPE } from '../../../interfaces';
 
 export default class AdminController {
     static async getAdmins(req: Request, res: Response, next: NextFunction) {
@@ -42,17 +42,9 @@ export default class AdminController {
 
     static async addAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const email = get(req?.body, "email", "");
-            const password = get(req?.body, "password", "");
-            const full_name = get(req?.body, "full_name", "");
-            const contact_number = get(req?.body, "contact_number", "");
-            const phone_code = get(req?.body, "phone_code", "");
-            const role = get(req?.body, "role", 0);
-            const address = get(req?.body, "address", "");
-            const active = get(req?.body, "active", 1);
-            const user_type = 'Admin';
-            
-            const existingAdmin = await new Auth().getUserByEmail(email);
+            const payload = req?.body;
+
+            const existingAdmin = await new Auth().getUserByEmail(payload.email);
             if (existingAdmin) {
                 return res
                     .status(400)
@@ -64,17 +56,11 @@ export default class AdminController {
                     );
             }
 
-            const hashedPassword = await createPassword(password);
+            const hashedPassword = await createPassword(payload.password);
             await new Admin().addAdmin({
-                email,
+                ...payload,
                 password: hashedPassword,
-                full_name,
-                contact_number,
-                phone_code,
-                role,
-                address,
-                active,
-                user_type
+                user_type: USER_TYPE.ADMIN
             });
 
             return res
@@ -96,27 +82,10 @@ export default class AdminController {
     static async editAdmin(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-            const email = get(req?.body, "email", "");
-            const password = get(req?.body, "password", "");
-            const full_name = get(req?.body, "full_name", "");
-            const contact_number = get(req?.body, "contact_number", "");
-            const phone_code = get(req?.body, "phone_code", "");
-            const role = get(req?.body, "role", 0);
-            const address = get(req?.body, "address", "");
-            const active = get(req?.body, "active", 1);
+            let payload = req?.body;
 
-            let payload: TEditUser = {
-                email,
-                full_name,
-                contact_number,
-                phone_code,
-                role,
-                address,
-                active,
-            };
-
-            if (password) {
-                const hashedPassword = await createPassword(password);
+            if (payload.password) {
+                const hashedPassword = await createPassword(payload.password);
                 payload = { ...payload, password: hashedPassword };
             }
 
@@ -193,17 +162,7 @@ export default class AdminController {
     static async editProfile(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req, "user_id", "");
-            const full_name = get(req?.body, "full_name", "");
-            const contact_number = get(req?.body, "contact_number", "");
-            const phone_code = get(req?.body, "phone_code", "");
-            const address = get(req?.body, "address", "");
-
-            let payload: TEditUserProfile = {
-                full_name,
-                contact_number,
-                phone_code,
-                address,
-            };
+            const payload = req?.body;
 
             await new Admin().editProfile(id, payload);
 

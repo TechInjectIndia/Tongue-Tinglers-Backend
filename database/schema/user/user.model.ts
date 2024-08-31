@@ -1,70 +1,64 @@
 const { DataTypes } = require("sequelize");
 import { sequelize } from "../../../config";
-const { BOOLEAN, STRING, DATE, TEXT, ENUM } = DataTypes;
+import { USER_STATUS, USER_TYPE } from '../../../interfaces';
+const { STRING, ENUM } = DataTypes;
 
 export const User = sequelize.define(
     "users",
     {
-        email: {
+        createdBy: {
             type: STRING,
+            allowNull: true,
         },
         password: {
             type: STRING,
-            allowNull: true,
         },
-        full_name: {
+        firstName: {
             type: STRING,
             allowNull: true,
         },
-        contact_number: {
+        lastName: {
             type: STRING,
             allowNull: true,
         },
-        phone_code: {
+        nameForSearch: {
+            type: STRING,
+            allowNull: true,
+        },
+        email: {
+            type: STRING,
+            allowNull: true,
+        },
+        userName: {
+            type: STRING,
+        },
+        phoneNumber: {
+            type: STRING,
+            allowNull: true,
+        },
+        type: {
+            type: ENUM,
+            values: [...Object.values(USER_TYPE)]
+        },
+        status: {
+            type: ENUM,
+            values: [...Object.values(USER_STATUS)]
+        },
+        cart: {
+            type: STRING,
+            allowNull: true,
+        },
+        updatedBy: {
+            type: STRING,
+            allowNull: true,
+        },
+        deletedBy: {
             type: STRING,
             allowNull: true,
         },
         role: {
             type: STRING,
-        },
-        profile_photo: {
-            type: STRING,
             allowNull: true,
-        },
-        address: {
-            type: STRING,
-            allowNull: true,
-        },
-        last_login_at: {
-            type: DATE,
-            allowNull: true,
-        },
-        last_login_ip: {
-            type: STRING,
-            allowNull: true,
-        },
-        refresh_token: {
-            type: STRING,
-            allowNull: true,
-        },
-        refferal_id: {
-            type: STRING,
-            allowNull: true,
-        },
-        refferal_by: {
-            type: STRING,
-            allowNull: true,
-        },
-        additional_info: {
-            type: TEXT,
-            allowNull: true,
-        },
-        user_type: {
-            type: ENUM,
-            values: ['Admin', 'Franchise', 'Customer',]
-        },
-        active: {
-            type: BOOLEAN,
         },
     }
 );

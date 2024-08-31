@@ -17,14 +17,14 @@ export const validateListAdminQuery = async (
 ) => validateReq(req, res, next, listAdminQuery, "query");
 
 const createAdminBody = Joi.object().keys({
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
     email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
     password: Joi.string().required(),
-    full_name: Joi.string().required(),
-    contact_number: Joi.string().required(),
-    phone_code: Joi.string().required(),
-    role: Joi.number().required(),
-    address: Joi.string().required(),
-    active: Joi.number().required(),
+    userName: Joi.string().required(),
+    phoneNumber: Joi.string().required(),
+    status: Joi.string().required(),
+    role: Joi.string().required(),
 });
 
 export const validateCreateAdminBody = async (
@@ -44,13 +44,14 @@ export const validateEditAdminParams = async (
 ) => validateReq(req, res, next, editAdminParams, "params");
 
 const editAdminBody = Joi.object().keys({
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
     email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
-    full_name: Joi.string().required(),
-    contact_number: Joi.string().required(),
-    phone_code: Joi.string().required(),
-    role: Joi.number().required(),
-    address: Joi.string().required(),
-    active: Joi.number().required(),
+    password: Joi.string().required(),
+    userName: Joi.string().required(),
+    phoneNumber: Joi.string().required(),
+    status: Joi.string().required(),
+    role: Joi.string().required(),
 });
 
 export const validateEditAdminBody = async (

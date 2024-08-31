@@ -7,7 +7,8 @@ import {
     TEditUser,
     TEditUserProfile,
 } from "../../../types";
-import { User as UserModel, Roles, Permissions } from "../../../database/schema";
+import { User as UserModel, Roles } from "../../../database/schema";
+import { USER_TYPE } from '../../../interfaces';
 
 export class Admin {
     constructor() { }
@@ -18,26 +19,12 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: 'Admin',
+                type: USER_TYPE.ADMIN,
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
         });
         const data = await UserModel.findAll({
-            attributes: [
-                "id",
-                "email",
-                "full_name",
-                "contact_number",
-                "phone_code",
-                "role",
-                "profile_photo",
-                "address",
-                "last_login_at",
-                "last_login_ip",
-                "createdAt",
-                "active",
-            ],
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -45,7 +32,7 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: 'Admin',
+                type: USER_TYPE.ADMIN,
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
@@ -59,24 +46,10 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: 'Admin',
+                type: USER_TYPE.ADMIN,
             },
         });
         const data = await UserModel.findAll({
-            attributes: [
-                "id",
-                "email",
-                "full_name",
-                "contact_number",
-                "phone_code",
-                "role",
-                "profile_photo",
-                "address",
-                "last_login_at",
-                "last_login_ip",
-                "createdAt",
-                "active",
-            ],
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -84,14 +57,14 @@ export class Admin {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_type: 'Admin'
+                type: USER_TYPE.ADMIN
             },
         });
         return { total, data };
     }
 
     public async addAdmin(data: TAddUser): Promise<TUser | any> {
-        return await UserModel.create({...data, user_type: 'Admin'});
+        return await UserModel.create({ ...data, type: USER_TYPE.ADMIN });
     }
 
     public async editAdmin(
@@ -101,30 +74,16 @@ export class Admin {
         return await UserModel.update(data, {
             where: {
                 id,
-                user_type: 'Admin'
+                type: USER_TYPE.ADMIN
             },
         });
     }
 
     public async getAdminById(id: number): Promise<TUser | any> {
         const data = await UserModel.findOne({
-            attributes: [
-                "id",
-                "email",
-                "full_name",
-                "contact_number",
-                "phone_code",
-                "role",
-                "profile_photo",
-                "address",
-                "last_login_at",
-                "last_login_ip",
-                "createdAt",
-                "active",
-            ],
             where: {
                 id,
-                user_type: 'Admin'
+                type: USER_TYPE.ADMIN
             },
         });
         const role = await Roles.findOne({
@@ -132,7 +91,7 @@ export class Admin {
                 id: data?.dataValues?.role
             }
         })
-        return {...data?.dataValues, permissions: role?.dataValues?.role_permissions ?? ''};
+        return { ...data?.dataValues, permissions: role?.dataValues?.role_permissions ?? '' };
     }
 
     public async deleteAdmin(ids: number[]): Promise<TRole | any> {

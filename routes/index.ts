@@ -6,6 +6,10 @@ const FRANCHISE = '/franchise';
 const CUSTOMER = '/customer';
 const FRONTEND = '/';
 
+import addressRouter from "../apps/address/api";
+router.use('/user/address', addressRouter);
+
+
 // ====== Auth ======
 import { auth } from '../middlewares/auth';
 import authRouter from "../apps/auth/api";

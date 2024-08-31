@@ -37,6 +37,9 @@ const options = {
                 name: 'AUTH' // auth starts
             },
             {
+                name: 'Users > address'
+            },
+            {
                 name: 'Admin > Users' // admin starts
             },
             {
@@ -123,6 +126,7 @@ const options = {
     apis: [
         './routes/*.ts',
         './apps/auth/api/*.ts',
+        './apps/address/api/*.ts',
         './apps/admin-user/api/*.ts',
         './apps/franchise-user/api/*.ts',
         './apps/customer-user/api/*.ts',

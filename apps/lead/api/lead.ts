@@ -305,7 +305,7 @@ router.put("/update/:id", validateEditLeadParams, validateEditLeadBody, LeadCont
 router.delete("/delete", validateEditMultipleIdsBody, LeadController.delete);
 
 router.put("/assign-lead", validateAssignLeadBody, LeadController.assignLeadToAdminUser);
-router.get("/get-status/:id", validateEditLeadParams, LeadController.getLeadStatus);
+router.get("/get-status/:id", validateLeadStatusBody, LeadController.getLeadStatus);
 // ====== Lead Ends ======
 
 export default router;

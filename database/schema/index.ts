@@ -1,5 +1,6 @@
 // Admin model starts
 export * from "./user/user.model";
+export * from "./user/address";
 export * from "./admin-roles";
 export * from "./admin-permissions";
 // Admin model ends

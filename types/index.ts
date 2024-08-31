@@ -8,3 +8,4 @@ export * from './payments';
 export * from './reviews';
 export * from './testimonials';
 export * from './common';
+export * from './address';

@@ -24,7 +24,7 @@ const createAdminBody = Joi.object().keys({
     userName: Joi.string().required(),
     phoneNumber: Joi.string().required(),
     status: Joi.string().required(),
-    role: Joi.string().required(),
+    role: Joi.number().required(),
 });
 
 export const validateCreateAdminBody = async (
@@ -51,7 +51,7 @@ const editAdminBody = Joi.object().keys({
     userName: Joi.string().required(),
     phoneNumber: Joi.string().required(),
     status: Joi.string().required(),
-    role: Joi.string().required(),
+    role: Joi.number().required(),
 });
 
 export const validateEditAdminBody = async (

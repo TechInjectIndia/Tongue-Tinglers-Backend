@@ -46,6 +46,6 @@ export interface UserDetails {
     updatedAt: Date | null;
     deletedBy: string | null;
     deletedAt: Date | null;
-    role: null;
+    role: number | null;
     address: Array<Address>
 }

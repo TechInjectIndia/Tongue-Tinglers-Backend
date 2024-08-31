@@ -72,7 +72,6 @@ export default class AdminController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -90,7 +89,6 @@ export default class AdminController {
             }
 
             await new Admin().editAdmin(id, payload);
-
             return res
                 .status(200)
                 .send(
@@ -100,6 +98,7 @@ export default class AdminController {
                     )
                 );
         } catch (err) {
+            console.log(err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -153,6 +152,7 @@ export default class AdminController {
                     )
                 );
         } catch (err) {
+            console.log(err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -165,16 +165,17 @@ export default class AdminController {
             const payload = req?.body;
 
             await new Admin().editProfile(id, payload);
-
+            
             return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.ADMIN_UPDATED
-                    )
-                );
+            .status(200)
+            .send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.ADMIN_UPDATED
+                )
+            );
         } catch (err) {
+            console.log(err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

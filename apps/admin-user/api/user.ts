@@ -32,28 +32,31 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *            required:
  *              - email
  *              - password
- *              - full_name
- *              - contact_number
- *              - phone_code
+ *              - firstName
+ *              - lastName
+ *              - userName
+ *              - phoneNumber
+ *              - status
  *              - role
- *              - address
- *              - active
  *            properties:
  *              email:
  *                type: string
+ *                default: admin@gmail.com
  *              password:
  *                type: string
- *              full_name:
+ *                default: admin
+ *              firstName:
  *                type: string
- *              contact_number:
+ *              lastName:
  *                type: string
- *              phone_code:
+ *              userName:
  *                type: string
+ *              phoneNumber:
+ *                type: string
+ *              status:
+ *                type: string
+ *                default: active
  *              role:
- *                type: number
- *              address:
- *                type: string
- *              active:
  *                type: number
  *                default: 0 
  *     responses:
@@ -141,26 +144,30 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *            type: object
  *            required:
  *              - email
- *              - full_name
- *              - contact_number
- *              - phone_code
+ *              - password
+ *              - firstName
+ *              - lastName
+ *              - userName
+ *              - phoneNumber
+ *              - status
  *              - role
- *              - address
- *              - active
  *            properties:
  *              email:
  *                type: string
- *              full_name:
+ *              password:
  *                type: string
- *              contact_number:
+ *              firstName:
  *                type: string
- *              phone_code:
+ *              lastName:
  *                type: string
+ *              userName:
+ *                type: string
+ *              phoneNumber:
+ *                type: string
+ *              status:
+ *                type: string
+ *                default: active
  *              role:
- *                type: number
- *              address:
- *                type: string
- *              active:
  *                type: number
  *                default: 0 
  *     responses:

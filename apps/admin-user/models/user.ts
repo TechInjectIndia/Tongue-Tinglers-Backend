@@ -74,7 +74,6 @@ export class Admin {
         return await UserModel.update(data, {
             where: {
                 id,
-                type: USER_TYPE.ADMIN
             },
         });
     }
@@ -83,7 +82,6 @@ export class Admin {
         const data = await UserModel.findOne({
             where: {
                 id,
-                type: USER_TYPE.ADMIN
             },
         });
         const role = await Roles.findOne({

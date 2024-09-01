@@ -3,7 +3,7 @@ import {
     TUpdateUserToken,
     TUpdateUserPassword
 } from "../../../types";
-import { User as UserModel } from "../../../database/schema";
+import { UserModel } from "../../../database/schema";
 import { USER_TYPE } from '../../../interfaces';
 
 export class Auth {

@@ -3,7 +3,7 @@ import {
     TSettings,
     TEditSettings
 } from "../../../types";
-import { User as UserModel } from "../../../database/schema";
+import { UserModel } from "../../../database/schema";
 
 export class Admin {
     constructor() { }
@@ -35,7 +35,7 @@ export class Admin {
             ],
             where: {
                 id,
-                user_type: 'Admin'
+                type: 'admin'
             },
         });
         return data;

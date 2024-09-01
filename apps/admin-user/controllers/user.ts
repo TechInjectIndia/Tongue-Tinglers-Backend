@@ -60,7 +60,7 @@ export default class AdminController {
             await new Admin().addAdmin({
                 ...payload,
                 password: hashedPassword,
-                user_type: USER_TYPE.ADMIN
+                 USER_TYPE.ADMIN
             });
 
             return res

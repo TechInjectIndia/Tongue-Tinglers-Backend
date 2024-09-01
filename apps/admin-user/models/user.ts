@@ -6,41 +6,16 @@ import {
     TAddUser,
     TEditUser,
     TEditUserProfile,
+    TUsersList
 } from "../../../types";
-import { User as UserModel, Roles } from "../../../database/schema";
+import { UserModel, Roles } from "../../../database/schema";
 import { USER_TYPE } from '../../../interfaces';
+import IBaseRepo from '../controllers/controller/IController';
 
-export class Admin {
+export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     constructor() { }
 
-    public async getDeletedAdmins(filters: TListFilters): Promise<any | null> {
-        const total = await UserModel.count({
-            where: {
-                email: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-                type: USER_TYPE.ADMIN,
-                deletedAt: { [Op.not]: null },
-            },
-            paranoid: false,
-        });
-        const data = await UserModel.findAll({
-            order: [filters?.sorting],
-            offset: filters.offset,
-            limit: filters.limit,
-            where: {
-                email: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-                type: USER_TYPE.ADMIN,
-                deletedAt: { [Op.not]: null },
-            },
-            paranoid: false,
-        });
-        return { total, data };
-    }
-
-    public async getAdmins(filters: TListFilters): Promise<any | null> {
+    public async list(filters: TListFilters): Promise<TUsersList> {
         const total = await UserModel.count({
             where: {
                 email: {
@@ -63,22 +38,7 @@ export class Admin {
         return { total, data };
     }
 
-    public async addAdmin(data: TAddUser): Promise<TUser | any> {
-        return await UserModel.create({ ...data, type: USER_TYPE.ADMIN });
-    }
-
-    public async editAdmin(
-        id: number,
-        data: TEditUser
-    ): Promise<TUser | any> {
-        return await UserModel.update(data, {
-            where: {
-                id,
-            },
-        });
-    }
-
-    public async getAdminById(id: number): Promise<TUser | any> {
+    public async get(id: number): Promise<TUser> {
         const data = await UserModel.findOne({
             where: {
                 id,
@@ -92,7 +52,22 @@ export class Admin {
         return { ...data?.dataValues, permissions: role?.dataValues?.role_permissions ?? '' };
     }
 
-    public async deleteAdmin(ids: number[]): Promise<TRole | any> {
+    public async create(data: TAddUser): Promise<TUser> {
+        return await UserModel.create({ ...data, type: USER_TYPE.ADMIN });
+    }
+
+    public async update(
+        id: number,
+        data: TEditUser
+    ): Promise<[affectedCount: number]> {
+        return await UserModel.update(data, {
+            where: {
+                id,
+            },
+        });
+    }
+
+    public async delete(ids: number[]): Promise<number> {
         const response = await UserModel.destroy({
             where: {
                 id: ids,
@@ -101,18 +76,34 @@ export class Admin {
         return response;
     }
 
-    public async editProfile(
-        id: number,
-        data: TEditUserProfile
-    ): Promise<TUser | any> {
-        return await UserModel.update(data, {
+    public async deletedList(filters: TListFilters): Promise<TUsersList> {
+        const total = await UserModel.count({
             where: {
-                id,
+                email: {
+                    [Op.like]: `%${filters.search}%`,
+                },
+                type: USER_TYPE.ADMIN,
+                deletedAt: { [Op.not]: null },
             },
+            paranoid: false,
         });
+        const data = await UserModel.findAll({
+            order: [filters?.sorting],
+            offset: filters.offset,
+            limit: filters.limit,
+            where: {
+                email: {
+                    [Op.like]: `%${filters.search}%`,
+                },
+                type: USER_TYPE.ADMIN,
+                deletedAt: { [Op.not]: null },
+            },
+            paranoid: false,
+        });
+        return { total, data };
     }
 
-    public async restoreAdmin(ids: number[]): Promise<TRole | any> {
+    public async restore(ids: number[]): Promise<void> {
         const response = await UserModel.restore({
             where: {
                 id: ids,
@@ -121,7 +112,7 @@ export class Admin {
         return response;
     }
 
-    public async deleteAdminPermanant(ids: number[]): Promise<TRole | any> {
+    public async deletePermanant(ids: number[]): Promise<number> {
         const response = await UserModel.destroy({
             where: {
                 id: ids,
@@ -129,5 +120,16 @@ export class Admin {
             force: true,
         });
         return response;
+    }
+
+    public async updateProfile(
+        id: number,
+        data: TEditUserProfile
+    ): Promise<[affectedCount: number]> {
+        return await UserModel.update(data, {
+            where: {
+                id,
+            },
+        });
     }
 }

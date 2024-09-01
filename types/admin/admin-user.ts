@@ -2,20 +2,23 @@ const { OrderItem } = require("sequelize");
 
 export type TUser = {
   id: number;
+  createdBy: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
   email: string;
-  password?: string;
-  full_name: string;
-  contact_number: string;
-  phone_code: string;
+  userName: string;
+  phoneNumber: string;
+  type: string;
+  status: string;
+  cart: string;
+  updatedBy: string;
+  deletedBy: string;
   role: number;
-  profile_photo: string;
-  address: string;
-  last_login_at: Date;
-  last_login_ip: string;
-  refresh_token?: string;
-  active: number;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date;
 };
 
 export type TAddUser = {
@@ -73,4 +76,12 @@ export type TUpdateUserProfile = {
 export type TUpdateUserPassword = {
   user_id: string;
   password: string;
+};
+
+export type TQueryFilters = {
+  offset: number;
+  limit: number;
+  search?: string;
+  sorting?: typeof OrderItem;
+  trashOnly?: string;
 };

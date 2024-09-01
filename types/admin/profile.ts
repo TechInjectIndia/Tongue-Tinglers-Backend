@@ -1,5 +1,3 @@
-const { OrderItem } = require("sequelize");
-
 // Profile type Starts
 export type TProfile = {
   id: number;

@@ -3,7 +3,7 @@ import {
     TProfile,
     TEditProfile
 } from "../../../types/";
-import { User as UserModel } from "../../../database/schema";
+import { UserModel } from "../../../database/schema";
 
 export class Admin {
     constructor() { }
@@ -15,7 +15,7 @@ export class Admin {
         return await UserModel.update(data, {
             where: {
                 id,
-                user_type: 'Admin'
+                type: 'admin'
             },
         });
     }
@@ -37,7 +37,7 @@ export class Admin {
             ],
             where: {
                 id,
-                user_type: 'Admin'
+                type: 'admin'
             },
         });
         return data;

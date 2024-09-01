@@ -5,7 +5,7 @@ import {
     TPermissionFilters,
     TPermissionsList,
 } from "../../../types";
-import { User as UserModel, Permissions } from "../../../database/schema";
+import { UserModel, Permissions } from "../../../database/schema";
 
 export class Admin {
     constructor() { }
@@ -97,7 +97,7 @@ export class Admin {
         const data = await UserModel.findAll({
             where: {
                 role: ids,
-                user_type: 'Admin'
+                type: 'admin'
             },
         });
         return data ?? null;

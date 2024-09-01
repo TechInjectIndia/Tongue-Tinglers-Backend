@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { USER_STATUS, USER_TYPE } from '../../../interfaces';
 import { TUser } from "../../../types";
-const { STRING, ENUM } = DataTypes;
+const { INTEGER, STRING, ENUM } = DataTypes;
 
 interface UserCreationAttributes extends Optional<TUser, 'id' | 'createdAt' | 'updatedAt'> { }
 
@@ -29,7 +29,7 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
 
 UserModel.init({
     id: {
-        type: DataTypes.INTEGER,
+        type: INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
@@ -77,7 +77,7 @@ UserModel.init({
         type: STRING
     },
     role: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true,
     },
     createdAt: {

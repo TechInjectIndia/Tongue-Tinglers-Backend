@@ -29,25 +29,25 @@ export interface TUserWithPermission extends TUser {
 }
 
 export type TAddUser = {
-  email: string;
   password: string;
-  full_name: string;
-  contact_number: string;
-  phone_code: string;
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
+  email: string;
+  userName: string;
+  phoneNumber: string;
   role: number;
-  address: string;
-  user_type: string;
   active: number;
 };
 
 export type TEditUser = {
-  email?: string;
-  password?: string;
-  full_name?: string;
-  contact_number?: string;
-  phone_code?: string;
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
+  email: string;
+  userName: string;
+  phoneNumber: string;
   role: number;
-  address?: string;
   active: number;
 };
 
@@ -58,12 +58,12 @@ export type TUsersList = {
 };
 
 export type TEditUserProfile = {
-  full_name: string;
-  contact_number: string;
-  phone_code: string;
-  address: string;
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
+  userName: string;
+  phoneNumber: string;
 };
-// User User type Ends
 
 export type TUpdateUserToken = {
   user_id: number;
@@ -74,10 +74,11 @@ export type TUpdateUserToken = {
 
 export type TUpdateUserProfile = {
   user_id: string;
-  full_name: string;
-  contact_number: string;
-  phone_code: number;
-  address: string;
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
+  userName: string;
+  phoneNumber: string;
 };
 
 export type TUpdateUserPassword = {

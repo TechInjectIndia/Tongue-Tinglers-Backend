@@ -12,15 +12,24 @@ export const sendResponse = (type: string, message: string, data?: any) => {
 export const createUserResponse = (user: TUser) => {
     let userDetails = {
         id: user.id,
+        createdBy: user.createdBy,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        nameForSearch: user.nameForSearch,
         email: user.email,
-        full_name: user.full_name,
-        contact_number: user.contact_number,
-        phone_code: user.phone_code,
+        userName: user.userName,
+        phoneNumber: user.phoneNumber,
+        type: user.type,
+        status: user.status,
+        cart: user.cart,
+        access_token: user.access_token,
+        refresh_token: user.refresh_token,
+        updatedBy: user.updatedBy,
+        deletedBy: user.deletedBy,
         role: user.role,
-        profile_photo: user.profile_photo,
-        address: user.address,
         lastLoginAt: user.lastLoginAt,
-        created_at: user.createdAt,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
     };
     return userDetails;
 };

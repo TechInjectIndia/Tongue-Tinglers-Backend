@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 import {
     TProfile,
-    TEditProfile
+    TEditUserProfile
 } from "../../../types/";
 import { UserModel } from "../../../database/schema";
 
@@ -10,12 +10,11 @@ export class Admin {
 
     public async editProfile(
         id: number,
-        data: TEditProfile
-    ): Promise<TProfile | any> {
+        data: TEditUserProfile
+    ): Promise<[affectedCount: number]> {
         return await UserModel.update(data, {
             where: {
                 id,
-                type: 'admin'
             },
         });
     }
@@ -30,7 +29,6 @@ export class Admin {
                 "contact_number",
                 "phone_code",
                 "address",
-                "lastLoginAt",
                 "lastLoginIp",
                 "createdAt",
                 "active",

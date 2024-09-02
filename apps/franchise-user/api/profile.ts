@@ -8,7 +8,7 @@ const {
   validateEditProfileBody,
 } = FranchiseValidation;
 
-const { editProfile, getProfile, } = ProfileController;
+// const { editProfile, getProfile, } = ProfileController;
 // ====== Profile Start ======
 /**
  * @swagger
@@ -73,8 +73,8 @@ const { editProfile, getProfile, } = ProfileController;
  *         description: Profile not found
  * 
  */
-router.get("/", getProfile);
-router.put("/", validateEditProfileBody, editProfile);
+// router.get("/", getProfile);
+// router.put("/", validateEditProfileBody, editProfile);
 // ====== Profile Routes Ends ======
 
 export default router;

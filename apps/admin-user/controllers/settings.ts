@@ -3,13 +3,13 @@ import { get, isEmpty } from "lodash";
 import { TEditSettings } from "../../../types";
 import { sendResponse, createPassword } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { Admin } from '../models/settings';
+import { SettingsRepo } from '../models/settings';
 
 export default class SettingsController {
     static async getSettings(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req, "user_id", "");
-            const existingFranchisee = await new Admin().get(id as number);
+            const existingFranchisee = await new SettingsRepo().get(id as number);
 
             if (isEmpty(existingFranchisee)) {
                 return res
@@ -41,29 +41,20 @@ export default class SettingsController {
     static async editSettings(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req, "user_id", "");
-            const full_name = get(req?.body, "full_name", "");
-            const contact_number = get(req?.body, "contact_number", "");
-            const phone_code = get(req?.body, "phone_code", "");
-            const address = get(req?.body, "address", "");
+            const payload = req?.body;
 
-            let payload: TEditSettings = {
-                full_name,
-                contact_number,
-                phone_code,
-                address,
-            };
-
-            await new Admin().editSettings(id, payload);
+            await new SettingsRepo().editSettings(id, payload);
 
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED
+                        SUCCESS_MESSAGE.ADMIN_UPDATED
                     )
                 );
         } catch (err) {
+            console.log(err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

@@ -40,11 +40,14 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     }
 
     public async get(id: number): Promise<TUserWithPermission> {
+        console.log('datadatadata', id)
+
         const data = await UserModel.findOne({
             where: {
                 id,
             },
         });
+        console.log('datadatadata', data)
         const role = await Roles.findOne({
             where: {
                 id: data?.dataValues?.role
@@ -135,7 +138,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     public async updateProfile(
         id: number,
         data: TEditUserProfile
-    ): Promise<[affectedCount: number, affectedRows: UserModel[]]> {
+    ): Promise<[affectedCount: number]> {
         return await UserModel.update(data, {
             where: {
                 id,

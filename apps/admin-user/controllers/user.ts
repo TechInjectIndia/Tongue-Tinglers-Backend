@@ -133,7 +133,6 @@ export default class AdminController {
         try {
             const id = get(req?.params, "id", "");
             const existingAdmin = await new AdminRepo().get(id as number);
-
             if (isEmpty(existingAdmin)) {
                 return res
                     .status(400)

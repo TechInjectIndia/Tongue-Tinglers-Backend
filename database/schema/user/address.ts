@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 import { sequelize } from "../../../config";
 const { STRING } = DataTypes;
+import { UserModel } from './user.model'
 
 export const Address = sequelize.define('Address', {
   street: {
@@ -25,4 +26,11 @@ export const Address = sequelize.define('Address', {
   }
 }, {
   timestamps: true
+});
+
+UserModel.hasMany(Address, {
+  foreignKey: "user_id",
+});
+Address.belongsTo(UserModel, {
+  foreignKey: "user_id",
 });

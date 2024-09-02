@@ -54,7 +54,6 @@ export class Auth {
             {
                 refresh_token: data.refresh_token,
                 lastLoginAt: data.lastLoginAt,
-                lastLoginIp: data.lastLoginIp,
             },
             {
                 where: {

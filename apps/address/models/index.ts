@@ -1,18 +1,29 @@
 const { Op } = require("sequelize");
 import {
     TAddress,
-    TAddressFilters,
     TAddresssList,
     TAddAddress,
+    TListFilters,
+    TEditAddress
 } from "../../../types/";
-import { Address } from "../../../database/schema";
+import { AddressModel } from "../../../database/schema";
+import IBaseRepo from '../controllers/controller/IController';
 
-export class AddressModel {
+export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
     constructor() { }
 
-    public async getAddressByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TAddress | any> {
+    public async get(id: number): Promise<TAddress> {
+        const data = await AddressModel.findOne({
+            where: {
+                id,
+            },
+        });
+        return data;
+    }
+
+    public async getAddressByAttr(whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TAddress> {
         const whereAttributes = { [whereName]: whereVal }
-        const data = await Address.findOne({
+        const data = await AddressModel.findOne({
             raw: true,
             attributes: getAttributes,
             where: whereAttributes
@@ -20,15 +31,15 @@ export class AddressModel {
         return data;
     }
 
-    public async list(filters: TAddressFilters): Promise<TAddresssList | any> {
-        const total = await Address.count({
+    public async list(filters: TListFilters): Promise<TAddresssList> {
+        const total = await AddressModel.count({
             where: {
                 street: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Address.findAll({
+        const data = await AddressModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -41,22 +52,21 @@ export class AddressModel {
         return { total, data };
     }
 
-    public async add(data: TAddAddress): Promise<TAddress | any> {
-        const response = await Address.create(data);
+    public async create(data: TAddAddress): Promise<TAddress> {
+        const response = await AddressModel.create(data);
         return response;
     }
 
-    public async update(id: number, data: TAddAddress): Promise<TAddress | any> {
-        const response = await Address.update(data, {
+    public async update(id: number, data: TEditAddress): Promise<[affectedCount: number]> {
+        return await AddressModel.update(data, {
             where: {
                 id,
             },
         });
-        return response;
     }
 
-    public async delete(ids: number[]): Promise<TAddress | any> {
-        const response = await Address.destroy({
+    public async delete(ids: number[]): Promise<number> {
+        const response = await AddressModel.destroy({
             where: {
                 id: ids,
             },

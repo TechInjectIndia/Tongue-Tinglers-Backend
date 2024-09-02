@@ -6,8 +6,6 @@ const FRANCHISE = '/franchise';
 const CUSTOMER = '/customer';
 const FRONTEND = '/';
 
-import addressRouter from "../apps/address/api";
-router.use('/user/address', addressRouter);
 
 
 // ====== Auth ======
@@ -16,12 +14,16 @@ import authRouter from "../apps/auth/api";
 router.use(`/auth`, authRouter);
 // ====== Auth ======
 
+import addressRouter from "../apps/address/api";
+router.use('/user/address', auth, addressRouter);
+
 // ====== Admin ======
 // ====== Admin imports ======
 import franchiseRouter from "../apps/admin-user/api/franchise";
 import rolesRouter from "../apps/admin-user/api/roles";
 import permissionsRouter from "../apps/admin-user/api/permissions";
 import adminUsersRouter from "../apps/admin-user/api/user";
+import testUsersRouter from "../apps/test-user/api/user"; // for testing only
 import productRouter from "../apps/ecommerce/api/products";
 import productCategoryRouter from "../apps/ecommerce/api/category";
 import orderRouter from "../apps/ecommerce/api/orders";
@@ -39,7 +41,8 @@ import retortAnalyticsRouter from "../apps/analytics/api/admin/retort-analytics"
 import menuRouter from "../apps/menu/api/menu";
 
 // ====== Admin routes ======
-router.use(`${ADMIN}/users`, adminUsersRouter);
+router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
+router.use(`${ADMIN}/users`, auth, adminUsersRouter);
 router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
 router.use(`${ADMIN}/roles`, auth, rolesRouter);
 router.use(`${ADMIN}/franchise`, auth, franchiseRouter);

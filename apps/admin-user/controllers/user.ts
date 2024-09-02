@@ -85,10 +85,10 @@ export default class AdminController {
             const user_id = get(req, 'user_id', 0);
             let payload = {...req?.body, updatedBy: user_id};
 
-            if (payload.password) {
-                const hashedPassword = await createPassword(payload.password);
-                payload = { ...payload, password: hashedPassword };
-            }
+            // if (payload.password) {
+            //     const hashedPassword = await createPassword(payload.password);
+            //     payload = { ...payload, password: hashedPassword };
+            // }
 
             await new AdminRepo().update(id, payload);
             return res

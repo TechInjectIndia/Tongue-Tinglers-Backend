@@ -6,7 +6,7 @@ interface IController<T, F extends TQueryFilters> {
     get(id: number): Promise<Response<T>>;
     create(payload: TAddUser): Promise<Response<T>>;
     update(id: number, payload: TEditUser): Promise<Response<T>>;
-    delete(ids: number[]): Promise<Response<T>>;
+    delete(ids: number[], deletedBy: number): Promise<Response<T>>;
     deletedList(filters: F): Promise<Response<T[]>>;
     restore(ids: number[]): Promise<Response<T>>;
     deletePermanant(ids: number[]): Promise<Response<T>>;

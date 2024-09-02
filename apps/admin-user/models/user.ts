@@ -6,10 +6,11 @@ import {
     TAddUser,
     TEditUser,
     TEditUserProfile,
-    TUsersList
+    TUsersList,
+    TUserWithPermission
 } from "../../../types";
 import { UserModel, Roles } from "../../../database/schema";
-import { USER_TYPE } from '../../../interfaces';
+import { USER_TYPE, USER_STATUS } from '../../../interfaces';
 import IBaseRepo from '../controllers/controller/IController';
 
 export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
@@ -38,7 +39,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         return { total, data };
     }
 
-    public async get(id: number): Promise<TUser> {
+    public async get(id: number): Promise<TUserWithPermission> {
         const data = await UserModel.findOne({
             where: {
                 id,
@@ -67,8 +68,17 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         });
     }
 
-    public async delete(ids: number[]): Promise<number> {
+    public async delete(ids: number[], deletedBy: number): Promise<number> {
         const response = await UserModel.destroy({
+            where: {
+                id: ids,
+            },
+        });
+
+        await UserModel.update({
+            status: USER_STATUS.DELETED,
+            deletedBy: deletedBy?.toString()
+        }, {
             where: {
                 id: ids,
             },
@@ -125,7 +135,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     public async updateProfile(
         id: number,
         data: TEditUserProfile
-    ): Promise<[affectedCount: number]> {
+    ): Promise<[affectedCount: number, affectedRows: UserModel[]]> {
         return await UserModel.update(data, {
             where: {
                 id,

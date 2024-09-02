@@ -19,6 +19,9 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
     public type!: string;
     public status!: string;
     public cart: string;
+    public refresh_token: string;
+    public access_token: string;
+    public lastLoginAt: Date;
     public updatedBy!: string;
     public deletedBy!: string;
     public role: number | null;
@@ -70,6 +73,14 @@ UserModel.init({
         type: STRING,
         allowNull: true,
     },
+    access_token: {
+        type: STRING,
+        allowNull: true,
+    },
+    refresh_token: {
+        type: STRING,
+        allowNull: true,
+    },
     updatedBy: {
         type: STRING
     },
@@ -85,6 +96,12 @@ UserModel.init({
         allowNull: false,
         defaultValue: DataTypes.NOW,
         field: "created_at",
+    },
+    lastLoginAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+        field: "lastLoginAt",
     },
     updatedAt: {
         type: DataTypes.DATE,
@@ -102,6 +119,7 @@ UserModel.init({
     sequelize,
     tableName: 'users',
     timestamps: true,
+    paranoid: true
 });
 
 export { UserModel };

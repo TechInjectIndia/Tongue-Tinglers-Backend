@@ -13,13 +13,20 @@ export type TUser = {
   type: string;
   status: string;
   cart: string;
+  access_token: string;
+  refresh_token: string;
   updatedBy: string;
   deletedBy: string;
   role: number;
+  lastLoginAt: Date;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
 };
+
+export interface TUserWithPermission extends TUser {
+  permissions: any
+}
 
 export type TAddUser = {
   email: string;
@@ -47,7 +54,7 @@ export type TEditUser = {
 
 export type TUsersList = {
   total: number;
-  data: TUser;
+  data: TUser[];
 };
 
 export type TEditUserProfile = {
@@ -61,8 +68,8 @@ export type TEditUserProfile = {
 export type TUpdateUserToken = {
   user_id: number;
   refresh_token: string;
-  last_login_at: Date;
-  last_login_ip: string;
+  lastLoginAt: Date;
+  lastLoginIp: string;
 };
 
 export type TUpdateUserProfile = {

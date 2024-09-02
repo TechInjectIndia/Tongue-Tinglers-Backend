@@ -53,8 +53,8 @@ export class Auth {
         await UserModel.update(
             {
                 refresh_token: data.refresh_token,
-                last_login_at: data.last_login_at,
-                last_login_ip: data.last_login_ip,
+                lastLoginAt: data.lastLoginAt,
+                lastLoginIp: data.lastLoginIp,
             },
             {
                 where: {

@@ -54,8 +54,8 @@ export default class AuthController {
             await new Auth().updateRefreshToken({
                 user_id: user.id,
                 refresh_token: refreshToken,
-                last_login_at: new Date(),
-                last_login_ip: ip,
+                lastLoginAt: new Date(),
+                lastLoginIp: ip,
             });
 
             return res.status(200).send(

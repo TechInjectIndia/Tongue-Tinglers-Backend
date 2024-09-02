@@ -10,8 +10,8 @@ export type TAddress = {
   role: number;
   profile_photo: string;
   address: string;
-  last_login_at: Date;
-  last_login_ip: string;
+  lastLoginAt: Date;
+  lastLoginIp: string;
   refresh_token?: string;
   active: number;
   createdAt: Date;

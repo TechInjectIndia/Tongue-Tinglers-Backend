@@ -42,7 +42,8 @@ export default class AdminController {
 
     static async addAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const payload = req?.body;
+            const user_id = get(req, 'user_id', 0);
+            const payload = {...req?.body, createdBy: user_id};
 
             const existingAdmin = await new Auth().getUserByEmail(payload.email);
             if (existingAdmin) {
@@ -81,7 +82,8 @@ export default class AdminController {
     static async editAdmin(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-            let payload = req?.body;
+            const user_id = get(req, 'user_id', 0);
+            let payload = {...req?.body, updatedBy: user_id};
 
             if (payload.password) {
                 const hashedPassword = await createPassword(payload.password);
@@ -107,9 +109,10 @@ export default class AdminController {
 
     static async deleteAdmin(req: Request, res: Response, next: NextFunction) {
         try {
+            const user_id = get(req, 'user_id', 0);
             const ids = get(req?.body, "ids", "");
 
-            await new AdminRepo().delete(ids);
+            await new AdminRepo().delete(ids, user_id);
 
             return res
                 .status(200)

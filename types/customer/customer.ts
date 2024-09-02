@@ -8,8 +8,8 @@ export type TCustomerLogin = {
 export type TUpdateCustomerToken = {
   user_id: number;
   refresh_token: string;
-  last_login_at: Date;
-  last_login_ip: string;
+  lastLoginAt: Date;
+  lastLoginIp: string;
 };
 
 export type TUpdateCustomerPassword = {

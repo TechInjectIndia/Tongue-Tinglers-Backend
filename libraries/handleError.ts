@@ -19,7 +19,7 @@ export const createUserResponse = (user: TUser) => {
         role: user.role,
         profile_photo: user.profile_photo,
         address: user.address,
-        last_login_at: user.last_login_at,
+        lastLoginAt: user.lastLoginAt,
         created_at: user.createdAt,
     };
     return userDetails;

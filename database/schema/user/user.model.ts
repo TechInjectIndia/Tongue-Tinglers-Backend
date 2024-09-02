@@ -111,8 +111,8 @@ UserModel.init({
     },
     deletedAt: {
         type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
+        allowNull: true,
+        defaultValue: null,
         field: "deleted_at",
     },
 }, {

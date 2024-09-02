@@ -47,8 +47,8 @@ export default class LeadController {
             // check if user id assinegd by and assigned to is user
             // add details in logs
             const id = get(req?.body, "id", "");
-            const assigned_by = get(req, "user_id", "");
-            const assigned_to = get(req?.body, "assigned_to", "");
+            const assignedBy = get(req, "user_id", "");
+            const assignedTo = get(req?.body, "assignedTo", "");
 
             let getAttributes: any = ['*'];
             const whereName = 'id'
@@ -67,8 +67,8 @@ export default class LeadController {
             }
 
             const assignLead: any = {};
-            assignLead.assigned_by = assigned_by
-            assignLead.assigned_to = assigned_to
+            assignLead.assignedBy = assignedBy
+            assignLead.assignedTo = assignedTo
 
             const Lead = await new LeadModel().assignLeadToUser(id, assignLead);
 
@@ -110,7 +110,7 @@ export default class LeadController {
 
             const id = get(req, "user_id", "");
             createLead.created_by = id
-            createLead.assigned_to = id
+            createLead.assignedTo = id
             createLead.source = "Admin"
 
             const Lead = await new LeadModel().add(createLead);

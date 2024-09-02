@@ -1,39 +1,51 @@
 const { OrderItem } = require("sequelize");
 
-// Lead type Starts
 export type TLeadStatus = {
   status: number,
 };
 
 export type TLead = {
   id: number;
+  firstName: string,
+  lastName: string,
   city: string,
   state: string,
   zip_code: string,
   country: string,
-  phone_number: string,
+  phoneNumber: string,
   email: string,
   address: string,
   additional_info: string,
+  source: number,
+  follow_date: number,
   status: number,
+  createdBy: number,
+  assignedTo: number,
+  updatedBy: string;
+  deletedBy: string;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date;
 };
 
 export type TAssignLead = {
-  assigned_to: number;
-  assigned_by: number;
+  assignedTo: number;
+  assignedBy: number;
 };
 
 export type TAddLead = {
+  firstName: string,
+  lastName: string,
   city: string,
   state: string,
   zip_code: string,
   country: string,
-  phone_number: string,
+  phoneNumber: string,
   email: string,
   address: string,
   additional_info: string,
+  source: number,
+  follow_date: number,
   status: number,
 };
 
@@ -49,4 +61,3 @@ export type TLeadFilters = {
   sorting?: typeof OrderItem;
   trashOnly?: string;
 };
-// Lead type Ends

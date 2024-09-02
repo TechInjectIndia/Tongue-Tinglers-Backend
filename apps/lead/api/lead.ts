@@ -253,12 +253,12 @@ const {
  *            type: object
  *            required:
  *              - id
- *              - assigned_to
+ *              - assignedTo
  *            properties:
  *              id:
  *                type: number
  *                default: 3
- *              assigned_to:
+ *              assignedTo:
  *                type: number
  *                default: 1
  *     responses:

@@ -24,51 +24,47 @@ const {
  *           schema:
  *            type: object
  *            required:
- *              - name
- *              - source
- *              - city
- *              - zip_code
- *              - state
- *              - country
- *              - phone_number
+ *              - firstName
+ *              - lastName
  *              - email
+ *              - city
+ *              - state
+ *              - zip_code
+ *              - country
+ *              - phoneNumber
  *              - address
  *              - additional_info
- *              - status
  *            properties:
- *              name:
+ *              firstName:
  *                type: string
  *                default: lead 
- *              source:
- *                type: text
- *                default: Website
- *              city:
- *                type: text
- *                default: city
- *              zip_code:
- *                type: text
- *                default: zip_code
- *              state:
- *                type: text
- *                default: state
- *              country:
- *                type: text
- *                default: country
- *              phone_number:
- *                type: text
- *                default: phone_number
+ *              lastName:
+ *                type: string
+ *                default: lead 
  *              email:
  *                type: text
  *                default: email
+ *              city:
+ *                type: text
+ *                default: city
+ *              state:
+ *                type: text
+ *                default: state
+ *              zip_code:
+ *                type: text
+ *                default: zip_code
+ *              country:
+ *                type: text
+ *                default: country
+ *              phoneNumber:
+ *                type: text
+ *                default: phone_number
  *              address:
  *                type: text
  *                default: address
  *              additional_info:
  *                type: text
  *                default: additional_info
- *              status:
- *                type: boolean
- *                default: 0
  *     responses:
  *       '200':
  *         description: Lead submit successfully

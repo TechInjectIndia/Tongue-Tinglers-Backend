@@ -7,14 +7,14 @@ import {
     TLeadsList,
     TAddLead,
 } from "../../../types/lead";
-import { Lead } from "../../../database/schema";
+import { LeadsModel } from "../../../database/schema";
 
 export class LeadModel {
     constructor() { }
 
     public async getLeadStatus(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TLeadStatus | any> {
         const whereAttributes = { [whereName]: whereVal }
-        const data = await Lead.findOne({
+        const data = await LeadsModel.findOne({
             raw: true,
             attributes: getAttributes,
             where: whereAttributes
@@ -24,7 +24,7 @@ export class LeadModel {
 
     public async getLeadByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TLead | any> {
         const whereAttributes = { [whereName]: whereVal }
-        const data = await Lead.findOne({
+        const data = await LeadsModel.findOne({
             raw: true,
             attributes: getAttributes,
             where: whereAttributes
@@ -33,19 +33,19 @@ export class LeadModel {
     }
 
     public async list(filters: TLeadFilters): Promise<TLeadsList | any> {
-        const total = await Lead.count({
+        const total = await LeadsModel.count({
             where: {
-                name: {
+                firstName: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Lead.findAll({
+        const data = await LeadsModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
             where: {
-                name: {
+                firstName: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
@@ -54,12 +54,12 @@ export class LeadModel {
     }
 
     public async add(data: TAddLead): Promise<TLead | any> {
-        const response = await Lead.create(data);
+        const response = await LeadsModel.create(data);
         return response;
     }
 
     public async update(id: number, data: TAddLead): Promise<TLead | any> {
-        const response = await Lead.update(data, {
+        const response = await LeadsModel.update(data, {
             where: {
                 id,
             },
@@ -68,7 +68,7 @@ export class LeadModel {
     }
 
     public async assignLeadToUser(id: number, data: TAssignLead): Promise<TLead | any> {
-        const response = await Lead.update(data, {
+        const response = await LeadsModel.update(data, {
             where: {
                 id,
             },
@@ -77,7 +77,7 @@ export class LeadModel {
     }
 
     public async delete(ids: number[]): Promise<TLead | any> {
-        const response = await Lead.destroy({
+        const response = await LeadsModel.destroy({
             where: {
                 id: ids,
             },

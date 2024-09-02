@@ -21,8 +21,8 @@ export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
         return data;
     }
 
-    public async getAddressByAttr(whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TAddress> {
-        const whereAttributes = { [whereName]: whereVal }
+    public async getAddressByAttr(user_id: number, whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TAddress> {
+        const whereAttributes = { [whereName]: whereVal, user_id: user_id }
         const data = await AddressModel.findOne({
             raw: true,
             attributes: getAttributes,
@@ -31,12 +31,13 @@ export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
         return data;
     }
 
-    public async list(filters: TListFilters): Promise<TAddresssList> {
+    public async list(user_id: number, filters: TListFilters): Promise<TAddresssList> {
         const total = await AddressModel.count({
             where: {
                 street: {
                     [Op.like]: `%${filters.search}%`,
                 },
+                user_id: user_id
             },
         });
         const data = await AddressModel.findAll({
@@ -47,6 +48,7 @@ export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
                 street: {
                     [Op.like]: `%${filters.search}%`,
                 },
+                user_id: user_id
             },
         });
         return { total, data };
@@ -57,18 +59,20 @@ export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
         return response;
     }
 
-    public async update(id: number, data: TEditAddress): Promise<[affectedCount: number]> {
+    public async update(user_id: number, id: number, data: TEditAddress): Promise<[affectedCount: number]> {
         return await AddressModel.update(data, {
             where: {
-                id,
+                id: id,
+                user_id: user_id
             },
         });
     }
 
-    public async delete(ids: number[]): Promise<number> {
+    public async delete(user_id: number, ids: number[]): Promise<number> {
         const response = await AddressModel.destroy({
             where: {
                 id: ids,
+                user_id: user_id
             },
         });
         return response;

@@ -8,7 +8,7 @@ export default class AddressController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, 'user_id', '');
-            const payload = {...req?.body, user_id: user_id};
+            const payload = { ...req?.body, user_id: user_id };
 
             const Address = await new AddressRepo().create(payload);
             return res
@@ -36,8 +36,9 @@ export default class AddressController {
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
+            const user_id = get(req, 'user_id', '');
 
-            const Addresss = await new AddressRepo().list({
+            const Addresss = await new AddressRepo().list(user_id, {
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -55,7 +56,6 @@ export default class AddressController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -65,10 +65,20 @@ export default class AddressController {
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-
+            const user_id = get(req, 'user_id', '');
             const updateAddress = req?.body;
             delete updateAddress.id
-            const Address = await new AddressRepo().update(id, updateAddress);
+            const [Address] = await new AddressRepo().update(user_id, id, updateAddress);
+            if (Address > 0) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            'Something Went Wrong!'
+                        )
+                    );
+            }
 
             return res
                 .status(200)
@@ -89,11 +99,12 @@ export default class AddressController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
+            const user_id = get(req, 'user_id', '');
 
-            let getAttributes: any = '';
+            let getAttributes: any = ['*'];
             const whereName = 'id'
             const whereVal = id;
-            const existingAddress = await new AddressRepo().getAddressByAttr(whereName, whereVal, getAttributes);
+            const existingAddress = await new AddressRepo().getAddressByAttr(user_id, whereName, whereVal, getAttributes);
 
             if (isEmpty(existingAddress)) {
                 return res
@@ -116,7 +127,6 @@ export default class AddressController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -126,8 +136,9 @@ export default class AddressController {
     static async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const ids = get(req?.body, "ids", "");
+            const user_id = get(req, 'user_id', '');
 
-            const Address = await new AddressRepo().delete(ids);
+            const Address = await new AddressRepo().delete(user_id, ids);
             return res
                 .status(200)
                 .send(

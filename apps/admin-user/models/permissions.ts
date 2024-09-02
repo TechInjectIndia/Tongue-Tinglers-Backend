@@ -5,13 +5,13 @@ import {
     TPermissionFilters,
     TPermissionsList,
 } from "../../../types";
-import { UserModel, Permissions } from "../../../database/schema";
+import { UserModel, PermissionModel } from "../../../database/schema";
 
 export class Admin {
     constructor() { }
 
     public async getPermissionByName(name: string): Promise<TPermission | any> {
-        const data = await Permissions.findOne({
+        const data = await PermissionModel.findOne({
             where: {
                 name,
             },
@@ -20,7 +20,7 @@ export class Admin {
     }
 
     public async getPermissionById(id: number): Promise<TPermission | any> {
-        const data = await Permissions.findOne({
+        const data = await PermissionModel.findOne({
             where: {
                 id,
             },
@@ -29,14 +29,14 @@ export class Admin {
     }
 
     public async listPermissions(filters: TPermissionFilters): Promise<TPermissionsList | any> {
-        const total = await Permissions.count({
+        const total = await PermissionModel.count({
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Permissions.findAll({
+        const data = await PermissionModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -50,14 +50,14 @@ export class Admin {
     }
 
     public async getPermissions(filters: TPermissionFilters): Promise<TPermissionsList | any> {
-        const total = await Permissions.count({
+        const total = await PermissionModel.count({
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Permissions.findAll({
+        const data = await PermissionModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -71,12 +71,12 @@ export class Admin {
     }
 
     public async addPermission(data: TAddPermission): Promise<TPermission | any> {
-        const response = await Permissions.create(data);
+        const response = await PermissionModel.create(data);
         return response;
     }
 
     public async editPermission(id: number, data: TAddPermission): Promise<TPermission | any> {
-        const response = await Permissions.update(data, {
+        const response = await PermissionModel.update(data, {
             where: {
                 id,
             },
@@ -85,7 +85,7 @@ export class Admin {
     }
 
     public async deletePermission(ids: number[]): Promise<TPermission | any> {
-        const response = await Permissions.destroy({
+        const response = await PermissionModel.destroy({
             where: {
                 id: ids,
             },

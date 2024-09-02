@@ -4,8 +4,10 @@ const { OrderItem } = require("sequelize");
 export type TPermission = {
   id: number;
   name: string;
+  description: string;
   active: number;
   createdAt: Date;
+  deletedAt: Date;
   updatedAt: Date;
 };
 

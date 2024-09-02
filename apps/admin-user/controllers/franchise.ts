@@ -2,12 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse, createPassword } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { AdminRepo } from '../models/user';
+import { FranchiseRepo } from '../models/franchise';
 import { Auth } from '../../auth/models';
 import { USER_TYPE } from '../../../interfaces';
 
-export default class AdminController {
-    static async getAdmins(req: Request, res: Response, next: NextFunction) {
+export default class FranchiseController {
+    static async list(req: Request, res: Response, next: NextFunction) {
         try {
             const size = get(req?.query, "size", 10);
             const skip = get(req?.query, "skip", 1);
@@ -16,7 +16,7 @@ export default class AdminController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const admins = await new AdminRepo().list({
+            const admins = await new FranchiseRepo().list({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -29,7 +29,7 @@ export default class AdminController {
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.ADMINS_FETCHED,
+                        SUCCESS_MESSAGE.FRANCHISE_FETCHED,
                         admins
                     )
                 );
@@ -40,7 +40,7 @@ export default class AdminController {
         }
     }
 
-    static async addAdmin(req: Request, res: Response, next: NextFunction) {
+    static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, 'user_id', 0);
             const payload = { ...req?.body, createdBy: user_id };
@@ -52,13 +52,13 @@ export default class AdminController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.ADMIN_EXISTS
+                            ERROR_MESSAGE.FRANCHISE_EXISTS
                         )
                     );
             }
 
             const hashedPassword = await createPassword(payload.password);
-            await new AdminRepo().create({
+            await new FranchiseRepo().create({
                 ...payload,
                 password: hashedPassword,
                 type: USER_TYPE.ADMIN
@@ -69,7 +69,7 @@ export default class AdminController {
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.ADMIN_CREATED
+                        SUCCESS_MESSAGE.FRANCHISE_CREATED
                     )
                 );
         } catch (err) {
@@ -79,47 +79,41 @@ export default class AdminController {
         }
     }
 
-    static async editAdmin(req: Request, res: Response, next: NextFunction) {
+    static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
             const user_id = get(req, 'user_id', 0);
             let payload = { ...req?.body, updatedBy: user_id };
 
-            // if (payload.password) {
-            //     const hashedPassword = await createPassword(payload.password);
-            //     payload = { ...payload, password: hashedPassword };
-            // }
-
-            await new AdminRepo().update(id, payload);
+            await new FranchiseRepo().update(id, payload);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.ADMIN_UPDATED
+                        SUCCESS_MESSAGE.FRANCHISE_UPDATED
                     )
                 );
         } catch (err) {
-            console.log(err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
 
-    static async deleteAdmin(req: Request, res: Response, next: NextFunction) {
+    static async deleteFranchise(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, 'user_id', 0);
             const ids = get(req?.body, "ids", "");
 
-            await new AdminRepo().delete(ids, user_id);
+            await new FranchiseRepo().delete(ids, user_id);
 
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.ADMIN_DELETED
+                        SUCCESS_MESSAGE.FRANCHISE_DELETED
                     )
                 );
         } catch (err) {
@@ -129,17 +123,17 @@ export default class AdminController {
         }
     }
 
-    static async getAdmin(req: Request, res: Response, next: NextFunction) {
+    static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-            const existingAdmin = await new AdminRepo().get(id as number);
+            const existingAdmin = await new FranchiseRepo().get(id as number);
             if (isEmpty(existingAdmin)) {
                 return res
                     .status(400)
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.ADMIN_NOT_EXISTS
+                            ERROR_MESSAGE.FRANCHISE_NOT_EXISTS
                         )
                     );
             }
@@ -149,30 +143,8 @@ export default class AdminController {
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.ADMIN_FETCHED,
+                        SUCCESS_MESSAGE.FRANCHISE_FETCHED,
                         existingAdmin
-                    )
-                );
-        } catch (err) {
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
-        }
-    }
-
-    static async editProfile(req: Request, res: Response, next: NextFunction) {
-        try {
-            const id = get(req, "user_id", "");
-            const payload = req?.body;
-
-            await new AdminRepo().updateProfile(id, payload);
-
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.ADMIN_UPDATED
                     )
                 );
         } catch (err) {

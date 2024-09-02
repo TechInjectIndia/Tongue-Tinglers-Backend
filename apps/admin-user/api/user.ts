@@ -194,7 +194,7 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *                default: [1]
  *     responses:
  *       '200':
- *         description: role deleted successfully
+ *         description: user deleted successfully
  *       '401':
  *         description: Unauthorized
  *       '404':

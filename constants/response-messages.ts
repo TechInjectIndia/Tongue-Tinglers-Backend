@@ -7,6 +7,7 @@ export const RESPONSE_TYPE = {
 
 export const ERROR_MESSAGE = {
     ADMIN_NOT_EXISTS: "User does not exist",
+    FRANCHISE_NOT_EXISTS: "Franchise does not exist",
     INVALID_LOGIN_REQUEST: "Invalid Email or Password",
     INVALID_CAPTCHA: "Invalid Captcha",
     UNAUTHORIZED_REQUEST: "Unauthorized Access",
@@ -15,6 +16,7 @@ export const ERROR_MESSAGE = {
     ROLE_EXISTS: "Role already exists",
     ROLE_NOT_EXISTS: "Role does not exist",
     ADMIN_EXISTS: "Admin already exists",
+    FRANCHISE_EXISTS: "Franchise already exists",
     USER_EXISTS: "User already exists",
     USER_NOT_EXISTS: "User does not exist",
     INVALID_OLD_PASSWORD: "Invalid old password",
@@ -37,6 +39,10 @@ export const SUCCESS_MESSAGE = {
     ROLE_DELETED: "Role deleted successfully",
     ROLE_FETCHED: "Role fetched successfully",
     PASSWORD_UPDATED: "Password updated successfully",
+    FRANCHISE_CREATED: "Franchise user created successfully",
+    FRANCHISE_FETCHED: "Franchise users fetched successfully",
+    FRANCHISE_UPDATED: "Franchise user updated successfully",
+    FRANCHISE_DELETED: "Admin user moved to trash successfully",
     ADMINS_FETCHED: "Admin users fetched successfully",
     ADMIN_CREATED: "Admin user created successfully",
     ADMIN_UPDATED: "Admin user updated successfully",

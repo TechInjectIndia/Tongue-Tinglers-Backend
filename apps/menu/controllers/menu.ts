@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { MenuModel } from '../models/menu';
+import { MenuRepo } from '../models/menu';
 
 export default class MenuController {
     static async add(req: Request, res: Response, next: NextFunction) {
@@ -12,7 +12,7 @@ export default class MenuController {
             let getAttributes: any = '';
             const whereName = 'email'
             const whereVal = req?.body?.email;
-            const existingMenu = await new MenuModel().getMenuByAttr(whereName, whereVal, getAttributes);
+            const existingMenu = await new MenuRepo().getMenuByAttr(whereName, whereVal, getAttributes);
             if (existingMenu) {
                 return res
                     .status(400)
@@ -24,7 +24,7 @@ export default class MenuController {
                     );
             }
 
-            const Menu = await new MenuModel().add(createMenu);
+            const Menu = await new MenuRepo().add(createMenu);
             return res
                 .status(200)
                 .send(
@@ -51,7 +51,7 @@ export default class MenuController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const Menus = await new MenuModel().list({
+            const Menus = await new MenuRepo().list({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -83,7 +83,7 @@ export default class MenuController {
             let getAttributes: any = '';
             const whereName = 'id'
             const whereVal = id;
-            const existingMenu = await new MenuModel().getMenuByAttr(whereName, whereVal, getAttributes);
+            const existingMenu = await new MenuRepo().getMenuByAttr(whereName, whereVal, getAttributes);
 
             if (isEmpty(existingMenu)) {
                 return res
@@ -98,7 +98,7 @@ export default class MenuController {
             
             const updateMenu = req?.body;
             delete updateMenu.id
-            const Menu = await new MenuModel().update(id, updateMenu);
+            const Menu = await new MenuRepo().update(id, updateMenu);
 
             return res
                 .status(200)
@@ -123,7 +123,7 @@ export default class MenuController {
             let getAttributes: any = '*';
             const whereName = 'id'
             const whereVal = id;
-            const existingMenu = await new MenuModel().getMenuByAttr(whereName, whereVal, getAttributes);
+            const existingMenu = await new MenuRepo().getMenuByAttr(whereName, whereVal, getAttributes);
 
             if (isEmpty(existingMenu)) {
                 return res
@@ -157,7 +157,7 @@ export default class MenuController {
         try {
             const ids = get(req?.body, "ids", "");
 
-            const Menu = await new MenuModel().delete(ids);
+            const Menu = await new MenuRepo().delete(ids);
             return res
                 .status(200)
                 .send(

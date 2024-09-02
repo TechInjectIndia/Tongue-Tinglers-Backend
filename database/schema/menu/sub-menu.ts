@@ -1,25 +1,26 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { TMenu } from "../../../types";
+import { TSubMenu } from "../../../types";
 import { MENU_STATUS } from '../../../interfaces';
+import { MenuModel } from './menu'
 
 const { INTEGER, STRING, ENUM } = DataTypes;
 
-interface MenuCreationAttributes extends Optional<TMenu, 'id' | 'createdAt' | 'updatedAt'> { }
+interface SubMenuCreationAttributes extends Optional<TSubMenu, 'id' | 'createdAt' | 'updatedAt'> { }
 
-class MenuModel extends Model<TMenu, MenuCreationAttributes> implements TMenu {
+class SubMenuModel extends Model<TSubMenu, SubMenuCreationAttributes> implements TSubMenu {
     public id!: number;
     public name: string;
     public status!: string;
+    public deletedBy!: string;
     public updatedBy!: string;
     public createdBy!: string;
-    public deletedBy!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date;
 }
 
-MenuModel.init({
+SubMenuModel.init({
     id: {
         type: INTEGER,
         autoIncrement: true,
@@ -32,6 +33,9 @@ MenuModel.init({
     status: {
         type: ENUM,
         values: [...Object.values(MENU_STATUS)]
+    },
+    deletedBy: {
+        type: STRING
     },
     updatedBy: {
         type: STRING
@@ -51,9 +55,6 @@ MenuModel.init({
         defaultValue: DataTypes.NOW,
         field: "updated_at",
     },
-    deletedBy: {
-        type: STRING
-    },
     deletedAt: {
         type: DataTypes.DATE,
         allowNull: true,
@@ -67,4 +68,11 @@ MenuModel.init({
     paranoid: true
 });
 
-export { MenuModel };
+MenuModel.hasMany(SubMenuModel, {
+    foreignKey: "menu_id",
+});
+SubMenuModel.belongsTo(MenuModel, {
+    foreignKey: "menu_id",
+});
+
+export { SubMenuModel };

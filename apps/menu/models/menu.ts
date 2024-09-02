@@ -5,14 +5,14 @@ import {
     TMenusList,
     TAddMenu,
 } from "../../../types/menu";
-import { Menu } from "../../../database/schema";
+import { MenuModel } from "../../../database/schema";
 
-export class MenuModel {
+export class MenuRepo {
     constructor() { }
 
     public async getMenuByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TMenu | any> {
         const whereAttributes = { [whereName]: whereVal }
-        const data = await Menu.findOne({
+        const data = await MenuModel.findOne({
             raw: true,
             attributes: getAttributes,
             where: whereAttributes
@@ -21,14 +21,14 @@ export class MenuModel {
     }
 
     public async list(filters: TMenuFilters): Promise<TMenusList | any> {
-        const total = await Menu.count({
+        const total = await MenuModel.count({
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Menu.findAll({
+        const data = await MenuModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -42,12 +42,12 @@ export class MenuModel {
     }
 
     public async add(data: TAddMenu): Promise<TMenu | any> {
-        const response = await Menu.create(data);
+        const response = await MenuModel.create(data);
         return response;
     }
 
     public async update(id: number, data: TAddMenu): Promise<TMenu | any> {
-        const response = await Menu.update(data, {
+        const response = await MenuModel.update(data, {
             where: {
                 id,
             },
@@ -56,7 +56,7 @@ export class MenuModel {
     }
 
     public async delete(ids: number[]): Promise<TMenu | any> {
-        const response = await Menu.destroy({
+        const response = await MenuModel.destroy({
             where: {
                 id: ids,
             },

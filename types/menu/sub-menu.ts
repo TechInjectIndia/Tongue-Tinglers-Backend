@@ -1,11 +1,6 @@
 const { OrderItem } = require("sequelize");
 
-export type TAddMenu = {  
-  name: string;
-  status: string;
-};
-
-export type TMenu = {
+export type TSubMenu = {
   id: number;
   name: string;
   status: string;
@@ -17,12 +12,12 @@ export type TMenu = {
   deletedAt: Date;
 };
 
-export type TMenusList = {
+export type TSubMenusList = {
   total: number;
-  data: TMenu;
+  data: TSubMenu;
 };
 
-export type TMenuFilters = {
+export type TSubMenuFilters = {
   offset: number;
   limit: number;
   search?: string;

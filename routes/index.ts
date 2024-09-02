@@ -6,8 +6,6 @@ const FRANCHISE = '/franchise';
 const CUSTOMER = '/customer';
 const FRONTEND = '/';
 
-
-
 // ====== Auth ======
 import { auth } from '../middlewares/auth';
 import authRouter from "../apps/auth/api";

@@ -1,10 +1,8 @@
 const { Sequelize } = require('sequelize');
 
 import {
-    TAnalytics,
     TAnalyticsFilters,
     TAnalyticssList,
-    TAddAnalytics,
 } from "../../../types/analytics";
 import { Lead } from "../../../database/schema";
 

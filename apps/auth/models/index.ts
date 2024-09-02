@@ -3,7 +3,7 @@ import {
     TUpdateUserToken,
     TUpdateUserPassword
 } from "../../../types";
-import { User as UserModel } from "../../../database/schema";
+import { UserModel } from "../../../database/schema";
 import { USER_TYPE } from '../../../interfaces';
 
 export class Auth {
@@ -53,8 +53,7 @@ export class Auth {
         await UserModel.update(
             {
                 refresh_token: data.refresh_token,
-                last_login_at: data.last_login_at,
-                last_login_ip: data.last_login_ip,
+                lastLoginAt: data.lastLoginAt,
             },
             {
                 where: {

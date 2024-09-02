@@ -9,7 +9,7 @@ const {
   validateEditSettingsBody,
 } = FranchiseValidation;
 
-const { editSettings, getSettings, } = SettingsController;
+// const { editSettings, getSettings, } = SettingsController;
 // ====== Settings Start ======
 /**
  * @swagger
@@ -93,8 +93,8 @@ const { editSettings, getSettings, } = SettingsController;
  *         description: Settings not found
  * 
  */
-router.get("/", validateEditSettingsParams, getSettings);
-router.put("/", validateEditSettingsParams, validateEditSettingsBody, editSettings);
+// router.get("/", validateEditSettingsParams, getSettings);
+// router.put("/", validateEditSettingsParams, validateEditSettingsBody, editSettings);
 // ====== Settings Routes Ends ======
 
 export default router;

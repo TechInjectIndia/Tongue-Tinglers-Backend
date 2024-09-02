@@ -2,15 +2,15 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { AddressModel } from '../models';
+import { AddressRepo } from '../models';
 
 export default class AddressController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const createAddress = req?.body;
-            const id = get(req, "user_id", "");
+            const user_id = get(req, 'user_id', '');
+            const payload = {...req?.body, user_id: user_id};
 
-            const Address = await new AddressModel().add(createAddress);
+            const Address = await new AddressRepo().create(payload);
             return res
                 .status(200)
                 .send(
@@ -21,6 +21,7 @@ export default class AddressController {
                     )
                 );
         } catch (err) {
+            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -36,7 +37,7 @@ export default class AddressController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const Addresss = await new AddressModel().list({
+            const Addresss = await new AddressRepo().list({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -67,7 +68,7 @@ export default class AddressController {
 
             const updateAddress = req?.body;
             delete updateAddress.id
-            const Address = await new AddressModel().update(id, updateAddress);
+            const Address = await new AddressRepo().update(id, updateAddress);
 
             return res
                 .status(200)
@@ -92,7 +93,7 @@ export default class AddressController {
             let getAttributes: any = '';
             const whereName = 'id'
             const whereVal = id;
-            const existingAddress = await new AddressModel().getAddressByAttr(whereName, whereVal, getAttributes);
+            const existingAddress = await new AddressRepo().getAddressByAttr(whereName, whereVal, getAttributes);
 
             if (isEmpty(existingAddress)) {
                 return res
@@ -126,7 +127,7 @@ export default class AddressController {
         try {
             const ids = get(req?.body, "ids", "");
 
-            const Address = await new AddressModel().delete(ids);
+            const Address = await new AddressRepo().delete(ids);
             return res
                 .status(200)
                 .send(

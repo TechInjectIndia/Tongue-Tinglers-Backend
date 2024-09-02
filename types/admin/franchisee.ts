@@ -16,8 +16,8 @@ export type TFranchisee = {
   role: number;
   profile_photo: string;
   address: string;
-  last_login_at: Date;
-  last_login_ip: string;
+  lastLoginAt: Date;
+  lastLoginIp: string;
   refresh_token?: string;
   active: number;
   createdAt: Date;
@@ -63,8 +63,8 @@ export type TEditFranchiseeProfile = {
 export type TUpdateFranchiseeToken = {
   user_id: number;
   refresh_token: string;
-  last_login_at: Date;
-  last_login_ip: string;
+  lastLoginAt: Date;
+  lastLoginIp: string;
 };
 
 export type TUpdateFranchiseeProfile = {

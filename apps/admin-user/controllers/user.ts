@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse, createPassword } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { Admin } from '../models/user';
+import { AdminRepo } from '../models/user';
 import { Auth } from '../../auth/models';
 import { USER_TYPE } from '../../../interfaces';
 
@@ -16,7 +16,7 @@ export default class AdminController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const admins = await new Admin().getAdmins({
+            const admins = await new AdminRepo().list({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -42,7 +42,8 @@ export default class AdminController {
 
     static async addAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const payload = req?.body;
+            const user_id = get(req, 'user_id', 0);
+            const payload = {...req?.body, createdBy: user_id};
 
             const existingAdmin = await new Auth().getUserByEmail(payload.email);
             if (existingAdmin) {
@@ -57,10 +58,10 @@ export default class AdminController {
             }
 
             const hashedPassword = await createPassword(payload.password);
-            await new Admin().addAdmin({
+            await new AdminRepo().create({
                 ...payload,
                 password: hashedPassword,
-                user_type: USER_TYPE.ADMIN
+                type: USER_TYPE.ADMIN
             });
 
             return res
@@ -81,14 +82,15 @@ export default class AdminController {
     static async editAdmin(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-            let payload = req?.body;
+            const user_id = get(req, 'user_id', 0);
+            let payload = {...req?.body, updatedBy: user_id};
 
-            if (payload.password) {
-                const hashedPassword = await createPassword(payload.password);
-                payload = { ...payload, password: hashedPassword };
-            }
+            // if (payload.password) {
+            //     const hashedPassword = await createPassword(payload.password);
+            //     payload = { ...payload, password: hashedPassword };
+            // }
 
-            await new Admin().editAdmin(id, payload);
+            await new AdminRepo().update(id, payload);
             return res
                 .status(200)
                 .send(
@@ -107,9 +109,10 @@ export default class AdminController {
 
     static async deleteAdmin(req: Request, res: Response, next: NextFunction) {
         try {
+            const user_id = get(req, 'user_id', 0);
             const ids = get(req?.body, "ids", "");
 
-            await new Admin().deleteAdmin(ids);
+            await new AdminRepo().delete(ids, user_id);
 
             return res
                 .status(200)
@@ -129,8 +132,7 @@ export default class AdminController {
     static async getAdmin(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-            const existingAdmin = await new Admin().getAdminById(id as number);
-
+            const existingAdmin = await new AdminRepo().get(id as number);
             if (isEmpty(existingAdmin)) {
                 return res
                     .status(400)
@@ -164,16 +166,16 @@ export default class AdminController {
             const id = get(req, "user_id", "");
             const payload = req?.body;
 
-            await new Admin().editProfile(id, payload);
-            
+            await new AdminRepo().updateProfile(id, payload);
+
             return res
-            .status(200)
-            .send(
-                sendResponse(
-                    RESPONSE_TYPE.SUCCESS,
-                    SUCCESS_MESSAGE.ADMIN_UPDATED
-                )
-            );
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.ADMIN_UPDATED
+                    )
+                );
         } catch (err) {
             console.log(err)
             return res.status(500).send({

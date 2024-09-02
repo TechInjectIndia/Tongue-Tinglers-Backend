@@ -127,6 +127,7 @@ const options = {
         './routes/*.ts',
         './apps/auth/api/*.ts',
         './apps/address/api/*.ts',
+        './apps/test-user/api/*.ts',
         './apps/admin-user/api/*.ts',
         './apps/franchise-user/api/*.ts',
         './apps/customer-user/api/*.ts',

@@ -143,8 +143,6 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *           schema:
  *            type: object
  *            required:
- *              - email
- *              - password
  *              - firstName
  *              - lastName
  *              - userName
@@ -152,10 +150,6 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *              - status
  *              - role
  *            properties:
- *              email:
- *                type: string
- *              password:
- *                type: string
  *              firstName:
  *                type: string
  *              lastName:

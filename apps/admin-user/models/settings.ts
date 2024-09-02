@@ -1,17 +1,17 @@
 const { Op } = require("sequelize");
 import {
     TSettings,
-    TEditSettings
+    TEditUserProfile
 } from "../../../types";
-import { User as UserModel } from "../../../database/schema";
+import { UserModel } from "../../../database/schema";
 
-export class Admin {
+export class SettingsRepo {
     constructor() { }
 
     public async editSettings(
         id: number,
-        data: TEditSettings
-    ): Promise<TSettings | any> {
+        data: TEditUserProfile
+    ): Promise<[affectedCount: number]> {
         return await UserModel.update(data, {
             where: {
                 id,
@@ -28,14 +28,14 @@ export class Admin {
                 "contact_number",
                 "phone_code",
                 "address",
-                "last_login_at",
-                "last_login_ip",
+                "lastLoginAt",
+                "lastLoginIp",
                 "createdAt",
                 "active",
             ],
             where: {
                 id,
-                user_type: 'Admin'
+                type: 'admin'
             },
         });
         return data;

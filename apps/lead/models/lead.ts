@@ -2,17 +2,19 @@ const { Op } = require("sequelize");
 import {
     TLeadStatus,
     TAssignLead,
+    TEditLead,
     TLead,
-    TLeadFilters,
+    TListFilters,
     TLeadsList,
     TAddLead,
-} from "../../../types/lead";
+} from "../../../types";
 import { LeadsModel } from "../../../database/schema";
+import IBaseRepo from '../controllers/controller/ILeadController';
 
-export class LeadModel {
+export class LeadRepo implements IBaseRepo<TLead, TListFilters> {
     constructor() { }
 
-    public async getLeadStatus(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TLeadStatus | any> {
+    public async getLeadStatus(whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TLeadStatus> {
         const whereAttributes = { [whereName]: whereVal }
         const data = await LeadsModel.findOne({
             raw: true,
@@ -22,7 +24,7 @@ export class LeadModel {
         return data;
     }
 
-    public async getLeadByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TLead | any> {
+    public async getLeadByAttr(whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TLead> {
         const whereAttributes = { [whereName]: whereVal }
         const data = await LeadsModel.findOne({
             raw: true,
@@ -32,7 +34,17 @@ export class LeadModel {
         return data;
     }
 
-    public async list(filters: TLeadFilters): Promise<TLeadsList | any> {
+    public async checkLeadExist(email: string, excludeId: number): Promise<TLead> {
+        const data = await LeadsModel.findOne({
+            where: {
+                email: email,
+                id: { [Op.ne]: excludeId }, // Sequelize.Op.ne means "not equal"
+            },
+        });
+        return data;
+    }
+
+    public async list(filters: TListFilters): Promise<TLeadsList> {
         const total = await LeadsModel.count({
             where: {
                 firstName: {
@@ -53,12 +65,12 @@ export class LeadModel {
         return { total, data };
     }
 
-    public async add(data: TAddLead): Promise<TLead | any> {
+    public async create(data: TAddLead): Promise<TLead> {
         const response = await LeadsModel.create(data);
         return response;
     }
 
-    public async update(id: number, data: TAddLead): Promise<TLead | any> {
+    public async update(id: number, data: TEditLead): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
             where: {
                 id,
@@ -67,7 +79,7 @@ export class LeadModel {
         return response;
     }
 
-    public async assignLeadToUser(id: number, data: TAssignLead): Promise<TLead | any> {
+    public async assignLeadToUser(id: number, data: TAssignLead): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
             where: {
                 id,
@@ -76,7 +88,7 @@ export class LeadModel {
         return response;
     }
 
-    public async delete(ids: number[]): Promise<TLead | any> {
+    public async delete(ids: number[]): Promise<number> {
         const response = await LeadsModel.destroy({
             where: {
                 id: ids,

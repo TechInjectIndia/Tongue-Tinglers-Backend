@@ -107,7 +107,6 @@ export default class FranchiseController {
             const ids = get(req?.body, "ids", "");
 
             await new FranchiseRepo().delete(ids, user_id);
-
             return res
                 .status(200)
                 .send(

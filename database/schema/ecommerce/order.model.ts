@@ -1,33 +1,66 @@
-const { DataTypes } = require("sequelize");
+import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-const { INTEGER, DATE, STRING, ENUM } = DataTypes;
-const ORDER_STATUS = {
-    processed: 'Processing',
-    delivered: 'Delivered',
-    shipped: 'Shipped',
-    cancelled: 'Cancelled',
-};
+import { TOrder } from "../../../types";
+import { ORDER_TYPE } from '../../../interfaces';
+const { INTEGER, STRING, TEXT, ENUM, BOOLEAN } = DataTypes;
 
-export const Order = sequelize.define('orders', {
+interface OrdersCreationAttributes extends Optional<TOrder, 'id' | 'createdAt' | 'updatedAt'> { }
+
+class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOrder {
+    public id!: number;
+    public user_id!: number;
+    public trackingNumber!: string;
+    public shippingAddress!: string;
+    public paymentMethod!: string;
+    public totalPrice!: number;
+    public orderStatus!: string;
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+}
+
+OrdersModel.init({
+    id: {
+        type: INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
     user_id: {
         type: INTEGER,
         allowNull: true,
     },
-    tracking_number: {
+    trackingNumber: {
         type: STRING,
     },
-    shipping_address: {
+    shippingAddress: {
         type: STRING,
     },
-    payment_method: {
+    paymentMethod: {
         type: STRING,
     },
-    total_price: {
+    totalPrice: {
         type: INTEGER,
     },
-    order_status: {
+    orderStatus: {
         type: ENUM,
-        values: [ORDER_STATUS.processed, ORDER_STATUS.delivered, ORDER_STATUS.shipped, ORDER_STATUS.cancelled]
+        values: [...Object.values(ORDER_TYPE)]
     },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+        field: "created_at",
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+        field: "updated_at",
+    },
+}, {
+    sequelize,
+    tableName: 'orders',
+    timestamps: true,
 });
+
+export { OrdersModel };
 

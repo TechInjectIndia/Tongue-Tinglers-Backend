@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { TQueryFilters, TAddProduct, TEditProduct } from '../../../../types'
+import { TQueryFilters, TAddProduct, TEditProduct } from '../../../../../types'
 
 interface IProductsController<T, F extends TQueryFilters> {
     list(filters: F): Promise<Response<T[]>>;

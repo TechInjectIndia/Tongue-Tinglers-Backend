@@ -5,14 +5,14 @@ import {
     TOrdersList,
     TOrderStatus
 } from "../../../../types/ecommerce";
-import { Order } from "../../../../database/schema";
+import { OrdersModel } from "../../../../database/schema";
 
 export class OrderModel {
     constructor() { }
 
     public async getOrderByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TOrderStatus | any> {
         const whereAttributes = { [whereName]: whereVal }
-        const data = await Order.findOne({
+        const data = await OrdersModel.findOne({
             raw: true,
             attributes: getAttributes,
             where: whereAttributes
@@ -21,7 +21,7 @@ export class OrderModel {
     }
 
     public async getOrderById(id: number): Promise<TOrder | any> {
-        const data = await Order.findOne({
+        const data = await OrdersModel.findOne({
             where: {
                 id,
             },
@@ -30,19 +30,19 @@ export class OrderModel {
     }
 
     public async list(filters: TOrderFilters): Promise<TOrdersList | any> {
-        const total = await Order.count({
+        const total = await OrdersModel.count({
             where: {
-                order_id: {
+                id: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Order.findAll({
+        const data = await OrdersModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
             where: {
-                order_id: {
+                id: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },

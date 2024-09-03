@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { TQueryFilters, TAddProduct, TEditProduct } from '../../../../types'
+import { TQueryFilters, TAddProduct, TEditProduct } from '../../../../../types'
 
 interface IWebProductsController<T, F extends TQueryFilters> {
     getProductByTag(type: string, limit: number): Promise<Response<T[]>>;

@@ -4,3 +4,4 @@ export * from './menu';
 export * from './testimonials';
 export * from './reviews';
 export * from './products';
+export * from './orders';

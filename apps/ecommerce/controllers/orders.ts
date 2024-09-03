@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { OrderModel } from '../models/orders';
+import { OrderRepo } from '../models/orders';
 
 export default class OrderController {
     static async list(req: Request, res: Response, next: NextFunction) {
@@ -14,7 +14,7 @@ export default class OrderController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const Orders = await new OrderModel().list({
+            const Orders = await new OrderRepo().list({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -44,7 +44,7 @@ export default class OrderController {
             const id = get(req?.params, "id", "");
             const orderStatus = get(req?.body, "status", "");
 
-            const existingOrder = await new OrderModel().getOrderById(id as number);
+            const existingOrder = await new OrderRepo().getOrderById(id as number);
             if (isEmpty(existingOrder)) {
                 return res
                     .status(400)
@@ -56,7 +56,7 @@ export default class OrderController {
                     );
             }
 
-            const Order = await new OrderModel().update(id, { orderStatus });
+            const Order = await new OrderRepo().update(id, { orderStatus });
             return res
                 .status(200)
                 .send(
@@ -76,7 +76,7 @@ export default class OrderController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-            const Order = await new OrderModel().getOrderById(id as number);
+            const Order = await new OrderRepo().getOrderById(id as number);
 
             if (isEmpty(Order)) {
                 return res

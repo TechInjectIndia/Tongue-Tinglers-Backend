@@ -6,7 +6,7 @@ import {
     TProductSearch,
 } from "../../../../types/ecommerce";
 import { ProductsModel } from "../../../../database/schema";
-import IBaseRepo from '../../controllers/controller/IWebProductsController';
+import IBaseRepo from '../../controllers/controller/product/IWebProductsController';
 
 export class WebProductRepo implements IBaseRepo<TProduct, TProductFilters> {
     constructor() { }

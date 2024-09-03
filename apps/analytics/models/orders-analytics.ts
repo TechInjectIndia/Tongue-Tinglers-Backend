@@ -2,13 +2,13 @@ const { Sequelize } = require('sequelize');
 import {
     TAnalyticssList,
 } from "../../../types/analytics";
-import { Order } from "../../../database/schema";
+import { OrdersModel } from "../../../database/schema";
 
 export class AnalyticsModel {
     constructor() { }
 
     public async orderCountByDateWise(startDate: Date, endDate: Date): Promise<TAnalyticssList | any> {
-        Order.findAll({
+        OrdersModel.findAll({
             attributes: [
                 'order_status',
                 [Sequelize.fn('COUNT', Sequelize.col('order_status')), 'count']

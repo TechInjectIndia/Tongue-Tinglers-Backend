@@ -11,10 +11,8 @@ class PermissionModel extends Model<TPermission, PermissionsCreationAttributes> 
     public description!: string;    
     public active!: number;    
     public updatedBy!: string;
-    public deletedBy!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
-    public readonly deletedAt!: Date;
 }
 
 PermissionModel.init({
@@ -46,17 +44,10 @@ PermissionModel.init({
         defaultValue: DataTypes.NOW,
         field: "updated_at",
     },
-    deletedAt: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: null,
-        field: "deleted_at",
-    },
 }, {
     sequelize,
     tableName: 'admin_permissions',
     timestamps: true,
-    paranoid: true
 });
 
 export { PermissionModel };

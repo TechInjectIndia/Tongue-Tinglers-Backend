@@ -1,12 +1,12 @@
 import * as express from "express";
 import ProfileController from "../controllers/profile";
-import * as AdminValidation from "../validations/profile";
+import * as ProfileValidation from "../validations/profile";
 
 const router = express.Router();
 
 const {
   validateEditProfileBody,
-} = AdminValidation;
+} = ProfileValidation;
 
 const { editProfile, getProfile, } = ProfileController;
 // ====== Profile Start ======

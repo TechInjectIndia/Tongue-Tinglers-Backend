@@ -7,10 +7,14 @@ export type TPermission = {
   description: string;
   active: number;
   createdAt: Date;
-  deletedAt: Date;
   updatedAt: Date;
 };
 
+export type TEditPermission = {
+  name: string;
+  description: string;
+  active: number;
+};
 export type TAddPermission = {
   name: string;
   active: number;
@@ -18,7 +22,7 @@ export type TAddPermission = {
 
 export type TPermissionsList = {
   total: number;
-  data: TPermission;
+  data: TPermission[];
 };
 
 export type TPermissionFilters = {

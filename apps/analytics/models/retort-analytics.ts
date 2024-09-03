@@ -1,9 +1,7 @@
 const { Op } = require("sequelize");
 import {
-    TAnalytics,
     TAnalyticsFilters,
     TAnalyticssList,
-    TAddAnalytics,
 } from "../../../types/analytics";
 import { LeadsModel } from "../../../database/schema";
 

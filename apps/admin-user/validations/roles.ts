@@ -4,6 +4,7 @@ import { validateReq } from "../../../libraries";
 
 const createRoleBody = Joi.object().keys({
     name: Joi.string().required(),
+    description: Joi.string().required(),
     role_permissions: Joi.string(),
     active: Joi.number().required(),
 });
@@ -16,6 +17,7 @@ export const validateCreateRoleBody = async (
 
 const editRoleBody = Joi.object().keys({
     name: Joi.string().required(),
+    description: Joi.string().required(),
     role_permissions: Joi.string(),
     active: Joi.number().required(),
 });

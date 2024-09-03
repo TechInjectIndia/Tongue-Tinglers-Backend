@@ -2,15 +2,32 @@ const { Op } = require("sequelize");
 import {
     TTestimonialsFiltersFrontend,
     TTestimonialsList,
-} from "../../../types/testimonials";
-import { Testimonials } from "../../../database/schema";
+    TTestimonials,
+    TAddTestimonials
+} from "../../../types";
+import { TestimonialsModel } from "../../../database/schema";
+import IBaseRepo from '../controllers/controller/IWebTestimonialsController';
 
-export class TestimonialsModel {
+export class TestimonialsRepo implements IBaseRepo<TTestimonials, TTestimonialsFiltersFrontend> {
     constructor() { }
 
+    public async getTestimonialsByAttr(whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TTestimonials> {
+        const whereAttributes = { [whereName]: whereVal }
+        const data = await TestimonialsModel.findOne({
+            raw: true,
+            attributes: getAttributes,
+            where: whereAttributes
+        });
+        return data;
+    }
 
-    public async list(filters: TTestimonialsFiltersFrontend): Promise<TTestimonialsList | any> {
-        const total = await Testimonials.count({
+    // public async create(data: TAddTestimonials): Promise<TTestimonials> {
+    //     const response = await TestimonialsModel.create(data);
+    //     return response;
+    // }
+
+    public async list(filters: TTestimonialsFiltersFrontend): Promise<TTestimonialsList> {
+        const total = await TestimonialsModel.count({
             where: {
                 testimonial_text: {
                     [Op.like]: `%${filters.search}%`,
@@ -21,7 +38,7 @@ export class TestimonialsModel {
                 approved: 1
             },
         });
-        const data = await Testimonials.findAll({
+        const data = await TestimonialsModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,

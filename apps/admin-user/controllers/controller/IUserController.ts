@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import { TQueryFilters, TAddUser, TEditUser, TEditUserProfile } from '../../../../types'
 
-interface IController<T, F extends TQueryFilters> {
+interface IUserController<T, F extends TQueryFilters> {
     list(filters: F): Promise<Response<T[]>>;
     get(id: number): Promise<Response<T>>;
     create(payload: TAddUser): Promise<Response<T>>;
@@ -13,4 +13,4 @@ interface IController<T, F extends TQueryFilters> {
     updateProfile(id: number, payload: TEditUserProfile): Promise<Response<T>>;
 }
 
-export default IController;
+export default IUserController;

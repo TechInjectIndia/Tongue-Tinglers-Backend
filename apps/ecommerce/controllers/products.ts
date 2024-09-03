@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { ProductModel } from '../models/products';
+import { ProductRepo } from '../models/products';
 const slugify = require('slugify');
 
 export default class ProductsController {
@@ -11,7 +11,7 @@ export default class ProductsController {
             const name = get(req?.body, "name", "");
             const createProduct = req?.body;
             createProduct.slug = slugify(name, {lower: true});
-            const existingProduct = await new ProductModel().getProductByName(name);
+            const existingProduct = await new ProductRepo().getProductByName(name);
             if (existingProduct) {
                 return res
                     .status(400)
@@ -24,7 +24,7 @@ export default class ProductsController {
             }
             // check if Name exist
             // check if Slug exist
-            const Product = await new ProductModel().create(createProduct);
+            const Product = await new ProductRepo().create(createProduct);
             return res
                 .status(200)
                 .send(
@@ -51,7 +51,7 @@ export default class ProductsController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const Products = await new ProductModel().list({
+            const Products = await new ProductRepo().list({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -79,8 +79,7 @@ export default class ProductsController {
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-            const existingProduct = await new ProductModel().getProductById(id as number);
-
+            const existingProduct = await new ProductRepo().get(id as number);
             if (isEmpty(existingProduct)) {
                 return res
                     .status(400)
@@ -95,8 +94,7 @@ export default class ProductsController {
             const createProduct = req?.body;
             delete createProduct.id
 
-            const Product = await new ProductModel().update(id, createProduct);
-
+            const Product = await new ProductRepo().update(id as number, createProduct);
             return res
                 .status(200)
                 .send(
@@ -116,7 +114,7 @@ export default class ProductsController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-            const Product = await new ProductModel().getProductById(id as number);
+            const Product = await new ProductRepo().get(id as number);
 
             if (isEmpty(Product)) {
                 return res
@@ -149,8 +147,7 @@ export default class ProductsController {
     static async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const ids = get(req?.body, "ids", "");
-
-            const Product = await new ProductModel().delete(ids);
+            const Product = await new ProductRepo().delete(ids);
             return res
                 .status(200)
                 .send(

@@ -4,15 +4,18 @@ import {
     TTestimonialsFilters,
     TTestimonialsList,
     TAddTestimonials,
-} from "../../../types/testimonials";
-import { Testimonials } from "../../../database/schema";
+    TEditTestimonials,
+    TListFilters
+} from "../../../types";
+import { TestimonialsModel } from "../../../database/schema";
+import IBaseRepo from '../controllers/controller/ITestimonialsController';
 
-export class TestimonialsModel {
+export class TestimonialsRepo implements IBaseRepo<TTestimonials, TListFilters> {
     constructor() { }
 
-    public async getTestimonialsByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TTestimonials | any> {
+    public async getTestimonialsByAttr(whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TTestimonials> {
         const whereAttributes = { [whereName]: whereVal }
-        const data = await Testimonials.findOne({
+        const data = await TestimonialsModel.findOne({
             raw: true,
             attributes: getAttributes,
             where: whereAttributes
@@ -20,15 +23,15 @@ export class TestimonialsModel {
         return data;
     }
 
-    public async list(filters: TTestimonialsFilters): Promise<TTestimonialsList | any> {
-        const total = await Testimonials.count({
+    public async list(filters: TTestimonialsFilters): Promise<TTestimonialsList> {
+        const total = await TestimonialsModel.count({
             where: {
                 testimonial_text: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Testimonials.findAll({
+        const data = await TestimonialsModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -41,13 +44,13 @@ export class TestimonialsModel {
         return { total, data };
     }
 
-    public async add(data: TAddTestimonials): Promise<TAddTestimonials | any> {
-        const response = await Testimonials.create(data);
+    public async create(data: TAddTestimonials): Promise<TTestimonials> {
+        const response = await TestimonialsModel.create(data);
         return response;
     }
 
-    public async update(id: number, data: TAddTestimonials): Promise<TTestimonials | any> {
-        const response = await Testimonials.update(data, {
+    public async update(id: number, data: TEditTestimonials): Promise<[affectedCount: number]> {
+        const response = await TestimonialsModel.update(data, {
             where: {
                 id,
             },
@@ -55,8 +58,8 @@ export class TestimonialsModel {
         return response;
     }
 
-    public async delete(ids: number[]): Promise<TTestimonials | any> {
-        const response = await Testimonials.destroy({
+    public async delete(ids: number[]): Promise<number> {
+        const response = await TestimonialsModel.destroy({
             where: {
                 id: ids,
             },

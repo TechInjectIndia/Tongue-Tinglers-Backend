@@ -7,6 +7,7 @@ export type TUser = {
   firstName: string;
   lastName: string;
   nameForSearch: string;
+  profilePhoto: string;
   email: string;
   userName: string;
   phoneNumber: string;

@@ -2,36 +2,39 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { TestimonialsModel } from '../models/testimonials';
-import { ProductModel } from '../../ecommerce/models/products';
+import { TestimonialsRepo } from '../models/testimonials';
+import { ProductRepo } from '../../ecommerce/models/products';
+import { AdminRepo as FranchiseRepo } from '../../admin-user/models/user';
+import { TESTIMONIAL_ITEM_TYPE } from '../../../interfaces';
 
 export default class TestimonialsController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const createTestimonials = req?.body;
             const item_type = get(req?.body, "item_type", '');
+            const item_id = get(req?.body, "item_id", "");
+            const user_id = get(req, 'user_id', 0);
 
-            const user_id = get(req, "user_id", "");
-            createTestimonials.user_id = user_id
-            if (item_type == 'product') {
-                const item_id = get(req?.body, "item_id", "");
-                const Product = await new ProductModel().getProductById(item_id as number);
-    
-                if (isEmpty(Product)) {
-                    return res
-                        .status(400)
-                        .send(
-                            sendResponse(
-                                RESPONSE_TYPE.ERROR,
-                                `Product ${ERROR_MESSAGE.NOT_EXISTS}`
-                            )
-                        );
-                }
+            let checkIfExist = null;
+            let franchiseOrProduct = TESTIMONIAL_ITEM_TYPE.PRODUCT
+            if (item_type == TESTIMONIAL_ITEM_TYPE.PRODUCT) {
+                checkIfExist = await new ProductRepo().get(item_id as number);
+            } else if (item_type == TESTIMONIAL_ITEM_TYPE.FRANCHISE) {
+                checkIfExist = await new FranchiseRepo().get(item_id as number);
+                franchiseOrProduct = TESTIMONIAL_ITEM_TYPE.FRANCHISE
+            }
+            if (isEmpty(checkIfExist)) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `${franchiseOrProduct} ${ERROR_MESSAGE.NOT_EXISTS}`
+                        )
+                    );
             }
 
-            const Testimonials = await new TestimonialsModel().add(createTestimonials);
-
-            // check if  franchise or product exist
+            const payload = { ...req?.body, user_id: user_id };
+            const Testimonials = await new TestimonialsRepo().create(payload);
             return res
                 .status(200)
                 .send(
@@ -57,7 +60,7 @@ export default class TestimonialsController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const Testimonialss = await new TestimonialsModel().list({
+            const Testimonialss = await new TestimonialsRepo().list({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -88,7 +91,7 @@ export default class TestimonialsController {
 
             const updateTestimonials = req?.body;
             delete updateTestimonials.id
-            const Testimonials = await new TestimonialsModel().update(id, updateTestimonials);
+            const Testimonials = await new TestimonialsRepo().update(id, updateTestimonials);
 
             return res
                 .status(200)
@@ -109,10 +112,10 @@ export default class TestimonialsController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-            let getAttributes: any = '';
+            let getAttributes: any = ['*'];
             const whereName = 'id'
             const whereVal = id;
-            const existingTestimonials = await new TestimonialsModel().getTestimonialsByAttr(whereName, whereVal, getAttributes);
+            const existingTestimonials = await new TestimonialsRepo().getTestimonialsByAttr(whereName, whereVal, getAttributes);
 
             if (isEmpty(existingTestimonials)) {
                 return res
@@ -145,7 +148,7 @@ export default class TestimonialsController {
         try {
             const ids = get(req?.body, "ids", "");
 
-            const Testimonials = await new TestimonialsModel().delete(ids);
+            const Testimonials = await new TestimonialsRepo().delete(ids);
             return res
                 .status(200)
                 .send(

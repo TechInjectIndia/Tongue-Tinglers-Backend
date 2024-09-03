@@ -1,12 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { TEditProfile } from "../../../types";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { ProfileRepo } from '../models/profile';
 
 export default class ProfileController {
-    static async getProfile(req: Request, res: Response, next: NextFunction) {
+    static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req, "user_id", "");
             const getProfileData = await new ProfileRepo().get(id as number);
@@ -38,13 +37,12 @@ export default class ProfileController {
         }
     }
 
-    static async editProfile(req: Request, res: Response, next: NextFunction) {
+    static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req, "user_id", "");
             const payload = req?.body;
 
-            await new ProfileRepo().editProfile(id, payload);
-
+            await new ProfileRepo().update(id, payload);
             return res
                 .status(200)
                 .send(

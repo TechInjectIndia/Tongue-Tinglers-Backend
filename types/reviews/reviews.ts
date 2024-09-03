@@ -3,6 +3,7 @@ const { OrderItem } = require("sequelize");
 // Reviews type Starts
 export type TReviews = {
   id: number;
+  user_id: number;
   review_text: string;
   rating: number;
   approved: number;
@@ -14,10 +15,12 @@ export type TReviews = {
 
 export type TAddReviews = {
 };
+export type TEditReviews = {
+};
 
 export type TReviewssList = {
   total: number;
-  data: TReviews;
+  data: TReviews[];
 };
 
 export type TReviewsFilters = {

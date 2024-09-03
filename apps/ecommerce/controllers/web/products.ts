@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../../constants";
-import { ProductModel } from '../../models/web/products';
+import { WebProductRepo } from '../../models/web/products';
 
 export default class ProductsController {
     static async list(req: Request, res: Response, next: NextFunction) {
@@ -14,7 +14,7 @@ export default class ProductsController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const Products = await new ProductModel().list({
+            const Products = await new WebProductRepo().list({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -42,7 +42,7 @@ export default class ProductsController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const slug = get(req?.params, "slug", "");
-            const Product = await new ProductModel().getProductBySlug(slug as string);
+            const Product = await new WebProductRepo().getProductBySlug(slug as string);
 
             if (isEmpty(Product)) {
                 return res
@@ -77,7 +77,7 @@ export default class ProductsController {
             const limit = get(req?.query, "limit", "");
             const type = get(req?.query, "type", "");
 
-            const Products = await new ProductModel().getProductByTag(type as string, limit as number);
+            const Products = await new WebProductRepo().getProductByTag(type as string, limit as number);
 
             if (isEmpty(Products)) {
                 return res
@@ -114,7 +114,7 @@ export default class ProductsController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const Products = await new ProductModel().search({
+            const Products = await new WebProductRepo().search({
                 search,
                 sorting,
             });

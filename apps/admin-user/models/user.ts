@@ -8,7 +8,7 @@ import {
     TUsersList,
     TUserWithPermission
 } from "../../../types";
-import { UserModel, Roles } from "../../../database/schema";
+import { UserModel, RolesModel } from "../../../database/schema";
 import { USER_TYPE, USER_STATUS } from '../../../interfaces';
 import IBaseRepo from '../controllers/controller/IController';
 
@@ -44,7 +44,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                 id,
             },
         });
-        const role = await Roles.findOne({
+        const role = await RolesModel.findOne({
             where: {
                 id: data?.dataValues?.role
             }
@@ -56,10 +56,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         return await UserModel.create({ ...data, type: USER_TYPE.ADMIN });
     }
 
-    public async update(
-        id: number,
-        data: TEditUser
-    ): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TEditUser): Promise<[affectedCount: number]> {
         return await UserModel.update(data, {
             where: {
                 id,
@@ -131,10 +128,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         return response;
     }
 
-    public async updateProfile(
-        id: number,
-        data: TEditUserProfile
-    ): Promise<[affectedCount: number]> {
+    public async updateProfile(id: number, data: TEditUserProfile): Promise<[affectedCount: number]> {
         return await UserModel.update(data, {
             where: {
                 id,

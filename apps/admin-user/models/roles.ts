@@ -4,24 +4,29 @@ import {
     TRoleFilters,
     TRolesList,
     TAddRole,
+    TEditRole,
+    TListFilters,
+    TUser
 } from "../../../types";
-import { UserModel, Roles } from "../../../database/schema";
+import { USER_TYPE } from '../../../interfaces';
+import { UserModel, RolesModel } from "../../../database/schema";
+import IBaseRepo from '../controllers/controller/IRolesController';
 
-export class Admin {
+export class RolesRepo implements IBaseRepo<TRole, TListFilters> {
     constructor() { }
 
-    public async getRoleAssigneeByRoleId(ids: string[]): Promise<any> {
+    public async getRoleAssigneeByRoleId(ids: number[]): Promise<TUser[]> {
         const data = await UserModel.findAll({
             where: {
                 role: ids,
-                type: 'admin'
+                type: USER_TYPE.ADMIN,
             },
         });
-        return data ?? null;
+        return data;
     }
 
-    public async getRoleByName(name: string): Promise<TRole | any> {
-        const data = await Roles.findOne({
+    public async getRoleByName(name: string): Promise<TRole> {
+        const data = await RolesModel.findOne({
             where: {
                 name,
             },
@@ -29,8 +34,8 @@ export class Admin {
         return data;
     }
 
-    public async getRoleById(id: number): Promise<TRole | any> {
-        const data = await Roles.findOne({
+    public async get(id: number): Promise<TRole> {
+        const data = await RolesModel.findOne({
             where: {
                 id,
             },
@@ -38,15 +43,15 @@ export class Admin {
         return data;
     }
 
-    public async listRoles(filters: TRoleFilters): Promise<TRolesList | any> {
-        const total = await Roles.count({
+    public async list(filters: TRoleFilters): Promise<TRolesList> {
+        const total = await RolesModel.count({
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Roles.findAll({
+        const data = await RolesModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -59,13 +64,13 @@ export class Admin {
         return { total, data };
     }
 
-    public async addRole(data: TAddRole): Promise<TRole | any> {
-        const response = await Roles.create(data);
+    public async create(data: TAddRole): Promise<TRole> {
+        const response = await RolesModel.create(data);
         return response;
     }
 
-    public async editRole(id: number, data: TAddRole): Promise<TRole | any> {
-        const response = await Roles.update(data, {
+    public async update(id: number, data: TEditRole): Promise<[affectedCount: number]> {
+        const response = await RolesModel.update(data, {
             where: {
                 id,
             },
@@ -73,8 +78,8 @@ export class Admin {
         return response;
     }
 
-    public async deleteRole(ids: number[]): Promise<TRole | any> {
-        const response = await Roles.destroy({
+    public async deleteRole(ids: number[]): Promise<number> {
+        const response = await RolesModel.destroy({
             where: {
                 id: ids,
             },

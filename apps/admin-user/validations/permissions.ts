@@ -14,6 +14,7 @@ export const validateEditMultipleIdsBody = async (
 
 const createPermissionBody = Joi.object().keys({
     name: Joi.string().required(),
+    description: Joi.string().required(),
     active: Joi.number().required(),
 });
 
@@ -25,6 +26,7 @@ export const validateCreatePermissionBody = async (
 
 const editPermissionBody = Joi.object().keys({
     name: Joi.string().required(),
+    description: Joi.string().required(),
     active: Joi.number().required(),
 });
 

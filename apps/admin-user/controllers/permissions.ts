@@ -2,13 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { Admin } from '../models/permissions';
+import { PermissionsRepo } from '../models/permissions';
 
-export default class PermissionsController {    
+export default class PermissionsController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-            const isExistPermission = await new Admin().getPermissionById(id as number);
+            const isExistPermission = await new PermissionsRepo().get(id as number);
             if (!isExistPermission) {
                 return res
                     .status(400)
@@ -25,7 +25,7 @@ export default class PermissionsController {
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CREATED,
+                        SUCCESS_MESSAGE.FETCHED,
                         isExistPermission
                     )
                 );
@@ -45,7 +45,7 @@ export default class PermissionsController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const roles = await new Admin().listPermissions({
+            const roles = await new PermissionsRepo().list({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -74,7 +74,7 @@ export default class PermissionsController {
         try {
             const name = get(req?.body, "name", "");
             const active = get(req?.body, "active", 1);
-            const existingPermission = await new Admin().getPermissionByName(name);
+            const existingPermission = await new PermissionsRepo().getPermissionByName(name);
 
             if (!isEmpty(existingPermission)) {
                 return res
@@ -87,7 +87,7 @@ export default class PermissionsController {
                     );
             }
 
-            const Permission = await new Admin().addPermission({ name, active });
+            const Permission = await new PermissionsRepo().create({ name, active });
             return res
                 .status(200)
                 .send(
@@ -108,10 +108,10 @@ export default class PermissionsController {
         try {
             const id = get(req?.params, "id", "");
             const name = get(req?.body, "name", "");
+            const description = get(req?.body, "description", "");
             const active = get(req?.body, "active", 1);
 
-            const existingPermission = await new Admin().getPermissionById(id as number);
-
+            const existingPermission = await new PermissionsRepo().get(id as number);
             if (isEmpty(existingPermission)) {
                 return res
                     .status(400)
@@ -123,48 +123,25 @@ export default class PermissionsController {
                     );
             }
 
-            const Permission = await new Admin().editPermission(id, { name, active });
+            const checkPermissionExist = await new PermissionsRepo().checkPermissionExist(name as string, id as number);
+            if (checkPermissionExist) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.EXISTS
+                        )
+                    );
+            }
 
+            const Permission = await new PermissionsRepo().update(id, { name, description, active });
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
-                        Permission
-                    )
-                );
-        } catch (err) {
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
-        }
-    }
-
-    static async delete(req: Request, res: Response, next: NextFunction) {
-        try {
-            const ids = get(req?.body, "ids", "");
-
-            const isAssigned = await new Admin().getPermissionAssigneeByPermissionId(ids);
-            if (!isEmpty(isAssigned)) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS
-                        )
-                    );
-            }
-
-            const Permission = await new Admin().deletePermission(ids);
-
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.DELETED,
                         Permission
                     )
                 );

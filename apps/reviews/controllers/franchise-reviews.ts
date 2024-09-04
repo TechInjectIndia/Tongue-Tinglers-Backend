@@ -35,15 +35,15 @@ export default class FranchiseReviewsController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
-            const user_id = get(req, 'user_id', '');
+            sorting = sorting.toString().split(" ");
+            const user_id = get(req, 'user_id', 0);
 
             const Reviewss = await new FranchiseReviewsRepo().list(user_id as number, {
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -64,7 +64,7 @@ export default class FranchiseReviewsController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
 
             let getAttributes: any = ['*'];
             const whereName = 'id'

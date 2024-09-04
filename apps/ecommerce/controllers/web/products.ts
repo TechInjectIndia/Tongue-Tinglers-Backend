@@ -12,14 +12,14 @@ export default class webProductsController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
             const Products = await new WebProductRepo().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -74,8 +74,8 @@ export default class webProductsController {
 
     static async getByType(req: Request, res: Response, next: NextFunction) {
         try {
-            const limit = get(req?.query, "limit", "");
-            const type = get(req?.query, "type", "");
+            const limit = get(req?.query, "limit", 500);
+            const type = get(req?.query, "type");
 
             const Products = await new WebProductRepo().getProductByTag(type as string, limit as number);
 
@@ -110,12 +110,11 @@ export default class webProductsController {
     static async search(req: Request, res: Response, next: NextFunction) {
         try {
             const search = get(req?.query, "search", "");
-            console.log('search', req?.query);
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
             const Products = await new WebProductRepo().search({
-                search,
+                search: search as string,
                 sorting,
             });
 

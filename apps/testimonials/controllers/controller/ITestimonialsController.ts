@@ -1,12 +1,12 @@
 import { Response } from "express";
-import { TQueryFilters, TAddTestimonials, TEditTestimonials } from '../../../../types'
+import { TQueryFilters, TAddTestimonials, TEditTestimonials, TTestimonialsList } from '../../../../types'
 
 interface ITestimonialsController<T, F extends TQueryFilters> {
-    list(filters: F): Promise<Response<T[]>>;
-    getTestimonialsByAttr(whereName: any, whereVal: any, getAttributes: any): Promise<Response<T>>;
-    create(payload: TAddTestimonials): Promise<Response<T>>;
-    update(id: number, payload: TEditTestimonials): Promise<Response<T>>;
-    delete(ids: number[]): Promise<Response<T>>;
+    list(filters: F): Promise<TTestimonialsList>;
+    getTestimonialsByAttr(whereName: any, whereVal: any, getAttributes: any): Promise<T>;
+    create(payload: TAddTestimonials): Promise<T>;
+    update(id: number, payload: TEditTestimonials): Promise<[affectedCount: number]>;
+    delete(ids: number[]): Promise<number>;
 }
 
 export default ITestimonialsController;

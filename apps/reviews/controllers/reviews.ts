@@ -59,14 +59,14 @@ export default class ReviewsController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
             const Reviewss = await new ReviewsRepo().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -88,7 +88,7 @@ export default class ReviewsController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             let getAttributes: any = ['*'];
             const whereName = 'id'
             const whereVal = id;
@@ -107,7 +107,7 @@ export default class ReviewsController {
 
             const updateReviews = req?.body;
             delete updateReviews.id
-            const Reviews = await new ReviewsRepo().update(id, updateReviews);
+            const Reviews = await new ReviewsRepo().update(id as number, updateReviews);
 
             return res
                 .status(200)
@@ -127,7 +127,7 @@ export default class ReviewsController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
 
             let getAttributes: any = '';
             const whereName = 'id'

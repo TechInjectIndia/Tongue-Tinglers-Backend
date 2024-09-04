@@ -49,14 +49,14 @@ export default class ProductsController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
             const Products = await new ProductRepo().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -78,7 +78,7 @@ export default class ProductsController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const existingProduct = await new ProductRepo().get(id as number);
             if (isEmpty(existingProduct)) {
                 return res
@@ -113,7 +113,7 @@ export default class ProductsController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const Product = await new ProductRepo().get(id as number);
 
             if (isEmpty(Product)) {

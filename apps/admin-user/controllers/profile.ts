@@ -7,7 +7,7 @@ import { ProfileRepo } from '../models/profile';
 export default class ProfileController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req, "user_id", "");
+            const id = get(req, "user_id", 0);
             const getProfileData = await new ProfileRepo().get(id as number);
 
             if (isEmpty(getProfileData)) {
@@ -39,7 +39,7 @@ export default class ProfileController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req, "user_id", "");
+            const id = get(req, "user_id", 0);
             const payload = req?.body;
 
             await new ProfileRepo().update(id, payload);

@@ -1,12 +1,12 @@
 import { Response } from "express";
-import { TQueryFilters, TAddProduct, TEditProduct } from '../../../../../types'
+import { TQueryFilters, TAddProduct, TProductsList } from '../../../../../types'
 
 interface IWebProductsController<T, F extends TQueryFilters> {
-    list(filters: F): Promise<Response<T[]>>;
-    search(filters: F): Promise<Response<T[]>>;
-    getProductByTag(type: string, limit: number): Promise<Response<T[]>>;
-    getProductByName(name: string): Promise<Response<T>>;
-    getProductBySlug(slug: string): Promise<Response<T>>;
+    list(filters: F): Promise<TProductsList>;
+    search(filters: F): Promise<TProductsList>;
+    getProductByTag(type: string, limit: number): Promise<TProductsList>;
+    getProductByName(name: string): Promise<T>;
+    getProductBySlug(slug: string): Promise<T>;
 }
 
 export default IWebProductsController;

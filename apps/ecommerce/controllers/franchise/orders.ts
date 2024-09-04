@@ -8,7 +8,7 @@ export default class OrderController {
 
     static async getOrderStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             let getAttributes: any = ['order_status'];
             const whereName = 'id'
             const whereVal = id;
@@ -48,14 +48,14 @@ export default class OrderController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
             const Orders = await new OrderModel().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -76,7 +76,7 @@ export default class OrderController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const Order = await new OrderModel().getOrderById(id as number);
 
             if (isEmpty(Order)) {

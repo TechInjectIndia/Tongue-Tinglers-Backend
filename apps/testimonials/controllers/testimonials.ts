@@ -58,14 +58,14 @@ export default class TestimonialsController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
             const Testimonialss = await new TestimonialsRepo().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -87,11 +87,11 @@ export default class TestimonialsController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
 
             const updateTestimonials = req?.body;
             delete updateTestimonials.id
-            const Testimonials = await new TestimonialsRepo().update(id, updateTestimonials);
+            const Testimonials = await new TestimonialsRepo().update(id as number, updateTestimonials);
 
             return res
                 .status(200)
@@ -111,7 +111,7 @@ export default class TestimonialsController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             let getAttributes: any = ['*'];
             const whereName = 'id'
             const whereVal = id;

@@ -50,14 +50,14 @@ export default class ProductTagsController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
             const Tags = await new TagModel().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -79,7 +79,7 @@ export default class ProductTagsController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const name = get(req?.body, "name", "");
             const active = get(req?.body, "active", 1);
             const description = get(req?.body, "description", '');
@@ -98,7 +98,7 @@ export default class ProductTagsController {
                     );
             }
 
-            const Tag = await new TagModel().update(id, { name, description, slug, active });
+            const Tag = await new TagModel().update(id as number, { name, description, slug, active });
 
             return res
                 .status(200)
@@ -118,7 +118,7 @@ export default class ProductTagsController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const Tag = await new TagModel().getTagById(id as number);
 
             if (isEmpty(Tag)) {

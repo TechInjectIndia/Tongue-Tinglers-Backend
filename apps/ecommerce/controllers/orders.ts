@@ -12,14 +12,14 @@ export default class OrderController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
             const Orders = await new OrderRepo().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -41,7 +41,7 @@ export default class OrderController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const orderStatus = get(req?.body, "status", "");
 
             const existingOrder = await new OrderRepo().getOrderById(id as number);
@@ -56,7 +56,7 @@ export default class OrderController {
                     );
             }
 
-            const Order = await new OrderRepo().update(id, { orderStatus });
+            const Order = await new OrderRepo().update(id as number, { orderStatus });
             return res
                 .status(200)
                 .send(
@@ -75,7 +75,7 @@ export default class OrderController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const Order = await new OrderRepo().getOrderById(id as number);
 
             if (isEmpty(Order)) {

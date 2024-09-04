@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TReviews } from "../../../types";
 import { REVIEWS_ITEM_TYPE, REVIEW_FILTERS } from '../../../interfaces';
-const { INTEGER, STRING, TEXT, ENUM, DATE, NOW } = DataTypes;
+const { INTEGER, STRING, TEXT, ENUM, DATE, NOW, BOOLEAN } = DataTypes;
 
 interface ReviewsCreationAttributes extends Optional<TReviews, 'id' | 'createdAt' | 'updatedAt'> { }
 
@@ -24,7 +24,7 @@ ReviewsModel.init({
         type: INTEGER,
         autoIncrement: true,
         primaryKey: true,
-    },    
+    },
     user_id: { // Refers to the Users table.
         type: INTEGER,
         allowNull: false,
@@ -37,8 +37,8 @@ ReviewsModel.init({
         type: STRING,
     },
     approved: { // To indicate if the testimonial has been approved (useful if Reviews need to be moderated).
-        type: ENUM,
-        values: [...Object.values(REVIEWS_ITEM_TYPE)]
+        type: BOOLEAN,
+        defaultValue: false,
     },
     review_date: { // To indicate if the testimonial has been approved (useful if Reviews need to be moderated).
         type: DATE,

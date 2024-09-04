@@ -17,7 +17,7 @@ export type TLead = {
   address: string,
   additional_info: string,
   source: number,
-  follow_date: number,
+  follow_date: Date,
   status: number,
   createdBy: number,
   assignedTo: number,
@@ -40,7 +40,7 @@ export type TEditLead = {
   address: string,
   additional_info: string,
   source: number,
-  follow_date: number,
+  follow_date: Date,
   status: number,
 };
 
@@ -61,7 +61,7 @@ export type TAddLead = {
   address: string,
   additional_info: string,
   source: number,
-  follow_date: number,
+  follow_date: Date,
   status: number,
 };
 

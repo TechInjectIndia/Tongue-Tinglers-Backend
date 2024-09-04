@@ -9,6 +9,7 @@ const {
 } = ProfileValidation;
 
 const { update, get, } = ProfileController;
+
 // ====== Profile Start ======
 /**
  * @swagger

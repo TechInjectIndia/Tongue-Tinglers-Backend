@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { ProductCategoryModel } from '../models/category';
+import { ProductCategoryRepo } from '../models/category';
 const slugify = require('slugify');
 
 export default class ProductCategory {
@@ -13,7 +13,7 @@ export default class ProductCategory {
             const description = get(req?.body, "description", '');
             const slug = slugify(name, { lower: true });
 
-            const existingProduct = await new ProductCategoryModel().getProductCategoryByName(name);
+            const existingProduct = await new ProductCategoryRepo().getProductCategoryByName(name);
             if (existingProduct) {
                 return res
                     .status(400)
@@ -25,7 +25,7 @@ export default class ProductCategory {
                     );
             }
 
-            const Product = await new ProductCategoryModel().create({ name, slug, active, description });
+            const Product = await new ProductCategoryRepo().create({ name, slug, active, description });
             return res
                 .status(200)
                 .send(
@@ -52,7 +52,7 @@ export default class ProductCategory {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const Products = await new ProductCategoryModel().list({
+            const Products = await new ProductCategoryRepo().list({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
@@ -85,7 +85,7 @@ export default class ProductCategory {
             const description = get(req?.body, "description", '');
             const slug = slugify(name, { lower: true });
 
-            const existingProduct = await new ProductCategoryModel().getProductCategoryById(id as number);
+            const existingProduct = await new ProductCategoryRepo().get(id as number);
 
             if (isEmpty(existingProduct)) {
                 return res
@@ -98,7 +98,7 @@ export default class ProductCategory {
                     );
             }
 
-            const Product = await new ProductCategoryModel().update(id, { name, slug, active, description });
+            const Product = await new ProductCategoryRepo().update(id, { name, slug, active, description });
 
             return res
                 .status(200)
@@ -119,7 +119,7 @@ export default class ProductCategory {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", "");
-            const Product = await new ProductCategoryModel().getProductCategoryById(id as number);
+            const Product = await new ProductCategoryRepo().get(id as number);
 
             if (isEmpty(Product)) {
                 return res
@@ -153,7 +153,7 @@ export default class ProductCategory {
         try {
             const ids = get(req?.body, "ids", "");
 
-            const Product = await new ProductCategoryModel().delete(ids);
+            const Product = await new ProductCategoryRepo().delete(ids);
             return res
                 .status(200)
                 .send(

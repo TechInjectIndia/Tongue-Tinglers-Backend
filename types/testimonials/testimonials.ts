@@ -26,6 +26,7 @@ export type TAddTestimonials = {
   rating: number,
   approved: number,
   user_id: number;
+  date_submitted: Date;
   testimonial_text: string;
   item_id: string;
   item_type: string;

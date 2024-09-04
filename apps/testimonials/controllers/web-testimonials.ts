@@ -3,54 +3,8 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { TestimonialsRepo } from '../models/web-testimonials';
-import { TESTIMONIAL_ITEM_TYPE } from '../../../interfaces';
-import { ProductRepo } from '../../ecommerce/models/products';
-import { AdminRepo as FranchiseRepo } from '../../admin-user/models/user';
 
 export default class WebTestimonialsController {
-    // static async create(req: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         const item_type = get(req?.body, "item_type", '');
-    //         const item_id = get(req?.body, "item_id", "");
-    //         const user_id = get(req, 'user_id', 0);
-
-    //         let checkIfExist = null;
-    //         let franchiseOrProduct = TESTIMONIAL_ITEM_TYPE.PRODUCT
-    //         if (item_type == TESTIMONIAL_ITEM_TYPE.PRODUCT) {
-    //             checkIfExist = await new ProductRepo().get(item_id as number);
-    //         } else if (item_type == TESTIMONIAL_ITEM_TYPE.FRANCHISE) {
-    //             checkIfExist = await new FranchiseRepo().get(item_id as number);
-    //             franchiseOrProduct = TESTIMONIAL_ITEM_TYPE.FRANCHISE
-    //         }
-    //         if (isEmpty(checkIfExist)) {
-    //             return res
-    //                 .status(400)
-    //                 .send(
-    //                     sendResponse(
-    //                         RESPONSE_TYPE.ERROR,
-    //                         `${franchiseOrProduct} ${ERROR_MESSAGE.NOT_EXISTS}`
-    //                     )
-    //                 );
-    //         }
-
-    //         const payload = { ...req?.body, user_id: user_id };
-    //         const Testimonials = await new TestimonialsRepo().create(payload);
-    //         return res
-    //             .status(200)
-    //             .send(
-    //                 sendResponse(
-    //                     RESPONSE_TYPE.SUCCESS,
-    //                     SUCCESS_MESSAGE.CREATED,
-    //                     Testimonials
-    //                 )
-    //             );
-    //     } catch (err) {
-    //         return res.status(500).send({
-    //             message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-    //         });
-    //     }
-    // }
-
     static async list(req: Request, res: Response, next: NextFunction) {
         try {
             const size = get(req?.query, "size", 10);
@@ -85,39 +39,4 @@ export default class WebTestimonialsController {
             });
         }
     }
-
-    // static async get(req: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         const id = get(req?.params, "id", "");
-    //         let getAttributes: any = ['*'];
-    //         const whereName = 'id'
-    //         const whereVal = id;
-    //         const existingTestimonials = await new TestimonialsRepo().getTestimonialsByAttr(whereName, whereVal, getAttributes);
-
-    //         if (isEmpty(existingTestimonials)) {
-    //             return res
-    //                 .status(400)
-    //                 .send(
-    //                     sendResponse(
-    //                         RESPONSE_TYPE.ERROR,
-    //                         ERROR_MESSAGE.NOT_EXISTS
-    //                     )
-    //                 );
-    //         }
-
-    //         return res
-    //             .status(200)
-    //             .send(
-    //                 sendResponse(
-    //                     RESPONSE_TYPE.SUCCESS,
-    //                     SUCCESS_MESSAGE.FETCHED,
-    //                     existingTestimonials
-    //                 )
-    //             );
-    //     } catch (err) {
-    //         return res.status(500).send({
-    //             message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-    //         });
-    //     }
-    // }
 }

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { FollowUpsModel } from '../models/followup';
+import { FollowUpsRepo } from '../models/followup';
 
 export default class FollowUpsController {
 
@@ -16,8 +16,7 @@ export default class FollowUpsController {
             endDate = new Date(endDate);
             let getAttributes: any = ['*'];
 
-            const existingLead = await new FollowUpsModel().getFollowUpsToday(startDate, endDate, assignedTo, getAttributes);
-
+            const existingLead = await new FollowUpsRepo().getFollowUpsToday(startDate, endDate, assignedTo, getAttributes);
             if (isEmpty(existingLead)) {
                 return res
                     .status(400)
@@ -39,7 +38,6 @@ export default class FollowUpsController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

@@ -136,7 +136,7 @@ const {
  *                type: string
  *                default: AdminCategoryNew
  *              active:
- *                type: string
+ *                type: boolean
  *                default: 1
  *     responses:
  *       '200':

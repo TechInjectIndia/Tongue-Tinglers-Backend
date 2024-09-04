@@ -209,7 +209,7 @@ const {
  *                example: "2018-08-28"
  *              status:
  *                type: string
- *                default: New
+ *                default: new
  *     responses:
  *       '200':
  *         description: Lead updated successfully

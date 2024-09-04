@@ -2,17 +2,18 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { TestimonialsRepo } from '../models/testimonials';
+import { CustomerTestimonialsRepo } from '../models/customer-testimonials';
+import { TESTIMONIAL_ITEM_TYPE } from '../../../interfaces';
 import { ProductRepo } from '../../ecommerce/models/products';
 import { AdminRepo as FranchiseRepo } from '../../admin-user/models/user';
-import { TESTIMONIAL_ITEM_TYPE } from '../../../interfaces';
 
-export default class TestimonialsController {
+export default class CustomerTestimonialsController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const item_type = get(req?.body, "item_type", '');
             const item_id = get(req?.body, "item_id", "");
             const user_id = get(req, 'user_id', 0);
+            const currentDate = new Date();
 
             let checkIfExist: any;
             let franchiseOrProduct = TESTIMONIAL_ITEM_TYPE.PRODUCT
@@ -33,8 +34,8 @@ export default class TestimonialsController {
                     );
             }
 
-            const payload = { ...req?.body, user_id: user_id };
-            const Testimonials = await new TestimonialsRepo().create(payload);
+            const payload = { ...req?.body, user_id: user_id, date_submitted: currentDate };
+            const Testimonials = await new CustomerTestimonialsRepo().create(payload);
             return res
                 .status(200)
                 .send(
@@ -55,16 +56,18 @@ export default class TestimonialsController {
         try {
             const size = get(req?.query, "size", 10);
             const skip = get(req?.query, "skip", 1);
+            const rating = get(req?.query, "rating", 0);
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.split(" ");
 
-            const Testimonialss = await new TestimonialsRepo().list({
+            const getList = await new CustomerTestimonialsRepo().list({
                 offset: parseInt(skip),
                 limit: parseInt(size),
                 search,
                 sorting,
+                rating,
                 trashOnly
             });
 
@@ -74,32 +77,7 @@ export default class TestimonialsController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        Testimonialss
-                    )
-                );
-        } catch (err) {
-            console.log(err);
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
-        }
-    }
-
-    static async update(req: Request, res: Response, next: NextFunction) {
-        try {
-            const id = get(req?.params, "id", "");
-
-            const updateTestimonials = req?.body;
-            delete updateTestimonials.id
-            const Testimonials = await new TestimonialsRepo().update(id, updateTestimonials);
-
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED,
-                        Testimonials
+                        getList
                     )
                 );
         } catch (err) {
@@ -115,7 +93,7 @@ export default class TestimonialsController {
             let getAttributes: any = ['*'];
             const whereName = 'id'
             const whereVal = id;
-            const existingTestimonials = await new TestimonialsRepo().getTestimonialsByAttr(whereName, whereVal, getAttributes);
+            const existingTestimonials = await new CustomerTestimonialsRepo().getTestimonialsByAttr(whereName, whereVal, getAttributes);
 
             if (isEmpty(existingTestimonials)) {
                 return res
@@ -143,26 +121,4 @@ export default class TestimonialsController {
             });
         }
     }
-
-    static async delete(req: Request, res: Response, next: NextFunction) {
-        try {
-            const ids = get(req?.body, "ids", "");
-
-            const Testimonials = await new TestimonialsRepo().delete(ids);
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.DELETED,
-                        Testimonials
-                    )
-                );
-        } catch (err) {
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
-        }
-    }
-
 }

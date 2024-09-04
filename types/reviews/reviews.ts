@@ -15,7 +15,35 @@ export type TReviews = {
 };
 
 export type TAddReviews = {
+  user_id: number;
+  review_text: string;
+  rating: number;
+  item_id: number;
+  item_type: string;
+  approved: number;
+  review_date: Date;
 };
+
+export type TAddCustomerReviews = {
+  user_id: number;
+  review_text: string;
+  rating: number;
+  item_id: number;
+  item_type: string;
+  approved: number;
+  review_date: Date;
+};
+
+export type TAddFranchiseReviews = {
+  user_id: number;
+  review_text: string;
+  rating: number;
+  item_id: number;
+  item_type: string;
+  approved: number;
+  review_date: Date;
+};
+
 export type TEditReviews = {
 };
 

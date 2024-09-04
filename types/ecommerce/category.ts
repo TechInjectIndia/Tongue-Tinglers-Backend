@@ -6,8 +6,16 @@ export type TProductCategory = {
   name: string;
   description: string;
   active: number;
+  slug: string;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type TEditProductCategory = {
+  name: string;
+  slug: string;
+  description: string;
+  active: number;
 };
 
 export type TAddProductCategory = {
@@ -19,7 +27,7 @@ export type TAddProductCategory = {
 
 export type TProductCategorysList = {
   total: number;
-  data: TProductCategory;
+  data: TProductCategory[];
 };
 
 export type TProductCategoryFilters = {

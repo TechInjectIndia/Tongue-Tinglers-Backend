@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { LEAD_SOURCE, LEAD_STATUS } from '../../../interfaces';
 import { sequelize } from "../../../config";
 import { TLead } from "../../../types";
-const { STRING, TEXT, DATE, INTEGER, ENUM } = DataTypes;
+const { STRING, TEXT, DATE, INTEGER, ENUM, NOW } = DataTypes;
 
 interface LeadCreationAttributes extends Optional<TLead, 'id' | 'createdAt' | 'updatedAt'> { }
 
@@ -20,7 +20,7 @@ class LeadsModel extends Model<TLead, LeadCreationAttributes> implements TLead {
     public additional_info: string;
     public status: number;
     public source: number;
-    public follow_date: number;
+    public follow_date: Date;
     public assignedTo: number;
     public createdBy!: number;
     public updatedBy!: string;
@@ -75,7 +75,7 @@ LeadsModel.init({
         values: [...Object.values(LEAD_SOURCE)]
     },
     follow_date: {
-        type: STRING
+        type: DATE
     },
     assignedTo: {
         type: INTEGER
@@ -90,19 +90,19 @@ LeadsModel.init({
         type: STRING
     },
     createdAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW,
+        defaultValue: NOW,
         field: "created_at",
     },
     updatedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW,
+        defaultValue: NOW,
         field: "updated_at",
     },
     deletedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: true,
         defaultValue: null,
         field: "deleted_at",

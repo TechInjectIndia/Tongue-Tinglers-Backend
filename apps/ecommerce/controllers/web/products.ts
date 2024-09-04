@@ -4,7 +4,7 @@ import { sendResponse } from "../../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../../constants";
 import { WebProductRepo } from '../../models/web/products';
 
-export default class ProductsController {
+export default class webProductsController {
     static async list(req: Request, res: Response, next: NextFunction) {
         try {
             const size = get(req?.query, "size", 10);

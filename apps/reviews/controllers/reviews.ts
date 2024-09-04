@@ -14,7 +14,7 @@ export default class ReviewsController {
             const item_id = get(req?.body, "item_id", "");
             const user_id = get(req, 'user_id', 0);
 
-            let checkIfExist = null;
+            let checkIfExist: any;
             let franchiseOrProduct = TESTIMONIAL_ITEM_TYPE.PRODUCT
             if (item_type == TESTIMONIAL_ITEM_TYPE.PRODUCT) {
                 checkIfExist = await new ProductRepo().get(item_id as number);

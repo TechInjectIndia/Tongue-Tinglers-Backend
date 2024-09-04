@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TTestimonials } from "../../../types";
 import { TESTIMONIAL_ITEM_TYPE } from '../../../interfaces';
-const { INTEGER, STRING, TEXT, ENUM, DATE, NOW } = DataTypes;
+const { INTEGER, BOOLEAN, TEXT, ENUM, DATE, NOW } = DataTypes;
 
 interface TestimonialsCreationAttributes extends Optional<TTestimonials, 'id' | 'createdAt' | 'updatedAt'> { }
 
@@ -39,7 +39,8 @@ TestimonialsModel.init({
         type: DATE,
     },
     approved: { // To indicate if the testimonial has been approved (useful if testimonials need to be moderated).
-        type: INTEGER,
+        type: BOOLEAN, // Use BOOLEAN for true/false values
+        defaultValue: false,
     },
     item_id: { // Identifier for the item being reviewed (e.g., franchise id)
         type: INTEGER,

@@ -1,16 +1,16 @@
 import { NextFunction, Response } from "express";
-import { TQueryFilters, TAddUser, TEditUser, TEditUserProfile } from '../../../../types'
+import { TQueryFilters, TAddUser, TEditUser, TEditUserProfile, TUsersList, TUserWithPermission } from '../../../../types'
 
 interface IController<T, F extends TQueryFilters> {
-    list(filters: F): Promise<Response<T[]>>;
-    get(id: number): Promise<Response<T>>;
-    create(payload: TAddUser): Promise<Response<T>>;
-    update(id: number, payload: TEditUser): Promise<Response<T>>;
-    delete(ids: number[], deletedBy: number): Promise<Response<T>>;
-    deletedList(filters: F): Promise<Response<T[]>>;
-    restore(ids: number[]): Promise<Response<T>>;
-    deletePermanant(ids: number[]): Promise<Response<T>>;
-    updateProfile(id: number, payload: TEditUserProfile): Promise<Response<T>>;
+    list(filters: F): Promise<TUsersList>;
+    get(id: number): Promise<TUserWithPermission>;
+    create(payload: TAddUser): Promise<T>;
+    update(id: number, payload: TEditUser): Promise<[affectedCount: number]>;
+    delete(ids: number[], deletedBy: number): Promise<number>;
+    deletedList(filters: F): Promise<TUsersList>;
+    restore(ids: number[]): Promise<void>;
+    deletePermanant(ids: number[]): Promise<number>;
+    updateProfile(id: number, payload: TEditUserProfile): Promise<[affectedCount: number]>;
 }
 
 export default IController;

@@ -6,7 +6,7 @@ interface IFranchiseController<T, F extends TQueryFilters> {
     get(id: number): Promise<Response<T>>;
     create(payload: TAddFranchise): Promise<Response<T>>;
     update(id: number, payload: TEditFranchise): Promise<Response<T>>;
-    delete(ids: number[], deletedBy: number): Promise<Response<T>>;
+    delete(ids: number[], deletedBy: number): Promise<number>;
     getFranchiseByEmail(email: string): Promise<Response<T>>;
     deletedList(filters: F): Promise<Response<T[]>>;
 }

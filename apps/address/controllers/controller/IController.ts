@@ -1,12 +1,12 @@
 import { NextFunction, Response } from "express";
-import { TQueryFilters, TAddAddress, TEditAddress } from '../../../../types'
+import { TQueryFilters, TAddAddress, TEditAddress, TAddress, TAddresssList } from '../../../../types'
 
 interface IController<T, F extends TQueryFilters> {
-    list(user_id: number, filters: F): Promise<Response<T[]>>;
-    get(id: number): Promise<Response<T>>;
-    create(payload: TAddAddress): Promise<Response<T>>;
-    update(user_id: number, id: number, payload: TEditAddress): Promise<Response<T>>;
-    delete(user_id: number, ids: number[], deletedBy: number): Promise<Response<T>>;
+    list(user_id: number, filters: F): Promise<TAddresssList>;
+    get(id: number): Promise<T>;
+    create(payload: TAddAddress): Promise<T>;
+    update(user_id: number, id: number, payload: TEditAddress): Promise<[affectedCount: number]>;
+    delete(user_id: number, ids: number[], deletedBy: number): Promise<number>;
 }
 
 export default IController;

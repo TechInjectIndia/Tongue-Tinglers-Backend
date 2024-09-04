@@ -1,38 +1,64 @@
-const { DataTypes } = require("sequelize");
+import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-const { INTEGER, STRING, DATE } = DataTypes;
+import { TCategoryImage } from "../../../types";
+const { INTEGER, STRING, DATE, NOW } = DataTypes;
 
-export const CategoryImange = sequelize.define('category_images', {
-    category_id: {
+interface OrderItemsCreationAttributes extends Optional<TCategoryImage, 'id' | 'createdAt' | 'updatedAt'> { }
+
+class CategoryImageModel extends Model<TCategoryImage, OrderItemsCreationAttributes> implements TCategoryImage {
+    public id!: number;
+    public categoryId!: number;
+    public fileName!: string;
+    public filePath!: string;
+    public originalName!: string;
+    public fileSize!: number;
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+}
+
+CategoryImageModel.init({
+    id: {
+        type: INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
+    categoryId: {
+        type: INTEGER,
+        allowNull: false,
+    },
+    fileName: {
         type: STRING,
         allowNull: false,
     },
-    file_name: {
+    filePath: {
         type: STRING,
         allowNull: false,
     },
-    file_path: {
+    originalName: {
         type: STRING,
         allowNull: false,
     },
-    original_name: {
-        type: STRING,
-        allowNull: false,
-    },
-    file_size: {
+    fileSize: {
         type: INTEGER,
         allowNull: false,
     },
     createdAt: {
         type: DATE,
         allowNull: false,
-        defaultValue: new Date(),
-        field: 'created_at'
+        defaultValue: NOW,
+        field: "created_at",
     },
     updatedAt: {
         type: DATE,
         allowNull: false,
-        defaultValue: new Date(),
-        field: 'updated_at'
+        defaultValue: NOW,
+        field: "updated_at",
     },
+}, {
+    sequelize,
+    tableName: 'category_images',
+    timestamps: true,
 });
+
+export { CategoryImageModel };
+

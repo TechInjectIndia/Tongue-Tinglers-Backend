@@ -1,7 +1,7 @@
 const { OrderItem } = require("sequelize");
 
 // Tag type Starts
-export type TTag = {
+export type TProductTag = {
   id: number;
   name: string;
   slug: string;
@@ -11,19 +11,26 @@ export type TTag = {
   updatedAt: Date;
 };
 
-export type TAddTag = {
+export type TEditProductTag = {
   name: string;
   slug: string;
   description: string;
   active: number;
 };
 
-export type TTagsList = {
-  total: number;
-  data: TTag;
+export type TAddProductTag = {
+  name: string;
+  slug: string;
+  description: string;
+  active: number;
 };
 
-export type TTagFilters = {
+export type TProductTagsList = {
+  total: number;
+  data: TProductTag[];
+};
+
+export type TProductTagFilters = {
   offset: number;
   limit: number;
   search?: string;

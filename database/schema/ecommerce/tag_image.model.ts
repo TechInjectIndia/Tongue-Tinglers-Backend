@@ -1,37 +1,64 @@
-const { DataTypes } = require("sequelize");
+import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-const { INTEGER, STRING, TEXT, DATE } = DataTypes;
+import { TTagImage } from "../../../types";
+const { INTEGER, STRING, DATE, NOW } = DataTypes;
 
-export const TagImage = sequelize.define('tag_images', {
-    tag_id: {
-        type: STRING,
-        allowNull: true,
+interface OrderItemsCreationAttributes extends Optional<TTagImage, 'id' | 'createdAt' | 'updatedAt'> { }
+
+class TagImageModel extends Model<TTagImage, OrderItemsCreationAttributes> implements TTagImage {
+    public id!: number;
+    public tagId!: number;
+    public fileName!: string;
+    public filePath!: string;
+    public originalName!: string;
+    public fileSize!: number;
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+}
+
+TagImageModel.init({
+    id: {
+        type: INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
     },
-    file_name: {
+    tagId: {
+        type: INTEGER,
+        allowNull: false,
+    },
+    fileName: {
         type: STRING,
         allowNull: false,
     },
-    file_path: {
+    filePath: {
         type: STRING,
         allowNull: false,
     },
-    original_name: {
+    originalName: {
         type: STRING,
         allowNull: false,
     },
-    file_size: {
-        type: INTEGER, allowNull: false,
+    fileSize: {
+        type: INTEGER,
+        allowNull: false,
     },
     createdAt: {
         type: DATE,
         allowNull: false,
-        defaultValue: new Date(),
-        field: 'created_at'
+        defaultValue: NOW,
+        field: "created_at",
     },
     updatedAt: {
         type: DATE,
         allowNull: false,
-        defaultValue: new Date(),
-        field: 'updated_at'
+        defaultValue: NOW,
+        field: "updated_at",
     },
+}, {
+    sequelize,
+    tableName: 'tag_images',
+    timestamps: true,
 });
+
+export { TagImageModel };
+

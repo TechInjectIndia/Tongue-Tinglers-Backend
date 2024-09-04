@@ -1,17 +1,19 @@
 const { Op } = require("sequelize");
 import {
-    TTag,
-    TTagFilters,
-    TTagsList,
-    TAddTag,
+    TProductTag,
+    TProductTagFilters,
+    TProductTagsList,
+    TAddProductTag,
 } from "../../../types/ecommerce";
-import { Tag } from "../../../database/schema";
+import { ProductTagModel } from "../../../database/schema";
 
-export class TagModel {
+import IBaseRepo from '../controllers/controller/tag/IProductTagController';
+
+export class ProductTagRepo implements IBaseRepo<TProductTag, TProductTagFilters> {
     constructor() { }
 
-    public async getTagByName(name: string): Promise<TTag | any> {
-        const data = await Tag.findOne({
+    public async getTagByName(name: string): Promise<TProductTag> {
+        const data = await ProductTagModel.findOne({
             where: {
                 name,
             },
@@ -19,8 +21,8 @@ export class TagModel {
         return data;
     }
 
-    public async getTagById(id: number): Promise<TTag | any> {
-        const data = await Tag.findOne({
+    public async get(id: number): Promise<TProductTag> {
+        const data = await ProductTagModel.findOne({
             where: {
                 id,
             },
@@ -28,15 +30,15 @@ export class TagModel {
         return data;
     }
 
-    public async list(filters: TTagFilters): Promise<TTagsList | any> {
-        const total = await Tag.count({
+    public async list(filters: TProductTagFilters): Promise<TProductTagsList> {
+        const total = await ProductTagModel.count({
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Tag.findAll({
+        const data = await ProductTagModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -49,13 +51,13 @@ export class TagModel {
         return { total, data };
     }
 
-    public async create(data: TAddTag): Promise<TTag | any> {
-        const response = await Tag.create(data);
+    public async create(data: TAddProductTag): Promise<TProductTag> {
+        const response = await ProductTagModel.create(data);
         return response;
     }
 
-    public async update(id: number, data: TAddTag): Promise<TTag | any> {
-        const response = await Tag.update(data, {
+    public async update(id: number, data: TAddProductTag): Promise<[affectedCount: number]> {
+        const response = await ProductTagModel.update(data, {
             where: {
                 id,
             },
@@ -63,8 +65,8 @@ export class TagModel {
         return response;
     }
 
-    public async delete(ids: number[]): Promise<TTag | any> {
-        const response = await Tag.destroy({
+    public async delete(ids: number[]): Promise<number> {
+        const response = await ProductTagModel.destroy({
             where: {
                 id: ids,
             },

@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TTestimonials } from "../../../types";
 import { TESTIMONIAL_ITEM_TYPE } from '../../../interfaces';
-const { INTEGER, STRING, TEXT, ENUM } = DataTypes;
+const { INTEGER, STRING, TEXT, ENUM, DATE, NOW } = DataTypes;
 
 interface TestimonialsCreationAttributes extends Optional<TTestimonials, 'id' | 'createdAt' | 'updatedAt'> { }
 
@@ -13,6 +13,7 @@ class TestimonialsModel extends Model<TTestimonials, TestimonialsCreationAttribu
     public rating!: number;
     public item_id!: string;
     public item_type!: string;
+    public date_submitted!: Date;
     public approved!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -23,7 +24,7 @@ TestimonialsModel.init({
         type: INTEGER,
         autoIncrement: true,
         primaryKey: true,
-    },    
+    },
     user_id: { // Refers to the Users table.
         type: INTEGER,
         allowNull: false,
@@ -33,6 +34,9 @@ TestimonialsModel.init({
     },
     rating: { // An optional field for a rating system (usually 1 to 5).
         type: INTEGER,
+    },
+    date_submitted: { // To indicate if the testimonial has been approved (useful if testimonials need to be moderated).
+        type: DATE,
     },
     approved: { // To indicate if the testimonial has been approved (useful if testimonials need to be moderated).
         type: INTEGER,
@@ -45,15 +49,15 @@ TestimonialsModel.init({
         values: [...Object.values(TESTIMONIAL_ITEM_TYPE)]
     },
     createdAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW,
+        defaultValue: NOW,
         field: "created_at",
     },
     updatedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW,
+        defaultValue: NOW,
         field: "updated_at",
     },
 }, {

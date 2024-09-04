@@ -1,8 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TReviews } from "../../../types";
-import { REVIEWS_ITEM_TYPE } from '../../../interfaces';
-const { INTEGER, STRING, TEXT, ENUM } = DataTypes;
+import { REVIEWS_ITEM_TYPE, REVIEW_FILTERS } from '../../../interfaces';
+const { INTEGER, STRING, TEXT, ENUM, DATE, NOW } = DataTypes;
 
 interface ReviewsCreationAttributes extends Optional<TReviews, 'id' | 'createdAt' | 'updatedAt'> { }
 
@@ -11,6 +11,7 @@ class ReviewsModel extends Model<TReviews, ReviewsCreationAttributes> implements
     public user_id!: number;
     public review_text!: string;
     public rating!: number;
+    public review_date!: Date;
     public item_id!: number;
     public item_type!: string;
     public approved!: number;
@@ -36,7 +37,11 @@ ReviewsModel.init({
         type: STRING,
     },
     approved: { // To indicate if the testimonial has been approved (useful if Reviews need to be moderated).
-        type: INTEGER,
+        type: ENUM,
+        values: [...Object.values(REVIEWS_ITEM_TYPE)]
+    },
+    review_date: { // To indicate if the testimonial has been approved (useful if Reviews need to be moderated).
+        type: DATE,
     },
     item_id: { // Identifier for the item being reviewed (e.g., franchise id)
         type: INTEGER,
@@ -46,15 +51,15 @@ ReviewsModel.init({
         values: [...Object.values(REVIEWS_ITEM_TYPE)]
     },
     createdAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW,
+        defaultValue: NOW,
         field: "created_at",
     },
     updatedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW,
+        defaultValue: NOW,
         field: "updated_at",
     },
 }, {

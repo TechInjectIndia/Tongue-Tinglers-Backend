@@ -7,6 +7,7 @@ export type TTestimonials = {
   rating: number;
   item_id: string;
   item_type: string;
+  date_submitted: Date;
   approved: number;
   createdAt: Date;
   updatedAt: Date;

@@ -3,14 +3,14 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { ProductRepo } from '../models/products';
-const slugify = require('slugify');
+import slugify from 'slugify';
 
 export default class ProductsController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const name = get(req?.body, "name", "");
             const createProduct = req?.body;
-            createProduct.slug = slugify(name, {lower: true});
+            createProduct.slug = slugify(name, { lower: true });
             const existingProduct = await new ProductRepo().getProductByName(name);
             if (existingProduct) {
                 return res

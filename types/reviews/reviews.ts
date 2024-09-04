@@ -7,6 +7,7 @@ export type TReviews = {
   review_text: string;
   rating: number;
   approved: number;
+  review_date: Date;
   item_id: number;
   item_type: string;
   createdAt: Date;

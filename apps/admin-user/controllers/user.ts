@@ -60,7 +60,7 @@ export default class AdminController {
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
                 emailVerified: true,
-                phoneNumber: '+913239379173',
+                phoneNumber: payload.phoneNumber,
                 password: 'Test@123',
                 disabled: false
             });

@@ -17,7 +17,7 @@ export type TLead = {
   address: string,
   additional_info: string,
   source: number,
-  follow_date: number,
+  follow_date: Date,
   status: number,
   createdBy: number,
   assignedTo: number,
@@ -26,6 +26,22 @@ export type TLead = {
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
+};
+
+export type TEditLead = {
+  firstName: string,
+  lastName: string,
+  city: string,
+  state: string,
+  zip_code: string,
+  country: string,
+  phoneNumber: string,
+  email: string,
+  address: string,
+  additional_info: string,
+  source: number,
+  follow_date: Date,
+  status: number,
 };
 
 export type TAssignLead = {
@@ -45,19 +61,11 @@ export type TAddLead = {
   address: string,
   additional_info: string,
   source: number,
-  follow_date: number,
+  follow_date: Date,
   status: number,
 };
 
 export type TLeadsList = {
   total: number;
-  data: TLead;
-};
-
-export type TLeadFilters = {
-  offset: number;
-  limit: number;
-  search?: string;
-  sorting?: typeof OrderItem;
-  trashOnly?: string;
+  data: TLead[];
 };

@@ -7,7 +7,7 @@ import { PermissionsRepo } from '../models/permissions';
 export default class PermissionsController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const isExistPermission = await new PermissionsRepo().get(id as number);
             if (!isExistPermission) {
                 return res
@@ -43,14 +43,14 @@ export default class PermissionsController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
             const roles = await new PermissionsRepo().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -106,7 +106,7 @@ export default class PermissionsController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const name = get(req?.body, "name", "");
             const description = get(req?.body, "description", "");
             const active = get(req?.body, "active", 1);
@@ -135,7 +135,7 @@ export default class PermissionsController {
                     );
             }
 
-            const Permission = await new PermissionsRepo().update(id, { name, description, active });
+            const Permission = await new PermissionsRepo().update(id as number, { name, description, active });
             return res
                 .status(200)
                 .send(

@@ -1,26 +1,22 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { TSubMenu } from "../../../types";
-import { MENU_STATUS } from '../../../interfaces';
+import { TMenuCategory } from "../../../types";
+import { MENU_CATEGORY_STATUS } from '../../../interfaces';
 import { MenuModel } from './menu'
 
 const { INTEGER, STRING, ENUM } = DataTypes;
 
-interface SubMenuCreationAttributes extends Optional<TSubMenu, 'id' | 'createdAt' | 'updatedAt'> { }
+interface SubMenuCreationAttributes extends Optional<TMenuCategory, 'id' | 'createdAt' | 'updatedAt'> { }
 
-class SubMenuModel extends Model<TSubMenu, SubMenuCreationAttributes> implements TSubMenu {
+class MenuCategoryModel extends Model<TMenuCategory, SubMenuCreationAttributes> implements TMenuCategory {
     public id!: number;
     public name: string;
     public status!: string;
-    public deletedBy!: string;
-    public updatedBy!: string;
-    public createdBy!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
-    public readonly deletedAt!: Date;
 }
 
-SubMenuModel.init({
+MenuCategoryModel.init({
     id: {
         type: INTEGER,
         autoIncrement: true,
@@ -32,16 +28,7 @@ SubMenuModel.init({
     },
     status: {
         type: ENUM,
-        values: [...Object.values(MENU_STATUS)]
-    },
-    deletedBy: {
-        type: STRING
-    },
-    updatedBy: {
-        type: STRING
-    },
-    createdBy: {
-        type: STRING
+        values: [...Object.values(MENU_CATEGORY_STATUS)]
     },
     createdAt: {
         type: DataTypes.DATE,
@@ -55,24 +42,17 @@ SubMenuModel.init({
         defaultValue: DataTypes.NOW,
         field: "updated_at",
     },
-    deletedAt: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: null,
-        field: "deleted_at",
-    },
 }, {
     sequelize,
-    tableName: 'menus',
+    tableName: 'menu_category',
     timestamps: true,
-    paranoid: true
 });
 
-MenuModel.hasMany(SubMenuModel, {
+MenuModel.hasMany(MenuCategoryModel, {
     foreignKey: "menu_id",
 });
-SubMenuModel.belongsTo(MenuModel, {
+MenuCategoryModel.belongsTo(MenuModel, {
     foreignKey: "menu_id",
 });
 
-export { SubMenuModel };
+export { MenuCategoryModel };

@@ -10,7 +10,7 @@ import { MenuModel } from "../../../database/schema";
 export class MenuRepo {
     constructor() { }
 
-    public async getMenuByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TMenu | any> {
+    public async getMenuByAttr(whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TMenu | any> {
         const whereAttributes = { [whereName]: whereVal }
         const data = await MenuModel.findOne({
             raw: true,

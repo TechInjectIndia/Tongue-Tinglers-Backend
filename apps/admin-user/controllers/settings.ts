@@ -8,7 +8,7 @@ import { SettingsRepo } from '../models/settings';
 export default class SettingsController {
     static async getSettings(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req, "user_id", "");
+            const id = get(req, "user_id", 0);
             const existingFranchisee = await new SettingsRepo().get(id as number);
 
             if (isEmpty(existingFranchisee)) {
@@ -40,7 +40,7 @@ export default class SettingsController {
 
     static async editSettings(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req, "user_id", "");
+            const id = get(req, "user_id", 0);
             const payload = req?.body;
 
             await new SettingsRepo().editSettings(id, payload);

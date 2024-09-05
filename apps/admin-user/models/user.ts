@@ -10,7 +10,7 @@ import {
 } from "../../../types";
 import { UserModel, RolesModel } from "../../../database/schema";
 import { USER_TYPE, USER_STATUS } from '../../../interfaces';
-import IBaseRepo from '../controllers/controller/IController';
+import IBaseRepo from '../controllers/controller/IUserController';
 
 export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     constructor() { }
@@ -71,10 +71,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
             },
         });
 
-        await UserModel.update({
-            status: USER_STATUS.DELETED,
-            deletedBy: deletedBy?.toString()
-        }, {
+        await UserModel.update({ status: USER_STATUS.DELETED, deletedBy: deletedBy?.toString() }, {
             where: {
                 id: ids,
             },

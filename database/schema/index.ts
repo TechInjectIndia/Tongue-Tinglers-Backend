@@ -11,7 +11,7 @@ export * from "./ecommerce/category_image.model";
 export * from "./ecommerce/order.model";
 export * from "./ecommerce/order_item.model";
 export * from "./ecommerce/product.model";
-export * from "./ecommerce/product_category.model";
+export * from "./ecommerce/product_category_map.model";
 export * from "./ecommerce/product_image.model";
 export * from "./ecommerce/tag.model";
 export * from "./ecommerce/tag_image.model";
@@ -24,4 +24,8 @@ export * from "./lead/lead.model";
 export * from "./payments/payments";
 export * from "./reviews/reviews";
 export * from "./testimonials/testimonials";
+
 export * from "./menu/menu";
+export * from "./menu/menu-category";
+export * from "./menu/menu-category_relation";
+export * from "./menu/menu-category_image";

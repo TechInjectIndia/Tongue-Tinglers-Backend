@@ -3,11 +3,10 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
 const editProfileBody = Joi.object().keys({
-    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
-    full_name: Joi.string().required(),
-    contact_number: Joi.string().required(),
-    phone_code: Joi.string().required(),
-    address: Joi.string().required(),
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    phoneNumber: Joi.string().required(),
+    profilePhoto: Joi.string().required(),
 });
 
 export const validateEditProfileBody = async (

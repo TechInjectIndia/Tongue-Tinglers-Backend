@@ -1,13 +1,16 @@
 const { Op } = require("sequelize");
 import {
     TLead,
-} from "../../../types/lead/lead";
+    TListFilters
+} from "../../../types";
 import { LeadsModel } from "../../../database/schema";
 
-export class FollowUpsModel {
+import IBaseRepo from '../controllers/controller/IFollowUpsController';
+
+export class FollowUpsRepo implements IBaseRepo<TLead, TListFilters> {
     constructor() { }
 
-    public async getFollowUpsToday(startDate: Date, endDate: Date, assignedTo: number, getAttributes: any = '*'): Promise<TLead | any> {
+    public async getFollowUpsToday(startDate: Date, endDate: Date, assignedTo: number, getAttributes: any = ['*']): Promise<TLead | any> {
         const data = await LeadsModel.findAll({
             raw: true,
             attributes: getAttributes,

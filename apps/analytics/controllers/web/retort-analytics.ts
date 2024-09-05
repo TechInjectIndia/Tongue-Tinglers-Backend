@@ -12,14 +12,14 @@ export default class RetortAnalyticsController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
             const Analyticss = await new AnalyticsModel().leadSources({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res

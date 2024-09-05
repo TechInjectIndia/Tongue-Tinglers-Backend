@@ -11,7 +11,7 @@ export const validateLeadStatusBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, statusLeadBody, "body");
+) => validateReq(req, res, next, statusLeadBody, "params");
 
 const assignLeadBody = Joi.object().keys({
     id: Joi.number().required(),
@@ -35,6 +35,7 @@ const createLeadBody = Joi.object().keys({
     phoneNumber: Joi.string().required(),
     address: Joi.string().required(),
     additional_info: Joi.string().required(),
+    status: Joi.string().valid(...Object.values(LEAD_STATUS)).optional().allow(''),
 });
 
 export const validateCreateLeadBody = async (

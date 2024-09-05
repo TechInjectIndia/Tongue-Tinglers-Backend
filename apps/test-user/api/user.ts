@@ -1,6 +1,7 @@
 import * as express from "express";
 import AdminController from "../controllers/user";
 import * as AdminValidation from "../validations/user";
+import { hasPermission } from '../../../middlewares/auth';
 
 const router = express.Router();
 
@@ -63,7 +64,7 @@ const { addAdmin } = AdminController;
  *       '401':
  *         description: Unauthorized
  */
-router.post("/create", validateCreateAdminBody, addAdmin);
+router.post("/create", validateCreateAdminBody, hasPermission('admin', 'read'), addAdmin);
 // ====== Admins Routes Ends ======
 
 export default router;

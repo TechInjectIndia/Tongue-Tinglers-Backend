@@ -1,11 +1,11 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../config";
-import { TAuditLogs } from "../../types";
+import { TAuditLog } from "../../types";
 const { INTEGER, STRING, TEXT, BOOLEAN } = DataTypes;
 
-interface AuditLogsCreationAttributes extends Optional<TAuditLogs, 'id' | 'createdAt' | 'updatedAt'> { }
+interface AuditLogsCreationAttributes extends Optional<TAuditLog, 'id' | 'createdAt' | 'updatedAt'> { }
 
-class AuditLogsModel extends Model<TAuditLogs, AuditLogsCreationAttributes> implements TAuditLogs {
+class AuditLogsModel extends Model<TAuditLog, AuditLogsCreationAttributes> implements TAuditLog {
     public id!: number;
     public user_id!: number;
     public description!: string;

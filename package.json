@@ -67,6 +67,8 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/lodash": "^4.17.7",
+    "@types/node": "^22.5.2",
     "tsconfig-paths": "^4.2.0"
   }
 }

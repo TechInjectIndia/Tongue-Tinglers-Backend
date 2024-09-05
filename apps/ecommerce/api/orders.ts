@@ -5,6 +5,7 @@ import * as OrderValidation from "../validations/orders";
 const router = express.Router();
 
 const {
+  validateCreateOrderBody,
   validateEditOrderBody,
   validateEditOrderParams,
   validateListOrderQuery,
@@ -13,7 +14,45 @@ const {
 // ====== order Starts ======
 /**
  * @swagger
- * /api/admin/product/order/list?size={size}&skip={skip}:
+ * /api/admin/order/create:
+ *   post:
+ *     summary: Create a new order
+ *     tags: [Admin > Ecommerce > Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - trackingNumber
+ *              - shippingAddress
+ *              - totalPrice
+ *              - cart_items
+ *            properties:
+ *              trackingNumber:
+ *                type: string
+ *                default: product12 
+ *              shippingAddress:
+ *                type: text
+ *                default: desc
+ *              totalPrice:
+ *                type: text
+ *                default: 123
+ *              cart_items:
+ *                type: text
+ *                default: "[0]"
+ *     responses:
+ *       '200':
+ *         description: order created successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
+ * /api/admin/order/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all Order
  *     tags: [Admin > Ecommerce > Orders]
@@ -41,7 +80,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * /api/admin/product/order/get/{id}:
+ * /api/admin/order/get/{id}:
  *   get:
  *     summary: Get a order by ID
  *     tags: [Admin > Ecommerce > Orders]
@@ -68,7 +107,7 @@ const {
  *       '404':
  *         description: Order not found
  * 
- * /api/admin/product/order/update/{id}:
+ * /api/admin/order/update/{id}:
  *   put:
  *     summary: Update a order
  *     tags: [Admin > Ecommerce > Orders]
@@ -107,6 +146,7 @@ const {
  *       '404':
  *         description: Order not found
  */
+router.post("/create", validateCreateOrderBody, OrderController.create);
 router.get("/list", validateListOrderQuery, OrderController.list);
 router.get("/get/:id", validateEditOrderParams, OrderController.get);
 router.put("/update/:id", validateEditOrderParams, validateEditOrderBody, OrderController.update);

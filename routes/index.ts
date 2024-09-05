@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { sendEmail } from '../libraries';
 
 const router = Router();
 
@@ -115,5 +116,9 @@ router.use(`/reviews`, webReviewsRouter);
 router.use(`/testimonials`, webTestimonialsRouter);
 router.use(`/product`, webProductsRouter);
 // ====== Frontend ======
+
+router.use(`/test-email`, () => {
+    // sendEmail('jasskaranofficial@gmail.com', 'Test subject', 'welcome-admin-user', {user_firstname: 'Jaskaran Singh'});
+});
 
 export default router;

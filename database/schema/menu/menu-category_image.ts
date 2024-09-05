@@ -1,12 +1,14 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { TCategoryImage } from "../../../types";
-const { INTEGER, STRING, DATE, NOW } = DataTypes;
-import { ProductCategoryModel } from './category.model'
+import { TMenuCategoryImage } from "../../../types";
+import { MENU_STATUS } from '../../../interfaces';
+import { MenuModel } from './menu'
 
-interface OrderItemsCreationAttributes extends Optional<TCategoryImage, 'id' | 'createdAt' | 'updatedAt'> { }
+const { INTEGER, STRING, ENUM } = DataTypes;
 
-class CategoryImageModel extends Model<TCategoryImage, OrderItemsCreationAttributes> implements TCategoryImage {
+interface SubMenuCreationAttributes extends Optional<TMenuCategoryImage, 'id' | 'createdAt' | 'updatedAt'> { }
+
+class MenuCategoryImageModel extends Model<TMenuCategoryImage, SubMenuCreationAttributes> implements TMenuCategoryImage {
     public id!: number;
     public categoryId!: number;
     public fileName!: string;
@@ -17,7 +19,7 @@ class CategoryImageModel extends Model<TCategoryImage, OrderItemsCreationAttribu
     public readonly updatedAt!: Date;
 }
 
-CategoryImageModel.init({
+MenuCategoryImageModel.init({
     id: {
         type: INTEGER,
         autoIncrement: true,
@@ -44,22 +46,28 @@ CategoryImageModel.init({
         allowNull: false,
     },
     createdAt: {
-        type: DATE,
+        type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: NOW,
+        defaultValue: DataTypes.NOW,
         field: "created_at",
     },
     updatedAt: {
-        type: DATE,
+        type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: NOW,
+        defaultValue: DataTypes.NOW,
         field: "updated_at",
     },
 }, {
     sequelize,
-    tableName: 'category_images',
+    tableName: 'menus_category_image',
     timestamps: true,
 });
 
-export { CategoryImageModel };
+MenuModel.hasMany(MenuCategoryImageModel, {
+    foreignKey: "menu_id",
+});
+MenuCategoryImageModel.belongsTo(MenuModel, {
+    foreignKey: "menu_id",
+});
 
+export { MenuCategoryImageModel };

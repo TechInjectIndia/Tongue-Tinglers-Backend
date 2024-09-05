@@ -1,6 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TProductTag } from "../../../types";
+import { TagImageModel } from './tag_image.model'
+
 const { STRING, INTEGER, DATE, NOW, BOOLEAN } = DataTypes;
 
 interface OrderItemsCreationAttributes extends Optional<TProductTag, 'id' | 'createdAt' | 'updatedAt'> { }
@@ -45,6 +47,8 @@ ProductTagModel.init({
     tableName: 'product_tags',
     timestamps: true,
 });
+
+ProductTagModel.hasMany(TagImageModel, { as: 'images' });
 
 export { ProductTagModel };
 

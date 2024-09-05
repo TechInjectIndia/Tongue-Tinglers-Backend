@@ -3,9 +3,18 @@ export type TOrderItem = {
   name: string;
   slug: string;
   orderId: number;
-  productId: string;
-  price: number;
-  quantity: string;
+  productId: number;
+  price: string;
+  quantity: number;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type TAddOrderItem = {
+  name: string;
+  slug: string;
+  orderId: number;
+  productId: number;
+  price: string;
+  quantity: number;
 };

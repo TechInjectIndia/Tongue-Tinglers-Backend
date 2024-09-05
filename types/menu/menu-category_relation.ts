@@ -1,23 +1,19 @@
 const { OrderItem } = require("sequelize");
 
-export type TSubMenu = {
+export type TMenuCategoryRelation = {
   id: number;
-  name: string;
-  status: string;
-  updatedBy: string;
-  deletedBy: string;
-  createdBy: string;
+  menuId: number;
+  categoryId: number;
   createdAt: Date;
   updatedAt: Date;
-  deletedAt: Date;
 };
 
-export type TSubMenusList = {
+export type TMenuCategoryRelationsList = {
   total: number;
-  data: TSubMenu;
+  data: TMenuCategoryRelation[];
 };
 
-export type TSubMenuFilters = {
+export type TMenuCategoryRelationFilters = {
   offset: number;
   limit: number;
   search?: string;

@@ -1,7 +1,8 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import { DataTypes, Model, Optional, } from "sequelize";
 import { sequelize } from "../../../config";
 import { TProductCategory } from "../../../types";
-const { STRING, TEXT, DATE, INTEGER, ENUM, NOW, BOOLEAN } = DataTypes;
+const { STRING, TEXT, DATE, INTEGER, NOW, BOOLEAN } = DataTypes;
+import { CategoryImageModel } from './category_image.model'
 
 interface ProductCategoryCreationAttributes extends Optional<TProductCategory, 'id' | 'createdAt' | 'updatedAt'> { }
 
@@ -52,5 +53,7 @@ ProductCategoryModel.init({
     tableName: 'product_category',
     timestamps: true,
 });
+
+ProductCategoryModel.hasMany(CategoryImageModel, { as: 'images' });
 
 export { ProductCategoryModel };

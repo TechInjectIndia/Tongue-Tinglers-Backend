@@ -3,12 +3,14 @@ import { sequelize } from "../../../config";
 import { TOrder } from "../../../types";
 import { ORDER_TYPE } from '../../../interfaces';
 const { INTEGER, STRING, TEXT, ENUM, BOOLEAN } = DataTypes;
+import { OrderItemsModel } from './order_item.model'
+import { UserModel } from '../user/user.model'
 
 interface OrdersCreationAttributes extends Optional<TOrder, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOrder {
     public id!: number;
-    public user_id!: number;
+    public userId!: number;
     public trackingNumber!: string;
     public shippingAddress!: string;
     public paymentMethod!: string;
@@ -24,7 +26,7 @@ OrdersModel.init({
         autoIncrement: true,
         primaryKey: true,
     },
-    user_id: {
+    userId: {
         type: INTEGER,
         allowNull: true,
     },
@@ -61,6 +63,9 @@ OrdersModel.init({
     tableName: 'orders',
     timestamps: true,
 });
+
+OrdersModel.hasMany(OrderItemsModel,  { as: 'order_items' });
+OrdersModel.belongsTo(UserModel, { foreignKey: 'userId' });
 
 export { OrdersModel };
 

@@ -25,7 +25,7 @@ import testUsersRouter from "../apps/test-user/api/user"; // for testing only
 import productRouter from "../apps/ecommerce/api/products";
 import productCategoryRouter from "../apps/ecommerce/api/category";
 import orderRouter from "../apps/ecommerce/api/orders"; // pending
-import productTagRouter from "../apps/ecommerce/api/tags"; // pending
+import productTagRouter from "../apps/ecommerce/api/tags";
 import leadRouter from "../apps/lead/api/lead";
 import followUpsRouter from "../apps/lead/api/followups";
 import profileRouter from "../apps/admin-user/api/profile";
@@ -55,8 +55,8 @@ router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // 
 router.use(`${ADMIN}/menu`, auth, menuRouter); // pending
 router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
-router.use(`${ADMIN}/product/order`, auth, orderRouter); // pending
-router.use(`${ADMIN}/product/tag`, auth, productTagRouter); // pending
+router.use(`${ADMIN}/order`, auth, orderRouter); // pending
+router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
 router.use(`${ADMIN}/lead`, auth, leadRouter);
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 // ====== Admin ======

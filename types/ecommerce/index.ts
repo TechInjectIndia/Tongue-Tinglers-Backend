@@ -5,5 +5,6 @@ export * from './category';
 export * from './category-images';
 export * from './tag';
 export * from './tag-image';
+export * from './product-tag-link';
 export * from './orders';
 export * from './order-item';

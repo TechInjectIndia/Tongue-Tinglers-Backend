@@ -5,7 +5,7 @@ import {
     TProductTagsList,
     TAddProductTag,
 } from "../../../types/ecommerce";
-import { ProductTagModel } from "../../../database/schema";
+import { ProductTagModel, TagImageModel } from "../../../database/schema";
 
 import IBaseRepo from '../controllers/controller/tag/IProductTagController';
 
@@ -26,6 +26,10 @@ export class ProductTagRepo implements IBaseRepo<TProductTag, TProductTagFilters
             where: {
                 id,
             },
+            include: [{
+                model: TagImageModel,
+                as: 'images'
+            }]
         });
         return data;
     }

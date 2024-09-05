@@ -10,9 +10,9 @@ class OrderItemsModel extends Model<TOrderItem, OrderItemsCreationAttributes> im
     public name!: string;
     public slug!: string;
     public orderId!: number;
-    public productId!: string;
-    public price!: number;
-    public quantity!: string;
+    public productId!: number;
+    public price!: string;
+    public quantity!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -40,7 +40,7 @@ OrderItemsModel.init({
         allowNull: true,
     },
     price: {
-        type: INTEGER,
+        type: STRING,
         allowNull: true,
     },
     quantity: {

@@ -1,8 +1,10 @@
 import { Response } from "express";
-import { TQueryFilters, TAddOrder, TEditOrder } from '../../../../types'
+import { TQueryFilters, TOrdersList, TEditOrder, TAddOrder } from '../../../../types'
 
 interface IOrdersController<T, F extends TQueryFilters> {
-    list(filters: F): Promise<Response<T[]>>;
+    get(id: number): Promise<T>;
+    create(payload: TAddOrder): Promise<T>;
+    list(filters: F): Promise<TOrdersList>;
     update(id: number, payload: TEditOrder): Promise<[affectedCount: number]>;
 }
 

@@ -1,11 +1,6 @@
 const { OrderItem } = require("sequelize");
 
-export type TAddMenu = {  
-  name: string;
-  status: string;
-};
-
-export type TMenu = {
+export type TMenuCategory = {
   id: number;
   name: string;
   status: string;
@@ -13,12 +8,12 @@ export type TMenu = {
   updatedAt: Date;
 };
 
-export type TMenusList = {
+export type TMenuCategorysList = {
   total: number;
-  data: TMenu[];
+  data: TMenuCategory[];
 };
 
-export type TMenuFilters = {
+export type TMenuCategoryFilters = {
   offset: number;
   limit: number;
   search?: string;

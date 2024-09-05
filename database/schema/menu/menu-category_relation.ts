@@ -1,33 +1,34 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { TMenu } from "../../../types";
+import { TMenuCategoryRelation } from "../../../types";
 import { MENU_STATUS } from '../../../interfaces';
+import { MenuModel } from './menu'
 
 const { INTEGER, STRING, ENUM } = DataTypes;
 
-interface MenuCreationAttributes extends Optional<TMenu, 'id' | 'createdAt' | 'updatedAt'> { }
+interface SubMenuCreationAttributes extends Optional<TMenuCategoryRelation, 'id' | 'createdAt' | 'updatedAt'> { }
 
-class MenuModel extends Model<TMenu, MenuCreationAttributes> implements TMenu {
+class MenuCategoryRelationModel extends Model<TMenuCategoryRelation, SubMenuCreationAttributes> implements TMenuCategoryRelation {
     public id!: number;
-    public name: string;
-    public status!: string;
+    public menuId: number;
+    public categoryId!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
 
-MenuModel.init({
+MenuCategoryRelationModel.init({
     id: {
         type: INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
-    name: {
-        type: STRING,
+    menuId: {
+        type: INTEGER,
         allowNull: false
     },
-    status: {
-        type: ENUM,
-        values: [...Object.values(MENU_STATUS)]
+    categoryId: {
+        type: INTEGER,
+        allowNull: false
     },
     createdAt: {
         type: DataTypes.DATE,
@@ -43,8 +44,15 @@ MenuModel.init({
     },
 }, {
     sequelize,
-    tableName: 'menus',
+    tableName: 'menu_category_relation',
     timestamps: true,
 });
 
-export { MenuModel };
+MenuModel.hasMany(MenuCategoryRelationModel, {
+    foreignKey: "menu_id",
+});
+MenuCategoryRelationModel.belongsTo(MenuModel, {
+    foreignKey: "menu_id",
+});
+
+export { MenuCategoryRelationModel };

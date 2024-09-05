@@ -2,6 +2,12 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TProduct } from "../../../types";
 import { PRODUCTS_TYPE } from '../../../interfaces';
+import { ProductImagesModel } from './product_image.model'
+import { ProductCategoryModel } from './category.model'
+import { ProductCategoryMapModel } from './product_category_map.model'
+import { ProductTagModel } from './tag.model'
+import { ProductTagMapModel } from './product_tag_map'
+
 const { INTEGER, STRING, TEXT, ENUM, BOOLEAN } = DataTypes;
 
 interface ProductsCreationAttributes extends Optional<TProduct, 'id' | 'createdAt' | 'updatedAt'> { }
@@ -84,6 +90,21 @@ ProductsModel.init({
     sequelize,
     tableName: 'products',
     timestamps: true,
+});
+
+ProductsModel.hasMany(ProductImagesModel, { as: 'images' });
+
+ProductsModel.belongsToMany(ProductCategoryModel, {
+    through: ProductCategoryMapModel,
+    foreignKey: 'productId',
+    otherKey: 'categoryId',
+    as: 'categories'
+});
+ProductsModel.belongsToMany(ProductTagModel, {
+    through: ProductTagMapModel,
+    foreignKey: 'productId',
+    otherKey: 'tagId',
+    as: 'tags'
 });
 
 export { ProductsModel };

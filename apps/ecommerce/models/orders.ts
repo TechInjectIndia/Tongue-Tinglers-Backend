@@ -3,27 +3,39 @@ import {
     TOrder,
     TOrderFilters,
     TOrdersList,
+    TEditOrder,
     TAddOrder,
 } from "../../../types/ecommerce";
-import { OrdersModel } from "../../../database/schema";
+import { OrdersModel, OrderItemsModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IOrdersController';
 
 export class OrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
     constructor() { }
 
-    public async getOrderById(id: number): Promise<TOrder | any> {
+    public async create(data: TAddOrder): Promise<TOrder> {
+        const response = await OrdersModel.create(data);
+        return response;
+    }
+
+    public async get(id: number): Promise<TOrder> {
         const data = await OrdersModel.findOne({
             where: {
                 id,
             },
+            include: [
+                {
+                    model: OrderItemsModel,
+                    as: 'order_items'
+                },
+            ],
         });
         return data;
     }
 
-    public async list(filters: TOrderFilters): Promise<TOrdersList | any> {
+    public async list(filters: TOrderFilters): Promise<TOrdersList> {
         const total = await OrdersModel.count({
             where: {
-                id: {
+                trackingNumber: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
@@ -33,7 +45,7 @@ export class OrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
             offset: filters.offset,
             limit: filters.limit,
             where: {
-                id: {
+                trackingNumber: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
@@ -41,7 +53,7 @@ export class OrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
         return { total, data };
     }
 
-    public async update(id: number, data: TAddOrder): Promise<TOrder | any> {
+    public async update(id: number, data: TEditOrder): Promise<[affectedCount: number]> {
         const response = await OrdersModel.update(data, {
             where: {
                 id,

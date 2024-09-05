@@ -6,7 +6,7 @@ import {
     TAddProductCategory,
     TEditProductCategory,
 } from "../../../types/ecommerce";
-import { ProductCategoryModel } from "../../../database/schema";
+import { ProductCategoryModel, CategoryImageModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/category/IProductsCategoryController';
 
 export class ProductCategoryRepo implements IBaseRepo<TProductCategory, TProductCategoryFilters> {
@@ -26,6 +26,10 @@ export class ProductCategoryRepo implements IBaseRepo<TProductCategory, TProduct
             where: {
                 id,
             },
+            include: [{
+                model: CategoryImageModel,
+                as: 'images'
+            }]
         });
         return data;
     }

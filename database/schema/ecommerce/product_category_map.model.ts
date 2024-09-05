@@ -5,19 +5,15 @@ const { INTEGER, DATE, NOW } = DataTypes;
 
 interface OrderItemsCreationAttributes extends Optional<TProductCategoryLink, 'id' | 'createdAt' | 'updatedAt'> { }
 
-class ProductCategoryLinkModel extends Model<TProductCategoryLink, OrderItemsCreationAttributes> implements TProductCategoryLink {
+class ProductCategoryMapModel extends Model<TProductCategoryLink, OrderItemsCreationAttributes> implements TProductCategoryLink {
     public id!: number;
     public productId!: number;
     public categoryId!: number;
-    public file_name!: string;
-    public file_path!: number;
-    public original_name!: string;
-    public file_size!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
 
-ProductCategoryLinkModel.init({
+ProductCategoryMapModel.init({
     id: {
         type: INTEGER,
         autoIncrement: true,
@@ -47,5 +43,5 @@ ProductCategoryLinkModel.init({
     timestamps: true,
 });
 
-export { ProductCategoryLinkModel };
+export { ProductCategoryMapModel };
 

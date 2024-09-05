@@ -9,17 +9,13 @@ export type TMenu = {
   id: number;
   name: string;
   status: string;
-  updatedBy: string;
-  deletedBy: string;
-  createdBy: string;
   createdAt: Date;
   updatedAt: Date;
-  deletedAt: Date;
 };
 
 export type TMenusList = {
   total: number;
-  data: TMenu;
+  data: TMenu[];
 };
 
 export type TMenuFilters = {

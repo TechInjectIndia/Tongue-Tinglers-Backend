@@ -1,30 +1,64 @@
-const { DataTypes } = require("sequelize");
+import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-const { INTEGER, STRING, TEXT } = DataTypes;
+import { TProductImage } from "../../../types";
+const { STRING, INTEGER, DATE, NOW } = DataTypes;
 
-export const ProductImage = sequelize.define('product_images', {
+interface OrderItemsCreationAttributes extends Optional<TProductImage, 'id' | 'createdAt' | 'updatedAt'> { }
+
+class ProductImagesModel extends Model<TProductImage, OrderItemsCreationAttributes> implements TProductImage {
+    public id!: number;
+    public productId!: number;
+    public fileName!: string;
+    public filePath!: string;
+    public originalName!: string;
+    public fileSize!: number;
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+}
+
+ProductImagesModel.init({
     id: {
         type: INTEGER,
-        primaryKey: true,
         autoIncrement: true,
+        primaryKey: true,
     },
-    product_id: {
-        type: STRING,
-        allowNull: true,
+    productId: {
+        type: INTEGER,
+        allowNull: false,
     },
-    file_name: {
+    fileName: {
         type: STRING,
         allowNull: false,
     },
-    file_path: {
+    filePath: {
         type: STRING,
         allowNull: false,
     },
-    original_name: {
+    originalName: {
         type: STRING,
         allowNull: false,
     },
-    file_size: {
-        type: INTEGER, allowNull: false,
+    fileSize: {
+        type: INTEGER,
+        allowNull: false,
     },
+    createdAt: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: NOW,
+        field: "created_at",
+    },
+    updatedAt: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: NOW,
+        field: "updated_at",
+    },
+}, {
+    sequelize,
+    tableName: 'product_images',
+    timestamps: true,
 });
+
+export { ProductImagesModel };
+

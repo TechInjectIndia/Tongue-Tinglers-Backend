@@ -54,14 +54,14 @@ export default class RolesController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
             const roles = await new RolesRepo().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -83,7 +83,7 @@ export default class RolesController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const name = get(req?.body, "name", "");
             const active = get(req?.body, "active", 1);
             const permissions = get(req?.body, "role_permissions", '');
@@ -106,7 +106,7 @@ export default class RolesController {
                     );
             }
 
-            const role = await new RolesRepo().update(id, { name, active, description, role_permissions: permissions });
+            const role = await new RolesRepo().update(id as number, { name, active, description, role_permissions: permissions });
 
             return res
                 .status(200)
@@ -127,7 +127,7 @@ export default class RolesController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const role = await new RolesRepo().get(id as number);
 
             if (isEmpty(role)) {

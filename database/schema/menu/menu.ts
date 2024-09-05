@@ -11,12 +11,8 @@ class MenuModel extends Model<TMenu, MenuCreationAttributes> implements TMenu {
     public id!: number;
     public name: string;
     public status!: string;
-    public updatedBy!: string;
-    public createdBy!: string;
-    public deletedBy!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
-    public readonly deletedAt!: Date;
 }
 
 MenuModel.init({
@@ -33,12 +29,6 @@ MenuModel.init({
         type: ENUM,
         values: [...Object.values(MENU_STATUS)]
     },
-    updatedBy: {
-        type: STRING
-    },
-    createdBy: {
-        type: STRING
-    },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -51,20 +41,10 @@ MenuModel.init({
         defaultValue: DataTypes.NOW,
         field: "updated_at",
     },
-    deletedBy: {
-        type: STRING
-    },
-    deletedAt: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: null,
-        field: "deleted_at",
-    },
 }, {
     sequelize,
     tableName: 'menus',
     timestamps: true,
-    paranoid: true
 });
 
 export { MenuModel };

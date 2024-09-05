@@ -3,6 +3,11 @@ import { sendResponse } from "../libraries";
 import { ERROR_MESSAGE, RESPONSE_TYPE } from "../constants";
 import { verifyFirebaseToken, getUserByFirebaseUid } from '../libraries';
 
+const roles = {
+    admin: ['read'],
+    user: ['read'],
+};
+
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
     const idToken = req.headers.authorization?.split('Bearer ')[1];
     if (!idToken)
@@ -26,3 +31,13 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
         return res.status(400).send(ERROR_MESSAGE.INVALID_TOKEN);
     }
 };
+
+export function hasPermission(userRole: string, permission: string) {
+    return (req: Request, res: Response, next: NextFunction) => {
+        const permissions = roles[userRole] || [];
+        if (permissions.includes(permission)) {
+            return next();
+        }
+        res.status(403).send('Forbidden');
+    };
+}

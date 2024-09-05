@@ -4,14 +4,16 @@ import {
     TProductCategoryFilters,
     TProductCategorysList,
     TAddProductCategory,
+    TEditProductCategory,
 } from "../../../types/ecommerce";
-import { Category } from "../../../database/schema";
+import { ProductCategoryModel, CategoryImageModel } from "../../../database/schema";
+import IBaseRepo from '../controllers/controller/category/IProductsCategoryController';
 
-export class ProductCategoryModel {
+export class ProductCategoryRepo implements IBaseRepo<TProductCategory, TProductCategoryFilters> {
     constructor() { }
 
-    public async getProductCategoryByName(name: string): Promise<TProductCategory | any> {
-        const data = await Category.findOne({
+    public async getProductCategoryByName(name: string): Promise<TProductCategory> {
+        const data = await ProductCategoryModel.findOne({
             where: {
                 name,
             },
@@ -19,24 +21,28 @@ export class ProductCategoryModel {
         return data;
     }
 
-    public async getProductCategoryById(id: number): Promise<TProductCategory | any> {
-        const data = await Category.findOne({
+    public async get(id: number): Promise<TProductCategory> {
+        const data = await ProductCategoryModel.findOne({
             where: {
                 id,
             },
+            include: [{
+                model: CategoryImageModel,
+                as: 'images'
+            }]
         });
         return data;
     }
 
-    public async list(filters: TProductCategoryFilters): Promise<TProductCategorysList | any> {
-        const total = await Category.count({
+    public async list(filters: TProductCategoryFilters): Promise<TProductCategorysList> {
+        const total = await ProductCategoryModel.count({
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Category.findAll({
+        const data = await ProductCategoryModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -49,13 +55,13 @@ export class ProductCategoryModel {
         return { total, data };
     }
 
-    public async create(data: TAddProductCategory): Promise<TProductCategory | any> {
-        const response = await Category.create(data);
+    public async create(data: TAddProductCategory): Promise<TProductCategory> {
+        const response = await ProductCategoryModel.create(data);
         return response;
     }
 
-    public async update(id: number, data: TAddProductCategory): Promise<TProductCategory | any> {
-        const response = await Category.update(data, {
+    public async update(id: number, data: TEditProductCategory): Promise<[affectedCount: number]> {
+        const response = await ProductCategoryModel.update(data, {
             where: {
                 id,
             },
@@ -63,8 +69,8 @@ export class ProductCategoryModel {
         return response;
     }
 
-    public async delete(ids: number[]): Promise<TProductCategory | any> {
-        const response = await Category.destroy({
+    public async delete(ids: number[]): Promise<number> {
+        const response = await ProductCategoryModel.destroy({
             where: {
                 id: ids,
             },

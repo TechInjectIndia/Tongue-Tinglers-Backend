@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
+import { P_CATEGORY_TYPE } from '../../../interfaces/product_category';
 
 const createProductCategoryBody = Joi.object().keys({
     name: Joi.string().required(),
     description: Joi.string(),
-    active: Joi.number().required(),
+    active: Joi.string().valid(...Object.values(P_CATEGORY_TYPE)).optional().allow(''),
 });
 
 export const validateCreateProductCategoryBody = async (
@@ -17,7 +18,7 @@ export const validateCreateProductCategoryBody = async (
 const editProductCategoryBody = Joi.object().keys({
     name: Joi.string().required(),
     description: Joi.string(),
-    active: Joi.number().required(),
+    active: Joi.string().valid(...Object.values(P_CATEGORY_TYPE)).optional().allow(''),
 });
 
 export const validateEditProductCategoryBody = async (

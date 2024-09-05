@@ -30,6 +30,7 @@ const {
  *            required:
  *              - review_text
  *              - rating
+ *              - review_date
  *              - approved
  *              - item_id
  *              - item_type
@@ -40,6 +41,9 @@ const {
  *              rating:
  *                type: number
  *                default: 1
+ *              review_date:
+ *                type: string
+ *                default: "02/02/2024"
  *              approved:
  *                type: number
  *                default: 0
@@ -135,6 +139,7 @@ const {
  *            required:
  *              - review_text
  *              - rating
+ *              - review_date
  *              - approved
  *            properties:
  *              review_text:
@@ -143,6 +148,9 @@ const {
  *              rating:
  *                type: number
  *                default: 1
+ *              review_date:
+ *                type: string
+ *                default: "02/02/2024"
  *              approved:
  *                type: number
  *                default: 0

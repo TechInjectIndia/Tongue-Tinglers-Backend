@@ -78,11 +78,11 @@ export default class AuthController {
         next: NextFunction
     ) {
         try {
-            const user_id = get(req, "user_id", '');
+            const user_id = get(req, "user_id", );
             const old_password = get(req?.body, "old_password", "");
             const new_password = get(req?.body, "new_password", "");
 
-            const user = await new Auth().getUserPassword(user_id);
+            const user = await new Auth().getUserPassword(user_id as number);
             const validPassword = await bcrypt.compare(
                 old_password,
                 user.password

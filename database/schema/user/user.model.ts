@@ -12,6 +12,7 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
     public createdBy!: string;
     public password: string;
     public firstName!: string;
+    public profilePhoto!: string;
     public lastName!: string;
     public nameForSearch!: string;
     public email!: string;
@@ -46,6 +47,9 @@ UserModel.init({
     password: {
         type: STRING,
         allowNull: true,
+    },
+    profilePhoto: {
+        type: STRING
     },
     firstName: {
         type: STRING

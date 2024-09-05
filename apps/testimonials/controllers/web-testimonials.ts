@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { TestimonialsModel } from '../models/web-testimonials';
+import { TestimonialsRepo } from '../models/web-testimonials';
 
 export default class WebTestimonialsController {
     static async list(req: Request, res: Response, next: NextFunction) {
@@ -13,15 +13,15 @@ export default class WebTestimonialsController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
-            const Testimonialss = await new TestimonialsModel().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                rating,
-                trashOnly
+            const getList = await new TestimonialsRepo().list({
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string,
+                rating: rating as number
             });
 
             return res
@@ -30,11 +30,10 @@ export default class WebTestimonialsController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        Testimonialss
+                        getList
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

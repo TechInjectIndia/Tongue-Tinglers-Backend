@@ -49,14 +49,14 @@ export default class MenuController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
             const Menus = await new MenuRepo().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -78,7 +78,7 @@ export default class MenuController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
 
             let getAttributes: any = '';
             const whereName = 'id'
@@ -98,7 +98,7 @@ export default class MenuController {
             
             const updateMenu = req?.body;
             delete updateMenu.id
-            const Menu = await new MenuRepo().update(id, updateMenu);
+            const Menu = await new MenuRepo().update(id as number, updateMenu);
 
             return res
                 .status(200)
@@ -118,7 +118,7 @@ export default class MenuController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
 
             let getAttributes: any = '*';
             const whereName = 'id'

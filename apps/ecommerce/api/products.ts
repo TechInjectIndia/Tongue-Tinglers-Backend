@@ -46,7 +46,7 @@ const {
  *                default: 123.00
  *              type:
  *                type: text
- *                default: New
+ *                default: new
  *              stock:
  *                type: integer
  *                default: 10
@@ -156,7 +156,7 @@ const {
  *                default: 178
  *              type:
  *                type: text
- *                default: Upcoming
+ *                default: upcoming
  *              stock:
  *                type: number
  *                default: 52

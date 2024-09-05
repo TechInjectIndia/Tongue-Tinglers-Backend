@@ -5,7 +5,6 @@ import * as PermissionValidation from "../validations/permissions";
 const router = express.Router();
 
 const {
-  validateEditMultipleIdsBody,
   validateCreatePermissionBody,
   validateListPermissionQuery,
   validateEditPermissionParams,

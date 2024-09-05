@@ -1,18 +1,19 @@
 import * as express from "express";
 import ProfileController from "../controllers/profile";
-import * as CustomerValidation from "../validations/profile";
+import * as ProfileValidation from "../validations/profile";
 
 const router = express.Router();
 
 const {
   validateEditProfileBody,
-} = CustomerValidation;
+} = ProfileValidation;
 
-// const { editProfile, getProfile, } = ProfileController;
+const { update, get, } = ProfileController;
+
 // ====== Profile Start ======
 /**
  * @swagger
- * /api/customer/profile:
+ * /api/profile:
  *   get:
  *     summary: Get a Profile
  *     tags: [Customer > Profile]
@@ -21,14 +22,12 @@ const {
  *     responses:
  *       '200':
  *         description: Profile retrieved successfully
- *         content:
- *           application/json:
  *       '401':
  *         description: Unauthorized
  *       '404':
  *         description: Profile not found
  * 
- * /apiCcustomer/profile/:
+ * /api/profile/:
  *   put:
  *     summary: Update a Profile
  *     tags: [Customer > Profile]
@@ -49,18 +48,18 @@ const {
  *           schema:
  *            type: object
  *            required:
- *              - full_name
- *              - contact_number
- *              - phone_code
- *              - address
+ *              - firstName
+ *              - lastName
+ *              - phoneNumber
+ *              - profilePhoto
  *            properties:
- *              full_name:
+ *              firstName:
  *                type: string
- *              contact_number:
+ *              lastName:
  *                type: string
- *              phone_code:
+ *              phoneNumber:
  *                type: string
- *              address:
+ *              profilePhoto:
  *                type: string
  *     responses:
  *       '200':
@@ -71,10 +70,10 @@ const {
  *         description: Unauthorized
  *       '404':
  *         description: Profile not found
- * 
  */
-// router.get("/", getProfile);
-// router.put("/", validateEditProfileBody, editProfile);
+
+router.get("/", get);
+router.put("/", validateEditProfileBody, update);
 // ====== Profile Routes Ends ======
 
 export default router;

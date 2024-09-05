@@ -2,6 +2,19 @@ import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
+const createOrderBody = Joi.object().keys({
+    trackingNumber: Joi.string().required(),
+    shippingAddress: Joi.string().required(),
+    totalPrice: Joi.number().required(),
+    cart_items: Joi.string().required(),
+});
+
+export const validateCreateOrderBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, createOrderBody, "body");
+
 const editOrderBody = Joi.object().keys({
     user_id: Joi.string().required(),
 });

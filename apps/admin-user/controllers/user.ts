@@ -14,14 +14,14 @@ export default class AdminController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
             const admins = await new AdminRepo().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -101,7 +101,7 @@ export default class AdminController {
 
     static async editAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const user_id = get(req, 'user_id', 0);
             let payload = { ...req?.body, updatedBy: user_id };
 
@@ -110,7 +110,7 @@ export default class AdminController {
             //     payload = { ...payload, password: hashedPassword };
             // }
 
-            await new AdminRepo().update(id, payload);
+            await new AdminRepo().update(id as number, payload);
             return res
                 .status(200)
                 .send(
@@ -151,7 +151,7 @@ export default class AdminController {
 
     static async getAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const existingAdmin = await new AdminRepo().get(id as number);
             if (isEmpty(existingAdmin)) {
                 return res
@@ -182,7 +182,7 @@ export default class AdminController {
 
     static async editProfile(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req, "user_id", "");
+            const id = get(req, "user_id", 0);
             const payload = req?.body;
 
             await new AdminRepo().updateProfile(id, payload);

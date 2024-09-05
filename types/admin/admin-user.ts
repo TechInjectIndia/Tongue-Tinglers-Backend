@@ -30,6 +30,7 @@ export interface TUserWithPermission extends TUser {
 }
 
 export type TAddUser = {
+  firebaseUid: string;
   password: string;
   firstName: string;
   lastName: string;

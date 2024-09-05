@@ -8,6 +8,7 @@ interface UserCreationAttributes extends Optional<TUser, 'id' | 'createdAt' | 'u
 
 class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
     public id!: number;
+    public firebaseUid!: string;
     public createdBy!: string;
     public password: string;
     public firstName!: string;
@@ -35,6 +36,9 @@ UserModel.init({
         type: INTEGER,
         autoIncrement: true,
         primaryKey: true,
+    },
+    firebaseUid: {
+        type: STRING
     },
     createdBy: {
         type: STRING

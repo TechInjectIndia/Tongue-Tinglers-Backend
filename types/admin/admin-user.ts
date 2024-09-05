@@ -2,6 +2,7 @@ const { OrderItem } = require("sequelize");
 
 export type TUser = {
   id: number;
+  firebaseUid: string;
   createdBy: string;
   password: string;
   firstName: string;

@@ -30,7 +30,7 @@ import adminUsersRouter from "../apps/admin-user/api/user";
 import testUsersRouter from "../apps/test-user/api/user"; // for testing only
 import productRouter from "../apps/ecommerce/api/products";
 import productCategoryRouter from "../apps/ecommerce/api/category";
-import orderRouter from "../apps/ecommerce/api/orders"; // pending
+import orderRouter from "../apps/ecommerce/api/orders";
 import productTagRouter from "../apps/ecommerce/api/tags";
 import leadRouter from "../apps/lead/api/lead";
 import followUpsRouter from "../apps/lead/api/followups";
@@ -61,7 +61,7 @@ router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // 
 router.use(`${ADMIN}/menu`, auth, menuRouter); // pending
 router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
-router.use(`${ADMIN}/order`, auth, orderRouter); // pending
+router.use(`${ADMIN}/order`, auth, orderRouter);
 router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
 router.use(`${ADMIN}/lead`, auth, leadRouter);
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);
@@ -74,7 +74,7 @@ import franchiseProfileRouter from "../apps/franchise-user/api/profile";
 import franchiseSettingsRouter from "../apps/franchise-user/api/settings"; // pending
 import franchiseOrderAnalyticsRouter from "../apps/analytics/api/franchise/orders-analytics"; // pending
 import franchiseRetortAnalyticsRouter from "../apps/analytics/api/franchise/retort-analytics"; // pending
-import franchiseOrderRouter from "../apps/ecommerce/api/franchise/orders"; // pending
+import franchiseOrderRouter from "../apps/ecommerce/api/franchise/orders";
 import franchiseTestimonialsRouter from "../apps/testimonials/api/franchise-testimonials";
 
 // ====== Franchise routes ======
@@ -82,7 +82,7 @@ import franchiseTestimonialsRouter from "../apps/testimonials/api/franchise-test
 router.use(`${FRANCHISE}/reviews`, auth, franchiseReviewsRouter);
 router.use(`${FRANCHISE}/profile`, auth, franchiseProfileRouter);
 router.use(`${FRANCHISE}/settings`, auth, franchiseSettingsRouter); // pending
-router.use(`${FRANCHISE}/order`, auth, franchiseOrderRouter); // pending
+router.use(`${FRANCHISE}/order`, auth, franchiseOrderRouter);
 router.use(`${FRANCHISE}/analytics/orders`, auth, franchiseOrderAnalyticsRouter); // pending
 router.use(`${FRANCHISE}/analytics/retort`, auth, franchiseRetortAnalyticsRouter); // pending
 router.use(`${FRANCHISE}/testimonials`, auth, franchiseTestimonialsRouter);

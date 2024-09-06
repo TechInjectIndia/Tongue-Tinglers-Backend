@@ -1,0 +1,37 @@
+const { Op } = require("sequelize");
+import {
+    TMenuCategoryRelation,
+    TMenuFilters,
+    TAddMenuCategoryRelation,
+} from "../../../types/menu";
+import { MenuCategoryMapModel } from "../../../database/schema";
+
+import IBaseRepo from '../controllers/controller/IMenuCategoryMapController';
+
+export class MenuCategoryMapRepo implements IBaseRepo<TMenuCategoryRelation, TMenuFilters> {
+    constructor() { }
+
+    public async create(data: TAddMenuCategoryRelation): Promise<TMenuCategoryRelation> {
+        const response = await MenuCategoryMapModel.create(data);
+        return response;
+    }
+
+    public async get(menuId: number, categoryId: number): Promise<TMenuCategoryRelation | null> {
+        const response = await MenuCategoryMapModel.findOne({
+            where: {
+                menuId: menuId,
+                categoryId: categoryId,
+            },
+        });
+        return response;
+    }
+
+    public async delete(ids: number[]): Promise<number> {
+        const response = await MenuCategoryMapModel.destroy({
+            where: {
+                id: ids,
+            },
+        });
+        return response;
+    }
+}

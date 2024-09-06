@@ -8,6 +8,16 @@ export type TMenuCategory = {
   updatedAt: Date;
 };
 
+export type TEditMenuCategory = {
+  name: string;
+  status: string;
+};
+
+export type TAddMenuCategory = {
+  name: string;
+  status: string;
+};
+
 export type TMenuCategorysList = {
   total: number;
   data: TMenuCategory[];

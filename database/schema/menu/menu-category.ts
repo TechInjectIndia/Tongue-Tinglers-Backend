@@ -48,11 +48,4 @@ MenuCategoryModel.init({
     timestamps: true,
 });
 
-MenuModel.hasMany(MenuCategoryModel, {
-    foreignKey: "menu_id",
-});
-MenuCategoryModel.belongsTo(MenuModel, {
-    foreignKey: "menu_id",
-});
-
 export { MenuCategoryModel };

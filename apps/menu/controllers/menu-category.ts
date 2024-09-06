@@ -2,14 +2,17 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { MenuRepo } from '../models/menu';
+import { MenuCategoryRepo } from '../models/menu-category';
 
-export default class MenuController {
+export default class MenuCategoryController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const payload = req?.body;
-            const name = req?.body?.name;
-            const existingMenu = await new MenuRepo().getMenuByName(name as string);
+            const createMenu = req?.body;
+
+            let getAttributes: any = ['*'];
+            const whereName = 'name'
+            const whereVal = req?.body?.name;
+            const existingMenu = await new MenuCategoryRepo().getMenuCategoryByAttr(whereName, whereVal, getAttributes);
             if (existingMenu) {
                 return res
                     .status(400)
@@ -21,7 +24,7 @@ export default class MenuController {
                     );
             }
 
-            const Menu = await new MenuRepo().create(payload);
+            const Menu = await new MenuCategoryRepo().create(createMenu);
             return res
                 .status(200)
                 .send(
@@ -48,7 +51,7 @@ export default class MenuController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
 
-            const Menus = await new MenuRepo().list({
+            const Menus = await new MenuCategoryRepo().list({
                 offset: skip as number,
                 limit: size as number,
                 search: search as string,
@@ -76,7 +79,11 @@ export default class MenuController {
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const existingMenu = await new MenuRepo().get(id as number);
+
+            let getAttributes: any = ['*'];
+            const whereName = 'id'
+            const whereVal = id;
+            const existingMenu = await new MenuCategoryRepo().getMenuCategoryByAttr(whereName, whereVal, getAttributes);
             if (isEmpty(existingMenu)) {
                 return res
                     .status(400)
@@ -90,7 +97,7 @@ export default class MenuController {
             
             const updateMenu = req?.body;
             delete updateMenu.id
-            const Menu = await new MenuRepo().update(id as number, updateMenu);
+            const Menu = await new MenuCategoryRepo().update(id as number, updateMenu);
 
             return res
                 .status(200)
@@ -111,7 +118,11 @@ export default class MenuController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const existingMenu = await new MenuRepo().get(id as number);
+
+            let getAttributes: any = ['*'];
+            const whereName = 'id'
+            const whereVal = id;
+            const existingMenu = await new MenuCategoryRepo().getMenuCategoryByAttr(whereName, whereVal, getAttributes);
 
             if (isEmpty(existingMenu)) {
                 return res
@@ -145,7 +156,7 @@ export default class MenuController {
         try {
             const ids = get(req?.body, "ids", "");
 
-            const Menu = await new MenuRepo().delete(ids);
+            const Menu = await new MenuCategoryRepo().delete(ids);
             return res
                 .status(200)
                 .send(

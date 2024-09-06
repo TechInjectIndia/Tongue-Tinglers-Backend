@@ -100,6 +100,7 @@ ProductsModel.belongsToMany(ProductCategoryModel, {
     otherKey: 'categoryId',
     as: 'categories'
 });
+
 ProductsModel.belongsToMany(ProductTagModel, {
     through: ProductTagMapModel,
     foreignKey: 'productId',

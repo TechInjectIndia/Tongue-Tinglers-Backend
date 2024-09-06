@@ -12,21 +12,12 @@ import IBaseRepo from '../controllers/controller/IController';
 export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
     constructor() { }
 
-    public async get(id: number): Promise<TAddress> {
+    public async get(id: number, user_id: number): Promise<TAddress> {
         const data = await AddressModel.findOne({
             where: {
                 id,
+                user_id: user_id
             },
-        });
-        return data;
-    }
-
-    public async getAddressByAttr(user_id: number, whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TAddress> {
-        const whereAttributes = { [whereName]: whereVal, user_id: user_id }
-        const data = await AddressModel.findOne({
-            raw: true,
-            attributes: getAttributes,
-            where: whereAttributes
         });
         return data;
     }

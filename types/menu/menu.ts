@@ -1,6 +1,11 @@
 const { OrderItem } = require("sequelize");
 
-export type TAddMenu = {  
+export type TAddMenu = {
+  name: string;
+  status: string;
+};
+
+export type TEditMenu = {
   name: string;
   status: string;
 };

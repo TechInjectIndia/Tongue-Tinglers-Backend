@@ -2,29 +2,14 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { MenuRepo } from '../models/menu';
+import { MenuImageRepo } from '../models/menu-image';
 
-export default class MenuController {
+export default class MenuImageController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const createMenu = req?.body;
 
-            let getAttributes: any = ['*'];
-            const whereName = 'name'
-            const whereVal = req?.body?.name;
-            const existingMenu = await new MenuRepo().getMenuByAttr(whereName, whereVal, getAttributes);
-            if (existingMenu) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.EXISTS
-                        )
-                    );
-            }
-
-            const Menu = await new MenuRepo().create(createMenu);
+            const Menu = await new MenuImageRepo().create(createMenu);
             return res
                 .status(200)
                 .send(
@@ -51,7 +36,7 @@ export default class MenuController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
 
-            const Menus = await new MenuRepo().list({
+            const Menus = await new MenuImageRepo().list({
                 offset: skip as number,
                 limit: size as number,
                 search: search as string,
@@ -80,24 +65,9 @@ export default class MenuController {
         try {
             const id = get(req?.params, "id", 0);
 
-            let getAttributes: any = ['*'];
-            const whereName = 'id'
-            const whereVal = id;
-            const existingMenu = await new MenuRepo().getMenuByAttr(whereName, whereVal, getAttributes);
-            if (isEmpty(existingMenu)) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS
-                        )
-                    );
-            }
-            
             const updateMenu = req?.body;
             delete updateMenu.id
-            const Menu = await new MenuRepo().update(id as number, updateMenu);
+            const Menu = await new MenuImageRepo().update(id as number, updateMenu);
 
             return res
                 .status(200)
@@ -118,11 +88,7 @@ export default class MenuController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-
-            let getAttributes: any = ['*'];
-            const whereName = 'id'
-            const whereVal = id;
-            const existingMenu = await new MenuRepo().getMenuByAttr(whereName, whereVal, getAttributes);
+            const existingMenu = await new MenuImageRepo().get(id as number);
 
             if (isEmpty(existingMenu)) {
                 return res
@@ -156,7 +122,7 @@ export default class MenuController {
         try {
             const ids = get(req?.body, "ids", "");
 
-            const Menu = await new MenuRepo().delete(ids);
+            const Menu = await new MenuImageRepo().delete(ids);
             return res
                 .status(200)
                 .send(

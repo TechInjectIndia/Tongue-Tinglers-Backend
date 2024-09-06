@@ -8,7 +8,7 @@ const { INTEGER, STRING, ENUM } = DataTypes;
 
 interface SubMenuCreationAttributes extends Optional<TMenuCategoryRelation, 'id' | 'createdAt' | 'updatedAt'> { }
 
-class MenuCategoryRelationModel extends Model<TMenuCategoryRelation, SubMenuCreationAttributes> implements TMenuCategoryRelation {
+class MenuCategoryMapModel extends Model<TMenuCategoryRelation, SubMenuCreationAttributes> implements TMenuCategoryRelation {
     public id!: number;
     public menuId: number;
     public categoryId!: number;
@@ -16,7 +16,7 @@ class MenuCategoryRelationModel extends Model<TMenuCategoryRelation, SubMenuCrea
     public readonly updatedAt!: Date;
 }
 
-MenuCategoryRelationModel.init({
+MenuCategoryMapModel.init({
     id: {
         type: INTEGER,
         autoIncrement: true,
@@ -48,11 +48,4 @@ MenuCategoryRelationModel.init({
     timestamps: true,
 });
 
-MenuModel.hasMany(MenuCategoryRelationModel, {
-    foreignKey: "menu_id",
-});
-MenuCategoryRelationModel.belongsTo(MenuModel, {
-    foreignKey: "menu_id",
-});
-
-export { MenuCategoryRelationModel };
+export { MenuCategoryMapModel };

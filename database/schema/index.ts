@@ -26,6 +26,7 @@ export * from "./reviews/reviews";
 export * from "./testimonials/testimonials";
 
 export * from "./menu/menu";
+export * from "./menu/menu-image";
 export * from "./menu/menu-category";
-export * from "./menu/menu-category_relation";
+export * from "./menu/menu-category_map";
 export * from "./menu/menu-category_image";

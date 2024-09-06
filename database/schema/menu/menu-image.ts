@@ -1,31 +1,30 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { TMenuCategoryImage } from "../../../types";
-import { MENU_STATUS } from '../../../interfaces';
+import { TMenuImage } from "../../../types";
 import { MenuModel } from './menu'
 
 const { INTEGER, STRING, ENUM } = DataTypes;
 
-interface SubMenuCreationAttributes extends Optional<TMenuCategoryImage, 'id' | 'createdAt' | 'updatedAt'> { }
+interface SubMenuCreationAttributes extends Optional<TMenuImage, 'id' | 'createdAt' | 'updatedAt'> { }
 
-class MenuCategoryImageModel extends Model<TMenuCategoryImage, SubMenuCreationAttributes> implements TMenuCategoryImage {
+class MenuImageModel extends Model<TMenuImage, SubMenuCreationAttributes> implements TMenuImage {
     public id!: number;
-    public categoryId!: number;
+    public menuId!: number;
     public fileName!: string;
     public filePath!: string;
     public originalName!: string;
-    public fileSize!: number;
+    public fileSize!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
 
-MenuCategoryImageModel.init({
+MenuImageModel.init({
     id: {
         type: INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
-    categoryId: {
+    menuId: {
         type: INTEGER,
         allowNull: false,
     },
@@ -42,7 +41,7 @@ MenuCategoryImageModel.init({
         allowNull: false,
     },
     fileSize: {
-        type: INTEGER,
+        type: STRING,
         allowNull: false,
     },
     createdAt: {
@@ -63,4 +62,4 @@ MenuCategoryImageModel.init({
     timestamps: true,
 });
 
-export { MenuCategoryImageModel };
+export { MenuImageModel };

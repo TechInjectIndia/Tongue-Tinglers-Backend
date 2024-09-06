@@ -8,6 +8,11 @@ export type TMenuCategoryRelation = {
   updatedAt: Date;
 };
 
+export type TAddMenuCategoryRelation = {
+  menuId: number;
+  categoryId: number;
+};
+
 export type TMenuCategoryRelationsList = {
   total: number;
   data: TMenuCategoryRelation[];

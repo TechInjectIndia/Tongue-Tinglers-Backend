@@ -9,7 +9,7 @@ export default class AddressController {
         try {
             const user_id = get(req, 'user_id', '');
             const payload = { ...req?.body, user_id: user_id };
-
+            console.log(payload);
             const Address = await new AddressRepo().create(payload);
             return res
                 .status(200)
@@ -21,7 +21,6 @@ export default class AddressController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

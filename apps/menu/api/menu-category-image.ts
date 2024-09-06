@@ -1,24 +1,24 @@
 import * as express from "express";
-import MenuController from "../controllers/menu";
-import * as MenuValidation from "../validations/menu";
+import MenuCategoryImageController from "../controllers/menu-category-image";
+import * as MenuCategoryImageValidation from "../validations/menu-category-image";
 
 const router = express.Router();
 
 const {
-  validateCreateMenuBody,
-  validateEditMenuBody,
-  validateEditMenuParams,
-  validateListMenuQuery,
+  validateCreateMenuCategoryImageBody,
+  validateEditMenuCategoryImageBody,
+  validateEditMenuCategoryImageParams,
+  validateListMenuCategoryImageQuery,
   validateEditMultipleIdsBody,
-} = MenuValidation;
+} = MenuCategoryImageValidation;
 
 // ====== Menu Starts ======
 /**
  * @swagger
- * /api/admin/menu/create:
+ * /api/admin/menu/category/create:
  *   post:
- *     summary: Create a new Menu
- *     tags: [Admin > Menu]
+ *     summary: Create a new Menu Category
+ *     tags: [Admin > Menu > Category]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -28,8 +28,11 @@ const {
  *           schema:
  *            type: object
  *            required:
- *              - name
- *              - status
+ *              - categoryId
+ *              - fileName
+ *              - filePath
+ *              - originalName
+ *              - fileSize
  *            properties:
  *              name:
  *                type: string
@@ -39,16 +42,16 @@ const {
  *                default: "inactive"
  *     responses:
  *       '200':
- *         description: Menu created successfully
+ *         description: Menu Category created successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/menu/list?size={size}&skip={skip}:
+ * /api/admin/menu/category/list?size={size}&skip={skip}:
  *   get:
- *     summary: Get all Menu
- *     tags: [Admin > Menu]
+ *     summary: Get all Menu Categories
+ *     tags: [Admin > Menu > Category]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -68,16 +71,15 @@ const {
  *         description: How many Rows want to skip
  *     responses:
  *       '200':
- *         description: Menu retrieved successfully
+ *         description: Menu Category retrieved successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
- * /api/admin/menu/get/{id}:
+ * /api/admin/menu/category/get/{id}:
  *   get:
- *     summary: Get a Menu by ID
- *     tags: [Admin > Menu]
+ *     summary: Get a Menu Category by ID
+ *     tags: [Admin > Menu > Category]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -87,24 +89,24 @@ const {
  *         default: 1
  *         schema:
  *           type: string
- *         description: ID of the Menu to retrieve
+ *         description: ID of the Menu Category to retrieve
  *     responses:
  *       '200':
- *         description: Menu retrieved successfully
+ *         description: Menu Category retrieved successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: string
- *               description: ID of the Menu to retrieve
+ *               description: ID of the Menu Category to retrieve
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Menu not found
+ *         description: Menu Category not found
  * 
- * /api/admin/menu/update/{id}:
+ * /api/admin/menu/category/update/{id}:
  *   put:
- *     summary: Update a Menu
- *     tags: [Admin > Menu]
+ *     summary: Update a Menu Category
+ *     tags: [Admin > Menu > Category]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -114,7 +116,7 @@ const {
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the Menu to update
+ *         description: ID of the Menu Category to update
  *     requestBody:
  *       required: true
  *       content:
@@ -133,18 +135,18 @@ const {
  *                default: "active"
  *     responses:
  *       '200':
- *         description: Menu updated successfully
+ *         description: Menu Category updated successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Menu not found
+ *         description: Menu Category not found
  * 
- * /api/admin/menu/delete:
+ * /api/admin/menu/category/delete:
  *   delete:
- *     summary: Delete a Menu
- *     tags: [Admin > Menu]
+ *     summary: Delete a Menu Category
+ *     tags: [Admin > Menu > Category]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -161,18 +163,16 @@ const {
  *                default: [1]
  *     responses:
  *       '200':
- *         description: Menu deleted successfully
+ *         description: Menu Category deleted successfully
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Menu not found
+ *         description: Menu Category not found
  */
-
-router.post("/create", validateCreateMenuBody, MenuController.create);
-router.get("/list", validateListMenuQuery, MenuController.list);
-router.get("/get/:id", validateEditMenuParams, MenuController.get);
-router.put("/update/:id", validateEditMenuParams, validateEditMenuBody, MenuController.update);
-router.delete("/delete", validateEditMultipleIdsBody, MenuController.delete);
+router.post("/create", validateCreateMenuCategoryImageBody, MenuCategoryImageController.create);
+router.get("/get/:id", validateEditMenuCategoryImageParams, MenuCategoryImageController.get);
+router.put("/update/:id", validateEditMenuCategoryImageParams, validateEditMenuCategoryImageBody, MenuCategoryImageController.update);
+router.delete("/delete", validateEditMultipleIdsBody, MenuCategoryImageController.delete);
 // ====== Menu Ends ======
 
 export default router;

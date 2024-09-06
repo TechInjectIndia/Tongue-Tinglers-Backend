@@ -7,10 +7,21 @@ import {
 } from "../../../types/menu";
 import { MenuModel } from "../../../database/schema";
 
-export class MenuRepo {
+import IBaseRepo from '../controllers/controller/IMenuController';
+
+export class MenuRepo implements IBaseRepo<TMenu, TMenuFilters> {
     constructor() { }
 
-    public async getMenuByAttr(whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TMenu | any> {
+    public async get(id: number): Promise<TMenu> {
+        const data = await MenuModel.findOne({
+            where: {
+                id,
+            },
+        });
+        return data;
+    }
+
+    public async getMenuByAttr(whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TMenu> {
         const whereAttributes = { [whereName]: whereVal }
         const data = await MenuModel.findOne({
             raw: true,
@@ -20,7 +31,7 @@ export class MenuRepo {
         return data;
     }
 
-    public async list(filters: TMenuFilters): Promise<TMenusList | any> {
+    public async list(filters: TMenuFilters): Promise<TMenusList> {
         const total = await MenuModel.count({
             where: {
                 name: {
@@ -41,12 +52,12 @@ export class MenuRepo {
         return { total, data };
     }
 
-    public async add(data: TAddMenu): Promise<TMenu | any> {
+    public async create(data: TAddMenu): Promise<TMenu> {
         const response = await MenuModel.create(data);
         return response;
     }
 
-    public async update(id: number, data: TAddMenu): Promise<TMenu | any> {
+    public async update(id: number, data: TAddMenu): Promise<[affectedCount: number]> {
         const response = await MenuModel.update(data, {
             where: {
                 id,
@@ -55,7 +66,7 @@ export class MenuRepo {
         return response;
     }
 
-    public async delete(ids: number[]): Promise<TMenu | any> {
+    public async delete(ids: number[]): Promise<number> {
         const response = await MenuModel.destroy({
             where: {
                 id: ids,

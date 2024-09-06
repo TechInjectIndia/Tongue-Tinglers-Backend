@@ -58,7 +58,7 @@ MenuImageModel.init({
     },
 }, {
     sequelize,
-    tableName: 'menus_category_image',
+    tableName: 'menu_image',
     timestamps: true,
 });
 

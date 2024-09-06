@@ -5,7 +5,7 @@ import {
     TMenusList,
     TAddMenu,
 } from "../../../types/menu";
-import { MenuModel } from "../../../database/schema";
+import { MenuModel, MenuImageModel, MenuCategoryModel } from "../../../database/schema";
 
 import IBaseRepo from '../controllers/controller/IMenuController';
 
@@ -17,16 +17,35 @@ export class MenuRepo implements IBaseRepo<TMenu, TMenuFilters> {
             where: {
                 id,
             },
+            include: [
+                {
+                    model: MenuImageModel,
+                    as: 'images'
+                },
+                {
+                    model: MenuCategoryModel,
+                    as: 'categories'
+                },
+            ],
         });
         return data;
     }
 
-    public async getMenuByAttr(whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TMenu> {
-        const whereAttributes = { [whereName]: whereVal }
+    public async getMenuByName(name: string): Promise<TMenu> {
         const data = await MenuModel.findOne({
-            raw: true,
-            attributes: getAttributes,
-            where: whereAttributes
+            where: {
+                name,
+            },
+            include: [
+                {
+                    model: MenuImageModel,
+                    as: 'images'
+                },
+                {
+                    model: MenuCategoryModel,
+                    as: 'categories'
+                },
+            ],
         });
         return data;
     }

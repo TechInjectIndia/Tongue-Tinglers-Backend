@@ -44,7 +44,7 @@ MenuCategoryMapModel.init({
     },
 }, {
     sequelize,
-    tableName: 'menu_category_relation',
+    tableName: 'menu_category_map',
     timestamps: true,
 });
 

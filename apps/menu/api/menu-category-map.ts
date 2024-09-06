@@ -12,7 +12,7 @@ const {
 // ====== Menu Starts ======
 /**
  * @swagger
- * /api/admin/menu/category/create:
+ * /api/admin/menu/category/map/create:
  *   post:
  *     summary: Create a new Menu Category
  *     tags: [Admin > Menu > Category > Map]
@@ -42,7 +42,7 @@ const {
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/menu/category/delete:
+ * /api/admin/menu/category/map/delete:
  *   delete:
  *     summary: Delete a Menu Category Map
  *     tags: [Admin > Menu > Category > Map]

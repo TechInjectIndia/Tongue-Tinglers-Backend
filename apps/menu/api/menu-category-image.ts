@@ -15,10 +15,10 @@ const {
 // ====== Menu Starts ======
 /**
  * @swagger
- * /api/admin/menu/category/create:
+ * /api/admin/menu/category/image/create:
  *   post:
  *     summary: Create a new Menu Category
- *     tags: [Admin > Menu > Category]
+ *     tags: [Admin > Menu > Category > Image]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -48,10 +48,10 @@ const {
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/menu/category/list?size={size}&skip={skip}:
+ * /api/admin/menu/category/image/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all Menu Categories
- *     tags: [Admin > Menu > Category]
+ *     tags: [Admin > Menu > Category > Image]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -76,10 +76,10 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * /api/admin/menu/category/get/{id}:
+ * /api/admin/menu/category/image/get/{id}:
  *   get:
  *     summary: Get a Menu Category by ID
- *     tags: [Admin > Menu > Category]
+ *     tags: [Admin > Menu > Category > Image]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -103,10 +103,10 @@ const {
  *       '404':
  *         description: Menu Category not found
  * 
- * /api/admin/menu/category/update/{id}:
+ * /api/admin/menu/category/image/update/{id}:
  *   put:
  *     summary: Update a Menu Category
- *     tags: [Admin > Menu > Category]
+ *     tags: [Admin > Menu > Category > Image]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -143,10 +143,10 @@ const {
  *       '404':
  *         description: Menu Category not found
  * 
- * /api/admin/menu/category/delete:
+ * /api/admin/menu/category/image/delete:
  *   delete:
  *     summary: Delete a Menu Category
- *     tags: [Admin > Menu > Category]
+ *     tags: [Admin > Menu > Category > Image]
  *     security:
  *       - bearerAuth: []
  *     requestBody:

@@ -5,10 +5,7 @@ import { MENU_CATEGORY_STATUS } from '../../../interfaces';
 
 const createMenuCategoryMapBody = Joi.object().keys({
     menuId: Joi.number().required(),
-    fileName: Joi.string().required(),
-    filePath: Joi.string().required(),
-    originalName: Joi.string().required(),
-    fileSize: Joi.string().required(),
+    categoryId: Joi.number().required(),
 });
 
 export const validateCreateMenuCategoryMapBody = async (
@@ -19,10 +16,7 @@ export const validateCreateMenuCategoryMapBody = async (
 
 const editMenuCategoryMapBody = Joi.object().keys({
     menuId: Joi.number().required(),
-    fileName: Joi.string().required(),
-    filePath: Joi.string().required(),
-    originalName: Joi.string().required(),
-    fileSize: Joi.string().required(),
+    categoryId: Joi.number().required(),
 });
 
 export const validateEditMenuCategoryMapBody = async (

@@ -7,12 +7,9 @@ import { MenuRepo } from '../models/menu';
 export default class MenuController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const createMenu = req?.body;
-
-            let getAttributes: any = ['*'];
-            const whereName = 'name'
-            const whereVal = req?.body?.name;
-            const existingMenu = await new MenuRepo().getMenuByAttr(whereName, whereVal, getAttributes);
+            const payload = req?.body;
+            const name = req?.body?.name;
+            const existingMenu = await new MenuRepo().getMenuByName(name as string);
             if (existingMenu) {
                 return res
                     .status(400)
@@ -24,7 +21,7 @@ export default class MenuController {
                     );
             }
 
-            const Menu = await new MenuRepo().create(createMenu);
+            const Menu = await new MenuRepo().create(payload);
             return res
                 .status(200)
                 .send(
@@ -79,11 +76,7 @@ export default class MenuController {
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-
-            let getAttributes: any = ['*'];
-            const whereName = 'id'
-            const whereVal = id;
-            const existingMenu = await new MenuRepo().getMenuByAttr(whereName, whereVal, getAttributes);
+            const existingMenu = await new MenuRepo().get(id as number);
             if (isEmpty(existingMenu)) {
                 return res
                     .status(400)
@@ -118,11 +111,7 @@ export default class MenuController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-
-            let getAttributes: any = ['*'];
-            const whereName = 'id'
-            const whereVal = id;
-            const existingMenu = await new MenuRepo().getMenuByAttr(whereName, whereVal, getAttributes);
+            const existingMenu = await new MenuRepo().get(id as number);
 
             if (isEmpty(existingMenu)) {
                 return res

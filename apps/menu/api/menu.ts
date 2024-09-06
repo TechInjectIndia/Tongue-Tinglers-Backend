@@ -1,6 +1,10 @@
 import * as express from "express";
 import MenuController from "../controllers/menu";
 import * as MenuValidation from "../validations/menu";
+import menuCategoryRouter from "../../menu/api/menu-category";
+import menuCategoryImageRouter from "../../menu/api/menu-category-image";
+import menuCategoryMapRouter from "../../menu/api/menu-category-map";
+import menuImageRouter from "../../menu/api/menu-image";
 
 const router = express.Router();
 
@@ -173,6 +177,13 @@ router.get("/list", validateListMenuQuery, MenuController.list);
 router.get("/get/:id", validateEditMenuParams, MenuController.get);
 router.put("/update/:id", validateEditMenuParams, validateEditMenuBody, MenuController.update);
 router.delete("/delete", validateEditMultipleIdsBody, MenuController.delete);
+
+// Other Menu Apis
+router.use("/category", menuCategoryRouter);
+router.use("/category/image", menuCategoryImageRouter);
+router.use("/category/map", menuCategoryMapRouter);
+router.use("/image", menuImageRouter);
+
 // ====== Menu Ends ======
 
 export default router;

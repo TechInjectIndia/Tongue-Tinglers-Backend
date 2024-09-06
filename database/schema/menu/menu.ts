@@ -2,6 +2,9 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TMenu } from "../../../types";
 import { MENU_STATUS } from '../../../interfaces';
+import { MenuImageModel } from './menu-image'
+import { MenuCategoryModel } from './menu-category'
+import { MenuCategoryMapModel } from './menu-category_map'
 
 const { INTEGER, STRING, ENUM } = DataTypes;
 
@@ -43,8 +46,17 @@ MenuModel.init({
     },
 }, {
     sequelize,
-    tableName: 'menus',
+    tableName: 'menu',
     timestamps: true,
+});
+
+MenuModel.hasMany(MenuImageModel, { as: 'images' });
+
+MenuModel.belongsToMany(MenuCategoryModel, {
+    through: MenuCategoryMapModel,
+    foreignKey: 'menuId',
+    otherKey: 'categoryId',
+    as: 'categories'
 });
 
 export { MenuModel };

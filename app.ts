@@ -65,7 +65,7 @@ const limiter = rateLimit({
   max: 100 // Limit each IP to 100 requests per windowMs
 });
 
-const server = express();
+export const server = express();
 server.use(async (req, res, next) => { // Purpose: A more flexible rate limiter than express-rate-limit, suitable for different types of stores (e.g., Redis).
   try {
     await rateLimiter.consume(req.ip);
@@ -79,12 +79,12 @@ server.use(express.urlencoded({ limit: "10mb", extended: true }));
 server.use(express.json({ limit: "10mb" }));
 server.use(helmet()); // Purpose: Adds various HTTP headers to help protect your app from common web
 server.use(helmetCsp({ // Purpose: Provides a Content Security Policy (CSP) middleware for Helmet to help prevent XSS attacks.
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "trusted-cdn.com"],
-      // Additional directives
-    }
-  }));
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", "trusted-cdn.com"],
+    // Additional directives
+  }
+}));
 server.use(xss()); // Purpose: Middleware for Express to sanitize user input for XSS attacks.
 server.use(expressSanitizer());
 server.use(limiter); // Purpose: Limits repeated requests to public APIs and/or endpoints, which helps to prevent

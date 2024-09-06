@@ -1,6 +1,8 @@
 import * as express from "express";
 import ProfileController from "../controllers/profile";
 import * as ProfileValidation from "../validations/profile";
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
@@ -8,11 +10,37 @@ const {
   validateEditProfileBody,
 } = ProfileValidation;
 
-const { update, get, } = ProfileController;
+const { update, get, uploadImage } = ProfileController;
 
 // ====== Profile Start ======
 /**
- * @swagger
+ * @swagger 
+ * /api/franchise/profile/image/upload:
+ *   post:
+ *     summary: Upload Profile Image
+ *     tags: [Franchise > Profile]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - file
+ *            properties:
+ *              file:
+ *                type: string
+ *                format: binary
+ *     responses:
+ *       '200':
+ *         description: Profile Image Uploaded successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
  * /api/franchise/profile:
  *   get:
  *     summary: Get a Profile
@@ -75,5 +103,7 @@ const { update, get, } = ProfileController;
 router.get("/", get);
 router.put("/", validateEditProfileBody, update);
 // ====== Profile Routes Ends ======
+
+router.post("/image/upload", upload.single('file'), uploadImage);
 
 export default router;

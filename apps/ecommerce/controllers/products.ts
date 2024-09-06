@@ -1,11 +1,30 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse } from "../../../libraries";
+import { sendResponse, uploadSingleFileToFirebase } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { ProductRepo } from '../models/products';
 import slugify from 'slugify';
 
 export default class ProductsController {
+    static async uploadImage(req: Request, res: Response, next: NextFunction) {
+        try {
+            const moduleName = 'product'
+            await uploadSingleFileToFirebase(req as any, moduleName as string)
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPLOADED,
+                    )
+                );
+        } catch (err) {
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const name = get(req?.body, "name", "");

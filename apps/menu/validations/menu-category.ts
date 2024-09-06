@@ -5,8 +5,8 @@ import { MENU_CATEGORY_STATUS } from '../../../interfaces';
 
 const createMenuCategoryBody = Joi.object().keys({
     name: Joi.string().required(),
+    image: Joi.string().required(),
     status: Joi.string().valid(...Object.values(MENU_CATEGORY_STATUS)).optional().allow(''),
-
 });
 
 export const validateCreateMenuCategoryBody = async (
@@ -17,6 +17,7 @@ export const validateCreateMenuCategoryBody = async (
 
 const editMenuCategoryBody = Joi.object().keys({
     name: Joi.string().required(),
+    image: Joi.string().required(),
     status: Joi.string().valid(...Object.values(MENU_CATEGORY_STATUS)).optional().allow(''),
 });
 

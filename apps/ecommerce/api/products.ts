@@ -1,6 +1,8 @@
 import * as express from "express";
 import ProductsController from "../controllers/products";
 import * as ProductsValidation from "../validations/products";
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
@@ -14,7 +16,33 @@ const {
 
 // ====== Products Starts ======
 /**
- * @swagger
+ * @swagger 
+ * /api/admin/product/image/upload:
+ *   post:
+ *     summary: Upload product Image
+ *     tags: [Admin > Ecommerce > Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - file
+ *            properties:
+ *              file:
+ *                type: string
+ *                format: binary
+ *     responses:
+ *       '200':
+ *         description: product Image Uploaded successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
  * /api/admin/product/create:
  *   post:
  *     summary: Create a new products
@@ -205,5 +233,7 @@ router.get("/get/:id", validateEditProductsParams, ProductsController.get);
 router.put("/update/:id", validateEditProductsParams, validateEditProductsBody, ProductsController.update);
 router.delete("/delete", validateEditMultipleIdsBody, ProductsController.delete);
 // ====== Products Ends ======
+
+router.post("/image/upload", upload.single('file'), ProductsController.uploadImage);
 
 export default router;

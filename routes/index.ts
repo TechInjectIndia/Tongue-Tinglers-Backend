@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { sendEmail, uploadSingleFileToFirebase } from '../libraries';
 import { NextFunction, Request, Response } from "express";
-const saltedMd5 = require('salted-md5');
-const path = require('path');
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -58,7 +56,7 @@ router.use(`${ADMIN}/payments`, auth, paymentsRouter); // pending
 router.use(`${ADMIN}/analytics/leads`, leadsAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/orders`, ordersAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // pending
-router.use(`${ADMIN}/menu`, auth, menuRouter); // pending
+router.use(`${ADMIN}/menu`, menuRouter); // pending
 router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
 router.use(`${ADMIN}/order`, auth, orderRouter);

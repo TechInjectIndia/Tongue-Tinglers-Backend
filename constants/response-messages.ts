@@ -29,6 +29,7 @@ export const ERROR_MESSAGE = {
 
 export const SUCCESS_MESSAGE = {
     LOGGED_IN: "Logged In",
+    UPLOADED: "Image uploaded successfully",
     FETCHED: "Fetched successfully",
     CREATED: "Created successfully",
     UPDATED: "Updated successfully",

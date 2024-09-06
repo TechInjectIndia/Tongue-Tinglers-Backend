@@ -12,6 +12,7 @@ class MenuCategoryModel extends Model<TMenuCategory, SubMenuCreationAttributes> 
     public id!: number;
     public name: string;
     public status!: string;
+    public image!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -25,6 +26,10 @@ MenuCategoryModel.init({
     name: {
         type: STRING,
         allowNull: false
+    },
+    image: {
+        type: STRING,
+        allowNull: true
     },
     status: {
         type: ENUM,

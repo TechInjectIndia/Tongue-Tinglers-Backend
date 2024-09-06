@@ -1,10 +1,29 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse } from "../../../libraries";
+import { sendResponse, uploadSingleFileToFirebase } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { ProfileRepo } from '../models/profile';
 
 export default class ProfileController {
+    static async uploadImage(req: Request, res: Response, next: NextFunction) {
+        try {
+            const moduleName = 'customer'
+            await uploadSingleFileToFirebase(req as any, moduleName as string)
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPLOADED,
+                    )
+                );
+        } catch (err) {
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req, "user_id", 0);
@@ -22,14 +41,14 @@ export default class ProfileController {
             }
 
             return res
-            .status(200)
-            .send(
-                sendResponse(
-                    RESPONSE_TYPE.SUCCESS,
-                    SUCCESS_MESSAGE.FETCHED,
-                    getProfileData
-                )
-            );
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        getProfileData
+                    )
+                );
         } catch (err) {
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,

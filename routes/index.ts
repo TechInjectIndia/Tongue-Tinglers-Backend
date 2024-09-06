@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { sendEmail } from '../libraries';
+import { sendEmail, uploadSingleFileToFirebase } from '../libraries';
+import { NextFunction, Request, Response } from "express";
+const saltedMd5 = require('salted-md5');
+const path = require('path');
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router();
 
@@ -119,6 +124,11 @@ router.use(`/product`, webProductsRouter);
 
 router.use(`/test-email`, () => {
     // sendEmail('jasskaranofficial@gmail.com', 'Test subject', 'welcome-admin-user', {user_firstname: 'Jaskaran Singh'});
+});
+
+router.post(`/upload-file`, upload.single('file'), async (req: Request, res: Response) => {
+    // await uploadSingleFileToFirebase(req);
+    // res.send('done');
 });
 
 export default router;

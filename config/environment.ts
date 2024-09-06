@@ -15,4 +15,5 @@ export const CONFIG = {
     REFRESH_TOKEN_EXPIRATION: process.env.REFRESH_TOKEN_EXPIRATION,
     APP_BASE_URL: process.env.APP_BASE_URL,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
+    BUCKET_URL: process.env.BUCKET_URL,
 };

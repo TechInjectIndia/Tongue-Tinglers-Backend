@@ -17,6 +17,16 @@ export * from "./ecommerce/tag.model";
 export * from "./ecommerce/tag_image.model";
 // ecommerce model ends
 
+// retort model starts
+export * from "./retort/retort-category";
+export * from "./retort/retort-category_image";
+export * from "./retort/retort-order";
+export * from "./retort/retort-order_item";
+export * from "./retort/retort-product";
+export * from "./retort/retort-product_category_map";
+export * from "./retort/retort-product_image";
+// retort model ends
+
 // lead model starts
 export * from "./lead/lead.model";
 // lead model ends

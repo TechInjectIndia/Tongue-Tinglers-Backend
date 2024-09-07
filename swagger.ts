@@ -134,6 +134,8 @@ const options = {
         './apps/ecommerce/api/*.ts',
         './apps/ecommerce/api/web/*.ts',
         './apps/ecommerce/api/franchise/*.ts',
+        './apps/retort/api/*.ts',
+        './apps/retort/api/franchise/*.ts',
         './apps/lead/api/*.ts',
         './apps/testimonials/api/*.ts',
         './apps/reviews/api/*.ts',

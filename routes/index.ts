@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { sendEmail, uploadSingleFileToFirebase } from '../libraries';
 import { NextFunction, Request, Response } from "express";
-const saltedMd5 = require('salted-md5');
-const path = require('path');
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -27,7 +25,6 @@ import franchiseRouter from "../apps/admin-user/api/franchise";
 import rolesRouter from "../apps/admin-user/api/roles";
 import permissionsRouter from "../apps/admin-user/api/permissions";
 import adminUsersRouter from "../apps/admin-user/api/user";
-import testUsersRouter from "../apps/test-user/api/user"; // for testing only
 import productRouter from "../apps/ecommerce/api/products";
 import productCategoryRouter from "../apps/ecommerce/api/category";
 import orderRouter from "../apps/ecommerce/api/orders";
@@ -42,10 +39,12 @@ import testimonialsRouter from "../apps/testimonials/api/testimonials";
 import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics"; // pending
 import ordersAnalyticsRouter from "../apps/analytics/api/admin/orders-analytics"; // pending
 import retortAnalyticsRouter from "../apps/analytics/api/admin/retort-analytics"; // pending
-import menuRouter from "../apps/menu/api/menu"; // pending
+import menuRouter from "../apps/menu/api/menu";
+import retortProductRouter from "../apps/retort/api/products";
+import retortProductCategoryRouter from "../apps/retort/api/category";
+import retortOrderRouter from "../apps/retort/api/orders";
 
 // ====== Admin routes ======
-router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
 router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
 router.use(`${ADMIN}/roles`, auth, rolesRouter);
@@ -55,16 +54,19 @@ router.use(`${ADMIN}/reviews`, auth, reviewsRouter);
 router.use(`${ADMIN}/profile`, auth, profileRouter);
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
 router.use(`${ADMIN}/payments`, auth, paymentsRouter); // pending
-router.use(`${ADMIN}/analytics/leads`, leadsAnalyticsRouter); // pending
-router.use(`${ADMIN}/analytics/orders`, ordersAnalyticsRouter); // pending
+router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter); // pending
+router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // pending
-router.use(`${ADMIN}/menu`, auth, menuRouter); // pending
+router.use(`${ADMIN}/menu`, menuRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
 router.use(`${ADMIN}/order`, auth, orderRouter);
 router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
 router.use(`${ADMIN}/lead`, auth, leadRouter);
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);
+router.use(`${ADMIN}/retort/product`, auth, retortProductRouter);
+router.use(`${ADMIN}/retort/category`, auth, retortProductCategoryRouter);
+router.use(`${ADMIN}/retort/order`, auth, retortOrderRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

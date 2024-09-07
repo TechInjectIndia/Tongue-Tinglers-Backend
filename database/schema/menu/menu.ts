@@ -5,6 +5,7 @@ import { MENU_STATUS } from '../../../interfaces';
 import { MenuImageModel } from './menu-image'
 import { MenuCategoryModel } from './menu-category'
 import { MenuCategoryMapModel } from './menu-category_map'
+import { MenuProductsModel } from './menu-product'
 
 const { INTEGER, STRING, ENUM } = DataTypes;
 
@@ -51,6 +52,7 @@ MenuModel.init({
 });
 
 MenuModel.hasMany(MenuImageModel, { as: 'images' });
+MenuImageModel.belongsTo(MenuModel);
 
 MenuModel.belongsToMany(MenuCategoryModel, {
     through: MenuCategoryMapModel,
@@ -58,5 +60,12 @@ MenuModel.belongsToMany(MenuCategoryModel, {
     otherKey: 'categoryId',
     as: 'categories'
 });
+
+MenuCategoryModel.hasMany(MenuProductsModel, {
+    foreignKey: 'categoryId',
+    as: 'products',
+});
+
+MenuProductsModel.belongsTo(MenuCategoryModel);
 
 export { MenuModel };

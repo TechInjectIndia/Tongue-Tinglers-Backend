@@ -12,7 +12,7 @@ const {
 // ====== Menu Starts ======
 /**
  * @swagger
- * /api/admin/menu/category/map/create:
+ * /api/admin/menu/category/map/assign:
  *   post:
  *     summary: Create a new Menu Category
  *     tags: [Admin > Menu > Category > Map]
@@ -42,7 +42,7 @@ const {
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/menu/category/map/delete:
+ * /api/admin/menu/category/map/unassign:
  *   delete:
  *     summary: Delete a Menu Category Map
  *     tags: [Admin > Menu > Category > Map]
@@ -72,8 +72,8 @@ const {
  *       '404':
  *         description: Menu Category not found
  */
-router.post("/create", validateCreateMenuCategoryMapBody, MenuCategoryMapController.create);
-router.delete("/delete", validateEditMultipleIdsBody, MenuCategoryMapController.delete);
+router.post("/assign", validateCreateMenuCategoryMapBody, MenuCategoryMapController.assign);
+router.post("/unassign", validateEditMultipleIdsBody, MenuCategoryMapController.unassign);
 // ====== Menu Ends ======
 
 export default router;

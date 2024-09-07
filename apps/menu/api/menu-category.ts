@@ -1,6 +1,8 @@
 import * as express from "express";
 import MenuCategoryController from "../controllers/menu-category";
 import * as MenuCategoryValidation from "../validations/menu-category";
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
@@ -14,7 +16,33 @@ const {
 
 // ====== Menu Starts ======
 /**
- * @swagger
+ * @swagger 
+ * /api/admin/menu/category/image/upload:
+ *   post:
+ *     summary: Upload Menu Category Image
+ *     tags: [Admin > Menu > Category]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - file
+ *            properties:
+ *              file:
+ *                type: string
+ *                format: binary
+ *     responses:
+ *       '200':
+ *         description: Menu Category Image Uploaded successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ *
  * /api/admin/menu/category/create:
  *   post:
  *     summary: Create a new Menu Category
@@ -29,11 +57,15 @@ const {
  *            type: object
  *            required:
  *              - name
+ *              - image
  *              - status
  *            properties:
  *              name:
  *                type: string
- *                default: AdminMenu 
+ *                default: AdminMenu
+ *              image:
+ *                type: string
+ *                default: "imagename"
  *              status:
  *                type: string
  *                default: "inactive"
@@ -73,6 +105,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
+ * 
  * /api/admin/menu/category/get/{id}:
  *   get:
  *     summary: Get a Menu Category by ID
@@ -172,5 +205,7 @@ router.get("/get/:id", validateEditMenuCategoryParams, MenuCategoryController.ge
 router.put("/update/:id", validateEditMenuCategoryParams, validateEditMenuCategoryBody, MenuCategoryController.update);
 router.delete("/delete", validateEditMultipleIdsBody, MenuCategoryController.delete);
 // ====== Menu Ends ======
+
+router.post("/image/upload", upload.single('file'), MenuCategoryController.upload);
 
 export default router;

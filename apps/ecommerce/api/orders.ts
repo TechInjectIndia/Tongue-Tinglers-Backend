@@ -80,6 +80,34 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
+ * 
+ * /api/admin/order/get-status/{id}:
+ *   get:
+ *     summary: Get a order Status by ID
+ *     tags: [Admin > Ecommerce > Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         default: 1
+ *         schema:
+ *           type: string
+ *         description: ID of the order to retrieve
+ *     responses:
+ *       '200':
+ *         description: Order retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               description: ID of the Order to retrieve
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Order not found
+ * 
  * /api/admin/order/get/{id}:
  *   get:
  *     summary: Get a order by ID
@@ -149,6 +177,7 @@ const {
 router.post("/create", validateCreateOrderBody, OrderController.create);
 router.get("/list", validateListOrderQuery, OrderController.list);
 router.get("/get/:id", validateEditOrderParams, OrderController.get);
+router.get("/get-status/:id", validateEditOrderParams, OrderController.orderStatus);
 router.put("/update/:id", validateEditOrderParams, validateEditOrderBody, OrderController.update);
 // ====== order Ends ======
 

@@ -28,7 +28,10 @@ export const ERROR_MESSAGE = {
 };
 
 export const SUCCESS_MESSAGE = {
+    ASSIGNED: "Assigned successfully",
+    UNASSIGNED: "Un-assigned successfully",
     LOGGED_IN: "Logged In",
+    UPLOADED: "Image uploaded successfully",
     FETCHED: "Fetched successfully",
     CREATED: "Created successfully",
     UPDATED: "Updated successfully",

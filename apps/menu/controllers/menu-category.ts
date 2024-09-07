@@ -1,14 +1,32 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse } from "../../../libraries";
+import { sendResponse, uploadSingleFileToFirebase } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { MenuCategoryRepo } from '../models/menu-category';
 
 export default class MenuCategoryController {
+    static async upload(req: Request, res: Response, next: NextFunction) {
+        try {
+            const moduleName = 'menu-category'
+            await uploadSingleFileToFirebase(req as any, moduleName as string)
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPLOADED,
+                    )
+                );
+        } catch (err) {
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const createMenu = req?.body;
-
             let getAttributes: any = ['*'];
             const whereName = 'name'
             const whereVal = req?.body?.name;
@@ -94,7 +112,7 @@ export default class MenuCategoryController {
                         )
                     );
             }
-            
+
             const updateMenu = req?.body;
             delete updateMenu.id
             const Menu = await new MenuCategoryRepo().update(id as number, updateMenu);

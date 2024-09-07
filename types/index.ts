@@ -3,6 +3,7 @@ export * from './audit-logs';
 export * from './analytics';
 export * from './customer';
 export * from './ecommerce';
+export * from './retort';
 export * from './lead';
 export * from './menu';
 export * from './payments';

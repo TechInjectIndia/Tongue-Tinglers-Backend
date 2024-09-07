@@ -115,6 +115,39 @@ export default class OrderController {
         }
     }
 
+    static async orderStatus(req: Request, res: Response, next: NextFunction) {
+        try {
+            const id = get(req?.params, "id", 0);
+            const Order = await new OrderRepo().orderStatus(id as number);
+
+            if (isEmpty(Order)) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS
+                        )
+                    );
+            }
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        Order
+                    )
+                );
+        } catch (err) {
+            console.log(err);
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);

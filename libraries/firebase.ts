@@ -1,7 +1,6 @@
 const admin = require('firebase-admin');
 const serviceAccount = require('../firebase-adminsdk.json');
 import { CONFIG } from '../config';
-import dayjs from 'dayjs';
 
 type TFirebaseUser = {
   email: string;
@@ -32,13 +31,19 @@ export const createFirebaseUser = async (user: TFirebaseUser) => {
   }
 }
 
-export const uploadSingleFileToFirebase = async (req: any) => {
+export const uploadSingleFileToFirebase = async (req: any, destinationPath: string) => {
+
   const file = req?.file;
   const fileName = `${Date.now()}` + file.originalname;
   var buffer = new Uint8Array(file.buffer);
-  const url = await bucket
-    .file(fileName)
-    .getSignedUrl({ action: "read", expires: dayjs().add(50, 'year') });
-  await bucket.file(fileName).save(buffer, { resumable: true });
+
+  const fileUpload = bucket.file(destinationPath + '/' + fileName);
+
+  const result = new Date();
+  result.setFullYear(result.getFullYear() + 50);
+
+  const url = await fileUpload.getSignedUrl({ action: "read", expires: result });
+  await fileUpload.save(buffer, { resumable: true });
+
   return url;
 }

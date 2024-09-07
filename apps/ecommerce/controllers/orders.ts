@@ -17,14 +17,21 @@ export default class OrderController {
             if (createOrder) {
                 if (cartItems.length) {
                     cartItems.map(async (product: any, index: number) => {
+                        let isRepeated = 0;
                         const getProduct = await new ProductRepo().get(product.id as number);
+                        const checkRepeatedOrder = await new OrderItemRepo().checkRepeatedOrder(user_id as number, product.id as number);
+                        if (checkRepeatedOrder) {
+                            isRepeated = 1;
+                        }
                         const orderItemPayload = {
                             name: getProduct.name as string,
                             slug: getProduct.slug as string,
+                            userId: user_id,
                             price: getProduct.price as string,
                             productId: product.id as number,
                             quantity: cartItems[index].quantity as number,
-                            orderId: createOrder.id as number
+                            orderId: createOrder.id as number,
+                            isRepeated: isRepeated
                         };
                         await new OrderItemRepo().create(orderItemPayload);
                     });

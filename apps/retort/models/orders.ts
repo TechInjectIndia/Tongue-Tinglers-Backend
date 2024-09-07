@@ -12,6 +12,16 @@ import IBaseRepo from '../controllers/controller/IOrdersController';
 export class RetortOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
     constructor() { }
 
+    public async orderStatus(id: number): Promise<TOrder> {
+        const data = await RetortOrdersModel.findOne({
+            where: {
+                id,
+            },
+            attributes: ['orderStatus']
+        });
+        return data;
+    }
+
     public async create(data: TAddOrder): Promise<TOrder> {
         const response = await RetortOrdersModel.create(data);
         return response;

@@ -22,6 +22,7 @@ export type TAddOrder = {
   shippingAddress: string;
   paymentMethod: string;
   totalPrice: number;
+  isRepeated: number;
   orderStatus: string;
 };
 

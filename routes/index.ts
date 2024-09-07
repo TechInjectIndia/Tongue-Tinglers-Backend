@@ -16,6 +16,11 @@ import authRouter from "../apps/auth/api";
 router.use(`/auth`, authRouter);
 // ====== Auth ======
 
+// ====== Pet Pooja ======
+import petPoojaApiRouter from "../apps/pet-pooja/api/petpooja";
+router.use(`/pet-pooja`, petPoojaApiRouter);
+// ====== Pet Pooja ======
+
 import addressRouter from "../apps/address/api";
 router.use('/user/address', auth, addressRouter);
 
@@ -57,7 +62,7 @@ router.use(`${ADMIN}/payments`, auth, paymentsRouter); // pending
 router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // pending
-router.use(`${ADMIN}/menu`, menuRouter);
+router.use(`${ADMIN}/menu`, auth, menuRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
 router.use(`${ADMIN}/order`, auth, orderRouter);

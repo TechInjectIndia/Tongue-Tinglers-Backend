@@ -10,7 +10,9 @@ class OrderItemsModel extends Model<TOrderItem, OrderItemsCreationAttributes> im
     public name!: string;
     public slug!: string;
     public orderId!: number;
+    public userId!: number;
     public productId!: number;
+    public isRepeated!: number;
     public price!: string;
     public quantity!: number;
     public readonly createdAt!: Date;
@@ -34,6 +36,14 @@ OrderItemsModel.init({
     orderId: {
         type: INTEGER,
         allowNull: false,
+    },
+    userId: {
+        type: INTEGER,
+        allowNull: true,
+    },
+    isRepeated: {
+        type: INTEGER,
+        defaultValue: 0
     },
     productId: {
         type: INTEGER,

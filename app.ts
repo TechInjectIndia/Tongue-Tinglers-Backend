@@ -12,10 +12,7 @@ require("./database/schema");
 const helmet = require('helmet');
 const helmetCsp = require('helmet-csp');
 const rateLimit = require('express-rate-limit');
-
 const xss = require('xss-clean');
-const { JSDOM } = require('jsdom');
-const DOMPurify = require('dompurify')(new JSDOM().window);
 
 const { RateLimiterMemory } = require('rate-limiter-flexible');
 const rateLimiter = new RateLimiterMemory({

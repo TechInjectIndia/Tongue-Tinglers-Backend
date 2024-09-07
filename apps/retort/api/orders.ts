@@ -14,6 +14,33 @@ const {
 // ====== order Starts ======
 /**
  * @swagger
+ * /api/admin/retort/order/get-status/{id}:
+ *   get:
+ *     summary: Get a retort order Status by ID
+ *     tags: [Admin > Ecommerce > Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         default: 1
+ *         schema:
+ *           type: string
+ *         description: ID of the order to retrieve
+ *     responses:
+ *       '200':
+ *         description: Order retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               description: ID of the Order to retrieve
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Order not found
+ * 
  * /api/admin/retort/order/create:
  *   post:
  *     summary: Create a new order
@@ -149,6 +176,7 @@ const {
 router.post("/create", validateCreateOrderBody, RetortOrderController.create);
 router.get("/list", validateListOrderQuery, RetortOrderController.list);
 router.get("/get/:id", validateEditOrderParams, RetortOrderController.get);
+router.get("/get-status/:id", validateEditOrderParams, RetortOrderController.orderStatus);
 router.put("/update/:id", validateEditOrderParams, validateEditOrderBody, RetortOrderController.update);
 // ====== order Ends ======
 

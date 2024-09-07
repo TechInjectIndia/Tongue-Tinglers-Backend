@@ -125,6 +125,7 @@ const options = {
     // looks for configuration in specified directories
     apis: [
         './routes/*.ts',
+        './apps/pet-pooja/api/*.ts',
         './apps/auth/api/*.ts',
         './apps/address/api/*.ts',
         './apps/test-user/api/*.ts',

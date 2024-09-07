@@ -37,13 +37,13 @@ const options = {
                 name: 'AUTH' // auth starts
             },
             {
-                name: 'Users > address'
+                name: 'Admin > Permissions'
+            },
+            {
+                name: 'Admin > Roles'
             },
             {
                 name: 'Admin > Users' // admin starts
-            },
-            {
-                name: 'Admin > User > Payments'
             },
             {
                 name: 'Admin > User > Profile'
@@ -58,25 +58,16 @@ const options = {
                 name: 'Admin > Reviews'
             },
             {
-                name: 'Admin > Analytics > Leads'
-            },
-            {
-                name: 'Admin > Analytics > Orders'
-            },
-            {
-                name: 'Admin > Analytics > Retort'
-            },
-            {
                 name: 'Admin > Menu'
             },
             {
+                name: 'Admin > Menu > Category'
+            },
+            {
+                name: 'Admin > Menu > Product'
+            },
+            {
                 name: 'Admin > Franchise'
-            },
-            {
-                name: 'Admin > Permissions'
-            },
-            {
-                name: 'Admin > Roles'
             },
             {
                 name: 'Admin > Ecommerce > Products'
@@ -94,6 +85,18 @@ const options = {
                 name: 'Admin > Ecommerce > Invoices'
             },
             {
+                name: 'Admin > Retort > Products'
+            },
+            {
+                name: 'Admin > Retort > Product > Category'
+            },
+            {
+                name: 'Admin > Retort > Orders'
+            },
+            {
+                name: 'Admin > Retort > Invoices'
+            },
+            {
                 name: 'Admin > Logs > Audit-logs'
             },
             {
@@ -106,6 +109,9 @@ const options = {
                 name: 'Admin > Lead > Follow Ups'
             },
             {
+                name: 'Admin > User > Payments'
+            },
+            {
                 name: 'Frontend > Ecommerce > Products' // frontend starts
             },
             {
@@ -115,11 +121,50 @@ const options = {
                 name: 'Frontend > Testimonials'
             },
             {
+                name: 'Franchise > Profile'
+            },
+            {
+                name: 'Franchise > Settings'
+            },
+            {
                 name: 'Franchise > Ecommerce > Orders' // franchise starts
             },
             {
-                name: 'Franchise > Profile'
-            }
+                name: 'Franchise > Retort > Orders'
+            },
+            {
+                name: 'Franchise > Testimonials'
+            },
+            {
+                name: 'Franchise > Reviews'
+            },
+            {
+                name: 'Customer > Profile'
+            },
+            {
+                name: 'Customer > Settings'
+            },
+            {
+                name: 'Customer > Testimonials'
+            },
+            {
+                name: 'Customer > Reviews'
+            },
+            {
+                name: 'Users > address'
+            },
+            {
+                name: 'Admin > Analytics > Leads'
+            },
+            {
+                name: 'Admin > Analytics > Orders'
+            },
+            {
+                name: 'Admin > Analytics > Retort'
+            },
+            {
+                name: 'PetPooja'
+            },
         ]
     },
     // looks for configuration in specified directories

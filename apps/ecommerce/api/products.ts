@@ -47,7 +47,7 @@ const {
  * /api/admin/product/assign-category:
  *   post:
  *     summary: Assign Category
- *     tags: [Admin > Ecommerce > Products > Category > Assign > Add]
+ *     tags: [Admin > Ecommerce > Products]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -77,7 +77,7 @@ const {
  * /api/admin/product/unassign-category:
  *   post:
  *     summary: Un-Assign Category
- *     tags: [Admin > Ecommerce > Products > Category > Assign > Remove]
+ *     tags: [Admin > Ecommerce > Products]
  *     security:
  *       - bearerAuth: []
  *     requestBody:

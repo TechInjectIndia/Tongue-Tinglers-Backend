@@ -14,8 +14,8 @@ const {
  * @swagger
  * /api/admin/menu/category/map/assign:
  *   post:
- *     summary: Create a new Menu Category
- *     tags: [Admin > Menu > Category > Map]
+ *     summary: Assign menu to category
+ *     tags: [Admin > Menu > Category]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -43,9 +43,9 @@ const {
  *         description: Unauthorized
  * 
  * /api/admin/menu/category/map/unassign:
- *   delete:
- *     summary: Delete a Menu Category Map
- *     tags: [Admin > Menu > Category > Map]
+ *   post:
+ *     summary: Un-Assign menu to category
+ *     tags: [Admin > Menu > Category]
  *     security:
  *       - bearerAuth: []
  *     requestBody:

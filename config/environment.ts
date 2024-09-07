@@ -16,4 +16,5 @@ export const CONFIG = {
     APP_BASE_URL: process.env.APP_BASE_URL,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     BUCKET_URL: process.env.BUCKET_URL,
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL,
 };

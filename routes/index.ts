@@ -1,10 +1,6 @@
 import { Router } from "express";
-import { sendEmail, uploadSingleFileToFirebase } from '../libraries';
-import { NextFunction, Request, Response } from "express";
-const saltedMd5 = require('salted-md5');
-const path = require('path');
-const multer = require('multer');
-const upload = multer({ storage: multer.memoryStorage() });
+import { sendEmail, EMAIL_HEADING, getEmailTemplate, EMAIL_TEMPLATE } from '../libraries';
+import { CONFIG } from '../config'
 
 const router = Router();
 
@@ -122,13 +118,16 @@ router.use(`/testimonials`, webTestimonialsRouter);
 router.use(`/product`, webProductsRouter);
 // ====== Frontend ======
 
-router.use(`/test-email`, () => {
-    // sendEmail('jasskaranofficial@gmail.com', 'Test subject', 'welcome-admin-user', {user_firstname: 'Jaskaran Singh'});
-});
-
-router.post(`/upload-file`, upload.single('file'), async (req: Request, res: Response) => {
-    // await uploadSingleFileToFirebase(req);
-    // res.send('done');
+router.use(`/test-email`, async () => {
+    const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_ADMIN_ADDED, { email: CONFIG.ADMIN_EMAIL, link: 'some-link' });
+    sendEmail(
+        CONFIG.ADMIN_EMAIL,
+        EMAIL_HEADING.NEW_ADMIN_ADDED,
+        {
+            heading: EMAIL_HEADING.NEW_ADMIN_ADDED,
+            description: emailContent
+        }
+    );
 });
 
 export default router;

@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse, createPassword, createFirebaseUser } from "../../../libraries";
+import { sendResponse, createPassword, createFirebaseUser, sendEmail, EMAIL_HEADING } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { AdminRepo } from '../models/user';
 import { Auth } from '../../auth/models';
 import { USER_TYPE } from '../../../interfaces';
+import { CONFIG } from '../../../config';
 
 export default class AdminController {
     static async getAdmins(req: Request, res: Response, next: NextFunction) {
@@ -83,6 +84,16 @@ export default class AdminController {
                 type: USER_TYPE.ADMIN,
                 firebaseUid: firebaseUser.uid
             });
+
+            // New admin created email sent to Super admin
+            await sendEmail(
+                CONFIG.ADMIN_EMAIL,
+                EMAIL_HEADING.NEW_ADMIN_ADDED,
+                {
+                    heading: EMAIL_HEADING.NEW_ADMIN_ADDED,
+                    description: `Dear ${payload.email}, We are pleased to inform you that your new email account has been successfully created.`
+                }
+            );
 
             return res
                 .status(200)

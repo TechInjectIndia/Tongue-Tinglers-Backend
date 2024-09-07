@@ -8,6 +8,7 @@ const router = express.Router();
 
 const {
   validateCreateProductsBody,
+  validateAssignCategoryBody,
   validateEditProductsBody,
   validateEditProductsParams,
   validateListProductsQuery,
@@ -16,7 +17,7 @@ const {
 
 // ====== Products Starts ======
 /**
- * @swagger 
+ * @swagger
  * /api/admin/product/image/upload:
  *   post:
  *     summary: Upload product Image
@@ -38,6 +39,66 @@ const {
  *     responses:
  *       '200':
  *         description: product Image Uploaded successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
+ * /api/admin/product/assign-category:
+ *   post:
+ *     summary: Assign Category
+ *     tags: [Admin > Ecommerce > Products > Category > Assign > Add]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - productId
+ *              - categoryId
+ *            properties:
+ *              productId:
+ *                type: number
+ *                default: 1 
+ *              categoryId:
+ *                type: number
+ *                default: 1
+ *     responses:
+ *       '200':
+ *         description: Assigned successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
+ * /api/admin/product/unassign-category:
+ *   post:
+ *     summary: Un-Assign Category
+ *     tags: [Admin > Ecommerce > Products > Category > Assign > Remove]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - productId
+ *              - categoryId
+ *            properties:
+ *              productId:
+ *                type: number
+ *                default: 1 
+ *              categoryId:
+ *                type: number
+ *                default: 1
+ *     responses:
+ *       '200':
+ *         description: Un-Assigned successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
@@ -235,5 +296,7 @@ router.delete("/delete", validateEditMultipleIdsBody, ProductsController.delete)
 // ====== Products Ends ======
 
 router.post("/image/upload", upload.single('file'), ProductsController.uploadImage);
+router.post("/assign-category", validateAssignCategoryBody, ProductsController.assignCategory);
+router.post("/unassign-category", validateAssignCategoryBody, ProductsController.unAssignCategory);
 
 export default router;

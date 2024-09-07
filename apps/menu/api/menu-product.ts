@@ -1,31 +1,26 @@
 import * as express from "express";
-import MenuController from "../controllers/menu";
-import * as MenuValidation from "../validations/menu";
-import menuProductRouter from "../../menu/api/menu-product";
-import menuProductMapRouter from "../../menu/api/menu-product-map";
-import menuCategoryRouter from "../../menu/api/menu-category";
-import menuCategoryMapRouter from "../../menu/api/menu-category-map";
-import menuImageRouter from "../../menu/api/menu-image";
+import MenuProductController from "../controllers/menu-product";
+import * as MenuProductValidation from "../validations/menu-product";
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
 const {
-  validateCreateMenuBody,
-  validateEditMenuBody,
-  validateEditMenuParams,
-  validateListMenuQuery,
+  validateCreateMenuProductBody,
+  validateEditMenuProductBody,
+  validateEditMenuProductParams,
+  validateListMenuProductQuery,
   validateEditMultipleIdsBody,
-} = MenuValidation;
+} = MenuProductValidation;
 
 // ====== Menu Starts ======
 /**
- * @swagger
- * /api/admin/menu/image/upload:
+ * @swagger 
+ * /api/admin/menu/product/image/upload:
  *   post:
- *     summary: Upload Menu Image
- *     tags: [Admin > Menu]
+ *     summary: Upload Menu Product Image
+ *     tags: [Admin > Menu > Product]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -42,16 +37,16 @@ const {
  *                format: binary
  *     responses:
  *       '200':
- *         description: Menu Image Uploaded successfully
+ *         description: Menu Product Image Uploaded successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
- * /api/admin/menu/create:
+ *
+ * /api/admin/menu/product/create:
  *   post:
- *     summary: Create a new Menu
- *     tags: [Admin > Menu]
+ *     summary: Create a new Menu Product
+ *     tags: [Admin > Menu > Product]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -62,26 +57,42 @@ const {
  *            type: object
  *            required:
  *              - name
- *              - status
+ *              - slug
+ *              - description
+ *              - images
+ *              - price
+ *              - active
  *            properties:
  *              name:
  *                type: string
- *                default: AdminMenu 
- *              status:
+ *                default: AdminMenu
+ *              slug:
  *                type: string
- *                default: "inactive"
+ *                default: slug
+ *              description:
+ *                type: string
+ *                default: description
+ *              images:
+ *                type: string
+ *                default: "imagename"
+ *              price:
+ *                type: number
+ *                default: 750
+ *              active:
+ *                type: string
+ *                default: "active"
  *     responses:
  *       '200':
- *         description: Menu created successfully
+ *         description: Menu Product created successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/menu/list?size={size}&skip={skip}:
+ * /api/admin/menu/product/list?size={size}&skip={skip}:
  *   get:
- *     summary: Get all Menu
- *     tags: [Admin > Menu]
+ *     summary: Get all Menu Categories
+ *     tags: [Admin > Menu > Product]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -101,16 +112,15 @@ const {
  *         description: How many Rows want to skip
  *     responses:
  *       '200':
- *         description: Menu retrieved successfully
+ *         description: Menu Product retrieved successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
- * /api/admin/menu/get/{id}:
+ * /api/admin/menu/product/get/{id}:
  *   get:
- *     summary: Get a Menu by ID
- *     tags: [Admin > Menu]
+ *     summary: Get a Menu Product by ID
+ *     tags: [Admin > Menu > Product]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -120,24 +130,24 @@ const {
  *         default: 1
  *         schema:
  *           type: string
- *         description: ID of the Menu to retrieve
+ *         description: ID of the Menu Product to retrieve
  *     responses:
  *       '200':
- *         description: Menu retrieved successfully
+ *         description: Menu Product retrieved successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: string
- *               description: ID of the Menu to retrieve
+ *               description: ID of the Menu Product to retrieve
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Menu not found
+ *         description: Menu Product not found
  * 
- * /api/admin/menu/update/{id}:
+ * /api/admin/menu/product/update/{id}:
  *   put:
- *     summary: Update a Menu
- *     tags: [Admin > Menu]
+ *     summary: Update a Menu Product
+ *     tags: [Admin > Menu > Product]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -147,7 +157,7 @@ const {
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the Menu to update
+ *         description: ID of the Menu Product to update
  *     requestBody:
  *       required: true
  *       content:
@@ -156,28 +166,44 @@ const {
  *            type: object
  *            required:
  *              - name
- *              - status
+ *              - slug
+ *              - description
+ *              - images
+ *              - price
+ *              - active
  *            properties:
  *              name:
  *                type: string
- *                default: Menu
- *              status:
+ *                default: AdminMenu
+ *              slug:
+ *                type: string
+ *                default: slug
+ *              description:
+ *                type: string
+ *                default: description
+ *              images:
+ *                type: string
+ *                default: "imagename"
+ *              price:
+ *                type: number
+ *                default: 750
+ *              active:
  *                type: string
  *                default: "active"
  *     responses:
  *       '200':
- *         description: Menu updated successfully
+ *         description: Menu Product updated successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Menu not found
+ *         description: Menu Product not found
  * 
- * /api/admin/menu/delete:
+ * /api/admin/menu/product/delete:
  *   delete:
- *     summary: Delete a Menu
- *     tags: [Admin > Menu]
+ *     summary: Delete a Menu Product
+ *     tags: [Admin > Menu > Product]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -194,28 +220,19 @@ const {
  *                default: [1]
  *     responses:
  *       '200':
- *         description: Menu deleted successfully
+ *         description: Menu Product deleted successfully
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Menu not found
+ *         description: Menu Product not found
  */
-
-router.post("/create", validateCreateMenuBody, MenuController.create);
-router.get("/list", validateListMenuQuery, MenuController.list);
-router.get("/get/:id", validateEditMenuParams, MenuController.get);
-router.put("/update/:id", validateEditMenuParams, validateEditMenuBody, MenuController.update);
-router.delete("/delete", validateEditMultipleIdsBody, MenuController.delete);
-
-// Menu Category Apis
-router.use("/product", menuProductRouter);
-router.use("/product/map", menuProductMapRouter);
-router.use("/category", menuCategoryRouter);
-router.use("/category/map", menuCategoryMapRouter);
-router.use("/image", menuImageRouter);
-
-
+router.post("/create", validateCreateMenuProductBody, MenuProductController.create);
+router.get("/list", validateListMenuProductQuery, MenuProductController.list);
+router.get("/get/:id", validateEditMenuProductParams, MenuProductController.get);
+router.put("/update/:id", validateEditMenuProductParams, validateEditMenuProductBody, MenuProductController.update);
+router.delete("/delete", validateEditMultipleIdsBody, MenuProductController.delete);
 // ====== Menu Ends ======
-router.post("/image/upload", upload.single('file'), MenuController.upload);
+
+router.post("/image/upload", upload.single('file'), MenuProductController.upload);
 
 export default router;

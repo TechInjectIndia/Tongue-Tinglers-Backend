@@ -2,34 +2,28 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { MenuRepo } from '../models/menu';
+import { MenuProductRepo } from '../models/menu-product';
 import { MenuCategoryRepo } from '../models/menu-category';
-import { MenuCategoryMapRepo } from '../models/menu-category-map';
+import { MenuProductMapRepo } from '../models/menu-product-map';
 
-export default class MenuCategoryMapController {
+export default class MenuProductCategoryMapController {
     static async assign(req: Request, res: Response, next: NextFunction) {
         try {
-            const createMenu = req?.body;
-            const menuId = req?.body.menuId;
+            const productId = req?.body.productId;
             const categoryId = req?.body.categoryId;
-
-            const existingMenu = await new MenuRepo().get(menuId as number);
+            
+            const existingProduct = await new MenuProductRepo().get(productId as number);
             const existingCategory = await new MenuCategoryRepo().get(categoryId as number);
-            if (existingMenu && existingCategory) {
-                const checkIfAlreadyLinked = await new MenuCategoryMapRepo().get(menuId as number, categoryId as number);
-                if (!checkIfAlreadyLinked) {
-                    const Menu = await new MenuCategoryMapRepo().assign(createMenu);
-                    return res
-                        .status(200)
-                        .send(
-                            sendResponse(
-                                RESPONSE_TYPE.SUCCESS,
-                                SUCCESS_MESSAGE.CREATED,
-                                Menu
-                            )
-                        );
-                }
-
+            if (existingProduct && existingCategory) {
+                await new MenuProductMapRepo().assign(productId as number, categoryId as number);
+                return res
+                    .status(200)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.SUCCESS,
+                            SUCCESS_MESSAGE.ASSIGNED,
+                        )
+                    );
             }
             return res
                 .status(400)
@@ -40,7 +34,7 @@ export default class MenuCategoryMapController {
                     )
                 );
         } catch (err) {
-            console.log(err)
+            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -49,22 +43,19 @@ export default class MenuCategoryMapController {
 
     static async unassign(req: Request, res: Response, next: NextFunction) {
         try {
-            const menuId = req?.body.menuId;
-            const categoryId = req?.body.categoryId;
+            const productId = req?.body.productId;
 
-            const Menu = await new MenuCategoryMapRepo().unassign(menuId as number, categoryId as number);
+            const Menu = await new MenuProductMapRepo().unassign(productId as number);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CREATED,
+                        SUCCESS_MESSAGE.UNASSIGNED,
                         Menu
                     )
                 );
-
         } catch (err) {
-            console.log(err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

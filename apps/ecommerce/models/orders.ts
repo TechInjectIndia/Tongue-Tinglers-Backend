@@ -17,6 +17,16 @@ export class OrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
         return response;
     }
 
+    public async orderStatus(id: number): Promise<TOrder> {
+        const data = await OrdersModel.findOne({
+            where: {
+                id,
+            },
+            attributes: ['orderStatus']
+        });
+        return data;
+    }
+
     public async get(id: number): Promise<TOrder> {
         const data = await OrdersModel.findOne({
             where: {

@@ -11,7 +11,7 @@ import IBaseRepo from '../controllers/controller/IMenuCategoryMapController';
 export class MenuCategoryMapRepo implements IBaseRepo<TMenuCategoryRelation, TMenuFilters> {
     constructor() { }
 
-    public async create(data: TAddMenuCategoryRelation): Promise<TMenuCategoryRelation> {
+    public async assign(data: TAddMenuCategoryRelation): Promise<TMenuCategoryRelation> {
         const response = await MenuCategoryMapModel.create(data);
         return response;
     }
@@ -26,10 +26,11 @@ export class MenuCategoryMapRepo implements IBaseRepo<TMenuCategoryRelation, TMe
         return response;
     }
 
-    public async delete(ids: number[]): Promise<number> {
+    public async unassign(menuId: number, categoryId: number): Promise<number> {
         const response = await MenuCategoryMapModel.destroy({
             where: {
-                id: ids,
+                menuId: menuId,
+                categoryId: categoryId,
             },
         });
         return response;

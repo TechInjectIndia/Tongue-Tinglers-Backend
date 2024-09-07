@@ -8,3 +8,9 @@ export type TProductCategoryLink = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type TAddProductCategoryLink = {
+  productId: number;
+  categoryId: number;
+};
+

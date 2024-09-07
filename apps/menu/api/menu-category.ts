@@ -105,6 +105,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
+ * 
  * /api/admin/menu/category/get/{id}:
  *   get:
  *     summary: Get a Menu Category by ID

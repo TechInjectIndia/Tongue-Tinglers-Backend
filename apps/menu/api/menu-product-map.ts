@@ -1,6 +1,6 @@
 import * as express from "express";
-import MenuCategoryMapController from "../controllers/menu-category-map";
-import * as MenuCategoryMapValidation from "../validations/menu-category-map";
+import MenuProductCategoryMapController from "../controllers/menu-product-map";
+import * as MenuCategoryMapValidation from "../validations/menu-product-map";
 
 const router = express.Router();
 
@@ -12,10 +12,10 @@ const {
 // ====== Menu Starts ======
 /**
  * @swagger
- * /api/admin/menu/category/map/assign:
+ * /api/admin/menu/product/map/assign:
  *   post:
- *     summary: Create a new Menu Category
- *     tags: [Admin > Menu > Category > Map]
+ *     summary: Assign Category
+ *     tags: [Admin > Menu > Product > Map]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -25,10 +25,10 @@ const {
  *           schema:
  *            type: object
  *            required:
- *              - menuId
+ *              - productId
  *              - categoryId
  *            properties:
- *              menuId:
+ *              productId:
  *                type: number
  *                default: 1 
  *              categoryId:
@@ -42,10 +42,10 @@ const {
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/menu/category/map/unassign:
+ * /api/admin/menu/product/map/unassign:
  *   delete:
- *     summary: Delete a Menu Category Map
- *     tags: [Admin > Menu > Category > Map]
+ *     summary: Un-Assign Category
+ *     tags: [Admin > Menu > Product > Map]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -55,10 +55,10 @@ const {
  *           schema:
  *            type: object
  *            required:
- *              - menuId
+ *              - productId
  *              - categoryId
  *            properties:
- *              menuId:
+ *              productId:
  *                type: number
  *                default: 1
  *              categoryId:
@@ -72,8 +72,8 @@ const {
  *       '404':
  *         description: Menu Category not found
  */
-router.post("/assign", validateCreateMenuCategoryMapBody, MenuCategoryMapController.assign);
-router.post("/unassign", validateEditMultipleIdsBody, MenuCategoryMapController.unassign);
+router.post("/assign", validateCreateMenuCategoryMapBody, MenuProductCategoryMapController.assign);
+router.post("/unassign", validateEditMultipleIdsBody, MenuProductCategoryMapController.unassign);
 // ====== Menu Ends ======
 
 export default router;

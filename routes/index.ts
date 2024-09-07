@@ -54,19 +54,19 @@ router.use(`${ADMIN}/reviews`, auth, reviewsRouter);
 router.use(`${ADMIN}/profile`, auth, profileRouter);
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
 router.use(`${ADMIN}/payments`, auth, paymentsRouter); // pending
-router.use(`${ADMIN}/analytics/leads`, leadsAnalyticsRouter); // pending
-router.use(`${ADMIN}/analytics/orders`, ordersAnalyticsRouter); // pending
+router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter); // pending
+router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // pending
-router.use(`${ADMIN}/menu`, auth, menuRouter);
+router.use(`${ADMIN}/menu`, menuRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
 router.use(`${ADMIN}/order`, auth, orderRouter);
 router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
 router.use(`${ADMIN}/lead`, auth, leadRouter);
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);
-router.use(`${ADMIN}/retort/product`, retortProductRouter);
-router.use(`${ADMIN}/retort/category`, retortProductCategoryRouter);
-router.use(`${ADMIN}/retort/order`, retortOrderRouter);
+router.use(`${ADMIN}/retort/product`, auth, retortProductRouter);
+router.use(`${ADMIN}/retort/category`, auth, retortProductCategoryRouter);
+router.use(`${ADMIN}/retort/order`, auth, retortOrderRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

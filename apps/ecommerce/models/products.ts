@@ -37,11 +37,17 @@ export class ProductRepo implements IBaseRepo<TProduct, TProductFilters> {
             },
             {
                 model: ProductCategoryModel,
-                as: 'categories'
+                as: 'categories',
+                through: {
+                    attributes: ['id'],
+                }
             },
             {
                 model: ProductTagModel,
-                as: 'tags'
+                as: 'tags',
+                through: {
+                    attributes: ['id'],
+                }
             }]
         });
         return data;

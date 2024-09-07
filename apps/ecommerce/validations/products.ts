@@ -3,6 +3,17 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 import { PRODUCTS_TYPE } from '../../../interfaces/products';
 
+const AssignCategoryBody = Joi.object().keys({    
+    productId: Joi.number().required(),
+    categoryId: Joi.number().required(),
+});
+
+export const validateAssignCategoryBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, AssignCategoryBody, "body");
+
 const createProductsBody = Joi.object().keys({
     name: Joi.string().required(),
     description: Joi.string().required(),

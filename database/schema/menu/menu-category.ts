@@ -2,7 +2,6 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TMenuCategory } from "../../../types";
 import { MENU_CATEGORY_STATUS } from '../../../interfaces';
-import { MenuModel } from './menu'
 
 const { INTEGER, STRING, ENUM } = DataTypes;
 

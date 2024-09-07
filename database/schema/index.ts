@@ -40,3 +40,4 @@ export * from "./menu/menu-image";
 export * from "./menu/menu-category";
 export * from "./menu/menu-category_map";
 export * from "./menu/menu-product";
+export * from "./crm";

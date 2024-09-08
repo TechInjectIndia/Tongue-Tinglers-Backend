@@ -1,18 +1,20 @@
 const { Op } = require("sequelize");
 import {
     TReviews,
+    TEditReviews,
     TReviewsFilters,
     TReviewssList,
     TAddReviews,
 } from "../../../types/reviews";
-import { Reviews } from "../../../database/schema";
+import { ReviewsModel } from "../../../database/schema";
+import IBaseRepo from '../controllers/controller/IReviewsController';
 
-export class ReviewsModel {
+export class ReviewsRepo implements IBaseRepo<TReviews, TReviewsFilters> {
     constructor() { }
 
-    public async getReviewsByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TReviews | any> {
+    public async getReviewsByAttr(whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TReviews> {
         const whereAttributes = { [whereName]: whereVal }
-        const data = await Reviews.findOne({
+        const data = await ReviewsModel.findOne({
             raw: true,
             attributes: getAttributes,
             where: whereAttributes
@@ -20,15 +22,15 @@ export class ReviewsModel {
         return data;
     }
 
-    public async list(filters: TReviewsFilters): Promise<TReviewssList | any> {
-        const total = await Reviews.count({
+    public async list(filters: TReviewsFilters): Promise<TReviewssList> {
+        const total = await ReviewsModel.count({
             where: {
                 review_text: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Reviews.findAll({
+        const data = await ReviewsModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -41,13 +43,13 @@ export class ReviewsModel {
         return { total, data };
     }
 
-    public async add(data: TAddReviews): Promise<TReviews | any> {
-        const response = await Reviews.create(data);
+    public async create(data: TAddReviews): Promise<TReviews> {
+        const response = await ReviewsModel.create(data);
         return response;
     }
 
-    public async update(id: number, data: TAddReviews): Promise<TReviews | any> {
-        const response = await Reviews.update(data, {
+    public async update(id: number, data: TEditReviews): Promise<[affectedCount: number]> {
+        const response = await ReviewsModel.update(data, {
             where: {
                 id,
             },
@@ -55,8 +57,8 @@ export class ReviewsModel {
         return response;
     }
 
-    public async delete(ids: number[]): Promise<TReviews | any> {
-        const response = await Reviews.destroy({
+    public async delete(ids: number[]): Promise<number> {
+        const response = await ReviewsModel.destroy({
             where: {
                 id: ids,
             },

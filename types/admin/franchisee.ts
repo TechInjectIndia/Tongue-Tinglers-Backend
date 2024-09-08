@@ -1,81 +1,87 @@
 const { OrderItem } = require("sequelize");
 
-// Franchisee type Starts
-export type TFranchiseeLogin = {
-  email: string;
-  password?: string;
-};
-
-export type TFranchisee = {
+export type TFranchise = {
   id: number;
+  createdBy: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
   email: string;
-  password?: string;
-  full_name: string;
-  contact_number: string;
-  phone_code: string;
+  userName: string;
+  phoneNumber: string;
+  type: string;
+  status: string;
+  cart: string;
+  access_token: string;
+  refresh_token: string;
+  updatedBy: string;
+  deletedBy: string;
   role: number;
-  profile_photo: string;
-  address: string;
-  last_login_at: Date;
-  last_login_ip: string;
-  refresh_token?: string;
-  active: number;
+  lastLoginAt: Date;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date;
 };
 
-export type TAddFranchisee = {
-  email: string;
+export interface TFranchiseWithPermission extends TFranchise {
+  permissions: any
+}
+
+export type TAddFranchise = {
   password: string;
-  full_name: string;
-  contact_number: string;
-  phone_code: string;
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
+  email: string;
+  userName: string;
+  phoneNumber: string;
   role: number;
-  address: string;
   active: number;
 };
 
-export type TEditFranchisee = {
-  email?: string;
-  password?: string;
-  full_name?: string;
-  contact_number?: string;
-  phone_code?: string;
+export type TEditFranchise = {
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
+  email: string;
+  userName: string;
+  phoneNumber: string;
   role: number;
-  address?: string;
   active: number;
 };
 
 
 export type TFranchiseesList = {
   total: number;
-  data: TFranchisee;
+  data: TFranchise[];
 };
 
-export type TEditFranchiseeProfile = {
-  full_name: string;
-  contact_number: string;
-  phone_code: string;
-  address: string;
+export type TEditFranchiseProfile = {
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
+  userName: string;
+  phoneNumber: string;
 };
-// Franchisee type Ends
 
-export type TUpdateFranchiseeToken = {
+export type TUpdateFranchiseToken = {
   user_id: number;
   refresh_token: string;
-  last_login_at: Date;
-  last_login_ip: string;
+  lastLoginAt: Date;
+  lastLoginIp: string;
 };
 
-export type TUpdateFranchiseeProfile = {
+export type TUpdateFranchiseProfile = {
   user_id: string;
-  full_name: string;
-  contact_number: string;
-  phone_code: number;
-  address: string;
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
+  userName: string;
+  phoneNumber: string;
 };
 
-export type TUpdateFranchiseePassword = {
+export type TUpdateFranchisePassword = {
   user_id: string;
   password: string;
 };

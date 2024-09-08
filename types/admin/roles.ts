@@ -1,24 +1,32 @@
 const { OrderItem } = require("sequelize");
 
-// Role type Starts
 export type TRole = {
   id: number;
   name: string;
-  role_permissions: object;
+  role_permissions: string;
+  description: string;
   active: number;
   createdAt: Date;
   updatedAt: Date;
 };
 
+export type TEditRole = {
+  name: string;
+  active: number;
+  role_permissions: string;
+  description: string;
+};
+
 export type TAddRole = {
   name: string;
   active: number;
-  role_permissions: object;
+  role_permissions: string;
+  description: string;
 };
 
 export type TRolesList = {
   total: number;
-  data: TRole;
+  data: TRole[];
 };
 
 export type TRoleFilters = {
@@ -28,4 +36,3 @@ export type TRoleFilters = {
   sorting?: typeof OrderItem;
   trashOnly?: string;
 };
-// Role type Ends

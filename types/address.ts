@@ -2,47 +2,35 @@ const { OrderItem } = require("sequelize");
 
 export type TAddress = {
   id: number;
-  email: string;
-  password?: string;
-  full_name: string;
-  contact_number: string;
-  phone_code: string;
-  role: number;
-  profile_photo: string;
-  address: string;
-  last_login_at: Date;
-  last_login_ip: string;
-  refresh_token?: string;
-  active: number;
+  user_id: number;
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
   createdAt: Date;
   updatedAt: Date;
 };
 
 export type TAddAddress = {
-  email: string;
-  password: string;
-  full_name: string;
-  contact_number: string;
-  phone_code: string;
-  role: number;
-  address: string;
-  active: number;
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
 };
 
 export type TEditAddress = {
-  email?: string;
-  password?: string;
-  full_name?: string;
-  contact_number?: string;
-  phone_code?: string;
-  role: number;
-  address?: string;
-  active: number;
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
 };
 
 export type TAddresssList = {
   total: number;
-  data: TAddress;
+  data: TAddress[];
 };
 
 export type TAddressFilters = {

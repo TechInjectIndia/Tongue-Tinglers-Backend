@@ -1,44 +1,18 @@
 const { Op } = require("sequelize");
 import {
     TListFilters,
-    TFranchisee,
-    TAddFranchisee,
-    TEditFranchisee,
+    TFranchise,
+    TAddFranchise,
+    TEditFranchise,
 } from "../../../types";
-import { User as UserModel } from "../../../database/schema";
-import { USER_TYPE } from '../../../interfaces';
+import { UserModel } from "../../../database/schema";
+import { USER_TYPE, USER_STATUS } from '../../../interfaces';
+import IBaseRepo from '../controllers/controller/IFranchiseController';
 
-export class Admin {
+export class FranchiseRepo implements IBaseRepo<TFranchise, TListFilters> {
     constructor() { }
 
-    public async getDeletedFranchisees(filters: TListFilters): Promise<any | null> {
-        const total = await UserModel.count({
-            where: {
-                email: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-                type: USER_TYPE.FRANCHISE,
-                deletedAt: { [Op.not]: null },
-            },
-            paranoid: false,
-        });
-        const data = await UserModel.findAll({
-            order: [filters?.sorting],
-            offset: filters.offset,
-            limit: filters.limit,
-            where: {
-                email: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-                type: USER_TYPE.FRANCHISE,
-                deletedAt: { [Op.not]: null },
-            },
-            paranoid: false,
-        });
-        return { total, data };
-    }
-
-    public async getFranchisees(filters: TListFilters): Promise<any | null> {
+    public async list(filters: TListFilters): Promise<any | null> {
         const total = await UserModel.count({
             where: {
                 email: {
@@ -60,15 +34,22 @@ export class Admin {
         });
         return { total, data };
     }
+    
+    public async get(id: number): Promise<TFranchise | any> {
+        const data = await UserModel.findOne({
+            where: {
+                id,
+                type: USER_TYPE.FRANCHISE
+            },
+        });
+        return data;
+    }
 
-    public async addFranchisee(data: TAddFranchisee): Promise<TFranchisee | any> {
+    public async create(data: TAddFranchise): Promise<TFranchise | any> {
         return await UserModel.create({ ...data, type: USER_TYPE.FRANCHISE });
     }
 
-    public async editFranchisee(
-        id: number,
-        data: TEditFranchisee
-    ): Promise<TFranchisee | any> {
+    public async update(id: number, data: TEditFranchise): Promise<TFranchise | any> {
         return await UserModel.update(data, {
             where: {
                 id,
@@ -76,7 +57,25 @@ export class Admin {
         });
     }
 
-    public async getFranchiseeByEmail(email: string): Promise<TFranchisee | any> {
+    public async delete(ids: number[], deletedBy: number): Promise<number> {
+        const response = await UserModel.destroy({
+            where: {
+                id: ids,
+            },
+        });
+
+        await UserModel.update({
+            status: USER_STATUS.DELETED,
+            deletedBy: deletedBy?.toString()
+        }, {
+            where: {
+                id: ids,
+            },
+        });
+        return response;
+    }
+
+    public async getFranchiseByEmail(email: string): Promise<TFranchise | any> {
         const data = await UserModel.findOne({
             where: {
                 email,
@@ -86,22 +85,30 @@ export class Admin {
         return data;
     }
 
-    public async getFranchiseeById(id: number): Promise<TFranchisee | any> {
-        const data = await UserModel.findOne({
+    public async deletedList(filters: TListFilters): Promise<any | null> {
+        const total = await UserModel.count({
             where: {
-                id,
-                type: USER_TYPE.FRANCHISE
+                email: {
+                    [Op.like]: `%${filters.search}%`,
+                },
+                type: USER_TYPE.FRANCHISE,
+                deletedAt: { [Op.not]: null },
             },
+            paranoid: false,
         });
-        return data;
-    }
-
-    public async deleteFranchisee(ids: number[]): Promise<TFranchisee | any> {
-        const response = await UserModel.destroy({
+        const data = await UserModel.findAll({
+            order: [filters?.sorting],
+            offset: filters.offset,
+            limit: filters.limit,
             where: {
-                id: ids,
+                email: {
+                    [Op.like]: `%${filters.search}%`,
+                },
+                type: USER_TYPE.FRANCHISE,
+                deletedAt: { [Op.not]: null },
             },
+            paranoid: false,
         });
-        return response;
+        return { total, data };
     }
 }

@@ -1,16 +1,15 @@
 import * as express from "express";
 import PermissionController from "../controllers/permissions";
-import * as AdminValidation from "../validations/permissions";
+import * as PermissionValidation from "../validations/permissions";
 
 const router = express.Router();
 
 const {
-  validateEditMultipleIdsBody,
   validateCreatePermissionBody,
   validateListPermissionQuery,
   validateEditPermissionParams,
   validateEditPermissionBody
-} = AdminValidation;
+} = PermissionValidation;
 
 // ====== Admin Permissions Starts =====
 /**
@@ -29,11 +28,15 @@ const {
  *            type: object
  *            required:
  *              - name
+ *              - description
  *              - active
  *            properties:
  *              name:
  *                type: string
- *                default: roles 
+ *                default: admin 
+ *              description:
+ *                type: string
+ *                default: description 
  *              active:
  *                type: boolean
  *                default: 1
@@ -121,11 +124,15 @@ const {
  *            type: object
  *            required:
  *              - name
+ *              - description
  *              - active
  *            properties:
  *              name:
  *                type: string
  *                default: Admin
+ *              description:
+ *                type: string
+ *                default: description
  *              active:
  *                type: string
  *                default: 1
@@ -139,36 +146,10 @@ const {
  *       '404':
  *         description: permissions not found
  * 
- * /api/admin/permissions/delete:
- *   delete:
- *     summary: Delete permission
- *     tags: [Admin > Permissions]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *      required: true
- *      content:
- *        application/json:
- *           schema:
- *            type: object
- *            required:
- *              - ids
- *            properties:
- *              ids:
- *                type: array
- *                default: [1]
- *     responses:
- *       '200':
- *         description: permission deleted successfully
- *       '401':
- *         description: Unauthorized
- *       '404':
- *         description: permissions not found
  */
 router.post("/create", validateCreatePermissionBody, PermissionController.create);
 router.get("/list", validateListPermissionQuery, PermissionController.list);
 router.get("/get/:id", validateEditPermissionParams, PermissionController.get);
 router.put("/update/:id", validateEditPermissionParams, validateEditPermissionBody, PermissionController.update);
-router.delete("/delete", validateEditMultipleIdsBody, PermissionController.delete);
 // ====== Admin Permissions Ends ======
 export default router;

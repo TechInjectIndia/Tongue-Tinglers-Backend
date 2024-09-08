@@ -4,11 +4,17 @@ const { OrderItem } = require("sequelize");
 export type TPermission = {
   id: number;
   name: string;
+  description: string;
   active: number;
   createdAt: Date;
   updatedAt: Date;
 };
 
+export type TEditPermission = {
+  name: string;
+  description: string;
+  active: number;
+};
 export type TAddPermission = {
   name: string;
   active: number;
@@ -16,7 +22,7 @@ export type TAddPermission = {
 
 export type TPermissionsList = {
   total: number;
-  data: TPermission;
+  data: TPermission[];
 };
 
 export type TPermissionFilters = {

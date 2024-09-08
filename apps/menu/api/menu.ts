@@ -1,6 +1,13 @@
 import * as express from "express";
 import MenuController from "../controllers/menu";
 import * as MenuValidation from "../validations/menu";
+import menuProductRouter from "../../menu/api/menu-product";
+import menuProductMapRouter from "../../menu/api/menu-product-map";
+import menuCategoryRouter from "../../menu/api/menu-category";
+import menuCategoryMapRouter from "../../menu/api/menu-category-map";
+import menuImageRouter from "../../menu/api/menu-image";
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
@@ -15,6 +22,32 @@ const {
 // ====== Menu Starts ======
 /**
  * @swagger
+ * /api/admin/menu/image/upload:
+ *   post:
+ *     summary: Upload Menu Image
+ *     tags: [Admin > Menu]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - file
+ *            properties:
+ *              file:
+ *                type: string
+ *                format: binary
+ *     responses:
+ *       '200':
+ *         description: Menu Image Uploaded successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
  * /api/admin/menu/create:
  *   post:
  *     summary: Create a new Menu
@@ -29,46 +62,14 @@ const {
  *            type: object
  *            required:
  *              - name
- *              - city
- *              - zip_code
- *              - state
- *              - country
- *              - phone_number
- *              - email
- *              - address
- *              - additional_info
  *              - status
  *            properties:
  *              name:
  *                type: string
  *                default: AdminMenu 
- *              city:
- *                type: text
- *                default: city
- *              zip_code:
- *                type: text
- *                default: zip_code
- *              state:
- *                type: text
- *                default: state
- *              country:
- *                type: text
- *                default: country
- *              phone_number:
- *                type: text
- *                default: phone_number
- *              email:
- *                type: text
- *                default: email
- *              address:
- *                type: text
- *                default: address
- *              additional_info:
- *                type: text
- *                default: additional_info
  *              status:
- *                type: boolean
- *                default: 0
+ *                type: string
+ *                default: "inactive"
  *     responses:
  *       '200':
  *         description: Menu created successfully
@@ -105,6 +106,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
+ * 
  * /api/admin/menu/get/{id}:
  *   get:
  *     summary: Get a Menu by ID
@@ -154,46 +156,14 @@ const {
  *            type: object
  *            required:
  *              - name
- *              - city
- *              - zip_code
- *              - state
- *              - country
- *              - phone_number
- *              - email
- *              - address
- *              - additional_info
  *              - status
  *            properties:
  *              name:
  *                type: string
- *                default: Menu 
- *              city:
- *                type: text
- *                default: city
- *              zip_code:
- *                type: text
- *                default: zip_code
- *              state:
- *                type: text
- *                default: state
- *              country:
- *                type: text
- *                default: country
- *              phone_number:
- *                type: text
- *                default: phone_number
- *              email:
- *                type: text
- *                default: email
- *              address:
- *                type: text
- *                default: address
- *              additional_info:
- *                type: text
- *                default: additional_info
+ *                default: Menu
  *              status:
- *                type: boolean
- *                default: 0 
+ *                type: string
+ *                default: "active"
  *     responses:
  *       '200':
  *         description: Menu updated successfully
@@ -230,11 +200,22 @@ const {
  *       '404':
  *         description: Menu not found
  */
-router.post("/create", validateCreateMenuBody, MenuController.add);
+
+router.post("/create", validateCreateMenuBody, MenuController.create);
 router.get("/list", validateListMenuQuery, MenuController.list);
 router.get("/get/:id", validateEditMenuParams, MenuController.get);
 router.put("/update/:id", validateEditMenuParams, validateEditMenuBody, MenuController.update);
 router.delete("/delete", validateEditMultipleIdsBody, MenuController.delete);
+
+// Menu Category Apis
+router.use("/product", menuProductRouter);
+router.use("/product/map", menuProductMapRouter);
+router.use("/category", menuCategoryRouter);
+router.use("/category/map", menuCategoryMapRouter);
+router.use("/image", menuImageRouter);
+
+
 // ====== Menu Ends ======
+router.post("/image/upload", upload.single('file'), MenuController.upload);
 
 export default router;

@@ -14,14 +14,14 @@ export default class FranchiseController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
             const admins = await new FranchiseRepo().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -81,11 +81,11 @@ export default class FranchiseController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const user_id = get(req, 'user_id', 0);
             let payload = { ...req?.body, updatedBy: user_id };
 
-            await new FranchiseRepo().update(id, payload);
+            await new FranchiseRepo().update(id as number, payload);
             return res
                 .status(200)
                 .send(
@@ -107,7 +107,6 @@ export default class FranchiseController {
             const ids = get(req?.body, "ids", "");
 
             await new FranchiseRepo().delete(ids, user_id);
-
             return res
                 .status(200)
                 .send(
@@ -125,7 +124,7 @@ export default class FranchiseController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const existingAdmin = await new FranchiseRepo().get(id as number);
             if (isEmpty(existingAdmin)) {
                 return res

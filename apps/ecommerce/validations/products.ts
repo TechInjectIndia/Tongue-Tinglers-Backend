@@ -1,16 +1,23 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
+import { PRODUCTS_TYPE } from '../../../interfaces/products';
 
-export const TYPEFILTERS = {
-    Old: 'Old',
-    New: 'New',
-    Upcoming: 'Upcoming',
-}
+const AssignCategoryBody = Joi.object().keys({    
+    productId: Joi.number().required(),
+    categoryId: Joi.number().required(),
+});
+
+export const validateAssignCategoryBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, AssignCategoryBody, "body");
+
 const createProductsBody = Joi.object().keys({
     name: Joi.string().required(),
     description: Joi.string().required(),
-    type: Joi.string().valid(...Object.values(TYPEFILTERS)).optional().allow(''),
+    type: Joi.string().valid(...Object.values(PRODUCTS_TYPE)).optional().allow(''),
     price: Joi.number().required(),
     stock: Joi.number().required(),
     active: Joi.number().required(),
@@ -25,7 +32,7 @@ export const validateCreateProductsBody = async (
 const editProductsBody = Joi.object().keys({
     name: Joi.string().required(),
     description: Joi.string().required(),
-    type: Joi.string().valid(...Object.values(TYPEFILTERS)).optional().allow(''),
+    type: Joi.string().valid(...Object.values(PRODUCTS_TYPE)).optional().allow(''),
     price: Joi.number().required(),
     stock: Joi.number().required(),
     active: Joi.number().required(),

@@ -1,18 +1,71 @@
-const { DataTypes } = require("sequelize");
+import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-const { STRING, TEXT, INTEGER } = DataTypes;
+import { TMenu } from "../../../types";
+import { MENU_STATUS } from '../../../interfaces';
+import { MenuImageModel } from './menu-image'
+import { MenuCategoryModel } from './menu-category'
+import { MenuCategoryMapModel } from './menu-category_map'
+import { MenuProductsModel } from './menu-product'
 
-export const Menu = sequelize.define("menu", {
-    user_id: { // Refers to the Users table.
+const { INTEGER, STRING, ENUM } = DataTypes;
+
+interface MenuCreationAttributes extends Optional<TMenu, 'id' | 'createdAt' | 'updatedAt'> { }
+
+class MenuModel extends Model<TMenu, MenuCreationAttributes> implements TMenu {
+    public id!: number;
+    public name: string;
+    public status!: string;
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+}
+
+MenuModel.init({
+    id: {
         type: INTEGER,
-        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
     },
-    timestamp: { // When the activity occurred.
+    name: {
         type: STRING,
-        allowNull: false,
+        allowNull: false
     },
-    description: { // Detailed record of the activity.
-        type: TEXT,
+    status: {
+        type: ENUM,
+        values: [...Object.values(MENU_STATUS)]
+    },
+    createdAt: {
+        type: DataTypes.DATE,
         allowNull: false,
-    },    
+        defaultValue: DataTypes.NOW,
+        field: "created_at",
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+        field: "updated_at",
+    },
+}, {
+    sequelize,
+    tableName: 'menu',
+    timestamps: true,
 });
+
+MenuModel.hasMany(MenuImageModel, { as: 'images' });
+MenuImageModel.belongsTo(MenuModel);
+
+MenuModel.belongsToMany(MenuCategoryModel, {
+    through: MenuCategoryMapModel,
+    foreignKey: 'menuId',
+    otherKey: 'categoryId',
+    as: 'categories'
+});
+
+MenuCategoryModel.hasMany(MenuProductsModel, {
+    foreignKey: 'categoryId',
+    as: 'products',
+});
+
+MenuProductsModel.belongsTo(MenuCategoryModel);
+
+export { MenuModel };

@@ -1,24 +1,25 @@
 import * as express from "express";
-import FranchiseeController from "../controllers/franchisee";
-import * as AdminValidation from "../validations/franchise";
+import FranchiseController from "../controllers/franchise";
+import * as FranchiseValidation from "../validations/franchise";
 
 const router = express.Router();
 
 const {
-  validateCreateFranchiseeBody,
-  validateEditFranchiseeParams,
-  validateEditFranchiseeBody,
-  validateListFranchiseeQuery,
+  validateListFranchiseQuery,
+  validateCreateFranchiseBody,
+  validateEditFranchiseParams,
+  validateEditFranchiseBody,
   validateEditMultipleIdsBody,
-} = AdminValidation;
+} = FranchiseValidation;
 
-const { getFranchisees, addFranchisee, editFranchisee, deleteFranchisee, getFranchisee, } = FranchiseeController;
-// ====== Franchisee Start ======
+const { list, create, update, get, deleteFranchise } = FranchiseController;
+
+// ====== Franchises Routes Start ======
 /**
  * @swagger
  * /api/admin/franchise/create:
  *   post:
- *     summary: Create a new Franchisee
+ *     summary: Create a new franchise
  *     tags: [Admin > Franchise]
  *     security:
  *       - bearerAuth: []
@@ -31,30 +32,36 @@ const { getFranchisees, addFranchisee, editFranchisee, deleteFranchisee, getFran
  *            required:
  *              - email
  *              - password
- *              - full_name
- *              - contact_number
- *              - phone_code
- *              - address
- *              - active
+ *              - firstName
+ *              - lastName
+ *              - userName
+ *              - phoneNumber
+ *              - status
+ *              - role
  *            properties:
  *              email:
  *                type: string
+ *                default: Franchise@gmail.com
  *              password:
  *                type: string
- *              full_name:
+ *                default: Franchise
+ *              firstName:
  *                type: string
- *              contact_number:
+ *              lastName:
  *                type: string
- *              phone_code:
+ *              userName:
  *                type: string
- *              address:
+ *              phoneNumber:
  *                type: string
- *              active:
+ *              status:
+ *                type: string
+ *                default: active
+ *              role:
  *                type: number
  *                default: 0 
  *     responses:
  *       '200':
- *         description: Franchisee created successfully
+ *         description: franchise created successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
@@ -62,7 +69,7 @@ const { getFranchisees, addFranchisee, editFranchisee, deleteFranchisee, getFran
  * 
  * /api/admin/franchise/list?size={size}&skip={skip}:
  *   get:
- *     summary: Get all Franchisee
+ *     summary: Get all franchisees
  *     tags: [Admin > Franchise]
  *     security:
  *       - bearerAuth: []
@@ -83,14 +90,15 @@ const { getFranchisees, addFranchisee, editFranchisee, deleteFranchisee, getFran
  *         description: How many Rows want to skip
  *     responses:
  *       '200':
- *         description: Franchisee retrieved successfully
+ *         description: franchisees retrieved successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
+ * 
  * /api/admin/franchise/get/{id}:
  *   get:
- *     summary: Get a Franchisee by ID
+ *     summary: Get a franchise by ID
  *     tags: [Admin > Franchise]
  *     security:
  *       - bearerAuth: []
@@ -101,34 +109,33 @@ const { getFranchisees, addFranchisee, editFranchisee, deleteFranchisee, getFran
  *         default: 1
  *         schema:
  *           type: string
- *         description: ID of the Franchisee to retrieve
+ *         description: ID of the franchise to retrieve
  *     responses:
  *       '200':
- *         description: Franchisee retrieved successfully
+ *         description: franchise retrieved successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: string
- *               description: ID of the Franchisee to retrieve
+ *               description: ID of the franchise to retrieve
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Franchisee not found
+ *         description: franchise not found
  * 
  * /api/admin/franchise/update/{id}:
  *   put:
- *     summary: Update a Franchisee
+ *     summary: Update a franchise
  *     tags: [Admin > Franchise]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
- *         default: 1
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the Franchisee to update
+ *         description: ID of the franchise to update
  *     requestBody:
  *       required: true
  *       content:
@@ -136,40 +143,40 @@ const { getFranchisees, addFranchisee, editFranchisee, deleteFranchisee, getFran
  *           schema:
  *            type: object
  *            required:
- *              - email
- *              - full_name
- *              - contact_number
- *              - phone_code
- *              - address
- *              - active
+ *              - firstName
+ *              - lastName
+ *              - userName
+ *              - phoneNumber
+ *              - status
+ *              - role
  *            properties:
- *              email:
+ *              firstName:
  *                type: string
- *                default: 12@gmail.com
- *              full_name:
+ *              lastName:
  *                type: string
- *              contact_number:
+ *              userName:
  *                type: string
- *              phone_code:
+ *              phoneNumber:
  *                type: string
- *              address:
+ *              status:
  *                type: string
- *              active:
+ *                default: active
+ *              role:
  *                type: number
  *                default: 0 
  *     responses:
  *       '200':
- *         description: Franchisee updated successfully
+ *         description: franchise updated successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Franchisee not found
+ *         description: franchise not found
  * 
  * /api/admin/franchise/delete:
  *   delete:
- *     summary: Delete a Franchisee
+ *     summary: Delete a franchise
  *     tags: [Admin > Franchise]
  *     security:
  *       - bearerAuth: []
@@ -187,17 +194,17 @@ const { getFranchisees, addFranchisee, editFranchisee, deleteFranchisee, getFran
  *                default: [1]
  *     responses:
  *       '200':
- *         description: Franchisee deleted successfully
+ *         description: franchise deleted successfully
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Franchisee not found
+ *         description: franchise not found
  */
-router.post("/create", validateCreateFranchiseeBody, addFranchisee);
-router.get("/list", validateListFranchiseeQuery, getFranchisees);
-router.get("/get/:id", validateEditFranchiseeParams, getFranchisee);
-router.put("/update/:id", validateEditFranchiseeParams, validateEditFranchiseeBody, editFranchisee);
-router.delete("/delete", validateEditMultipleIdsBody, deleteFranchisee); // Soft delete single or multiple
-// ====== Franchisee Routes Ends ======
+router.post("/create", validateCreateFranchiseBody, create);
+router.get("/list", validateListFranchiseQuery, list);
+router.get("/get/:id", validateEditFranchiseParams, get);
+router.put("/update/:id", validateEditFranchiseParams, validateEditFranchiseBody, update);
+router.delete("/delete", validateEditMultipleIdsBody, deleteFranchise); // Soft delete single or multiple
+// ====== Franchises Routes Ends ======
 
 export default router;

@@ -1,16 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
-
-export const SOURCEFILTER = {
-    Admin: 'Admin',
-    Website: 'Website',
-    Others: 'Others'
-}
-
-export const LEADSTATUSFILTER = {
-    New: 'New',
-}
+import { LEAD_STATUS } from '../../../interfaces/leads';
 
 const statusLeadBody = Joi.object().keys({
     id: Joi.number().required(),
@@ -20,11 +11,11 @@ export const validateLeadStatusBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, statusLeadBody, "body");
+) => validateReq(req, res, next, statusLeadBody, "params");
 
 const assignLeadBody = Joi.object().keys({
     id: Joi.number().required(),
-    assigned_to: Joi.number().required(),
+    assignedTo: Joi.number().required(),
 });
 
 export const validateAssignLeadBody = async (
@@ -34,17 +25,17 @@ export const validateAssignLeadBody = async (
 ) => validateReq(req, res, next, assignLeadBody, "body");
 
 const createLeadBody = Joi.object().keys({
-    name: Joi.string().required(),
-    source: Joi.string().valid(...Object.values(SOURCEFILTER)).optional().allow(''),
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
     city: Joi.string().required(),
     state: Joi.string().required(),
     zip_code: Joi.string().required(),
     country: Joi.string().required(),
-    phone_number: Joi.string().required(),
-    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
+    phoneNumber: Joi.string().required(),
     address: Joi.string().required(),
     additional_info: Joi.string().required(),
-    status: Joi.string().valid(...Object.values(LEADSTATUSFILTER)).optional().allow(''),
+    status: Joi.string().valid(...Object.values(LEAD_STATUS)).optional().allow(''),
 });
 
 export const validateCreateLeadBody = async (
@@ -54,16 +45,18 @@ export const validateCreateLeadBody = async (
 ) => validateReq(req, res, next, createLeadBody, "body");
 
 const editLeadBody = Joi.object().keys({
-    name: Joi.string().required(),
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
     city: Joi.string().required(),
     state: Joi.string().required(),
     zip_code: Joi.string().required(),
     country: Joi.string().required(),
-    phone_number: Joi.string().required(),
+    phoneNumber: Joi.string().required(),
     address: Joi.string().required(),
-    additional_info: Joi.string().required(),
+    additional_info: Joi.string().required(),    
     follow_date: Joi.date().iso().required(),
-    status: Joi.string().valid(...Object.values(LEADSTATUSFILTER)).optional().allow(''),
+    status: Joi.string().valid(...Object.values(LEAD_STATUS)).optional().allow(''),
 });
 
 export const validateEditLeadBody = async (

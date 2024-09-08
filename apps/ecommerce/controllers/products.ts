@@ -1,17 +1,109 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse } from "../../../libraries";
+import { sendResponse, uploadSingleFileToFirebase } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { ProductModel } from '../models/products';
-const slugify = require('slugify');
+import { ProductRepo } from '../models/products';
+import { ProductCategoryRepo } from '../models/category';
+import { ProductCategoryMapRepo } from '../models/product-category-map';
+import slugify from 'slugify';
 
 export default class ProductsController {
+    static async uploadImage(req: Request, res: Response, next: NextFunction) {
+        try {
+            const moduleName = 'product'
+            await uploadSingleFileToFirebase(req as any, moduleName as string)
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPLOADED,
+                    )
+                );
+        } catch (err) {
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    static async assignCategory(req: Request, res: Response, next: NextFunction) {
+        try {
+            const payload = req?.body;
+            const productId = req?.body.productId;
+            const categoryId = req?.body.categoryId;
+
+            const existingProduct = await new ProductRepo().get(productId as number);
+            const existingCategory = await new ProductCategoryRepo().get(categoryId as number);
+            if (existingProduct && existingCategory) {
+                const checkIfAlreadyLinked = await new ProductCategoryMapRepo().get(productId as number, categoryId as number);
+                if (!checkIfAlreadyLinked) {
+                    const createLink = await new ProductCategoryMapRepo().assign(payload);
+                    return res
+                        .status(200)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.SUCCESS,
+                                SUCCESS_MESSAGE.ASSIGNED,
+                                createLink
+                            )
+                        );
+                }
+
+            }
+            return res
+                .status(400)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        'Product or Category is missing!'
+                    )
+                );
+        } catch (err) {
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    static async unAssignCategory(req: Request, res: Response, next: NextFunction) {
+        try {
+            const productId = req?.body.productId;
+            const categoryId = req?.body.categoryId;
+
+            const checkIfAlreadyLinked = await new ProductCategoryMapRepo().unassign(productId as number, categoryId as number);
+            if (checkIfAlreadyLinked) {
+                return res
+                    .status(200)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.SUCCESS,
+                            SUCCESS_MESSAGE.UNASSIGNED,
+                            checkIfAlreadyLinked
+                        )
+                    );
+            }
+            return res
+                .status(400)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        'Something Went Wrong!'
+                    )
+                );
+        } catch (err) {
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const name = get(req?.body, "name", "");
             const createProduct = req?.body;
-            createProduct.slug = slugify(name, {lower: true});
-            const existingProduct = await new ProductModel().getProductByName(name);
+            createProduct.slug = slugify(name, { lower: true });
+            const existingProduct = await new ProductRepo().getProductByName(name);
             if (existingProduct) {
                 return res
                     .status(400)
@@ -24,7 +116,7 @@ export default class ProductsController {
             }
             // check if Name exist
             // check if Slug exist
-            const Product = await new ProductModel().create(createProduct);
+            const Product = await new ProductRepo().create(createProduct);
             return res
                 .status(200)
                 .send(
@@ -49,14 +141,14 @@ export default class ProductsController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
-            const Products = await new ProductModel().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+            const Products = await new ProductRepo().list({
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -78,9 +170,8 @@ export default class ProductsController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
-            const existingProduct = await new ProductModel().getProductById(id as number);
-
+            const id = get(req?.params, "id", 0);
+            const existingProduct = await new ProductRepo().get(id as number);
             if (isEmpty(existingProduct)) {
                 return res
                     .status(400)
@@ -95,8 +186,7 @@ export default class ProductsController {
             const createProduct = req?.body;
             delete createProduct.id
 
-            const Product = await new ProductModel().update(id, createProduct);
-
+            const Product = await new ProductRepo().update(id as number, createProduct);
             return res
                 .status(200)
                 .send(
@@ -115,8 +205,8 @@ export default class ProductsController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
-            const Product = await new ProductModel().getProductById(id as number);
+            const id = get(req?.params, "id", 0);
+            const Product = await new ProductRepo().get(id as number);
 
             if (isEmpty(Product)) {
                 return res
@@ -149,8 +239,7 @@ export default class ProductsController {
     static async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const ids = get(req?.body, "ids", "");
-
-            const Product = await new ProductModel().delete(ids);
+            const Product = await new ProductRepo().delete(ids);
             return res
                 .status(200)
                 .send(

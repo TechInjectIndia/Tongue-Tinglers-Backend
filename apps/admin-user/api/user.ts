@@ -143,8 +143,6 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *           schema:
  *            type: object
  *            required:
- *              - email
- *              - password
  *              - firstName
  *              - lastName
  *              - userName
@@ -152,10 +150,6 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *              - status
  *              - role
  *            properties:
- *              email:
- *                type: string
- *              password:
- *                type: string
  *              firstName:
  *                type: string
  *              lastName:
@@ -200,7 +194,7 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *                default: [1]
  *     responses:
  *       '200':
- *         description: role deleted successfully
+ *         description: user deleted successfully
  *       '401':
  *         description: Unauthorized
  *       '404':

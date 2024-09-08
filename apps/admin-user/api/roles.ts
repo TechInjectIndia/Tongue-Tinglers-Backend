@@ -1,6 +1,6 @@
 import * as express from "express";
 import RolesController from "../controllers/roles";
-import * as AdminValidation from "../validations/roles";
+import * as RolesValidation from "../validations/roles";
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ const {
   validateEditRoleParams,
   validateListRoleQuery,
   validateEditMultipleIdsBody,
-} = AdminValidation;
+} = RolesValidation;
 
 
 // ====== Admin Roles Starts ======
@@ -30,12 +30,16 @@ const {
  *            type: object
  *            required:
  *              - name
+ *              - description
  *              - role_permissions
  *              - active
  *            properties:
  *              name:
  *                type: string
  *                default: AdminRole 
+ *              description:
+ *                type: text
+ *                default: "description"
  *              role_permissions:
  *                type: text
  *                default: "{'user':['add','edit']}"
@@ -126,11 +130,16 @@ const {
  *            type: object
  *            required:
  *              - name
+ *              - description
+ *              - role_permissions
  *              - active
  *            properties:
  *              name:
  *                type: string
  *                default: AdminRoleNew
+ *              description:
+ *                type: text
+ *                default: "description"
  *              role_permissions:
  *                type: text
  *                default: "{'user':['add','edit']}"
@@ -173,10 +182,10 @@ const {
  *       '404':
  *         description: roles not found
  */
-router.post("/create", validateCreateRoleBody, RolesController.addRole);
-router.get("/list", validateListRoleQuery, RolesController.listRoles);
-router.get("/get/:id", validateEditRoleParams, RolesController.getRole);
-router.put("/update/:id", validateEditRoleParams, validateEditRoleBody, RolesController.editRole);
+router.post("/create", validateCreateRoleBody, RolesController.create);
+router.get("/list", validateListRoleQuery, RolesController.list);
+router.get("/get/:id", validateEditRoleParams, RolesController.get);
+router.put("/update/:id", validateEditRoleParams, validateEditRoleBody, RolesController.update);
 router.delete("/delete", validateEditMultipleIdsBody, RolesController.deleteRole);
 // ====== Admin Roles Ends ======
 

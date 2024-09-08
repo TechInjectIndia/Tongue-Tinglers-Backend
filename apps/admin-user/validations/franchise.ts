@@ -2,72 +2,74 @@ import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
-const listFranchiseeQuery = Joi.object().keys({
+const listFranchiseQuery = Joi.object().keys({
     size: Joi.number().required(),
     skip: Joi.number().required(),
     search: Joi.string().optional().allow(""),
     sorting: Joi.string().optional().allow(""),
     trashOnly: Joi.string().optional().allow("").valid("true", ""),
 });
-export const validateListFranchiseeQuery = async (
+
+export const validateListFranchiseQuery = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, listFranchiseeQuery, "query");
+) => validateReq(req, res, next, listFranchiseQuery, "query");
 
-const createFranchiseeBody = Joi.object().keys({
+const createFranchiseBody = Joi.object().keys({
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
     email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
     password: Joi.string().required(),
-    full_name: Joi.string().required(),
-    contact_number: Joi.string().required(),
-    phone_code: Joi.string().required(),
-    address: Joi.string().required(),
-    active: Joi.number().required(),
+    userName: Joi.string().required(),
+    phoneNumber: Joi.string().required(),
+    status: Joi.string().required(),
+    role: Joi.number().required(),
 });
 
-export const validateCreateFranchiseeBody = async (
+export const validateCreateFranchiseBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, createFranchiseeBody, "body");
+) => validateReq(req, res, next, createFranchiseBody, "body");
 
-const editFranchiseeParams = Joi.object().keys({
+const editFranchiseParams = Joi.object().keys({
     id: Joi.string().required(),
 });
 
-export const validateEditFranchiseeParams = async (
+export const validateEditFranchiseParams = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, editFranchiseeParams, "params");
+) => validateReq(req, res, next, editFranchiseParams, "params");
 
-const editFranchiseeBody = Joi.object().keys({
-    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
+const editFranchiseBody = Joi.object().keys({
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    userName: Joi.string().required(),
+    phoneNumber: Joi.string().required(),
+    status: Joi.string().required(),
+    role: Joi.number().required(),
+});
+
+export const validateEditFranchiseBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, editFranchiseBody, "body");
+
+const editFranchiseProfileBody = Joi.object().keys({
     full_name: Joi.string().required(),
     contact_number: Joi.string().required(),
     phone_code: Joi.string().required(),
     address: Joi.string().required(),
-    active: Joi.number().required(),
 });
 
-export const validateEditFranchiseeBody = async (
+export const validateEditFranchiseProfileBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, editFranchiseeBody, "body");
-
-const editFranchiseeProfileBody = Joi.object().keys({
-    full_name: Joi.string().required(),
-    contact_number: Joi.string().required(),
-    phone_code: Joi.string().required(),
-    address: Joi.string().required(),
-});
-
-export const validateEditFranchiseeProfileBody = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => validateReq(req, res, next, editFranchiseeProfileBody, "body");
+) => validateReq(req, res, next, editFranchiseProfileBody, "body");
 
 const editMultipleIdsBody = Joi.object().keys({
     ids: Joi.array().min(1).required(),

@@ -1,11 +1,14 @@
 import * as express from "express";
 import ProductsController from "../controllers/products";
 import * as ProductsValidation from "../validations/products";
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
 const {
   validateCreateProductsBody,
+  validateAssignCategoryBody,
   validateEditProductsBody,
   validateEditProductsParams,
   validateListProductsQuery,
@@ -15,6 +18,92 @@ const {
 // ====== Products Starts ======
 /**
  * @swagger
+ * /api/admin/product/image/upload:
+ *   post:
+ *     summary: Upload product Image
+ *     tags: [Admin > Ecommerce > Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - file
+ *            properties:
+ *              file:
+ *                type: string
+ *                format: binary
+ *     responses:
+ *       '200':
+ *         description: product Image Uploaded successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
+ * /api/admin/product/assign-category:
+ *   post:
+ *     summary: Assign Category
+ *     tags: [Admin > Ecommerce > Products > Category > Assign > Add]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - productId
+ *              - categoryId
+ *            properties:
+ *              productId:
+ *                type: number
+ *                default: 1 
+ *              categoryId:
+ *                type: number
+ *                default: 1
+ *     responses:
+ *       '200':
+ *         description: Assigned successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
+ * /api/admin/product/unassign-category:
+ *   post:
+ *     summary: Un-Assign Category
+ *     tags: [Admin > Ecommerce > Products > Category > Assign > Remove]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - productId
+ *              - categoryId
+ *            properties:
+ *              productId:
+ *                type: number
+ *                default: 1 
+ *              categoryId:
+ *                type: number
+ *                default: 1
+ *     responses:
+ *       '200':
+ *         description: Un-Assigned successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
  * /api/admin/product/create:
  *   post:
  *     summary: Create a new products
@@ -46,7 +135,7 @@ const {
  *                default: 123.00
  *              type:
  *                type: text
- *                default: New
+ *                default: new
  *              stock:
  *                type: integer
  *                default: 10
@@ -156,7 +245,7 @@ const {
  *                default: 178
  *              type:
  *                type: text
- *                default: Upcoming
+ *                default: upcoming
  *              stock:
  *                type: number
  *                default: 52
@@ -205,5 +294,9 @@ router.get("/get/:id", validateEditProductsParams, ProductsController.get);
 router.put("/update/:id", validateEditProductsParams, validateEditProductsBody, ProductsController.update);
 router.delete("/delete", validateEditMultipleIdsBody, ProductsController.delete);
 // ====== Products Ends ======
+
+router.post("/image/upload", upload.single('file'), ProductsController.uploadImage);
+router.post("/assign-category", validateAssignCategoryBody, ProductsController.assignCategory);
+router.post("/unassign-category", validateAssignCategoryBody, ProductsController.unAssignCategory);
 
 export default router;

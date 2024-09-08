@@ -1,18 +1,16 @@
 const { Sequelize } = require('sequelize');
 
 import {
-    TAnalytics,
     TAnalyticsFilters,
     TAnalyticssList,
-    TAddAnalytics,
 } from "../../../types/analytics";
-import { Lead } from "../../../database/schema";
+import { LeadsModel } from "../../../database/schema";
 
 export class AnalyticsModel {
     constructor() { }
 
     public async leadSources(startDate: Date, endDate: Date): Promise<TAnalyticssList | any> {
-        const data = await Lead.findAll({
+        const data = await LeadsModel.findAll({
             attributes: [
                 'source',
                 [Sequelize.fn('COUNT', Sequelize.col('source')), 'count']
@@ -28,7 +26,7 @@ export class AnalyticsModel {
     }
 
     public async conversionRate(startDate: Date, endDate: Date): Promise<TAnalyticssList | any> {
-        const data = await Lead.findAll({
+        const data = await LeadsModel.findAll({
             attributes: [
                 'status',
                 [Sequelize.fn('COUNT', Sequelize.col('status')), 'count']

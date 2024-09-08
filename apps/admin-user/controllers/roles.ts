@@ -2,21 +2,22 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { Admin } from '../models/roles';
+import { RolesRepo } from '../models/roles';
 const { Op } = require("sequelize");
 
 export default class RolesController {
-    static async addRole(req: Request, res: Response, next: NextFunction) {
+    static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const name = get(req?.body, "name", "");
             const active = get(req?.body, "active", 1);
             const permissions = get(req?.body, "role_permissions", '');
+            const description = get(req?.body, "description", '');
 
             // let role_permissions: any = '';
             // if (permissions != '') {
             //     role_permissions = JSON.parse(permissions);
             // }
-            const existingRole = await new Admin().getRoleByName(name);
+            const existingRole = await new RolesRepo().getRoleByName(name);
             if (existingRole) {
                 return res
                     .status(400)
@@ -28,7 +29,7 @@ export default class RolesController {
                     );
             }
 
-            const role = await new Admin().addRole({ name, active, role_permissions: permissions });
+            const role = await new RolesRepo().create({ name, active, description, role_permissions: permissions });
             return res
                 .status(200)
                 .send(
@@ -46,21 +47,21 @@ export default class RolesController {
         }
     }
 
-    static async listRoles(req: Request, res: Response, next: NextFunction) {
+    static async list(req: Request, res: Response, next: NextFunction) {
         try {
             const size = get(req?.query, "size", 10);
             const skip = get(req?.query, "skip", 1);
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
 
-            const roles = await new Admin().listRoles({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+            const roles = await new RolesRepo().list({
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -80,18 +81,19 @@ export default class RolesController {
         }
     }
 
-    static async editRole(req: Request, res: Response, next: NextFunction) {
+    static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
             const name = get(req?.body, "name", "");
             const active = get(req?.body, "active", 1);
             const permissions = get(req?.body, "role_permissions", '');
+            const description = get(req?.body, "description", '');
 
             // let role_permissions: any = '';
             // if (permissions != '') {
             //     role_permissions = JSON.parse(permissions);
             // }
-            const existingRole = await new Admin().getRoleById(id as number);
+            const existingRole = await new RolesRepo().get(id as number);
 
             if (isEmpty(existingRole)) {
                 return res
@@ -104,7 +106,7 @@ export default class RolesController {
                     );
             }
 
-            const role = await new Admin().editRole(id, { name, active, role_permissions: permissions });
+            const role = await new RolesRepo().update(id as number, { name, active, description, role_permissions: permissions });
 
             return res
                 .status(200)
@@ -123,10 +125,10 @@ export default class RolesController {
         }
     }
 
-    static async getRole(req: Request, res: Response, next: NextFunction) {
+    static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
-            const role = await new Admin().getRoleById(id as number);
+            const id = get(req?.params, "id", 0);
+            const role = await new RolesRepo().get(id as number);
 
             if (isEmpty(role)) {
                 return res
@@ -160,7 +162,7 @@ export default class RolesController {
         try {
             const ids = get(req?.body, "ids", "");
 
-            const isAssigned = await new Admin().getRoleAssigneeByRoleId(ids);
+            const isAssigned = await new RolesRepo().getRoleAssigneeByRoleId(ids);
             if (!isEmpty(isAssigned)) {
                 return res
                     .status(400)
@@ -172,8 +174,7 @@ export default class RolesController {
                     );
             }
 
-            const role = await new Admin().deleteRole(ids);
-
+            const role = await new RolesRepo().deleteRole(ids);
             return res
                 .status(200)
                 .send(

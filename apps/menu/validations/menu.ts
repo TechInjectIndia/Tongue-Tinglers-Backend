@@ -1,18 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
+import { MENU_STATUS } from '../../../interfaces';
 
 const createMenuBody = Joi.object().keys({
     name: Joi.string().required(),
-    city: Joi.string().required(),
-    state: Joi.string().required(),
-    zip_code: Joi.string().required(),
-    country: Joi.string().required(),
-    phone_number: Joi.string().required(),
-    email: Joi.string().required(),
-    address: Joi.string().required(),
-    additional_info: Joi.string().required(),
-    status: Joi.number().required(),
+    status: Joi.string().valid(...Object.values(MENU_STATUS)).optional().allow(''),
+
 });
 
 export const validateCreateMenuBody = async (
@@ -23,15 +17,7 @@ export const validateCreateMenuBody = async (
 
 const editMenuBody = Joi.object().keys({
     name: Joi.string().required(),
-    city: Joi.string().required(),
-    state: Joi.string().required(),
-    zip_code: Joi.string().required(),
-    country: Joi.string().required(),
-    phone_number: Joi.string().required(),
-    email: Joi.string().required(),
-    address: Joi.string().required(),
-    additional_info: Joi.string().required(),
-    status: Joi.number().required(),
+    status: Joi.string().valid(...Object.values(MENU_STATUS)).optional().allow(''),
 });
 
 export const validateEditMenuBody = async (

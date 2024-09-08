@@ -1,6 +1,8 @@
 import * as express from "express";
 import ProductCategoryController from "../controllers/category";
 import * as ProductCategoryValidation from "../validations/category";
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
@@ -14,7 +16,33 @@ const {
 
 // ====== Product Category Starts ======
 /**
- * @swagger
+ * @swagger 
+ * /api/admin/product/category/image/upload:
+ *   post:
+ *     summary: Upload Product Category Image
+ *     tags: [Admin > Ecommerce > Product > Category]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - file
+ *            properties:
+ *              file:
+ *                type: string
+ *                format: binary
+ *     responses:
+ *       '200':
+ *         description: Product Category Image Uploaded successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
  * /api/admin/product/category/create:
  *   post:
  *     summary: Create a new Product Category
@@ -136,7 +164,7 @@ const {
  *                type: string
  *                default: AdminCategoryNew
  *              active:
- *                type: string
+ *                type: boolean
  *                default: 1
  *     responses:
  *       '200':
@@ -180,5 +208,7 @@ router.get("/get/:id", validateEditProductCategoryParams, ProductCategoryControl
 router.put("/update/:id", validateEditProductCategoryParams, validateEditProductCategoryBody, ProductCategoryController.update);
 router.delete("/delete", validateEditMultipleIdsBody, ProductCategoryController.delete);
 // ====== ProductCategory Ends ======
+
+router.post("/image/upload", upload.single('file'), ProductCategoryController.uploadImage);
 
 export default router;

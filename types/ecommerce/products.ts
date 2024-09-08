@@ -4,29 +4,46 @@ const { OrderItem } = require("sequelize");
 export type TProduct = {
   id: number;
   name: string;
-  type: string;
+  slug: string;
   description: string;
   price: string;
   stock: string;
+  total_ratings: number;
+  type: string;
+  ratings: number;
+  discount: string;
+  sold: string;
   active: number;
   createdAt: Date;
   updatedAt: Date;
 };
 
+export type TEditProduct = {
+  name: string;
+  slug: string;
+  description: string;
+  price: string;
+  stock: string;
+  total_ratings: number;
+  type: string;
+  ratings: number;
+  discount: string;
+  sold: string;
+  active: number;
+}
+
 export type TAddProduct = {
-  data: {
-    name: string;
-    type: string;
-    description: string;
-    price: string;
-    stock: string;
-    active: number;
-  };
+  name: string;
+  type: string;
+  description: string;
+  price: string;
+  stock: string;
+  active: number;
 }
 
 export type TProductsList = {
   total: number;
-  data: TProduct;
+  data: TProduct[];
 };
 
 export type TProductFilters = {

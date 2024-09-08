@@ -30,27 +30,27 @@ const {
  *           schema:
  *            type: object
  *            required:
- *              - name
- *              - source
+ *              - firstName
+ *              - lastName
  *              - city
  *              - zip_code
  *              - state
  *              - country
- *              - phone_number
+ *              - phoneNumber
  *              - email
  *              - address
  *              - additional_info
  *              - status
  *            properties:
- *              name:
+ *              firstName:
  *                type: string
- *                default: Adminlead 
+ *                default: firstName 
+ *              lastName:
+ *                type: string
+ *                default: lastName 
  *              city:
  *                type: string
  *                default: city
- *              source:
- *                type: string
- *                default: Admin
  *              zip_code:
  *                type: string
  *                default: zip_code
@@ -60,9 +60,9 @@ const {
  *              country:
  *                type: string
  *                default: country
- *              phone_number:
+ *              phoneNumber:
  *                type: string
- *                default: phone_number
+ *                default: phoneNumber
  *              email:
  *                type: string
  *                default: email
@@ -74,7 +74,7 @@ const {
  *                default: additional_info
  *              status:
  *                type: string
- *                default: New
+ *                default: new
  *     responses:
  *       '200':
  *         description: Lead created successfully
@@ -160,21 +160,28 @@ const {
  *           schema:
  *            type: object
  *            required:
- *              - name
- *              - source
+ *              - firstName
+ *              - lastName
+ *              - email
  *              - city
  *              - zip_code
  *              - state
  *              - country
- *              - phone_number
+ *              - phoneNumber
  *              - address
  *              - additional_info
  *              - follow_date
  *              - status
  *            properties:
- *              name:
+ *              firstName:
  *                type: string
- *                default: Lead 
+ *                default: firstName 
+ *              lastName:
+ *                type: string
+ *                default: lastName 
+ *              email:
+ *                type: string
+ *                default: email@123.com 
  *              city:
  *                type: string
  *                default: city
@@ -187,9 +194,9 @@ const {
  *              country:
  *                type: string
  *                default: country
- *              phone_number:
+ *              phoneNumber:
  *                type: string
- *                default: phone_number
+ *                default: phoneNumber
  *              address:
  *                type: string
  *                default: address
@@ -202,7 +209,7 @@ const {
  *                example: "2018-08-28"
  *              status:
  *                type: string
- *                default: New
+ *                default: new
  *     responses:
  *       '200':
  *         description: Lead updated successfully
@@ -253,12 +260,12 @@ const {
  *            type: object
  *            required:
  *              - id
- *              - assigned_to
+ *              - assignedTo
  *            properties:
  *              id:
  *                type: number
  *                default: 3
- *              assigned_to:
+ *              assignedTo:
  *                type: number
  *                default: 1
  *     responses:
@@ -298,7 +305,7 @@ const {
  *       '404':
  *         description: Lead not found
  */
-router.post("/create", validateCreateLeadBody, LeadController.add);
+router.post("/create", validateCreateLeadBody, LeadController.create);
 router.get("/list", validateListLeadQuery, LeadController.list);
 router.get("/get/:id", validateEditLeadParams, LeadController.get);
 router.put("/update/:id", validateEditLeadParams, validateEditLeadBody, LeadController.update);

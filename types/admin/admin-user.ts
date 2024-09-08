@@ -2,75 +2,97 @@ const { OrderItem } = require("sequelize");
 
 export type TUser = {
   id: number;
+  firebaseUid: string;
+  createdBy: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
+  profilePhoto: string;
   email: string;
-  password?: string;
-  full_name: string;
-  contact_number: string;
-  phone_code: string;
+  userName: string;
+  phoneNumber: string;
+  type: string;
+  status: string;
+  cart: string;
+  access_token: string;
+  refresh_token: string;
+  updatedBy: string;
+  deletedBy: string;
   role: number;
-  profile_photo: string;
-  address: string;
-  last_login_at: Date;
-  last_login_ip: string;
-  refresh_token?: string;
-  active: number;
+  lastLoginAt: Date;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date;
 };
 
+export interface TUserWithPermission extends TUser {
+  permissions: any
+}
+
 export type TAddUser = {
-  email: string;
+  firebaseUid: string;
   password: string;
-  full_name: string;
-  contact_number: string;
-  phone_code: string;
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
+  email: string;
+  userName: string;
+  phoneNumber: string;
   role: number;
-  address: string;
-  user_type: string;
   active: number;
 };
 
 export type TEditUser = {
-  email?: string;
-  password?: string;
-  full_name?: string;
-  contact_number?: string;
-  phone_code?: string;
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
+  email: string;
+  userName: string;
+  phoneNumber: string;
   role: number;
-  address?: string;
   active: number;
 };
 
 
 export type TUsersList = {
   total: number;
-  data: TUser;
+  data: TUser[];
 };
 
 export type TEditUserProfile = {
-  full_name: string;
-  contact_number: string;
-  phone_code: string;
-  address: string;
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
+  userName: string;
+  phoneNumber: string;
 };
-// User User type Ends
 
 export type TUpdateUserToken = {
   user_id: number;
   refresh_token: string;
-  last_login_at: Date;
-  last_login_ip: string;
+  lastLoginAt: Date;
+  lastLoginIp: string;
 };
 
 export type TUpdateUserProfile = {
   user_id: string;
-  full_name: string;
-  contact_number: string;
-  phone_code: number;
-  address: string;
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
+  userName: string;
+  phoneNumber: string;
 };
 
 export type TUpdateUserPassword = {
   user_id: string;
   password: string;
+};
+
+export type TQueryFilters = {
+  offset: number;
+  limit: number;
+  search?: string;
+  sorting?: typeof OrderItem;
+  trashOnly?: string;
 };

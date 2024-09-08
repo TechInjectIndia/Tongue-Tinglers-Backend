@@ -1,24 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
-
-const ITEMTYPEFILTERS = {
-    product: 'product',
-    franchise: 'franchise'
-}
-
-const APPROVEDFILTERS = {
-    0: 0,
-    1: 1
-}
+import { TESTIMONIAL_ITEM_TYPE, APPROVED_FILTERS } from '../../../interfaces';
 
 const createTestimonialsBody = Joi.object().keys({
     testimonial_text: Joi.string().required(),
     rating: Joi.number().required(),
-    date_submitted: Joi.string().required(),
+    date_submitted: Joi.date().required(),
     approved: Joi.number().required(),
     item_id: Joi.number().required(),
-    item_type: Joi.string().valid(...Object.values(ITEMTYPEFILTERS)).optional().allow(''),
+    item_type: Joi.string().valid(...Object.values(TESTIMONIAL_ITEM_TYPE)).optional().allow(''),
 });
 
 export const validateCreateTestimonialsBody = async (
@@ -30,8 +21,8 @@ export const validateCreateTestimonialsBody = async (
 const editTestimonialsBody = Joi.object().keys({
     testimonial_text: Joi.string().required(),
     rating: Joi.number().required(),
-    date_submitted: Joi.string().required(),
-    approved: Joi.number().valid(...Object.values(APPROVEDFILTERS)).optional().allow(''),
+    date_submitted: Joi.date().required(),
+    approved: Joi.number().valid(...Object.values(APPROVED_FILTERS)).optional().allow(''),
 });
 
 export const validateEditTestimonialsBody = async (
@@ -42,7 +33,6 @@ export const validateEditTestimonialsBody = async (
 
 const editTestimonialsParams = Joi.object().keys({
     id: Joi.string().required(),
-    approved: Joi.number().valid(...Object.values(APPROVEDFILTERS)).optional().allow(''),
 });
 
 export const validateEditTestimonialsParams = async (

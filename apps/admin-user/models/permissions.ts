@@ -2,16 +2,21 @@ const { Op } = require("sequelize");
 import {
     TPermission,
     TAddPermission,
+    TEditPermission,
     TPermissionFilters,
     TPermissionsList,
+    TUser,
+    TListFilters
 } from "../../../types";
-import { User as UserModel, Permissions } from "../../../database/schema";
+import { UserModel, PermissionModel } from "../../../database/schema";
+import IBaseRepo from '../controllers/controller/IPermissionsController';
+import { USER_TYPE } from '../../../interfaces';
 
-export class Admin {
+export class PermissionsRepo implements IBaseRepo<TPermission, TListFilters> {
     constructor() { }
 
-    public async getPermissionByName(name: string): Promise<TPermission | any> {
-        const data = await Permissions.findOne({
+    public async getPermissionByName(name: string): Promise<TPermission> {
+        const data = await PermissionModel.findOne({
             where: {
                 name,
             },
@@ -19,8 +24,18 @@ export class Admin {
         return data;
     }
 
-    public async getPermissionById(id: number): Promise<TPermission | any> {
-        const data = await Permissions.findOne({
+    public async checkPermissionExist(name: string, excludeId: number): Promise<TPermission> {
+        const data = await PermissionModel.findOne({
+            where: {
+                name: name,
+                id: { [Op.ne]: excludeId }, // Sequelize.Op.ne means "not equal"
+            },
+        });
+        return data;
+    }
+
+    public async get(id: number): Promise<TPermission> {
+        const data = await PermissionModel.findOne({
             where: {
                 id,
             },
@@ -28,15 +43,15 @@ export class Admin {
         return data;
     }
 
-    public async listPermissions(filters: TPermissionFilters): Promise<TPermissionsList | any> {
-        const total = await Permissions.count({
+    public async list(filters: TPermissionFilters): Promise<TPermissionsList> {
+        const total = await PermissionModel.count({
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Permissions.findAll({
+        const data = await PermissionModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -49,34 +64,13 @@ export class Admin {
         return { total, data };
     }
 
-    public async getPermissions(filters: TPermissionFilters): Promise<TPermissionsList | any> {
-        const total = await Permissions.count({
-            where: {
-                name: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
-        });
-        const data = await Permissions.findAll({
-            order: [filters?.sorting],
-            offset: filters.offset,
-            limit: filters.limit,
-            where: {
-                name: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
-        });
-        return { total, data };
-    }
-
-    public async addPermission(data: TAddPermission): Promise<TPermission | any> {
-        const response = await Permissions.create(data);
+    public async create(data: TAddPermission): Promise<TPermission> {
+        const response = await PermissionModel.create(data);
         return response;
     }
 
-    public async editPermission(id: number, data: TAddPermission): Promise<TPermission | any> {
-        const response = await Permissions.update(data, {
+    public async update(id: number, data: TEditPermission): Promise<[affectedCount: number]> {
+        const response = await PermissionModel.update(data, {
             where: {
                 id,
             },
@@ -84,22 +78,13 @@ export class Admin {
         return response;
     }
 
-    public async deletePermission(ids: number[]): Promise<TPermission | any> {
-        const response = await Permissions.destroy({
-            where: {
-                id: ids,
-            },
-        });
-        return response;
-    }
-
-    public async getPermissionAssigneeByPermissionId(ids: string[]): Promise<any> {
+    public async getPermissionAssigneeByPermissionId(ids: number[]): Promise<TUser[]> {
         const data = await UserModel.findAll({
             where: {
                 role: ids,
-                user_type: 'Admin'
+                type: USER_TYPE.ADMIN
             },
         });
-        return data ?? null;
+        return data;
     }
 }

@@ -5,13 +5,14 @@ import {
     TProductsList,
     TProductSearch,
 } from "../../../../types/ecommerce";
-import { Product } from "../../../../database/schema";
+import { ProductsModel } from "../../../../database/schema";
+import IBaseRepo from '../../controllers/controller/product/IWebProductsController';
 
-export class ProductModel {
+export class WebProductRepo implements IBaseRepo<TProduct, TProductFilters> {
     constructor() { }
 
-    public async getProductByName(name: string): Promise<TProduct | any> {
-        const data = await Product.findOne({
+    public async getProductByName(name: string): Promise<TProduct> {
+        const data = await ProductsModel.findOne({
             where: {
                 name,
                 active: true,
@@ -20,18 +21,25 @@ export class ProductModel {
         return data;
     }
 
-    public async getProductByTag(type: string, limit: number): Promise<TProduct | any> {
-        const data = await Product.findAll({
+    public async getProductByTag(type: string, limit: number): Promise<TProductsList> {
+        const total = await ProductsModel.count({
             where: {
-                type,
+                type: type,
                 active: true,
             },
         });
-        return data;
+        const data = await ProductsModel.findAll({
+            limit: limit,
+            where: {
+                type: type,
+                active: true,
+            },
+        });
+        return { total, data };
     }
 
-    public async getProductBySlug(slug: string): Promise<TProduct | any> {
-        const data = await Product.findOne({
+    public async getProductBySlug(slug: string): Promise<TProduct> {
+        const data = await ProductsModel.findOne({
             where: {
                 slug,
                 active: true,
@@ -40,8 +48,8 @@ export class ProductModel {
         return data;
     }
 
-    public async list(filters: TProductFilters): Promise<TProductsList | any> {
-        const total = await Product.count({
+    public async list(filters: TProductFilters): Promise<TProductsList> {
+        const total = await ProductsModel.count({
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,
@@ -49,7 +57,7 @@ export class ProductModel {
                 active: true,
             },
         });
-        const data = await Product.findAll({
+        const data = await ProductsModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -63,8 +71,8 @@ export class ProductModel {
         return { total, data };
     }
 
-    public async search(filters: TProductSearch): Promise<TProductsList | any> {
-        const total = await Product.count({
+    public async search(filters: TProductSearch): Promise<TProductsList> {
+        const total = await ProductsModel.count({
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,
@@ -72,7 +80,7 @@ export class ProductModel {
                 active: true,
             },
         });
-        const data = await Product.findAll({
+        const data = await ProductsModel.findAll({
             order: [filters?.sorting],
             where: {
                 name: {

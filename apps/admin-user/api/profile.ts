@@ -1,17 +1,46 @@
 import * as express from "express";
 import ProfileController from "../controllers/profile";
-import * as AdminValidation from "../validations/profile";
+import * as ProfileValidation from "../validations/profile";
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
 const {
   validateEditProfileBody,
-} = AdminValidation;
+} = ProfileValidation;
 
-const { editProfile, getProfile, } = ProfileController;
+const { update, get, uploadImage } = ProfileController;
+
 // ====== Profile Start ======
 /**
- * @swagger
+ * @swagger 
+ * /api/admin/profile/image/upload:
+ *   post:
+ *     summary: Upload Profile Image
+ *     tags: [Admin > User > Profile]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - file
+ *            properties:
+ *              file:
+ *                type: string
+ *                format: binary
+ *     responses:
+ *       '200':
+ *         description: Profile Image Uploaded successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
  * /api/admin/profile:
  *   get:
  *     summary: Get a Profile
@@ -47,18 +76,18 @@ const { editProfile, getProfile, } = ProfileController;
  *           schema:
  *            type: object
  *            required:
- *              - full_name
- *              - contact_number
- *              - phone_code
- *              - address
+ *              - firstName
+ *              - lastName
+ *              - phoneNumber
+ *              - profilePhoto
  *            properties:
- *              full_name:
+ *              firstName:
  *                type: string
- *              contact_number:
+ *              lastName:
  *                type: string
- *              phone_code:
+ *              phoneNumber:
  *                type: string
- *              address:
+ *              profilePhoto:
  *                type: string
  *     responses:
  *       '200':
@@ -70,8 +99,11 @@ const { editProfile, getProfile, } = ProfileController;
  *       '404':
  *         description: Profile not found
  */
-router.get("/", getProfile);
-router.put("/", validateEditProfileBody, editProfile);
+
+router.get("/", get);
+router.put("/", validateEditProfileBody, update);
 // ====== Profile Routes Ends ======
+
+router.post("/image/upload", upload.single('file'), uploadImage);
 
 export default router;

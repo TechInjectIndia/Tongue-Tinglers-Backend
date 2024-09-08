@@ -1,31 +1,18 @@
 const { OrderItem } = require("sequelize");
 
-// Analytics type Starts
+// Analyticss type Starts
 export type TAnalytics = {
   id: number;
-  city: string,
-  state: string,
-  zip_code: string,
-  country: string,
-  phone_number: string,
-  email: string,
-  address: string,
-  additional_info: string,
-  status: number,
+  user_id: number;
+  description: string;
+  activity_type: string;
   createdAt: Date;
   updatedAt: Date;
 };
 
 export type TAddAnalytics = {
-  city: string,
-  state: string,
-  zip_code: string,
-  country: string,
-  phone_number: string,
-  email: string,
-  address: string,
-  additional_info: string,
-  status: number,
+  name: string;
+  active: number;
 };
 
 export type TAnalyticssList = {
@@ -40,4 +27,4 @@ export type TAnalyticsFilters = {
   sorting?: typeof OrderItem;
   trashOnly?: string;
 };
-// Analytics type Ends
+// Analyticss type Ends

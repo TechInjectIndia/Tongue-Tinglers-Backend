@@ -5,30 +5,64 @@ import {
     TMenusList,
     TAddMenu,
 } from "../../../types/menu";
-import { Menu } from "../../../database/schema";
+import { MenuModel, MenuImageModel, MenuCategoryModel, MenuProductsModel } from "../../../database/schema";
 
-export class MenuModel {
+import IBaseRepo from '../controllers/controller/IMenuController';
+
+export class MenuRepo implements IBaseRepo<TMenu, TMenuFilters> {
     constructor() { }
 
-    public async getMenuByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TMenu | any> {
-        const whereAttributes = { [whereName]: whereVal }
-        const data = await Menu.findOne({
-            raw: true,
-            attributes: getAttributes,
-            where: whereAttributes
+    public async get(id: number): Promise<TMenu> {
+        const data = await MenuModel.findOne({
+            where: {
+                id,
+            },
+            include: [
+                {
+                    model: MenuImageModel,
+                    as: 'images'
+                },
+                {
+                    model: MenuCategoryModel,
+                    as: 'categories',
+                    include: [{
+                        model: MenuProductsModel,
+                        as: 'products',
+                    }]
+                },
+            ],
         });
         return data;
     }
 
-    public async list(filters: TMenuFilters): Promise<TMenusList | any> {
-        const total = await Menu.count({
+    public async getMenuByName(name: string): Promise<TMenu> {
+        const data = await MenuModel.findOne({
+            where: {
+                name,
+            },
+            include: [
+                {
+                    model: MenuImageModel,
+                    as: 'images'
+                },
+                {
+                    model: MenuCategoryModel,
+                    as: 'categories'
+                },
+            ],
+        });
+        return data;
+    }
+
+    public async list(filters: TMenuFilters): Promise<TMenusList> {
+        const total = await MenuModel.count({
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Menu.findAll({
+        const data = await MenuModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -41,13 +75,13 @@ export class MenuModel {
         return { total, data };
     }
 
-    public async add(data: TAddMenu): Promise<TMenu | any> {
-        const response = await Menu.create(data);
+    public async create(data: TAddMenu): Promise<TMenu> {
+        const response = await MenuModel.create(data);
         return response;
     }
 
-    public async update(id: number, data: TAddMenu): Promise<TMenu | any> {
-        const response = await Menu.update(data, {
+    public async update(id: number, data: TAddMenu): Promise<[affectedCount: number]> {
+        const response = await MenuModel.update(data, {
             where: {
                 id,
             },
@@ -55,8 +89,8 @@ export class MenuModel {
         return response;
     }
 
-    public async delete(ids: number[]): Promise<TMenu | any> {
-        const response = await Menu.destroy({
+    public async delete(ids: number[]): Promise<number> {
+        const response = await MenuModel.destroy({
             where: {
                 id: ids,
             },

@@ -1,8 +1,30 @@
-const { DataTypes } = require("sequelize");
+import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-const { INTEGER, STRING } = DataTypes;
+import { TOrderItem } from "../../../types";
+const { INTEGER, STRING, DATE, NOW } = DataTypes;
 
-export const OrderItem = sequelize.define('order_items', {
+interface OrderItemsCreationAttributes extends Optional<TOrderItem, 'id' | 'createdAt' | 'updatedAt'> { }
+
+class OrderItemsModel extends Model<TOrderItem, OrderItemsCreationAttributes> implements TOrderItem {
+    public id!: number;
+    public name!: string;
+    public slug!: string;
+    public orderId!: number;
+    public userId!: number;
+    public productId!: number;
+    public isRepeated!: number;
+    public price!: string;
+    public quantity!: number;
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+}
+
+OrderItemsModel.init({
+    id: {
+        type: INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
     name: {
         type: STRING,
         allowNull: false,
@@ -11,20 +33,47 @@ export const OrderItem = sequelize.define('order_items', {
         type: STRING,
         allowNull: false,
     },
-    order_id: {
+    orderId: {
         type: INTEGER,
         allowNull: false,
     },
-    product_id: {
+    userId: {
+        type: INTEGER,
+        allowNull: true,
+    },
+    isRepeated: {
+        type: INTEGER,
+        defaultValue: 0
+    },
+    productId: {
         type: INTEGER,
         allowNull: true,
     },
     price: {
-        type: INTEGER,
+        type: STRING,
         allowNull: true,
     },
     quantity: {
         type: INTEGER,
         allowNull: true,
     },
+    createdAt: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: NOW,
+        field: "created_at",
+    },
+    updatedAt: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: NOW,
+        field: "updated_at",
+    },
+}, {
+    sequelize,
+    tableName: 'order_items',
+    timestamps: true,
 });
+
+export { OrderItemsModel };
+

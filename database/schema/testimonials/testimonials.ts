@@ -1,8 +1,30 @@
-const { DataTypes } = require("sequelize");
+import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-const { STRING, TEXT, INTEGER, ENUM, BOOLEAN } = DataTypes;
+import { TTestimonials } from "../../../types";
+import { TESTIMONIAL_ITEM_TYPE } from '../../../interfaces';
+const { INTEGER, BOOLEAN, TEXT, ENUM, DATE, NOW } = DataTypes;
 
-export const Testimonials = sequelize.define("testimonials", {
+interface TestimonialsCreationAttributes extends Optional<TTestimonials, 'id' | 'createdAt' | 'updatedAt'> { }
+
+class TestimonialsModel extends Model<TTestimonials, TestimonialsCreationAttributes> implements TTestimonials {
+    public id!: number;
+    public user_id!: number;
+    public testimonial_text!: string;
+    public rating!: number;
+    public item_id!: string;
+    public item_type!: string;
+    public date_submitted!: Date;
+    public approved!: number;
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+}
+
+TestimonialsModel.init({
+    id: {
+        type: INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
     user_id: { // Refers to the Users table.
         type: INTEGER,
         allowNull: false,
@@ -11,19 +33,38 @@ export const Testimonials = sequelize.define("testimonials", {
         type: TEXT,
     },
     rating: { // An optional field for a rating system (usually 1 to 5).
-        type: STRING,
+        type: INTEGER,
     },
-    date_submitted: { // The date and time when the testimonial was submitted.
-        type: STRING,
+    date_submitted: { // To indicate if the testimonial has been approved (useful if testimonials need to be moderated).
+        type: DATE,
     },
     approved: { // To indicate if the testimonial has been approved (useful if testimonials need to be moderated).
-        type: INTEGER,
+        type: BOOLEAN, // Use BOOLEAN for true/false values
+        defaultValue: false,
     },
     item_id: { // Identifier for the item being reviewed (e.g., franchise id)
         type: INTEGER,
     },
     item_type: {// Type of item being reviewed (e.g., franchise)
         type: ENUM,
-        values: ['product', 'franchise']
+        values: [...Object.values(TESTIMONIAL_ITEM_TYPE)]
     },
+    createdAt: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: NOW,
+        field: "created_at",
+    },
+    updatedAt: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: NOW,
+        field: "updated_at",
+    },
+}, {
+    sequelize,
+    tableName: 'testimonials',
+    timestamps: true,
 });
+
+export { TestimonialsModel };

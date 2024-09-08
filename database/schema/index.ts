@@ -11,11 +11,21 @@ export * from "./ecommerce/category_image.model";
 export * from "./ecommerce/order.model";
 export * from "./ecommerce/order_item.model";
 export * from "./ecommerce/product.model";
-export * from "./ecommerce/product_category.model";
+export * from "./ecommerce/product_category_map.model";
 export * from "./ecommerce/product_image.model";
 export * from "./ecommerce/tag.model";
 export * from "./ecommerce/tag_image.model";
 // ecommerce model ends
+
+// retort model starts
+export * from "./retort/retort-category";
+export * from "./retort/retort-category_image";
+export * from "./retort/retort-order";
+export * from "./retort/retort-order_item";
+export * from "./retort/retort-product";
+export * from "./retort/retort-product_category_map";
+export * from "./retort/retort-product_image";
+// retort model ends
 
 // lead model starts
 export * from "./lead/lead.model";
@@ -24,4 +34,9 @@ export * from "./lead/lead.model";
 export * from "./payments/payments";
 export * from "./reviews/reviews";
 export * from "./testimonials/testimonials";
+
 export * from "./menu/menu";
+export * from "./menu/menu-image";
+export * from "./menu/menu-category";
+export * from "./menu/menu-category_map";
+export * from "./menu/menu-product";

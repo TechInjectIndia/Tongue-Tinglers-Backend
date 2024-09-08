@@ -2,15 +2,14 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { AddressModel } from '../models';
+import { AddressRepo } from '../models';
 
 export default class AddressController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const createAddress = req?.body;
-            const id = get(req, "user_id", "");
-
-            const Address = await new AddressModel().add(createAddress);
+            const user_id = get(req, 'user_id', '');
+            const payload = { ...req?.body, user_id: user_id };
+            const Address = await new AddressRepo().create(payload);
             return res
                 .status(200)
                 .send(
@@ -34,14 +33,15 @@ export default class AddressController {
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.split(" ");
+            sorting = sorting.toString().split(" ");
+            const user_id = get(req, 'user_id', 0);
 
-            const Addresss = await new AddressModel().list({
-                offset: parseInt(skip),
-                limit: parseInt(size),
-                search,
-                sorting,
-                trashOnly
+            const Addresss = await new AddressRepo().list(user_id, {
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -54,7 +54,6 @@ export default class AddressController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -63,12 +62,11 @@ export default class AddressController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
-
+            const id = get(req?.params, "id", 0);
+            const user_id = get(req, 'user_id', 0);
             const updateAddress = req?.body;
             delete updateAddress.id
-            const Address = await new AddressModel().update(id, updateAddress);
-
+            const Address = await new AddressRepo().update(user_id as number, id as number, updateAddress);
             return res
                 .status(200)
                 .send(
@@ -87,12 +85,10 @@ export default class AddressController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = get(req?.params, "id", 0);
+            const user_id = get(req, 'user_id', 0);
 
-            let getAttributes: any = '';
-            const whereName = 'id'
-            const whereVal = id;
-            const existingAddress = await new AddressModel().getAddressByAttr(whereName, whereVal, getAttributes);
+            const existingAddress = await new AddressRepo().get(id as number, user_id as number);
 
             if (isEmpty(existingAddress)) {
                 return res
@@ -115,7 +111,6 @@ export default class AddressController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -125,8 +120,9 @@ export default class AddressController {
     static async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const ids = get(req?.body, "ids", "");
+            const user_id = get(req, 'user_id', 0);
 
-            const Address = await new AddressModel().delete(ids);
+            const Address = await new AddressRepo().delete(user_id, ids);
             return res
                 .status(200)
                 .send(

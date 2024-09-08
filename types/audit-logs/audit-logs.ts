@@ -1,7 +1,7 @@
 const { OrderItem } = require("sequelize");
 
-// Analyticss type Starts
-export type TAnalytics = {
+// AuditLogs type Starts
+export type TAuditLog = {
   id: number;
   user_id: number;
   description: string;
@@ -10,21 +10,21 @@ export type TAnalytics = {
   updatedAt: Date;
 };
 
-export type TAddAnalytics = {
+export type TAddAuditLog = {
   name: string;
   active: number;
 };
 
-export type TAnalyticssList = {
+export type TAuditLogsList = {
   total: number;
-  data: TAnalytics;
+  data: TAuditLog;
 };
 
-export type TAnalyticsFilters = {
+export type TAuditLogFilters = {
   offset: number;
   limit: number;
   search?: string;
   sorting?: typeof OrderItem;
   trashOnly?: string;
 };
-// Analyticss type Ends
+// AuditLogs type Ends

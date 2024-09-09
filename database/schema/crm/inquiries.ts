@@ -1,11 +1,12 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { TInquiry, INQUIRY_TYPE } from "../../../types";
-const { INTEGER, STRING, ENUM } = DataTypes;
+import { TInquiry } from "../../../types";
+import { INQUIRY_TYPE } from "../../../interfaces";
+const { INTEGER, STRING, ENUM, DATE, NOW } = DataTypes;
 
-interface UserCreationAttributes extends Optional<TInquiry, 'id' | 'createdAt' | 'updatedAt'> { }
+interface InquiryCreationAttributes extends Optional<TInquiry, 'id' | 'createdAt' | 'updatedAt'> { }
 
-class InquiryModel extends Model<TInquiry, UserCreationAttributes> implements TInquiry {
+class InquiryModel extends Model<TInquiry, InquiryCreationAttributes> implements TInquiry {
     public id!: number;
     public email!: string;
     public subject: string;
@@ -35,16 +36,14 @@ InquiryModel.init({
         values: [...Object.values(INQUIRY_TYPE)]
     },
     createdAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW,
-        field: "created_at",
+        defaultValue: NOW,
     },
     updatedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW,
-        field: "updated_at",
+        defaultValue: NOW,
     },
 }, {
     sequelize,

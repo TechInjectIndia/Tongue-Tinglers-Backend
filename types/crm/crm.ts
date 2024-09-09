@@ -1,29 +1,4 @@
-export type TInquiry = {
-    id: number;
-    email: string;
-    subject: string;
-    message: string;
-    type: string; // Franchisee or Customer
-    createdAt: Date;
-    updatedAt: Date;
-};
-
-export enum INQUIRY_TYPE {
-    CUSTOMER = "customer",
-    FRANCHISE = "franchise",
-}
-
-export enum CAMPAIGN_STATUS {
-    DRAFT = "draft",
-    SENT = "sent",
-    ARCHIVED = "archived",
-}
-
-export enum EMAIL_STATUS {
-    DELIVERED = "delivered",
-    FAILED = "failed"
-}
-
+//  ======= campaign Starts ==========
 export type TCampaign = {
     id: number;
     name: string;
@@ -36,6 +11,60 @@ export type TCampaign = {
     updatedAt: Date;
 };
 
+export type TCampaignsList = {
+    total: number;
+    data: TCampaign[];
+};
+
+export type TAddCampaign = {
+    name: string;
+    subject: string;
+    body: string;
+    status: string; // 'draft', 'sent', 'archived'
+    scheduledAt: Date | null;
+};
+
+export type TEditCampaign = {
+    name: string;
+    subject: string;
+    body: string;
+    status: string; // 'draft', 'sent', 'archived'
+    scheduledAt: Date | null;
+};
+//  ======= campaign Ends ==========
+
+//  ======= Inquiry Starts ==========
+export type TInquiry = {
+    id: number;
+    email: string;
+    subject: string;
+    message: string;
+    type: string; // Franchisee or Customer
+    createdAt: Date;
+    updatedAt: Date;
+};
+
+export type TInquirysList = {
+    total: number;
+    data: TInquiry[];
+};
+
+export type TAddInquiry = {
+    email: string;
+    subject: string;
+    message: string;
+    type: string; // Franchisee or Customer
+};
+
+export type TEditInquiry = {
+    email: string;
+    subject: string;
+    message: string;
+    type: string; // Franchisee or Customer
+};
+//  ======= Inquiry Ends ==========
+
+//  ======= Subscriber Starts ==========
 export type TSubscriber = {
     id: number;
     email: string;
@@ -45,6 +74,25 @@ export type TSubscriber = {
     updatedAt: Date;
 };
 
+export type TSubscribersList = {
+    total: number;
+    data: TSubscriber[];
+};
+
+export type TAddSubscriber = {
+    email: string;
+    name: string;
+    subscribedAt: Date | null;
+};
+
+export type TEditSubscriber = {
+    email: string;
+    name: string;
+    subscribedAt: Date | null;
+};
+//  ======= Subscriber Ends ==========
+
+//  ======= Email Starts ==========
 export type TEmail = {
     id: number;
     campaignId: number;
@@ -54,3 +102,21 @@ export type TEmail = {
     createdAt: Date;
     updatedAt: Date;
 };
+
+export type TEmailsList = {
+    total: number;
+    data: TEmail[];
+};
+
+export type TAddEmail = {
+    campaignId: number;
+    subscriberId: number;
+    status: string; // 'delivered', 'failed'
+};
+
+export type TEditEmail = {
+    campaignId: number;
+    subscriberId: number;
+    status: string; // 'delivered', 'failed'
+};
+//  ======= Email Ends ==========

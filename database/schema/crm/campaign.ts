@@ -1,11 +1,12 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { TCampaign, CAMPAIGN_STATUS } from "../../../types";
+import { CAMPAIGN_STATUS } from '../../../interfaces';
+import { TCampaign } from "../../../types";
 const { INTEGER, STRING, ENUM, TEXT } = DataTypes;
 
-interface UserCreationAttributes extends Optional<TCampaign, 'id' | 'createdAt' | 'updatedAt'> { }
+interface campaignAttributes extends Optional<TCampaign, 'id' | 'createdAt' | 'updatedAt'> { }
 
-class CampaignModel extends Model<TCampaign, UserCreationAttributes> implements TCampaign {
+class CampaignModel extends Model<TCampaign, campaignAttributes> implements TCampaign {
     public id!: number;
     public name!: string;
     public subject: string;
@@ -39,24 +40,20 @@ CampaignModel.init({
     scheduledAt: {
         type: DataTypes.DATE,
         allowNull: true,
-        field: "scheduled_at",
     },
     sentAt: {
         type: DataTypes.DATE,
         allowNull: true,
-        field: "sent_at",
     },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
-        field: "created_at",
     },
     updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
-        field: "updated_at",
     },
 }, {
     sequelize,

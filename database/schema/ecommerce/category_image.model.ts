@@ -2,7 +2,6 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TCategoryImage } from "../../../types";
 const { INTEGER, STRING, DATE, NOW } = DataTypes;
-import { ProductCategoryModel } from './category.model'
 
 interface OrderItemsCreationAttributes extends Optional<TCategoryImage, 'id' | 'createdAt' | 'updatedAt'> { }
 

@@ -1,54 +1,53 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
-import { MENU_STATUS } from '../../../interfaces';
 
-const createMenuBody = Joi.object().keys({
+const createSubscriberBody = Joi.object().keys({
     name: Joi.string().required(),
-    images: Joi.string().required(),
-    status: Joi.string().valid(...Object.values(MENU_STATUS)).optional().allow(''),
+    email: Joi.string().required(),
+    subscribedAt: Joi.string().required(),
 });
 
-export const validateCreateMenuBody = async (
+export const validateCreateSubscriberBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, createMenuBody, "body");
+) => validateReq(req, res, next, createSubscriberBody, "body");
 
-const editMenuBody = Joi.object().keys({
+const editSubscriberBody = Joi.object().keys({
     name: Joi.string().required(),
-    images: Joi.string().required(),
-    status: Joi.string().valid(...Object.values(MENU_STATUS)).optional().allow(''),
+    email: Joi.string().required(),
+    subscribedAt: Joi.string().required(),
 });
 
-export const validateEditMenuBody = async (
+export const validateEditSubscriberBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, editMenuBody, "body");
+) => validateReq(req, res, next, editSubscriberBody, "body");
 
-const editMenuParams = Joi.object().keys({
+const editSubscriberParams = Joi.object().keys({
     id: Joi.string().required(),
 });
 
-export const validateEditMenuParams = async (
+export const validateEditSubscriberParams = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, editMenuParams, "params");
+) => validateReq(req, res, next, editSubscriberParams, "params");
 
-const listMenuQuery = Joi.object().keys({
+const listSubscriberQuery = Joi.object().keys({
     size: Joi.number().required(),
     skip: Joi.number().required(),
     search: Joi.string().optional().allow(""),
     sorting: Joi.string().optional().allow(""),
 });
 
-export const validateListMenuQuery = async (
+export const validateListSubscriberQuery = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, listMenuQuery, "query");
+) => validateReq(req, res, next, listSubscriberQuery, "query");
 
 const editMultipleIdsBody = Joi.object().keys({
     ids: Joi.array().min(1).required(),

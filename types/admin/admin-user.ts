@@ -1,4 +1,3 @@
-const { OrderItem } = require("sequelize");
 
 export type TUser = {
   id: number;
@@ -87,12 +86,4 @@ export type TUpdateUserProfile = {
 export type TUpdateUserPassword = {
   user_id: string;
   password: string;
-};
-
-export type TQueryFilters = {
-  offset: number;
-  limit: number;
-  search?: string;
-  sorting?: typeof OrderItem;
-  trashOnly?: string;
 };

@@ -1,13 +1,14 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { TEmail, EMAIL_STATUS } from "../../../types";
-const { INTEGER, STRING, ENUM } = DataTypes;
-import {CampaignModel} from './campaign';
-import {SubscriberModel} from './subscriber';
+import { TEmail } from "../../../types";
+import { EMAIL_STATUS } from "../../../interfaces";
+const { INTEGER, DATE, ENUM, NOW } = DataTypes;
+import { CampaignModel } from './campaign';
+import { SubscriberModel } from './subscriber';
 
-interface UserCreationAttributes extends Optional<TEmail, 'id' | 'createdAt' | 'updatedAt'> { }
+interface EmailCreationAttributes extends Optional<TEmail, 'id' | 'createdAt' | 'updatedAt'> { }
 
-class EmailModel extends Model<TEmail, UserCreationAttributes> implements TEmail {
+class EmailModel extends Model<TEmail, EmailCreationAttributes> implements TEmail {
     public id!: number;
     public campaignId!: number;
     public subscriberId!: number;
@@ -19,46 +20,44 @@ class EmailModel extends Model<TEmail, UserCreationAttributes> implements TEmail
 
 EmailModel.init({
     id: {
-        type: DataTypes.INTEGER,
+        type: INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
     campaignId: {
-        type: DataTypes.INTEGER,
+        type: INTEGER,
         references: {
-            model: 'Campaigns',
+            model: CampaignModel,
             key: 'id',
         },
         allowNull: false,
     },
     subscriberId: {
-        type: DataTypes.INTEGER,
+        type: INTEGER,
         references: {
-            model: 'Subscribers',
+            model: SubscriberModel,
             key: 'id',
         },
         allowNull: false,
     },
     status: {
         type: ENUM,
+        defaultValue: EMAIL_STATUS.DRAFT,
         values: [...Object.values(EMAIL_STATUS)]
     },
     sentAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: true,
-        field: "sent_at",
     },
     createdAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW,
-        field: "created_at",
+        defaultValue: NOW,
     },
     updatedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW,
-        field: "updated_at",
+        defaultValue: NOW,
     },
 }, {
     sequelize,

@@ -6,3 +6,4 @@ export * from './reviews';
 export * from './products';
 export * from './product_category';
 export * from './orders';
+export * from './crm';

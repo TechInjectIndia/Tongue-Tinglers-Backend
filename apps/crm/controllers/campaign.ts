@@ -2,25 +2,28 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { MenuImageRepo } from '../models/menu-image';
+import { CampaignRepo } from '../models/campaign';
 
-export default class MenuImageController {
+export default class CampaignController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const createMenu = req?.body;
+            const name = get(req?.body, "name", "");
+            const status = get(req?.body, "status", 1);
+            const subject = get(req?.body, "subject", '');
+            const body = get(req?.body, "body", '');
+            const scheduledAt = get(req?.body, "scheduledAt", '');
 
-            const Menu = await new MenuImageRepo().create(createMenu);
+            const campaign = await new CampaignRepo().create({ name, subject, body, status, scheduledAt });
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.CREATED,
-                        Menu
+                        campaign
                     )
                 );
         } catch (err) {
-            console.log(err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -36,7 +39,7 @@ export default class MenuImageController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
 
-            const Menus = await new MenuImageRepo().list({
+            const campaigns = await new CampaignRepo().list({
                 offset: skip as number,
                 limit: size as number,
                 search: search as string,
@@ -50,11 +53,10 @@ export default class MenuImageController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        Menus
+                        campaigns
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -64,18 +66,20 @@ export default class MenuImageController {
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
+            const name = get(req?.body, "name", "");
+            const status = get(req?.body, "status", 1);
+            const subject = get(req?.body, "subject", '');
+            const body = get(req?.body, "body", '');
+            const scheduledAt = get(req?.body, "scheduledAt", '');
 
-            const updateMenu = req?.body;
-            delete updateMenu.id
-            const Menu = await new MenuImageRepo().update(id as number, updateMenu);
-
+            const campaign = await new CampaignRepo().update(id as number, { name, subject, body, status, scheduledAt });
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
-                        Menu
+                        campaign
                     )
                 );
         } catch (err) {
@@ -88,9 +92,8 @@ export default class MenuImageController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const existingMenu = await new MenuImageRepo().get(id as number);
-
-            if (isEmpty(existingMenu)) {
+            const campaign = await new CampaignRepo().get(id as number);
+            if (isEmpty(campaign)) {
                 return res
                     .status(400)
                     .send(
@@ -107,11 +110,10 @@ export default class MenuImageController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        existingMenu
+                        campaign
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -121,15 +123,14 @@ export default class MenuImageController {
     static async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const ids = get(req?.body, "ids", "");
-
-            const Menu = await new MenuImageRepo().delete(ids);
+            const campaign = await new CampaignRepo().delete(ids);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.DELETED,
-                        Menu
+                        campaign
                     )
                 );
         } catch (err) {

@@ -5,7 +5,6 @@ import menuProductRouter from "../../menu/api/menu-product";
 import menuProductMapRouter from "../../menu/api/menu-product-map";
 import menuCategoryRouter from "../../menu/api/menu-category";
 import menuCategoryMapRouter from "../../menu/api/menu-category-map";
-import menuImageRouter from "../../menu/api/menu-image";
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -62,9 +61,13 @@ const {
  *            type: object
  *            required:
  *              - name
+ *              - images
  *              - status
  *            properties:
  *              name:
+ *                type: string
+ *                default: AdminMenu 
+ *              images:
  *                type: string
  *                default: AdminMenu 
  *              status:
@@ -156,11 +159,15 @@ const {
  *            type: object
  *            required:
  *              - name
+ *              - images
  *              - status
  *            properties:
  *              name:
  *                type: string
  *                default: Menu
+ *              images:
+ *                type: string
+ *                default: "active"
  *              status:
  *                type: string
  *                default: "active"
@@ -212,8 +219,6 @@ router.use("/product", menuProductRouter);
 router.use("/product/map", menuProductMapRouter);
 router.use("/category", menuCategoryRouter);
 router.use("/category/map", menuCategoryMapRouter);
-router.use("/image", menuImageRouter);
-
 
 // ====== Menu Ends ======
 router.post("/image/upload", upload.single('file'), MenuController.upload);

@@ -40,3 +40,7 @@ export * from "./menu/menu-image";
 export * from "./menu/menu-category";
 export * from "./menu/menu-category_map";
 export * from "./menu/menu-product";
+
+// crm model starts
+export * from "./crm";
+// crm model ends

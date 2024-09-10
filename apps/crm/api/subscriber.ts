@@ -15,7 +15,7 @@ const {
 /**
  * @swagger 
  * 
- * /api/admin/campaign/subscriber/create:
+ * /api/admin/crm/subscriber/create:
  *   post:
  *     summary: Create a new Subscriber
  *     tags: [Admin > CRM > Subscriber]
@@ -37,10 +37,10 @@ const {
  *                default: AdminSubscriberNew
  *              email:
  *                type: string
- *                default: subject
+ *                default: email@gmail.com
  *              subscribedAt:
  *                type: string
- *                default: scheduledAt
+ *                default: "2000-10-31T01:30:00.000-05:00"
  *     responses:
  *       '200':
  *         description: Subscriber created successfully
@@ -49,7 +49,7 @@ const {
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/campaign/subscriber/list?size={size}&skip={skip}:
+ * /api/admin/crm/subscriber/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all Subscriber
  *     tags: [Admin > CRM > Subscriber]
@@ -77,7 +77,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * /api/admin/campaign/subscriber/get/{id}:
+ * /api/admin/crm/subscriber/get/{id}:
  *   get:
  *     summary: Get a Subscriber by ID
  *     tags: [Admin > CRM > Subscriber]
@@ -104,7 +104,7 @@ const {
  *       '404':
  *         description: Subscriber not found
  * 
- * /api/admin/campaign/subscriber/update/{id}:
+ * /api/admin/crm/subscriber/update/{id}:
  *   put:
  *     summary: Update a Subscriber
  *     tags: [Admin > CRM > Subscriber]
@@ -134,10 +134,10 @@ const {
  *                default: AdminSubscriberNew
  *              email:
  *                type: string
- *                default: subject
+ *                default: subject@gmai.com
  *              subscribedAt:
  *                type: string
- *                default: scheduledAt
+ *                default: "2000-10-31T01:30:00.000-05:00"
  *     responses:
  *       '200':
  *         description: Subscriber updated successfully
@@ -148,7 +148,7 @@ const {
  *       '404':
  *         description: Subscriber not found
  * 
- * /api/admin/campaign/subscriber/delete:
+ * /api/admin/crm/subscriber/delete:
  *   delete:
  *     summary: Delete a Subscriber
  *     tags: [Admin > CRM > Subscriber]

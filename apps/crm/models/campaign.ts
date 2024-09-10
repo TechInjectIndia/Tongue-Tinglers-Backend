@@ -7,10 +7,28 @@ import {
     TEditCampaign,
 } from "../../../types";
 import { CampaignModel } from "../../../database/schema";
+import { EmailModel } from "../../../database/schema";
+import { SubscriberModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/ICampaignController';
 
 export class CampaignRepo implements IBaseRepo<TCampaign, TQueryFilters> {
     constructor() { }
+
+    public async getAllSubscribersByCampaignId(campaignId: number): Promise<TCampaign[] | null> {
+        const data = await CampaignModel.findAll({
+            where: {
+                id: campaignId,
+            },
+            include: [{
+                model: EmailModel,
+                as: 'emails'
+            }, {
+                model: SubscriberModel,
+                as: 'subscribers'
+            }]
+        });
+        return data;
+    }
 
     public async get(id: number): Promise<TCampaign | null> {
         const data = await CampaignModel.findOne({

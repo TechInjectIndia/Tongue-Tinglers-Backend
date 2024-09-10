@@ -5,12 +5,18 @@ import {
     TEmailsList,
     TAddEmail,
     TEditEmail,
+    TAssignCampaign
 } from "../../../types";
 import { EmailModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IEmailController';
 
 export class EmailRepo implements IBaseRepo<TEmail, TQueryFilters> {
     constructor() { }
+
+    public async campaignAssignment(campaignId: number, subscriberId: number, status: string): Promise<TAssignCampaign | null> {
+        const response = await EmailModel.create({ campaignId, subscriberId, status });
+        return response;
+    }
 
     public async get(id: number): Promise<TEmail | null> {
         const data = await EmailModel.findOne({

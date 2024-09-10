@@ -189,7 +189,8 @@ const options = {
         './apps/menu/api/*.ts',
         './apps/analytics/api/admin/*.ts',
         './apps/analytics/api/customer/*.ts',
-        './apps/analytics/api/franchise/*.ts'
+        './apps/analytics/api/franchise/*.ts',
+        './apps/crm/api/*.ts',
     ],
 }
 const swaggerSpec = swaggerJsdoc(options)

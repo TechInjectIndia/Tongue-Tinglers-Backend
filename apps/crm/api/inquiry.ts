@@ -15,7 +15,7 @@ const {
 /**
  * @swagger 
  * 
- * /api/admin/campaign/inquiry/create:
+ * /api/admin/crm/inquiry/create:
  *   post:
  *     summary: Create a new Inquiry
  *     tags: [Admin > CRM > Inquiry]
@@ -53,7 +53,7 @@ const {
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/campaign/inquiry/list?size={size}&skip={skip}:
+ * /api/admin/crm/inquiry/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all Inquiry
  *     tags: [Admin > CRM > Inquiry]
@@ -81,7 +81,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * /api/admin/campaign/inquiry/get/{id}:
+ * /api/admin/crm/inquiry/get/{id}:
  *   get:
  *     summary: Get a Inquiry by ID
  *     tags: [Admin > CRM > Inquiry]
@@ -108,7 +108,7 @@ const {
  *       '404':
  *         description: Inquiry not found
  * 
- * /api/admin/campaign/inquiry/update/{id}:
+ * /api/admin/crm/inquiry/update/{id}:
  *   put:
  *     summary: Update a Inquiry
  *     tags: [Admin > CRM > Inquiry]
@@ -156,7 +156,7 @@ const {
  *       '404':
  *         description: Inquiry not found
  * 
- * /api/admin/campaign/inquiry/delete:
+ * /api/admin/crm/inquiry/delete:
  *   delete:
  *     summary: Delete a Inquiry
  *     tags: [Admin > CRM > Inquiry]

@@ -15,7 +15,7 @@ const {
 /**
  * @swagger 
  * 
- * /api/admin/campaign/email/create:
+ * /api/admin/crm/email/create:
  *   post:
  *     summary: Create a new Email
  *     tags: [Admin > CRM > Email]
@@ -49,7 +49,7 @@ const {
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/campaign/email/list?size={size}&skip={skip}:
+ * /api/admin/crm/email/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all Email
  *     tags: [Admin > CRM > Email]
@@ -77,7 +77,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * /api/admin/campaign/email/get/{id}:
+ * /api/admin/crm/email/get/{id}:
  *   get:
  *     summary: Get a Email by ID
  *     tags: [Admin > CRM > Email]
@@ -104,7 +104,7 @@ const {
  *       '404':
  *         description: Email not found
  * 
- * /api/admin/campaign/email/update/{id}:
+ * /api/admin/crm/email/update/{id}:
  *   put:
  *     summary: Update a Email
  *     tags: [Admin > CRM > Email]
@@ -148,7 +148,7 @@ const {
  *       '404':
  *         description: Email not found
  * 
- * /api/admin/campaign/email/delete:
+ * /api/admin/crm/email/delete:
  *   delete:
  *     summary: Delete a Email
  *     tags: [Admin > CRM > Email]

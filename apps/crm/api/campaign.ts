@@ -12,13 +12,14 @@ const {
   validateEditCampaignParams,
   validateListCampaignQuery,
   validateEditMultipleIdsBody,
+  validateCampaignAssignmentBody
 } = CampaignValidation;
 
 // ====== Campiagn Starts ======
 /**
  * @swagger 
  * 
- * /api/admin/campaign/create:
+ * /api/admin/crm/create:
  *   post:
  *     summary: Create a new Campiagn
  *     tags: [Admin > CRM > Campiagn]
@@ -48,10 +49,10 @@ const {
  *                default: body
  *              scheduledAt:
  *                type: string
- *                default: scheduledAt
+ *                default: "2000-10-31T01:30:00.000-05:00"
  *              status:
  *                type: boolean
- *                default: 1
+ *                default: "draft"
  *     responses:
  *       '200':
  *         description: Campiagn created successfully
@@ -60,7 +61,7 @@ const {
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/campaign/list?size={size}&skip={skip}:
+ * /api/admin/crm/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all Campaign
  *     tags: [Admin > CRM > Campiagn]
@@ -88,7 +89,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * /api/admin/campaign/get/{id}:
+ * /api/admin/crm/get/{id}:
  *   get:
  *     summary: Get a Campaign by ID
  *     tags: [Admin > CRM > Campiagn]
@@ -115,7 +116,7 @@ const {
  *       '404':
  *         description: Campaign not found
  * 
- * /api/admin/campaign/update/{id}:
+ * /api/admin/crm/update/{id}:
  *   put:
  *     summary: Update a Campaign
  *     tags: [Admin > CRM > Campiagn]
@@ -153,10 +154,10 @@ const {
  *                default: body
  *              scheduledAt:
  *                type: string
- *                default: scheduledAt
+ *                default: "2000-10-31T01:30:00.000-05:00"
  *              status:
  *                type: boolean
- *                default: 1
+ *                default: "draft"
  *     responses:
  *       '200':
  *         description: Campiagn updated successfully
@@ -167,7 +168,7 @@ const {
  *       '404':
  *         description: Campaign not found
  * 
- * /api/admin/campaign/delete:
+ * /api/admin/crm/delete:
  *   delete:
  *     summary: Delete a Campaign
  *     tags: [Admin > CRM > Campiagn]
@@ -199,6 +200,9 @@ router.get("/get/:id", validateEditCampaignParams, CampaignController.get);
 router.put("/update/:id", validateEditCampaignParams, validateEditCampaignBody, CampaignController.update);
 router.delete("/delete", validateEditMultipleIdsBody, CampaignController.delete);
 // ====== Campaign Ends ======
+
+router.post("/assign", validateCampaignAssignmentBody, CampaignController.campaignAssignment);
+router.post("/send-campaign", validateCampaignAssignmentBody, CampaignController.sendCampaignEmailToSubscribers);
 
 // Campaign Furthur Apis
 router.use("/email", emailCampaignRouter);

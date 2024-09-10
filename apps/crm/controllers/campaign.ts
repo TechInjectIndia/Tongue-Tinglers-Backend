@@ -1,10 +1,60 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
+import { EMAIL_STATUS } from "../../../interfaces";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { CampaignRepo } from '../models/campaign';
+import { EmailRepo } from '../models/email';
+import { SubscriberRepo } from '../models/subscriber';
 
 export default class CampaignController {
+    static async sendCampaignEmailToSubscribers(req: Request, res: Response, next: NextFunction) {
+        try {
+            const campaignId = get(req?.body, "campaignId", "");
+            const subscriberId = get(req?.body, "subscriberId", 1);
+            const status = EMAIL_STATUS.DELIVERED;
+
+            const getAllSubscribers = await new CampaignRepo().getAllSubscribersByCampaignId(campaignId as number);
+
+            const campaign = await new EmailRepo().campaignAssignment(campaignId, subscriberId, status);
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.CREATED,
+                        campaign
+                    )
+                );
+        } catch (err) {
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+    static async campaignAssignment(req: Request, res: Response, next: NextFunction) {
+        try {
+            const campaignId = get(req?.body, "campaignId", "");
+            const subscriberId = get(req?.body, "subscriberId", 1);
+            const status = EMAIL_STATUS.DRAFT;
+
+            const campaign = await new EmailRepo().campaignAssignment(campaignId, subscriberId, status);
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.CREATED,
+                        campaign
+                    )
+                );
+        } catch (err) {
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const name = get(req?.body, "name", "");

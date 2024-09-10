@@ -24,6 +24,12 @@ export type TAddCampaign = {
     scheduledAt: Date | null;
 };
 
+export type TAssignCampaign = {
+    campaignId: number,
+    subscriberId: number,
+    status: string
+};
+
 export type TEditCampaign = {
     name: string;
     subject: string;

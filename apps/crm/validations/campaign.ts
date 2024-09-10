@@ -3,6 +3,17 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 import { CAMPAIGN_STATUS } from '../../../interfaces/';
 
+const campaignAssignmentBody = Joi.object().keys({
+    campaignId: Joi.number().required(),
+    subscriberId: Joi.number().required(),
+});
+
+export const validateCampaignAssignmentBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, campaignAssignmentBody, "body");
+
 const createCampaignBody = Joi.object().keys({
     name: Joi.string().required(),
     subject: Joi.string().required(),

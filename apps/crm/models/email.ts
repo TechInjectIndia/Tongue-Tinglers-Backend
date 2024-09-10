@@ -53,10 +53,12 @@ export class EmailRepo implements IBaseRepo<TEmail, TQueryFilters> {
         return response;
     }
 
-    public async update(id: number, data: TEditEmail): Promise<[affectedCount: number]> {
+    public async update(id: number, campaignId: number, subscriberId: number, data: TEditEmail): Promise<[affectedCount: number]> {
         const response = await EmailModel.update(data, {
             where: {
                 id,
+                campaignId,
+                subscriberId
             },
         });
         return response;

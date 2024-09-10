@@ -73,7 +73,7 @@ router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 router.use(`${ADMIN}/retort/product`, auth, retortProductRouter);
 router.use(`${ADMIN}/retort/category`, auth, retortProductCategoryRouter);
 router.use(`${ADMIN}/retort/order`, auth, retortOrderRouter);
-router.use(`${ADMIN}/campaign`, auth, campaignRouter);
+router.use(`${ADMIN}/crm`, campaignRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

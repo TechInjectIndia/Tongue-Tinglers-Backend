@@ -193,6 +193,78 @@ const {
  *         description: Unauthorized
  *       '404':
  *         description: Campiagn not found
+ * 
+ * /api/admin/crm/assign:
+ *   post:
+ *     summary: assign
+ *     tags: [Admin > CRM > Campiagn]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - campaignId
+ *              - subscriberId
+ *            properties:
+ *              campaignId:
+ *                type: number
+ *                default: 1
+ *              subscriberId:
+ *                type: number
+ *                default: 1
+ *     responses:
+ *       '200':
+ *         description: Campiagn created successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
+ * /api/admin/crm/send-campaign:
+ *   post:
+ *     summary: send-campaign
+ *     tags: [Admin > CRM > Campiagn]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - name
+ *              - subject
+ *              - body
+ *              - scheduledAt
+ *              - status
+ *            properties:
+ *              name:
+ *                type: string
+ *                default: AdminCampaignNew
+ *              subject:
+ *                type: string
+ *                default: subject
+ *              body:
+ *                type: string
+ *                default: body
+ *              scheduledAt:
+ *                type: string
+ *                default: "2000-10-31T01:30:00.000-05:00"
+ *              status:
+ *                type: boolean
+ *                default: "draft"
+ *     responses:
+ *       '200':
+ *         description: Campiagn created successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
  */
 router.post("/create", validateCreateCampaignBody, CampaignController.create);
 router.get("/list", validateListCampaignQuery, CampaignController.list);
@@ -201,7 +273,6 @@ router.put("/update/:id", validateEditCampaignParams, validateEditCampaignBody, 
 router.delete("/delete", validateEditMultipleIdsBody, CampaignController.delete);
 // ====== Campaign Ends ======
 
-router.post("/assign", validateCampaignAssignmentBody, CampaignController.campaignAssignment);
 router.post("/send-campaign", validateCampaignAssignmentBody, CampaignController.sendCampaignEmailToSubscribers);
 
 // Campaign Furthur Apis

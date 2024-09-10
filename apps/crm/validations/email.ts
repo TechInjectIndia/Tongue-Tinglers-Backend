@@ -6,7 +6,6 @@ import { EMAIL_STATUS } from '../../../interfaces';
 const createEmailBody = Joi.object().keys({
     campaignId: Joi.number().required(),
     subscriberId: Joi.number().required(),
-    status: Joi.string().valid(...Object.values(EMAIL_STATUS)).optional().allow(''),
 });
 
 export const validateCreateEmailBody = async (

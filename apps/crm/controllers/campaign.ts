@@ -11,11 +11,12 @@ export default class CampaignController {
     static async sendCampaignEmailToSubscribers(req: Request, res: Response, next: NextFunction) {
         try {
             const campaignId = get(req?.body, "campaignId", "");
-            const subscriberId = get(req?.body, "subscriberId", 1);
             const status = EMAIL_STATUS.DELIVERED;
 
             const getAllSubscribers = await new CampaignRepo().getAllSubscribersByCampaignId(campaignId as number);
-
+            console.log(getAllSubscribers)
+            // set email for all subscribers
+            let subscriberId = 1;
             const campaign = await new EmailRepo().campaignAssignment(campaignId, subscriberId, status);
             return res
                 .status(200)
@@ -32,28 +33,28 @@ export default class CampaignController {
             });
         }
     }
-    static async campaignAssignment(req: Request, res: Response, next: NextFunction) {
-        try {
-            const campaignId = get(req?.body, "campaignId", "");
-            const subscriberId = get(req?.body, "subscriberId", 1);
-            const status = EMAIL_STATUS.DRAFT;
+    // static async campaignAssignment(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //         const campaignId = get(req?.body, "campaignId", "");
+    //         const subscriberId = get(req?.body, "subscriberId", "");
+    //         const status = EMAIL_STATUS.DRAFT;
 
-            const campaign = await new EmailRepo().campaignAssignment(campaignId, subscriberId, status);
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CREATED,
-                        campaign
-                    )
-                );
-        } catch (err) {
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
-        }
-    }
+    //         const campaign = await new EmailRepo().campaignAssignment(campaignId, subscriberId, status);
+    //         return res
+    //             .status(200)
+    //             .send(
+    //                 sendResponse(
+    //                     RESPONSE_TYPE.SUCCESS,
+    //                     SUCCESS_MESSAGE.CREATED,
+    //                     campaign
+    //                 )
+    //             );
+    //     } catch (err) {
+    //         return res.status(500).send({
+    //             message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+    //         });
+    //     }
+    // }
 
     static async create(req: Request, res: Response, next: NextFunction) {
         try {

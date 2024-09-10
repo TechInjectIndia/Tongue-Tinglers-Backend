@@ -3,24 +3,31 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { EmailRepo } from '../models/email';
+import { CampaignRepo } from '../models/campaign';
+import { SubscriberRepo } from '../models/subscriber';
 
 export default class EmailController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const campaignId = get(req?.body, "campaignId", "");
-            const subscriberId = get(req?.body, "subscriberId", 1);
-            const status = get(req?.body, "status", '');
+            const subscriberId = get(req?.body, "subscriberId", "");
+            const status = 'draft';
 
-            const Email = await new EmailRepo().create({ campaignId, subscriberId, status });
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CREATED,
-                        Email
-                    )
-                );
+            const existingCampaign = await new CampaignRepo().get(campaignId as number);
+            const existingSubscriber = await new SubscriberRepo().get(subscriberId as number);
+            if (existingCampaign && existingSubscriber) {
+                const Email = await new EmailRepo().create({ campaignId, subscriberId, status });
+                return res
+                    .status(200)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.SUCCESS,
+                            SUCCESS_MESSAGE.CREATED,
+                            Email
+                        )
+                    );
+
+            }
         } catch (err) {
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -68,7 +75,7 @@ export default class EmailController {
             const subscriberId = get(req?.body, "subscriberId", 1);
             const status = get(req?.body, "status", '');
 
-            const Email = await new EmailRepo().update(id as number, { campaignId, subscriberId, status });
+            const Email = await new EmailRepo().update(id as number, campaignId, subscriberId, { campaignId, subscriberId, status });
             return res
                 .status(200)
                 .send(

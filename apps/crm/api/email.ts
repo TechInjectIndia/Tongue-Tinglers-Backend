@@ -30,16 +30,12 @@ const {
  *            required:
  *              - campaignId
  *              - subscriberId
- *              - status
  *            properties:
  *              campaignId:
- *                type: string
- *                default: AdminEmailNew
+ *                type: number
+ *                default: 1
  *              subscriberId:
- *                type: string
- *                default: subject
- *              status:
- *                type: boolean
+ *                type: number
  *                default: 1
  *     responses:
  *       '200':
@@ -130,11 +126,11 @@ const {
  *              - status
  *            properties:
  *              campaignId:
- *                type: string
- *                default: AdminEmailNew
+ *                type: number
+ *                default: 1
  *              subscriberId:
- *                type: string
- *                default: subject
+ *                type: number
+ *                default: 1
  *              status:
  *                type: boolean
  *                default: 1

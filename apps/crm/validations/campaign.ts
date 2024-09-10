@@ -14,6 +14,16 @@ export const validateCampaignAssignmentBody = async (
     next: NextFunction
 ) => validateReq(req, res, next, campaignAssignmentBody, "body");
 
+const sendCampaignAssignmentBody = Joi.object().keys({
+    campaignId: Joi.number().required(),
+});
+
+export const validatesendCampaignAssignmentBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, sendCampaignAssignmentBody, "body");
+
 const createCampaignBody = Joi.object().keys({
     name: Joi.string().required(),
     subject: Joi.string().required(),

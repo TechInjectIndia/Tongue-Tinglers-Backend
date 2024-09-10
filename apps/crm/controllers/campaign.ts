@@ -5,7 +5,6 @@ import { EMAIL_STATUS } from "../../../interfaces";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { CampaignRepo } from '../models/campaign';
 import { EmailRepo } from '../models/email';
-import { SubscriberRepo } from '../models/subscriber';
 
 export default class CampaignController {
     static async sendCampaignEmailToSubscribers(req: Request, res: Response, next: NextFunction) {
@@ -17,17 +16,18 @@ export default class CampaignController {
             console.log(getAllSubscribers)
             // set email for all subscribers
             let subscriberId = 1;
-            const campaign = await new EmailRepo().campaignAssignment(campaignId, subscriberId, status);
+            // const campaign = await new EmailRepo().update(campaignId, subscriberId, status);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.CREATED,
-                        campaign
+                        getAllSubscribers
                     )
                 );
         } catch (err) {
+            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

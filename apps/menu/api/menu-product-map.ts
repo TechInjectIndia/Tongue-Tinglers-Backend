@@ -14,8 +14,8 @@ const {
  * @swagger
  * /api/admin/menu/product/map/assign:
  *   post:
- *     summary: Assign Category
- *     tags: [Admin > Menu > Product > Map]
+ *     summary: Assign Category to Product
+ *     tags: [Admin > Menu > Product]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -43,9 +43,9 @@ const {
  *         description: Unauthorized
  * 
  * /api/admin/menu/product/map/unassign:
- *   delete:
- *     summary: Un-Assign Category
- *     tags: [Admin > Menu > Product > Map]
+ *   post:
+ *     summary: Un-Assign Category to Product
+ *     tags: [Admin > Menu > Product]
  *     security:
  *       - bearerAuth: []
  *     requestBody:

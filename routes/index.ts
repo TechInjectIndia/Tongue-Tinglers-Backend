@@ -48,6 +48,7 @@ import menuRouter from "../apps/menu/api/menu";
 import retortProductRouter from "../apps/retort/api/products";
 import retortProductCategoryRouter from "../apps/retort/api/category";
 import retortOrderRouter from "../apps/retort/api/orders";
+import campaignRouter from "../apps/crm/api/campaign";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -72,6 +73,7 @@ router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 router.use(`${ADMIN}/retort/product`, auth, retortProductRouter);
 router.use(`${ADMIN}/retort/category`, auth, retortProductCategoryRouter);
 router.use(`${ADMIN}/retort/order`, auth, retortOrderRouter);
+router.use(`${ADMIN}/crm`, campaignRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

@@ -5,7 +5,7 @@ import {
     TMenusList,
     TAddMenu,
 } from "../../../types/menu";
-import { MenuModel, MenuImageModel, MenuCategoryModel, MenuProductsModel } from "../../../database/schema";
+import { MenuModel, MenuCategoryModel, MenuProductsModel } from "../../../database/schema";
 
 import IBaseRepo from '../controllers/controller/IMenuController';
 
@@ -18,10 +18,6 @@ export class MenuRepo implements IBaseRepo<TMenu, TMenuFilters> {
                 id,
             },
             include: [
-                {
-                    model: MenuImageModel,
-                    as: 'images'
-                },
                 {
                     model: MenuCategoryModel,
                     as: 'categories',
@@ -41,10 +37,6 @@ export class MenuRepo implements IBaseRepo<TMenu, TMenuFilters> {
                 name,
             },
             include: [
-                {
-                    model: MenuImageModel,
-                    as: 'images'
-                },
                 {
                     model: MenuCategoryModel,
                     as: 'categories'

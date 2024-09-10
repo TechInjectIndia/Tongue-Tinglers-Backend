@@ -2,7 +2,6 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TMenu } from "../../../types";
 import { MENU_STATUS } from '../../../interfaces';
-import { MenuImageModel } from './menu-image'
 import { MenuCategoryModel } from './menu-category'
 import { MenuCategoryMapModel } from './menu-category_map'
 import { MenuProductsModel } from './menu-product'
@@ -14,6 +13,7 @@ interface MenuCreationAttributes extends Optional<TMenu, 'id' | 'createdAt' | 'u
 class MenuModel extends Model<TMenu, MenuCreationAttributes> implements TMenu {
     public id!: number;
     public name: string;
+    public images!: string;
     public status!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -24,6 +24,10 @@ MenuModel.init({
         type: INTEGER,
         autoIncrement: true,
         primaryKey: true,
+    },
+    images: {
+        type: STRING,
+        allowNull: false
     },
     name: {
         type: STRING,
@@ -50,9 +54,6 @@ MenuModel.init({
     tableName: 'menu',
     timestamps: true,
 });
-
-MenuModel.hasMany(MenuImageModel, { as: 'images' });
-MenuImageModel.belongsTo(MenuModel);
 
 MenuModel.belongsToMany(MenuCategoryModel, {
     through: MenuCategoryMapModel,

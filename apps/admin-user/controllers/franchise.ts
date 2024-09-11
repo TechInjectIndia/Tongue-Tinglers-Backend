@@ -41,11 +41,6 @@ export default class FranchiseController {
         }
     }
 
-    
-    static async createFranchiseFromLead(req: Request, res: Response, next: NextFunction) {
-        
-    }
-
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, 'user_id', 0);

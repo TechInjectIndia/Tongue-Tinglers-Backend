@@ -47,6 +47,7 @@ export class LeadRepo implements IBaseRepo<TLead, TListFilters> {
 
     public async getLeadByStatus(id: number): Promise<TLead> {
         const data = await LeadsModel.findOne({
+            raw: true,
             where: {
                 id: id,
                 status: LEAD_STATUS.NEW

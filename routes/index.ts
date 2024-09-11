@@ -25,6 +25,7 @@ import franchiseRouter from "../apps/admin-user/api/franchise";
 import rolesRouter from "../apps/admin-user/api/roles";
 import permissionsRouter from "../apps/admin-user/api/permissions";
 import adminUsersRouter from "../apps/admin-user/api/user";
+import customerUsersRouter from "../apps/admin-user/api/customer";
 import productRouter from "../apps/ecommerce/api/products";
 import productCategoryRouter from "../apps/ecommerce/api/category";
 import orderRouter from "../apps/ecommerce/api/orders";
@@ -48,6 +49,7 @@ import testUsersRouter from "../apps/test-user/api/user"; // for testing only
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
+router.use(`${ADMIN}/customer`, auth, customerUsersRouter);
 router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
 router.use(`${ADMIN}/roles`, auth, rolesRouter);
 router.use(`${ADMIN}/franchise`, auth, franchiseRouter);
@@ -64,7 +66,7 @@ router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
 router.use(`${ADMIN}/order`, auth, orderRouter);
 router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
-router.use(`${ADMIN}/lead`, leadRouter);
+router.use(`${ADMIN}/lead`, auth, leadRouter);
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 router.use(`${ADMIN}/retort/product`, auth, retortProductRouter);
 router.use(`${ADMIN}/retort/category`, auth, retortProductCategoryRouter);

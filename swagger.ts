@@ -145,6 +145,9 @@ const options = {
                 name: 'Customer > Profile'
             },
             {
+                name: 'Admin > Customer'
+            },
+            {
                 name: 'Customer > Settings'
             },
             {

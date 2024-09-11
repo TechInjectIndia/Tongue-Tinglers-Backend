@@ -6,7 +6,8 @@ export const RESPONSE_TYPE = {
 };
 
 export const ERROR_MESSAGE = {
-    ADMIN_NOT_EXISTS: "User does not exist",
+    ADMIN_NOT_EXISTS: "Admin does not exist",
+    CUSTOMER_NOT_EXISTS: "Customer does not exist",
     FRANCHISE_NOT_EXISTS: "Franchise does not exist",
     INVALID_LOGIN_REQUEST: "Invalid Email or Password",
     INVALID_CAPTCHA: "Invalid Captcha",
@@ -16,6 +17,7 @@ export const ERROR_MESSAGE = {
     ROLE_EXISTS: "Role already exists",
     ROLE_NOT_EXISTS: "Role does not exist",
     ADMIN_EXISTS: "Admin already exists",
+    CUSTOMER_EXISTS: "Customer already exists",
     FRANCHISE_EXISTS: "Franchise already exists",
     USER_EXISTS: "User already exists",
     USER_NOT_EXISTS: "User does not exist",
@@ -51,6 +53,11 @@ export const SUCCESS_MESSAGE = {
     ADMIN_UPDATED: "Admin user updated successfully",
     ADMIN_DELETED: "Admin user moved to trash successfully",
     ADMIN_FETCHED: "Admin user fetched successfully",
+    CUSTOMERS_FETCHED: "CUSTOMER users fetched successfully",
+    CUSTOMER_CREATED: "CUSTOMER user created successfully",
+    CUSTOMER_UPDATED: "CUSTOMER user updated successfully",
+    CUSTOMER_DELETED: "CUSTOMER user moved to trash successfully",
+    CUSTOMER_FETCHED: "CUSTOMER user fetched successfully",
     PROFILE_UPDATED: "Profile updated successfully",
 };
 

@@ -54,7 +54,6 @@ export type TEditUser = {
   active: number;
 };
 
-
 export type TUsersList = {
   total: number;
   data: TUser[];

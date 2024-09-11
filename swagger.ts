@@ -37,6 +37,9 @@ const options = {
                 name: 'AUTH' // auth starts
             },
             {
+                name: 'Zoho Sign'
+            },
+            {
                 name: 'Admin > Permissions'
             },
             {
@@ -171,6 +174,7 @@ const options = {
     apis: [
         './routes/*.ts',
         './apps/pet-pooja/api/*.ts',
+        './apps/zoho-sign/api/*.ts',
         './apps/auth/api/*.ts',
         './apps/address/api/*.ts',
         './apps/test-user/api/*.ts',

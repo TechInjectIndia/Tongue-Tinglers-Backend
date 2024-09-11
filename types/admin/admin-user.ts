@@ -38,6 +38,7 @@ export type TAddUser = {
   email: string;
   userName: string;
   phoneNumber: string;
+  type: string;
   role: number;
   active: number;
 };

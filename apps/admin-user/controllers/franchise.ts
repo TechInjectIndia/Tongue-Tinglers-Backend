@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse, createPassword } from "../../../libraries";
+import { sendResponse, createPassword, createFirebaseUser } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { FranchiseRepo } from '../models/franchise';
+import { AdminRepo } from '../models/user';
 import { Auth } from '../../auth/models';
 import { USER_TYPE } from '../../../interfaces';
 
@@ -40,6 +41,11 @@ export default class FranchiseController {
         }
     }
 
+    
+    static async createFranchiseFromLead(req: Request, res: Response, next: NextFunction) {
+        
+    }
+
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, 'user_id', 0);
@@ -57,11 +63,31 @@ export default class FranchiseController {
                     );
             }
 
+            const firebaseUser = await createFirebaseUser({
+                email: payload.email,
+                emailVerified: true,
+                phoneNumber: payload.phoneNumber,
+                password: payload.password,
+                disabled: false
+            });
+
+            if (!firebaseUser?.success) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            firebaseUser?.uid
+                        )
+                    );
+            }
+
             const hashedPassword = await createPassword(payload.password);
-            await new FranchiseRepo().create({
+            await new AdminRepo().create({
                 ...payload,
                 password: hashedPassword,
-                type: USER_TYPE.ADMIN
+                type: USER_TYPE.FRANCHISE,
+                firebaseUid: firebaseUser.uid
             });
 
             return res

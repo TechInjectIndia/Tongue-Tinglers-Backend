@@ -3,6 +3,16 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 import { LEAD_STATUS } from '../../../interfaces/leads';
 
+const convertLeadParams = Joi.object().keys({
+    id: Joi.number().required(),
+});
+
+export const validateConvertLeadParams = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, convertLeadParams, "body");
+
 const statusLeadBody = Joi.object().keys({
     id: Joi.number().required(),
 });
@@ -47,7 +57,6 @@ export const validateCreateLeadBody = async (
 const editLeadBody = Joi.object().keys({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
-    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
     city: Joi.string().required(),
     state: Joi.string().required(),
     zip_code: Joi.string().required(),

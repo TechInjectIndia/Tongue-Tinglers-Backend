@@ -3,9 +3,52 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { LeadRepo } from '../models/lead';
-import { LEAD_SOURCE } from '../../../interfaces';
+import { FranchiseRepo } from '../../admin-user/models/franchise';
+import { LEAD_SOURCE, LEAD_STATUS } from '../../../interfaces';
 
 export default class LeadController {
+    static async convertLeadToFranchisee(req: Request, res: Response, next: NextFunction) {
+        try {
+            const id = get(req?.body, "id", 0);
+
+            const existingLead = await new LeadRepo().getLeadByStatus(id as number);
+            if (isEmpty(existingLead)) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS
+                        )
+                    );
+            } else {
+                const createFranchisePayload = {
+                    firstName: existingLead.firstName,
+                    lastName: existingLead.lastName,
+                    nameForSearch: existingLead.firstName,
+                    email: existingLead.email,
+                    userName: existingLead.email,
+                    phoneNumber: existingLead.phoneNumber
+                }
+                const createFranchise = await new FranchiseRepo().createFranchiseFromLead(createFranchisePayload);
+                let payload = { status: LEAD_STATUS.CONVERTED };
+                const covertedLead = await new LeadRepo().updateStatus(id as number, payload);
+            }
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        'Lead converted successfully',
+                    )
+                );
+        } catch (err) {
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
 
     static async getLeadStatus(req: Request, res: Response, next: NextFunction) {
         try {
@@ -167,13 +210,11 @@ export default class LeadController {
         try {
             const id = get(req?.params, "id", 0);
             const payload = req?.body;
-            const email = get(payload, "email", '');
 
             let getAttributes: any = ['*'];
             const whereName = 'id'
             const whereVal = id;
             const existingLead = await new LeadRepo().getLeadByAttr(whereName, whereVal, getAttributes);
-
             if (isEmpty(existingLead)) {
                 return res
                     .status(400)
@@ -181,18 +222,6 @@ export default class LeadController {
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
                             ERROR_MESSAGE.NOT_EXISTS
-                        )
-                    );
-            }
-
-            const checkPermissionExist = await new LeadRepo().checkLeadExist(email as string, id as number);
-            if (checkPermissionExist) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.EXISTS
                         )
                     );
             }

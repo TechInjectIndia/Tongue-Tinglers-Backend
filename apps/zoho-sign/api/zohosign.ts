@@ -1,20 +1,20 @@
 import * as express from "express";
-import PetPoojaController from "../controllers/petpooja";
-import * as PetPoojaValidation from "../validations/petpooja";
+import ZohoSignController from "../controllers/zohosign";
+import * as ZohoSignValidation from "../validations/zohosign";
 
 const router = express.Router();
 
 const {
-    validatePetPoojaParams,
-} = PetPoojaValidation;
+    validateZohoSignParams,
+} = ZohoSignValidation;
 
-// ====== Testimonials Starts ======
+// ====== Zoho Sign Starts ======
 /**
  * @swagger
- * /api/pet-pooja/place-order:
- *   get:
- *     summary: PetPooja order
- *     tags: [PetPooja]
+ * /api/zoho-sign/send-document:
+ *   post:
+ *     summary: send-document
+ *     tags: [Zoho Sign]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -24,11 +24,11 @@ const {
  *         default: 1
  *         schema:
  *           type: string
- *           default: order
+ *           default: send-document
  *         description: type
  *     responses:
  *       '200':
- *         description: order retrieved successfully
+ *         description: Zoho Sign created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -37,12 +37,12 @@ const {
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: order not found
- * 
- * /api/pet-pooja/inventory:
+ *         description: Zoho Sign not found
+ *  
+ * /api/zoho-sign/get-status:
  *   get:
- *     summary: PetPooja inventory
- *     tags: [PetPooja]
+ *     summary: send-document
+ *     tags: [Zoho Sign]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -52,11 +52,11 @@ const {
  *         default: 1
  *         schema:
  *           type: string
- *           default: inventory
+ *           default: get-status
  *         description: type
  *     responses:
  *       '200':
- *         description: inventory retrieved successfully
+ *         description: Zoho Sign fetched successfully
  *         content:
  *           application/json:
  *             schema:
@@ -65,11 +65,11 @@ const {
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: inventory not found
- * 
+ *         description: Zoho Sign not found
  */
 
-router.get("/place-order", PetPoojaController.newOrderPlaced);
-router.get("/inventory", PetPoojaController.getInventory);
+router.post("/send-document", ZohoSignController.sendDocumentForSigning);
+router.get("/get-status", ZohoSignController.getDocumentStatus);
+// ====== Zoho Sign Ends ======
 
 export default router;

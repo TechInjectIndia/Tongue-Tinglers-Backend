@@ -61,7 +61,7 @@ export default class AdminController {
                 email: payload.email,
                 emailVerified: true,
                 phoneNumber: payload.phoneNumber,
-                password: 'Test@123',
+                password: payload.password,
                 disabled: false
             });
 

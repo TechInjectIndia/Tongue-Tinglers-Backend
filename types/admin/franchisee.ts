@@ -40,6 +40,15 @@ export type TAddFranchise = {
   active: number;
 };
 
+export type TConvertLeadToFranchise = {
+  firstName: string;
+  lastName: string;
+  nameForSearch: string;
+  email: string;
+  userName: string;
+  phoneNumber: string;
+};
+
 export type TEditFranchise = {
   firstName: string;
   lastName: string;

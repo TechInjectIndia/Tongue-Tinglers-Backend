@@ -36,8 +36,9 @@ export type TAddFranchise = {
   email: string;
   userName: string;
   phoneNumber: string;
+  firebaseUid: string;
+  createdBy: string;
   role: number;
-  active: number;
 };
 
 export type TConvertLeadToFranchise = {
@@ -57,7 +58,6 @@ export type TEditFranchise = {
   userName: string;
   phoneNumber: string;
   role: number;
-  active: number;
 };
 
 

@@ -1,49 +1,93 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse } from "../../../libraries";
+import { sendResponse, createPassword, createFirebaseUser } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { LeadRepo } from '../models/lead';
 import { FranchiseRepo } from '../../admin-user/models/franchise';
+import { AdminRepo } from '../../admin-user/models/user';
 import { LEAD_SOURCE, LEAD_STATUS } from '../../../interfaces';
 
 export default class LeadController {
     static async convertLeadToFranchisee(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.body, "id", 0);
-
             const existingLead = await new LeadRepo().getLeadByStatus(id as number);
             if (isEmpty(existingLead)) {
                 return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS
-                        )
-                    );
+                .status(400)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.NOT_EXISTS
+                    )
+                );
             } else {
-                const createFranchisePayload = {
+                const user_id = get(req, 'user_id', 0);
+                
+                const payload = {
                     firstName: existingLead.firstName,
                     lastName: existingLead.lastName,
                     nameForSearch: existingLead.firstName,
                     email: existingLead.email,
                     userName: existingLead.email,
-                    phoneNumber: existingLead.phoneNumber
+                    phoneNumber: existingLead.phoneNumber,
+                    password: 'Test@123#',
+                    createdBy: `${user_id}`,
+                    role: 1,
                 }
-                const createFranchise = await new FranchiseRepo().createFranchiseFromLead(createFranchisePayload);
-                let payload = { status: LEAD_STATUS.CONVERTED };
-                const covertedLead = await new LeadRepo().updateStatus(id as number, payload);
-            }
 
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        'Lead converted successfully',
-                    )
-                );
+                const existingFranchise = await new FranchiseRepo().getFranchiseByEmail(payload.email);
+                if (existingFranchise) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                ERROR_MESSAGE.FRANCHISE_EXISTS
+                            )
+                        );
+                }
+
+                const firebaseUser = await createFirebaseUser({
+                    email: payload.email,
+                    emailVerified: true,
+                    phoneNumber: payload.phoneNumber,
+                    password: payload.password,
+                    disabled: false
+                });
+
+                if (!firebaseUser?.success) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                firebaseUser?.uid
+                            )
+                        );
+                }
+
+                const hashedPassword = await createPassword(payload.password);
+                await new FranchiseRepo().create({
+                    ...payload,
+                    password: hashedPassword,
+                    firebaseUid: firebaseUser.uid
+                });
+
+                let payloadLead = { status: LEAD_STATUS.CONVERTED };
+                const covertedLead = await new LeadRepo().updateStatus(id as number, payloadLead);
+
+                return res
+                    .status(200)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.SUCCESS,
+                            SUCCESS_MESSAGE.FRANCHISE_CREATED
+                        )
+                    );
+            }
         } catch (err) {
+            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

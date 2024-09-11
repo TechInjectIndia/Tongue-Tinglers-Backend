@@ -121,6 +121,7 @@ import webLeadRouter from "../apps/lead/api/web-lead";
 import webTestimonialsRouter from "../apps/testimonials/api/web-testimonials";
 import webReviewsRouter from "../apps/reviews/api/web-reviews";
 import webProductsRouter from "../apps/ecommerce/api/web/products";
+import webRegisterRouter from "../apps/admin-user/api/customer-register";
 
 // ====== Frontend routes ======
 // router.use(`/menu`, webMenuRouter); // pending
@@ -128,6 +129,7 @@ router.use(`/lead`, webLeadRouter);
 router.use(`/reviews`, webReviewsRouter);
 router.use(`/testimonials`, webTestimonialsRouter);
 router.use(`/product`, webProductsRouter);
+router.use(`/register`, webRegisterRouter);
 // ====== Frontend ======
 
 router.use(`/test-email`, () => {

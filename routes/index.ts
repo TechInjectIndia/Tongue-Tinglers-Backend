@@ -16,11 +16,6 @@ import authRouter from "../apps/auth/api";
 router.use(`/auth`, authRouter);
 // ====== Auth ======
 
-// ====== Pet Pooja ======
-import petPoojaApiRouter from "../apps/pet-pooja/api/petpooja";
-router.use(`/pet-pooja`, petPoojaApiRouter);
-// ====== Pet Pooja ======
-
 import addressRouter from "../apps/address/api";
 router.use('/user/address', auth, addressRouter);
 
@@ -49,6 +44,7 @@ import retortProductRouter from "../apps/retort/api/products";
 import retortProductCategoryRouter from "../apps/retort/api/category";
 import retortOrderRouter from "../apps/retort/api/orders";
 import campaignRouter from "../apps/crm/api/campaign";
+import testUsersRouter from "../apps/test-user/api/user"; // for testing only
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -68,12 +64,13 @@ router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
 router.use(`${ADMIN}/order`, auth, orderRouter);
 router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
-router.use(`${ADMIN}/lead`, auth, leadRouter);
+router.use(`${ADMIN}/lead`, leadRouter);
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 router.use(`${ADMIN}/retort/product`, auth, retortProductRouter);
 router.use(`${ADMIN}/retort/category`, auth, retortProductCategoryRouter);
 router.use(`${ADMIN}/retort/order`, auth, retortOrderRouter);
-router.use(`${ADMIN}/crm`, campaignRouter);
+router.use(`${ADMIN}/crm`, auth, campaignRouter);
+router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 // ====== Admin ======
 
 // ====== Franchise ======
@@ -139,5 +136,15 @@ router.post(`/upload-file`, upload.single('file'), async (req: Request, res: Res
     // await uploadSingleFileToFirebase(req);
     // res.send('done');
 });
+
+// ====== Pet Pooja ======
+import petPoojaApiRouter from "../apps/pet-pooja/api/petpooja";
+router.use(`/pet-pooja`, petPoojaApiRouter);
+// ====== Pet Pooja ======
+
+// ====== Zoho Sign ======
+import zohoSignApiRouter from "../apps/zoho-sign/api/zohosign";
+router.use(`/zoho-sign`, zohoSignApiRouter);
+// ====== Zoho Sign ======
 
 export default router;

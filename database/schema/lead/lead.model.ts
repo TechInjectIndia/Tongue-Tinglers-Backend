@@ -18,7 +18,7 @@ class LeadsModel extends Model<TLead, LeadCreationAttributes> implements TLead {
     public phoneNumber: string;
     public address: string;
     public additional_info: string;
-    public status: number;
+    public status: string;
     public source: number;
     public follow_date: Date;
     public assignedTo: number;

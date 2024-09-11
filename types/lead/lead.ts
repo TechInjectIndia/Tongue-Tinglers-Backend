@@ -1,7 +1,7 @@
 const { OrderItem } = require("sequelize");
 
 export type TLeadStatus = {
-  status: number,
+  status: string,
 };
 
 export type TLead = {
@@ -18,7 +18,7 @@ export type TLead = {
   additional_info: string,
   source: number,
   follow_date: Date,
-  status: number,
+  status: string,
   createdBy: number,
   assignedTo: number,
   updatedBy: string;
@@ -36,12 +36,15 @@ export type TEditLead = {
   zip_code: string,
   country: string,
   phoneNumber: string,
-  email: string,
   address: string,
   additional_info: string,
   source: number,
   follow_date: Date,
-  status: number,
+  status: string,
+};
+
+export type TLeadStatusUpdate = {
+  status: string,
 };
 
 export type TAssignLead = {
@@ -62,7 +65,7 @@ export type TAddLead = {
   additional_info: string,
   source: number,
   follow_date: Date,
-  status: number,
+  status: string,
 };
 
 export type TLeadsList = {

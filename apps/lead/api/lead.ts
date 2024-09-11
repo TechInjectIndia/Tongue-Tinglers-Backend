@@ -5,6 +5,7 @@ import * as LeadValidation from "../validations/lead";
 const router = express.Router();
 
 const {
+  validateConvertLeadParams,
   validateLeadStatusBody,
   validateAssignLeadBody,
   validateCreateLeadBody,
@@ -162,7 +163,6 @@ const {
  *            required:
  *              - firstName
  *              - lastName
- *              - email
  *              - city
  *              - zip_code
  *              - state
@@ -179,9 +179,6 @@ const {
  *              lastName:
  *                type: string
  *                default: lastName 
- *              email:
- *                type: string
- *                default: email@123.com 
  *              city:
  *                type: string
  *                default: city
@@ -304,6 +301,32 @@ const {
  *         description: Unauthorized
  *       '404':
  *         description: Lead not found
+ * 
+ * /api/admin/lead/convert-lead:
+ *   post:
+ *     summary: convert Lead to franchisee
+ *     tags: [Admin > Lead]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - id
+ *            properties:
+ *              id:
+ *                type: number
+ *                default: 1
+ *     responses:
+ *       '200':
+ *         description: Lead coverted successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
  */
 router.post("/create", validateCreateLeadBody, LeadController.create);
 router.get("/list", validateListLeadQuery, LeadController.list);
@@ -313,6 +336,8 @@ router.delete("/delete", validateEditMultipleIdsBody, LeadController.delete);
 
 router.put("/assign-lead", validateAssignLeadBody, LeadController.assignLeadToAdminUser);
 router.get("/get-status/:id", validateLeadStatusBody, LeadController.getLeadStatus);
+
+router.post("/convert-lead", validateConvertLeadParams, LeadController.convertLeadToFranchisee);
 // ====== Lead Ends ======
 
 export default router;

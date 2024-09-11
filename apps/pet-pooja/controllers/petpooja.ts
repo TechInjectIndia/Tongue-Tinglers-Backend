@@ -4,12 +4,13 @@ import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constant
 import { PetPoojaRepo } from '../models/petpooja';
 import { get } from "lodash";
 
-export default class TestimonialsController {
+export default class PetPoojaController {
     static async newOrderPlaced(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log('hi')
             const franchiseId = get(req.body, 'franchiseId', '');
 
-            const orderFromPetPooja = await new PetPoojaRepo().savePetPoojaOrder(franchiseId as number);
+            // const orderFromPetPooja = await new PetPoojaRepo().savePetPoojaOrder(franchiseId as number);
             return res
                 .status(200)
                 .send(
@@ -19,6 +20,7 @@ export default class TestimonialsController {
                     )
                 );
         } catch (err) {
+            console.log(err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

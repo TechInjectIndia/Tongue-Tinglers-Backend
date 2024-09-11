@@ -7,12 +7,23 @@ import {
     TListFilters,
     TLeadsList,
     TAddLead,
+    TLeadStatusUpdate
 } from "../../../types";
 import { LeadsModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/ILeadController';
+import { LEAD_STATUS } from '../../../interfaces';
 
 export class LeadRepo implements IBaseRepo<TLead, TListFilters> {
     constructor() { }
+
+    public async updateStatus(id: number, data: TLeadStatusUpdate): Promise<[affectedCount: number]> {
+        const response = await LeadsModel.update(data, {
+            where: {
+                id,
+            },
+        });
+        return response;
+    }
 
     public async getLeadStatus(whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TLeadStatus> {
         const whereAttributes = { [whereName]: whereVal }
@@ -30,6 +41,16 @@ export class LeadRepo implements IBaseRepo<TLead, TListFilters> {
             raw: true,
             attributes: getAttributes,
             where: whereAttributes
+        });
+        return data;
+    }
+
+    public async getLeadByStatus(id: number): Promise<TLead> {
+        const data = await LeadsModel.findOne({
+            where: {
+                id: id,
+                status: LEAD_STATUS.NEW
+            },
         });
         return data;
     }

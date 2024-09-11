@@ -21,10 +21,12 @@ export class CampaignRepo implements IBaseRepo<TCampaign, TQueryFilters> {
             },
             include: [{
                 model: EmailModel,
-                as: 'emails'
-            }, {
-                model: SubscriberModel,
-                as: 'subscribers'
+                attributes: ['subscriberId', 'status', 'sentAt'],
+                include: [{
+                    model: SubscriberModel,
+                    attributes: ['name', 'email'],
+                }]
+
             }]
         });
         return data;

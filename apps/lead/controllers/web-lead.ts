@@ -3,7 +3,7 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { LeadRepo } from '../models/web-lead';
-import { LEAD_SOURCE } from '../../../interfaces';
+import { LEAD_SOURCE, LEAD_STATUS } from '../../../interfaces';
 
 export default class WebLeadController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -23,8 +23,8 @@ export default class WebLeadController {
                         )
                     );
             }
-            
-            const createLead = { ...req?.body, source: LEAD_SOURCE.WEBSITE };
+
+            const createLead = { ...req?.body, source: LEAD_SOURCE.WEBSITE, status: LEAD_STATUS.NEW };
             const Lead = await new LeadRepo().create(createLead);
             return res
                 .status(200)

@@ -52,7 +52,8 @@
   "downlevelIteration": true,
   "include": [
     "./server/**/*",
-    "./app.ts"
+    "./app.ts",
+    "src/**/*.ts"
 , "types", "database", "config", "constants", "routes", "libraries"  ],
   "exclude": [
     "node_modules"

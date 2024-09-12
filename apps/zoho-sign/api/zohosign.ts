@@ -17,23 +17,9 @@ const {
  *     tags: [Zoho Sign]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: type
- *         required: true
- *         default: 1
- *         schema:
- *           type: string
- *           default: send-document
- *         description: type
  *     responses:
  *       '200':
  *         description: Zoho Sign created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: string
- *               description: type
  *       '401':
  *         description: Unauthorized
  *       '404':
@@ -70,7 +56,6 @@ const {
 
 router.post("/send-document", ZohoSignController.sendDocumentForSigning);
 router.get("/get-status", ZohoSignController.getDocumentStatus);
-router.get("/oauth/callback", ZohoSignController.oAuthCallback);
 // ====== Zoho Sign Ends ======
 
 export default router;

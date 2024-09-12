@@ -8,15 +8,10 @@ export default class FollowUpsController {
 
     static async getTodayFollowUps(req: Request, res: Response, next: NextFunction) {
         try {
-            // let startDate = get(req?.query, "start_date");
-            // let endDate = get(req?.query, "end_date");
             let assignedTo = get(req, "user_id", 0);
-
-            let startDate = new Date();
-            let endDate = new Date();
             let getAttributes: any = ['*'];
 
-            const existingLead = await new FollowUpsRepo().getFollowUpsToday(startDate, endDate, assignedTo, getAttributes);
+            const existingLead = await new FollowUpsRepo().getFollowUpsToday(assignedTo, getAttributes);
             if (isEmpty(existingLead)) {
                 return res
                     .status(400)

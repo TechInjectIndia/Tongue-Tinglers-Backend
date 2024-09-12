@@ -10,15 +10,20 @@ import IBaseRepo from '../controllers/controller/IFollowUpsController';
 export class FollowUpsRepo implements IBaseRepo<TLead, TListFilters> {
     constructor() { }
 
-    public async getFollowUpsToday(startDate: Date, endDate: Date, assignedTo: number, getAttributes: any = ['*']): Promise<TLead | any> {
+    public async getFollowUpsToday(assignedTo: number, getAttributes: any = ['*']): Promise<TLead | any> {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Start of the day
+
         const data = await LeadsModel.findAll({
             raw: true,
             attributes: getAttributes,
             where: {
-                follow_date: {
-                    [Op.between]: [startDate, endDate]
+                followedDate: {
+                    [Op.contains]: [today.toISOString()] // Use Op.contains to check for the presence of today's date
                 },
-                assignedTo: assignedTo
+                assign: {
+                    [Op.contains]: [{ assignedDate: today.toISOString(), assignedTo: assignedTo }]
+                }
             }
         });
         return data;

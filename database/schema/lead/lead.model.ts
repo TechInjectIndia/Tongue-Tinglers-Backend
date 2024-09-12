@@ -1,40 +1,41 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { LEAD_SOURCE, LEAD_STATUS } from '../../../interfaces';
+import { LEAD_SOURCE, LEAD_STATUS, Assignee } from '../../../interfaces';
 import { sequelize } from "../../../config";
 import { TLead } from "../../../types";
-const { STRING, TEXT, DATE, INTEGER, ENUM, NOW } = DataTypes;
+const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
 
 interface LeadCreationAttributes extends Optional<TLead, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class LeadsModel extends Model<TLead, LeadCreationAttributes> implements TLead {
-    public id!: number;
+    public assign: Assignee[];
+    public status: LEAD_STATUS;
+    public id!: string;
     public firstName: string;
     public lastName: string;
-    public email: string;
     public city: string;
     public state: string;
-    public zip_code: string;
+    public zipCode: string;
     public country: string;
     public phoneNumber: string;
+    public email: string;
     public address: string;
-    public additional_info: string;
-    public status: string;
-    public source: number;
-    public follow_date: Date;
-    public assignedTo: number;
+    public additionalInfo: string;
+    public source: LEAD_SOURCE;
+    public followedDate: Date[] | null;
     public createdBy!: number;
     public updatedBy!: string;
-    public deletedBy!: string;
+    public deletedBy!: string | null;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
-    public readonly deletedAt!: Date;
+    public readonly deletedAt!: Date | null;
 }
 
 LeadsModel.init({
     id: {
-        type: INTEGER,
-        autoIncrement: true,
+        type: STRING,
         primaryKey: true,
+        allowNull: false,
+        defaultValue: UUIDV4 // For UUID v4, if you use UUIDs
     },
     firstName: {
         type: STRING
@@ -54,7 +55,7 @@ LeadsModel.init({
     state: {
         type: STRING
     },
-    zip_code: {
+    zipCode: {
         type: STRING
     },
     country: {
@@ -63,7 +64,7 @@ LeadsModel.init({
     address: {
         type: STRING
     },
-    additional_info: {
+    additionalInfo: {
         type: TEXT
     },
     status: {
@@ -74,11 +75,11 @@ LeadsModel.init({
         type: ENUM,
         values: [...Object.values(LEAD_SOURCE)]
     },
-    follow_date: {
-        type: DATE
+    followedDate: {
+        type: JSONB // Stores an array of dates as JSON
     },
-    assignedTo: {
-        type: INTEGER
+    assign: {
+        type: JSONB // Stores an array of dates as JSON
     },
     createdBy: {
         type: STRING

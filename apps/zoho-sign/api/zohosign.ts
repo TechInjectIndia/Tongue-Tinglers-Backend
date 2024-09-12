@@ -70,6 +70,7 @@ const {
 
 router.post("/send-document", ZohoSignController.sendDocumentForSigning);
 router.get("/get-status", ZohoSignController.getDocumentStatus);
+router.get("/oauth/callback", ZohoSignController.oAuthCallback);
 // ====== Zoho Sign Ends ======
 
 export default router;

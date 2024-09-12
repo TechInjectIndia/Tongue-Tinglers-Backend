@@ -4,7 +4,7 @@ import { validateReq } from "../../../libraries";
 import { LEAD_STATUS } from '../../../interfaces/leads';
 
 const convertLeadParams = Joi.object().keys({
-    id: Joi.number().required(),
+    id: Joi.string().required(),
 });
 
 export const validateConvertLeadParams = async (
@@ -14,7 +14,7 @@ export const validateConvertLeadParams = async (
 ) => validateReq(req, res, next, convertLeadParams, "body");
 
 const statusLeadBody = Joi.object().keys({
-    id: Joi.number().required(),
+    id: Joi.string().required(),
 });
 
 export const validateLeadStatusBody = async (
@@ -24,7 +24,7 @@ export const validateLeadStatusBody = async (
 ) => validateReq(req, res, next, statusLeadBody, "params");
 
 const assignLeadBody = Joi.object().keys({
-    id: Joi.number().required(),
+    id: Joi.string().required(),
     assignedTo: Joi.number().required(),
 });
 
@@ -40,11 +40,11 @@ const createLeadBody = Joi.object().keys({
     email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
     city: Joi.string().required(),
     state: Joi.string().required(),
-    zip_code: Joi.string().required(),
+    zipCode: Joi.string().required(),
     country: Joi.string().required(),
     phoneNumber: Joi.string().required(),
     address: Joi.string().required(),
-    additional_info: Joi.string().required(),
+    additionalInfo: Joi.string().required(),
     status: Joi.string().valid(...Object.values(LEAD_STATUS)).optional().allow(''),
 });
 
@@ -59,12 +59,12 @@ const editLeadBody = Joi.object().keys({
     lastName: Joi.string().required(),
     city: Joi.string().required(),
     state: Joi.string().required(),
-    zip_code: Joi.string().required(),
+    zipCode: Joi.string().required(),
     country: Joi.string().required(),
     phoneNumber: Joi.string().required(),
     address: Joi.string().required(),
-    additional_info: Joi.string().required(),    
-    follow_date: Joi.date().iso().required(),
+    additionalInfo: Joi.string().required(),
+    followedDate: Joi.date().iso().required(),
     status: Joi.string().valid(...Object.values(LEAD_STATUS)).optional().allow(''),
 });
 
@@ -75,7 +75,7 @@ export const validateEditLeadBody = async (
 ) => validateReq(req, res, next, editLeadBody, "body");
 
 const editLeadParams = Joi.object().keys({
-    id: Joi.number().required(),
+    id: Joi.string().required(),
 });
 
 export const validateEditLeadParams = async (

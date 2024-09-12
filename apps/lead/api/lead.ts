@@ -34,13 +34,13 @@ const {
  *              - firstName
  *              - lastName
  *              - city
- *              - zip_code
+ *              - zipCode
  *              - state
  *              - country
  *              - phoneNumber
  *              - email
  *              - address
- *              - additional_info
+ *              - additionalInfo
  *              - status
  *            properties:
  *              firstName:
@@ -52,9 +52,9 @@ const {
  *              city:
  *                type: string
  *                default: city
- *              zip_code:
+ *              zipCode:
  *                type: string
- *                default: zip_code
+ *                default: zipCode
  *              state:
  *                type: string
  *                default: state
@@ -70,9 +70,9 @@ const {
  *              address:
  *                type: string
  *                default: address
- *              additional_info:
+ *              additionalInfo:
  *                type: text
- *                default: additional_info
+ *                default: additionalInfo
  *              status:
  *                type: string
  *                default: new
@@ -164,13 +164,13 @@ const {
  *              - firstName
  *              - lastName
  *              - city
- *              - zip_code
+ *              - zipCode
  *              - state
  *              - country
  *              - phoneNumber
  *              - address
- *              - additional_info
- *              - follow_date
+ *              - additionalInfo
+ *              - followedDate
  *              - status
  *            properties:
  *              firstName:
@@ -182,9 +182,9 @@ const {
  *              city:
  *                type: string
  *                default: city
- *              zip_code:
+ *              zipCode:
  *                type: string
- *                default: zip_code
+ *                default: zipCode
  *              state:
  *                type: string
  *                default: state
@@ -197,13 +197,13 @@ const {
  *              address:
  *                type: string
  *                default: address
- *              additional_info:
+ *              additionalInfo:
  *                type: text
- *                default: additional_info
- *              follow_date:
+ *                default: additionalInfo
+ *              followedDate:
  *                type: string
  *                format: date
- *                example: "2018-08-28"
+ *                example: "2024-09-12 09:30:50.95+05:30"
  *              status:
  *                type: string
  *                default: new
@@ -260,14 +260,14 @@ const {
  *              - assignedTo
  *            properties:
  *              id:
- *                type: number
- *                default: 3
+ *                type: string
+ *                default: "cf75234c-27a4-4cb8-8f52-0339fbac31fa"
  *              assignedTo:
  *                type: number
  *                default: 1
  *     responses:
  *       '200':
- *         description: Lead updated successfully
+ *         description: Lead assigned successfully
  *       '400':
  *         description: Invalid request body
  *       '401':

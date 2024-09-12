@@ -7,16 +7,15 @@ import {
     TListFilters,
     TLeadsList,
     TAddLead,
-    TLeadStatusUpdate
 } from "../../../types";
 import { LeadsModel } from "../../../database/schema";
-import IBaseRepo from '../controllers/controller/ILeadController';
 import { LEAD_STATUS } from '../../../interfaces';
+import IBaseRepo from '../controllers/controller/ILeadController';
 
 export class LeadRepo implements IBaseRepo<TLead, TListFilters> {
     constructor() { }
 
-    public async updateStatus(id: number, data: TLeadStatusUpdate): Promise<[affectedCount: number]> {
+    public async updateStatus(id: number, data: TLeadStatus): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
             where: {
                 id,

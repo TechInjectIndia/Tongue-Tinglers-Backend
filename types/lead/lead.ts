@@ -1,31 +1,32 @@
 const { OrderItem } = require("sequelize");
+import { LEAD_SOURCE, LEAD_STATUS, Assignee } from '../../interfaces/leads'
 
 export type TLeadStatus = {
-  status: string,
+  status: LEAD_STATUS,
 };
 
 export type TLead = {
-  id: number;
+  assign: Assignee[];
+  status: LEAD_STATUS;
+  id: string;
   firstName: string,
   lastName: string,
   city: string,
   state: string,
-  zip_code: string,
+  zipCode: string,
   country: string,
   phoneNumber: string,
   email: string,
   address: string,
-  additional_info: string,
-  source: number,
-  follow_date: Date,
-  status: string,
+  additionalInfo: string,
+  source: LEAD_SOURCE,
+  followedDate?: Date[] | null,
   createdBy: number,
-  assignedTo: number,
   updatedBy: string;
-  deletedBy: string;
+  deletedBy: string | null;
   createdAt: Date;
   updatedAt: Date;
-  deletedAt: Date;
+  deletedAt: Date | null;
 };
 
 export type TEditLead = {
@@ -33,23 +34,18 @@ export type TEditLead = {
   lastName: string,
   city: string,
   state: string,
-  zip_code: string,
+  zipCode: string,
   country: string,
   phoneNumber: string,
   address: string,
-  additional_info: string,
-  source: number,
-  follow_date: Date,
-  status: string,
-};
-
-export type TLeadStatusUpdate = {
-  status: string,
+  additionalInfo: string,
+  source: LEAD_SOURCE,
+  followedDate?: Date[] | null,
+  status: LEAD_STATUS,
 };
 
 export type TAssignLead = {
-  assignedTo: number;
-  assignedBy: number;
+  assign: Assignee[]
 };
 
 export type TAddLead = {
@@ -57,15 +53,15 @@ export type TAddLead = {
   lastName: string,
   city: string,
   state: string,
-  zip_code: string,
+  zipCode: string,
   country: string,
   phoneNumber: string,
   email: string,
   address: string,
-  additional_info: string,
-  source: number,
-  follow_date: Date,
-  status: string,
+  additionalInfo: string,
+  source: LEAD_SOURCE,
+  followedDate?: Date[] | null,
+  status: LEAD_STATUS,
 };
 
 export type TLeadsList = {

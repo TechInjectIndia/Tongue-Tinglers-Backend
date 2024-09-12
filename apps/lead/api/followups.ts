@@ -18,7 +18,6 @@ const {
  *     tags: [Admin > Lead > Follow Ups]
  *     security:
  *       - bearerAuth: []
- *     parameters:
  *     responses:
  *       '200':
  *         description: Follow Up retrieved successfully
@@ -73,7 +72,7 @@ const {
 // *       '404':
 // *         description: FollowUps not found
 
-router.get("/", validateTodayFollowUpsParams, FollowUpsController.getTodayFollowUps);
+router.get("/", FollowUpsController.getTodayFollowUps);
 // ====== FollowUps Ends ======
 
 export default router;

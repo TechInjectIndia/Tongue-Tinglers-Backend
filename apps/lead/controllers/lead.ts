@@ -4,8 +4,8 @@ import { sendResponse, createPassword, createFirebaseUser } from "../../../libra
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { LeadRepo } from '../models/lead';
 import { FranchiseRepo } from '../../admin-user/models/franchise';
-import { AdminRepo } from '../../admin-user/models/user';
 import { LEAD_SOURCE, LEAD_STATUS } from '../../../interfaces';
+import { TAssignLead } from "../../../types";
 
 export default class LeadController {
     static async convertLeadToFranchisee(req: Request, res: Response, next: NextFunction) {
@@ -14,16 +14,16 @@ export default class LeadController {
             const existingLead = await new LeadRepo().getLeadByStatus(id as number);
             if (isEmpty(existingLead)) {
                 return res
-                .status(400)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.ERROR,
-                        ERROR_MESSAGE.NOT_EXISTS
-                    )
-                );
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS
+                        )
+                    );
             } else {
                 const user_id = get(req, 'user_id', 0);
-                
+
                 const payload = {
                     firstName: existingLead.firstName,
                     lastName: existingLead.lastName,
@@ -132,11 +132,11 @@ export default class LeadController {
 
     static async assignLeadToAdminUser(req: Request, res: Response, next: NextFunction) {
         try {
-            // check if user id assinegd by and assigned to is user
-            // add details in logs
             const id = get(req?.body, "id", "");
-            const assignedBy = get(req, "user_id", "");
+            const assignedBy = get(req, "user_id", "0");
             const assignedTo = get(req?.body, "assignedTo", "");
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Start of the day
 
             let getAttributes: any = ['*'];
             const whereName = 'id'
@@ -154,12 +154,19 @@ export default class LeadController {
                     );
             }
 
-            const assignLead: any = {};
-            assignLead.assignedBy = assignedBy
-            assignLead.assignedTo = assignedTo
+            let assignLead: any = [];
+            let tmp: any = {};
+            tmp.assignedBy = assignedBy
+            tmp.assignedTo = assignedTo
+            tmp.assignedDate = today
+            assignLead.push(tmp);
 
-            const Lead = await new LeadRepo().assignLeadToUser(id, assignLead);
+            if (!existingLead.assign || !Array.isArray(existingLead.assign)) {
+                existingLead.assign = [];
+            }
+            const assignArray = [...existingLead.assign, ...assignLead]
 
+            const Lead = await new LeadRepo().assignLeadToUser(id, { assign: assignArray });
             return res
                 .status(200)
                 .send(
@@ -170,7 +177,7 @@ export default class LeadController {
                     )
                 );
         } catch (err) {
-            // console.log('err', err)
+            console.log('err', err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -197,7 +204,10 @@ export default class LeadController {
             }
 
             const user_id = get(req, 'user_id', 0);
-            let payload = { ...req?.body, createdBy: user_id, assignedTo: user_id, source: LEAD_SOURCE.ADMIN };
+            let payload = { ...req?.body, createdBy: user_id, assignedTo: user_id, source: LEAD_SOURCE.ADMIN, };
+            // let followDateNew = payload.followedDate;
+            // payload.followedDate = [];
+            // payload.followedDate.push(followDateNew)
 
             const Lead = await new LeadRepo().create(payload);
             return res
@@ -210,6 +220,7 @@ export default class LeadController {
                     )
                 );
         } catch (err) {
+            console.log(err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -271,6 +282,15 @@ export default class LeadController {
             }
 
             delete payload.id
+
+            let followDateNew = payload.followedDate;
+            payload.followedDate = [];
+            if (!existingLead.followedDate || !Array.isArray(existingLead.followedDate)) {
+                existingLead.followedDate = [];
+            }
+            existingLead.followedDate.push(followDateNew)
+            payload.followedDate = existingLead.followedDate;
+
             const Lead = await new LeadRepo().update(id as number, payload);
             return res
                 .status(200)

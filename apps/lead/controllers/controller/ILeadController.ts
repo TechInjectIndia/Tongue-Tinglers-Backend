@@ -1,9 +1,9 @@
 import { Response } from "express";
-import { TQueryFilters, TAddLead, TEditLead, TLeadStatus, TLeadsList, TLeadStatusUpdate } from '../../../../types'
+import { TQueryFilters, TAddLead, TEditLead, TLeadStatus, TLeadsList } from '../../../../types'
 
 interface ILeadController<T, F extends TQueryFilters> {
     getLeadByStatus(id: number): Promise<T>
-    updateStatus(id: number, data: TLeadStatusUpdate): Promise<[affectedCount: number]>
+    updateStatus(id: number, data: TLeadStatus): Promise<[affectedCount: number]>
     list(filters: F): Promise<TLeadsList>;
     getLeadByAttr(whereName: string, whereVal: any, getAttributes: string): Promise<T>;
     create(payload: TAddLead): Promise<T>;

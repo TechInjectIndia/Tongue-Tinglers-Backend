@@ -22,7 +22,7 @@ class LeadsModel extends Model<TLead, LeadCreationAttributes> implements TLead {
     public additionalInfo: string;
     public source: LEAD_SOURCE;
     public followedDate: Date[] | null;
-    public createdBy!: number;
+    public createdBy!: string;
     public updatedBy!: string;
     public deletedBy!: string | null;
     public readonly createdAt!: Date;

@@ -1,6 +1,6 @@
 
 export type TUser = {
-  id: number;
+  id: string;
   firebaseUid: string;
   createdBy: string;
   password: string;
@@ -40,7 +40,6 @@ export type TAddUser = {
   phoneNumber: string;
   type: string;
   role: number;
-  active: number;
 };
 
 export type TEditUser = {
@@ -51,7 +50,6 @@ export type TEditUser = {
   userName: string;
   phoneNumber: string;
   role: number;
-  active: number;
 };
 
 export type TUsersList = {

@@ -1,6 +1,6 @@
 // Profile type Starts
 export type TProfile = {
-  id: number;
+  id: string;
   email: string;
   firstName: string;
   lastName: string;

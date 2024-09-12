@@ -7,7 +7,7 @@ const { INTEGER, STRING, ENUM, UUIDV4 } = DataTypes;
 interface UserCreationAttributes extends Optional<TUser, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
-    public id!: number;
+    public id!: string;
     public firebaseUid!: string;
     public createdBy!: string;
     public password: string;

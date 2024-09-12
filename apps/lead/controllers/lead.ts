@@ -4,8 +4,7 @@ import { sendResponse, createPassword, createFirebaseUser } from "../../../libra
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { LeadRepo } from '../models/lead';
 import { FranchiseRepo } from '../../admin-user/models/franchise';
-import { LEAD_SOURCE, LEAD_STATUS } from '../../../interfaces';
-import { TAssignLead } from "../../../types";
+import { LEAD_SOURCE, LEAD_STATUS, USER_TYPE, USER_STATUS } from '../../../interfaces';
 
 export default class LeadController {
     static async convertLeadToFranchisee(req: Request, res: Response, next: NextFunction) {
@@ -34,6 +33,8 @@ export default class LeadController {
                     password: 'Test@123#',
                     createdBy: `${user_id}`,
                     role: 1,
+                    type: USER_TYPE.FRANCHISE,
+                    status: USER_STATUS.ACTIVE,
                 }
 
                 const existingFranchise = await new FranchiseRepo().getFranchiseByEmail(payload.email);

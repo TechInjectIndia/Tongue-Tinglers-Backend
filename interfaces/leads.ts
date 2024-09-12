@@ -13,7 +13,6 @@ export enum LEAD_STATUS {
     CONVERTED = "converted",
     LOST = "lost",
     FOLLOWED_UP = "followed-up",
-    CLOSED = 'Closed'
 }
 
 export interface Assignee {

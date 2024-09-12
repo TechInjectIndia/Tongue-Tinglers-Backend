@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 import {
     TLead,
-    TAddLead,
+    TLeadPayload,
 } from "../../../types/lead";
 import { LeadsModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IWebLeadController';
@@ -19,7 +19,7 @@ export class LeadRepo implements IBaseRepo<TLead> {
         return data;
     }
 
-    public async create(data: TAddLead): Promise<TLead> {
+    public async create(data: TLeadPayload): Promise<TLead> {
         const response = await LeadsModel.create(data);
         return response;
     }

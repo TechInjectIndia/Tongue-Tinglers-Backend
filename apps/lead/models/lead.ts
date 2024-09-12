@@ -2,11 +2,10 @@ const { Op } = require("sequelize");
 import {
     TLeadStatus,
     TAssignLead,
-    TEditLead,
+    TLeadPayload,
     TLead,
     TListFilters,
     TLeadsList,
-    TAddLead,
 } from "../../../types";
 import { LeadsModel } from "../../../database/schema";
 import { LEAD_STATUS } from '../../../interfaces';
@@ -86,12 +85,12 @@ export class LeadRepo implements IBaseRepo<TLead, TListFilters> {
         return { total, data };
     }
 
-    public async create(data: TAddLead): Promise<TLead> {
+    public async create(data: TLeadPayload): Promise<TLead> {
         const response = await LeadsModel.create(data);
         return response;
     }
 
-    public async update(id: number, data: TEditLead): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TLeadPayload): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
             where: {
                 id,

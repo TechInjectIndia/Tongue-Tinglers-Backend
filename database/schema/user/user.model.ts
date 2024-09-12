@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { USER_STATUS, USER_TYPE } from '../../../interfaces';
 import { TUser } from "../../../types";
-const { INTEGER, STRING, ENUM } = DataTypes;
+const { INTEGER, STRING, ENUM, UUIDV4 } = DataTypes;
 
 interface UserCreationAttributes extends Optional<TUser, 'id' | 'createdAt' | 'updatedAt'> { }
 
@@ -34,9 +34,10 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
 
 UserModel.init({
     id: {
-        type: INTEGER,
-        autoIncrement: true,
+        type: STRING,
         primaryKey: true,
+        allowNull: false,
+        defaultValue: UUIDV4 // For UUID v4, if you use UUIDs
     },
     firebaseUid: {
         type: STRING

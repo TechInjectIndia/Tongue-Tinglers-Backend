@@ -1,8 +1,8 @@
 import { NextFunction, Response } from "express";
-import { TAddLead } from '../../../../types'
+import { TLeadPayload } from '../../../../types'
 
 interface IController<T> {
-    create(payload: TAddLead): Promise<T>;
+    create(payload: TLeadPayload): Promise<T>;
     getLeadByAttr(whereName: any, whereVal: any): Promise<T>;
 }
 

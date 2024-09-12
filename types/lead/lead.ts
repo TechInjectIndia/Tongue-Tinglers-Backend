@@ -5,7 +5,7 @@ export type TLeadStatus = {
   status: LEAD_STATUS,
 };
 
-export type TLead = {
+export interface TLead {
   assign: Assignee[];
   status: LEAD_STATUS;
   id: string;
@@ -29,26 +29,11 @@ export type TLead = {
   deletedAt: Date | null;
 };
 
-export type TEditLead = {
-  firstName: string,
-  lastName: string,
-  city: string,
-  state: string,
-  zipCode: string,
-  country: string,
-  phoneNumber: string,
-  address: string,
-  additionalInfo: string,
-  source: LEAD_SOURCE,
-  followedDate?: Date[] | null,
-  status: LEAD_STATUS,
-};
-
 export type TAssignLead = {
   assign: Assignee[]
 };
 
-export type TAddLead = {
+export type TLeadPayload = {
   firstName: string,
   lastName: string,
   city: string,
@@ -56,7 +41,7 @@ export type TAddLead = {
   zipCode: string,
   country: string,
   phoneNumber: string,
-  email: string,
+  email?: string,
   address: string,
   additionalInfo: string,
   source: LEAD_SOURCE,

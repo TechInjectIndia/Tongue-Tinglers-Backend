@@ -1,16 +1,16 @@
 const { Op } = require("sequelize");
 import {
     TListFilters,
-    TFranchise,
-    TAddFranchise,
-    TEditFranchise,
+    TUser,
+    TAddUser,
+    TEditUser,
     TConvertLeadToFranchise
 } from "../../../types";
 import { UserModel } from "../../../database/schema";
 import { USER_TYPE, USER_STATUS } from '../../../interfaces';
 import IBaseRepo from '../controllers/controller/IFranchiseController';
 
-export class FranchiseRepo implements IBaseRepo<TFranchise, TListFilters> {
+export class FranchiseRepo implements IBaseRepo<TUser, TListFilters> {
     constructor() { }
 
     public async list(filters: TListFilters): Promise<any> {
@@ -36,7 +36,7 @@ export class FranchiseRepo implements IBaseRepo<TFranchise, TListFilters> {
         return { total, data };
     }
 
-    public async get(id: number): Promise<TFranchise> {
+    public async get(id: number): Promise<TUser> {
         const data = await UserModel.findOne({
             where: {
                 id,
@@ -46,15 +46,15 @@ export class FranchiseRepo implements IBaseRepo<TFranchise, TListFilters> {
         return data;
     }
 
-    public async createFranchiseFromLead(data: TConvertLeadToFranchise): Promise<TFranchise> {
+    public async createFranchiseFromLead(data: TConvertLeadToFranchise): Promise<TUser> {
         return await UserModel.create({ ...data, type: USER_TYPE.FRANCHISE, status: USER_STATUS.ACTIVE });
     }
 
-    public async create(data: TAddFranchise): Promise<TFranchise> {
+    public async create(data: TAddUser): Promise<TUser> {
         return await UserModel.create({ ...data, type: USER_TYPE.FRANCHISE });
     }
 
-    public async update(id: number, data: TEditFranchise): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TEditUser): Promise<[affectedCount: number]> {
         return await UserModel.update(data, {
             where: {
                 id,
@@ -80,7 +80,7 @@ export class FranchiseRepo implements IBaseRepo<TFranchise, TListFilters> {
         return response;
     }
 
-    public async getFranchiseByEmail(email: string): Promise<TFranchise> {
+    public async getFranchiseByEmail(email: string): Promise<TUser> {
         const data = await UserModel.findOne({
             where: {
                 email,

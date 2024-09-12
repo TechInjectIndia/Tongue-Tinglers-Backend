@@ -4,7 +4,7 @@ import {
     TEditUser,
 } from "../../../types";
 const axios = require('axios');
-const { ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN, ZOHO_API_BASE_URL } = process.env;
+const { ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN } = process.env;
 
 import IBaseRepo from '../controllers/controller/IZohoSignController';
 

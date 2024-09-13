@@ -10,7 +10,7 @@ interface RetortOrdersCreationAttributes extends Optional<TOrder, 'id' | 'create
 
 class RetortOrdersModel extends Model<TOrder, RetortOrdersCreationAttributes> implements TOrder {
     public id!: number;
-    public userId!: number;
+    public userId!: string;
     public trackingNumber!: string;
     public shippingAddress!: string;
     public paymentMethod!: string;
@@ -27,7 +27,7 @@ RetortOrdersModel.init({
         primaryKey: true,
     },
     userId: {
-        type: INTEGER,
+        type: STRING,
         allowNull: true,
     },
     trackingNumber: {

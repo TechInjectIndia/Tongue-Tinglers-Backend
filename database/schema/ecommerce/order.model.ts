@@ -10,7 +10,7 @@ interface OrdersCreationAttributes extends Optional<TOrder, 'id' | 'createdAt' |
 
 class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOrder {
     public id!: number;
-    public userId!: number;
+    public userId!: string;
     public trackingNumber!: string;
     public shippingAddress!: string;
     public paymentMethod!: string;
@@ -27,7 +27,7 @@ OrdersModel.init({
         primaryKey: true,
     },
     userId: {
-        type: INTEGER,
+        type: STRING,
         allowNull: true,
     },
     trackingNumber: {

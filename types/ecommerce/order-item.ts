@@ -3,7 +3,7 @@ export type TOrderItem = {
   name: string;
   slug: string;
   orderId: number;
-  userId: number;
+  userId: string;
   productId: number;
   isRepeated: number;
   price: string;
@@ -16,7 +16,7 @@ export type TAddOrderItem = {
   name: string;
   slug: string;
   orderId: number;
-  userId: number;
+  userId: string;
   productId: number;
   price: string;
   quantity: number;

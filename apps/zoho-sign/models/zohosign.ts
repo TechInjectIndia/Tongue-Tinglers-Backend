@@ -13,7 +13,7 @@ export class ZohoSignRepo implements IBaseRepo<TEditUser, TListFilters> {
 
     public async getAccessTokenZoho(): Promise<any> {
         try {
-            const redirectUri = 'https://sign.zoho.com';
+            const redirectUri = 'https%3A%2F%2Fsign.zoho.com';
             const response = await axios.post('https://accounts.zoho.in/oauth/v2/token', null, {
                 params: {
                     client_id: ZOHO_CLIENT_ID,

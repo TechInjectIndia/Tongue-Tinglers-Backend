@@ -9,7 +9,7 @@ import { OrderItemRepo } from '../models/orders-item';
 export default class OrderController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', 0);
+            const user_id = get(req, 'user_id', '');
             const payload = { ...req?.body, userId: user_id, paymentMethod: 'razorpay', orderStatus: 'processed' };
             const cartItems = req.body.cart_items;
 
@@ -19,14 +19,14 @@ export default class OrderController {
                     cartItems.map(async (product: any, index: number) => {
                         let isRepeated = 0;
                         const getProduct = await new ProductRepo().get(product.id as number);
-                        const checkRepeatedOrder = await new OrderItemRepo().checkRepeatedOrder(user_id as number, product.id as number);
+                        const checkRepeatedOrder = await new OrderItemRepo().checkRepeatedOrder(user_id as string, product.id as number);
                         if (checkRepeatedOrder) {
                             isRepeated = 1;
                         }
                         const orderItemPayload = {
                             name: getProduct.name as string,
                             slug: getProduct.slug as string,
-                            userId: user_id,
+                            userId: user_id as string,
                             price: getProduct.price as string,
                             productId: product.id as number,
                             quantity: cartItems[index].quantity as number,

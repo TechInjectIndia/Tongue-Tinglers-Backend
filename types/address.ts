@@ -2,7 +2,7 @@ const { OrderItem } = require("sequelize");
 
 export type TAddress = {
   id: number;
-  user_id: number;
+  user_id: string;
   street: string;
   city: string;
   state: string;

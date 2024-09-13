@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
 import { ZohoSignRepo } from '../models/zohosign';
 import { sendResponse } from "../../../libraries";
+const FormData = require('form-data');
 
 const { ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REDIRECT_URI, ZOHO_AUTH_URL, ZOHO_TOKEN_URL, ZOHO_API_URL } = process.env;
 
@@ -36,8 +37,8 @@ export default class ZohoSignController {
         console.log(accessToken)
         try {
             const response = await axios.post(
-                `https://sign.zoho.com/writer/api/v1/documents`,
-                documentData, // Document data
+                `https://sign.zoho.com/api/v1/documents`,
+                // documentData, // Document data
                 {
                     headers: {
                         Authorization: `Zoho-oauthtoken ${accessToken}`,
@@ -55,10 +56,11 @@ export default class ZohoSignController {
 
     static async getDocuments(req: Request, res: Response, next: NextFunction) {
         const accessToken = await new ZohoSignRepo().getAccessTokenZoho();
+        console.log(accessToken)
         try {
-            const response = await axios.get(`${ZOHO_API_URL}/documents`, {
+            const response = await axios.get(`${ZOHO_API_URL}/requests`, {
                 headers: {
-                    Authorization: `Bearer ${accessToken}`,
+                    Authorization: `Zoho-oauthtoken ${accessToken}`,
                 },
             });
             res.json(response.data);
@@ -68,22 +70,132 @@ export default class ZohoSignController {
     };
 
     static async signDocument(req: Request, res: Response, next: NextFunction) {
-        const documentId = '1212121212'; // Ensure accessToken and documentId are provided in request body
-        const accessToken = await new ZohoSignRepo().getAccessTokenZoho();
+        const documentId = '72565000000030049'; // Ensure accessToken and documentId are provided in request body
+        // const data = {
+        //     "requests": {
+        //         "document_ids": [
+        //             "72565000000030049" // Replace with your document ID
+        //         ],
+        //         "recipients": [
+        //             {
+        //                 "email": "jasskaranofficial@gmail.com", // Email of the first recipient
+        //                 "name": "Recipient One",
+        //                 "action_type": "SIGNATURE",
+        //                 "signing_order": '1'
+        //             }
+        //         ],
+        //         "actions": [
+        //             {
+        //                 "action_id": "72565000000030071", // Unique action ID
+        //                 "action_type": "SIGNATURE",
+        //                 "signing_order": '1',
+        //                 "fields": [
+        //                     {
+        //                         "field_type_name": "SIGNATURE",
+        //                         "text_property": {
+        //                             "font": "Arial",
+        //                             "font_size": '12',
+        //                             "font_color": "black",
+        //                             "max_field_length": '255',
+        //                             "is_bold": 'false',
+        //                             "is_italic": 'false'
+        //                         },
+        //                         "field_category": "SIGNATURE",
+        //                         "field_label": "Signature",
+        //                         "is_mandatory": 'true',
+        //                         "page_no": '1',
+        //                         "document_id": "72565000000030049", // Replace with your document ID
+        //                         "field_name": "signature_field_1",
+        //                         "y_coord": '150',
+        //                         "x_coord": '200',
+        //                         "abs_width": '100',
+        //                         "abs_height": '50'
+        //                     }
+        //                 ]
+        //             },
+        //             {
+        //                 "action_id": "72565000000030081", // Unique action ID
+        //                 "action_type": "SIGNATURE",
+        //                 "signing_order": '2',
+        //                 "fields": [
+        //                     {
+        //                         "field_type_name": "SIGNATURE",
+        //                         "text_property": {
+        //                             "font": "Arial",
+        //                             "font_size": '12',
+        //                             "font_color": "black",
+        //                             "max_field_length": '255',
+        //                             "is_bold": 'false',
+        //                             "is_italic": 'false'
+        //                         },
+        //                         "field_category": "SIGNATURE",
+        //                         "field_label": "Signature",
+        //                         "is_mandatory": 'true',
+        //                         "page_no": '1',
+        //                         "document_id": "72565000000030049",
+        //                         "field_name": "signature_field_2",
+        //                         "y_coord": '250',
+        //                         "x_coord": '200',
+        //                         "abs_width": '100',
+        //                         "abs_height": '50'
+        //                     }
+        //                 ]
+        //             }
+        //         ]
+        //     }
+        // }
 
+        const data={
+            "requests": {
+                "request_name": "NDA",
+                "description": "Details of document",
+                "is_sequential": true,
+                "actions": [
+                    {
+                        "action_type": "SIGN",
+                        "recipient_email": "navdeepmatrixecho@gmail.com",
+                        "recipient_name": "Alex James",
+                        "signing_order": 0,
+                        "verify_recipient": true,
+                        "verification_type": "EMAIL",
+                        "private_notes": "To be signed"
+                    },
+                    {
+                        "action_type": "INPERSONSIGN",
+                        "recipient_email": "lovepreetmatrixecho@gmail.com",
+                        "recipient_name": "Alex James",
+                        "in_person_name": "David",
+                        "in_person_email": "lovepreetmatrixecho@gmail.com",
+                        "signing_order": 1,
+                        "verify_recipient": false,
+                        "private_notes": "Sign as Inperson"
+                    }
+                ],
+                "expiration_days": 10,
+                "email_reminders": true,
+                "reminder_period": 2,
+                "notes": "Note for all recipients"
+            }
+        }
+
+        const accessToken = await new ZohoSignRepo().getAccessTokenZoho();
+        console.log(accessToken)
         try {
             const response = await axios.post(
-                `${ZOHO_API_URL}/documents/${documentId}/sign`,
-                req.body, // Signing data
+                // `${ZOHO_API_URL}/documents/${documentId}/sign`,
+                `${ZOHO_API_URL}/requests`,
+                // documentDetails, // Signing data
+                data,
                 {
                     headers: {
-                        Authorization: `Bearer ${accessToken}`,
+                        Authorization: `Zoho-oauthtoken ${accessToken}`,
                         'Content-Type': 'application/json',
                     },
                 }
             );
             res.json(response.data);
         } catch (error) {
+            // console.log(error);
             res.status(500).json(error.response.data);
         }
     };

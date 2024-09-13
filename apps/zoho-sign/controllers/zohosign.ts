@@ -7,38 +7,40 @@ const { ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REDIRECT_URI, ZOHO_AUTH_URL, ZO
 
 export default class ZohoSignController {
     static async createDocument(req: Request, res: Response, next: NextFunction) {
-        // const { name, recipients, templateId, redirectUrl } = {
-        //     name: "Sample Document",
-        //     recipients: [
-        //         {
-        //             "name": "John Doe",
-        //             "email": "john.doe@example.com",
-        //             "role": "Signer",
-        //             "signingOrder": 1,
-        //             "signatureType": "TEXT"
-        //         }
-        //     ],
-        //     templateId: null,
-        //     redirectUrl: "http://localhost:3000/zoho/callback"
-        // };
-        // // Basic validation
-        // if (!name || !recipients) {
-        //     return res.status(400).json({ message: 'Missing required fields' });
-        // }
-        // const documentData = {
-        //     name,
-        //     recipients,
-        //     templateId: templateId || null,
-        //     redirectUrl
-        // };
+        const { name, recipients, templateId, redirectUrl } = {
+            name: "Sample Document",
+            recipients: [
+                {
+                    "name": "John Doe",
+                    "email": "john.doe@example.com",
+                    "role": "Signer",
+                    "signingOrder": 1,
+                    "signatureType": "TEXT"
+                }
+            ],
+            templateId: null,
+            redirectUrl: "http://localhost:3000/zoho/callback"
+        };
+        // Basic validation
+        if (!name || !recipients) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+        const documentData = {
+            name,
+            recipients,
+            templateId: templateId || null,
+            redirectUrl
+        };
+        // let data_string = 'data='.urlencode('{"page_context":{"row_count":10,"start_index":1,"search_columns":{},"sort_column":"created_time","sort_order":"DESC"}}'');
         const accessToken = await new ZohoSignRepo().getAccessTokenZoho();
+        console.log(accessToken)
         try {
             const response = await axios.post(
-                `https://sign.zoho.com/api/v1/documents`,
-                // documentData, // Document data
+                `https://sign.zoho.com/writer/api/v1/documents`,
+                documentData, // Document data
                 {
                     headers: {
-                        Authorization: `Bearer ${accessToken}`,
+                        Authorization: `Zoho-oauthtoken ${accessToken}`,
                         'Content-Type': 'application/json',
                     },
                 }
@@ -46,7 +48,7 @@ export default class ZohoSignController {
             console.log(response.data.message);
             res.json(response);
         } catch (error) {
-            console.log(error);
+            console.log(error.response.data);
             res.status(500).json(error.response.data.message);
         }
     };

@@ -8,7 +8,7 @@ interface AddressCreationAttributes extends Optional<TAddress, 'id' | 'createdAt
 
 class AddressModel extends Model<TAddress, AddressCreationAttributes> implements TAddress {
   public id!: number;
-  public user_id!: number;
+  public user_id!: string;
   public street!: string;
   public city!: string;
   public state!: string;
@@ -25,7 +25,7 @@ AddressModel.init({
     primaryKey: true,
   },
   user_id: {
-    type: INTEGER,
+    type: STRING,
     allowNull: false
   },
   street: {

@@ -10,7 +10,7 @@ import IBaseRepo from '../controllers/controller/IOrderItemsController';
 export class OrderItemRepo implements IBaseRepo<TAddOrderItem, TOrderFilters> {
     constructor() { }
 
-    public async checkRepeatedOrder(userId: number, productId: number): Promise<TOrderItem> {
+    public async checkRepeatedOrder(userId: string, productId: number): Promise<TOrderItem> {
         const data = await OrderItemsModel.findOne({
             where: {
                 userId: userId,

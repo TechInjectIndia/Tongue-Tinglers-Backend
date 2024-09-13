@@ -4,7 +4,7 @@ import {
     TEditUser,
 } from "../../../types";
 const axios = require('axios');
-const { ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN, ZOHO_API_BASE_URL } = process.env;
+const { ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN } = process.env;
 
 import IBaseRepo from '../controllers/controller/IZohoSignController';
 
@@ -13,7 +13,7 @@ export class ZohoSignRepo implements IBaseRepo<TEditUser, TListFilters> {
 
     public async getAccessTokenZoho(): Promise<any> {
         try {
-            const redirectUri = 'https://sign.zoho.com';
+            const redirectUri = 'https%3A%2F%2Fsign.zoho.com';
             const response = await axios.post('https://accounts.zoho.in/oauth/v2/token', null, {
                 params: {
                     client_id: ZOHO_CLIENT_ID,

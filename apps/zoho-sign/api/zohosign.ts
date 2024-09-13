@@ -11,9 +11,9 @@ const {
 // ====== Zoho Sign Starts ======
 /**
  * @swagger
- * /api/zoho-sign/send-document:
- *   post:
- *     summary: send-document
+ * /api/zoho-sign/auth-url:
+ *   get:
+ *     summary: auth-url
  *     tags: [Zoho Sign]
  *     security:
  *       - bearerAuth: []
@@ -24,38 +24,71 @@ const {
  *         description: Unauthorized
  *       '404':
  *         description: Zoho Sign not found
- *  
- * /api/zoho-sign/get-status:
+ * 
+ * /api/zoho-sign/oauth/callback:
  *   get:
- *     summary: send-document
+ *     summary: oauth/callback
  *     tags: [Zoho Sign]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: type
- *         required: true
- *         default: 1
- *         schema:
- *           type: string
- *           default: get-status
- *         description: type
  *     responses:
  *       '200':
- *         description: Zoho Sign fetched successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: string
- *               description: type
+ *         description: Zoho Sign created successfully
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Zoho Sign not found
+ * 
+ * /api/zoho-sign/create-document:
+ *   post:
+ *     summary: create-document
+ *     tags: [Zoho Sign]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Zoho Sign created successfully
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Zoho Sign not found
+ * 
+ * /api/zoho-sign/get-documents:
+ *   post:
+ *     summary: get-documents
+ *     tags: [Zoho Sign]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Zoho Sign created successfully
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Zoho Sign not found
+ * 
+ * /api/zoho-sign/sign-document:
+ *   post:
+ *     summary: sign-document
+ *     tags: [Zoho Sign]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Zoho Sign created successfully
  *       '401':
  *         description: Unauthorized
  *       '404':
  *         description: Zoho Sign not found
  */
 
-router.post("/send-document", ZohoSignController.sendDocumentForSigning);
-router.get("/get-status", ZohoSignController.getDocumentStatus);
+router.get('/oauth/callback', ZohoSignController.getAccessToken);
+router.post('/create-document', ZohoSignController.createDocument);
+router.post('/get-documents', ZohoSignController.getDocuments);
+router.post('/sign-document', ZohoSignController.signDocument);
+
+// router.post("/send-document", ZohoSignController.sendDocumentForSigning);
+// router.get("/get-status", ZohoSignController.getDocumentStatus);
 // ====== Zoho Sign Ends ======
 
 export default router;

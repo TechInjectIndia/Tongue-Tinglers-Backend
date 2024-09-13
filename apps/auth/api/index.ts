@@ -8,37 +8,38 @@ const { validateLoginBody, validateChangePasswordBody } = AuthValidation;
 const { login, changePassword } = AuthController;
 
 // ====== Auth Start ======
+
+// * /api/auth/login:
+// *   post:
+// *     summary: login
+// *     tags: [AUTH]
+// *     security:
+// *       - bearerAuth: []
+// *     requestBody:
+// *       required: true
+// *       content:
+// *         application/json:
+// *           schema:
+// *            type: object
+// *            required:
+// *              - email
+// *              - password
+// *            properties:
+// *              email:
+// *                type: string
+// *                default: admin@gmail.com
+// *              password:
+// *                type: string
+// *                default: admin
+// *     responses:
+// *       '200':
+// *         description: logged in successfully
+// *       '400':
+// *         description: Invalid request body
+// *       '401':
+// *         description: Unauthorized
 /**
  * @swagger
- * /api/auth/login:
- *   post:
- *     summary: login
- *     tags: [AUTH]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *            type: object
- *            required:
- *              - email
- *              - password
- *            properties:
- *              email:
- *                type: string
- *                default: admin@gmail.com
- *              password:
- *                type: string
- *                default: admin
- *     responses:
- *       '200':
- *         description: logged in successfully
- *       '400':
- *         description: Invalid request body
- *       '401':
- *         description: Unauthorized
  * 
  * /api/auth/change-password:
  *   post:
@@ -70,7 +71,7 @@ const { login, changePassword } = AuthController;
  *       '401':
  *         description: Unauthorized
  */
-router.post("/login", validateLoginBody, login);
+// router.post("/login", validateLoginBody, login);
 router.post("/change-password", auth, validateChangePasswordBody, changePassword);
 
 export default router;

@@ -11,20 +11,6 @@ const {
 // ====== Zoho Sign Starts ======
 /**
  * @swagger
- * /api/zoho-sign/auth-url:
- *   get:
- *     summary: auth-url
- *     tags: [Zoho Sign]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       '200':
- *         description: Zoho Sign created successfully
- *       '401':
- *         description: Unauthorized
- *       '404':
- *         description: Zoho Sign not found
- * 
  * /api/zoho-sign/oauth/callback:
  *   get:
  *     summary: oauth/callback

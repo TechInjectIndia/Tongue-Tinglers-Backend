@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse } from "../../../libraries";
+import { sendResponse, createStandardPaymentLink } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { PaymentsModel } from '../models/';
 
@@ -168,6 +168,29 @@ export default class PaymentsController {
                     )
                 );
         } catch (err) {
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    static async generatePaymentLink(req: Request, res: Response, next: NextFunction) {
+        try {
+            const contract_id = req?.body?.contract_id;
+
+            const link = await createStandardPaymentLink(contract_id);
+            
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.CREATED,
+                        link
+                    )
+                );
+        } catch (err) {
+            console.log(err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

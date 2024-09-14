@@ -10,6 +10,7 @@ const {
   validateEditPaymentsParams,
   validateListPaymentsQuery,
   validateEditMultipleIdsBody,
+  validateGenerateLinkBody
 } = PaymentsValidation;
 
 // ====== Payments Starts ======
@@ -235,6 +236,8 @@ router.get("/list", validateListPaymentsQuery, PaymentsController.list);
 router.get("/get/:id", validateEditPaymentsParams, PaymentsController.get);
 router.put("/update/:id", validateEditPaymentsParams, validateEditPaymentsBody, PaymentsController.update);
 router.delete("/delete", validateEditMultipleIdsBody, PaymentsController.delete);
+
+router.post("/generate-link", validateGenerateLinkBody, PaymentsController.generatePaymentLink);
 // ====== Payments Ends ======
 
 export default router;

@@ -73,3 +73,12 @@ export const validateEditMultipleIdsBody = async (
     next: NextFunction
 ) => validateReq(req, res, next, editMultipleIdsBody, "body");
 
+const generateLinkBody = Joi.object().keys({
+    contract_id: Joi.number().required()
+});
+
+export const validateGenerateLinkBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, generateLinkBody, "body");

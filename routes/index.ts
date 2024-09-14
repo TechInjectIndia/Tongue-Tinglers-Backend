@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { sendEmail, uploadSingleFileToFirebase } from '../libraries';
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -57,7 +56,7 @@ router.use(`${ADMIN}/testimonials`, auth, testimonialsRouter);
 router.use(`${ADMIN}/reviews`, auth, reviewsRouter);
 router.use(`${ADMIN}/profile`, auth, profileRouter);
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
-router.use(`${ADMIN}/payments`, auth, paymentsRouter); // pending
+router.use(`/payments`, auth, paymentsRouter); // pending
 router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // pending
@@ -132,9 +131,9 @@ router.use(`/product`, webProductsRouter);
 router.use(`/register`, webRegisterRouter);
 // ====== Frontend ======
 
-router.use(`/test-email`, () => {
-    // sendEmail('jasskaranofficial@gmail.com', 'Test subject', 'welcome-admin-user', {user_firstname: 'Jaskaran Singh'});
-});
+// router.use(`/test-payment-link`, () => {
+//     createStandardPaymentLink();
+// });
 
 router.post(`/upload-file`, upload.single('file'), async (req: Request, res: Response) => {
     // await uploadSingleFileToFirebase(req);

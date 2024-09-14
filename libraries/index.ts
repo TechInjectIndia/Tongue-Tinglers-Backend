@@ -7,3 +7,4 @@ export * from './date-range';
 export * from './firebase';
 export * from './database';
 export * from './resend';
+export * from './razorpay';

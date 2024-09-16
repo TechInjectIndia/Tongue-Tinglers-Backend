@@ -1,6 +1,7 @@
 import * as express from "express";
 import ProfileController from "../controllers/profile";
 import * as ProfileValidation from "../validations/profile";
+import { hasPermission } from '../../../middlewares';
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 

@@ -1,6 +1,7 @@
 import * as express from "express";
 import FranchiseController from "../controllers/franchise";
 import * as FranchiseValidation from "../validations/franchise";
+import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 

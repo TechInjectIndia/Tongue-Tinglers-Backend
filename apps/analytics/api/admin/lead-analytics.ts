@@ -1,6 +1,7 @@
 import * as express from "express";
 import LeadAnalyticsController from "../../controllers/lead-analytics";
 import * as AnalyticsValidation from "../../validations/lead-analytics";
+import { hasPermission } from '../../../../middlewares';
 
 const router = express.Router();
 

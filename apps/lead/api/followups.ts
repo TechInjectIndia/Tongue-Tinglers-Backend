@@ -1,6 +1,7 @@
 import * as express from "express";
 import FollowUpsController from "../controllers/followups";
 import * as FollowUpsValidation from "../validations/followups";
+import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 

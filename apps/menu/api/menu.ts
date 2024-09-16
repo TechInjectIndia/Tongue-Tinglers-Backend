@@ -5,6 +5,7 @@ import menuProductRouter from "../../menu/api/menu-product";
 import menuProductMapRouter from "../../menu/api/menu-product-map";
 import menuCategoryRouter from "../../menu/api/menu-category";
 import menuCategoryMapRouter from "../../menu/api/menu-category-map";
+import { hasPermission } from '../../../middlewares';
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 

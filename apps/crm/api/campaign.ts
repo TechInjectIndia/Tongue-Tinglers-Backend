@@ -4,6 +4,7 @@ import * as CampaignValidation from "../validations/campaign";
 import emailCampaignRouter from "../../crm/api/email";
 import InquiryRouter from "../../crm/api/inquiry";
 import SubscriberRouter from "../../crm/api/subscriber";
+import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 const {

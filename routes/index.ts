@@ -47,7 +47,7 @@ import campaignRouter from "../apps/crm/api/campaign";
 import testUsersRouter from "../apps/test-user/api/user"; // for testing only
 
 // ====== Admin routes ======
-router.use(`${ADMIN}/users`, adminUsersRouter);
+router.use(`${ADMIN}/users`, auth, adminUsersRouter);
 router.use(`${ADMIN}/customer`, auth, customerUsersRouter);
 router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
 router.use(`${ADMIN}/roles`, auth, rolesRouter);

@@ -38,25 +38,32 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         return { total, data };
     }
 
-    public async get(id: number): Promise<TUserWithPermission> {
+    public async get(id: string): Promise<TUserWithPermission> {
         const data = await UserModel.findOne({
+            raw: true,
             where: {
                 id,
             },
         });
-        const role = await RolesModel.findOne({
-            where: {
-                id: data?.dataValues?.role
-            }
-        })
-        return { ...data?.dataValues, permissions: role?.dataValues?.role_permissions ?? '' };
+        if (data) {
+            const role = await RolesModel.findOne({
+                raw: true,
+                where: {
+                    id: data?.role
+                }
+            })
+            return { ...data, permissions: role?.role_permissions ?? '' };
+        } else {
+            return { ...data, permissions: '' };
+        }
+
     }
 
     public async create(data: TAddUser): Promise<TUser> {
         return await UserModel.create({ ...data, type: USER_TYPE.ADMIN });
     }
 
-    public async update(id: number, data: TEditUser): Promise<[affectedCount: number]> {
+    public async update(id: string, data: TEditUser): Promise<[affectedCount: number]> {
         return await UserModel.update(data, {
             where: {
                 id,
@@ -64,7 +71,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         });
     }
 
-    public async delete(ids: number[], deletedBy: number): Promise<number> {
+    public async delete(ids: string[], deletedBy: number): Promise<number> {
         const response = await UserModel.destroy({
             where: {
                 id: ids,
@@ -106,7 +113,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         return { total, data };
     }
 
-    public async restore(ids: number[]): Promise<void> {
+    public async restore(ids: string[]): Promise<void> {
         const response = await UserModel.restore({
             where: {
                 id: ids,
@@ -115,7 +122,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         return response;
     }
 
-    public async deletePermanant(ids: number[]): Promise<number> {
+    public async deletePermanant(ids: string[]): Promise<number> {
         const response = await UserModel.destroy({
             where: {
                 id: ids,
@@ -125,7 +132,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         return response;
     }
 
-    public async updateProfile(id: number, data: TEditUserProfile): Promise<[affectedCount: number]> {
+    public async updateProfile(id: string, data: TEditUserProfile): Promise<[affectedCount: number]> {
         return await UserModel.update(data, {
             where: {
                 id,

@@ -110,7 +110,7 @@ export default class AdminController {
             //     payload = { ...payload, password: hashedPassword };
             // }
 
-            await new AdminRepo().update(id as number, payload);
+            await new AdminRepo().update(id as string, payload);
             return res
                 .status(200)
                 .send(
@@ -151,9 +151,9 @@ export default class AdminController {
 
     static async getAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
-            const existingAdmin = await new AdminRepo().get(id as number);
-            if (isEmpty(existingAdmin)) {
+            const id = get(req?.params, "id");
+            const existingAdmin = await new AdminRepo().get(id as string);
+            if (!existingAdmin?.id) {
                 return res
                     .status(400)
                     .send(
@@ -174,6 +174,7 @@ export default class AdminController {
                     )
                 );
         } catch (err) {
+            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -182,7 +183,7 @@ export default class AdminController {
 
     static async editProfile(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req, "user_id", 0);
+            const id = get(req, "user_id",);
             const payload = req?.body;
 
             await new AdminRepo().updateProfile(id, payload);

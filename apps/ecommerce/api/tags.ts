@@ -1,6 +1,7 @@
 import * as express from "express";
 import ProductTagsController from "../controllers/tags";
 import * as ProductTagsValidation from "../validations/tags";
+import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 

@@ -1,6 +1,7 @@
 import * as express from "express";
 import ProductsController from "../controllers/products";
 import * as ProductsValidation from "../validations/products";
+import { hasPermission } from '../../../middlewares';
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 

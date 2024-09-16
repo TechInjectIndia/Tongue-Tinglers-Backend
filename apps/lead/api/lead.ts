@@ -1,6 +1,7 @@
 import * as express from "express";
 import LeadController from "../controllers/lead";
 import * as LeadValidation from "../validations/lead";
+import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 

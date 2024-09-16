@@ -1,6 +1,7 @@
 import * as express from "express";
 import AdminController from "../controllers/user";
 import * as AdminValidation from "../validations/user";
+import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 
@@ -200,11 +201,11 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *       '404':
  *         description: User not found
  */
-router.post("/create", validateCreateAdminBody, addAdmin);
-router.get("/list", validateListAdminQuery, getAdmins);
-router.get("/get/:id", validateEditAdminParams, getAdmin);
-router.put("/update/:id", validateEditAdminParams, validateEditAdminBody, editAdmin);
-router.delete("/delete", validateEditMultipleIdsBody, deleteAdmin); // Soft delete single or multiple
+router.post("/create", hasPermission('admin', 'create'), validateCreateAdminBody, addAdmin);
+router.get("/list", hasPermission('admin', 'read'), validateListAdminQuery, getAdmins);
+router.get("/get/:id", hasPermission('admin', 'read'), validateEditAdminParams, getAdmin);
+router.put("/update/:id", hasPermission('admin', 'update'), validateEditAdminParams, validateEditAdminBody, editAdmin);
+router.delete("/delete", hasPermission('admin', 'delete'), validateEditMultipleIdsBody, deleteAdmin); // Soft delete single or multiple
 // ====== Admins Routes Ends ======
 
 export default router;

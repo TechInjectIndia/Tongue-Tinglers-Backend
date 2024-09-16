@@ -1,6 +1,7 @@
 import * as express from "express";
 import ReviewsController from "../controllers/reviews";
 import * as ReviewsValidation from "../validations/reviews";
+import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 

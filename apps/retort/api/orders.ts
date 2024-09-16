@@ -1,6 +1,7 @@
 import * as express from "express";
 import RetortOrderController from "../controllers/orders";
 import * as OrderValidation from "../validations/orders";
+import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 

@@ -1,5 +1,6 @@
 import * as express from "express";
 import SettingsController from "../controllers/settings";
+import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 

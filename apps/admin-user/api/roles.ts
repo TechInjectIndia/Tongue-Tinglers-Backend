@@ -1,6 +1,7 @@
 import * as express from "express";
 import RolesController from "../controllers/roles";
 import * as RolesValidation from "../validations/roles";
+import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 
@@ -42,7 +43,7 @@ const {
  *                default: "description"
  *              role_permissions:
  *                type: text
- *                default: "{'user':['add','edit']}"
+ *                default: '{"user":["create","update", "delete", "read"]}'
  *              active:
  *                type: boolean
  *                default: 0 
@@ -142,7 +143,7 @@ const {
  *                default: "description"
  *              role_permissions:
  *                type: text
- *                default: "{'user':['add','edit']}"
+ *                default: '{"user":["create","update", "delete", "read"]}'
  *              active:
  *                type: string
  *                default: 1

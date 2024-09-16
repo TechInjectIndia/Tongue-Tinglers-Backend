@@ -68,13 +68,9 @@ const {
  *         description: Zoho Sign not found
  */
 
-router.get('/oauth/callback', ZohoSignController.getAccessToken);
-router.post('/create-document', ZohoSignController.createDocument);
+router.post('/create-document', ZohoSignController.sendDocumentUsingTemplate);
 router.post('/get-documents', ZohoSignController.getDocuments);
 router.post('/sign-document', ZohoSignController.signDocument);
-
-// router.post("/send-document", ZohoSignController.sendDocumentForSigning);
-// router.get("/get-status", ZohoSignController.getDocumentStatus);
 // ====== Zoho Sign Ends ======
 
 export default router;

@@ -38,7 +38,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
         return { total, data };
     }
 
-    public async get(id: number): Promise<TUserWithPermission> {
+    public async get(id: string): Promise<TUserWithPermission> {
         const data = await UserModel.findOne({
             where: {
                 id,
@@ -56,7 +56,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
         return await UserModel.create({ ...data, type: USER_TYPE.CUSTOMER });
     }
 
-    public async update(id: number, data: TEditUser): Promise<[affectedCount: number]> {
+    public async update(id: string, data: TEditUser): Promise<[affectedCount: number]> {
         return await UserModel.update(data, {
             where: {
                 id,
@@ -64,7 +64,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
         });
     }
 
-    public async delete(ids: number[], deletedBy: number): Promise<number> {
+    public async delete(ids: string[], deletedBy: number): Promise<number> {
         const response = await UserModel.destroy({
             where: {
                 id: ids,
@@ -106,7 +106,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
         return { total, data };
     }
 
-    public async restore(ids: number[]): Promise<void> {
+    public async restore(ids: string[]): Promise<void> {
         const response = await UserModel.restore({
             where: {
                 id: ids,
@@ -115,7 +115,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
         return response;
     }
 
-    public async deletePermanant(ids: number[]): Promise<number> {
+    public async deletePermanant(ids: string[]): Promise<number> {
         const response = await UserModel.destroy({
             where: {
                 id: ids,
@@ -125,7 +125,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
         return response;
     }
 
-    public async updateProfile(id: number, data: TEditUserProfile): Promise<[affectedCount: number]> {
+    public async updateProfile(id: string, data: TEditUserProfile): Promise<[affectedCount: number]> {
         return await UserModel.update(data, {
             where: {
                 id,

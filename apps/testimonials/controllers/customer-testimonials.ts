@@ -20,7 +20,7 @@ export default class CustomerTestimonialsController {
             if (item_type == TESTIMONIAL_ITEM_TYPE.PRODUCT) {
                 checkIfExist = await new ProductRepo().get(item_id as number);
             } else if (item_type == TESTIMONIAL_ITEM_TYPE.FRANCHISE) {
-                checkIfExist = await new FranchiseRepo().get(item_id as number);
+                checkIfExist = await new FranchiseRepo().get(item_id as string);
                 franchiseOrProduct = TESTIMONIAL_ITEM_TYPE.FRANCHISE
             }
             if (isEmpty(checkIfExist)) {

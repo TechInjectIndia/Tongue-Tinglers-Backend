@@ -3,14 +3,14 @@ import { TQueryFilters, TAddUser, TEditUser, TEditUserProfile, TUsersList, TUser
 
 interface IUserController<T, F extends TQueryFilters> {
     list(filters: F): Promise<TUsersList>;
-    get(id: number): Promise<TUserWithPermission>;
+    get(id: string): Promise<TUserWithPermission>;
     create(payload: TAddUser): Promise<T>;
-    update(id: number, payload: TEditUser): Promise<[affectedCount: number]>;
-    delete(ids: number[], deletedBy: number): Promise<number>;
+    update(id: string, payload: TEditUser): Promise<[affectedCount: number]>;
+    delete(ids: string[], deletedBy: number): Promise<number>;
     deletedList(filters: F): Promise<TUsersList>;
-    restore(ids: number[]): Promise<void>;
-    deletePermanant(ids: number[]): Promise<number>;
-    updateProfile(id: number, payload: TEditUserProfile): Promise<[affectedCount: number]>;
+    restore(ids: string[]): Promise<void>;
+    deletePermanant(ids: string[]): Promise<number>;
+    updateProfile(id: string, payload: TEditUserProfile): Promise<[affectedCount: number]>;
 }
 
 export default IUserController;

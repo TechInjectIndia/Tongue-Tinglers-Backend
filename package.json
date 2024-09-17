@@ -8,6 +8,11 @@
   "scripts": {
     "seed": "ts-node ./node_modules/.bin/sequelize-cli db:seed:all",
     "start": "ts-node -r tsconfig-paths/register ./app.ts",
+    "start:pm2": "pm2 start ./app.ts --interpreter ts-node --name TongueTingler",
+    "stop:pm2": "pm2 stop TongueTingler",
+    "restart:pm2": "pm2 restart TongueTingler",
+    "delete:pm2": "pm2 delete TongueTingler",
+    "logs:pm2": "pm2 logs TongueTingler",
     "repl": "ts-node -r tsconfig-paths/register",
     "test": "ts-mocha --paths -p ./tsconfig.json server/**/*.spec.ts",
     "coverage": "nyc npm run test",

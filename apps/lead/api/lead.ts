@@ -329,16 +329,16 @@ const {
  *       '401':
  *         description: Unauthorized
  */
-router.post("/create", validateCreateLeadBody, LeadController.create);
-router.get("/list", validateListLeadQuery, LeadController.list);
-router.get("/get/:id", validateEditLeadParams, LeadController.get);
-router.put("/update/:id", validateEditLeadParams, validateEditLeadBody, LeadController.update);
-router.delete("/delete", validateEditMultipleIdsBody, LeadController.delete);
+router.post("/create", hasPermission('lead', 'create'), validateCreateLeadBody, LeadController.create);
+router.get("/list", hasPermission('lead', 'read'), validateListLeadQuery, LeadController.list);
+router.get("/get/:id", hasPermission('lead', 'read'), validateEditLeadParams, LeadController.get);
+router.put("/update/:id", hasPermission('lead', 'update'), validateEditLeadParams, validateEditLeadBody, LeadController.update);
+router.delete("/delete", hasPermission('lead', 'delete'), validateEditMultipleIdsBody, LeadController.delete);
 
-router.put("/assign-lead", validateAssignLeadBody, LeadController.assignLeadToAdminUser);
-router.get("/get-status/:id", validateLeadStatusBody, LeadController.getLeadStatus);
+router.put("/assign-lead", hasPermission('lead', 'update'), validateAssignLeadBody, LeadController.assignLeadToAdminUser);
+router.get("/get-status/:id", hasPermission('lead', 'update'), validateLeadStatusBody, LeadController.getLeadStatus);
 
-router.post("/convert-lead", validateConvertLeadParams, LeadController.convertLeadToFranchisee);
+router.post("/convert-lead", hasPermission('lead', 'update'), validateConvertLeadParams, LeadController.convertLeadToFranchisee);
 // ====== Lead Ends ======
 
 export default router;

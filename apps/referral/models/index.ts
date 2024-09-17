@@ -4,6 +4,7 @@ import {
     TAddresssList,
     TPayloadAddress,
     TListFilters,
+    TPayloadAddress
 } from "../../../types/";
 import { AddressModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IController';

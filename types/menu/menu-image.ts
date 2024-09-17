@@ -11,15 +11,7 @@ export type TMenuImage = {
   updatedAt: Date;
 };
 
-export type TAddMenuImage = {
-  menuId: number;
-  fileName: string;
-  filePath: string;
-  originalName: string;
-  fileSize: string;
-};
-
-export type TEditMenuImage = {
+export type TPayloadMenuImage = {
   menuId: number;
   fileName: string;
   filePath: string;

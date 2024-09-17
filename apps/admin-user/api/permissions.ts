@@ -148,9 +148,9 @@ const {
  *         description: permissions not found
  * 
  */
-router.post("/create", validateCreatePermissionBody, PermissionController.create);
-router.get("/list", validateListPermissionQuery, PermissionController.list);
-router.get("/get/:id", validateEditPermissionParams, PermissionController.get);
-router.put("/update/:id", validateEditPermissionParams, validateEditPermissionBody, PermissionController.update);
+router.post("/create", hasPermission('permission', 'create'), validateCreatePermissionBody, PermissionController.create);
+router.get("/list", hasPermission('permission', 'read'), validateListPermissionQuery, PermissionController.list);
+router.get("/get/:id", hasPermission('permission', 'read'), validateEditPermissionParams, PermissionController.get);
+router.put("/update/:id", hasPermission('permission', 'update'), validateEditPermissionParams, validateEditPermissionBody, PermissionController.update);
 // ====== Admin Permissions Ends ======
 export default router;

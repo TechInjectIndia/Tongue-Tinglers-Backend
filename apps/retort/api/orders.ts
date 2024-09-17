@@ -174,11 +174,11 @@ const {
  *       '404':
  *         description: Order not found
  */
-router.post("/create", validateCreateOrderBody, RetortOrderController.create);
-router.get("/list", validateListOrderQuery, RetortOrderController.list);
-router.get("/get/:id", validateEditOrderParams, RetortOrderController.get);
-router.get("/get-status/:id", validateEditOrderParams, RetortOrderController.orderStatus);
-router.put("/update/:id", validateEditOrderParams, validateEditOrderBody, RetortOrderController.update);
+router.post("/create", hasPermission('retort', 'create'), validateCreateOrderBody, RetortOrderController.create);
+router.get("/list",hasPermission('retort', 'read'),  validateListOrderQuery, RetortOrderController.list);
+router.get("/get/:id", hasPermission('retort', 'read'), validateEditOrderParams, RetortOrderController.get);
+router.get("/get-status/:id", hasPermission('retort', 'read'), validateEditOrderParams, RetortOrderController.orderStatus);
+router.put("/update/:id",hasPermission('retort', 'update'),  validateEditOrderParams, validateEditOrderBody, RetortOrderController.update);
 // ====== order Ends ======
 
 export default router;

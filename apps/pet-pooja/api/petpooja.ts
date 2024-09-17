@@ -17,15 +17,6 @@ const {
  *     tags: [PetPooja]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: type
- *         required: true
- *         default: 1
- *         schema:
- *           type: string
- *           default: order
- *         description: type
  *     responses:
  *       '200':
  *         description: order retrieved successfully
@@ -45,15 +36,6 @@ const {
  *     tags: [PetPooja]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: type
- *         required: true
- *         default: 1
- *         schema:
- *           type: string
- *           default: inventory
- *         description: type
  *     responses:
  *       '200':
  *         description: inventory retrieved successfully

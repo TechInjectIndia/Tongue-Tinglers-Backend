@@ -6,7 +6,7 @@ export type TCustomerLogin = {
 };
 
 export type TUpdateCustomerToken = {
-  user_id: number;
+  user_id: string;
   refresh_token: string;
   lastLoginAt: Date;
   lastLoginIp: string;

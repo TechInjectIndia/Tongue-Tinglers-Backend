@@ -23,6 +23,7 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
     public cart: string;
     public refresh_token: string;
     public access_token: string;
+    public referralCode: string;
     public lastLoginAt: Date;
     public updatedBy!: string;
     public deletedBy!: string;
@@ -83,6 +84,10 @@ UserModel.init({
         allowNull: true,
     },
     access_token: {
+        type: STRING,
+        allowNull: true,
+    },
+    referralCode: {
         type: STRING,
         allowNull: true,
     },

@@ -1,8 +1,7 @@
 const { Op } = require("sequelize");
 import {
     TPermission,
-    TAddPermission,
-    TEditPermission,
+    TPermissionPayload,
     TPermissionFilters,
     TPermissionsList,
     TUser,
@@ -64,12 +63,12 @@ export class PermissionsRepo implements IBaseRepo<TPermission, TListFilters> {
         return { total, data };
     }
 
-    public async create(data: TAddPermission): Promise<TPermission> {
+    public async create(data: TPermissionPayload): Promise<TPermission> {
         const response = await PermissionModel.create(data);
         return response;
     }
 
-    public async update(id: number, data: TEditPermission): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TPermissionPayload): Promise<[affectedCount: number]> {
         const response = await PermissionModel.update(data, {
             where: {
                 id,

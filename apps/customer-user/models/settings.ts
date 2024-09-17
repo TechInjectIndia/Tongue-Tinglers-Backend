@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 import {
     TSettings,
-    TEditSettings
+    TPayloadSettings
 } from "../../../types";
 import { UserModel } from "../../../database/schema";
 

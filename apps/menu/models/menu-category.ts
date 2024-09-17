@@ -1,9 +1,8 @@
 const { Op } = require("sequelize");
 import {
     TMenuCategory,
-    TAddMenuCategory,
+    TPayloadMenuCategory,
     TMenuCategorysList,
-    TEditMenuCategory,
     TMenuCategoryFilters,
 } from "../../../types/menu/menu-category";
 import { MenuCategoryModel } from "../../../database/schema";
@@ -53,12 +52,12 @@ export class MenuCategoryRepo implements IBaseRepo<TMenuCategory, TMenuCategoryF
         return data;
     }
 
-    public async create(data: TAddMenuCategory): Promise<TMenuCategory> {
+    public async create(data: TPayloadMenuCategory): Promise<TMenuCategory> {
         const response = await MenuCategoryModel.create(data);
         return response;
     }
 
-    public async update(id: number, data: TEditMenuCategory): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TPayloadMenuCategory): Promise<[affectedCount: number]> {
         const response = await MenuCategoryModel.update(data, {
             where: {
                 id,

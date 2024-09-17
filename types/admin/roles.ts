@@ -10,14 +10,7 @@ export type TRole = {
   updatedAt: Date;
 };
 
-export type TEditRole = {
-  name: string;
-  active: number;
-  role_permissions: string;
-  description: string;
-};
-
-export type TAddRole = {
+export type TRolePayload = {
   name: string;
   active: number;
   role_permissions: string;

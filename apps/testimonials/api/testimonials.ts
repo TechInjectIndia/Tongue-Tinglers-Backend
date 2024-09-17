@@ -191,11 +191,11 @@ const {
  *       '404':
  *         description: Testimonials not found
  */
-router.post("/create", validateCreateTestimonialsBody, TestimonialsController.create);
-router.get("/list", validateListTestimonialsQuery, TestimonialsController.list);
-router.get("/get/:id", validateEditTestimonialsParams, TestimonialsController.get);
-router.put("/update/:id", validateEditTestimonialsParams, validateEditTestimonialsBody, TestimonialsController.update);
-router.delete("/delete", validateEditMultipleIdsBody, TestimonialsController.delete);
+router.post("/create", hasPermission('testimonials', 'create'), validateCreateTestimonialsBody, TestimonialsController.create);
+router.get("/list", hasPermission('testimonials', 'read'), validateListTestimonialsQuery, TestimonialsController.list);
+router.get("/get/:id", hasPermission('testimonials', 'read'), validateEditTestimonialsParams, TestimonialsController.get);
+router.put("/update/:id", hasPermission('testimonials', 'update'), validateEditTestimonialsParams, validateEditTestimonialsBody, TestimonialsController.update);
+router.delete("/delete", hasPermission('testimonials', 'delete'), validateEditMultipleIdsBody, TestimonialsController.delete);
 // ====== Testimonials Ends ======
 
 export default router;

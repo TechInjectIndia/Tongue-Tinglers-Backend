@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { TQueryFilters, TAddPermission, TEditPermission, TPermissionsList, TUser } from '../../../../types'
+import { TQueryFilters, TPermissionPayload, TPermissionsList, TUser } from '../../../../types'
 
 interface IPermissionsController<T, F extends TQueryFilters> {
     getPermissionAssigneeByPermissionId(ids: number[]): Promise<TUser[]>;
@@ -7,8 +7,8 @@ interface IPermissionsController<T, F extends TQueryFilters> {
     checkPermissionExist(name: string, excludeId: number): Promise<T>;
     list(filters: F): Promise<TPermissionsList>;
     get(id: number): Promise<T>;
-    create(payload: TAddPermission): Promise<T>;
-    update(id: number, payload: TEditPermission): Promise<[affectedCount: number]>;
+    create(payload: TPermissionPayload): Promise<T>;
+    update(id: number, payload: TPermissionPayload): Promise<[affectedCount: number]>;
 }
 
 export default IPermissionsController;

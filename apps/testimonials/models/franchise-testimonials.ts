@@ -3,7 +3,7 @@ import {
     TTestimonialsFiltersFrontend,
     TTestimonialsList,
     TTestimonials,
-    TAddTestimonials
+    TPayloadTestimonials
 } from "../../../types";
 import { TestimonialsModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IFranchiseTestimonialsController';
@@ -21,7 +21,7 @@ export class FranchiseTestimonialsRepo implements IBaseRepo<TTestimonials, TTest
         return data;
     }
 
-    public async create(data: TAddTestimonials): Promise<TTestimonials> {
+    public async create(data: TPayloadTestimonials): Promise<TTestimonials> {
         const response = await TestimonialsModel.create(data);
         return response;
     }

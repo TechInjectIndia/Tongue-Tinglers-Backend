@@ -10,14 +10,12 @@ const roles = { admin: ['read'], user: ['read'] };
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
     const idToken = req.headers.authorization?.split('Bearer ')[1];
     if (!idToken)
-        return res
-            .status(401)
-            .send(
-                sendResponse(
-                    RESPONSE_TYPE.ERROR,
-                    ERROR_MESSAGE.UNAUTHORIZED_REQUEST
-                )
-            );
+        return res.status(401).send(
+            sendResponse(
+                RESPONSE_TYPE.ERROR,
+                ERROR_MESSAGE.UNAUTHORIZED_REQUEST
+            )
+        );
     try {
         const decodedToken = await verifyFirebaseToken(idToken);
         if (decodedToken && decodedToken?.user_id) {
@@ -25,6 +23,13 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
             (req as any).firebase_uid = decodedToken?.user_id;
             (req as any).user_id = user?.id;
             next();
+        } else {
+            return res.status(401).send(
+                sendResponse(
+                    RESPONSE_TYPE.ERROR,
+                    ERROR_MESSAGE.UNAUTHORIZED_REQUEST
+                )
+            );
         }
     } catch (err) {
         return res.status(400).send(ERROR_MESSAGE.INVALID_TOKEN);
@@ -40,21 +45,26 @@ export const hasPermission = (permissionName: string, permission: string) => {
                 id: user_id
             }
         });
-        if(role_id?.role){
+        if (role_id?.role) {
             const role = await RolesModel.findOne({
                 attributes: ['role_permissions'],
                 where: {
                     id: role_id?.role
                 }
             });
-            if(role?.role_permissions){
-                const permissions = JSON.parse(role?.role_permissions);
-                if(!permissions || typeof permissions[permissionName] == 'undefined' || !permissions[permissionName]?.includes(permission)){
+            if (role?.role_permissions) {
+                let permissions = role?.role_permissions;
+                permissions = JSON.stringify(permissions);
+                permissions = JSON.parse(permissions);
+                if (!permissions || typeof permissions[permissionName] == 'undefined' || !permissions[permissionName]?.includes(permission)) {
                     res.status(403).send('Forbidden');
-                }else{
+                } else {
                     next();
                 }
             }
+        } else {
+            next();
+            // res.status(403).send('Forbidden');
         }
     };
 }

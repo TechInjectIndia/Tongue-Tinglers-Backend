@@ -73,7 +73,7 @@ const {
 // *       '404':
 // *         description: FollowUps not found
 
-router.get("/", FollowUpsController.getTodayFollowUps);
+router.get("/", hasPermission('followup', 'read'), FollowUpsController.getTodayFollowUps);
 // ====== FollowUps Ends ======
 
 export default router;

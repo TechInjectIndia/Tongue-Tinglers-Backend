@@ -12,15 +12,7 @@ export type TAddress = {
   updatedAt: Date;
 };
 
-export type TAddAddress = {
-  street: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
-};
-
-export type TEditAddress = {
+export type TPayloadAddress = {
   street: string;
   city: string;
   state: string;

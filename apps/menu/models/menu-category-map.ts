@@ -2,7 +2,7 @@ const { Op } = require("sequelize");
 import {
     TMenuCategoryRelation,
     TMenuFilters,
-    TAddMenuCategoryRelation,
+    TPayloadMenuCategoryRelation,
 } from "../../../types/menu";
 import { MenuCategoryMapModel } from "../../../database/schema";
 
@@ -11,7 +11,7 @@ import IBaseRepo from '../controllers/controller/IMenuCategoryMapController';
 export class MenuCategoryMapRepo implements IBaseRepo<TMenuCategoryRelation, TMenuFilters> {
     constructor() { }
 
-    public async assign(data: TAddMenuCategoryRelation): Promise<TMenuCategoryRelation> {
+    public async assign(data: TPayloadMenuCategoryRelation): Promise<TMenuCategoryRelation> {
         const response = await MenuCategoryMapModel.create(data);
         return response;
     }

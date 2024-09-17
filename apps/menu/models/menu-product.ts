@@ -1,9 +1,8 @@
 const { Op } = require("sequelize");
 import {
     TMenuProduct,
-    TAddMenuProduct,
     TMenuProductsList,
-    TEditMenuProduct,
+    TPayloadMenuProduct,
     TMenuProductFilters,
 } from "../../../types/menu/menu-product";
 import { MenuProductsModel } from "../../../database/schema";
@@ -53,12 +52,12 @@ export class MenuProductRepo implements IBaseRepo<TMenuProduct, TMenuProductFilt
         return data;
     }
 
-    public async create(data: TAddMenuProduct): Promise<TMenuProduct> {
+    public async create(data: TPayloadMenuProduct): Promise<TMenuProduct> {
         const response = await MenuProductsModel.create(data);
         return response;
     }
 
-    public async update(id: number, data: TEditMenuProduct): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TPayloadMenuProduct): Promise<[affectedCount: number]> {
         const response = await MenuProductsModel.update(data, {
             where: {
                 id,

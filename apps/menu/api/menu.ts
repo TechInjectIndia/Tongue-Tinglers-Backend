@@ -209,11 +209,11 @@ const {
  *         description: Menu not found
  */
 
-router.post("/create", validateCreateMenuBody, MenuController.create);
-router.get("/list", validateListMenuQuery, MenuController.list);
-router.get("/get/:id", validateEditMenuParams, MenuController.get);
-router.put("/update/:id", validateEditMenuParams, validateEditMenuBody, MenuController.update);
-router.delete("/delete", validateEditMultipleIdsBody, MenuController.delete);
+router.post("/create", hasPermission('menu', 'create'), validateCreateMenuBody, MenuController.create);
+router.get("/list",  hasPermission('menu', 'read'),validateListMenuQuery, MenuController.list);
+router.get("/get/:id",  hasPermission('menu', 'read'),validateEditMenuParams, MenuController.get);
+router.put("/update/:id", hasPermission('menu', 'update'), validateEditMenuParams, validateEditMenuBody, MenuController.update);
+router.delete("/delete", hasPermission('menu', 'delete'), validateEditMultipleIdsBody, MenuController.delete);
 
 // Menu Category Apis
 router.use("/product", menuProductRouter);

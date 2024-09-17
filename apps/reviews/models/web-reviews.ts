@@ -1,10 +1,8 @@
 const { Op } = require("sequelize");
 import {
     TReviews,
-    TEditReviews,
     TReviewsFilters,
     TReviewssList,
-    TAddReviews,
 } from "../../../types/reviews";
 import { ReviewsModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IWebReviewsController';

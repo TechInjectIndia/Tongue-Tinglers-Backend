@@ -74,6 +74,7 @@ export default class PermissionsController {
         try {
             const name = get(req?.body, "name", "");
             const active = get(req?.body, "active", 1);
+            const description = get(req?.body, "description", 1);
             const existingPermission = await new PermissionsRepo().getPermissionByName(name);
 
             if (!isEmpty(existingPermission)) {
@@ -87,7 +88,7 @@ export default class PermissionsController {
                     );
             }
 
-            const Permission = await new PermissionsRepo().create({ name, active });
+            const Permission = await new PermissionsRepo().create({ name, active, description });
             return res
                 .status(200)
                 .send(
@@ -111,17 +112,17 @@ export default class PermissionsController {
             const description = get(req?.body, "description", "");
             const active = get(req?.body, "active", 1);
 
-            const existingPermission = await new PermissionsRepo().get(id as number);
-            if (isEmpty(existingPermission)) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS
-                        )
-                    );
-            }
+            // const existingPermission = await new PermissionsRepo().get(id as number);
+            // if (isEmpty(existingPermission)) {
+            //     return res
+            //         .status(400)
+            //         .send(
+            //             sendResponse(
+            //                 RESPONSE_TYPE.ERROR,
+            //                 ERROR_MESSAGE.NOT_EXISTS
+            //             )
+            //         );
+            // }
 
             const checkPermissionExist = await new PermissionsRepo().checkPermissionExist(name as string, id as number);
             if (checkPermissionExist) {

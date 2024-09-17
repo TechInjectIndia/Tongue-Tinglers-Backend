@@ -6,14 +6,34 @@ import {
     TEditUser,
     TEditUserProfile,
     TUsersList,
-    TUserWithPermission
+    TUserWithPermission,
+    TUpdateUserReferralCode
 } from "../../../types";
 import { UserModel, RolesModel } from "../../../database/schema";
 import { USER_TYPE, USER_STATUS } from '../../../interfaces';
 import IBaseRepo from '../controllers/controller/IUserController';
+import { isEmpty } from "lodash";
 
 export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     constructor() { }
+
+    public async getByReferralCode(referralCode: string) {
+        const data = await UserModel.findOne({ where: { referralCode: referralCode } });
+        return data;
+    }
+
+    public async existsByReferralCode(referralCode: string): Promise<boolean> {
+        const count = await UserModel.count({ where: { referralCode: referralCode } });
+        return count > 0;
+    }
+
+    public async saveReferral(id: string, data: TUpdateUserReferralCode): Promise<[affectedCount: number]> {
+        return await UserModel.update(data, {
+            where: {
+                id,
+            },
+        });
+    }
 
     public async list(filters: TListFilters): Promise<TUsersList> {
         const total = await UserModel.count({
@@ -56,7 +76,6 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         } else {
             return { ...data, permissions: '' };
         }
-
     }
 
     public async create(data: TAddUser): Promise<TUser> {

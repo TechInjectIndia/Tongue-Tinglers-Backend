@@ -201,11 +201,11 @@ const { list, create, update, deleteCustomer, get } = CustomerController;
  *       '404':
  *         description: User not found
  */
-router.post("/create", validateCreateCustomerBody, create);
-router.get("/list", validateListCustomerQuery, list);
-router.get("/get/:id", validateEditCustomerParams, get);
-router.put("/update/:id", validateEditCustomerParams, validateEditCustomerBody, update);
-router.delete("/delete", validateEditMultipleIdsBody, deleteCustomer); // Soft delete single or multiple
+router.post("/create", hasPermission('customer', 'create'), validateCreateCustomerBody, create);
+router.get("/list", hasPermission('customer', 'read'), validateListCustomerQuery, list);
+router.get("/get/:id", hasPermission('customer', 'read'), validateEditCustomerParams, get);
+router.put("/update/:id", hasPermission('customer', 'update'), validateEditCustomerParams, validateEditCustomerBody, update);
+router.delete("/delete", hasPermission('customer', 'delete'), validateEditMultipleIdsBody, deleteCustomer); // Soft delete single or multiple
 // ====== Customers Routes Ends ======
 
 export default router;

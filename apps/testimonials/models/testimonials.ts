@@ -3,8 +3,7 @@ import {
     TTestimonials,
     TTestimonialsFilters,
     TTestimonialsList,
-    TAddTestimonials,
-    TEditTestimonials,
+    TPayloadTestimonials,
     TListFilters
 } from "../../../types";
 import { TestimonialsModel } from "../../../database/schema";
@@ -44,12 +43,12 @@ export class TestimonialsRepo implements IBaseRepo<TTestimonials, TListFilters> 
         return { total, data };
     }
 
-    public async create(data: TAddTestimonials): Promise<TTestimonials> {
+    public async create(data: TPayloadTestimonials): Promise<TTestimonials> {
         const response = await TestimonialsModel.create(data);
         return response;
     }
 
-    public async update(id: number, data: TEditTestimonials): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TPayloadTestimonials): Promise<[affectedCount: number]> {
         const response = await TestimonialsModel.update(data, {
             where: {
                 id,

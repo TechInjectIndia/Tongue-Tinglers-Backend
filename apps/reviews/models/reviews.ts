@@ -1,10 +1,9 @@
 const { Op } = require("sequelize");
 import {
     TReviews,
-    TEditReviews,
+    TAddReviews,
     TReviewsFilters,
     TReviewssList,
-    TAddReviews,
 } from "../../../types/reviews";
 import { ReviewsModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IReviewsController';
@@ -48,7 +47,7 @@ export class ReviewsRepo implements IBaseRepo<TReviews, TReviewsFilters> {
         return response;
     }
 
-    public async update(id: number, data: TEditReviews): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TAddReviews): Promise<[affectedCount: number]> {
         const response = await ReviewsModel.update(data, {
             where: {
                 id,

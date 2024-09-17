@@ -228,13 +228,13 @@ const {
  *       '404':
  *         description: products not found
  */
-router.post("/create", validateCreateProductsBody, RetortProductsController.create);
-router.get("/list", validateListProductsQuery, RetortProductsController.list);
-router.get("/get/:id", validateEditProductsParams, RetortProductsController.get);
-router.put("/update/:id", validateEditProductsParams, validateEditProductsBody, RetortProductsController.update);
-router.delete("/delete", validateEditMultipleIdsBody, RetortProductsController.delete);
+router.post("/create", hasPermission('retort', 'create'), validateCreateProductsBody, RetortProductsController.create);
+router.get("/list", hasPermission('retort', 'read'), validateListProductsQuery, RetortProductsController.list);
+router.get("/get/:id", hasPermission('retort', 'read'), validateEditProductsParams, RetortProductsController.get);
+router.put("/update/:id", hasPermission('retort', 'update'), validateEditProductsParams, validateEditProductsBody, RetortProductsController.update);
+router.delete("/delete", hasPermission('retort', 'delete'), validateEditMultipleIdsBody, RetortProductsController.delete);
 // ====== Products Ends ======
 
-router.post("/image/upload", upload.single('file'), RetortProductsController.uploadImage);
+router.post("/image/upload", hasPermission('retort', 'create'), upload.single('file'), RetortProductsController.uploadImage);
 
 export default router;

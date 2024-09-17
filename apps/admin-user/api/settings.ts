@@ -8,12 +8,20 @@ const { editSettings, getSettings, } = SettingsController;
 // ====== Settings Start ======
 /**
  * @swagger
- * /api/admin/settings:
+ * /api/admin/settings/{id}:
  *   get:
  *     summary: Get Settings
- *     tags: [Admin > User > Settings]
+ *     tags: [Admin > Settings]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         default: 1
+ *         schema:
+ *           type: string
+ *         description: ID
  *     responses:
  *       '200':
  *         description: Settings retrieved successfully
@@ -22,10 +30,10 @@ const { editSettings, getSettings, } = SettingsController;
  *       '404':
  *         description: Settings not found
  * 
- * /api/admin/Settings/update:
+ * /api/admin/Settings/{id}:
  *   put:
  *     summary: Update a Settings
- *     tags: [Admin > User > Settings]
+ *     tags: [Admin > Settings]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -75,8 +83,8 @@ const { editSettings, getSettings, } = SettingsController;
  *         description: Settings not found
  * 
  */
-router.get("/", getSettings);
-router.put("/", editSettings);
+router.get("/:id", hasPermission('settings', 'create'), getSettings);
+router.put("/:id", hasPermission('settings', 'update'), editSettings);
 // ====== Settings Routes Ends ======
 
 export default router;

@@ -8,7 +8,7 @@ export type TMenuCategoryRelation = {
   updatedAt: Date;
 };
 
-export type TAddMenuCategoryRelation = {
+export type TPayloadMenuCategoryRelation = {
   menuId: number;
   categoryId: number;
 };

@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import dotenvExpand from "dotenv-expand";
 import sgMail from "@sendgrid/mail";
 import { CONFIG } from "./config";
 import swaggerDocs from './swagger';
@@ -9,20 +8,21 @@ import cors from "cors";
 import router from "./routes";
 import { connectToDatabase } from "./config";
 require("./database/schema");
-const helmet = require('helmet');
-const helmetCsp = require('helmet-csp');
-const rateLimit = require('express-rate-limit');
-const xss = require('xss-clean');
+import helmet from 'helmet';
+import helmetCsp from 'helmet-csp';
+import rateLimit from 'express-rate-limit';
+import xss from 'xss-clean';
 
-const { RateLimiterMemory } = require('rate-limiter-flexible');
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 const rateLimiter = new RateLimiterMemory({
   points: 10, // Number of points
   duration: 1, // Per second
 });
-const expressSanitizer = require('express-sanitizer');
+import expressSanitizer from 'express-sanitizer';
 
-const env = dotenv.config({ path: `${__dirname}/.env` });
-dotenvExpand.expand(env);
+dotenv.config();
+// const env = dotenv.config({ path: `${__dirname}/.env` });
+// dotenvExpand.expand(env);
 
 declare global {
   interface BigInt {

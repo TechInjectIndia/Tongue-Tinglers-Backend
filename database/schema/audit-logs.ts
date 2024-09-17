@@ -7,7 +7,7 @@ interface AuditLogsCreationAttributes extends Optional<TAuditLog, 'id' | 'create
 
 class AuditLogsModel extends Model<TAuditLog, AuditLogsCreationAttributes> implements TAuditLog {
     public id!: number;
-    public user_id!: number;
+    public user_id!: string;
     public description!: string;
     public activity_type!: string;
     public updatedBy!: string;

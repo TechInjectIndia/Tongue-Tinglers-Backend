@@ -1,5 +1,5 @@
-const admin = require('firebase-admin');
-const serviceAccount = require('../firebase-adminsdk.json');
+import admin, { ServiceAccount } from 'firebase-admin';
+import serviceAccountJson from '../firebase-adminsdk.json';
 import { CONFIG } from '../config';
 
 type TFirebaseUser = {
@@ -9,6 +9,10 @@ type TFirebaseUser = {
   password: string;
   disabled: boolean;
 }
+
+const serviceAccount: ServiceAccount = serviceAccountJson as ServiceAccount;
+console.log(CONFIG.BUCKET_URL);
+
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

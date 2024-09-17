@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { TQueryFilters, TPayloadAddress, TPayloadAddress, TAddress, TAddresssList } from '../../../../types'
+import { TQueryFilters, TPayloadAddress, TAddress, TAddresssList } from '../../../../types'
 
 interface IController<T, F extends TQueryFilters> {
     list(user_id: number, filters: F): Promise<TAddresssList>;

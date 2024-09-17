@@ -3,7 +3,7 @@ const { OrderItem } = require("sequelize");
 // AuditLogs type Starts
 export type TAuditLog = {
   id: number;
-  user_id: number;
+  user_id: string;
   description: string;
   activity_type: string;
   createdAt: Date;

@@ -13,16 +13,7 @@ export type TMenuProduct = {
   updatedAt: Date;
 };
 
-export type TEditMenuProduct = {
-  name: string;
-  slug: string;
-  description: string;
-  images: string;
-  price: number;
-  active: string;
-};
-
-export type TAddMenuProduct = {
+export type TPayloadMenuProduct = {
   name: string;
   slug: string;
   description: string;

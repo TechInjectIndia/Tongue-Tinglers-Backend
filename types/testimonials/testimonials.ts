@@ -2,7 +2,7 @@ const { OrderItem } = require("sequelize");
 
 export type TTestimonials = {
   id: number;
-  user_id: number;
+  user_id: string;
   testimonial_text: string;
   rating: number;
   item_id: string;
@@ -13,19 +13,10 @@ export type TTestimonials = {
   updatedAt: Date;
 };
 
-export type TEditTestimonials = {
+export type TPayloadTestimonials = {
   rating: number,
   approved: number,
-  user_id: number;
-  testimonial_text: string;
-  item_id: string;
-  item_type: string;
-};
-
-export type TAddTestimonials = {
-  rating: number,
-  approved: number,
-  user_id: number;
+  user_id: string;
   date_submitted: Date;
   testimonial_text: string;
   item_id: string;

@@ -201,11 +201,11 @@ const { list, create, update, get, deleteFranchise } = FranchiseController;
  *       '404':
  *         description: franchise not found
  */
-router.post("/create", validateCreateFranchiseBody, create);
-router.get("/list", validateListFranchiseQuery, list);
-router.get("/get/:id", validateEditFranchiseParams, get);
-router.put("/update/:id", validateEditFranchiseParams, validateEditFranchiseBody, update);
-router.delete("/delete", validateEditMultipleIdsBody, deleteFranchise); // Soft delete single or multiple
+router.post("/create", hasPermission('franchise', 'create'), validateCreateFranchiseBody, create);
+router.get("/list", hasPermission('franchise', 'read'), validateListFranchiseQuery, list);
+router.get("/get/:id", hasPermission('franchise', 'read'), validateEditFranchiseParams, get);
+router.put("/update/:id", hasPermission('franchise', 'update'), validateEditFranchiseParams, validateEditFranchiseBody, update);
+router.delete("/delete", hasPermission('franchise', 'delete'), validateEditMultipleIdsBody, deleteFranchise); // Soft delete single or multiple
 // ====== Franchises Routes Ends ======
 
 export default router;

@@ -15,6 +15,7 @@ export type TUser = {
   status: string;
   cart: string;
   access_token: string;
+  referralCode: string;
   refresh_token: string;
   updatedBy: string;
   deletedBy: string;
@@ -40,6 +41,7 @@ export type TAddUser = {
   phoneNumber: string;
   type: string;
   role: number;
+  referralCode: string;
 };
 
 export type TEditUser = {
@@ -66,7 +68,7 @@ export type TEditUserProfile = {
 };
 
 export type TUpdateUserToken = {
-  user_id: number;
+  user_id: string;
   refresh_token: string;
   lastLoginAt: Date;
   lastLoginIp: string;
@@ -84,4 +86,8 @@ export type TUpdateUserProfile = {
 export type TUpdateUserPassword = {
   user_id: string;
   password: string;
+};
+
+export type TUpdateUserReferralCode = {
+  referralCode: string;
 };

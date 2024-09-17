@@ -23,7 +23,7 @@ export class PetPoojaRepo implements IBaseRepo<TEditUser, TListFilters> {
         return data;
     }
 
-    public async getInventory(franchiseId: number): Promise<any> {
+    public async getInventory(franchiseId: string): Promise<any> {
         const response = await axios.get(`${apiUrl}/inventory`, {
             headers: {
                 'Authorization': `Bearer ${apiKey}`
@@ -31,14 +31,10 @@ export class PetPoojaRepo implements IBaseRepo<TEditUser, TListFilters> {
         });
 
         // Save inventory to database, date wise, ( franchiseId )
-        // const response = await PermissionModel.create(data);
-        // return response;
     }
 
-    public async savePetPoojaOrder(franchiseId: number): Promise<any> {
+    public async savePetPoojaOrder(franchiseId: string): Promise<any> {
 
         // Save new Order        
-        // const response = await PermissionModel.create(data);
-        // return response;
     }
 }

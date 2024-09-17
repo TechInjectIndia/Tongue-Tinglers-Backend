@@ -72,7 +72,8 @@ export default class LeadController {
                 await new FranchiseRepo().create({
                     ...payload,
                     password: hashedPassword,
-                    firebaseUid: firebaseUser.uid
+                    firebaseUid: firebaseUser.uid,
+                    referralCode: ''
                 });
 
                 let payloadLead = { status: LEAD_STATUS.CONVERTED };

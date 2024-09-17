@@ -27,9 +27,14 @@ export const ERROR_MESSAGE = {
     EXISTS: "already exists",
     NOT_EXISTS: "does not exists",
     UPDATED: "updated successfully",
+    REFERRAL_CODE_REQUIRED: 'Referral code is required',
+    REFERRAL_CODE_NOT_EXISTS: 'Referral code does not exist',
+    REFERRAL_CODE_USED: 'Referral code has already been used'
 };
 
 export const SUCCESS_MESSAGE = {
+    REFERRAL_CODE_CREATED: 'Referral code created successfully',
+    REFERRAL_CODE_VALID: 'Referral code is valid',
     ASSIGNED: "Assigned successfully",
     UNASSIGNED: "Un-assigned successfully",
     LOGGED_IN: "Logged In",

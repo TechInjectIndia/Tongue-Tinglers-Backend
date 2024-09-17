@@ -43,7 +43,7 @@ const {
  *                default: "description"
  *              role_permissions:
  *                type: text
- *                default: '{"user":["create","update", "delete", "read"]}'
+ *                default: "{\"user\":[\"create\",\"update\",\"delete\",\"read\"]}"
  *              active:
  *                type: boolean
  *                default: 0 
@@ -83,6 +83,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
+ * 
  * /api/admin/roles/get/{id}:
  *   get:
  *     summary: Get a role by ID
@@ -183,11 +184,11 @@ const {
  *       '404':
  *         description: roles not found
  */
-router.post("/create", validateCreateRoleBody, RolesController.create);
-router.get("/list", validateListRoleQuery, RolesController.list);
-router.get("/get/:id", validateEditRoleParams, RolesController.get);
-router.put("/update/:id", validateEditRoleParams, validateEditRoleBody, RolesController.update);
-router.delete("/delete", validateEditMultipleIdsBody, RolesController.deleteRole);
+router.post("/create", hasPermission('roles', 'create'), validateCreateRoleBody, RolesController.create);
+router.get("/list", hasPermission('roles', 'read'), validateListRoleQuery, RolesController.list);
+router.get("/get/:id", hasPermission('roles', 'read'), validateEditRoleParams, RolesController.get);
+router.put("/update/:id", hasPermission('roles', 'update'), validateEditRoleParams, validateEditRoleBody, RolesController.update);
+router.delete("/delete", hasPermission('roles', 'delete'), validateEditMultipleIdsBody, RolesController.deleteRole);
 // ====== Admin Roles Ends ======
 
 export default router;

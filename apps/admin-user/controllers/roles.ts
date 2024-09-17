@@ -13,10 +13,6 @@ export default class RolesController {
             const permissions = get(req?.body, "role_permissions", '');
             const description = get(req?.body, "description", '');
 
-            // let role_permissions: any = '';
-            // if (permissions != '') {
-            //     role_permissions = JSON.parse(permissions);
-            // }
             const existingRole = await new RolesRepo().getRoleByName(name);
             if (existingRole) {
                 return res

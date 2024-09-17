@@ -1,10 +1,10 @@
-import { TQueryFilters, TMenuProduct, TEditMenuProduct, TMenuProductsList, TAddMenuProduct, } from '../../../../types'
+import { TQueryFilters, TMenuProductsList, TPayloadMenuProduct, } from '../../../../types'
 
 interface IMenuProductController<T, F extends TQueryFilters> {
     get(id: number): Promise<T | null>;
-    create(payload: TAddMenuProduct): Promise<T>;
+    create(payload: TPayloadMenuProduct): Promise<T>;
     list(filters: F): Promise<TMenuProductsList>;
-    update(id: number, payload: TEditMenuProduct): Promise<[affectedCount: number]>;
+    update(id: number, payload: TPayloadMenuProduct): Promise<[affectedCount: number]>;
     delete(ids: number[]): Promise<number>;
     getMenuProductByAttr(whereName: string, whereVal: any, getAttributes: any): Promise<T | null>;
 }

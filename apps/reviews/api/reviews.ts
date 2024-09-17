@@ -192,11 +192,11 @@ const {
  *         description: Reviews not found
  */
 
-router.post("/create", validateCreateReviewsBody, ReviewsController.create);
-router.get("/list", validateListReviewsQuery, ReviewsController.list);
-router.get("/get/:id", validateEditReviewsParams, ReviewsController.get);
-router.put("/update/:id", validateEditReviewsParams, validateEditReviewsBody, ReviewsController.update);
-router.delete("/delete", validateEditMultipleIdsBody, ReviewsController.delete);
+router.post("/create", hasPermission('reviews', 'create'), validateCreateReviewsBody, ReviewsController.create);
+router.get("/list", hasPermission('reviews', 'read'), validateListReviewsQuery, ReviewsController.list);
+router.get("/get/:id", hasPermission('reviews', 'read'), validateEditReviewsParams, ReviewsController.get);
+router.put("/update/:id", hasPermission('reviews', 'update'), validateEditReviewsParams, validateEditReviewsBody, ReviewsController.update);
+router.delete("/delete", hasPermission('reviews', 'delete'), validateEditMultipleIdsBody, ReviewsController.delete);
 // ====== Reviews Ends ======
 
 export default router;

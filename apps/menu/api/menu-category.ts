@@ -3,6 +3,7 @@ import MenuCategoryController from "../controllers/menu-category";
 import * as MenuCategoryValidation from "../validations/menu-category";
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
+import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 
@@ -199,11 +200,11 @@ const {
  *       '404':
  *         description: Menu Category not found
  */
-router.post("/create", validateCreateMenuCategoryBody, MenuCategoryController.create);
-router.get("/list", validateListMenuCategoryQuery, MenuCategoryController.list);
-router.get("/get/:id", validateEditMenuCategoryParams, MenuCategoryController.get);
-router.put("/update/:id", validateEditMenuCategoryParams, validateEditMenuCategoryBody, MenuCategoryController.update);
-router.delete("/delete", validateEditMultipleIdsBody, MenuCategoryController.delete);
+router.post("/create", hasPermission('menu', 'create'), validateCreateMenuCategoryBody, MenuCategoryController.create);
+router.get("/list", hasPermission('menu', 'read'), validateListMenuCategoryQuery, MenuCategoryController.list);
+router.get("/get/:id", hasPermission('menu', 'read'), validateEditMenuCategoryParams, MenuCategoryController.get);
+router.put("/update/:id", hasPermission('menu', 'update'), validateEditMenuCategoryParams, validateEditMenuCategoryBody, MenuCategoryController.update);
+router.delete("/delete", hasPermission('menu', 'delete'), validateEditMultipleIdsBody, MenuCategoryController.delete);
 // ====== Menu Ends ======
 
 router.post("/image/upload", upload.single('file'), MenuCategoryController.upload);

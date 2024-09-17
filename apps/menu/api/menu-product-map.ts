@@ -1,6 +1,7 @@
 import * as express from "express";
 import MenuProductCategoryMapController from "../controllers/menu-product-map";
 import * as MenuCategoryMapValidation from "../validations/menu-product-map";
+import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 
@@ -72,8 +73,8 @@ const {
  *       '404':
  *         description: Menu Category not found
  */
-router.post("/assign", validateCreateMenuCategoryMapBody, MenuProductCategoryMapController.assign);
-router.post("/unassign", validateEditMultipleIdsBody, MenuProductCategoryMapController.unassign);
+router.post("/assign", hasPermission('menu', 'update'), validateCreateMenuCategoryMapBody, MenuProductCategoryMapController.assign);
+router.post("/unassign", hasPermission('menu', 'update'), validateEditMultipleIdsBody, MenuProductCategoryMapController.unassign);
 // ====== Menu Ends ======
 
 export default router;

@@ -203,13 +203,13 @@ const {
  *       '404':
  *         description: Product Category not found
  */
-router.post("/create", validateCreateProductCategoryBody, RetortProductCategoryController.create);
-router.get("/list", validateListProductCategoryQuery, RetortProductCategoryController.list);
-router.get("/get/:id", validateEditProductCategoryParams, RetortProductCategoryController.get);
-router.put("/update/:id", validateEditProductCategoryParams, validateEditProductCategoryBody, RetortProductCategoryController.update);
-router.delete("/delete", validateEditMultipleIdsBody, RetortProductCategoryController.delete);
-// ====== ProductCategory Ends ======
+router.post("/create", hasPermission('retort', 'create'), validateCreateProductCategoryBody, RetortProductCategoryController.create);
+router.get("/list", hasPermission('retort', 'read'), validateListProductCategoryQuery, RetortProductCategoryController.list);
+router.get("/get/:id", hasPermission('retort', 'read'), validateEditProductCategoryParams, RetortProductCategoryController.get);
+router.put("/update/:id", hasPermission('retort', 'update'), validateEditProductCategoryParams, validateEditProductCategoryBody, RetortProductCategoryController.update);
+router.delete("/delete", hasPermission('retort', 'delete'), validateEditMultipleIdsBody, RetortProductCategoryController.delete);
+// ====== Product Category Ends ======
 
-router.post("/image/upload", upload.single('file'), RetortProductCategoryController.uploadImage);
+router.post("/image/upload", hasPermission('retort', 'create'), upload.single('file'), RetortProductCategoryController.uploadImage);
 
 export default router;

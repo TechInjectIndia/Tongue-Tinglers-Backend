@@ -3,6 +3,7 @@ import MenuProductController from "../controllers/menu-product";
 import * as MenuProductValidation from "../validations/menu-product";
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
+import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 
@@ -226,11 +227,11 @@ const {
  *       '404':
  *         description: Menu Product not found
  */
-router.post("/create", validateCreateMenuProductBody, MenuProductController.create);
-router.get("/list", validateListMenuProductQuery, MenuProductController.list);
-router.get("/get/:id", validateEditMenuProductParams, MenuProductController.get);
-router.put("/update/:id", validateEditMenuProductParams, validateEditMenuProductBody, MenuProductController.update);
-router.delete("/delete", validateEditMultipleIdsBody, MenuProductController.delete);
+router.post("/create", hasPermission('menu', 'create'), validateCreateMenuProductBody, MenuProductController.create);
+router.get("/list", hasPermission('menu', 'read'), validateListMenuProductQuery, MenuProductController.list);
+router.get("/get/:id", hasPermission('menu', 'read'), validateEditMenuProductParams, MenuProductController.get);
+router.put("/update/:id", hasPermission('menu', 'update'), validateEditMenuProductParams, validateEditMenuProductBody, MenuProductController.update);
+router.delete("/delete", hasPermission('menu', 'delete'), validateEditMultipleIdsBody, MenuProductController.delete);
 // ====== Menu Ends ======
 
 router.post("/image/upload", upload.single('file'), MenuProductController.upload);

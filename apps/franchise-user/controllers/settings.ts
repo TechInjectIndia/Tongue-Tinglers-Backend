@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { TEditSettings } from "../../../types";
+import { TPayloadSettings } from "../../../types";
 import { sendResponse, createPassword } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { Admin } from '../models/settings';
@@ -46,7 +46,7 @@ export default class SettingsController {
 //             const phone_code = get(req?.body, "phone_code", "");
 //             const address = get(req?.body, "address", "");
 
-//             let payload: TEditSettings = {
+//             let payload: TPayloadSettings = {
 //                 full_name,
 //                 contact_number,
 //                 phone_code,

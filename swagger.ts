@@ -178,6 +178,7 @@ const options = {
         './routes/*.ts',
         './apps/pet-pooja/api/*.ts',
         './apps/zoho-sign/api/*.ts',
+        './apps/referral/api/*.ts',
         './apps/auth/api/*.ts',
         './apps/address/api/*.ts',
         './apps/test-user/api/*.ts',

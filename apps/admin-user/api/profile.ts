@@ -101,8 +101,8 @@ const { update, get, uploadImage } = ProfileController;
  *         description: Profile not found
  */
 
-router.get("/", get);
-router.put("/", validateEditProfileBody, update);
+router.get("/", hasPermission('profile', 'create'), get);
+router.put("/", hasPermission('profile', 'update'), validateEditProfileBody, update);
 // ====== Profile Routes Ends ======
 
 router.post("/image/upload", upload.single('file'), uploadImage);

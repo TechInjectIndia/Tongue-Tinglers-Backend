@@ -11,20 +11,6 @@ const {
 // ====== Zoho Sign Starts ======
 /**
  * @swagger
- * /api/zoho-sign/oauth/callback:
- *   get:
- *     summary: oauth/callback
- *     tags: [Zoho Sign]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       '200':
- *         description: Zoho Sign created successfully
- *       '401':
- *         description: Unauthorized
- *       '404':
- *         description: Zoho Sign not found
- * 
  * /api/zoho-sign/create-document:
  *   post:
  *     summary: create-document
@@ -52,25 +38,12 @@ const {
  *         description: Unauthorized
  *       '404':
  *         description: Zoho Sign not found
- * 
- * /api/zoho-sign/sign-document:
- *   post:
- *     summary: sign-document
- *     tags: [Zoho Sign]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       '200':
- *         description: Zoho Sign created successfully
- *       '401':
- *         description: Unauthorized
- *       '404':
- *         description: Zoho Sign not found
  */
 
 router.post('/create-document', ZohoSignController.sendDocumentUsingTemplate);
 router.post('/get-documents', ZohoSignController.getDocuments);
-router.post('/sign-document', ZohoSignController.signDocument);
+router.post('/callback', ZohoSignController.callback);
+// router.post('/sign-document', ZohoSignController.signDocument);
 // ====== Zoho Sign Ends ======
 
 export default router;

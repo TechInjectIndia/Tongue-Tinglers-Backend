@@ -10,13 +10,9 @@ export type TPermission = {
   updatedAt: Date;
 };
 
-export type TEditPermission = {
+export type TPermissionPayload = {
   name: string;
-  description: string;
-  active: number;
-};
-export type TAddPermission = {
-  name: string;
+  description?: string;
   active: number;
 };
 

@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../config";
 import { TRole } from "../../types";
-const { INTEGER, STRING, TEXT, BOOLEAN, DATE, NOW } = DataTypes;
+const { INTEGER, STRING, TEXT, BOOLEAN, DATE, NOW, JSONB } = DataTypes;
 
 interface PermissionsCreationAttributes extends Optional<TRole, 'id' | 'createdAt' | 'updatedAt'> { }
 
@@ -31,7 +31,7 @@ RolesModel.init({
         allowNull: true,
     },
     role_permissions: {  // 'Roles & Permissions relations'
-        type: TEXT,
+        type: JSONB,
         allowNull: true,
     },
     active: {

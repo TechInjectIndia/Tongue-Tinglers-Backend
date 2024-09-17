@@ -13,7 +13,7 @@ export type TSettings = {
   updatedAt: Date;
 };
 
-export type TEditSettings = {
+export type TPayloadSettings = {
   key: string;
   value?: string;
   type: string;

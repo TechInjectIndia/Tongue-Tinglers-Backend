@@ -9,12 +9,7 @@ export type TMenuCategory = {
   updatedAt: Date;
 };
 
-export type TEditMenuCategory = {
-  name: string;
-  status: string;
-};
-
-export type TAddMenuCategory = {
+export type TPayloadMenuCategory = {
   name: string;
   status: string;
 };

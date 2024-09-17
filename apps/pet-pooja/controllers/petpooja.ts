@@ -7,10 +7,9 @@ import { get } from "lodash";
 export default class PetPoojaController {
     static async newOrderPlaced(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log('hi')
             const franchiseId = get(req.body, 'franchiseId', '');
-
-            // const orderFromPetPooja = await new PetPoojaRepo().savePetPoojaOrder(franchiseId as number);
+            const orderDetails = get(req.body, 'order_details', '');
+            const orderFromPetPooja = await new PetPoojaRepo().savePetPoojaOrder(franchiseId as string);
             return res
                 .status(200)
                 .send(
@@ -29,7 +28,6 @@ export default class PetPoojaController {
 
     static async getInventory(req: Request, res: Response, next: NextFunction) {
         try {
-            // get all franchise
             const existingFranchisee = await new PetPoojaRepo().getAllFranchise();
 
             // Api Call Pet Pooja

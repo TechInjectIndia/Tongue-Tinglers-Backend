@@ -75,7 +75,7 @@ export type TEditFranchiseProfile = {
 };
 
 export type TUpdateFranchiseToken = {
-  user_id: number;
+  user_id: string;
   refresh_token: string;
   lastLoginAt: Date;
   lastLoginIp: string;

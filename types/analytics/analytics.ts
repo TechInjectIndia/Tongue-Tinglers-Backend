@@ -3,7 +3,7 @@ const { OrderItem } = require("sequelize");
 // Analyticss type Starts
 export type TAnalytics = {
   id: number;
-  user_id: number;
+  user_id: string;
   description: string;
   activity_type: string;
   createdAt: Date;

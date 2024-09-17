@@ -3,8 +3,7 @@ import {
     TRole,
     TRoleFilters,
     TRolesList,
-    TAddRole,
-    TEditRole,
+    TRolePayload,
     TListFilters,
     TUser
 } from "../../../types";
@@ -64,12 +63,13 @@ export class RolesRepo implements IBaseRepo<TRole, TListFilters> {
         return { total, data };
     }
 
-    public async create(data: TAddRole): Promise<TRole> {
-        const response = await RolesModel.create(data);
+    public async create(data: TRolePayload): Promise<TRole> {
+        const permissions = JSON.parse(data.role_permissions)
+        const response = await RolesModel.create({ ...data, role_permissions: permissions });
         return response;
     }
 
-    public async update(id: number, data: TEditRole): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TRolePayload): Promise<[affectedCount: number]> {
         const response = await RolesModel.update(data, {
             where: {
                 id,

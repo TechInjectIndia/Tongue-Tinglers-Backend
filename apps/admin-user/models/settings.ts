@@ -1,18 +1,18 @@
 const { Op } = require("sequelize");
 import {
     TSettings,
-    TEditUserProfile
+    TPayloadSettings
 } from "../../../types";
-import { UserModel } from "../../../database/schema";
+import { SettingsModel } from "../../../database/schema";
 
 export class SettingsRepo {
     constructor() { }
 
     public async editSettings(
         id: number,
-        data: TEditUserProfile
+        data: TPayloadSettings
     ): Promise<[affectedCount: number]> {
-        return await UserModel.update(data, {
+        return await SettingsModel.update(data, {
             where: {
                 id,
             },
@@ -20,22 +20,9 @@ export class SettingsRepo {
     }
 
     public async get(id: number): Promise<TSettings | any> {
-        const data = await UserModel.findOne({
-            attributes: [
-                "id",
-                "email",
-                "full_name",
-                "contact_number",
-                "phone_code",
-                "address",
-                "lastLoginAt",
-                "lastLoginIp",
-                "createdAt",
-                "active",
-            ],
+        const data = await SettingsModel.findOne({
             where: {
                 id,
-                type: 'admin'
             },
         });
         return data;

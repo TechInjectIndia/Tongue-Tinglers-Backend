@@ -3,19 +3,122 @@ const axios = require('axios');
 import { ZohoSignRepo } from '../models/zohosign';
 import { AdminRepo } from '../../admin-user/models/user';
 import { sendResponse } from "../../../libraries";
-const FormData = require('form-data');
-const fs = require('fs');
+import FormData from 'form-data';
+import fs from 'fs';
+import crypto from 'crypto';
 
 const { ZOHO_API_URL } = process.env;
 
+// Your webhook secret key (ensure you use a secure method to store this)
+const WEBHOOK_SECRET = 'b0FzwfdoDpvJ2FjPZdL4flyDZm2opq5ri5UPaVJyB78VwgPF1sy'; // Replace with your actual secret key
+
 export default class ZohoSignController {
+
+    // Validate sign for webhook
+    static async validateSignature(req: Request, res: Response, next: NextFunction) {
+        // Function to validate the HMAC signature
+        const receivedSignature = req.headers['x-zoho-sign-webhook-signature'];
+        const computedSignature = crypto.createHmac('sha256', WEBHOOK_SECRET).update(JSON.stringify(req.body)).digest('hex');
+
+        if (receivedSignature === computedSignature) {
+            next(); // Signature is valid, proceed to the handler
+        } else {
+            res.status(400).send('Invalid signature');
+        }
+    }
+
+    // Webhook endpoint
+    static async callback(req: Request, res: Response, next: NextFunction) {
+        const payload = req.body;
+
+        // Extract and process notifications data
+        const notifications = payload.notifications || {};
+        const performedByEmail = notifications.performed_by_email;
+        const performedByName = notifications.performed_by_name;
+        const performedAt = notifications.performed_at;
+        const reason = notifications.reason;
+        const activity = notifications.activity;
+        const operationType = notifications.operation_type;
+        const actionId = notifications.action_id;
+        const ipAddress = notifications.ip_address;
+
+        // Convert timestamp from milliseconds to a Date object
+        const performedAtDate = new Date(performedAt);
+
+        // Log the data
+        console.log(`Operation performed by: ${performedByName} (${performedByEmail})`);
+        console.log(`Timestamp: ${performedAtDate}`);
+        console.log(`Reason: ${reason}`);
+        console.log(`Activity: ${activity}`);
+        console.log(`Operation Type: ${operationType}`);
+        console.log(`Action ID: ${actionId}`);
+        console.log(`IP Address: ${ipAddress}`);
+
+        // Extract and process requests data
+        const requests = payload.requests || {};
+        const requestName = requests.request_name;
+        const requestId = requests.request_id;
+        const documentIds = requests.document_ids || [];
+
+        // Log the requests data
+        console.log(`Request Name: ${requestName}`);
+        console.log(`Request ID: ${requestId}`);
+
+        documentIds.forEach(doc => {
+            const documentName = doc.document_name;
+            const documentId = doc.document_id;
+            console.log(`Document Name: ${documentName}`);
+            console.log(`Document ID: ${documentId}`);
+        });
+
+        // Handle different operation types
+        switch (operationType) {
+            case 'RequestSubmitted':
+                console.log('A new request has been submitted.');
+                break;
+            case 'RequestViewed':
+                console.log('A request has been viewed.');
+                break;
+            case 'RequestSigningSuccess':
+                console.log('A document has been signed successfully.');
+                break;
+            case 'RequestCompleted':
+                console.log('The request has been completed.');
+                break;
+            case 'RequestRejected':
+                console.log('The request has been rejected.');
+                break;
+            case 'RequestRecalled':
+                console.log('The request has been recalled.');
+                break;
+            case 'RequestForwarded':
+                console.log('The request has been forwarded to another person.');
+                break;
+            case 'RequestExpired':
+                console.log('The request has expired.');
+                break;
+            default:
+                console.log('Unknown operation type.');
+                break;
+        }
+
+        // Respond to acknowledge receipt
+        res.json({ status: 'success' });
+    };
+
+    // Send document to franchise using template
     static async sendDocumentUsingTemplate(req: Request, res: Response, next: NextFunction) {
         const accessToken = await new ZohoSignRepo().getAccessTokenZoho();
         try {
             const templateId = "72565000000032727";
             const franchiseId = "72565000000032727";
             const franchiseDetails = await new AdminRepo().get(franchiseId as string)
+            if (!franchiseDetails) {
+                res.status(403).json('No franchise found');
+            }
             const getTemplate = await new ZohoSignRepo().getTemplates(templateId as string);
+            console.log(getTemplate);
+
             const jsonData = {
                 "templates": {
                     "field_data": {
@@ -28,8 +131,8 @@ export default class ZohoSignController {
                     },
                     "actions": [
                         {
-                            "recipient_name": "lovepreet",
-                            "recipient_email": "lovepreetmatrixecho@gmail.com",
+                            "recipient_name": "nav",
+                            "recipient_email": "navdeepsaroya4@gmail.com",
                             "action_id": getTemplate.templates.actions[0].action_id,
                             "action_type": getTemplate.templates.actions[0].action_type,
                             "signing_order": 1,
@@ -55,6 +158,7 @@ export default class ZohoSignController {
             };
 
             axios.request(config).then((response) => {
+                console.log(response)
                 res.status(200).json(response.data.message);
             }).catch((error) => {
                 console.log(error);
@@ -64,6 +168,7 @@ export default class ZohoSignController {
         }
     };
 
+    // Create new document
     static async createDocument(req: Request, res: Response, next: NextFunction) {
         const accessToken = await new ZohoSignRepo().getAccessTokenZoho();
         try {
@@ -116,6 +221,7 @@ export default class ZohoSignController {
         }
     };
 
+    // Get all the documents
     static async getDocuments(req: Request, res: Response, next: NextFunction) {
         const accessToken = await new ZohoSignRepo().getAccessTokenZoho();
         try {
@@ -130,7 +236,7 @@ export default class ZohoSignController {
         }
     };
 
-
+    // Sign documents
     static async signDocument(req: Request, res: Response, next: NextFunction) {
         try {
             const accessToken = await new ZohoSignRepo().getAccessTokenZoho();

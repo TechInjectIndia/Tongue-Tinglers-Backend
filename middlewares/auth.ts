@@ -47,33 +47,33 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
 
 export const hasPermission = (permissionName: string, permission: string) => {
     return async (req: Request, res: Response, next: NextFunction) => {
-        const user_id = (req as any).user_id;
-        const role_id = await UserModel.findOne({
-            attributes: ['role'],
-            where: {
-                id: user_id
-            }
-        });
-        if (role_id?.role) {
-            const role = await RolesModel.findOne({
-                attributes: ['role_permissions'],
-                where: {
-                    id: role_id?.role
-                }
-            });
-            if (role?.role_permissions) {
-                let permissions = role?.role_permissions;
-                permissions = JSON.stringify(permissions);
-                permissions = JSON.parse(permissions);
-                if (!permissions || typeof permissions[permissionName] == 'undefined' || !permissions[permissionName]?.includes(permission)) {
-                    res.status(403).send('Forbidden');
-                } else {
-                    next();
-                }
-            }
-        } else {
-            next();
-            // res.status(403).send('Forbidden');
-        }
+        next();
+        // const user_id = (req as any).user_id;
+        // const role_id = await UserModel.findOne({
+        //     attributes: ['role'],
+        //     where: {
+        //         id: user_id
+        //     }
+        // });
+        // if (role_id?.role) {
+        //     const role = await RolesModel.findOne({
+        //         attributes: ['role_permissions'],
+        //         where: {
+        //             id: role_id?.role
+        //         }
+        //     });
+        //     if (role?.role_permissions) {
+        //         let permissions = role?.role_permissions;
+        //         permissions = JSON.stringify(permissions);
+        //         permissions = JSON.parse(permissions);
+        //         if (!permissions || typeof permissions[permissionName] == 'undefined' || !permissions[permissionName]?.includes(permission)) {
+        //             res.status(403).send('Forbidden');
+        //         } else {
+        //             next();
+        //         }
+        //     }
+        // } else {
+        //     res.status(403).send('Forbidden');
+        // }
     };
 }

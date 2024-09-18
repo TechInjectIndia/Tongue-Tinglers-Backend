@@ -21,11 +21,19 @@ const router = express.Router();
  *            required:
  *              - templateId
  *              - franchiseId
+ *              - recipientName
+ *              - recipientEmail
  *              - prefilledValues
  *            properties:
  *              templateId:
  *                type: string
  *                default: admin
+ *              recipientName:
+ *                type: string
+ *                default: admin
+ *              recipientEmail:
+ *                type: string
+ *                default: "admin@gmail.com"
  *              franchiseId:
  *                type: string
  *              prefilledValues:

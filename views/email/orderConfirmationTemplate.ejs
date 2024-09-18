@@ -1,0 +1,24 @@
+<div class="container">
+    <h1 class="header">Order Confirmation</h1>
+    <p>Dear {{customerName}},</p>
+    <p>Thank you for your order! Here are your order details:</p>
+
+    <h3>Order Details</h3>
+    <p><strong>Order ID:</strong> {{orderId}}</p>
+    <p><strong>Total Price:</strong> ${{totalPrice}}</p>
+    <p><strong>Order Status:</strong> {{orderStatus}}</p>
+    <p><strong>Shipping Address:</strong> {{shippingAddress}}</p>
+
+    <h3>Items Ordered</h3>
+    <ul>
+        {{#each items}}
+        <li>{{this.name}} (x{{this.quantity}}) - ${{this.price}}</li>
+        {{/each}}
+    </ul>
+
+    <p>If you have any questions, feel free to reach out!</p>
+
+    <div class="footer">
+        <p>Thank you for choosing us!</p>
+    </div>
+</div>

@@ -13,7 +13,7 @@ export default class CampaignController {
             const status = EMAIL_STATUS.DELIVERED;
 
             const getAllSubscribers = await new CampaignRepo().getAllSubscribersByCampaignId(campaignId as number);
-            console.log(getAllSubscribers)
+            // console.log(getAllSubscribers)
             // set email for all subscribers
             let subscriberId = 1;
             // const campaign = await new EmailRepo().update(campaignId, subscriberId, status);

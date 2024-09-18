@@ -20,9 +20,18 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
         const decodedToken = await verifyFirebaseToken(idToken);
         if (decodedToken && decodedToken?.user_id) {
             const user = await getUserByFirebaseUid(decodedToken?.user_id);
-            (req as any).firebase_uid = decodedToken?.user_id;
-            (req as any).user_id = user?.id;
-            next();
+            if(user){
+                (req as any).firebase_uid = decodedToken?.user_id;
+                (req as any).user_id = user?.id;
+                next();
+            }else{
+                return res.status(401).send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.UNAUTHORIZED_REQUEST
+                    )
+                );
+            }
         } else {
             return res.status(401).send(
                 sendResponse(

@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse, createPassword, createFirebaseUser } from "../../../libraries";
+import { sendResponse, createPassword, createFirebaseUser, sendEmail, getEmailTemplate, EMAIL_TEMPLATE, EMAIL_HEADING } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { FranchiseRepo } from '../models/franchise';
 import { AdminRepo } from '../models/user';
 import { Auth } from '../../auth/models';
 import { USER_TYPE } from '../../../interfaces';
+import { CONFIG } from '../../../config';
 
 export default class FranchiseController {
     static async list(req: Request, res: Response, next: NextFunction) {
@@ -84,6 +85,25 @@ export default class FranchiseController {
                 type: USER_TYPE.FRANCHISE,
                 firebaseUid: firebaseUser.uid
             });
+
+            // Email Sending Logic Starts
+            const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
+                franchiseName: payload.name,
+                franchiseEmail: payload.email,
+                franchisePhone: payload.phoneNumber,
+            });
+
+            const mailOptions = {
+                to: CONFIG.ADMIN_EMAIL,
+                subject: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
+                templateParams: {
+                    heading: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
+                    description: emailContent,
+                },
+            };
+
+            await sendEmail(mailOptions);
+            // Email Sending Logic Ends
 
             return res
                 .status(200)

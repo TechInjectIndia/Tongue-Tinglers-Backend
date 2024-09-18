@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse, createPassword, createFirebaseUser } from "../../../libraries";
+import { sendResponse, createPassword, createFirebaseUser, sendEmail, getEmailTemplate, EMAIL_TEMPLATE, EMAIL_HEADING } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { LeadRepo } from '../models/lead';
 import { AdminRepo } from '../../admin-user/models/user';
 import { FranchiseRepo } from '../../admin-user/models/franchise';
 import { LEAD_SOURCE, LEAD_STATUS, USER_TYPE, USER_STATUS } from '../../../interfaces';
+import { CONFIG } from '../../../config';
 
 export default class LeadController {
     static async convertLeadToFranchisee(req: Request, res: Response, next: NextFunction) {
@@ -78,7 +79,27 @@ export default class LeadController {
                 });
 
                 let payloadLead = { status: LEAD_STATUS.CONVERTED };
-                const covertedLead = await new LeadRepo().updateStatus(id as string, payloadLead);
+                await new LeadRepo().updateStatus(id as string, payloadLead);
+
+                // Email Starts - New franchise created email sent to the team
+                const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
+                    leadName: existingLead.firstName + " " + existingLead.lastName,
+                    leadEmail: existingLead.email,
+                    leadPhone: existingLead.phoneNumber
+                });
+
+                const mailOptions = {
+                    to: CONFIG.ADMIN_EMAIL, // Replace with the appropriate recipient email
+                    subject: EMAIL_HEADING.NEW_FRANCHISE_CREATED, // Define this in your EMAIL_HEADING
+                    templateParams: {
+                        heading: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
+                        description: emailContent
+                    }
+                };
+
+                await sendEmail(mailOptions);
+                // Email Ends
+
                 // if(covertedLead)
                 return res
                     .status(200)

@@ -43,7 +43,7 @@ export default class AdminController {
 
     static async addAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', 0);
+            const user_id = get(req, 'user_id', "");
             const payload = { ...req?.body, createdBy: user_id };
 
             const existingAdmin = await new Auth().getUserByEmail(payload.email);
@@ -77,16 +77,23 @@ export default class AdminController {
                     );
             }
 
-            // New admin created email sent to Super admin
-            const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_ADMIN_ADDED, { email: CONFIG.ADMIN_EMAIL, link: 'some-link' });
-            await sendEmail(
-                CONFIG.ADMIN_EMAIL,
-                EMAIL_HEADING.NEW_ADMIN_ADDED,
-                {
-                    heading: EMAIL_HEADING.NEW_ADMIN_ADDED,
+            // Email Starts - New admin created email sent to Super admin
+            const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.WELCOME_ADMIN_USER, {
+                email: CONFIG.ADMIN_EMAIL,
+                link: 'some-link'
+            });
+
+            const mailOptions = {
+                to: CONFIG.ADMIN_EMAIL,
+                subject: EMAIL_HEADING.WELCOME_ADMIN_USER,
+                templateParams: {
+                    heading: EMAIL_HEADING.WELCOME_ADMIN_USER,
                     description: emailContent
                 }
-            );
+            };
+
+            await sendEmail(mailOptions);
+            // Email Ends
 
             const hashedPassword = await createPassword(payload.password);
             await new AdminRepo().create({

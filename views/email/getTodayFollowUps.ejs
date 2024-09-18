@@ -1,0 +1,13 @@
+<div class="container">
+    <h1>Follow-Up Reminder</h1>
+    <p>Hello {{userName}},</p>
+    <p>You have the following follow-ups scheduled for today:</p>
+    <ul>
+        {{#each followUps}}
+            <li><strong>Lead:</strong> {{this.leadName}} - <strong>Date:</strong> {{this.followUpDate}}</li>
+        {{/each}}
+    </ul>
+    <div class="footer">
+        <p>Thank you!</p>
+    </div>
+</div>

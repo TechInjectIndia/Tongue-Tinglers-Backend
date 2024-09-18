@@ -6,12 +6,30 @@ const ejs = require("ejs");
 const resend = new Resend(CONFIG.RESEND_API_KEY);
 
 export const EMAIL_HEADING = {
-    NEW_ADMIN_ADDED: 'Welcome to Tongue Tinglers'
-}
+    WELCOME_ADMIN_USER: 'Welcome to Tongue Tinglers',
+    NEW_FRANCHISE_CREATED: "New Franchise Created",
+    FOLLOW_UP_REMINDER: "Follow-Up Reminder",
+    LEAD_GENERATION: 'Lead Generation',
+    ORDER_CONFIRMATION: 'Order Confirmation',
+    PASSWORD_RESET: 'Password Reset',
+    PAYMENT_CONFIRMATION: 'Payment Confirmation',
+    PAYMENT_RECEIPT: 'Payment Receipt',
+    PAYMENT_REMINDER: 'Payment Reminder',
+    REFERRAL_NOTIFICATION: 'Referral Notification',
+};
 
 export const EMAIL_TEMPLATE = {
-    NEW_ADMIN_ADDED: 'welcome-admin-user'
-}
+    WELCOME_ADMIN_USER: 'welcomeAdminUser', // done
+    NEW_FRANCHISE_CREATED: "convertLeadToFranchisee", // done
+    FOLLOW_UP_REMINDER: "getTodayFollowUps", // done
+    LEAD_GENERATION: 'leadGenerationTemplate', // done
+    ORDER_CONFIRMATION: 'orderConfirmationTemplate',
+    PASSWORD_RESET: 'passwordResetTemplate',
+    PAYMENT_CONFIRMATION: 'paymentConfirmationTemplate',
+    PAYMENT_RECEIPT: 'paymentReceiptTemplate',
+    PAYMENT_REMINDER: 'paymentReminderTemplate',
+    REFERRAL_NOTIFICATION: 'referralNotificationTemplate',
+};
 
 const defaultParams = {
     logo: 'Tongue Tinglers',
@@ -20,10 +38,7 @@ const defaultParams = {
     phone: '+1234567890',
 }
 
-export const sendEmail = async (to: string, subject: string, templateParams: {
-    heading: string,
-    description: string
-}) => {
+export const sendEmail = async ({ to, subject, templateParams }) => {
     const paramsData = templateParams ? { ...templateParams, ...defaultParams } : { ...defaultParams };
     ejs
         .renderFile(path.join(__dirname, "../views/email/index.ejs"), paramsData)

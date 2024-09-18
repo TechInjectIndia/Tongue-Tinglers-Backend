@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse } from "../../../libraries";
+import { sendResponse, sendEmail, getEmailTemplate, EMAIL_TEMPLATE, EMAIL_HEADING } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { LeadRepo } from '../models/web-lead';
 import { LEAD_SOURCE, LEAD_STATUS } from '../../../interfaces';
+import { CONFIG } from '../../../config';
 
 export default class WebLeadController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -26,6 +27,26 @@ export default class WebLeadController {
 
             const createLead = { ...req?.body, source: LEAD_SOURCE.WEBSITE, status: LEAD_STATUS.NEW };
             const Lead = await new LeadRepo().create(createLead);
+
+            // Email Starts - New lead generated email sent to the team
+            const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.LEAD_GENERATION, {
+                leadName: createLead.name,
+                leadEmail: createLead.email,
+                leadPhone: createLead.phoneNumber
+            });
+
+            const mailOptions = {
+                to: CONFIG.ADMIN_EMAIL,
+                subject: EMAIL_HEADING.LEAD_GENERATION,
+                templateParams: {
+                    heading: EMAIL_HEADING.LEAD_GENERATION,
+                    description: emailContent
+                }
+            };
+
+            await sendEmail(mailOptions);
+            // Email Ends
+
             return res
                 .status(200)
                 .send(

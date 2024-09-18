@@ -1,12 +1,7 @@
 import * as express from "express";
 import PetPoojaController from "../controllers/petpooja";
-import * as PetPoojaValidation from "../validations/petpooja";
 
 const router = express.Router();
-
-const {
-    validatePetPoojaParams,
-} = PetPoojaValidation;
 
 // ====== Testimonials Starts ======
 /**

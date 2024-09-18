@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse } from "../../../libraries";
+import { sendResponse, sendEmail, getEmailTemplate, EMAIL_TEMPLATE, EMAIL_HEADING } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { FollowUpsRepo } from '../models/followup';
+import { CONFIG } from '../../../config';
 
 export default class FollowUpsController {
 
@@ -22,6 +23,24 @@ export default class FollowUpsController {
                         )
                     );
             }
+
+            // Email Sending Logic Starts
+            const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.FOLLOW_UP_REMINDER, {
+                userName: existingLead.name,
+                followUps: existingLead,
+            });
+
+            const mailOptions = {
+                to: CONFIG.ADMIN_EMAIL,
+                subject: EMAIL_HEADING.FOLLOW_UP_REMINDER,
+                templateParams: {
+                    heading: EMAIL_HEADING.FOLLOW_UP_REMINDER,
+                    description: emailContent,
+                },
+            };
+
+            await sendEmail(mailOptions);
+            // Email Sending Logic Ends
 
             return res
                 .status(200)

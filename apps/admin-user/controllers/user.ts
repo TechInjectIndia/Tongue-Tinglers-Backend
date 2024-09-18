@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse, createPassword, createFirebaseUser } from "../../../libraries";
+import { sendResponse, createPassword, createFirebaseUser, sendEmail, EMAIL_HEADING, getEmailTemplate, EMAIL_TEMPLATE } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { AdminRepo } from '../models/user';
 import { Auth } from '../../auth/models';
 import { USER_TYPE } from '../../../interfaces';
+import { CONFIG } from '../../../config';
 
 export default class AdminController {
     static async getAdmins(req: Request, res: Response, next: NextFunction) {
@@ -75,6 +76,17 @@ export default class AdminController {
                         )
                     );
             }
+
+            // New admin created email sent to Super admin
+            const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_ADMIN_ADDED, { email: CONFIG.ADMIN_EMAIL, link: 'some-link' });
+            await sendEmail(
+                CONFIG.ADMIN_EMAIL,
+                EMAIL_HEADING.NEW_ADMIN_ADDED,
+                {
+                    heading: EMAIL_HEADING.NEW_ADMIN_ADDED,
+                    description: emailContent
+                }
+            );
 
             const hashedPassword = await createPassword(payload.password);
             await new AdminRepo().create({

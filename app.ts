@@ -86,7 +86,7 @@ server.use(helmetCsp({ // Purpose: Provides a Content Security Policy (CSP) midd
 server.use(xss()); // Purpose: Middleware for Express to sanitize user input for XSS attacks.
 server.use(expressSanitizer());
 server.use(limiter); // Purpose: Limits repeated requests to public APIs and/or endpoints, which helps to prevent
-server.use(cors(corsOptions)); // Purpose: Provides a middleware for enabling Cross-Origin Resource Sharing (CORS) with various
+server.use(cors()); // Purpose: Provides a middleware for enabling Cross-Origin Resource Sharing (CORS) with various
 server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");
 server.get('/', (_, res) => {

@@ -89,7 +89,7 @@ server.use(limiter); // Purpose: Limits repeated requests to public APIs and/or 
 server.use(cors(corsOptions)); // Purpose: Provides a middleware for enabling Cross-Origin Resource Sharing (CORS) with various
 server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");
-server.use('/', (_, res) => {
+server.get('/', (_, res) => {
   res.send('Hello from Tongue tingler server')
 })
 server.use("/api", router);

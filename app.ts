@@ -49,11 +49,12 @@ const whitelist = [
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1 || origin === undefined) {
-      callback(null, true);
-    } else {
-      callback(new Error("UNAUTHORIZED!"));
-    }
+    callback(null, true);
+    // if (whitelist.indexOf(origin) !== -1 || origin === undefined) {
+    //   callback(null, true);
+    // } else {
+    //   callback(new Error("UNAUTHORIZED!"));
+    // }
   },
   credentials: true,
 };

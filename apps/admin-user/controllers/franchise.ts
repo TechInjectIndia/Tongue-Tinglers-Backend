@@ -94,7 +94,7 @@ export default class FranchiseController {
             });
 
             const mailOptions = {
-                to: CONFIG.ADMIN_EMAIL,
+                to: payload.email,
                 subject: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
                 templateParams: {
                     heading: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
@@ -102,7 +102,7 @@ export default class FranchiseController {
                 },
             };
 
-            await sendEmail(mailOptions);
+            await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
             // Email Sending Logic Ends
 
             return res

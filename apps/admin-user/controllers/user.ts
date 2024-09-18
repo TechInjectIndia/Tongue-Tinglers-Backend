@@ -77,14 +77,14 @@ export default class AdminController {
                     );
             }
 
-            // Email Starts - New admin created email sent to Super admin
+            // Email Starts - New admin created email sent to user
             const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.WELCOME_ADMIN_USER, {
-                email: CONFIG.ADMIN_EMAIL,
+                email: payload.email,
                 link: 'some-link'
             });
 
             const mailOptions = {
-                to: CONFIG.ADMIN_EMAIL,
+                to: payload.email,
                 subject: EMAIL_HEADING.WELCOME_ADMIN_USER,
                 templateParams: {
                     heading: EMAIL_HEADING.WELCOME_ADMIN_USER,
@@ -92,7 +92,7 @@ export default class AdminController {
                 }
             };
 
-            await sendEmail(mailOptions);
+            await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
             // Email Ends
 
             const hashedPassword = await createPassword(payload.password);

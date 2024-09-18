@@ -21,11 +21,19 @@ const router = express.Router();
  *            required:
  *              - templateId
  *              - franchiseId
+ *              - recipientName
+ *              - recipientEmail
  *              - prefilledValues
  *            properties:
  *              templateId:
  *                type: string
  *                default: admin
+ *              recipientName:
+ *                type: string
+ *                default: admin
+ *              recipientEmail:
+ *                type: string
+ *                default: "admin@gmail.com"
  *              franchiseId:
  *                type: string
  *              prefilledValues:
@@ -39,9 +47,9 @@ const router = express.Router();
  *       '404':
  *         description: Zoho Sign not found
  * 
- * /api/zoho-sign/get-documents:
- *   post:
- *     summary: get-documents
+ * /api/zoho-sign/documents:
+ *   get:
+ *     summary: get documents
  *     tags: [Zoho Sign]
  *     security:
  *       - bearerAuth: []
@@ -52,11 +60,49 @@ const router = express.Router();
  *         description: Unauthorized
  *       '404':
  *         description: Zoho Sign not found
+ * 
+ * /api/zoho-sign/templates:
+ *   get:
+ *     summary: get templates
+ *     tags: [Zoho Sign]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Zoho Sign created successfully
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Zoho Sign not found
+ * 
+ * /api/zoho-sign/get-fields/{templateId}:
+ *   get:
+ *     summary: get all fields by template ID
+ *     tags: [Zoho Sign]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: templateId
+ *         required: true
+ *         default: 1
+ *         schema:
+ *           type: string
+ *         description: ID of the template to retrieve
+ *     responses:
+ *       '200':
+ *         description: Zoho Sign created successfully
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Zoho Sign not found
  */
 
 router.post('/send-document', ZohoSignController.sendDocumentUsingTemplate);
-router.post('/get-documents', ZohoSignController.getDocuments);
+router.get('/templates', ZohoSignController.getTemplates);
+router.get('/get-fields/:templateId', ZohoSignController.getFieldsByTemplate);
 router.post('/callback', ZohoSignController.callback);
+router.get('/documents', ZohoSignController.getDocuments);
 // router.post('/sign-document', ZohoSignController.signDocument);
 // ====== Zoho Sign Ends ======
 

@@ -23,6 +23,7 @@ export default class FollowUpsController {
                         )
                     );
             }
+            console.log(existingLead);
 
             // Email Sending Logic Starts
             const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.FOLLOW_UP_REMINDER, {
@@ -39,7 +40,7 @@ export default class FollowUpsController {
                 },
             };
 
-            await sendEmail(mailOptions);
+            await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
             // Email Sending Logic Ends
 
             return res

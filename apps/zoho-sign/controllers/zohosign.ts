@@ -110,6 +110,8 @@ export default class ZohoSignController {
         try {
             const templateId = get(req?.body, "templateId", '');
             const franchiseId = get(req?.body, "franchiseId", '');
+            const recipientName = get(req?.body, "recipientName", '');
+            const recipientEmail = get(req?.body, "recipientEmail", '');
             let prefilledValues = get(req?.body, "prefilledValues", '');
 
             const franchiseDetails = await new AdminRepo().get(franchiseId as string)
@@ -117,7 +119,7 @@ export default class ZohoSignController {
                 res.status(403).json('No franchise found');
             }
 
-            const getTemplate = await new ZohoSignRepo().getTemplates(templateId as string);
+            const getTemplate = await new ZohoSignRepo().getTemplate(templateId as string);
             if (!getTemplate) {
                 res.status(403).json('No template found');
             }
@@ -131,8 +133,8 @@ export default class ZohoSignController {
                     },
                     "actions": [
                         {
-                            "recipient_name": "nav",
-                            "recipient_email": "navdeepsaroya4@gmail.com",
+                            "recipient_name": recipientName,
+                            "recipient_email": recipientEmail,
                             "action_id": getTemplate.templates.actions[0].action_id,
                             "action_type": getTemplate.templates.actions[0].action_type,
                             "signing_order": 1,
@@ -144,7 +146,7 @@ export default class ZohoSignController {
                 }
             };
 
-            // Populate field_text_data in jsonData            
+            // Populate field_text_data in jsonData
             if (getTemplate?.templates?.document_fields[0]?.fields) {
                 const docFields = getTemplate?.templates?.document_fields[0]?.fields;
                 prefilledValues = JSON.parse(prefilledValues);
@@ -232,6 +234,38 @@ export default class ZohoSignController {
         } catch (error) {
             console.log(error.response);
             res.status(500).json(error.response.data.message);
+        }
+    };
+
+    // Get all the templates
+    static async getTemplates(req: Request, res: Response, next: NextFunction) {
+        try {
+            const getTemplate = await new ZohoSignRepo().getTemplates();
+            res.status(200).json(getTemplate);
+        } catch (error) {
+            res.status(500).json(error.response.data);
+        }
+    };
+
+    // Get all fields of templates
+    static async getFieldsByTemplate(req: Request, res: Response, next: NextFunction) {
+        const templateId = get(req?.params, "templateId", '');
+
+        try {
+            const getTemplate = await new ZohoSignRepo().getTemplate(templateId as string);
+            if (!getTemplate) {
+                res.status(403).json('No template found');
+            }
+
+            let docFields = '';
+            if (getTemplate?.templates?.document_fields[0]?.fields) {
+                docFields = getTemplate?.templates?.document_fields[0]?.fields;
+            }
+
+            res.status(200).json(docFields);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json(error.response.data);
         }
     };
 

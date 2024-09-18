@@ -28,7 +28,7 @@ export default class WebLeadController {
             const createLead = { ...req?.body, source: LEAD_SOURCE.WEBSITE, status: LEAD_STATUS.NEW };
             const Lead = await new LeadRepo().create(createLead);
 
-            // Email Starts - New lead generated email sent to the team
+            // Email Starts - New lead generated email sent to the user
             const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.LEAD_GENERATION, {
                 leadName: createLead.name,
                 leadEmail: createLead.email,
@@ -36,7 +36,7 @@ export default class WebLeadController {
             });
 
             const mailOptions = {
-                to: CONFIG.ADMIN_EMAIL,
+                to: createLead.email,
                 subject: EMAIL_HEADING.LEAD_GENERATION,
                 templateParams: {
                     heading: EMAIL_HEADING.LEAD_GENERATION,
@@ -44,7 +44,7 @@ export default class WebLeadController {
                 }
             };
 
-            await sendEmail(mailOptions);
+            await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
             // Email Ends
 
             return res

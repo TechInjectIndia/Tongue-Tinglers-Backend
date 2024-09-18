@@ -30,10 +30,24 @@ export class ZohoSignRepo implements IBaseRepo<TEditUser, TListFilters> {
         }
     }
 
-    public async getTemplates(templateId: string): Promise<any> {
+    public async getTemplate(templateId: string): Promise<any> {
         const accessToken = await new ZohoSignRepo().getAccessTokenZoho();
         try {
             const response = await axios.get(`${ZOHO_API_URL}/templates/${templateId}`, {
+                headers: {
+                    Authorization: `Zoho-oauthtoken ${accessToken}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async getTemplates(): Promise<any> {
+        const accessToken = await new ZohoSignRepo().getAccessTokenZoho();
+        try {
+            const response = await axios.get(`${ZOHO_API_URL}/templates`, {
                 headers: {
                     Authorization: `Zoho-oauthtoken ${accessToken}`,
                 },

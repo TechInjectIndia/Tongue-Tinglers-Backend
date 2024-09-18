@@ -38,21 +38,26 @@ const defaultParams = {
     phone: '+1234567890',
 }
 
-export const sendEmail = async ({ to, subject, templateParams }) => {
+export const sendEmail = async (to: string, subject: string, templateParams: {
+    heading: string,
+    description: string
+}) => {
     const paramsData = templateParams ? { ...templateParams, ...defaultParams } : { ...defaultParams };
-    ejs
-        .renderFile(path.join(__dirname, "../views/email/index.ejs"), paramsData)
-        .then((result) => {
-            resend.emails.send({
-                from: 'onboarding@resend.dev',
-                to,
-                subject,
-                html: result
-            });
-        })
-        .catch((err) => {
-            console.log('Error loading email', err);
+    await ejs.renderFile(path.join(__dirname, "../views/email/index.ejs"), paramsData).then((result) => {
+        resend.emails.send({
+            from: 'onboarding@resend.dev',
+            to,
+            subject,
+            html: result
+        }).then((result) => {
+            console.log(result)
+        }).catch((err) => {
+            console.log(err)
         });
+    }).catch((err) => {
+        console.log('Error loading email', err);
+    });
+    console.log('paramsData');
 }
 
 export const getEmailTemplate = async (template: string, params?: any) => {

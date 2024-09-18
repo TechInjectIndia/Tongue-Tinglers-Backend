@@ -97,7 +97,7 @@ export default class LeadController {
                     }
                 };
 
-                await sendEmail(mailOptions);
+                await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
                 // Email Ends
 
                 // if(covertedLead)

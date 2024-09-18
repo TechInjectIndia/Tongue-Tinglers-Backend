@@ -66,7 +66,10 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         const data = await UserModel.findOne({
             raw: true,
             where: {
-                id,
+                [Op.or]: [
+                    { id: id }, 
+                    { firebaseUid: id }
+                ]
             },
         });
         if (data) {

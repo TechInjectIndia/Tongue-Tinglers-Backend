@@ -3,14 +3,12 @@ const axios = require('axios');
 import { ZohoSignRepo } from '../models/zohosign';
 import { AdminRepo } from '../../admin-user/models/user';
 import { sendResponse } from "../../../libraries";
+import { get, isEmpty } from "lodash";
 import FormData from 'form-data';
 import fs from 'fs';
 import crypto from 'crypto';
 
-const { ZOHO_API_URL } = process.env;
-
-// Your webhook secret key (ensure you use a secure method to store this)
-const WEBHOOK_SECRET = 'b0FzwfdoDpvJ2FjPZdL4flyDZm2opq5ri5UPaVJyB78VwgPF1sy'; // Replace with your actual secret key
+const { ZOHO_API_URL, ZOHO_WEBHOOK_SECRET } = process.env;
 
 export default class ZohoSignController {
 
@@ -18,7 +16,7 @@ export default class ZohoSignController {
     static async validateSignature(req: Request, res: Response, next: NextFunction) {
         // Function to validate the HMAC signature
         const receivedSignature = req.headers['x-zoho-sign-webhook-signature'];
-        const computedSignature = crypto.createHmac('sha256', WEBHOOK_SECRET).update(JSON.stringify(req.body)).digest('hex');
+        const computedSignature = crypto.createHmac('sha256', ZOHO_WEBHOOK_SECRET).update(JSON.stringify(req.body)).digest('hex');
 
         if (receivedSignature === computedSignature) {
             next(); // Signature is valid, proceed to the handler
@@ -110,21 +108,23 @@ export default class ZohoSignController {
     static async sendDocumentUsingTemplate(req: Request, res: Response, next: NextFunction) {
         const accessToken = await new ZohoSignRepo().getAccessTokenZoho();
         try {
-            const templateId = "72565000000032727";
-            const franchiseId = "72565000000032727";
+            const templateId = get(req?.body, "templateId", '');
+            const franchiseId = get(req?.body, "franchiseId", '');
+            let prefilledValues = get(req?.body, "prefilledValues", '');
+
             const franchiseDetails = await new AdminRepo().get(franchiseId as string)
             if (!franchiseDetails) {
                 res.status(403).json('No franchise found');
             }
-            const getTemplate = await new ZohoSignRepo().getTemplates(templateId as string);
-            console.log(getTemplate);
 
+            const getTemplate = await new ZohoSignRepo().getTemplates(templateId as string);
+            if (!getTemplate) {
+                res.status(403).json('No template found');
+            }
             const jsonData = {
                 "templates": {
                     "field_data": {
-                        "field_text_data": {
-                            'franchisee': 'sign'
-                        },
+                        "field_text_data": {},
                         "field_boolean_data": {},
                         "field_date_data": {},
                         "field_radio_data": {}
@@ -143,6 +143,20 @@ export default class ZohoSignController {
                     "notes": ""
                 }
             };
+
+            // Populate field_text_data in jsonData            
+            if (getTemplate?.templates?.document_fields[0]?.fields) {
+                const docFields = getTemplate?.templates?.document_fields[0]?.fields;
+                prefilledValues = JSON.parse(prefilledValues);
+                docFields.forEach(field => {
+                    const fieldLabel = field.field_label; // "Name-:", "Signature-:", "Date-:"
+                    const fieldValue = prefilledValues[fieldLabel] || ''; // Get the prefilled value
+
+                    if (field.field_category === 'textfield') {
+                        jsonData.templates.field_data.field_text_data[fieldLabel] = fieldValue;
+                    }
+                });
+            }
 
             let data = new FormData();
             data.append('data', JSON.stringify(jsonData));

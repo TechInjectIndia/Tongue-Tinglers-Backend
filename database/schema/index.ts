@@ -41,6 +41,7 @@ export * from "./menu/menu-category_map";
 export * from "./menu/menu-product";
 
 export * from "./settings";
+export * from "./petpooja/stock";
 
 // crm model starts
 export * from "./crm";

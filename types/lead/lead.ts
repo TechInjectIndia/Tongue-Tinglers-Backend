@@ -21,6 +21,7 @@ export interface TLead {
   additionalInfo: string,
   source: LEAD_SOURCE,
   followedDate?: Date[] | null,
+  referby?: string,
   createdBy: string,
   updatedBy: string;
   deletedBy: string | null;

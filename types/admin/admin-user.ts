@@ -16,6 +16,7 @@ export type TUser = {
   cart: string;
   access_token: string;
   referralCode: string;
+  referralBy: string;
   refresh_token: string;
   updatedBy: string;
   deletedBy: string;
@@ -41,7 +42,7 @@ export type TAddUser = {
   phoneNumber: string;
   type: string;
   role: number;
-  referralCode: string;
+  referralBy: string;
 };
 
 export type TEditUser = {

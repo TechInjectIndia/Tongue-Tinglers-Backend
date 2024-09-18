@@ -17,10 +17,9 @@ function generateReferralCode(length = 8): string {
 }
 
 export default class ReferralController {
-    static async getReferralCode(req: Request, res: Response, next: NextFunction) {
+    static async getAllFranchiseByCode(req: Request, res: Response, next: NextFunction) {
         try {
             const referralCode = req.params.referralCode as string;
-
             if (!referralCode) {
                 return res.status(400).send(
                     sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.REFERRAL_CODE_REQUIRED)
@@ -28,8 +27,7 @@ export default class ReferralController {
             }
 
             // Retrieve referral code details from the database
-            const referral = await new AdminRepo().getByReferralCode(referralCode);
-
+            const referral = await new AdminRepo().getAllFranchiseByCode(referralCode);
             if (!referral) {
                 return res.status(404).send(
                     sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS)

@@ -3,6 +3,7 @@ import { get, isEmpty } from "lodash";
 import { sendResponse, createPassword, createFirebaseUser } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { LeadRepo } from '../models/lead';
+import { AdminRepo } from '../../admin-user/models/user';
 import { FranchiseRepo } from '../../admin-user/models/franchise';
 import { LEAD_SOURCE, LEAD_STATUS, USER_TYPE, USER_STATUS } from '../../../interfaces';
 
@@ -10,7 +11,7 @@ export default class LeadController {
     static async convertLeadToFranchisee(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.body, "id", 0);
-            const existingLead = await new LeadRepo().getLeadByStatus(id as number);
+            const existingLead = await new LeadRepo().getLeadByStatus(id as string);
             if (isEmpty(existingLead)) {
                 return res
                     .status(400)
@@ -35,6 +36,7 @@ export default class LeadController {
                     role: 1,
                     type: USER_TYPE.FRANCHISE,
                     status: USER_STATUS.ACTIVE,
+                    referralBy: existingLead.referby,
                 }
 
                 const existingFranchise = await new FranchiseRepo().getFranchiseByEmail(payload.email);
@@ -73,12 +75,11 @@ export default class LeadController {
                     ...payload,
                     password: hashedPassword,
                     firebaseUid: firebaseUser.uid,
-                    referralCode: ''
                 });
 
                 let payloadLead = { status: LEAD_STATUS.CONVERTED };
-                const covertedLead = await new LeadRepo().updateStatus(id as number, payloadLead);
-
+                const covertedLead = await new LeadRepo().updateStatus(id as string, payloadLead);
+                // if(covertedLead)
                 return res
                     .status(200)
                     .send(
@@ -188,8 +189,6 @@ export default class LeadController {
 
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const createLead = req?.body;
-
             let getAttributes: any = '';
             const whereName = 'email'
             const whereVal = req?.body?.email;
@@ -207,9 +206,14 @@ export default class LeadController {
 
             const user_id = get(req, 'user_id', 0);
             let payload = { ...req?.body, createdBy: user_id, assignedTo: user_id, source: LEAD_SOURCE.ADMIN, };
-            // let followDateNew = payload.followedDate;
-            // payload.followedDate = [];
-            // payload.followedDate.push(followDateNew)
+
+            // check if referral code valid
+            const existingReferral = await new AdminRepo().getByReferralCode(payload.referby as string);
+            if (!existingReferral) {
+                return res.status(404).send(
+                    sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS)
+                );
+            }
 
             const Lead = await new LeadRepo().create(payload);
             return res
@@ -293,7 +297,7 @@ export default class LeadController {
             existingLead.followedDate.push(followDateNew)
             payload.followedDate = existingLead.followedDate;
 
-            const Lead = await new LeadRepo().update(id as number, payload);
+            const Lead = await new LeadRepo().update(id as string, payload);
             return res
                 .status(200)
                 .send(

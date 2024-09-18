@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import { TQueryFilters, TAddUser, TEditUser, TEditUserProfile, TUsersList, TUserWithPermission, TUpdateUserReferralCode } from '../../../../types'
 
-interface IUserController<T, F extends TQueryFilters> {
+interface ICustomerController<T, F extends TQueryFilters> {
     list(filters: F): Promise<TUsersList>;
     get(id: string): Promise<TUserWithPermission>;
     create(payload: TAddUser): Promise<T>;
@@ -11,10 +11,6 @@ interface IUserController<T, F extends TQueryFilters> {
     restore(ids: string[]): Promise<void>;
     deletePermanant(ids: string[]): Promise<number>;
     updateProfile(id: string, payload: TEditUserProfile): Promise<[affectedCount: number]>;
-    getByReferralCode(referralCode: string);
-    getAllFranchiseByCode(referralCode: string);
-    existsByReferralCode(referralCode: string): Promise<boolean>;
-    saveReferral(id: string, data: TUpdateUserReferralCode): Promise<[affectedCount: number]>;
 }
 
-export default IUserController;
+export default ICustomerController;

@@ -14,7 +14,7 @@ import IBaseRepo from '../controllers/controller/ILeadController';
 export class LeadRepo implements IBaseRepo<TLead, TListFilters> {
     constructor() { }
 
-    public async updateStatus(id: number, data: TLeadStatus): Promise<[affectedCount: number]> {
+    public async updateStatus(id: string, data: TLeadStatus): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
             where: {
                 id,
@@ -43,7 +43,7 @@ export class LeadRepo implements IBaseRepo<TLead, TListFilters> {
         return data;
     }
 
-    public async getLeadByStatus(id: number): Promise<TLead> {
+    public async getLeadByStatus(id: string): Promise<TLead> {
         const data = await LeadsModel.findOne({
             raw: true,
             where: {
@@ -90,7 +90,7 @@ export class LeadRepo implements IBaseRepo<TLead, TListFilters> {
         return response;
     }
 
-    public async update(id: number, data: TLeadPayload): Promise<[affectedCount: number]> {
+    public async update(id: string, data: TLeadPayload): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
             where: {
                 id,
@@ -99,7 +99,7 @@ export class LeadRepo implements IBaseRepo<TLead, TListFilters> {
         return response;
     }
 
-    public async assignLeadToUser(id: number, data: TAssignLead): Promise<[affectedCount: number]> {
+    public async assignLeadToUser(id: string, data: TAssignLead): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
             where: {
                 id,

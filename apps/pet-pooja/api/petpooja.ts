@@ -52,6 +52,6 @@ const {
  */
 
 router.get("/place-order", PetPoojaController.newOrderPlaced);
-router.get("/inventory", PetPoojaController.getInventory);
+router.get("/inventory", PetPoojaController.processAndSaveStockData);
 
 export default router;

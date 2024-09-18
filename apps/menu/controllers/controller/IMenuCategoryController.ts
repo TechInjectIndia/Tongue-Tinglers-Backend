@@ -1,4 +1,4 @@
-import { TQueryFilters, TMenuCategory, TPayloadMenuCategory, TMenuCategorysList, TPayloadMenuCategory, } from '../../../../types'
+import { TPayloadMenuCategory, TQueryFilters, } from '../../../../types'
 
 interface IMenuCategoryController<T, F extends TQueryFilters> {
     get(id: number): Promise<T | null>;

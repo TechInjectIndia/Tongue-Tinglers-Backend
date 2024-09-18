@@ -39,6 +39,7 @@ const { list, create, update, get, deleteFranchise } = FranchiseController;
  *              - phoneNumber
  *              - status
  *              - role
+ *              - referralBy
  *            properties:
  *              email:
  *                type: string
@@ -60,6 +61,9 @@ const { list, create, update, get, deleteFranchise } = FranchiseController;
  *              role:
  *                type: number
  *                default: 0 
+ *              referralBy:
+ *                type: string
+ *                default: ""
  *     responses:
  *       '200':
  *         description: franchise created successfully

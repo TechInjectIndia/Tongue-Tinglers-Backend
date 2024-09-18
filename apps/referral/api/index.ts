@@ -50,7 +50,7 @@ const router = express.Router();
  * 
  */
 router.post("/", ReferralController.generate);
-router.get("/:referral_code", ReferralController.getReferralCode);
+router.get("/:referral_code", ReferralController.getAllFranchiseByCode);
 router.get("/validate/:referral_code", ReferralController.validate);
 
 export default router;

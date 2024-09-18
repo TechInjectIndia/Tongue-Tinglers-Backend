@@ -22,6 +22,7 @@ class LeadsModel extends Model<TLead, LeadCreationAttributes> implements TLead {
     public additionalInfo: string;
     public source: LEAD_SOURCE;
     public followedDate: Date[] | null;
+    public referby?: string;
     public createdBy!: string;
     public updatedBy!: string;
     public deletedBy!: string | null;
@@ -80,6 +81,9 @@ LeadsModel.init({
     },
     assign: {
         type: JSONB // Stores an array of dates as JSON
+    },
+    referby: {
+        type: STRING
     },
     createdBy: {
         type: STRING

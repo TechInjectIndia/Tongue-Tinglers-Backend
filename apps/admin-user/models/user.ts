@@ -12,7 +12,6 @@ import {
 import { UserModel, RolesModel } from "../../../database/schema";
 import { USER_TYPE, USER_STATUS } from '../../../interfaces';
 import IBaseRepo from '../controllers/controller/IUserController';
-import { isEmpty } from "lodash";
 
 export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     constructor() { }
@@ -20,6 +19,11 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     public async getByReferralCode(referralCode: string) {
         const data = await UserModel.findOne({ where: { referralCode: referralCode } });
         return data;
+    }
+
+    public async getAllFranchiseByCode(referralCode: string) {
+        const franchisee = await UserModel.findAll({ where: { referralBy: referralCode } });
+        return franchisee;
     }
 
     public async existsByReferralCode(referralCode: string): Promise<boolean> {

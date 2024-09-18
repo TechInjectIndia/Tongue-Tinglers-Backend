@@ -43,6 +43,7 @@ const {
  *              - address
  *              - additionalInfo
  *              - status
+ *              - referby
  *            properties:
  *              firstName:
  *                type: string
@@ -77,6 +78,9 @@ const {
  *              status:
  *                type: string
  *                default: new
+ *              referby:
+ *                type: string
+ *                default: 'JCHKDHJ'
  *     responses:
  *       '200':
  *         description: Lead created successfully

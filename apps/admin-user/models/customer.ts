@@ -10,7 +10,7 @@ import {
 } from "../../../types";
 import { UserModel, RolesModel } from "../../../database/schema";
 import { USER_TYPE, USER_STATUS } from '../../../interfaces';
-import IBaseRepo from '../controllers/controller/IUserController';
+import IBaseRepo from '../controllers/controller/ICustomerController';
 
 export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
     constructor() { }

@@ -25,6 +25,7 @@ const createFranchiseBody = Joi.object().keys({
     phoneNumber: Joi.string().required(),
     status: Joi.string().required(),
     role: Joi.number().required(),
+    referralBy: Joi.string(),
 });
 
 export const validateCreateFranchiseBody = async (

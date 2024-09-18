@@ -241,9 +241,19 @@ export default class ZohoSignController {
     static async getTemplates(req: Request, res: Response, next: NextFunction) {
         try {
             const getTemplate = await new ZohoSignRepo().getTemplates();
-            res.status(200).json(getTemplate);
+
+            if (getTemplate) {
+                // Extracting the desired data
+                const templatesArray = getTemplate.templates.map(template => ({
+                    templateId: template.template_id,
+                    templateTitle: template.template_name
+                }));
+
+                return res.status(200).json(templatesArray);
+            }
+            return res.status(403).json('');
         } catch (error) {
-            res.status(500).json(error.response.data);
+            return res.status(500).json(error.response);
         }
     };
 
@@ -257,12 +267,18 @@ export default class ZohoSignController {
                 res.status(403).json('No template found');
             }
 
-            let docFields = '';
+            let resultArray = '';
             if (getTemplate?.templates?.document_fields[0]?.fields) {
-                docFields = getTemplate?.templates?.document_fields[0]?.fields;
+                const docFields = getTemplate?.templates?.document_fields[0]?.fields;
+                // Extracting the desired fields
+                resultArray = docFields.map(field => ({
+                    field_label: field.field_label,
+                    is_mandatory: field.is_mandatory,
+                    field_category: field.field_category,
+                    default_value: field.default_value
+                }));
             }
-
-            res.status(200).json(docFields);
+            res.status(200).json(resultArray);
         } catch (error) {
             console.log(error);
             res.status(500).json(error.response.data);

@@ -1,0 +1,19 @@
+<div class="container">
+    <h1>Payment Receipt</h1>
+    <p>Dear {{customerName}},</p>
+    <p>We are sending you a receipt for your recent payment of ${{amount}} for
+        the order #{{orderId}}.</p>
+
+    <h3>Receipt Details</h3>
+    <div class="details">
+        <p><strong>Transaction ID:</strong> {{transactionId}}</p>
+        <p><strong>Payment Method:</strong> {{paymentMethod}}</p>
+        <p><strong>Date:</strong> {{paymentDate}}</p>
+    </div>
+
+    <p>Thank you for your prompt payment!</p>
+
+    <div class="footer">
+        <p>For any inquiries, please contact our support team.</p>
+    </div>
+</div>

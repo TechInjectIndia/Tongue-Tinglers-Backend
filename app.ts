@@ -59,10 +59,10 @@ const corsOptions = {
   credentials: true,
 };
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // Limit each IP to 100 requests per windowMs
-});
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100 // Limit each IP to 100 requests per windowMs
+// });
 
 export const server = express();
 server.use(async (req, res, next) => { // Purpose: A more flexible rate limiter than express-rate-limit, suitable for different types of stores (e.g., Redis).
@@ -86,7 +86,7 @@ server.use(helmetCsp({ // Purpose: Provides a Content Security Policy (CSP) midd
 }));
 server.use(xss()); // Purpose: Middleware for Express to sanitize user input for XSS attacks.
 server.use(expressSanitizer());
-server.use(limiter); // Purpose: Limits repeated requests to public APIs and/or endpoints, which helps to prevent
+// server.use(limiter); // Purpose: Limits repeated requests to public APIs and/or endpoints, which helps to prevent
 server.use(cors()); // Purpose: Provides a middleware for enabling Cross-Origin Resource Sharing (CORS) with various
 server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");

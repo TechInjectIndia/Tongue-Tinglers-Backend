@@ -5,14 +5,14 @@ import {
     TLead
 } from "../types";
 
-const instance = new Razorpay({
+const razorpayInstance = new Razorpay({
     key_id: CONFIG.RP_ID_PROD,
     key_secret: CONFIG.RP_SECRET_PROD
 });
 
 export const createStandardPaymentLink = async (data: { 'contract': TContract, 'lead': TLead }) => {
     try {
-        const response = await instance.paymentLink.create({
+        const response = await razorpayInstance.paymentLink.create({
             amount: data.contract.amount,
             currency: "INR",
             accept_partial: true,
@@ -31,16 +31,13 @@ export const createStandardPaymentLink = async (data: { 'contract': TContract, '
             notes: {
                 policy_name: "Tongue Tingler"
             },
-            callback_url: "https://example-callback-url.com/",
-            callback_method: "post"
+            callback_url: CONFIG.RP_CALLBACK,
+            callback_method: "get"
         });
 
         return response;
-        // return response{
-        //     callback_url: response?.callback_url,
-        //     short_url: response?.short_url
-        // };
     } catch (err) {
-        return err;
+        console.error("Error creating payment link:", err);
+        throw new Error("Failed to create payment link");
     }
 }

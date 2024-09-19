@@ -31,25 +31,26 @@ export interface TEditContract {
     amount?: number;
     signedDate?: Date | null;
     dueDate?: Date;
-    validity?: {
-        from?: Date;
-        to?: Date;
+    validity: {
+        from: Date;
+        to: Date;
     };
     additionalInfo?: string;
     updatedBy?: string;
 }
 
 export interface TAddContract {
-    leadId: string;
-    status: CONTRACT_STATUS;
-    templateId: string;
-    amount: number;
+    leadId?: string;
+    userId?: string;
+    status?: CONTRACT_STATUS;
+    templateId?: string;
+    amount?: number;
     signedDate?: Date | null;
-    dueDate: Date;
+    dueDate?: Date;
     validity: {
         from: Date;
         to: Date;
     };
-    additionalInfo: string;
-    createdBy: string;
+    additionalInfo?: string;
+    createdBy?: string;
 }

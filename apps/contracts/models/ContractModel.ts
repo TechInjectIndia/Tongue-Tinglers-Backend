@@ -5,6 +5,7 @@ import {
     TContractsList,
     TAddContract,
 } from "../../../types";
+import { ContractPaymentDetails } from "../../../interfaces";
 import { ContractModel } from "../../../database/schema";
 import IContractsController from '../controllers/controller/IContractsController';
 
@@ -49,6 +50,15 @@ export class ContractRepo implements IContractsController<TContract, TQueryFilte
             where: { id },
         });
         return response;
+    }
+
+    public async updatePayment(contractId: string, paymentData: ContractPaymentDetails): Promise<boolean> {
+        const [affectedCount] = await ContractModel.update(
+            { payment: paymentData },
+            { where: { id: contractId } }
+        );
+
+        return affectedCount > 0; // Returns true if the update was successful
     }
 
     public async delete(ids: string[]): Promise<number> {

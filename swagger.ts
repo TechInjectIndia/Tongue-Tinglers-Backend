@@ -109,10 +109,13 @@ const options = {
                 name: 'Admin > Lead'
             },
             {
-                name: 'Admin > Lead > Follow Ups'
+                name: 'Admin > Contracts'
             },
             {
-                name: 'Admin > User > Payments'
+                name: 'Payments'
+            },
+            {
+                name: 'Admin > Lead > Follow Ups'
             },
             {
                 name: 'Frontend > Ecommerce > Products' // frontend starts

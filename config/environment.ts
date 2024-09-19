@@ -18,5 +18,7 @@ export const CONFIG = {
     BUCKET_URL: process.env.BUCKET_URL,
     RP_ID_PROD: process.env.RP_ID_PROD,
     RP_SECRET_PROD: process.env.RP_SECRET_PROD,
+    RP_WEBHOOK_SECRET: process.env.RP_WEBHOOK_SECRET,
+    RP_CALLBACK: process.env.RP_CALLBACK,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL,
 };

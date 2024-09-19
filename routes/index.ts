@@ -45,9 +45,9 @@ import retortAnalyticsRouter from "../apps/analytics/api/admin/retort-analytics"
 import menuRouter from "../apps/menu/api/menu";
 import retortProductRouter from "../apps/retort/api/products";
 import retortProductCategoryRouter from "../apps/retort/api/category";
-import retortOrderRouter from "../apps/retort/api/orders";
 import campaignRouter from "../apps/crm/api/campaign";
 import testUsersRouter from "../apps/test-user/api/user"; // for testing only
+import contractsRouter from "../apps/contracts/api";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -59,7 +59,7 @@ router.use(`${ADMIN}/testimonials`, auth, testimonialsRouter);
 router.use(`${ADMIN}/reviews`, auth, reviewsRouter);
 router.use(`${ADMIN}/profile`, auth, profileRouter);
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
-router.use(`/payments`, auth, paymentsRouter); // pending
+router.use(`/payments`, paymentsRouter); // pending
 router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // pending
@@ -72,9 +72,9 @@ router.use(`${ADMIN}/lead`, auth, leadRouter);
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 router.use(`${ADMIN}/retort/product`, auth, retortProductRouter);
 router.use(`${ADMIN}/retort/category`, auth, retortProductCategoryRouter);
-router.use(`${ADMIN}/retort/order`, auth, retortOrderRouter);
 router.use(`${ADMIN}/crm`, auth, campaignRouter);
 router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
+router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

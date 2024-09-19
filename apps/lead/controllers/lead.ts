@@ -229,11 +229,13 @@ export default class LeadController {
             let payload = { ...req?.body, createdBy: user_id, assignedTo: user_id, source: LEAD_SOURCE.ADMIN, };
 
             // check if referral code valid
-            const existingReferral = await new AdminRepo().getByReferralCode(payload.referby as string);
-            if (!existingReferral) {
-                return res.status(404).send(
-                    sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS)
-                );
+            if(payload.referby != ''){
+                const existingReferral = await new AdminRepo().getByReferralCode(payload.referby as string);
+                if (!existingReferral) {
+                    return res.status(404).send(
+                        sendResponse(RESPONSE_TYPE.ERROR, 'refarral code ' + ERROR_MESSAGE.NOT_EXISTS)
+                    );
+                }
             }
 
             const Lead = await new LeadRepo().create(payload);

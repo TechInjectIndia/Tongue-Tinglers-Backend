@@ -3,6 +3,7 @@ import { TQueryFilters, TLeadPayload, TLeadStatus, TLeadsList } from '../../../.
 
 interface ILeadController<T, F extends TQueryFilters> {
     getLeadByStatus(id: string): Promise<T>
+    get(id: string): Promise<T>
     updateStatus(id: string, data: TLeadStatus): Promise<[affectedCount: number]>
     list(filters: F): Promise<TLeadsList>;
     getLeadByAttr(whereName: string, whereVal: any, getAttributes: string): Promise<T>;

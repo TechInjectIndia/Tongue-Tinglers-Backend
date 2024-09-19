@@ -46,7 +46,7 @@ const createLeadBody = Joi.object().keys({
     address: Joi.string().required(),
     additionalInfo: Joi.string().required(),
     status: Joi.string().valid(...Object.values(LEAD_STATUS)).optional().allow(''),
-    referby: Joi.string(),
+    referby: Joi.string().allow('', null).optional(),
 });
 
 export const validateCreateLeadBody = async (

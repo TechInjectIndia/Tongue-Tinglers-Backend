@@ -109,10 +109,13 @@ const options = {
                 name: 'Admin > Lead'
             },
             {
-                name: 'Admin > Lead > Follow Ups'
+                name: 'Admin > Contracts'
             },
             {
-                name: 'Admin > User > Payments'
+                name: 'Payments'
+            },
+            {
+                name: 'Admin > Lead > Follow Ups'
             },
             {
                 name: 'Frontend > Ecommerce > Products' // frontend starts
@@ -199,6 +202,7 @@ const options = {
         './apps/analytics/api/customer/*.ts',
         './apps/analytics/api/franchise/*.ts',
         './apps/crm/api/*.ts',
+        './apps/contracts/api/*.ts',
     ],
 }
 const swaggerSpec = swaggerJsdoc(options)

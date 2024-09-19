@@ -1,200 +1,96 @@
+const Razorpay = require('razorpay');
 import { NextFunction, Request, Response } from "express";
-import { get, isEmpty } from "lodash";
 import { sendResponse, createStandardPaymentLink } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { PaymentsModel } from '../models/';
+import { ContractRepo } from '../../contracts/models/ContractModel';
+import { LeadRepo } from '../../lead/models/lead';
+import { CONTRACT_PAYMENT_STATUS } from '../../../interfaces';
+import { ContractPaymentDetails } from "../../../interfaces";
+import { CONFIG } from '../../../config';
+
+const razorpayInstance = new Razorpay({
+    key_id: CONFIG.RP_ID_PROD,
+    key_secret: CONFIG.RP_SECRET_PROD
+});
 
 export default class PaymentsController {
-    static async add(req: Request, res: Response, next: NextFunction) {
-        try {
-            const createPayments = req?.body;
+    static async webhook(req: Request, res: Response, next: NextFunction) {
+        const receivedSignature = req.headers['x-razorpay-signature'];
+        const webhookBody = JSON.stringify(req.body);
 
-            let getAttributes: any = '';
-            const whereName = 'email'
-            const whereVal = req?.body?.email;
-            const existingPayments = await new PaymentsModel().getPaymentsByAttr(whereName, whereVal, getAttributes);
-            if (existingPayments) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.EXISTS
-                        )
-                    );
-            }
-
-            const Payments = await new PaymentsModel().add(createPayments);
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CREATED,
-                        Payments
-                    )
-                );
-        } catch (err) {
-            console.log(err)
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
+        const isVerified = razorpayInstance.utils.verifyWebhookSignature(webhookBody, receivedSignature, CONFIG.RP_WEBHOOK_SECRET);
+        if (!isVerified) {
+            return res.status(400).send('Invalid signature');
         }
+
+        const event = req.body;
+
+        switch (event.event) {
+            case 'payment.captured':
+                await this.handlePaymentCaptured(event, CONTRACT_PAYMENT_STATUS.SUCCESS);
+                break;
+            case 'payment.failed':
+                await this.handlePaymentCaptured(event, CONTRACT_PAYMENT_STATUS.FAILED);
+                break;
+            default:
+                console.log(`Unhandled event: ${event.event}`);
+        }
+
+        res.status(200).send('Webhook received and verified');
     }
 
-    static async list(req: Request, res: Response, next: NextFunction) {
-        try {
-            const size = get(req?.query, "size", 10);
-            const skip = get(req?.query, "skip", 1);
-            const search = get(req?.query, "search", "");
-            const trashOnly = get(req?.query, "trashOnly", "");
-            let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.toString().split(" ");
+    static async handlePaymentCaptured(event: any, status: any) {
+        const paymentDetails = {
+            paymentId: event.payload.payment.entity.id,
+            amount: event.payload.payment.entity.amount / 100,
+            date: new Date(event.payload.payment.entity.created * 1000),
+            status: status,
+            additionalInfo: event.payload.payment.entity.notes,
+        };
 
-            const Paymentss = await new PaymentsModel().list({
-                offset: skip as number,
-                limit: size as number,
-                search: search as string,
-                sorting: sorting,
-                trashOnly: trashOnly as string
-            });
+        const contractId = event.payload.payment.entity.notes.contract_id;
 
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FETCHED,
-                        Paymentss
-                    )
-                );
-        } catch (err) {
-            console.log(err);
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
-        }
-    }
-
-    static async update(req: Request, res: Response, next: NextFunction) {
-        try {
-            const id = get(req?.params, "id", 0);
-
-            let getAttributes: any = '';
-            const whereName = 'id'
-            const whereVal = id;
-            const existingPayments = await new PaymentsModel().getPaymentsByAttr(whereName, whereVal, getAttributes);
-
-            if (isEmpty(existingPayments)) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS
-                        )
-                    );
-            }
-            
-            const updatePayments = req?.body;
-            delete updatePayments.id
-            const Payments = await new PaymentsModel().update(id as number, updatePayments);
-
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED,
-                        Payments
-                    )
-                );
-        } catch (err) {
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
-        }
-    }
-
-    static async get(req: Request, res: Response, next: NextFunction) {
-        try {
-            const id = get(req?.params, "id", 0);
-
-            let getAttributes: any = '*';
-            const whereName = 'id'
-            const whereVal = id;
-            const existingPayments = await new PaymentsModel().getPaymentsByAttr(whereName, whereVal, getAttributes);
-
-            if (isEmpty(existingPayments)) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS
-                        )
-                    );
-            }
-
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FETCHED,
-                        existingPayments
-                    )
-                );
-        } catch (err) {
-            console.log(err);
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
-        }
-    }
-
-    static async delete(req: Request, res: Response, next: NextFunction) {
-        try {
-            const ids = get(req?.body, "ids", "");
-
-            const Payments = await new PaymentsModel().delete(ids);
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.DELETED,
-                        Payments
-                    )
-                );
-        } catch (err) {
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
-        }
+        await new ContractRepo().updatePayment(contractId, paymentDetails);
     }
 
     static async generatePaymentLink(req: Request, res: Response, next: NextFunction) {
         try {
-            const contract_id = req?.body?.contract_id;
+            const { contract_id } = req.body;
 
-            const link = await createStandardPaymentLink(contract_id);
-            
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CREATED,
-                        link
-                    )
-                );
+            if (!contract_id) {
+                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, "Contract ID is required."));
+            }
+
+            const contractDetails = await new ContractRepo().get(contract_id);
+            if (!contractDetails) {
+                return res.status(404).send(sendResponse(RESPONSE_TYPE.ERROR, "Contract not found."));
+            }
+
+            const leadDetails = await new LeadRepo().get(contractDetails.leadId);
+            if (!leadDetails) {
+                return res.status(404).send(sendResponse(RESPONSE_TYPE.ERROR, "Lead not found."));
+            }
+
+            const link = await createStandardPaymentLink({ contract: contractDetails, lead: leadDetails });
+            if (!link) {
+                return res.status(500).send(sendResponse(RESPONSE_TYPE.ERROR, "Failed to create payment link."));
+            }
+
+            const paymentPayload: ContractPaymentDetails = {
+                paymentId: link.id,
+                amount: link.amount,
+                date: new Date(link.created_at * 1000),
+                status: CONTRACT_PAYMENT_STATUS.PENDING,
+                additionalInfo: link.description,
+            };
+
+            await new ContractRepo().updatePayment(contract_id, paymentPayload);
+
+            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, link));
+
         } catch (err) {
-            console.log(err)
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
+            console.error("Error generating payment link:", err);
+            return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
-
 }

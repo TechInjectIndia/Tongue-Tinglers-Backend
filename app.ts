@@ -15,7 +15,7 @@ import xss from 'xss-clean';
 
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 const rateLimiter = new RateLimiterMemory({
-  points: 10, // Number of points
+  points: 50, // Number of points
   duration: 1, // Per second
 });
 import expressSanitizer from 'express-sanitizer';

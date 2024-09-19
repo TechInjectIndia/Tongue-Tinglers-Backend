@@ -39,7 +39,7 @@ UserModel.init({
         type: STRING,
         primaryKey: true,
         allowNull: false,
-        defaultValue: UUIDV4 // For UUID v4, if you use UUIDs
+        defaultValue: UUIDV4
     },
     firebaseUid: {
         type: STRING

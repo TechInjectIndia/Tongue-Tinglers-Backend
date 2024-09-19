@@ -8,12 +8,14 @@ export type TOrder = {
   paymentMethod: string;
   totalPrice: number;
   orderStatus: string;
+  orderType: string;
   createdAt: Date;
   updatedAt: Date;
 };
 
 export type TEditOrder = {
   orderStatus: string;
+  orderType?: string;
 };
 
 export type TAddOrder = {
@@ -24,6 +26,7 @@ export type TAddOrder = {
   totalPrice: number;
   isRepeated: number;
   orderStatus: string;
+  orderType: string;
 };
 
 export type TOrdersList = {

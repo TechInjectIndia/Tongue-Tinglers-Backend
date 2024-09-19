@@ -12,3 +12,4 @@ export * from './testimonials';
 export * from './common';
 export * from './address';
 export * from './crm';
+export * from './contracts';

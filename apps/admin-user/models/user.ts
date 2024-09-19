@@ -67,9 +67,10 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
             raw: true,
             where: {
                 [Op.or]: [
-                    { id: id }, 
+                    { id: id },
                     { firebaseUid: id }
-                ]
+                ],
+                type: USER_TYPE.ADMIN
             },
         });
         if (data) {

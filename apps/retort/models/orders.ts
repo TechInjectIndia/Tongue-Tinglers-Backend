@@ -6,16 +6,18 @@ import {
     TEditOrder,
     TAddOrder,
 } from "../../../types/ecommerce";
-import { RetortOrdersModel, RetortOrderItemsModel } from "../../../database/schema";
+import { OrdersModel, OrderItemsModel } from "../../../database/schema";
+import { ORDER_TYPE } from '../../../interfaces';
 import IBaseRepo from '../controllers/controller/IOrdersController';
 
 export class RetortOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
     constructor() { }
 
-    public async orderStatus(id: number): Promise<TOrder> {
-        const data = await RetortOrdersModel.findOne({
+    public async orderStatus(id: number): Promise<TOrder | null> {
+        const data = await OrdersModel.findOne({
             where: {
                 id,
+                orderType: ORDER_TYPE.RETORT
             },
             attributes: ['orderStatus']
         });
@@ -23,18 +25,19 @@ export class RetortOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
     }
 
     public async create(data: TAddOrder): Promise<TOrder> {
-        const response = await RetortOrdersModel.create(data);
+        const response = await OrdersModel.create(data);
         return response;
     }
 
-    public async get(id: number): Promise<TOrder> {
-        const data = await RetortOrdersModel.findOne({
+    public async get(id: number): Promise<TOrder | null> {
+        const data = await OrdersModel.findOne({
             where: {
                 id,
+                orderType: ORDER_TYPE.RETORT
             },
             include: [
                 {
-                    model: RetortOrderItemsModel,
+                    model: OrderItemsModel,
                     as: 'order_items'
                 },
             ],
@@ -43,14 +46,15 @@ export class RetortOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
     }
 
     public async list(filters: TOrderFilters): Promise<TOrdersList> {
-        const total = await RetortOrdersModel.count({
+        const total = await OrdersModel.count({
             where: {
                 trackingNumber: {
                     [Op.like]: `%${filters.search}%`,
                 },
+                orderType: ORDER_TYPE.RETORT
             },
         });
-        const data = await RetortOrdersModel.findAll({
+        const data = await OrdersModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -58,15 +62,17 @@ export class RetortOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
                 trackingNumber: {
                     [Op.like]: `%${filters.search}%`,
                 },
+                orderType: ORDER_TYPE.RETORT
             },
         });
         return { total, data };
     }
 
     public async update(id: number, data: TEditOrder): Promise<[affectedCount: number]> {
-        const response = await RetortOrdersModel.update(data, {
+        const response = await OrdersModel.update(data, {
             where: {
                 id,
+                orderType: ORDER_TYPE.RETORT
             },
         });
         return response;

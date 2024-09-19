@@ -20,8 +20,6 @@ export * from "./ecommerce/tag_image.model";
 // retort model starts
 export * from "./retort/retort-category";
 export * from "./retort/retort-category_image";
-export * from "./retort/retort-order";
-export * from "./retort/retort-order_item";
 export * from "./retort/retort-product";
 export * from "./retort/retort-product_category_map";
 export * from "./retort/retort-product_image";
@@ -42,6 +40,7 @@ export * from "./menu/menu-product";
 
 export * from "./settings";
 export * from "./petpooja/stock";
+export * from "./contracts";
 
 // crm model starts
 export * from "./crm";

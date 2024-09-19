@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TOrder } from "../../../types";
-import { ORDER_TYPE } from '../../../interfaces';
+import { ORDER_TYPE, ORDER_STATUS } from '../../../interfaces';
 const { INTEGER, STRING, TEXT, ENUM, BOOLEAN } = DataTypes;
 import { OrderItemsModel } from './order_item.model'
 import { UserModel } from '../user/user.model'
@@ -16,6 +16,7 @@ class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOr
     public paymentMethod!: string;
     public totalPrice!: number;
     public orderStatus!: string;
+    public orderType!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -43,6 +44,10 @@ OrdersModel.init({
         type: INTEGER,
     },
     orderStatus: {
+        type: ENUM,
+        values: [...Object.values(ORDER_STATUS)]
+    },
+    orderType: {
         type: ENUM,
         values: [...Object.values(ORDER_TYPE)]
     },

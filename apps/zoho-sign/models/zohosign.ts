@@ -1,15 +1,18 @@
 const { Op } = require("sequelize");
 import {
-    TListFilters,
-    TEditUser,
+    TemplateType,
+    DocumentData,
+    SendResponse,
+    TemplateList,
+    FieldType,
 } from "../../../types";
 import { TokenModel } from "../../../database/schema";
 const axios = require('axios');
 const { ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN, ZOHO_API_URL, ZOHO_TOKEN_URL } = process.env;
-
 import IBaseRepo from '../controllers/controller/IZohoSignController';
+import { constrainedMemory } from "process";
 
-export class ZohoSignRepo implements IBaseRepo<TEditUser, TListFilters> {
+export class ZohoSignRepo implements IBaseRepo<TemplateType> {
     constructor() { }
 
     public async getAccessTokenFromDb(): Promise<string> {
@@ -69,7 +72,46 @@ export class ZohoSignRepo implements IBaseRepo<TEditUser, TListFilters> {
         return error.response && error.response.status === 401;
     }
 
-    public async getTemplate(templateId: string): Promise<any> {
+    public async sendDocumentUsingTemplate(templateId, data): Promise<SendResponse> {
+        return await this.handleTokenError(async () => {
+            try {
+                const accessToken = await this.getAccessTokenFromDb();
+                let config = {
+                    method: 'post',
+                    maxBodyLength: Infinity,
+                    url: `${ZOHO_API_URL}/templates/${templateId}/createdocument`,
+                    headers: {
+                        'Authorization': `Zoho-oauthtoken ${accessToken}`,
+                    },
+                    data: data
+                };
+
+                const response = await axios.request(config);
+                return response.data;
+            } catch (error) {
+                const errorMessage = error.response ? error.response.data : error.message;
+                console.error('Error sending document:', errorMessage);
+                throw new Error(`Failed to send document: ${errorMessage}`); // Throw a clear error
+            }
+        });
+    }
+
+    public async getTemplates(): Promise<TemplateList> {
+        return await this.handleTokenError(async () => {
+            const accessToken = await this.getAccessTokenFromDb();
+            const response = await axios.get(`${ZOHO_API_URL}/templates`, {
+                headers: {
+                    Authorization: `Zoho-oauthtoken ${accessToken}`,
+                },
+            });
+            return response.data.templates.map((template: any) => ({
+                templateId: template.template_id,
+                templateTitle: template.template_name
+            })) as TemplateList;
+        });
+    }
+
+    public async getTemplateFields(templateId: string): Promise<FieldType> {
         return await this.handleTokenError(async () => {
             const accessToken = await new ZohoSignRepo().getAccessTokenFromDb();
             const response = await axios.get(`${ZOHO_API_URL}/templates/${templateId}`, {
@@ -77,41 +119,23 @@ export class ZohoSignRepo implements IBaseRepo<TEditUser, TListFilters> {
                     Authorization: `Zoho-oauthtoken ${accessToken}`,
                 },
             });
-            return response.data;
+
+            return {
+                docs: response.data.templates.document_fields.map((docs: any) =>
+                ({
+                    document_id: docs.document_id,
+                    fields: docs.fields.map((field: any) => ({
+                        field_label: field.field_label,
+                        is_mandatory: field.is_mandatory,
+                        field_category: field.field_category,
+                        default_value: field.default_value,
+                    })),
+                })) || [],
+                actions: response.data.templates.actions.map((action: any) => ({
+                    action_id: action.action_id,
+                    action_type: action.action_type,
+                })) || [],
+            } as FieldType;
         });
     }
-
-    public async sendDocumentUsingTemplate(templateId: String, data: any): Promise<any> {
-        return await this.handleTokenError(async () => {
-            const accessToken = await new ZohoSignRepo().getAccessTokenFromDb();
-            let config = {
-                method: 'post',
-                maxBodyLength: Infinity,
-                url: `${ZOHO_API_URL}/templates/${templateId}/createdocument`,
-                headers: {
-                    'Authorization': `Zoho-oauthtoken ${accessToken}`,
-                },
-                data: data
-            };
-
-            axios.request(config).then((response) => {
-                response.status(200).json(response.data.message);
-            }).catch((error) => {
-                console.log(error);
-            });
-        });
-    }
-
-    public async getTemplates(): Promise<any> {
-        return await this.handleTokenError(async () => {
-            const accessToken = await new ZohoSignRepo().getAccessTokenFromDb();
-            const response = await axios.get(`${ZOHO_API_URL}/templates`, {
-                headers: {
-                    Authorization: `Zoho-oauthtoken ${accessToken}`,
-                },
-            });
-            return response.data;
-        });
-    }
-
 }

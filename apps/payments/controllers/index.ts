@@ -53,6 +53,38 @@ export default class PaymentsController {
         await new ContractRepo().updatePayment(contractId, paymentDetails);
     }
 
+    static async fetchPayment(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { paymentId } = req.params;
+
+            if (!paymentId) {
+                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, "Payment ID is required."));
+            }
+
+            const paymentDetailsFromRazorpay = await razorpayInstance.payments.fetch(paymentId);
+            if (!paymentDetailsFromRazorpay) {
+                return res.status(404).send(sendResponse(RESPONSE_TYPE.ERROR, "Payment not found in Razorpay."));
+            }
+            console.log('Payment Details from Razorpay:', paymentDetailsFromRazorpay);
+
+            const paymentDetailsFromRepo = await new ContractRepo().getPaymentById(paymentId);
+            if (!paymentDetailsFromRepo) {
+                return res.status(404).send(sendResponse(RESPONSE_TYPE.ERROR, "Payment not found in local repository."));
+            }
+            console.log('Payment Details from Repository:', paymentDetailsFromRepo);
+
+            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, "Payment details fetched successfully.", {
+                paymentDetailsFromRazorpay: paymentDetailsFromRazorpay,
+                paymentDetailsFromRepo: paymentDetailsFromRepo
+            }));
+
+        } catch (err) {
+            console.error("Error fetching payment details:", err);
+            return res.status(500).send({ message: err });
+        }
+    }
+
+
     static async generatePaymentLink(req: Request, res: Response, next: NextFunction) {
         try {
             const { contract_id } = req.body;
@@ -70,7 +102,7 @@ export default class PaymentsController {
             if (!leadDetails) {
                 return res.status(404).send(sendResponse(RESPONSE_TYPE.ERROR, "Lead not found."));
             }
-            
+
             const link = await createStandardPaymentLink({ contract: contractDetails, lead: leadDetails });
             if (!link) {
                 return res.status(500).send(sendResponse(RESPONSE_TYPE.ERROR, "Failed to create payment link."));

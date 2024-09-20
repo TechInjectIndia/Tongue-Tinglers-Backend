@@ -27,18 +27,18 @@ const router = express.Router();
  *            properties:
  *              templateId:
  *                type: string
- *                default: admin
+ *                default: 72565000000032727
  *              recipientName:
  *                type: string
  *                default: admin
  *              recipientEmail:
  *                type: string
- *                default: "admin@gmail.com"
+ *                default: "navdeepsaroya4@gmail.com"
  *              franchiseId:
  *                type: string
  *              prefilledValues:
- *                type: text
- *                default: '{"Name-:":"navdeep12","Signature-:":"echo12","Date-:":"today12"}'
+ *                type: string
+ *                default: "{\"Name-:\": \"navdeep12\", \"Signature-:\": \"echo12\", \"Date-:\": \"today12\"}"
  *     responses:
  *       '200':
  *         description: Zoho Sign send successfully

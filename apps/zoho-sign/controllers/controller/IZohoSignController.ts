@@ -1,9 +1,10 @@
-import { TListFilters, TEditUser } from "../../../../types";
+import { TemplateType, DocumentData, SendResponse, TemplateList, FieldType } from "../../../../types";
 
-interface IZohoSignController<T, TListFilters> {
-    getAccessTokenFromDb(): Promise<string>; // Assuming it returns an access token as a string
-    getTemplate(templateId: string): Promise<any>; // Define a specific type if known
-    getTemplates(): Promise<any>; // Define a specific type if known
+interface IZohoSignController<T> {
+    getAccessTokenFromDb(): Promise<string>;
+    getTemplateFields(templateId: string): Promise<TemplateType>;
+    sendDocumentUsingTemplate(templateId: string, data: DocumentData): Promise<SendResponse>;
+    getTemplates(): Promise<TemplateList>;
 }
 
 export default IZohoSignController;

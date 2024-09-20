@@ -106,21 +106,22 @@ export default class ZohoSignController {
     // Send document to franchise using template
     static async sendDocumentUsingTemplate(req: Request, res: Response, next: NextFunction) {
         try {
-            const templateId = get(req?.body, "templateId", '');
-            const franchiseId = get(req?.body, "franchiseId", '');
-            const recipientName = get(req?.body, "recipientName", '');
-            const recipientEmail = get(req?.body, "recipientEmail", '');
-            let prefilledValues = get(req?.body, "prefilledValues", '');
+            const templateId = get(req.body, "templateId", '');
+            const franchiseId = get(req.body, "franchiseId", '');
+            const recipientName = get(req.body, "recipientName", '');
+            const recipientEmail = get(req.body, "recipientEmail", '');
+            let prefilledValues = get(req.body, "prefilledValues", '');
 
             const franchiseDetails = await new AdminRepo().get(franchiseId as string)
             if (!franchiseDetails) {
                 res.status(403).json('No franchise found');
             }
 
-            const getTemplate = await new ZohoSignRepo().getTemplate(templateId as string);
+            const getTemplate = await new ZohoSignRepo().getTemplateFields(templateId as string);
             if (!getTemplate) {
                 res.status(403).json('No template found');
             }
+
             const jsonData = {
                 "templates": {
                     "field_data": {
@@ -129,42 +130,54 @@ export default class ZohoSignController {
                         "field_date_data": {},
                         "field_radio_data": {}
                     },
-                    "actions": [
-                        {
-                            "recipient_name": recipientName,
-                            "recipient_email": recipientEmail,
-                            "action_id": getTemplate.templates.actions[0].action_id,
-                            "action_type": getTemplate.templates.actions[0].action_type,
-                            "signing_order": 1,
-                            "verify_recipient": "false",
-                            "private_notes": ""
-                        }
-                    ],
+                    "actions": [],
                     "notes": ""
                 }
             };
 
-            // Populate field_text_data in jsonData
-            if (getTemplate?.templates?.document_fields[0]?.fields) {
-                const docFields = getTemplate?.templates?.document_fields[0]?.fields;
+            if (getTemplate?.docs) {
+                const docFields = getTemplate.docs;
                 prefilledValues = JSON.parse(prefilledValues);
-                docFields.forEach(field => {
-                    const fieldLabel = field.field_label; // "Name-:", "Signature-:", "Date-:"
-                    const fieldValue = prefilledValues[fieldLabel] || ''; // Get the prefilled value
 
-                    if (field.field_category === 'textfield') {
-                        jsonData.templates.field_data.field_text_data[fieldLabel] = fieldValue;
-                    }
+                docFields.forEach(doc => {
+                    const fields = doc.fields || [];
+
+                    fields.forEach(field => {
+                        const fieldLabel = field.field_label;
+                        const fieldValue = prefilledValues[fieldLabel] || '';
+
+                        if (field.field_category === 'textfield') {
+                            jsonData.templates.field_data.field_text_data[fieldLabel] = fieldValue;
+                        }
+                    });
+                });
+            }
+
+            if (getTemplate.actions.length > 0) {
+                getTemplate.actions.forEach(action => {
+                    jsonData.templates.actions.push({
+                        recipient_name: recipientName,
+                        recipient_email: recipientEmail,
+                        action_id: action.action_id,
+                        action_type: action.action_type,
+                        signing_order: 1,
+                        verify_recipient: "false",
+                        private_notes: ""
+                    });
                 });
             }
 
             let data = new FormData();
             data.append('data', JSON.stringify(jsonData));
 
-            const sendDocument = await new ZohoSignRepo().sendDocumentUsingTemplate(templateId, { data });
-
+            const sendDocument = await new ZohoSignRepo().sendDocumentUsingTemplate(templateId, data);
+            if (sendDocument) {
+                console.log(sendDocument)
+                res.status(200).json(sendDocument.message);
+            }
         } catch (error) {
-            res.status(500).json(error.response.data.message);
+            console.log(error);
+            res.status(500).json(error);
         }
     };
 
@@ -172,16 +185,10 @@ export default class ZohoSignController {
     static async getTemplates(req: Request, res: Response, next: NextFunction) {
         try {
             const getTemplate = await new ZohoSignRepo().getTemplates();
-
             if (getTemplate) {
-                const templatesArray = getTemplate.templates.map(template => ({
-                    templateId: template.template_id,
-                    templateTitle: template.template_name
-                }));
-
-                return res.status(200).json(templatesArray);
+                return res.status(200).json(getTemplate);
             }
-            return res.status(403).json('');
+            return res.status(403).json('No templates found');
         } catch (error) {
             return res.status(500).json(error.response);
         }
@@ -190,25 +197,13 @@ export default class ZohoSignController {
     // Get all fields of templates
     static async getFieldsByTemplate(req: Request, res: Response, next: NextFunction) {
         const templateId = get(req?.params, "templateId", '');
-
         try {
-            const getTemplate = await new ZohoSignRepo().getTemplate(templateId as string);
-            if (!getTemplate) {
+            const getTemplateFields = await new ZohoSignRepo().getTemplateFields(templateId as string);
+            console.log(getTemplateFields)
+            if (!getTemplateFields) {
                 res.status(403).json('No template found');
             }
-
-            let resultArray = '';
-            if (getTemplate?.templates?.document_fields[0]?.fields) {
-                const docFields = getTemplate?.templates?.document_fields[0]?.fields;
-                // Extracting the desired fields
-                resultArray = docFields.map(field => ({
-                    field_label: field.field_label,
-                    is_mandatory: field.is_mandatory,
-                    field_category: field.field_category,
-                    default_value: field.default_value
-                }));
-            }
-            res.status(200).json(resultArray);
+            res.status(200).json(getTemplateFields);
         } catch (error) {
             console.log(error);
             res.status(500).json(error.response.data);

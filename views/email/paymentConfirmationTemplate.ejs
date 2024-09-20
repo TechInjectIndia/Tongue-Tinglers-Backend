@@ -1,18 +1,16 @@
 <div class="container">
     <h1>Payment Confirmation</h1>
-    <p>Dear {{customerName}},</p>
-    <p>Thank you for your payment. We have received your payment of ${{amount}}
-        for the order #{{orderId}}.</p>
+    <p>Dear <%= customerName %>,</p>
+    <p>Thank you for your payment. We have received your payment of $<%= amount %> for the order #<%= orderId %>.</p>
 
     <h3>Payment Details</h3>
     <div class="details">
-        <p><strong>Transaction ID:</strong> {{transactionId}}</p>
-        <p><strong>Payment Method:</strong> {{paymentMethod}}</p>
-        <p><strong>Date:</strong> {{paymentDate}}</p>
+        <p><strong>Transaction ID:</strong> <%= transactionId %></p>
+        <p><strong>Payment Method:</strong> <%= paymentMethod %></p>
+        <p><strong>Date:</strong> <%= paymentDate %></p>
     </div>
 
-    <p>If you have any questions, feel free to reach out to our support team.
-    </p>
+    <p>If you have any questions, feel free to reach out to our support team.</p>
 
     <div class="footer">
         <p>Thank you for your business!</p>

@@ -17,6 +17,17 @@ export class ContractRepo implements IContractsController<TContract, TQueryFilte
         return response.get();
     }
 
+    public async getPaymentById(paymentId: string): Promise<TContract | null> {
+        const data = await ContractModel.findOne({
+            where: {
+                payment: {
+                    paymentId: paymentId
+                }
+            }
+        });
+        return data ? data.get() : null;
+    }
+
     public async get(id: string): Promise<TContract | null> {
         const data = await ContractModel.findOne({
             where: { id },

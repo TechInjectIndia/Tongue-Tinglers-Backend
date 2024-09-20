@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
 import { ZohoSignRepo } from '../models/zohosign';
-import { AdminRepo } from '../../admin-user/models/user';
+import { ContractRepo } from '../../contracts/models/ContractModel';
 import { sendResponse } from "../../../libraries";
 import { get, isEmpty } from "lodash";
 import FormData from 'form-data';
 import fs from 'fs';
 import crypto from 'crypto';
 
-const { ZOHO_API_URL, ZOHO_WEBHOOK_SECRET } = process.env;
+const { ZOHO_WEBHOOK_SECRET } = process.env;
 
 export default class ZohoSignController {
     // Validate sign for webhook
@@ -107,14 +107,14 @@ export default class ZohoSignController {
     static async sendDocumentUsingTemplate(req: Request, res: Response, next: NextFunction) {
         try {
             const templateId = get(req.body, "templateId", '');
-            const franchiseId = get(req.body, "franchiseId", '');
+            const contractId = get(req.body, "contractId", '');
             const recipientName = get(req.body, "recipientName", '');
             const recipientEmail = get(req.body, "recipientEmail", '');
             let prefilledValues = get(req.body, "prefilledValues", '');
 
-            const franchiseDetails = await new AdminRepo().get(franchiseId as string)
-            if (!franchiseDetails) {
-                res.status(403).json('No franchise found');
+            const contractDetails = await new ContractRepo().get(contractId as string)
+            if (!contractDetails) {
+                res.status(403).json('No contract found');
             }
 
             const getTemplate = await new ZohoSignRepo().getTemplateFields(templateId as string);
@@ -172,6 +172,7 @@ export default class ZohoSignController {
 
             const sendDocument = await new ZohoSignRepo().sendDocumentUsingTemplate(templateId, data);
             if (sendDocument) {
+                // update contract table
                 console.log(sendDocument)
                 res.status(200).json(sendDocument.message);
             }
@@ -199,7 +200,6 @@ export default class ZohoSignController {
         const templateId = get(req?.params, "templateId", '');
         try {
             const getTemplateFields = await new ZohoSignRepo().getTemplateFields(templateId as string);
-            console.log(getTemplateFields)
             if (!getTemplateFields) {
                 res.status(403).json('No template found');
             }

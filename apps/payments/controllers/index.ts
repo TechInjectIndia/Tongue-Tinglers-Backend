@@ -1,7 +1,7 @@
 const Razorpay = require('razorpay');
 import { NextFunction, Request, Response } from "express";
-import { sendResponse, createStandardPaymentLink } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
+import { sendResponse, createStandardPaymentLink, sendEmail, EMAIL_HEADING, getEmailTemplate, EMAIL_TEMPLATE } from "../../../libraries";
 import { ContractRepo } from '../../contracts/models/ContractModel';
 import { LeadRepo } from '../../lead/models/lead';
 import { CONTRACT_PAYMENT_STATUS } from '../../../interfaces';
@@ -53,6 +53,38 @@ export default class PaymentsController {
         await new ContractRepo().updatePayment(contractId, paymentDetails);
     }
 
+    static async fetchPayment(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { paymentId } = req.params;
+
+            if (!paymentId) {
+                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, "Payment ID is required."));
+            }
+
+            const paymentDetailsFromRazorpay = await razorpayInstance.payments.fetch(paymentId);
+            if (!paymentDetailsFromRazorpay) {
+                return res.status(404).send(sendResponse(RESPONSE_TYPE.ERROR, "Payment not found in Razorpay."));
+            }
+            console.log('Payment Details from Razorpay:', paymentDetailsFromRazorpay);
+
+            const paymentDetailsFromRepo = await new ContractRepo().getPaymentById(paymentId);
+            if (!paymentDetailsFromRepo) {
+                return res.status(404).send(sendResponse(RESPONSE_TYPE.ERROR, "Payment not found in local repository."));
+            }
+            console.log('Payment Details from Repository:', paymentDetailsFromRepo);
+
+            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, "Payment details fetched successfully.", {
+                paymentDetailsFromRazorpay: paymentDetailsFromRazorpay,
+                paymentDetailsFromRepo: paymentDetailsFromRepo
+            }));
+
+        } catch (err) {
+            console.error("Error fetching payment details:", err);
+            return res.status(500).send({ message: err });
+        }
+    }
+
+
     static async generatePaymentLink(req: Request, res: Response, next: NextFunction) {
         try {
             const { contract_id } = req.body;
@@ -75,6 +107,23 @@ export default class PaymentsController {
             if (!link) {
                 return res.status(500).send(sendResponse(RESPONSE_TYPE.ERROR, "Failed to create payment link."));
             }
+
+            // Email Starts
+            const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.PAYMENT_REQUEST, {
+                email: leadDetails.email,
+                link: link.short_url
+            });
+
+            const mailOptions = {
+                to: leadDetails.email,
+                subject: EMAIL_HEADING.PAYMENT_REQUEST,
+                templateParams: {
+                    heading: EMAIL_HEADING.PAYMENT_REQUEST,
+                    description: emailContent
+                }
+            };
+            await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
+            // Email Ends
 
             const paymentPayload: ContractPaymentDetails = {
                 paymentId: link.id,

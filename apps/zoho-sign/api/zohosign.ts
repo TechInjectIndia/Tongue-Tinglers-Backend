@@ -20,7 +20,7 @@ const router = express.Router();
  *            type: object
  *            required:
  *              - templateId
- *              - franchiseId
+ *              - contractId
  *              - recipientName
  *              - recipientEmail
  *              - prefilledValues
@@ -34,7 +34,7 @@ const router = express.Router();
  *              recipientEmail:
  *                type: string
  *                default: "navdeepsaroya4@gmail.com"
- *              franchiseId:
+ *              contractId:
  *                type: string
  *              prefilledValues:
  *                type: string

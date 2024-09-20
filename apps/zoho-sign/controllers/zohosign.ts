@@ -11,7 +11,6 @@ import crypto from 'crypto';
 const { ZOHO_API_URL, ZOHO_WEBHOOK_SECRET } = process.env;
 
 export default class ZohoSignController {
-
     // Validate sign for webhook
     static async validateSignature(req: Request, res: Response, next: NextFunction) {
         // Function to validate the HMAC signature
@@ -106,7 +105,6 @@ export default class ZohoSignController {
 
     // Send document to franchise using template
     static async sendDocumentUsingTemplate(req: Request, res: Response, next: NextFunction) {
-        const accessToken = await new ZohoSignRepo().getAccessTokenZoho();
         try {
             const templateId = get(req?.body, "templateId", '');
             const franchiseId = get(req?.body, "franchiseId", '');
@@ -163,76 +161,9 @@ export default class ZohoSignController {
             let data = new FormData();
             data.append('data', JSON.stringify(jsonData));
 
-            let config = {
-                method: 'post',
-                maxBodyLength: Infinity,
-                url: `${ZOHO_API_URL}/templates/${templateId}/createdocument`,
-                headers: {
-                    'Authorization': `Zoho-oauthtoken ${accessToken}`,
-                },
-                data: data
-            };
+            const sendDocument = await new ZohoSignRepo().sendDocumentUsingTemplate(templateId, { data });
 
-            axios.request(config).then((response) => {
-                console.log(response)
-                res.status(200).json(response.data.message);
-            }).catch((error) => {
-                console.log(error);
-            });
         } catch (error) {
-            res.status(500).json(error.response.data.message);
-        }
-    };
-
-    // Create new document
-    static async createDocument(req: Request, res: Response, next: NextFunction) {
-        const accessToken = await new ZohoSignRepo().getAccessTokenZoho();
-        try {
-            const jsonData = {
-                "requests": {
-                    "request_name": "New",
-                    "actions": [
-                        {
-                            "action_type": "SIGN",
-                            "recipient_email": "navdeepsaroya4@gmail.com",
-                            "recipient_name": "navdeep",
-                            "signing_order": "0",
-                            "verify_recipient": true,
-                            "verification_type": "EMAIL",
-                            "verification_code": "123456",
-                            "private_notes": ""
-                        }
-                    ],
-                    "expiration_days": "10",
-                    "is_sequential": true,
-                    "email_reminders": true,
-                    "reminder_period": 1,
-                    "folder_id": "72565000000033001"
-                }
-            };
-
-            let data = new FormData();
-            data.append('data', JSON.stringify(jsonData));
-            data.append('file', fs.createReadStream('C:\\Users\\hp\\Downloads\\Matrix_PRD_TongueTinglers2024.pdf'));
-
-            let config = {
-                method: 'post',
-                maxBodyLength: Infinity,
-                url: `${ZOHO_API_URL}/requests`,
-                headers: {
-                    'Authorization': `Zoho-oauthtoken ${accessToken}`,
-                },
-                data: data
-            };
-
-            axios.request(config).then((response) => {
-                console.log(JSON.stringify(response.data.message));
-                res.status(200).json(response.data.message);
-            }).catch((error) => {
-                console.log(error);
-            });
-        } catch (error) {
-            console.log(error.response);
             res.status(500).json(error.response.data.message);
         }
     };
@@ -243,7 +174,6 @@ export default class ZohoSignController {
             const getTemplate = await new ZohoSignRepo().getTemplates();
 
             if (getTemplate) {
-                // Extracting the desired data
                 const templatesArray = getTemplate.templates.map(template => ({
                     templateId: template.template_id,
                     templateTitle: template.template_name
@@ -281,87 +211,6 @@ export default class ZohoSignController {
             res.status(200).json(resultArray);
         } catch (error) {
             console.log(error);
-            res.status(500).json(error.response.data);
-        }
-    };
-
-    // Get all the documents
-    static async getDocuments(req: Request, res: Response, next: NextFunction) {
-        const accessToken = await new ZohoSignRepo().getAccessTokenZoho();
-        try {
-            const response = await axios.get(`${ZOHO_API_URL}/requests`, {
-                headers: {
-                    Authorization: `Zoho-oauthtoken ${accessToken}`,
-                },
-            });
-            res.json(response.data);
-        } catch (error) {
-            res.status(500).json(error.response.data);
-        }
-    };
-
-    // Sign documents
-    static async signDocument(req: Request, res: Response, next: NextFunction) {
-        try {
-            const accessToken = await new ZohoSignRepo().getAccessTokenZoho();
-            const documentId = "72565000000033124";
-            const reqId = "72565000000033123";
-            const actionId = "72565000000033140";
-            const jsonData = {
-                "requests": {
-                    "actions": [
-                        {
-                            "verify_recipient": false,
-                            "action_id": actionId,
-                            "action_type": "SIGN",
-                            "private_notes": "",
-                            "signing_order": 0,
-                            "fields": {
-                                "check_boxes": [
-                                    {
-                                        "field_name": "Checkbox-1",
-                                        "field_label": "Checkbox",
-                                        "field_type_name": "Checkbox",
-                                        "document_id": documentId,
-                                        "action_id": actionId,
-                                        "is_mandatory": true,
-                                        "x_coord": 100,
-                                        "y_coord": 100,
-                                        "abs_width": 40,
-                                        "abs_height": 30,
-                                        "page_no": 0,
-                                        "default_value": true,
-                                        "is_read_only": false,
-                                        "description_tooltip": "You agree to this"
-                                    }
-                                ],
-                            }
-                        }
-                    ]
-                }
-            }
-
-            let data = new FormData();
-            data.append('data', JSON.stringify(jsonData));
-
-            let config = {
-                method: 'post',
-                maxBodyLength: Infinity,
-                url: `${ZOHO_API_URL}/requests/${reqId}/submit`,
-                headers: {
-                    'Authorization': `Zoho-oauthtoken ${accessToken}`,
-                },
-                data: data
-            };
-
-            axios.request(config).then((response) => {
-                console.log(JSON.stringify(response.data.message));
-                res.status(200).json(response.data.message);
-            }).catch((error) => {
-                console.log(error);
-            });
-        } catch (error) {
-            // console.log(error);
             res.status(500).json(error.response.data);
         }
     };

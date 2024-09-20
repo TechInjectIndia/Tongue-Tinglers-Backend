@@ -13,3 +13,4 @@ export * from './common';
 export * from './address';
 export * from './crm';
 export * from './contracts';
+export * from './token';

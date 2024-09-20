@@ -66,26 +66,6 @@ export default class PetPoojaController {
         }
     };
 
-    async getAnalytics(req: Request, res: Response) {
-        try {
-            // const totalOrders = await this.analyticsService.getTotalOrders();
-            // const totalSales = await this.analyticsService.getTotalSales();
-            // const inventoryLevels = await this.analyticsService.getInventoryLevels();
-            // const salesTrends = await this.analyticsService.getSalesTrends();
-            // const inventoryChanges = await this.analyticsService.getInventoryChanges();
-
-            // res.json({
-            //     totalOrders,
-            //     totalSales,
-            //     inventoryLevels,
-            //     salesTrends,
-            //     inventoryChanges
-            // });
-        } catch (error) {
-            res.status(500).send('Error fetching analytics data');
-        }
-    }
-
     static async newOrderPlaced(req: Request, res: Response, next: NextFunction) {
         try {
             const existingFranchisee = await new PetPoojaRepo().getAllFranchise();

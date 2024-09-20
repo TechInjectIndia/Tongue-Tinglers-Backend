@@ -6,6 +6,7 @@ export type TAuditLog = {
   user_id: string;
   description: string;
   activity_type: string;
+  updatedBy: string;
   createdAt: Date;
   updatedAt: Date;
 };

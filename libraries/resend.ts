@@ -16,6 +16,7 @@ export const EMAIL_HEADING = {
     PAYMENT_RECEIPT: 'Payment Receipt',
     PAYMENT_REMINDER: 'Payment Reminder',
     REFERRAL_NOTIFICATION: 'Referral Notification',
+    PAYMENT_REQUEST: 'Payment Request',
 };
 
 export const EMAIL_TEMPLATE = {
@@ -28,6 +29,7 @@ export const EMAIL_TEMPLATE = {
     PAYMENT_CONFIRMATION: 'paymentConfirmationTemplate',
     PAYMENT_RECEIPT: 'paymentReceiptTemplate',
     PAYMENT_REMINDER: 'paymentReminderTemplate',
+    PAYMENT_REQUEST: 'paymentRequest',
     REFERRAL_NOTIFICATION: 'referralNotificationTemplate',
 };
 
@@ -57,7 +59,6 @@ export const sendEmail = async (to: string, subject: string, templateParams: {
     }).catch((err) => {
         console.log('Error loading email', err);
     });
-    console.log('paramsData');
 }
 
 export const getEmailTemplate = async (template: string, params?: any) => {

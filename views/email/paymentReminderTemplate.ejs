@@ -1,13 +1,12 @@
 <div class="container">
     <h1>Payment Reminder</h1>
-    <p>Dear {{customerName}},</p>
-    <p>This is a friendly reminder that your payment of ${{amount}} for the
-        order #{{orderId}} is due on {{dueDate}}.</p>
+    <p>Dear <%= customerName %>,</p>
+    <p>This is a friendly reminder that your payment of $<%= amount %> for the order #<%= orderId %> is due on <%= dueDate %>.</p>
 
     <h3>Payment Details</h3>
     <div class="details">
-        <p><strong>Transaction ID:</strong> {{transactionId}}</p>
-        <p><strong>Payment Method:</strong> {{paymentMethod}}</p>
+        <p><strong>Transaction ID:</strong> <%= transactionId %></p>
+        <p><strong>Payment Method:</strong> <%= paymentMethod %></p>
     </div>
 
     <p>Please make your payment before the due date to avoid any late fees.</p>

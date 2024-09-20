@@ -1,11 +1,11 @@
 <div class="container">
     <h1>Follow-Up Reminder</h1>
-    <p>Hello {{userName}},</p>
+    <p>Hello <%= userName %>,</p>
     <p>You have the following follow-ups scheduled for today:</p>
     <ul>
-        {{#each followUps}}
-            <li><strong>Lead:</strong> {{this.leadName}} - <strong>Date:</strong> {{this.followUpDate}}</li>
-        {{/each}}
+        <% followUps.forEach(function(followUp) { %>
+            <li><strong>Lead:</strong> <%= followUp.leadName %> - <strong>Date:</strong> <%= followUp.followUpDate %></li>
+        <% }); %>
     </ul>
     <div class="footer">
         <p>Thank you!</p>

@@ -38,6 +38,6 @@ export const createStandardPaymentLink = async (data: { 'contract': TContract, '
         return response;
     } catch (err) {
         console.error("Error creating payment link:", err);
-        throw new Error("Failed to create payment link");
+        return new Error("Failed to create payment link");
     }
 }

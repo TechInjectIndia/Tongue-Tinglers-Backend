@@ -1,7 +1,7 @@
 const Razorpay = require('razorpay');
 import { NextFunction, Request, Response } from "express";
-import { sendResponse, createStandardPaymentLink } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
+import { sendResponse, createStandardPaymentLink, sendEmail, EMAIL_HEADING, getEmailTemplate, EMAIL_TEMPLATE } from "../../../libraries";
 import { ContractRepo } from '../../contracts/models/ContractModel';
 import { LeadRepo } from '../../lead/models/lead';
 import { CONTRACT_PAYMENT_STATUS } from '../../../interfaces';
@@ -70,11 +70,28 @@ export default class PaymentsController {
             if (!leadDetails) {
                 return res.status(404).send(sendResponse(RESPONSE_TYPE.ERROR, "Lead not found."));
             }
-
+            
             const link = await createStandardPaymentLink({ contract: contractDetails, lead: leadDetails });
             if (!link) {
                 return res.status(500).send(sendResponse(RESPONSE_TYPE.ERROR, "Failed to create payment link."));
             }
+
+            // Email Starts
+            const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.PAYMENT_REQUEST, {
+                email: leadDetails.email,
+                link: link.short_url
+            });
+
+            const mailOptions = {
+                to: leadDetails.email,
+                subject: EMAIL_HEADING.PAYMENT_REQUEST,
+                templateParams: {
+                    heading: EMAIL_HEADING.PAYMENT_REQUEST,
+                    description: emailContent
+                }
+            };
+            await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
+            // Email Ends
 
             const paymentPayload: ContractPaymentDetails = {
                 paymentId: link.id,

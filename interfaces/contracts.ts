@@ -34,7 +34,6 @@ export enum CONTRACT_STATUS {
     TERMINATED = 'terminated'
 }
 
-
 export interface ContractDocumentDetails {
     id: string;
     name: string;
@@ -50,7 +49,6 @@ export interface ContractPaymentDetails {
     status: CONTRACT_PAYMENT_STATUS;
     additionalInfo: string;
 }
-
 
 export enum CONTRACT_PAYMENT_STATUS {
     PENDING = 'pending',

@@ -10,7 +10,6 @@ import { TokenModel } from "../../../database/schema";
 const axios = require('axios');
 const { ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN, ZOHO_API_URL, ZOHO_TOKEN_URL } = process.env;
 import IBaseRepo from '../controllers/controller/IZohoSignController';
-import { constrainedMemory } from "process";
 
 export class ZohoSignRepo implements IBaseRepo<TemplateType> {
     constructor() { }
@@ -31,7 +30,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
             }
         } catch (error) {
             console.error('Error retrieving access token from DB:', error.message);
-            throw error;
+            return error;
         }
     }
 
@@ -52,7 +51,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
             return response.data.access_token;
         } catch (error) {
             console.error('Error getting access token:', error.response ? error.response.data : error.message);
-            throw error;
+            return error;
         }
     }
 
@@ -91,7 +90,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
             } catch (error) {
                 const errorMessage = error.response ? error.response.data : error.message;
                 console.error('Error sending document:', errorMessage);
-                throw new Error(`Failed to send document: ${errorMessage}`); // Throw a clear error
+                return new Error(`Failed to send document: ${errorMessage}`); // return a clear error
             }
         });
     }

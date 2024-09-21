@@ -69,8 +69,9 @@ export default class ReferralController {
                 sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.EXISTS)
             );
         } catch (err) {
+            console.error("Error:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
@@ -96,8 +97,9 @@ export default class ReferralController {
                 sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.REFERRAL_CODE_VALID, { userId: existingReferral })
             );
         } catch (err) {
+            console.error("Error:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }

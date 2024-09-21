@@ -8,6 +8,40 @@ import { USER_TYPE } from '../../../interfaces';
 import { CONFIG } from '../../../config';
 
 export default class AdminController {
+    static async getAllUsers(req: Request, res: Response, next: NextFunction) {
+        try {
+            const size = get(req?.query, "size", 10);
+            const skip = get(req?.query, "skip", 1);
+            const search = get(req?.query, "search", "");
+            const trashOnly = get(req?.query, "trashOnly", "");
+            let sorting = get(req?.query, "sorting", "id DESC");
+            sorting = sorting.toString().split(" ");
+
+            const admins = await new AdminRepo().getAllUsers({
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+                trashOnly: trashOnly as string
+            });
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        admins
+                    )
+                );
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     static async getAdmins(req: Request, res: Response, next: NextFunction) {
         try {
             const size = get(req?.query, "size", 10);
@@ -35,8 +69,9 @@ export default class AdminController {
                     )
                 );
         } catch (err) {
+            console.error("Error:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
@@ -114,7 +149,7 @@ export default class AdminController {
                     )
                 );
         } catch (err) {
-            console.error("Error adding user:", err);
+            console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -165,8 +200,9 @@ export default class AdminController {
                     )
                 );
         } catch (err) {
+            console.error("Error:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
@@ -219,8 +255,9 @@ export default class AdminController {
                     )
                 );
         } catch (err) {
+            console.error("Error:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }

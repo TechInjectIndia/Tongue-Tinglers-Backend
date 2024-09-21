@@ -323,7 +323,7 @@ const {
  *              - id
  *            properties:
  *              id:
- *                type: number
+ *                type: string
  *                default: 1
  *     responses:
  *       '200':

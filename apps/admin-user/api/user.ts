@@ -13,7 +13,7 @@ const {
   validateEditMultipleIdsBody,
 } = AdminValidation;
 
-const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminController;
+const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminController;
 
 // ====== Admins Routes Start ======
 /**
@@ -68,9 +68,38 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/users/list?size={size}&skip={skip}:
+ * /api/admin/users/list-all?size={size}&skip={skip}:
  *   get:
  *     summary: Get all Users
+ *     tags: [Admin > Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: size
+ *         default: 10
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Size of the retreived data
+ *       - in: query
+ *         name: skip
+ *         default: 0
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: How many Rows want to skip
+ *     responses:
+ *       '200':
+ *         description: Users retrieved successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
+ * /api/admin/users/list?size={size}&skip={skip}:
+ *   get:
+ *     summary: Get admin Users
  *     tags: [Admin > Users]
  *     security:
  *       - bearerAuth: []
@@ -203,6 +232,7 @@ const { getAdmins, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminControll
  */
 router.post("/create", hasPermission('admin', 'create'), validateCreateAdminBody, addAdmin);
 router.get("/list", hasPermission('admin', 'read'), validateListAdminQuery, getAdmins);
+router.get("/list-all", hasPermission('admin', 'read'), validateListAdminQuery, getAllUsers);
 router.get("/get/:id", hasPermission('admin', 'read'), validateEditAdminParams, getAdmin);
 router.put("/update/:id", hasPermission('admin', 'update'), validateEditAdminParams, validateEditAdminBody, editAdmin);
 router.delete("/delete", hasPermission('admin', 'delete'), validateEditMultipleIdsBody, deleteAdmin); // Soft delete single or multiple

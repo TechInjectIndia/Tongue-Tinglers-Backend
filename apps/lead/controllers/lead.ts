@@ -11,9 +11,9 @@ import { CONFIG } from '../../../config';
 export default class LeadController {
     static async convertLeadToFranchisee(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.body, "id", 0);
+            const id = get(req?.body, "id");
             const existingLead = await new LeadRepo().getLeadByStatus(id as string);
-            if (isEmpty(existingLead)) {
+            if (!existingLead) {
                 return res
                     .status(400)
                     .send(
@@ -81,26 +81,27 @@ export default class LeadController {
                 let payloadLead = { status: LEAD_STATUS.CONVERTED };
                 await new LeadRepo().updateStatus(id as string, payloadLead);
 
-                // Email Starts - New franchise created email sent to the team
-                const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
-                    leadName: existingLead.firstName + " " + existingLead.lastName,
-                    leadEmail: existingLead.email,
-                    leadPhone: existingLead.phoneNumber
-                });
+                try {
+                    const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
+                        leadName: existingLead.firstName + " " + existingLead.lastName,
+                        leadEmail: existingLead.email,
+                        leadPhone: existingLead.phoneNumber
+                    });
 
-                const mailOptions = {
-                    to: CONFIG.ADMIN_EMAIL, // Replace with the appropriate recipient email
-                    subject: EMAIL_HEADING.NEW_FRANCHISE_CREATED, // Define this in your EMAIL_HEADING
-                    templateParams: {
-                        heading: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
-                        description: emailContent
-                    }
-                };
+                    const mailOptions = {
+                        to: existingLead.email,
+                        subject: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
+                        templateParams: {
+                            heading: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
+                            description: emailContent,
+                        },
+                    };
 
-                await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
-                // Email Ends
+                    await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
+                } catch (emailError) {
+                    console.error("Error sending email:", emailError);
+                }
 
-                // if(covertedLead)
                 return res
                     .status(200)
                     .send(
@@ -229,7 +230,7 @@ export default class LeadController {
             let payload = { ...req?.body, createdBy: user_id, assignedTo: user_id, source: LEAD_SOURCE.ADMIN, };
 
             // check if referral code valid
-            if(payload.referby != ''){
+            if (payload.referby != '') {
                 const existingReferral = await new AdminRepo().getByReferralCode(payload.referby as string);
                 if (!existingReferral) {
                     return res.status(404).send(
@@ -331,8 +332,9 @@ export default class LeadController {
                     )
                 );
         } catch (err) {
+            console.error("Error:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
@@ -389,8 +391,9 @@ export default class LeadController {
                     )
                 );
         } catch (err) {
+            console.error("Error:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }

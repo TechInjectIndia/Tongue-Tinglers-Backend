@@ -30,8 +30,9 @@ export default class PermissionsController {
                     )
                 );
         } catch (err) {
+            console.error("Error:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
@@ -77,7 +78,7 @@ export default class PermissionsController {
             const description = get(req?.body, "description", 1);
             const existingPermission = await new PermissionsRepo().getPermissionByName(name);
 
-            if (!isEmpty(existingPermission)) {
+            if (existingPermission) {
                 return res
                     .status(400)
                     .send(
@@ -99,57 +100,32 @@ export default class PermissionsController {
                     )
                 );
         } catch (err) {
+            console.error("Error:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
-            const name = get(req?.body, "name", "");
-            const description = get(req?.body, "description", "");
-            const active = get(req?.body, "active", 1);
+            const id = get(req?.params, "id", 0) as number;
+            const { name, description, active } = req.body;
 
-            // const existingPermission = await new PermissionsRepo().get(id as number);
-            // if (isEmpty(existingPermission)) {
-            //     return res
-            //         .status(400)
-            //         .send(
-            //             sendResponse(
-            //                 RESPONSE_TYPE.ERROR,
-            //                 ERROR_MESSAGE.NOT_EXISTS
-            //             )
-            //         );
-            // }
-
-            const checkPermissionExist = await new PermissionsRepo().checkPermissionExist(name as string, id as number);
+            const checkPermissionExist = await new PermissionsRepo().checkPermissionExist(name, id);
             if (checkPermissionExist) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.EXISTS
-                        )
-                    );
+                return res.status(409).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.EXISTS));
             }
 
-            const Permission = await new PermissionsRepo().update(id as number, { name, description, active });
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED,
-                        Permission
-                    )
-                );
+            const [affectedCount] = await new PermissionsRepo().update(id, { name, description, active });
+            if (affectedCount === 0) {
+                return res.status(404).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
+            }
+
+            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPDATED));
         } catch (err) {
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
+            console.error("Error:", err);
+            return res.status(500).send({ message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
 }

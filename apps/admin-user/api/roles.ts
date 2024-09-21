@@ -184,10 +184,10 @@ const {
  *       '404':
  *         description: roles not found
  */
-router.post("/create", hasPermission('roles', 'create'), validateCreateRoleBody, RolesController.create);
+router.post("/create", hasPermission('roles', 'create'), RolesController.validateRolePermissions, validateCreateRoleBody, RolesController.create);
 router.get("/list", hasPermission('roles', 'read'), validateListRoleQuery, RolesController.list);
 router.get("/get/:id", hasPermission('roles', 'read'), validateEditRoleParams, RolesController.get);
-router.put("/update/:id", hasPermission('roles', 'update'), validateEditRoleParams, validateEditRoleBody, RolesController.update);
+router.put("/update/:id", hasPermission('roles', 'update'), RolesController.validateRolePermissions, validateEditRoleParams, validateEditRoleBody, RolesController.update);
 router.delete("/delete", hasPermission('roles', 'delete'), validateEditMultipleIdsBody, RolesController.deleteRole);
 // ====== Admin Roles Ends ======
 

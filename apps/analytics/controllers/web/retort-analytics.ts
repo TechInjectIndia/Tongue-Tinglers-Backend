@@ -7,32 +7,23 @@ import { AnalyticsModel } from '../../models/lead-analytics';
 export default class RetortAnalyticsController {
     static async list(req: Request, res: Response, next: NextFunction) {
         try {
-            const size = get(req?.query, "size", 10);
-            const skip = get(req?.query, "skip", 1);
-            const search = get(req?.query, "search", "");
-            const trashOnly = get(req?.query, "trashOnly", "");
-            let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.toString().split(" ");
+            const startDate = new Date(get(req.query, "startDate", new Date(0)) as string);
+            const endDate = new Date(get(req.query, "endDate", new Date()) as string);
 
-            const Analyticss = await new AnalyticsModel().leadSources({
-                offset: skip as number,
-                limit: size as number,
-                search: search as string,
-                sorting: sorting,
-                trashOnly: trashOnly as string
-            });
+            const analyticsData = await new AnalyticsModel().leadSources(
+                startDate,
+                endDate,
+            );
 
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FETCHED,
-                        Analyticss
-                    )
-                );
+            return res.status(200).send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.FETCHED,
+                    analyticsData
+                )
+            );
         } catch (err) {
-            console.log(err);
+            console.error("Error fetching analytics data:", err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

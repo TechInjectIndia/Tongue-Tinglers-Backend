@@ -48,14 +48,14 @@ export const sendEmail = async (to: string, subject: string, templateParams: {
     const paramsData = templateParams ? { ...templateParams, ...defaultParams } : { ...defaultParams };
     await ejs.renderFile(path.join(__dirname, "../views/email/index.ejs"), paramsData).then((result) => {
         resend.emails.send({
-            from: 'onboarding@resend.dev',
+            from: 'Nitesh@techinject.co.in',
             to,
             subject,
             html: result
         }).then((result) => {
-            console.log(result)
+            console.log('>>>>>>>> res', result) 
         }).catch((err) => {
-            console.log(err)
+            console.log('>>>>>>>>> err', err)
         });
     }).catch((err) => {
         console.log('Error loading email', err);

@@ -77,24 +77,6 @@ export default class AdminController {
                     );
             }
 
-            // Email Starts - New admin created email sent to user
-            const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.WELCOME_ADMIN_USER, {
-                email: payload.email,
-                link: 'some-link'
-            });
-
-            const mailOptions = {
-                to: payload.email,
-                subject: EMAIL_HEADING.WELCOME_ADMIN_USER,
-                templateParams: {
-                    heading: EMAIL_HEADING.WELCOME_ADMIN_USER,
-                    description: emailContent
-                }
-            };
-
-            await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
-            // Email Ends
-
             const hashedPassword = await createPassword(payload.password);
             await new AdminRepo().create({
                 ...payload,
@@ -102,6 +84,26 @@ export default class AdminController {
                 type: USER_TYPE.ADMIN,
                 firebaseUid: firebaseUser.uid
             });
+
+            try {
+                const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.WELCOME_ADMIN_USER, {
+                    email: payload.email,
+                    link: 'some-link',
+                });
+
+                const mailOptions = {
+                    to: payload.email,
+                    subject: EMAIL_HEADING.WELCOME_ADMIN_USER,
+                    templateParams: {
+                        heading: EMAIL_HEADING.WELCOME_ADMIN_USER,
+                        description: emailContent,
+                    },
+                };
+
+                await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
+            } catch (emailError) {
+                console.error("Error sending email:", emailError);
+            }
 
             return res
                 .status(200)
@@ -112,8 +114,9 @@ export default class AdminController {
                     )
                 );
         } catch (err) {
+            console.error("Error adding user:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }

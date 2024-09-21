@@ -5,7 +5,7 @@ import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constant
 import { LeadRepo } from '../models/lead';
 import { AdminRepo } from '../../admin-user/models/user';
 import { FranchiseRepo } from '../../admin-user/models/franchise';
-import { LEAD_SOURCE, LEAD_STATUS, USER_TYPE, USER_STATUS } from '../../../interfaces';
+import { LEAD_SOURCE, LEAD_STATUS, USER_TYPE, USER_STATUS, FOLLOWED_DATE } from '../../../interfaces';
 import { CONFIG } from '../../../config';
 
 export default class LeadController {
@@ -293,8 +293,10 @@ export default class LeadController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
+            const user_id = get(req, 'user_id');
             const id = get(req?.params, "id", 0);
             const payload = req?.body;
+            const followedDate = payload.followedDate;
 
             let getAttributes: any = ['*'];
             const whereName = 'id'
@@ -313,13 +315,20 @@ export default class LeadController {
 
             delete payload.id
 
-            let followDateNew = payload.followedDate;
-            payload.followedDate = [];
-            if (!existingLead.followedDate || !Array.isArray(existingLead.followedDate)) {
-                existingLead.followedDate = [];
+            if (followedDate && Array.isArray(followedDate)) {
+                if (!existingLead.followedDate || !Array.isArray(existingLead.followedDate)) {
+                    existingLead.followedDate = [];
+                }
+                followedDate.forEach(dateInfo => {
+                    const followDateNew = {
+                        date: new Date(dateInfo.date),
+                        by: user_id,
+                        isFollowedUp: dateInfo.isFollowedUp
+                    };
+                    existingLead.followedDate.push(followDateNew);
+                });
+                payload.followedDate = existingLead.followedDate;
             }
-            existingLead.followedDate.push(followDateNew)
-            payload.followedDate = existingLead.followedDate;
 
             const Lead = await new LeadRepo().update(id as string, payload);
             return res

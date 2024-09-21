@@ -4,6 +4,12 @@ export enum LEAD_SOURCE {
     OTHERS = "others",
 }
 
+export interface FOLLOWED_DATE {
+    date: Date,
+    by: string,
+    isFollowedUp: boolean
+}
+
 export enum LEAD_STATUS {
     NEW = "new",
     CONTACTED = "contacted",

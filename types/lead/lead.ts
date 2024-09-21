@@ -1,5 +1,5 @@
 const { OrderItem } = require("sequelize");
-import { LEAD_SOURCE, LEAD_STATUS, Assignee } from '../../interfaces/leads'
+import { LEAD_SOURCE, LEAD_STATUS, Assignee, FOLLOWED_DATE } from '../../interfaces/leads'
 
 export type TLeadStatus = {
   status: LEAD_STATUS,
@@ -20,7 +20,7 @@ export interface TLead {
   address: string,
   additionalInfo: string,
   source: LEAD_SOURCE,
-  followedDate?: Date[] | null,
+  followedDate?: FOLLOWED_DATE[] | null,
   referby?: string,
   createdBy: string,
   updatedBy: string;
@@ -46,7 +46,7 @@ export type TLeadPayload = {
   address: string,
   additionalInfo: string,
   source: LEAD_SOURCE,
-  followedDate?: Date[] | null,
+  followedDate?: FOLLOWED_DATE[] | null,
   status: LEAD_STATUS,
 };
 

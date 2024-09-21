@@ -3,6 +3,18 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 import { LEAD_STATUS } from '../../../interfaces/leads';
 
+const FOLLOWED_DATE_SCHEMA = Joi.object().keys({
+    date: Joi.date().iso().required()
+        .messages({
+            'any.required': 'Followed date is required.',
+            'date.iso': 'Followed date must be in ISO format.',
+        }),
+    isFollowedUp: Joi.boolean().required()
+        .messages({
+            'any.required': 'Follow-up status is required.',
+        }),
+});
+
 // Validation for converting lead parameters
 const convertLeadParams = Joi.object().keys({
     id: Joi.string().required()
@@ -120,11 +132,7 @@ const editLeadBody = Joi.object().keys({
         .messages({
             'any.required': 'Additional info is required.',
         }),
-    followedDate: Joi.date().iso().required()
-        .messages({
-            'any.required': 'Followed date is required.',
-            'date.iso': 'Followed date must be in ISO format.',
-        }),
+    followedDate: Joi.array().items(FOLLOWED_DATE_SCHEMA).optional(),
     status: Joi.string().valid(...Object.values(LEAD_STATUS)).optional().allow('')
         .messages({
             'any.only': `Status must be one of: ${Object.values(LEAD_STATUS).join(', ')}.`,

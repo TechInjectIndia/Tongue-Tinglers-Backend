@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { LEAD_SOURCE, LEAD_STATUS, Assignee } from '../../../interfaces';
+import { LEAD_SOURCE, LEAD_STATUS, Assignee, FOLLOWED_DATE } from '../../../interfaces';
 import { sequelize } from "../../../config";
 import { TLead } from "../../../types";
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
@@ -21,7 +21,7 @@ class LeadsModel extends Model<TLead, LeadCreationAttributes> implements TLead {
     public address: string;
     public additionalInfo: string;
     public source: LEAD_SOURCE;
-    public followedDate: Date[] | null;
+    public followedDate: FOLLOWED_DATE[] | null;
     public referby?: string;
     public createdBy!: string;
     public updatedBy!: string;

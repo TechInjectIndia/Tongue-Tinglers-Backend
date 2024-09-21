@@ -46,7 +46,7 @@ const {
  *                default: "{\"user\":[\"create\",\"update\",\"delete\",\"read\"]}"
  *              active:
  *                type: boolean
- *                default: 0 
+ *                default: true
  *     responses:
  *       '200':
  *         description: roles created successfully
@@ -144,10 +144,10 @@ const {
  *                default: "description"
  *              role_permissions:
  *                type: text
- *                default: '{"user":["create","update", "delete", "read"]}'
+ *                default: "{\"user\":[\"create\",\"update\",\"delete\",\"read\"]}"
  *              active:
  *                type: string
- *                default: 1
+ *                default: true
  *     responses:
  *       '200':
  *         description: roles updated successfully

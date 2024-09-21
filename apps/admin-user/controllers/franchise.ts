@@ -36,8 +36,9 @@ export default class FranchiseController {
                     )
                 );
         } catch (err) {
+            console.error("Error:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
@@ -86,24 +87,26 @@ export default class FranchiseController {
                 firebaseUid: firebaseUser.uid
             });
 
-            // Email Sending Logic Starts
-            const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
-                franchiseName: payload.name,
-                franchiseEmail: payload.email,
-                franchisePhone: payload.phoneNumber,
-            });
+            try {
+                const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
+                    franchiseName: payload.name,
+                    franchiseEmail: payload.email,
+                    franchisePhone: payload.phoneNumber,
+                });
 
-            const mailOptions = {
-                to: payload.email,
-                subject: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
-                templateParams: {
-                    heading: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
-                    description: emailContent,
-                },
-            };
+                const mailOptions = {
+                    to: payload.email,
+                    subject: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
+                    templateParams: {
+                        heading: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
+                        description: emailContent,
+                    }
+                };
 
-            await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
-            // Email Sending Logic Ends
+                await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
+            } catch (emailError) {
+                console.error("Error sending email:", emailError);
+            }
 
             return res
                 .status(200)
@@ -114,8 +117,9 @@ export default class FranchiseController {
                     )
                 );
         } catch (err) {
+            console.error("Error:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
@@ -136,8 +140,9 @@ export default class FranchiseController {
                     )
                 );
         } catch (err) {
+            console.error("Error:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
@@ -157,8 +162,9 @@ export default class FranchiseController {
                     )
                 );
         } catch (err) {
+            console.error("Error:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
@@ -188,8 +194,9 @@ export default class FranchiseController {
                     )
                 );
         } catch (err) {
+            console.error("Error:", err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }

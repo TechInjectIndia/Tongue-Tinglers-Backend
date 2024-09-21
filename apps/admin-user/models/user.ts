@@ -39,6 +39,27 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         });
     }
 
+    public async getAllUsers(filters: TListFilters): Promise<TUsersList> {
+        const total = await UserModel.count({
+            where: {
+                email: {
+                    [Op.like]: `%${filters.search}%`,
+                },
+            },
+        });
+        const data = await UserModel.findAll({
+            order: [filters?.sorting],
+            offset: filters.offset,
+            limit: filters.limit,
+            where: {
+                email: {
+                    [Op.like]: `%${filters.search}%`,
+                },
+            },
+        });
+        return { total, data };
+    }
+
     public async list(filters: TListFilters): Promise<TUsersList> {
         const total = await UserModel.count({
             where: {

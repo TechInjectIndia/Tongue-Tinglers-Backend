@@ -20,10 +20,11 @@ export const EMAIL_HEADING = {
 };
 
 export const EMAIL_TEMPLATE = {
-    WELCOME_ADMIN_USER: 'welcomeAdminUser', // done
-    NEW_FRANCHISE_CREATED: "convertLeadToFranchisee", // done
-    FOLLOW_UP_REMINDER: "getTodayFollowUps", // done
-    LEAD_GENERATION: 'leadGenerationTemplate', // done
+    WELCOME_ADMIN_USER: 'welcomeAdminUser',
+    LEAD_CONVERTED: "convertLeadToFranchisee",
+    NEW_FRANCHISE_CREATED: "newFranchiseNotification",
+    FOLLOW_UP_REMINDER: "getTodayFollowUps",
+    LEAD_GENERATION: 'leadGenerationTemplate',
     ORDER_CONFIRMATION: 'orderConfirmationTemplate',
     PASSWORD_RESET: 'passwordResetTemplate',
     PAYMENT_CONFIRMATION: 'paymentConfirmationTemplate',

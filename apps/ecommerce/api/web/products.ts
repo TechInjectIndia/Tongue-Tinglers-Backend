@@ -4,7 +4,7 @@ import * as ProductsValidation from "../../validations/web/products";
 
 const router = express.Router();
 const {
-  validatTypeProductsParams,
+  validateTypeProductsParams,
   validateSingleProductsParams,
   validateSearchProductsParams,
   validateListProductsQuery,
@@ -133,7 +133,7 @@ const {
  */
 
 router.get("/all", validateListProductsQuery, webProductsController.list);
-router.get("/get/type/", validatTypeProductsParams, webProductsController.getByType);
+router.get("/get/type/", validateTypeProductsParams, webProductsController.getByType);
 router.get("/search", validateSearchProductsParams, webProductsController.search);
 router.get("/:slug", validateSingleProductsParams, webProductsController.get);
 // ====== Products Ends ======

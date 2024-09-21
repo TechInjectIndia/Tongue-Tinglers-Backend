@@ -10,7 +10,7 @@ import IBaseRepo from '../controllers/controller/IProfileController';
 export class ProfileRepo implements IBaseRepo<TProfile> {
     constructor() { }
 
-    public async update(id: number, data: TEditUserProfile): Promise<[affectedCount: number]> {
+    public async update(id: string, data: TEditUserProfile): Promise<[affectedCount: number]> {
         return await UserModel.update(data, {
             where: {
                 id,
@@ -19,7 +19,7 @@ export class ProfileRepo implements IBaseRepo<TProfile> {
         });
     }
 
-    public async get(id: number): Promise<TProfile> {
+    public async get(id: string): Promise<TProfile> {
         const data = await UserModel.findOne({
             raw: true,
             attributes: ['id', 'email', 'firstName', 'lastName', 'userName', 'phoneNumber', 'profilePhoto', 'status'],

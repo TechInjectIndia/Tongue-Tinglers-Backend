@@ -4,48 +4,45 @@ import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { RolesRepo } from '../models/roles';
 import { PermissionsRepo } from '../models/permissions';
-
+import { TPermission } from "../../../types";
 export default class RolesController {
     static async validateRolePermissions(req: Request, res: Response, next: NextFunction) {
         try {
             let { role_permissions } = req.body;
 
-            // Check if role_permissions is provided
+            // Parse role_permissions if it's a string
             if (typeof role_permissions === 'string') {
                 role_permissions = JSON.parse(role_permissions);
             }
 
+            // Validate role_permissions structure
             if (!role_permissions || typeof role_permissions !== 'object') {
                 return res.status(400).send({
                     message: "Role permissions must be an object."
                 });
             }
 
-            // Extract keys from role_permissions
-            const permissionsKeys = Object.keys(role_permissions); // This should give you the correct keys
-
+            const permissionsKeys = Object.keys(role_permissions);
             const permissionsRepo = new PermissionsRepo();
 
-            const size = 10;
-            const skip = 1;
-            const search = "";
-            const trashOnly = "";
-            const sorting = [["id", "DESC"]];
-
             const validPermissionsList = await permissionsRepo.list({
-                offset: skip,
-                limit: size,
-                search,
-                sorting,
-                trashOnly
+                offset: 0,
+                limit: 100,
+                search: "",
+                sorting: [["id", "DESC"]],
+                trashOnly: ""
             });
 
-            const validPermissions = validPermissionsList.data;
+            const validPermissions: TPermission[] = validPermissionsList.data;
+            const validPermissionsSet = new Set(validPermissions.map(p => p.name));
 
-            // Validate each key in permissionsKeys
-            const isValid = permissionsKeys.every(key =>
-                validPermissions.some(p => p.name === key)
-            );
+            const isValid = permissionsKeys.every(key => {
+                console.log(validPermissionsSet.has(key), key, validPermissionsSet)
+                if (validPermissionsSet.has(key)) {
+                    return Array.isArray(role_permissions[key]);
+                }
+                return false;
+            });
 
             if (!isValid) {
                 return res.status(400).send({
@@ -53,7 +50,7 @@ export default class RolesController {
                 });
             }
 
-            next(); // If valid, continue to the next middleware
+            next();
         } catch (err) {
             console.error("Error validating permissions:", err);
             return res.status(500).send({
@@ -61,6 +58,7 @@ export default class RolesController {
             });
         }
     }
+
 
     static async create(req: Request, res: Response, next: NextFunction) {
         try {

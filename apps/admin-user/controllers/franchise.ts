@@ -3,7 +3,6 @@ import { get, isEmpty } from "lodash";
 import { sendResponse, createPassword, createFirebaseUser, sendEmail, getEmailTemplate, EMAIL_TEMPLATE, EMAIL_HEADING } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { FranchiseRepo } from '../models/franchise';
-import { AdminRepo } from '../models/user';
 import { Auth } from '../../auth/models';
 import { USER_TYPE } from '../../../interfaces';
 import { CONFIG } from '../../../config';
@@ -80,7 +79,7 @@ export default class FranchiseController {
             }
 
             const hashedPassword = await createPassword(payload.password);
-            await new AdminRepo().create({
+            await new FranchiseRepo().create({
                 ...payload,
                 password: hashedPassword,
                 type: USER_TYPE.FRANCHISE,

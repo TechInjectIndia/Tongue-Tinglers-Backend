@@ -130,7 +130,7 @@ const {
  *         required: true
  *         default: 1
  *         schema:
- *           type: number
+ *           type: string
  *         description: ID of the lead to retrieve
  *     responses:
  *       '200':
@@ -138,7 +138,7 @@ const {
  *         content:
  *           application/json:
  *             schema:
- *               type: number
+ *               type: string
  *               description: ID of the Lead to retrieve
  *       '401':
  *         description: Unauthorized
@@ -154,7 +154,6 @@ const {
  *     parameters:
  *       - in: path
  *         name: id
- *         default: 1
  *         required: true
  *         schema:
  *           type: string
@@ -164,54 +163,72 @@ const {
  *       content:
  *         application/json:
  *           schema:
- *            type: object
- *            required:
- *              - firstName
- *              - lastName
- *              - city
- *              - zipCode
- *              - state
- *              - country
- *              - phoneNumber
- *              - address
- *              - additionalInfo
- *              - followedDate
- *              - status
- *            properties:
- *              firstName:
- *                type: string
- *                default: firstName 
- *              lastName:
- *                type: string
- *                default: lastName 
- *              city:
- *                type: string
- *                default: city
- *              zipCode:
- *                type: string
- *                default: zipCode
- *              state:
- *                type: string
- *                default: state
- *              country:
- *                type: string
- *                default: country
- *              phoneNumber:
- *                type: string
- *                default: phoneNumber
- *              address:
- *                type: string
- *                default: address
- *              additionalInfo:
- *                type: text
- *                default: additionalInfo
- *              followedDate:
- *                type: string
- *                format: date
- *                example: "2024-09-12 09:30:50.95+05:30"
- *              status:
- *                type: string
- *                default: new
+ *             type: object
+ *             required:
+ *               - firstName
+ *               - lastName
+ *               - city
+ *               - zipCode
+ *               - state
+ *               - country
+ *               - phoneNumber
+ *               - address
+ *               - additionalInfo
+ *               - followedDate
+ *               - status
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 description: "First name of the lead."
+ *               lastName:
+ *                 type: string
+ *                 description: "Last name of the lead."
+ *               city:
+ *                 type: string
+ *                 description: "City of residence."
+ *               zipCode:
+ *                 type: string
+ *                 description: "Postal code."
+ *               state:
+ *                 type: string
+ *                 description: "State of residence."
+ *               country:
+ *                 type: string
+ *                 description: "Country of residence."
+ *               phoneNumber:
+ *                 type: string
+ *                 description: "Contact phone number."
+ *               address:
+ *                 type: string
+ *                 description: "Street address."
+ *               additionalInfo:
+ *                 type: string
+ *                 description: "Any additional information about the lead."
+ *               followedDate:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - date
+ *                     - by
+ *                     - isFollowedUp
+ *                   properties:
+ *                     date:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2024-09-12T09:30:50.95+05:30"
+ *                       description: "Date of follow-up."
+ *                     isFollowedUp:
+ *                       type: boolean
+ *                       description: "Indicates if the follow-up was made."
+ *               status:
+ *                 type: string
+ *                 description: "Current status of the lead."
+ *                 enum: 
+ *                   - new
+ *                   - in_progress
+ *                   - completed
+ *                   - closed
  *     responses:
  *       '200':
  *         description: Lead updated successfully

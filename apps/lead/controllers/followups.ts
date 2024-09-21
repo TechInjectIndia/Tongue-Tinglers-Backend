@@ -25,22 +25,22 @@ export default class FollowUpsController {
             }
             console.log(existingLead);
 
-            // Email Sending Logic Starts
-            const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.FOLLOW_UP_REMINDER, {
-                userName: existingLead.name,
-                followUps: existingLead,
-            });
+            // // Email Sending Logic Starts
+            // const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.FOLLOW_UP_REMINDER, {
+            //     userName: existingLead.name,
+            //     followUps: existingLead,
+            // });
 
-            const mailOptions = {
-                to: CONFIG.ADMIN_EMAIL,
-                subject: EMAIL_HEADING.FOLLOW_UP_REMINDER,
-                templateParams: {
-                    heading: EMAIL_HEADING.FOLLOW_UP_REMINDER,
-                    description: emailContent,
-                },
-            };
+            // const mailOptions = {
+            //     to: CONFIG.ADMIN_EMAIL,
+            //     subject: EMAIL_HEADING.FOLLOW_UP_REMINDER,
+            //     templateParams: {
+            //         heading: EMAIL_HEADING.FOLLOW_UP_REMINDER,
+            //         description: emailContent,
+            //     },
+            // };
 
-            await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
+            // await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
             // Email Sending Logic Ends
 
             return res

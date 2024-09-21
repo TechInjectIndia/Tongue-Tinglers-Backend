@@ -38,39 +38,39 @@ const { login, changePassword } = AuthController;
 // *         description: Invalid request body
 // *       '401':
 // *         description: Unauthorized
-/**
- * @swagger
- * 
- * /api/auth/change-password:
- *   post:
- *     summary: change password
- *     tags: [AUTH]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *            type: object
- *            required:
- *              - old_password
- *              - new_password
- *            properties:
- *              old_password:
- *                type: string
- *                default: admin
- *              new_password:
- *                type: string
- *                default: admin123
- *     responses:
- *       '200':
- *         description: logged in successfully
- *       '400':
- *         description: Invalid request body
- *       '401':
- *         description: Unauthorized
- */
+// /**
+//  * @swagger
+//  * 
+//  * /api/auth/change-password:
+//  *   post:
+//  *     summary: change password
+//  *     tags: [AUTH]
+//  *     security:
+//  *       - bearerAuth: []
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *            type: object
+//  *            required:
+//  *              - old_password
+//  *              - new_password
+//  *            properties:
+//  *              old_password:
+//  *                type: string
+//  *                default: admin
+//  *              new_password:
+//  *                type: string
+//  *                default: admin123
+//  *     responses:
+//  *       '200':
+//  *         description: logged in successfully
+//  *       '400':
+//  *         description: Invalid request body
+//  *       '401':
+//  *         description: Unauthorized
+//  */
 // router.post("/login", validateLoginBody, login);
 router.post("/change-password", auth, validateChangePasswordBody, changePassword);
 

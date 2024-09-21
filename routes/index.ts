@@ -2,6 +2,7 @@ import { Router } from "express";
 import { Request, Response } from "express";
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
+import { sendEmail } from "../libraries";
 
 const router = Router();
 
@@ -152,5 +153,9 @@ router.use(`/pet-pooja`, petPoojaApiRouter);
 import zohoSignApiRouter from "../apps/zoho-sign/api/zohosign";
 router.use(`/zoho-sign`, zohoSignApiRouter);
 // ====== Zoho Sign ======
+
+router.use(`/etest`, () => {
+    sendEmail('jasskaranofficial@gmail.com', 'subject', {heading: 'asd', description: 'qwe'});
+});
 
 export default router;

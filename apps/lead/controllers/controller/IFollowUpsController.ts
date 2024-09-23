@@ -11,7 +11,14 @@ interface IFollowUpsController<T, F extends TQueryFilters> {
      * @param getAttributes - The attributes to retrieve.
      * @returns Promise resolving to the follow-up data.
      */
-    getFollowUpsToday(assignedTo: number, getAttributes: string): Promise<T>;
+    getTodayFollowUps(assignedTo: string, getAttributes: string[]): Promise<T[]>;
+
+    /**
+     * Get leads that have follow-ups scheduled for today.
+     * @param getAttributes - The attributes to retrieve.
+     * @returns Promise resolving to the leads data.
+     */
+    getLeadsByTodayFollowUps(getAttributes: string[]): Promise<T[]>;
 }
 
 export default IFollowUpsController;

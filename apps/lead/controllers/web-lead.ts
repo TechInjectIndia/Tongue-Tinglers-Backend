@@ -3,13 +3,13 @@ import { get, isEmpty } from "lodash";
 import { sendResponse, sendEmail, getEmailTemplate, EMAIL_TEMPLATE, EMAIL_HEADING } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { LeadRepo } from '../models/web-lead';
-import { LEAD_SOURCE, LEAD_STATUS } from '../../../interfaces';
+import { LeadSource, LeadStatus } from '../../../interfaces';
 import { CONFIG } from '../../../config';
 
 export default class WebLeadController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            let getAttributes: any = '';
+            let getAttributes: any = '[*]';
             const whereName = 'email'
             const whereVal = get(req?.body, "email", "");
 
@@ -25,7 +25,7 @@ export default class WebLeadController {
                     );
             }
 
-            const createLead = { ...req?.body, source: LEAD_SOURCE.WEBSITE, status: LEAD_STATUS.NEW };
+            const createLead = { ...req?.body, source: LeadSource.WEBSITE, status: LeadStatus.NEW };
             const Lead = await new LeadRepo().create(createLead);
 
             // Email Starts - New lead generated email sent to the user

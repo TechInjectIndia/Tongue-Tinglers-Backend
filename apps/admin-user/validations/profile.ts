@@ -18,10 +18,7 @@ const editProfileBody = Joi.object().keys({
         .messages({
             'string.pattern.base': 'Phone number must be in international format (e.g., +1234567890).',
         }),
-    profilePhoto: Joi.string().uri().optional()
-        .messages({
-            'string.uri': 'Profile photo must be a valid URL.',
-        }),
+    profilePhoto: Joi.string().optional()
 });
 
 // Middleware functions for validations

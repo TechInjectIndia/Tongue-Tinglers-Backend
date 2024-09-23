@@ -16,10 +16,7 @@ const editProfileBody = Joi.object().keys({
         .messages({
             'any.required': 'Phone number is required.'
         }),
-    profilePhoto: Joi.string().required()
-        .messages({
-            'any.required': 'Profile photo is required.'
-        }),
+    profilePhoto: Joi.string().optional()
 });
 
 // Middleware function for validating profile edit requests

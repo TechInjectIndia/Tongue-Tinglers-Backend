@@ -1,8 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { USER_STATUS, USER_TYPE } from '../../../interfaces';
+import { USER_STATUS, USER_TYPE, UserInformation } from '../../../interfaces';
 import { TUser } from "../../../types";
-const { INTEGER, STRING, ENUM, UUIDV4 } = DataTypes;
+const { INTEGER, STRING, ENUM, UUIDV4, JSONB } = DataTypes;
 
 interface UserCreationAttributes extends Optional<TUser, 'id' | 'createdAt' | 'updatedAt'> { }
 
@@ -24,7 +24,7 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
     public refresh_token: string;
     public access_token: string;
     public referralCode: string;
-    public referralBy: string;
+    public referBy: UserInformation;
     public lastLoginAt: Date;
     public updatedBy!: string;
     public deletedBy!: string;
@@ -92,8 +92,8 @@ UserModel.init({
         type: STRING,
         allowNull: true,
     },
-    referralBy: {
-        type: STRING,
+    referBy: {
+        type: JSONB,
         allowNull: true,
     },
     refresh_token: {

@@ -2,15 +2,18 @@ const Razorpay = require('razorpay');
 import { CONFIG } from '../config';
 import {
     TContract,
-    TLead
 } from "../types";
+
+import {
+    ILead
+} from "../interfaces";
 
 const razorpayInstance = new Razorpay({
     key_id: CONFIG.RP_ID_PROD,
     key_secret: CONFIG.RP_SECRET_PROD
 });
 
-export const createStandardPaymentLink = async (data: { 'contract': TContract, 'lead': TLead }) => {
+export const createStandardPaymentLink = async (data: { 'contract': TContract, 'lead': ILead }) => {
     try {
         const response = await razorpayInstance.paymentLink.create({
             amount: data.contract.amount,

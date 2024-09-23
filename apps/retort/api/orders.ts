@@ -1,6 +1,6 @@
 import * as express from "express";
-import RetortOrderController from "../../controllers/franchise/orders";
-import * as OrderValidation from "../../validations/orders";
+import RetortOrderController from "../controllers/franchise/orders";
+import * as OrderValidation from "../validations/orders";
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ const {
 // ====== order Starts ======
 /**
  * @swagger
- * /api/retort/order/list?size={size}&skip={skip}:
+ * /api/admin/retort/order/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all Order
  *     tags: [Franchise > Retort > Orders]
@@ -41,7 +41,7 @@ const {
  *       '401':
  *         description: Unauthorized
  * 
- * /api/retort/order/get/{id}:
+ * /api/admin/retort/order/get/{id}:
  *   get:
  *     summary: Get a order by ID
  *     tags: [Franchise > Retort > Orders]
@@ -68,7 +68,7 @@ const {
  *       '404':
  *         description: Order not found
  * 
- * /api/retort/order/get-status/{id}:
+ * /api/admin/retort/order/get-status/{id}:
  *   get:
  *     summary: Get Order by ID
  *     tags: [Franchise > Retort > Orders]

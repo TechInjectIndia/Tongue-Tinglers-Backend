@@ -1,5 +1,6 @@
 import { Response } from "express";
 import { TQueryFilters, TLeadPayload, TLeadStatus, TLeadsList } from '../../../../types';
+import { ILead } from '../../../../interfaces';
 
 /**
  * Interface for Lead Controller.
@@ -10,14 +11,14 @@ interface ILeadController<T, F extends TQueryFilters> {
      * @param id - The ID of the lead.
      * @returns Promise resolving to the lead data.
      */
-    getLeadByStatus(id: string): Promise<T>;
+    getLeadByStatus(id: string): Promise<ILead | null>;
 
     /**
      * Get lead by ID.
      * @param id - The ID of the lead.
      * @returns Promise resolving to the lead data.
      */
-    get(id: string): Promise<T>;
+    get(id: string): Promise<ILead | null>;
 
     /**
      * Update the status of a lead.
@@ -32,7 +33,7 @@ interface ILeadController<T, F extends TQueryFilters> {
      * @param filters - The filtering options.
      * @returns Promise resolving to a list of leads.
      */
-    list(filters: F): Promise<TLeadsList>;
+    list(filters: TQueryFilters): Promise<TLeadsList>;
 
     /**
      * Get lead by a specific attribute.
@@ -41,14 +42,14 @@ interface ILeadController<T, F extends TQueryFilters> {
      * @param getAttributes - The attributes to retrieve.
      * @returns Promise resolving to the lead data.
      */
-    getLeadByAttr(whereName: string, whereVal: any, getAttributes: string): Promise<T>;
+    getLeadByAttr(whereName: keyof ILead, whereVal: any, getAttributes: Array<keyof ILead>): Promise<ILead | null>;
 
     /**
      * Create a new lead.
      * @param payload - The data to create the lead.
      * @returns Promise resolving to the created lead.
      */
-    create(payload: TLeadPayload): Promise<T>;
+    create(payload: TLeadPayload): Promise<ILead>;
 
     /**
      * Update an existing lead.
@@ -63,7 +64,7 @@ interface ILeadController<T, F extends TQueryFilters> {
      * @param ids - Array of lead IDs to delete.
      * @returns Promise resolving to the count of deleted leads.
      */
-    delete(ids: number[]): Promise<number>;
+    delete(ids: string[]): Promise<number>; // Assuming IDs are strings
 
     /**
      * Get lead status by a specific attribute.
@@ -72,7 +73,7 @@ interface ILeadController<T, F extends TQueryFilters> {
      * @param getAttributes - The attributes to retrieve.
      * @returns Promise resolving to the lead status.
      */
-    getLeadStatus(whereName: string, whereVal: any, getAttributes: string): Promise<TLeadStatus>;
+    getLeadStatus(whereName: keyof ILead, whereVal: any, getAttributes: Array<keyof TLeadStatus>): Promise<TLeadStatus | null>;
 }
 
 export default ILeadController;

@@ -3,21 +3,67 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 import { MENU_CATEGORY_STATUS } from '../../../interfaces';
 
+// Validation for creating menu category mappings
 const createMenuCategoryMapBody = Joi.object().keys({
-    productId: Joi.number().required(),
-    categoryId: Joi.number().required(),
+    productId: Joi.number().required()
+        .messages({
+            'any.required': 'Product ID is required.'
+        }),
+    categoryId: Joi.number().required()
+        .messages({
+            'any.required': 'Category ID is required.'
+        }),
 });
 
+// Validation for editing menu category mappings
+const editMenuCategoryMapBody = Joi.object().keys({
+    productId: Joi.number().required()
+        .messages({
+            'any.required': 'Product ID is required.'
+        }),
+    categoryId: Joi.number().required()
+        .messages({
+            'any.required': 'Category ID is required.'
+        }),
+});
+
+// Validation for editing menu category mapping parameters
+const editMenuCategoryMapParams = Joi.object().keys({
+    id: Joi.string().required()
+        .messages({
+            'any.required': 'Menu category mapping ID is required.'
+        }),
+});
+
+// Validation for listing menu category mappings
+const listMenuCategoryMapQuery = Joi.object().keys({
+    size: Joi.number().required()
+        .messages({
+            'any.required': 'Size is required.'
+        }),
+    skip: Joi.number().required()
+        .messages({
+            'any.required': 'Skip is required.'
+        }),
+    search: Joi.string().optional().allow(""),
+    sorting: Joi.string().optional().allow(""),
+});
+
+// Validation for editing multiple menu category mappings
+const editMultipleIdsBody = Joi.object().keys({
+    ids: Joi.array().min(1).required()
+        .messages({
+            'array.min': 'At least one ID is required.',
+            'any.required': 'IDs are required.'
+        }),
+});
+
+// Middleware functions
 export const validateCreateMenuCategoryMapBody = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => validateReq(req, res, next, createMenuCategoryMapBody, "body");
-
-const editMenuCategoryMapBody = Joi.object().keys({
-    productId: Joi.number().required(),
-    categoryId: Joi.number().required(),
-});
 
 export const validateEditMenuCategoryMapBody = async (
     req: Request,
@@ -25,22 +71,11 @@ export const validateEditMenuCategoryMapBody = async (
     next: NextFunction
 ) => validateReq(req, res, next, editMenuCategoryMapBody, "body");
 
-const editMenuCategoryMapParams = Joi.object().keys({
-    id: Joi.string().required(),
-});
-
 export const validateEditMenuCategoryMapParams = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => validateReq(req, res, next, editMenuCategoryMapParams, "params");
-
-const listMenuCategoryMapQuery = Joi.object().keys({
-    size: Joi.number().required(),
-    skip: Joi.number().required(),
-    search: Joi.string().optional().allow(""),
-    sorting: Joi.string().optional().allow(""),
-});
 
 export const validateListMenuCategoryMapQuery = async (
     req: Request,
@@ -48,13 +83,8 @@ export const validateListMenuCategoryMapQuery = async (
     next: NextFunction
 ) => validateReq(req, res, next, listMenuCategoryMapQuery, "query");
 
-const editMultipleIdsBody = Joi.object().keys({
-    ids: Joi.array().min(1).required(),
-});
-
 export const validateEditMultipleIdsBody = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => validateReq(req, res, next, editMultipleIdsBody, "body");
-

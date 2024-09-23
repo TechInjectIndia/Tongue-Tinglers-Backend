@@ -32,7 +32,7 @@ export class OrderModel {
     public async list(filters: TOrderFilters): Promise<TOrdersList | any> {
         const total = await OrdersModel.count({
             where: {
-                id: {
+                trackingNumber: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
@@ -42,7 +42,7 @@ export class OrderModel {
             offset: filters.offset,
             limit: filters.limit,
             where: {
-                id: {
+                trackingNumber: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },

@@ -1,3 +1,5 @@
+import { UserDetails } from '../../interfaces/leads'
+
 
 export type TUser = {
   id: string;
@@ -16,7 +18,7 @@ export type TUser = {
   cart: string;
   access_token: string;
   referralCode: string;
-  referralBy: string;
+  referBy: UserDetails;
   refresh_token: string;
   updatedBy: string;
   deletedBy: string;
@@ -42,7 +44,7 @@ export type TAddUser = {
   phoneNumber: string;
   type: string;
   role: number;
-  referralBy: string;
+  referBy: UserDetails;
 };
 
 export type TEditUser = {

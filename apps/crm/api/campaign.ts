@@ -13,8 +13,7 @@ const {
   validateEditCampaignParams,
   validateListCampaignQuery,
   validateEditMultipleIdsBody,
-  validateCampaignAssignmentBody,
-  validatesendCampaignAssignmentBody
+  validateSendCampaignAssignmentBody
 } = CampaignValidation;
 
 // ====== Campiagn Starts ======
@@ -229,7 +228,7 @@ router.put("/update/:id", validateEditCampaignParams, validateEditCampaignBody, 
 router.delete("/delete", validateEditMultipleIdsBody, CampaignController.delete);
 // ====== Campaign Ends ======
 
-router.post("/send-campaign", validatesendCampaignAssignmentBody, CampaignController.sendCampaignEmailToSubscribers);
+router.post("/send-campaign", validateSendCampaignAssignmentBody, CampaignController.sendCampaignEmailToSubscribers);
 
 // Campaign Furthur Apis
 router.use("/email", emailCampaignRouter);

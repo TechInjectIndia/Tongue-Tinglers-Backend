@@ -10,7 +10,7 @@ export const sendResponse = (type: string, message: string, data?: any) => {
 };
 
 export const createUserResponse = (user: TUser) => {
-    let userDetails = {
+    let UserInformation = {
         id: user.id,
         createdBy: user.createdBy,
         firstName: user.firstName,
@@ -31,5 +31,5 @@ export const createUserResponse = (user: TUser) => {
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
     };
-    return userDetails;
+    return UserInformation;
 };

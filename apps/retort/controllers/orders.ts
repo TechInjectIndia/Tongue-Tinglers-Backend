@@ -1,17 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse } from "../../../../libraries";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../../constants";
-import { FranchiseOrderRepo } from '../../models/franchise/orders';
+import { sendResponse } from "../../../libraries";
+import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
+import { RetortOrderRepo } from '../models/orders';
 
 export default class OrderController {
 
     static async getOrderStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const existingLead = await new FranchiseOrderRepo().getOrderStatusById(id as number);
+            const existingOrder = await new RetortOrderRepo().get(id as number);
 
-            if (isEmpty(existingLead)) {
+            if (isEmpty(existingOrder)) {
                 return res
                     .status(400)
                     .send(
@@ -28,7 +28,7 @@ export default class OrderController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        existingLead
+                        existingOrder
                     )
                 );
         } catch (err) {
@@ -41,8 +41,6 @@ export default class OrderController {
 
     static async list(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '');
-
             const size = get(req?.query, "size", 10);
             const skip = get(req?.query, "skip", 1);
             const search = get(req?.query, "search", "");
@@ -50,13 +48,12 @@ export default class OrderController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
 
-            const Orders = await new FranchiseOrderRepo().list({
+            const Orders = await new RetortOrderRepo().list({
                 offset: skip as number,
                 limit: size as number,
                 search: search as string,
                 sorting: sorting,
-                trashOnly: trashOnly as string,
-                user_id: user_id as string
+                trashOnly: trashOnly as string
             });
 
             return res
@@ -79,7 +76,7 @@ export default class OrderController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const Order = await new FranchiseOrderRepo().getOrderById(id as number);
+            const Order = await new RetortOrderRepo().get(id as number);
 
             if (isEmpty(Order)) {
                 return res

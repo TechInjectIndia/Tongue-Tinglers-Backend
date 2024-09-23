@@ -1,77 +1,81 @@
-const { Op } = require("sequelize");
+import { Op } from "sequelize";
 import {
     TLeadStatus,
     TAssignLead,
     TLeadPayload,
-    TLead,
     TListFilters,
     TLeadsList,
 } from "../../../types";
 import { LeadsModel } from "../../../database/schema";
-import { LEAD_STATUS } from '../../../interfaces';
+import { LeadStatus, ILead } from '../../../interfaces'; // Use the LeadStatus enum from interfaces
 import IBaseRepo from '../controllers/controller/ILeadController';
 
-export class LeadRepo implements IBaseRepo<TLead, TListFilters> {
+export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
     constructor() { }
 
+    // Update the status of a lead
     public async updateStatus(id: string, data: TLeadStatus): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
-            where: {
-                id,
-            },
+            where: { id },
         });
         return response;
     }
 
-    public async getLeadStatus(whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TLeadStatus> {
-        const whereAttributes = { [whereName]: whereVal }
+    // Get lead status by any attribute
+    public async getLeadStatus(whereName: keyof ILead, whereVal: any, getAttributes: any = ['*']): Promise<TLeadStatus | null> {
+        const whereAttributes = { [whereName]: whereVal };
         const data = await LeadsModel.findOne({
             raw: true,
             attributes: getAttributes,
             where: whereAttributes
         });
-        return data;
+        return data as TLeadStatus | null;
     }
 
-    public async getLeadByAttr(whereName: any, whereVal: any, getAttributes: any = ['*']): Promise<TLead> {
-        const whereAttributes = { [whereName]: whereVal }
+    // Get lead by attribute
+    public async getLeadByAttr(whereName: keyof ILead, whereVal: any, getAttributes: any = ['*']): Promise<ILead | null> {
+        const whereAttributes = { [whereName]: whereVal };
         const data = await LeadsModel.findOne({
             raw: true,
             attributes: getAttributes,
             where: whereAttributes
         });
-        return data;
+        return data as ILead | null;
     }
 
-    public async get(id: string): Promise<TLead> {
+    // Get lead by ID
+    public async get(id: string): Promise<ILead | null> {
         const data = await LeadsModel.findOne({
             raw: true,
             where: { id }
         });
-        return data;
+        return data as ILead | null;
     }
 
-    public async getLeadByStatus(id: string): Promise<TLead> {
+    // Get lead by ID and status
+    public async getLeadByStatus(id: string): Promise<ILead | null> {
         const data = await LeadsModel.findOne({
             raw: true,
             where: {
                 id: id,
-                status: LEAD_STATUS.NEW
+                status: LeadStatus.NEW,
             },
         });
-        return data;
+        return data as ILead | null;
     }
 
-    public async checkLeadExist(email: string, excludeId: number): Promise<TLead> {
+    // Check if lead exists with a specific email and exclude a specific ID
+    public async checkLeadExist(email: string, excludeId: string): Promise<ILead | null> {
         const data = await LeadsModel.findOne({
             where: {
                 email: email,
-                id: { [Op.ne]: excludeId }, // Sequelize.Op.ne means "not equal"
+                id: { [Op.ne]: excludeId },
             },
         });
-        return data;
+        return data as ILead | null;
     }
 
+    // List leads with filters
     public async list(filters: TListFilters): Promise<TLeadsList> {
         const total = await LeadsModel.count({
             where: {
@@ -80,6 +84,7 @@ export class LeadRepo implements IBaseRepo<TLead, TListFilters> {
                 },
             },
         });
+
         const data = await LeadsModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
@@ -90,38 +95,51 @@ export class LeadRepo implements IBaseRepo<TLead, TListFilters> {
                 },
             },
         });
-        return { total, data };
+
+        return { total, data } as TLeadsList;
     }
 
-    public async create(data: TLeadPayload): Promise<TLead> {
+    // Create a new lead
+    public async create(data: TLeadPayload): Promise<ILead> {
         const response = await LeadsModel.create(data);
         return response;
     }
 
+    // Update lead information
     public async update(id: string, data: TLeadPayload): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
-            where: {
-                id,
-            },
+            where: { id },
         });
         return response;
     }
 
+    // Assign a lead to a user
     public async assignLeadToUser(id: string, data: TAssignLead): Promise<[affectedCount: number]> {
-        const response = await LeadsModel.update(data, {
-            where: {
-                id,
-            },
-        });
-        return response;
+        try {
+            const response = await LeadsModel.update(data, {
+                where: { id },
+            });
+
+            return response;
+        } catch (error) {
+            console.error("Error updating lead:", error);
+            throw new Error("Failed to assign lead to user"); // Rethrow or handle as needed
+        }
     }
 
-    public async delete(ids: number[]): Promise<number> {
-        const response = await LeadsModel.destroy({
-            where: {
-                id: ids,
-            },
-        });
-        return response;
+    // Delete leads by an array of IDs
+    public async delete(ids: string[]): Promise<number> {
+        try {
+            const deletedCount = await LeadsModel.destroy({
+                where: {
+                    id: ids,
+                },
+            });
+            return deletedCount;
+        } catch (error) {
+            console.error("Error deleting leads:", error);
+            throw new Error("Failed to delete leads"); // Rethrow or handle as needed
+        }
     }
+
 }

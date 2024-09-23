@@ -3,66 +3,118 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 import { PRODUCTS_TYPE } from '../../../interfaces/products';
 
+// Validation for creating products
 const createProductsBody = Joi.object().keys({
-    name: Joi.string().required(),
-    description: Joi.string().required(),
+    name: Joi.string().required()
+        .messages({
+            'any.required': 'Product name is required.'
+        }),
+    description: Joi.string().required()
+        .messages({
+            'any.required': 'Product description is required.'
+        }),
     type: Joi.string().valid(...Object.values(PRODUCTS_TYPE)).optional().allow(''),
-    price: Joi.number().required(),
-    stock: Joi.number().required(),
-    active: Joi.number().required(),
+    price: Joi.number().required()
+        .messages({
+            'any.required': 'Product price is required.'
+        }),
+    stock: Joi.number().required()
+        .messages({
+            'any.required': 'Product stock is required.'
+        }),
+    active: Joi.number().required()
+        .messages({
+            'any.required': 'Product active status is required.'
+        }),
 });
 
+// Validation for editing products
+const editProductsBody = Joi.object().keys({
+    name: Joi.string().required()
+        .messages({
+            'any.required': 'Product name is required.'
+        }),
+    description: Joi.string().required()
+        .messages({
+            'any.required': 'Product description is required.'
+        }),
+    type: Joi.string().valid(...Object.values(PRODUCTS_TYPE)).optional().allow(''),
+    price: Joi.number().required()
+        .messages({
+            'any.required': 'Product price is required.'
+        }),
+    stock: Joi.number().required()
+        .messages({
+            'any.required': 'Product stock is required.'
+        }),
+    active: Joi.number().required()
+        .messages({
+            'any.required': 'Product active status is required.'
+        }),
+});
+
+// Validation for editing product parameters
+const editProductsParams = Joi.object().keys({
+    id: Joi.string().required()
+        .messages({
+            'any.required': 'Product ID is required.'
+        }),
+});
+
+// Validation for listing products
+const listProductsQuery = Joi.object().keys({
+    size: Joi.number().required()
+        .messages({
+            'any.required': 'Size is required.'
+        }),
+    skip: Joi.number().required()
+        .messages({
+            'any.required': 'Skip is required.'
+        }),
+    search: Joi.string().optional().allow(""),
+    sorting: Joi.string().optional().allow(""),
+});
+
+// Validation for editing multiple products
+const editMultipleIdsBody = Joi.object().keys({
+    ids: Joi.array().min(1).required()
+        .messages({
+            'array.min': 'At least one ID is required.',
+            'any.required': 'IDs are required.'
+        }),
+});
+
+// Middleware for creating product validation
 export const validateCreateProductsBody = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => validateReq(req, res, next, createProductsBody, "body");
 
-const editProductsBody = Joi.object().keys({
-    name: Joi.string().required(),
-    description: Joi.string().required(),
-    type: Joi.string().valid(...Object.values(PRODUCTS_TYPE)).optional().allow(''),
-    price: Joi.number().required(),
-    stock: Joi.number().required(),
-    active: Joi.number().required(),
-});
-
+// Middleware for editing product validation
 export const validateEditProductsBody = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => validateReq(req, res, next, editProductsBody, "body");
 
-const editProductsParams = Joi.object().keys({
-    id: Joi.string().required(),
-});
-
+// Middleware for editing product parameters validation
 export const validateEditProductsParams = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => validateReq(req, res, next, editProductsParams, "params");
 
-const listProductsQuery = Joi.object().keys({
-    size: Joi.number().required(),
-    skip: Joi.number().required(),
-    search: Joi.string().optional().allow(""),
-    sorting: Joi.string().optional().allow(""),
-});
-
+// Middleware for listing products validation
 export const validateListProductsQuery = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => validateReq(req, res, next, listProductsQuery, "query");
 
-const editMultipleIdsBody = Joi.object().keys({
-    ids: Joi.array().min(1).required(),
-});
-
+// Middleware for editing multiple products validation
 export const validateEditMultipleIdsBody = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => validateReq(req, res, next, editMultipleIdsBody, "body");
-

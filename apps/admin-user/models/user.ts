@@ -22,7 +22,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     }
 
     public async getAllFranchiseByCode(referralCode: string) {
-        const franchisee = await UserModel.findAll({ where: { referralBy: referralCode } });
+        const franchisee = await UserModel.findAll({ where: { referBy: referralCode } });
         return franchisee;
     }
 

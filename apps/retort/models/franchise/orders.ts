@@ -3,38 +3,42 @@ import {
     TOrder,
     TOrderFilters,
     TOrdersList,
-    TOrderStatus
 } from "../../../../types/ecommerce";
 import { OrdersModel } from "../../../../database/schema";
+import IBaseRepo from '../../controllers/controller/franchise/IFranchiseOrderController';
+import { ORDER_TYPE } from '../../../../interfaces';
 
-export class OrderModel {
+export class FranchiseOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
     constructor() { }
 
-    public async getOrderByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TOrderStatus | any> {
-        const whereAttributes = { [whereName]: whereVal }
+    public async getOrderStatusById(id: number): Promise<TOrder | null> {
         const data = await OrdersModel.findOne({
-            raw: true,
-            attributes: getAttributes,
-            where: whereAttributes
+            attributes: ['orderStatus'],
+            where: {
+                id,
+                orderType: ORDER_TYPE.RETORT
+            },
         });
         return data;
     }
-
-    public async getOrderById(id: number): Promise<TOrder | any> {
+    public async getOrderById(id: number): Promise<TOrder | null> {
         const data = await OrdersModel.findOne({
             where: {
                 id,
+                orderType: ORDER_TYPE.RETORT
             },
         });
         return data;
     }
 
-    public async list(filters: TOrderFilters): Promise<TOrdersList | any> {
+    public async list(filters: TOrderFilters & { user_id: string }): Promise<TOrdersList> {
         const total = await OrdersModel.count({
             where: {
-                id: {
+                trackingNumber: {
                     [Op.like]: `%${filters.search}%`,
                 },
+                userId: filters.user_id,
+                orderType: ORDER_TYPE.RETORT
             },
         });
         const data = await OrdersModel.findAll({
@@ -42,9 +46,11 @@ export class OrderModel {
             offset: filters.offset,
             limit: filters.limit,
             where: {
-                id: {
+                trackingNumber: {
                     [Op.like]: `%${filters.search}%`,
                 },
+                userId: filters.user_id,
+                orderType: ORDER_TYPE.RETORT
             },
         });
         return { total, data };

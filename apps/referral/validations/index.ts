@@ -1,65 +1,31 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
-import { validateReq } from "../../../libraries";
+import { validateReq } from "../../../libraries"; // Assuming this is a function that handles validation responses
 
-const createAddressBody = Joi.object().keys({
-    street: Joi.string().required(),
-    city: Joi.string().required(),
-    state: Joi.string().required(),
-    postalCode: Joi.string().required(),
-    country: Joi.string().required(),
+// Joi schemas for validation
+const referralCodeSchema = Joi.object({
+    referral_code: Joi.string().alphanum().required().messages({
+        'string.empty': 'Referral code is required',
+        'string.alphanum': 'Referral code must be alphanumeric',
+    }),
 });
 
-export const validateCreateAddressBody = async (
+const validateSchema = Joi.object({
+    referralCode: Joi.string().required().messages({
+        'string.empty': 'Referral code is required',
+    }),
+});
+
+// Middleware to validate getting referral by code
+export const validateGetReferralByCode = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, createAddressBody, "body");
+) => validateReq(req, res, next, referralCodeSchema, "params");
 
-const editAddressBody = Joi.object().keys({
-    street: Joi.string().required(),
-    city: Joi.string().required(),
-    state: Joi.string().required(),
-    postalCode: Joi.string().required(),
-    country: Joi.string().required(),
-});
-
-export const validateEditAddressBody = async (
+// Middleware to validate referral code
+export const validateReferralCode = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, editAddressBody, "body");
-
-const editAddressParams = Joi.object().keys({
-    id: Joi.number().required(),
-});
-
-export const validateEditAddressParams = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => validateReq(req, res, next, editAddressParams, "params");
-
-const listAddressQuery = Joi.object().keys({
-    size: Joi.number().required(),
-    skip: Joi.number().required(),
-    search: Joi.string().optional().allow(""),
-    sorting: Joi.string().optional().allow(""),
-});
-
-export const validateListAddressQuery = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => validateReq(req, res, next, listAddressQuery, "query");
-
-const editMultipleIdsBody = Joi.object().keys({
-    ids: Joi.array().min(1).required(),
-});
-
-export const validateEditMultipleIdsBody = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => validateReq(req, res, next, editMultipleIdsBody, "body");
-
+) => validateReq(req, res, next, validateSchema, "body");

@@ -27,8 +27,8 @@ export default class ProfileController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req, "user_id", 0);
-            const getProfileData = await new ProfileRepo().get(id as number);
+            const id = get(req, "user_id");
+            const getProfileData = await new ProfileRepo().get(id as string);
 
             if (isEmpty(getProfileData)) {
                 return res
@@ -60,10 +60,10 @@ export default class ProfileController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req, "user_id", 0);
+            const id = get(req, "user_id");
             const payload = req?.body;
 
-            await new ProfileRepo().update(id, payload);
+            await new ProfileRepo().update(id as string, payload);
             return res
                 .status(200)
                 .send(

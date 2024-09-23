@@ -54,6 +54,7 @@ export class PermissionsRepo implements IBaseRepo<TPermission, TListFilters> {
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
+            raw:true,
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,

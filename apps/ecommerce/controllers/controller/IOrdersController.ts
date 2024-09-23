@@ -1,11 +1,44 @@
 import { Response } from "express";
-import { TQueryFilters, TOrdersList, TEditOrder, TAddOrder } from '../../../../types'
+import { TQueryFilters, TOrdersList, TEditOrder, TAddOrder } from '../../../../types';
 
+/**
+ * Interface for Orders Controller.
+ */
 interface IOrdersController<T, F extends TQueryFilters> {
+    /**
+     * Get an order by its ID.
+     * @param id - The ID of the order.
+     * @returns Promise resolving to the order.
+     */
     get(id: number): Promise<T>;
+
+    /**
+     * Get the status of an order by its ID.
+     * @param id - The ID of the order.
+     * @returns Promise resolving to the order's status.
+     */
     orderStatus(id: number): Promise<T>;
+
+    /**
+     * Create a new order.
+     * @param payload - The data to create the order.
+     * @returns Promise resolving to the created order.
+     */
     create(payload: TAddOrder): Promise<T>;
+
+    /**
+     * List orders with filters.
+     * @param filters - The filtering options.
+     * @returns Promise resolving to a list of orders.
+     */
     list(filters: F): Promise<TOrdersList>;
+
+    /**
+     * Update an existing order by ID.
+     * @param id - The ID of the order to update.
+     * @param payload - The data to update the order.
+     * @returns Promise resolving to the affected count.
+     */
     update(id: number, payload: TEditOrder): Promise<[affectedCount: number]>;
 }
 

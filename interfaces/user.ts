@@ -29,7 +29,7 @@ export interface Address {
     gstin: string | null;
 }
 
-export interface UserDetails {
+export interface UserInformation {
     id: string;
     createdBy: string;
     createdAt: Date;

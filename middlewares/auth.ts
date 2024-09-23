@@ -23,6 +23,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
             if(user){
                 (req as any).firebase_uid = decodedToken?.user_id;
                 (req as any).user_id = user?.id;
+                (req as any).user_name = user?.userName;
                 next();
             }else{
                 return res.status(401).send(

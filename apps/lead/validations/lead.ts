@@ -1,46 +1,31 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
-import { LEAD_STATUS } from '../../../interfaces/leads';
+import { LeadSource, LeadStatus, followStatus } from '../../../interfaces/leads';
 
 const FOLLOWED_DATE_SCHEMA = Joi.object().keys({
-    date: Joi.date().iso().required()
+    followedDate: Joi.date().iso().allow(null)
         .messages({
-            'any.required': 'Followed date is required.',
             'date.iso': 'Followed date must be in ISO format.',
         }),
-    isFollowedUp: Joi.boolean().required()
+    followedBy: Joi.object().keys({
+        userName: Joi.string().required()
+            .messages({
+                'any.required': 'Followed By username is required.',
+            }),
+        id: Joi.string().required()
+            .messages({
+                'any.required': 'Followed By ID is required.',
+            }),
+    }).required()
         .messages({
-            'any.required': 'Follow-up status is required.',
+            'any.required': 'Followed By details are required.',
         }),
-});
-
-// Validation for converting lead parameters
-const convertLeadParams = Joi.object().keys({
-    id: Joi.string().required()
+    notes: Joi.string().allow(null).optional(),
+    description: Joi.string().allow(null).optional(),
+    status: Joi.string().valid(...Object.values(followStatus))
         .messages({
-            'any.required': 'Lead ID is required.',
-        }),
-});
-
-// Validation for lead status body
-const statusLeadBody = Joi.object().keys({
-    id: Joi.string().required()
-        .messages({
-            'any.required': 'Lead ID is required.',
-        }),
-});
-
-// Validation for assigning lead
-const assignLeadBody = Joi.object().keys({
-    id: Joi.string().required()
-        .messages({
-            'any.required': 'Lead ID is required.',
-        }),
-    assignedTo: Joi.number().required()
-        .messages({
-            'any.required': 'Assigned To ID is required.',
-            'number.base': 'Assigned To ID must be a number.',
+            'any.only': `Status must be one of: ${Object.values(followStatus).join(', ')}.`,
         }),
 });
 
@@ -54,44 +39,74 @@ const createLeadBody = Joi.object().keys({
         .messages({
             'any.required': 'Last name is required.',
         }),
+    phoneNumber: Joi.string().pattern(/^\+\d{1,3}\d{9,}$/).required()
+        .messages({
+            'string.pattern.base': 'Phone number must be in international format (e.g., +1234567890).',
+            'any.required': 'Phone number is required.'
+        }),
     email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required()
         .messages({
             'string.email': 'Please provide a valid email address.',
             'any.required': 'Email is required.',
         }),
-    city: Joi.string().required()
-        .messages({
-            'any.required': 'City is required.',
-        }),
-    state: Joi.string().required()
-        .messages({
-            'any.required': 'State is required.',
-        }),
-    zipCode: Joi.string().required()
-        .messages({
-            'any.required': 'Zip code is required.',
-        }),
-    country: Joi.string().required()
-        .messages({
-            'any.required': 'Country is required.',
-        }),
-    phoneNumber: Joi.string().required()
-        .messages({
-            'any.required': 'Phone number is required.',
-        }),
-    address: Joi.string().required()
-        .messages({
-            'any.required': 'Address is required.',
-        }),
+    address: Joi.object().keys({
+        address: Joi.string().required()
+            .messages({
+                'any.required': 'Address is required.',
+            }),
+        city: Joi.string().required()
+            .messages({
+                'any.required': 'City is required.',
+            }),
+        state: Joi.string().required()
+            .messages({
+                'any.required': 'State is required.',
+            }),
+        zipCode: Joi.string().required()
+            .messages({
+                'any.required': 'Zip code is required.',
+            }),
+        country: Joi.string().required()
+            .messages({
+                'any.required': 'Country is required.',
+            }),
+        GSTIN: Joi.string().allow(null).optional(),
+    }).required(),
     additionalInfo: Joi.string().required()
         .messages({
             'any.required': 'Additional info is required.',
         }),
-    status: Joi.string().valid(...Object.values(LEAD_STATUS)).optional().allow('')
+    status: Joi.string().valid(...Object.values(LeadStatus))
         .messages({
-            'any.only': `Status must be one of: ${Object.values(LEAD_STATUS).join(', ')}.`,
+            'any.only': `Status must be one of: ${Object.values(LeadStatus).join(', ')}.`,
+            'any.required': 'Status is required.',
         }),
-    referby: Joi.string().allow('', null).optional()
+    referBy: Joi.object().keys({
+        userName: Joi.string().required()
+            .messages({
+                'any.required': 'Refer By username is required.',
+            }),
+        id: Joi.string().required()
+            .messages({
+                'any.required': 'Refer By ID is required.',
+            }),
+    }).optional(),
+    assign: Joi.object().keys({
+        assignedTo: Joi.object().required()
+            .messages({
+                'any.required': 'Assigned To details are required.',
+            }),
+        assignedBy: Joi.object().optional(),
+        assignedDate: Joi.date().iso().optional(),
+    }).optional(),
+    followDetails: Joi.array().items(FOLLOWED_DATE_SCHEMA).optional(),
+    source: Joi.string().valid(...Object.values(LeadSource)).required()
+        .messages({
+            'any.only': `Source must be one of: ${Object.values(LeadSource).join(', ')}.`,
+            'any.required': 'Source is required.',
+        }),
+    sourceInfo: Joi.string().optional(),
+    notes: Joi.string().optional(),
 });
 
 // Validation for editing a lead body
@@ -104,39 +119,74 @@ const editLeadBody = Joi.object().keys({
         .messages({
             'any.required': 'Last name is required.',
         }),
-    city: Joi.string().required()
+    phoneNumber: Joi.string().pattern(/^\+\d{1,3}\d{9,}$/).required()
         .messages({
-            'any.required': 'City is required.',
+            'string.pattern.base': 'Phone number must be in international format (e.g., +1234567890).',
+            'any.required': 'Phone number is required.'
         }),
-    state: Joi.string().required()
+    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required()
         .messages({
-            'any.required': 'State is required.',
+            'string.email': 'Please provide a valid email address.',
+            'any.required': 'Email is required.',
         }),
-    zipCode: Joi.string().required()
-        .messages({
-            'any.required': 'Zip code is required.',
-        }),
-    country: Joi.string().required()
-        .messages({
-            'any.required': 'Country is required.',
-        }),
-    phoneNumber: Joi.string().required()
-        .messages({
-            'any.required': 'Phone number is required.',
-        }),
-    address: Joi.string().required()
-        .messages({
-            'any.required': 'Address is required.',
-        }),
+    address: Joi.object().keys({
+        address: Joi.string().required()
+            .messages({
+                'any.required': 'Address is required.',
+            }),
+        city: Joi.string().required()
+            .messages({
+                'any.required': 'City is required.',
+            }),
+        state: Joi.string().required()
+            .messages({
+                'any.required': 'State is required.',
+            }),
+        zipCode: Joi.string().required()
+            .messages({
+                'any.required': 'Zip code is required.',
+            }),
+        country: Joi.string().required()
+            .messages({
+                'any.required': 'Country is required.',
+            }),
+        GSTIN: Joi.string().allow(null).optional(),
+    }).required(),
     additionalInfo: Joi.string().required()
         .messages({
             'any.required': 'Additional info is required.',
         }),
-    followedDate: Joi.array().items(FOLLOWED_DATE_SCHEMA).optional(),
-    status: Joi.string().valid(...Object.values(LEAD_STATUS)).optional().allow('')
+    status: Joi.string().valid(...Object.values(LeadStatus))
         .messages({
-            'any.only': `Status must be one of: ${Object.values(LEAD_STATUS).join(', ')}.`,
+            'any.only': `Status must be one of: ${Object.values(LeadStatus).join(', ')}.`,
+            'any.required': 'Status is required.',
         }),
+    referBy: Joi.object().keys({
+        userName: Joi.string().required()
+            .messages({
+                'any.required': 'Refer By username is required.',
+            }),
+        id: Joi.string().required()
+            .messages({
+                'any.required': 'Refer By ID is required.',
+            }),
+    }).optional(),
+    assign: Joi.object().keys({
+        assignedTo: Joi.object().required()
+            .messages({
+                'any.required': 'Assigned To details are required.',
+            }),
+        assignedBy: Joi.object().optional(),
+        assignedDate: Joi.date().iso().optional(),
+    }).optional(),
+    followDetails: Joi.array().items(FOLLOWED_DATE_SCHEMA).optional(),
+    source: Joi.string().valid(...Object.values(LeadSource)).required()
+        .messages({
+            'any.only': `Source must be one of: ${Object.values(LeadSource).join(', ')}.`,
+            'any.required': 'Source is required.',
+        }),
+    sourceInfo: Joi.string().optional(),
+    notes: Joi.string().optional(),
 });
 
 // Validation for editing lead parameters
@@ -172,25 +222,44 @@ const editMultipleIdsBody = Joi.object().keys({
         }),
 });
 
+// Validation for converting lead parameters
+const convertLeadParams = Joi.object().keys({
+    id: Joi.string().required()
+        .messages({
+            'any.required': 'Lead ID is required.',
+        }),
+});
+
+// Validation for assigning lead
+const assignLeadBody = Joi.object().keys({
+    id: Joi.string().required()
+        .messages({
+            'any.required': 'Lead ID is required.',
+        }),
+    assignedTo: Joi.object().keys({
+        userName: Joi.string().required()
+            .messages({
+                'any.required': 'Assigned To username is required.',
+            }),
+        id: Joi.string().required()
+            .messages({
+                'any.required': 'Assigned To ID is required.',
+            }),
+    }).required()
+        .messages({
+            'any.required': 'Assigned To details are required.',
+        }),
+});
+
+// Validation for lead status body
+const statusLeadBody = Joi.object().keys({
+    id: Joi.string().required()
+        .messages({
+            'any.required': 'Lead ID is required.',
+        }),
+});
+
 // Middleware functions for validations
-export const validateConvertLeadParams = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => validateReq(req, res, next, convertLeadParams, "body");
-
-export const validateLeadStatusBody = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => validateReq(req, res, next, statusLeadBody, "body");
-
-export const validateAssignLeadBody = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => validateReq(req, res, next, assignLeadBody, "body");
-
 export const validateCreateLeadBody = async (
     req: Request,
     res: Response,
@@ -220,3 +289,21 @@ export const validateEditMultipleIdsBody = async (
     res: Response,
     next: NextFunction
 ) => validateReq(req, res, next, editMultipleIdsBody, "body");
+
+export const validateConvertLeadParams = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, convertLeadParams, "body");
+
+export const validateAssignLeadBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, assignLeadBody, "body");
+
+export const validateLeadStatusBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, statusLeadBody, "body");

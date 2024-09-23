@@ -1,56 +1,32 @@
 const { OrderItem } = require("sequelize");
-import { LEAD_SOURCE, LEAD_STATUS, Assignee, FOLLOWED_DATE } from '../../interfaces/leads'
+import { LeadSource, LeadStatus, Assignee, FollowDetails, ILead, LeadAddress, UserDetails, Note, ITrackable } from '../../interfaces/leads'
 
 export type TLeadStatus = {
-  status: LEAD_STATUS,
-};
-
-export interface TLead {
-  assign: Assignee[];
-  status: LEAD_STATUS;
-  id: string;
-  firstName: string,
-  lastName: string,
-  city: string,
-  state: string,
-  zipCode: string,
-  country: string,
-  phoneNumber: string,
-  email: string,
-  address: string,
-  additionalInfo: string,
-  source: LEAD_SOURCE,
-  followedDate?: FOLLOWED_DATE[] | null,
-  referby?: string,
-  createdBy: string,
-  updatedBy: string;
-  deletedBy: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
+  status: LeadStatus,
 };
 
 export type TAssignLead = {
-  assign: Assignee[]
+  assign: Assignee
 };
 
-export type TLeadPayload = {
-  firstName: string,
-  lastName: string,
-  city: string,
-  state: string,
-  zipCode: string,
-  country: string,
-  phoneNumber: string,
-  email?: string,
-  address: string,
-  additionalInfo: string,
-  source: LEAD_SOURCE,
-  followedDate?: FOLLOWED_DATE[] | null,
-  status: LEAD_STATUS,
-};
+export interface TLeadPayload {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  address: LeadAddress;
+  additionalInfo?: string;
+  source: LeadSource;
+  sourceInfo?: string | null;
+  status: LeadStatus;
+  followDetails?: Array<FollowDetails> | null;
+  referBy?: UserDetails;
+  notes?: Note[] | null;
+  logs?: Record<string, ITrackable[]> | null;
+  assign?: Assignee;
+}
 
 export type TLeadsList = {
   total: number;
-  data: TLead[];
+  data: ILead[];
 };

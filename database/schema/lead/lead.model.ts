@@ -1,34 +1,41 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { LEAD_SOURCE, LEAD_STATUS, Assignee, FOLLOWED_DATE } from '../../../interfaces';
+import { LeadSource, LeadStatus, Assignee, FollowDetails, LeadAddress, UserDetails, ITrackable, Note } from '../../../interfaces';
 import { sequelize } from "../../../config";
-import { TLead } from "../../../types";
+import { ILead } from "../../../interfaces";
+import { UserModel } from '../user/user.model';
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
 
-interface LeadCreationAttributes extends Optional<TLead, 'id' | 'createdAt' | 'updatedAt'> { }
+interface LeadCreationAttributes extends Optional<ILead, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
-class LeadsModel extends Model<TLead, LeadCreationAttributes> implements TLead {
-    public assign: Assignee[];
-    public status: LEAD_STATUS;
+class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
+    public assign!: Assignee;
+    public status!: LeadStatus;
     public id!: string;
-    public firstName: string;
-    public lastName: string;
-    public city: string;
-    public state: string;
-    public zipCode: string;
-    public country: string;
-    public phoneNumber: string;
-    public email: string;
-    public address: string;
-    public additionalInfo: string;
-    public source: LEAD_SOURCE;
-    public followedDate: FOLLOWED_DATE[] | null;
-    public referby?: string;
+    public firstName!: string;
+    public lastName!: string;
+    public phoneNumber!: string;
+    public email!: string;
+    public address!: LeadAddress;
+    public additionalInfo!: string;
+    public source!: LeadSource;
+    public sourceInfo!: string | null;
+    public followDetails!: FollowDetails[] | null;
+    public referBy!: UserDetails;
+    public logs!: Record<string, ITrackable[]>;
+    public notes!: Note[] | null;
     public createdBy!: string;
-    public updatedBy!: string;
+    public updatedBy!: string | null;
     public deletedBy!: string | null;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
+
+    // Define associations
+    public static associate() {
+        LeadsModel.belongsTo(UserModel, { foreignKey: 'createdBy', as: 'creator' });
+        LeadsModel.belongsTo(UserModel, { foreignKey: 'updatedBy', as: 'updater' });
+        LeadsModel.belongsTo(UserModel, { foreignKey: 'deletedBy', as: 'deleter' });
+    }
 }
 
 LeadsModel.init({
@@ -36,63 +43,75 @@ LeadsModel.init({
         type: STRING,
         primaryKey: true,
         allowNull: false,
-        defaultValue: UUIDV4 // For UUID v4, if you use UUIDs
+        defaultValue: UUIDV4
     },
     firstName: {
-        type: STRING
+        type: STRING,
+        allowNull: false
     },
     lastName: {
-        type: STRING
+        type: STRING,
+        allowNull: false
     },
     email: {
-        type: STRING
+        type: STRING,
+        allowNull: false
     },
     phoneNumber: {
-        type: STRING
-    },
-    city: {
-        type: STRING
-    },
-    state: {
-        type: STRING
-    },
-    zipCode: {
-        type: STRING
-    },
-    country: {
-        type: STRING
+        type: STRING,
+        allowNull: false
     },
     address: {
-        type: STRING
+        type: JSONB,
+        allowNull: false
     },
     additionalInfo: {
-        type: TEXT
+        type: TEXT,
+        allowNull: true
     },
     status: {
-        type: ENUM,
-        values: [...Object.values(LEAD_STATUS)]
+        type: ENUM(...Object.values(LeadStatus)),
+        allowNull: false
     },
     source: {
-        type: ENUM,
-        values: [...Object.values(LEAD_SOURCE)]
+        type: ENUM(...Object.values(LeadSource)),
+        allowNull: false
     },
-    followedDate: {
-        type: JSONB // Stores an array of dates as JSON
+    sourceInfo: {
+        type: STRING,
+        allowNull: true
+    },
+    followDetails: {
+        type: JSONB,
+        allowNull: true
     },
     assign: {
-        type: JSONB // Stores an array of dates as JSON
+        type: JSONB,
+        allowNull: true
     },
-    referby: {
-        type: STRING
+    referBy: {
+        type: JSONB,
+        allowNull: true
+    },
+    logs: {
+        type: JSONB,
+        allowNull: true
+    },
+    notes: {
+        type: JSONB,
+        allowNull: true
     },
     createdBy: {
-        type: STRING
+        type: STRING,
+        allowNull: false
     },
     updatedBy: {
-        type: STRING
+        type: STRING,
+        allowNull: true
     },
     deletedBy: {
-        type: STRING
+        type: STRING,
+        allowNull: true
     },
     createdAt: {
         type: DATE,

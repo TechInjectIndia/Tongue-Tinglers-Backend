@@ -46,6 +46,7 @@ import retortAnalyticsRouter from "../apps/analytics/api/admin/retort-analytics"
 import menuRouter from "../apps/menu/api/menu";
 import retortProductRouter from "../apps/retort/api/products";
 import retortProductCategoryRouter from "../apps/retort/api/category";
+import retortOrderRouter from "../apps/retort/api/orders";
 import campaignRouter from "../apps/crm/api/campaign";
 import testUsersRouter from "../apps/test-user/api/user"; // for testing only
 import contractsRouter from "../apps/contracts/api";
@@ -73,6 +74,7 @@ router.use(`${ADMIN}/lead`, auth, leadRouter);
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 router.use(`${ADMIN}/retort/product`, auth, retortProductRouter);
 router.use(`${ADMIN}/retort/category`, auth, retortProductCategoryRouter);
+router.use(`${ADMIN}/retort/order`, auth, retortOrderRouter);
 router.use(`${ADMIN}/crm`, auth, campaignRouter);
 router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);
@@ -86,6 +88,7 @@ import franchiseSettingsRouter from "../apps/franchise-user/api/settings"; // pe
 import franchiseOrderAnalyticsRouter from "../apps/analytics/api/franchise/orders-analytics"; // pending
 import franchiseRetortAnalyticsRouter from "../apps/analytics/api/franchise/retort-analytics"; // pending
 import franchiseOrderRouter from "../apps/ecommerce/api/franchise/orders";
+import franchiseRetortOrderRouter from "../apps/retort/api/franchise/orders";
 import franchiseTestimonialsRouter from "../apps/testimonials/api/franchise-testimonials";
 
 // ====== Franchise routes ======
@@ -94,6 +97,7 @@ router.use(`${FRANCHISE}/reviews`, auth, franchiseReviewsRouter);
 router.use(`${FRANCHISE}/profile`, auth, franchiseProfileRouter);
 router.use(`${FRANCHISE}/settings`, auth, franchiseSettingsRouter); // pending
 router.use(`${FRANCHISE}/order`, auth, franchiseOrderRouter);
+router.use(`/retort/order`, auth, franchiseRetortOrderRouter);
 router.use(`${FRANCHISE}/analytics/orders`, auth, franchiseOrderAnalyticsRouter); // pending
 router.use(`${FRANCHISE}/analytics/retort`, auth, franchiseRetortAnalyticsRouter); // pending
 router.use(`${FRANCHISE}/testimonials`, auth, franchiseTestimonialsRouter);

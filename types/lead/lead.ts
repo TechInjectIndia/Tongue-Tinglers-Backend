@@ -9,28 +9,20 @@ export type TAssignLead = {
   assign: Assignee
 };
 
-export type ILeadLog = {
-  leadId: string;
-  action: 'created' | 'updated';
-  userId: string; // The user performing the action
-  timestamp: Date;
-  details: any; // Any relevant details about the change
-}
-
 export interface TLeadPayload {
   firstName: string;
   lastName: string;
   phoneNumber: string;
   email: string;
   address: LeadAddress;
-  additionalInfo?: string;
+  additionalInfo?: string | null;
   source: LeadSource;
   sourceInfo?: string | null;
   status: LeadStatus;
   followDetails?: Array<FollowDetails> | null;
   referBy?: UserDetails;
   logs?: Record<string, ITrackable[]> | null;
-  assign?: Assignee;
+  assign?: Assignee | null;
   notes?: Note[] | null;
   pruposalModals: Array<string> | null;
   franchiseModals: Array<string> | null;

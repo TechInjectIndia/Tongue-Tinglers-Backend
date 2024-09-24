@@ -3,21 +3,25 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 import { LeadSource, LeadStatus, followStatus } from '../../../interfaces/leads';
 
+// Schema for UserDetails
+const USER_DETAILS_SCHEMA = Joi.object().keys({
+    userName: Joi.string().required()
+        .messages({
+            'any.required': 'User name is required.',
+        }),
+    id: Joi.string().required()
+        .messages({
+            'any.required': 'User ID is required.',
+        }),
+});
+
+// Schema for FollowDetails
 const FOLLOWED_DATE_SCHEMA = Joi.object().keys({
     followedDate: Joi.date().iso().allow(null)
         .messages({
             'date.iso': 'Followed date must be in ISO format.',
         }),
-    followedBy: Joi.object().keys({
-        userName: Joi.string().required()
-            .messages({
-                'any.required': 'Followed By username is required.',
-            }),
-        id: Joi.string().required()
-            .messages({
-                'any.required': 'Followed By ID is required.',
-            }),
-    }).required()
+    followedBy: USER_DETAILS_SCHEMA.required()
         .messages({
             'any.required': 'Followed By details are required.',
         }),
@@ -27,8 +31,53 @@ const FOLLOWED_DATE_SCHEMA = Joi.object().keys({
         .messages({
             'any.only': `Status must be one of: ${Object.values(followStatus).join(', ')}.`,
         }),
+    createdAt: Joi.date().iso().allow(null)
+        .messages({
+            'date.iso': 'Followed date must be in ISO format.',
+        }),
+    createdBy: USER_DETAILS_SCHEMA.required()
+        .messages({
+            'any.required': 'Followed By details are required.',
+        }),
 });
 
+// Schema for Notes
+const NOTE_SCHEMA = Joi.object().keys({
+    note: Joi.string().required()
+        .messages({
+            'any.required': 'Note content is required.',
+        }),
+    userDetails: USER_DETAILS_SCHEMA.required()
+        .messages({
+            'any.required': 'User details are required for the note.',
+        }),
+    date: Joi.date().iso().required()
+        .messages({
+            'date.iso': 'Date must be in ISO format.',
+            'any.required': 'Date is required.',
+        }),
+});
+
+const ADDRESS_SCHEMA = Joi.object().keys({
+    address: Joi.string().required()
+        .messages({ 'any.required': 'Address is required.' }),
+    city: Joi.string().required()
+        .messages({ 'any.required': 'City is required.' }),
+    state: Joi.string().required()
+        .messages({ 'any.required': 'State is required.' }),
+    zipCode: Joi.string().required()
+        .messages({ 'any.required': 'Zip code is required.' }),
+    country: Joi.string().required()
+        .messages({ 'any.required': 'Country is required.' }),
+    GSTIN: Joi.string().allow(null).optional(),
+});
+
+const ASSIGN_SCHEMA = Joi.object().keys({
+    assignedTo: USER_DETAILS_SCHEMA.required()
+        .messages({ 'any.required': 'Assigned To details are required.' }),
+    assignedBy: USER_DETAILS_SCHEMA.optional(),
+    assignedDate: Joi.date().iso().optional(),
+});
 // Validation for creating a lead
 const createLeadBody = Joi.object().keys({
     firstName: Joi.string().required()
@@ -49,29 +98,7 @@ const createLeadBody = Joi.object().keys({
             'string.email': 'Please provide a valid email address.',
             'any.required': 'Email is required.',
         }),
-    address: Joi.object().keys({
-        address: Joi.string().required()
-            .messages({
-                'any.required': 'Address is required.',
-            }),
-        city: Joi.string().required()
-            .messages({
-                'any.required': 'City is required.',
-            }),
-        state: Joi.string().required()
-            .messages({
-                'any.required': 'State is required.',
-            }),
-        zipCode: Joi.string().required()
-            .messages({
-                'any.required': 'Zip code is required.',
-            }),
-        country: Joi.string().required()
-            .messages({
-                'any.required': 'Country is required.',
-            }),
-        GSTIN: Joi.string().allow(null).optional(),
-    }).required(),
+    address: ADDRESS_SCHEMA.required(),
     additionalInfo: Joi.string().required()
         .messages({
             'any.required': 'Additional info is required.',
@@ -81,24 +108,8 @@ const createLeadBody = Joi.object().keys({
             'any.only': `Status must be one of: ${Object.values(LeadStatus).join(', ')}.`,
             'any.required': 'Status is required.',
         }),
-    referBy: Joi.object().keys({
-        userName: Joi.string().required()
-            .messages({
-                'any.required': 'Refer By username is required.',
-            }),
-        id: Joi.string().required()
-            .messages({
-                'any.required': 'Refer By ID is required.',
-            }),
-    }).optional(),
-    assign: Joi.object().keys({
-        assignedTo: Joi.object().required()
-            .messages({
-                'any.required': 'Assigned To details are required.',
-            }),
-        assignedBy: Joi.object().optional(),
-        assignedDate: Joi.date().iso().optional(),
-    }).optional(),
+    referBy: USER_DETAILS_SCHEMA.optional(),
+    assign: ASSIGN_SCHEMA.optional(),
     followDetails: Joi.array().items(FOLLOWED_DATE_SCHEMA).optional(),
     source: Joi.string().valid(...Object.values(LeadSource)).required()
         .messages({
@@ -106,7 +117,7 @@ const createLeadBody = Joi.object().keys({
             'any.required': 'Source is required.',
         }),
     sourceInfo: Joi.string().optional(),
-    notes: Joi.string().optional(),
+    notes: Joi.array().items(NOTE_SCHEMA).optional(), // Updated to include notes validation
 });
 
 // Validation for editing a lead body
@@ -129,29 +140,7 @@ const editLeadBody = Joi.object().keys({
             'string.email': 'Please provide a valid email address.',
             'any.required': 'Email is required.',
         }),
-    address: Joi.object().keys({
-        address: Joi.string().required()
-            .messages({
-                'any.required': 'Address is required.',
-            }),
-        city: Joi.string().required()
-            .messages({
-                'any.required': 'City is required.',
-            }),
-        state: Joi.string().required()
-            .messages({
-                'any.required': 'State is required.',
-            }),
-        zipCode: Joi.string().required()
-            .messages({
-                'any.required': 'Zip code is required.',
-            }),
-        country: Joi.string().required()
-            .messages({
-                'any.required': 'Country is required.',
-            }),
-        GSTIN: Joi.string().allow(null).optional(),
-    }).required(),
+    address: ADDRESS_SCHEMA.required(),
     additionalInfo: Joi.string().required()
         .messages({
             'any.required': 'Additional info is required.',
@@ -161,24 +150,8 @@ const editLeadBody = Joi.object().keys({
             'any.only': `Status must be one of: ${Object.values(LeadStatus).join(', ')}.`,
             'any.required': 'Status is required.',
         }),
-    referBy: Joi.object().keys({
-        userName: Joi.string().required()
-            .messages({
-                'any.required': 'Refer By username is required.',
-            }),
-        id: Joi.string().required()
-            .messages({
-                'any.required': 'Refer By ID is required.',
-            }),
-    }).optional(),
-    assign: Joi.object().keys({
-        assignedTo: Joi.object().required()
-            .messages({
-                'any.required': 'Assigned To details are required.',
-            }),
-        assignedBy: Joi.object().optional(),
-        assignedDate: Joi.date().iso().optional(),
-    }).optional(),
+    referBy: USER_DETAILS_SCHEMA.optional(),
+    assign: ASSIGN_SCHEMA.optional(),
     followDetails: Joi.array().items(FOLLOWED_DATE_SCHEMA).optional(),
     source: Joi.string().valid(...Object.values(LeadSource)).required()
         .messages({
@@ -186,7 +159,7 @@ const editLeadBody = Joi.object().keys({
             'any.required': 'Source is required.',
         }),
     sourceInfo: Joi.string().optional(),
-    notes: Joi.string().optional(),
+    notes: Joi.array().items(NOTE_SCHEMA).optional(), // Updated to include notes validation
 });
 
 // Validation for editing lead parameters

@@ -6,6 +6,7 @@ import {
     TListFilters,
     TLeadsList,
 } from "../../../types";
+import { ITrackable } from "../../../interfaces";
 import { LeadsModel } from "../../../database/schema";
 import { LeadStatus, ILead } from '../../../interfaces'; // Use the LeadStatus enum from interfaces
 import IBaseRepo from '../controllers/controller/ILeadController';
@@ -101,8 +102,14 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
 
     // Create a new lead
     public async create(data: TLeadPayload): Promise<ILead> {
-        const response = await LeadsModel.create(data);
-        return response;
+        const leadData: TLeadPayload = {
+            ...data,
+            // Ensure logs is kept as an array
+            logs: data.logs, // Assuming logs is already of type ITrackable[]
+        };
+
+        const response = await LeadsModel.create(leadData);
+        return response as ILead; // Explicitly cast the response to ILead
     }
 
     // Update lead information

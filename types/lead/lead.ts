@@ -9,6 +9,14 @@ export type TAssignLead = {
   assign: Assignee
 };
 
+export type ILeadLog = {
+  leadId: string;
+  action: 'created' | 'updated';
+  userId: string; // The user performing the action
+  timestamp: Date;
+  details: any; // Any relevant details about the change
+}
+
 export interface TLeadPayload {
   firstName: string;
   lastName: string;

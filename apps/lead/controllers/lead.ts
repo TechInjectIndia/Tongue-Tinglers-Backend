@@ -5,8 +5,9 @@ import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constant
 import { LeadRepo } from '../models/lead';
 import { AdminRepo } from '../../admin-user/models/user';
 import { FranchiseRepo } from '../../admin-user/models/franchise';
-import { LeadSource, LeadStatus, USER_TYPE, USER_STATUS } from '../../../interfaces';
+import { ITrackable, LeadStatus, USER_TYPE, USER_STATUS } from '../../../interfaces';
 import { TAssignLead } from '../../../types';
+import { Sequelize } from 'sequelize';
 
 export default class LeadController {
 
@@ -131,6 +132,8 @@ export default class LeadController {
 
     static async create(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {
+            const user_id = get(req, 'user_id', '');
+            const user_name = get(req, 'user_name', '');
             const whereVal = get(req.body, "email", "");
             const existingLead = await new LeadRepo().getLeadByAttr('email', whereVal);
 
@@ -138,10 +141,17 @@ export default class LeadController {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.EXISTS));
             }
 
-            const user_id = get(req, 'user_id', 0);
             const payload = {
                 ...req.body,
                 createdBy: user_id,
+                logs: [{
+                    userDetails: {
+                        userName: user_name,
+                        id: user_id
+                    },
+                    events: 'Lead created',
+                    timeline: new Date(),
+                }],
             };
 
             if (payload.referby) {
@@ -179,8 +189,11 @@ export default class LeadController {
             return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
+
     static async update(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {
+            const user_id = get(req, 'user_id', '');
+            const user_name = get(req, 'user_name', '');
             const id = get(req.params, "id", "");
             const payload = req.body;
 
@@ -193,7 +206,22 @@ export default class LeadController {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
 
-            const updatedLead = await new LeadRepo().update(id, payload);
+            const updateLog: ITrackable = {
+                userDetails: {
+                    userName: user_name || 'unknown',
+                    id: user_id || 'unknown'
+                },
+                events: `Lead updated`,
+                timeline: new Date(),
+            };
+            const existingLogs = Array.isArray(existingLead.logs) ? existingLead.logs : [];
+            const updatedLogs = [...existingLogs, updateLog];
+
+            const updatedLead = await new LeadRepo().update(id, {
+                ...payload,
+                logs: updatedLogs
+            });
+
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPDATED, updatedLead));
         } catch (err) {
             console.error(err);

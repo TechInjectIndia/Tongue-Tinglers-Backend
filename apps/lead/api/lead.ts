@@ -119,13 +119,37 @@ const router = express.Router();
  *                       type: string
  *                     status:
  *                       type: string
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                     createdBy:
+ *                       type: object
+ *                       properties:
+ *                         userName:
+ *                           type: string
+ *                         id:
+ *                           type: string
  *               source:
  *                 type: string
  *               sourceInfo:
  *                 type: string
  *               notes:
- *                 type: string
- *                 nullable: true
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     note:
+ *                       type: string
+ *                     date:
+ *                       type: string
+ *                       format: date-time
+ *                     userDetails:
+ *                       type: object
+ *                       properties:
+ *                         userName:
+ *                           type: string
+ *                         id:
+ *                           type: string
  *     responses:
  *       '200':
  *         description: Lead created successfully
@@ -243,13 +267,37 @@ const router = express.Router();
  *                       type: string
  *                     status:
  *                       type: string
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                     createdBy:
+ *                       type: object
+ *                       properties:
+ *                         userName:
+ *                           type: string
+ *                         id:
+ *                           type: string
  *               source:
  *                 type: string
  *               sourceInfo:
  *                 type: string
  *               notes:
- *                 type: string
- *                 nullable: true
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     note:
+ *                       type: string
+ *                     date:
+ *                       type: string
+ *                       format: date-time
+ *                     userDetails:
+ *                       type: object
+ *                       properties:
+ *                         userName:
+ *                           type: string
+ *                         id:
+ *                           type: string
  *     responses:
  *       '200':
  *         description: Lead updated successfully

@@ -275,6 +275,7 @@ const router = express.Router();
  *                 type: string
  *               referBy:
  *                 type: object
+ *                 nullable: true
  *                 properties:
  *                   userName:
  *                     type: string

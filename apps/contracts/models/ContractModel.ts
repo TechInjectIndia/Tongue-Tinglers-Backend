@@ -12,6 +12,19 @@ import IContractsController from '../controllers/controller/IContractsController
 export class ContractRepo implements IContractsController<TContract, TQueryFilters> {
     constructor() { }
 
+    public async updateContractDoc(contractId: string, docData: any): Promise<TContract> {
+        const [affectedCount, updatedContracts] = await ContractModel.update(
+            { doc: docData },
+            { where: { id: contractId }, returning: true }
+        );
+
+        if (affectedCount === 0) {
+            throw new Error(`Contract with ID ${contractId} not found`);
+        }
+
+        return updatedContracts[0] as TContract;
+    }
+
     public async create(data: TAddContract): Promise<TContract> {
         const response = await ContractModel.create(data);
         return response.get();

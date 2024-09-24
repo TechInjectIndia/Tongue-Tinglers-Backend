@@ -8,7 +8,7 @@ const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
 interface LeadCreationAttributes extends Optional<ILead, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
 class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
-    public assign!: Assignee;
+    public assign!: Assignee | null;
     public status!: LeadStatus;
     public id!: string;
     public firstName!: string;
@@ -16,7 +16,7 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public phoneNumber!: string;
     public email!: string;
     public address!: LeadAddress;
-    public additionalInfo!: string;
+    public additionalInfo!: string | null;
     public source!: LeadSource;
     public sourceInfo!: string | null;
     public followDetails!: FollowDetails[] | null;

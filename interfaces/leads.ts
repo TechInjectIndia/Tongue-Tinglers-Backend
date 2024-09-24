@@ -15,18 +15,18 @@ export interface DeletionMetaData {
 }
 
 interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
-    assign: Assignee;
+    assign: Assignee | null;
     status: LeadStatus;
     firstName: string;
     lastName: string;
     phoneNumber: string;
     email: string;
     address: LeadAddress;
-    additionalInfo: string;
+    additionalInfo: string | null;
     source: LeadSource;
     sourceInfo: string | null;
     followDetails: Array<FollowDetails> | null;
-    referBy: UserDetails;
+    referBy: UserDetails | null;
     logs: Record<string, ITrackable[]>;
     notes: Note[] | null;
     pruposalModals: Array<string> | null;

@@ -24,7 +24,7 @@ export interface TLeadPayload {
   logs?: Record<string, ITrackable[]> | null;
   assign?: Assignee | null;
   notes?: Note[] | null;
-  pruposalModals: Array<string> | null;
+  proposalModals: Array<string> | null;
   franchiseModals: Array<string> | null;
   affiliate: Array<Affiliate> | null;
   marketing: Array<string> | null;

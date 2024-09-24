@@ -23,7 +23,7 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public referBy!: UserDetails;
     public logs!: Record<string, ITrackable[]>;
     public notes!: Note[] | null;
-    public pruposalModals: Array<string> | null;
+    public proposalModals: Array<string> | null;
     public franchiseModals: Array<string> | null;
     public affiliate: Array<Affiliate> | null;
     public marketing: Array<string> | null;
@@ -105,7 +105,7 @@ LeadsModel.init({
         type: JSONB,
         allowNull: true
     },
-    pruposalModals: {
+    proposalModals: {
         type: JSONB,
         allowNull: true
     },

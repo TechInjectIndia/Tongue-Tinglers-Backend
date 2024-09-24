@@ -29,7 +29,7 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     referBy: UserDetails | null;
     logs: Record<string, ITrackable[]>;
     notes: Note[] | null;
-    pruposalModals: Array<string> | null;
+    proposalModals: Array<string> | null;
     franchiseModals: Array<string> | null;
     affiliate: Array<Affiliate> | null;
     marketing: Array<string> | null;
@@ -82,8 +82,13 @@ enum followStatus {
 
 enum LeadSource {
     ADMIN = "admin",
-    WEBSITE = "website",
-    OTHERS = "others",
+    SEARCH = "search",
+    CONTENT = "content",
+    SOCIAL_MEDIA = "social-media",
+    EMAIL_MARKETING = "email-marketing",
+    PAID = "paid",
+    EVENT = "event",
+    REFERRAL = "referral"
 }
 
 enum LeadStatus {

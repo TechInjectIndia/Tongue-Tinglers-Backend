@@ -121,7 +121,7 @@ const createLeadBody = Joi.object().keys({
             'any.required': 'Email is required.',
         }),
     address: ADDRESS_SCHEMA.required(),
-    additionalInfo: Joi.string().optional(),
+    additionalInfo: Joi.string().allow(null).optional(),
     status: Joi.string().valid(...Object.values(LeadStatus))
         .messages({
             'any.only': `Status must be one of: ${Object.values(LeadStatus).join(', ')}.`,

@@ -125,6 +125,9 @@ const router = express.Router();
  *                       type: string
  *                     status:
  *                       type: string
+ *                     reminder:
+ *                       type: string
+ *                       format: date-time
  *                     createdAt:
  *                       type: string
  *                       format: date-time
@@ -318,6 +321,9 @@ const router = express.Router();
  *                       type: string
  *                     status:
  *                       type: string
+ *                     reminder:
+ *                       type: string
+ *                       format: date-time
  *                     createdAt:
  *                       type: string
  *                       format: date-time

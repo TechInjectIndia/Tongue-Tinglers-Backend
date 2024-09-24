@@ -128,7 +128,7 @@ const createLeadBody = Joi.object().keys({
             'any.required': 'Status is required.',
         }),
     referBy: USER_DETAILS_SCHEMA.allow(null),
-    assign: ASSIGN_SCHEMA.optional(),
+    assign: ASSIGN_SCHEMA.optional().allow(null),
     followDetails: Joi.array().items(FOLLOWED_DATE_SCHEMA).optional(),
     source: Joi.string().valid(...Object.values(LeadSource)).required()
         .messages({
@@ -179,7 +179,7 @@ const editLeadBody = Joi.object().keys({
             'any.required': 'Status is required.',
         }),
     referBy: USER_DETAILS_SCHEMA.allow(null),
-    assign: ASSIGN_SCHEMA.optional(),
+    assign: ASSIGN_SCHEMA.optional().allow(null),
     followDetails: Joi.array().items(FOLLOWED_DATE_SCHEMA).optional(),
     source: Joi.string().valid(...Object.values(LeadSource)).required()
         .messages({

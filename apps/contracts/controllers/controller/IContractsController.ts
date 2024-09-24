@@ -5,6 +5,14 @@ import { TQueryFilters } from '../../../../types';
  */
 interface IContractsController<T, F extends TQueryFilters> {
     /**
+    * Update the document associated with a contract.
+    * @param contractId - The ID of the contract to update.
+    * @param docData - The document data to update in the contract.
+    * @returns Promise resolving to the updated contract.
+    */
+    updateContractDoc(contractId: string, docData: any): Promise<T>;
+
+    /**
      * Create a new contract.
      * @param data - The data for the new contract.
      * @returns Promise resolving to the created contract.

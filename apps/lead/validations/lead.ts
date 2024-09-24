@@ -127,7 +127,7 @@ const createLeadBody = Joi.object().keys({
             'any.only': `Status must be one of: ${Object.values(LeadStatus).join(', ')}.`,
             'any.required': 'Status is required.',
         }),
-    referBy: USER_DETAILS_SCHEMA.optional(),
+    referBy: USER_DETAILS_SCHEMA.allow(null),
     assign: ASSIGN_SCHEMA.optional(),
     followDetails: Joi.array().items(FOLLOWED_DATE_SCHEMA).optional(),
     source: Joi.string().valid(...Object.values(LeadSource)).required()
@@ -178,7 +178,7 @@ const editLeadBody = Joi.object().keys({
             'any.only': `Status must be one of: ${Object.values(LeadStatus).join(', ')}.`,
             'any.required': 'Status is required.',
         }),
-    referBy: USER_DETAILS_SCHEMA.optional(),
+    referBy: USER_DETAILS_SCHEMA.allow(null),
     assign: ASSIGN_SCHEMA.optional(),
     followDetails: Joi.array().items(FOLLOWED_DATE_SCHEMA).optional(),
     source: Joi.string().valid(...Object.values(LeadSource)).required()

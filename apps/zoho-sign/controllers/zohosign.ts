@@ -99,7 +99,6 @@ export default class ZohoSignController {
                 break;
         }
 
-        // Respond to acknowledge receipt
         res.json({ status: 'success' });
     };
 
@@ -172,7 +171,15 @@ export default class ZohoSignController {
 
             const sendDocument = await new ZohoSignRepo().sendDocumentUsingTemplate(templateId, data);
             if (sendDocument) {
-                // update contract table
+                // const newDoc = {
+                //     id: sendDocument.document_id,
+                //     name: sendDocument.document_name,
+                //     url: sendDocument.document_url,
+                //     status: sendDocument.document_status,
+                //     additionalInfo: '',
+                // };
+                // await new ContractRepo().updateContractDoc(contractId, newDoc);
+
                 console.log(sendDocument)
                 res.status(200).json(sendDocument.message);
             }

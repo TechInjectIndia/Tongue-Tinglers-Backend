@@ -43,6 +43,12 @@ const router = express.Router();
  *               - source
  *               - sourceInfo
  *               - notes
+ *               - logs
+ *               - pruposalModals
+ *               - franchiseModals
+ *               - affiliate
+ *               - marketing
+ *               - other
  *             properties:
  *               firstName:
  *                 type: string
@@ -150,6 +156,45 @@ const router = express.Router();
  *                           type: string
  *                         id:
  *                           type: string
+ *               logs:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     events:
+ *                       type: string
+ *                     timeline:
+ *                       type: string
+ *                       format: date-time
+ *                     userDetails:
+ *                       type: object
+ *                       properties:
+ *                         userName:
+ *                           type: string
+ *                         id:
+ *                           type: string
+ *               pruposalModals:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               franchiseModals:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               affiliate:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *               marketing:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               other:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
  *     responses:
  *       '200':
  *         description: Lead created successfully
@@ -191,6 +236,12 @@ const router = express.Router();
  *               - source
  *               - sourceInfo
  *               - notes
+ *               - logs
+ *               - pruposalModals
+ *               - franchiseModals
+ *               - affiliate
+ *               - marketing
+ *               - other
  *             properties:
  *               firstName:
  *                 type: string
@@ -298,6 +349,45 @@ const router = express.Router();
  *                           type: string
  *                         id:
  *                           type: string
+ *               logs:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     events:
+ *                       type: string
+ *                     timeline:
+ *                       type: string
+ *                       format: date-time
+ *                     userDetails:
+ *                       type: object
+ *                       properties:
+ *                         userName:
+ *                           type: string
+ *                         id:
+ *                           type: string
+ *               pruposalModals:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               franchiseModals:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               affiliate:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *               marketing:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               other:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
  *     responses:
  *       '200':
  *         description: Lead updated successfully

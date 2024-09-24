@@ -29,6 +29,29 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     referBy: UserDetails;
     logs: Record<string, ITrackable[]>;
     notes: Note[] | null;
+    pruposalModals: Array<string> | null;
+    franchiseModals: Array<string> | null;
+    affiliate: Array<Affiliate> | null;
+    marketing: Array<string> | null;
+    other: Array<ExtraFields> | null;
+}
+
+interface ExtraFields {
+    key: string,
+    value: string,
+    type: EXTRA_FIELDS_TYPES,
+}
+
+enum EXTRA_FIELDS_TYPES {
+    TEXT = "text",
+    NUMBER = "number",
+    DATE = "date",
+    BOOLEAN = "boolean",
+}
+
+interface Affiliate {
+    affiliate: string,
+    affiliateId: string
 }
 
 interface LeadAddress {
@@ -93,7 +116,8 @@ interface FollowDetails {
     status: followStatus;
     createdAt: Date;
     createdBy: UserDetails;
+    reminder: Date | null;
 }
 
 // Export types
-export { ILead, LeadStatus, LeadSource, Assignee, FollowDetails, UserDetails, LeadAddress, ITrackable, Note, followStatus };
+export { ILead, LeadStatus, LeadSource, Assignee, FollowDetails, UserDetails, LeadAddress, ITrackable, Note, followStatus, ExtraFields, Affiliate };

@@ -39,6 +39,10 @@ const FOLLOWED_DATE_SCHEMA = Joi.object().keys({
         .messages({
             'any.required': 'Followed By details are required.',
         }),
+    reminder: Joi.date().iso().allow(null)
+        .messages({
+            'date.iso': 'reminder date must be in ISO format.',
+        }),
 });
 
 // Schema for Notes
@@ -52,6 +56,23 @@ const NOTE_SCHEMA = Joi.object().keys({
             'any.required': 'User details are required for the note.',
         }),
     date: Joi.date().iso().required()
+        .messages({
+            'date.iso': 'Date must be in ISO format.',
+            'any.required': 'Date is required.',
+        }),
+});
+
+// Schema for Logs
+const LOGS_SCHEMA = Joi.object().keys({
+    userDetails: USER_DETAILS_SCHEMA.required()
+        .messages({
+            'any.required': 'User details are required for the note.',
+        }),
+    events: Joi.string().required()
+        .messages({
+            'any.required': 'Logs content is required.',
+        }),
+    timeline: Joi.date().iso().required()
         .messages({
             'date.iso': 'Date must be in ISO format.',
             'any.required': 'Date is required.',
@@ -78,6 +99,7 @@ const ASSIGN_SCHEMA = Joi.object().keys({
     assignedBy: USER_DETAILS_SCHEMA.optional(),
     assignedDate: Joi.date().iso().optional(),
 });
+
 // Validation for creating a lead
 const createLeadBody = Joi.object().keys({
     firstName: Joi.string().required()
@@ -117,7 +139,19 @@ const createLeadBody = Joi.object().keys({
             'any.required': 'Source is required.',
         }),
     sourceInfo: Joi.string().optional(),
-    notes: Joi.array().items(NOTE_SCHEMA).optional(), // Updated to include notes validation
+    notes: Joi.array().items(NOTE_SCHEMA).optional(),
+    logs: Joi.array().items(LOGS_SCHEMA).optional(),
+    pruposalModals: Joi.array().items(Joi.string()).optional().allow(null),
+    franchiseModals: Joi.array().items(Joi.string()).optional().allow(null),
+    affiliate: Joi.array().items(Joi.object().keys({
+        id: Joi.string().required().messages({ 'any.required': 'Affiliate ID is required.' }),
+        name: Joi.string().required().messages({ 'any.required': 'Affiliate name is required.' }),
+    })).optional().allow(null),
+    marketing: Joi.array().items(Joi.string()).optional().allow(null),
+    other: Joi.array().items(Joi.object().keys({
+        key: Joi.string().required().messages({ 'any.required': 'Key is required.' }),
+        value: Joi.string().required().messages({ 'any.required': 'Value is required.' }),
+    })).optional().allow(null),
 });
 
 // Validation for editing a lead body
@@ -159,7 +193,19 @@ const editLeadBody = Joi.object().keys({
             'any.required': 'Source is required.',
         }),
     sourceInfo: Joi.string().optional(),
-    notes: Joi.array().items(NOTE_SCHEMA).optional(), // Updated to include notes validation
+    notes: Joi.array().items(NOTE_SCHEMA).optional(),
+    logs: Joi.array().items(LOGS_SCHEMA).optional(),
+    pruposalModals: Joi.array().items(Joi.string()).optional().allow(null),
+    franchiseModals: Joi.array().items(Joi.string()).optional().allow(null),
+    affiliate: Joi.array().items(Joi.object().keys({
+        id: Joi.string().required().messages({ 'any.required': 'Affiliate ID is required.' }),
+        name: Joi.string().required().messages({ 'any.required': 'Affiliate name is required.' }),
+    })).optional().allow(null),
+    marketing: Joi.array().items(Joi.string()).optional().allow(null),
+    other: Joi.array().items(Joi.object().keys({
+        key: Joi.string().required().messages({ 'any.required': 'Key is required.' }),
+        value: Joi.string().required().messages({ 'any.required': 'Value is required.' }),
+    })).optional().allow(null),
 });
 
 // Validation for editing lead parameters

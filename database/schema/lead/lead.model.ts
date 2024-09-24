@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { LeadSource, LeadStatus, Assignee, FollowDetails, LeadAddress, UserDetails, ITrackable, Note } from '../../../interfaces';
+import { LeadSource, LeadStatus, Assignee, FollowDetails, LeadAddress, UserDetails, ITrackable, Note, Affiliate, ExtraFields } from '../../../interfaces';
 import { sequelize } from "../../../config";
 import { ILead } from "../../../interfaces";
 import { UserModel } from '../user/user.model';
@@ -23,6 +23,11 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public referBy!: UserDetails;
     public logs!: Record<string, ITrackable[]>;
     public notes!: Note[] | null;
+    public pruposalModals: Array<string> | null;
+    public franchiseModals: Array<string> | null;
+    public affiliate: Array<Affiliate> | null;
+    public marketing: Array<string> | null;
+    public other: Array<ExtraFields> | null;
     public createdBy!: string;
     public updatedBy!: string | null;
     public deletedBy!: string | null;
@@ -30,7 +35,6 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
 
-    // Define associations
     public static associate() {
         LeadsModel.belongsTo(UserModel, { foreignKey: 'createdBy', as: 'creator' });
         LeadsModel.belongsTo(UserModel, { foreignKey: 'updatedBy', as: 'updater' });
@@ -98,6 +102,26 @@ LeadsModel.init({
         allowNull: true
     },
     notes: {
+        type: JSONB,
+        allowNull: true
+    },
+    pruposalModals: {
+        type: JSONB,
+        allowNull: true
+    },
+    franchiseModals: {
+        type: JSONB,
+        allowNull: true
+    },
+    affiliate: {
+        type: JSONB,
+        allowNull: true
+    },
+    marketing: {
+        type: JSONB,
+        allowNull: true
+    },
+    other: {
         type: JSONB,
         allowNull: true
     },

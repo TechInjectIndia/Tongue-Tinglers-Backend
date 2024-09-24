@@ -1,5 +1,5 @@
 const { OrderItem } = require("sequelize");
-import { LeadSource, LeadStatus, Assignee, FollowDetails, ILead, LeadAddress, UserDetails, Note, ITrackable } from '../../interfaces/leads'
+import { LeadSource, LeadStatus, Assignee, FollowDetails, ILead, LeadAddress, UserDetails, Note, ITrackable, Affiliate, ExtraFields } from '../../interfaces/leads'
 
 export type TLeadStatus = {
   status: LeadStatus,
@@ -29,9 +29,14 @@ export interface TLeadPayload {
   status: LeadStatus;
   followDetails?: Array<FollowDetails> | null;
   referBy?: UserDetails;
-  notes?: Note[] | null;
   logs?: Record<string, ITrackable[]> | null;
   assign?: Assignee;
+  notes?: Note[] | null;
+  pruposalModals: Array<string> | null;
+  franchiseModals: Array<string> | null;
+  affiliate: Array<Affiliate> | null;
+  marketing: Array<string> | null;
+  other: Array<ExtraFields> | null;
 }
 
 export type TLeadsList = {

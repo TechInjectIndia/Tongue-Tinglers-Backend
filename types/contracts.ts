@@ -1,7 +1,15 @@
-import { CONTRACT_STATUS } from '../interfaces';
+import { CONTRACT_STATUS, ContractDocumentDetails, ContractPaymentDetails } from '../interfaces';
 
 export interface TContract {
     id: string;
+    status: CONTRACT_STATUS;
+    terminationDetails: null | {
+        id: string;
+        reason: string;
+        date: Date;
+    }
+    doc: ContractDocumentDetails | null;
+    payment: ContractPaymentDetails | null;
     userId: string;
     leadId: string;
     templateId: string;
@@ -9,13 +17,13 @@ export interface TContract {
     signedDate: Date | null;
     dueDate: Date;
     validity: {
-        from: Date;
-        to: Date;
+        to: Date,
+        from: Date
     };
-    status: CONTRACT_STATUS;
-    additionalInfo: string;
-    createdBy: string;
+    additionalInfo: string,
+    createdBy: string,
     updatedBy: string | null;
+    deletedBy: string | null;
     createdAt: Date;
     updatedAt: Date | null;
     deletedAt: Date | null;
@@ -26,20 +34,7 @@ export interface TContractsList {
     data: TContract[];
 }
 
-export interface TEditContract {
-    templateId?: string;
-    amount?: number;
-    signedDate?: Date | null;
-    dueDate?: Date;
-    validity: {
-        from: Date;
-        to: Date;
-    };
-    additionalInfo?: string;
-    updatedBy?: string;
-}
-
-export interface TAddContract {
+export interface TContractPayload {
     leadId?: string;
     userId?: string;
     status?: CONTRACT_STATUS;

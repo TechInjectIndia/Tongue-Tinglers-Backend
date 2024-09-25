@@ -68,6 +68,21 @@ export default class ZohoSignController {
             console.log(`Document ID: ${documentId}`);
         });
 
+
+        // const sendDocument = await new ZohoSignRepo().sendDocumentUsingTemplate(templateId, data);
+        // if (sendDocument) {
+        //     const newDoc = {
+        //         id: sendDocument.document_id,
+        //         name: sendDocument.document_name,
+        //         url: sendDocument.document_url,
+        //         status: sendDocument.document_status,
+        //         additionalInfo: '',
+        //     };
+        //     await new ContractRepo().updateContractDoc(contractId, newDoc);
+
+        //     console.log(sendDocument)
+        // }
+
         // Handle different operation types
         switch (operationType) {
             case 'RequestSubmitted':
@@ -108,6 +123,7 @@ export default class ZohoSignController {
             const templateId = get(req.body, "templateId", '');
             const contractId = get(req.body, "contractId", '');
             const recipientName = get(req.body, "recipientName", '');
+            const notes = get(req.body, "notes", '');
             const recipientEmail = get(req.body, "recipientEmail", '');
             let prefilledValues = get(req.body, "prefilledValues", '');
 
@@ -130,7 +146,7 @@ export default class ZohoSignController {
                         "field_radio_data": {}
                     },
                     "actions": [],
-                    "notes": ""
+                    "notes": notes
                 }
             };
 
@@ -171,16 +187,15 @@ export default class ZohoSignController {
 
             const sendDocument = await new ZohoSignRepo().sendDocumentUsingTemplate(templateId, data);
             if (sendDocument) {
-                // const newDoc = {
-                //     id: sendDocument.document_id,
-                //     name: sendDocument.document_name,
-                //     url: sendDocument.document_url,
-                //     status: sendDocument.document_status,
-                //     additionalInfo: '',
-                // };
-                // await new ContractRepo().updateContractDoc(contractId, newDoc);
+                const newDoc = {
+                    id: sendDocument?.data?.requests.request_id,
+                    name: sendDocument?.data?.requests.request_name,
+                    url: '',
+                    status: sendDocument?.data?.requests.request_status,
+                    additionalInfo: sendDocument?.data?.requests.notes,
+                };
+                await new ContractRepo().updateContractDoc(contractId, newDoc);
 
-                console.log(sendDocument)
                 res.status(200).json(sendDocument.message);
             }
         } catch (error) {

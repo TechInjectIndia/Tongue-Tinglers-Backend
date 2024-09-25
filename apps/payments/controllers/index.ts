@@ -48,9 +48,9 @@ export default class PaymentsController {
             additionalInfo: event.payload.payment.entity.notes,
         };
 
-        const contractId = event.payload.payment.entity.notes.contract_id;
+        const paymentId = paymentDetails.paymentId;
 
-        await new ContractRepo().updatePayment(contractId, paymentDetails);
+        await new ContractRepo().updatePaymentStatus(paymentId, paymentDetails);
     }
 
     static async fetchPayment(req: Request, res: Response, next: NextFunction) {
@@ -108,23 +108,6 @@ export default class PaymentsController {
                 return res.status(500).send(sendResponse(RESPONSE_TYPE.ERROR, "Failed to create payment link."));
             }
 
-            // Email Starts
-            const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.PAYMENT_REQUEST, {
-                email: leadDetails.email,
-                link: link.short_url
-            });
-
-            const mailOptions = {
-                to: leadDetails.email,
-                subject: EMAIL_HEADING.PAYMENT_REQUEST,
-                templateParams: {
-                    heading: EMAIL_HEADING.PAYMENT_REQUEST,
-                    description: emailContent
-                }
-            };
-            await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
-            // Email Ends
-
             const paymentPayload: ContractPaymentDetails = {
                 paymentId: link.id,
                 amount: link.amount,
@@ -134,6 +117,26 @@ export default class PaymentsController {
             };
 
             await new ContractRepo().updatePayment(contract_id, paymentPayload);
+
+            try {
+                const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.PAYMENT_REQUEST, {
+                    email: leadDetails.email,
+                    link: link.short_url
+                });
+
+                const mailOptions = {
+                    to: leadDetails.email,
+                    subject: EMAIL_HEADING.PAYMENT_REQUEST,
+                    templateParams: {
+                        heading: EMAIL_HEADING.PAYMENT_REQUEST,
+                        description: emailContent
+                    }
+                };
+
+                await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
+            } catch (emailError) {
+                console.error("Error sending email:", emailError);
+            }
 
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, link));
 

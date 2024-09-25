@@ -4,12 +4,12 @@ import { sendResponse } from '../../../libraries';
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from '../../../constants';
 import { ContractRepo } from '../models/ContractModel';
 import { LeadRepo } from '../../lead/models/lead';
-import { TAddContract } from '../../../types';
+import { TContractPayload } from '../../../types';
 
 export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const newContract: TAddContract = req.body;
+            const newContract: TContractPayload = req.body;
             if (newContract.leadId) {
                 const leadExists = await new LeadRepo().get(newContract.leadId);
                 if (!leadExists) {

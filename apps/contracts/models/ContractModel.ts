@@ -3,7 +3,7 @@ import {
     TContract,
     TQueryFilters,
     TContractsList,
-    TAddContract,
+    TContractPayload,
 } from "../../../types";
 import { ContractPaymentDetails } from "../../../interfaces";
 import { ContractModel } from "../../../database/schema";
@@ -19,13 +19,14 @@ export class ContractRepo implements IContractsController<TContract, TQueryFilte
         );
 
         if (affectedCount === 0) {
-            throw new Error(`Contract with ID ${contractId} not found`);
+            console.log(Error(`Contract with ID ${contractId} not found`));
+            return null;
         }
 
         return updatedContracts[0] as TContract;
     }
 
-    public async create(data: TAddContract): Promise<TContract> {
+    public async create(data: TContractPayload): Promise<TContract> {
         const response = await ContractModel.create(data);
         return response.get();
     }
@@ -82,8 +83,36 @@ export class ContractRepo implements IContractsController<TContract, TQueryFilte
             { where: { id: contractId } }
         );
 
-        return affectedCount > 0; // Returns true if the update was successful
+        return affectedCount > 0;
     }
+
+    public async updatePaymentStatus(paymentId: string, newStatus: ContractPaymentDetails): Promise<boolean> {
+        try {
+            const contract = await ContractModel.findOne({
+                where: {
+                    'payment.paymentId': paymentId
+                },
+                attributes: ['payment']
+            });
+
+            if (contract && contract.payment) {
+                contract.payment.status = newStatus.status;
+
+                const [affectedCount] = await ContractModel.update(
+                    { payment: contract.payment },
+                    { where: { 'payment.paymentId': paymentId } }
+                );
+
+                return affectedCount > 0;
+            }
+
+            return false;
+        } catch (error) {
+            console.error('Error updating payment status:', error);
+            return false;
+        }
+    }
+
 
     public async delete(ids: string[]): Promise<number> {
         const response = await ContractModel.destroy({

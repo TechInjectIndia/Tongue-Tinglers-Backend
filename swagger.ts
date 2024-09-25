@@ -37,9 +37,6 @@ const options = {
                 name: 'AUTH' // auth starts
             },
             {
-                name: 'Zoho Sign'
-            },
-            {
                 name: 'Admin > Permissions'
             },
             {
@@ -113,6 +110,9 @@ const options = {
             },
             {
                 name: 'Payments'
+            },
+            {
+                name: 'Zoho Sign'
             },
             {
                 name: 'Admin > Lead > Follow Ups'

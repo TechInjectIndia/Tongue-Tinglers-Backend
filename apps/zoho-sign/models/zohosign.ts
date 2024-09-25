@@ -86,7 +86,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 };
 
                 const response = await axios.request(config);
-                return response.data;
+                return response;
             } catch (error) {
                 const errorMessage = error.response ? error.response.data : error.message;
                 console.error('Error sending document:', errorMessage);

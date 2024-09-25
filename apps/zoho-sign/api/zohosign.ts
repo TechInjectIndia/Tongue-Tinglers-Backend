@@ -24,6 +24,7 @@ const router = express.Router();
  *              - recipientName
  *              - recipientEmail
  *              - prefilledValues
+ *              - notes
  *            properties:
  *              templateId:
  *                type: string
@@ -39,6 +40,8 @@ const router = express.Router();
  *              prefilledValues:
  *                type: string
  *                default: "{\"Name-:\": \"navdeep12\", \"Signature-:\": \"echo12\", \"Date-:\": \"today12\"}"
+ *              notes:
+ *                type: string
  *     responses:
  *       '200':
  *         description: Zoho Sign send successfully

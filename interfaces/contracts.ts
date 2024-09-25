@@ -1,14 +1,38 @@
-export interface IContract {
+import type { UpdatedMetaData, BaseModel, DeletionMetaData, ITrackable, Note, UserDetails } from "../interfaces";
+
+enum CONTRACT_PAYMENT_STATUS {
+    PENDING = 'pending',
+    SUCCESS = 'success',
+    FAILED = 'failed'
+}
+
+enum CONTRACT_DOCUMENT_STATUS {
+    PENDING = 'pending',
+    APPROVED = 'approved',
+    REJECTED = 'rejected'
+}
+
+enum CONTRACT_STATUS {
+    DRAFT = 'draft',
+    ACTIVE = 'active',
+    EXPIRED = 'expired',
+    TERMINATED = 'terminated'
+}
+
+enum SIGN_STATUS {
+    PENDING = 'pending',
+    COMPLETED = 'completed'
+}
+
+interface IContract extends UpdatedMetaData, BaseModel, DeletionMetaData {
     id: string;
     status: CONTRACT_STATUS;
     terminationDetails: null | {
-        id: string;
+        UserDetails: UserDetails; // updated
         reason: string;
         date: Date;
     }
-    doc: ContractDocumentDetails | null;
     payment: ContractPaymentDetails | null;
-    userId: string;
     leadId: string;
     templateId: string;
     amount: number;
@@ -18,31 +42,23 @@ export interface IContract {
         to: Date,
         from: Date
     };
+    notes: Note[] | null;
     additionalInfo: string,
-    createdBy: string,
-    updatedBy: string | null;
-    deletedBy: string | null;
-    createdAt: Date;
-    updatedAt: Date | null;
-    deletedAt: Date | null;
+    logs: ITrackable[] | null; //update
+    signedDocs: SignDoc[] | null; //update
 }
 
-export enum CONTRACT_STATUS {
-    DRAFT = 'draft',
-    ACTIVE = 'active',
-    EXPIRED = 'expired',
-    TERMINATED = 'terminated'
+interface SignDoc {
+    docId: string | null;
+    sentBy: UserDetails,
+    createdAt: Date,
+    status: SIGN_STATUS,
+    docLink: string | null,
+    signedDate: Date | null,
+    notes: string | null
 }
 
-export interface ContractDocumentDetails {
-    id: string;
-    name: string;
-    url: string;
-    status: CONTRACT_DOCUMENT_STATUS;
-    additionalInfo: string;
-}
-
-export interface ContractPaymentDetails {
+interface ContractPaymentDetails {
     paymentId: string;
     amount: number;
     date: Date;
@@ -50,14 +66,12 @@ export interface ContractPaymentDetails {
     additionalInfo: string;
 }
 
-export enum CONTRACT_PAYMENT_STATUS {
-    PENDING = 'pending',
-    SUCCESS = 'success',
-    FAILED = 'failed'
-}
-
-export enum CONTRACT_DOCUMENT_STATUS {
-    PENDING = 'pending',
-    APPROVED = 'approved',
-    REJECTED = 'rejected'
-}
+export {
+    CONTRACT_STATUS,
+    CONTRACT_PAYMENT_STATUS,
+    CONTRACT_DOCUMENT_STATUS,
+    SignDoc,
+    type IContract,
+    type ContractPaymentDetails,
+    SIGN_STATUS,
+};

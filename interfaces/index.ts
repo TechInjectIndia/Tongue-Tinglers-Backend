@@ -9,3 +9,45 @@ export * from './orders';
 export * from './crm';
 export * from './petpooja';
 export * from './contracts';
+
+interface ITrackable {
+    userDetails: UserDetails;
+    events: string;
+    timeline: Date;
+}
+
+interface Note {
+    note: string;
+    userDetails: UserDetails;
+    date: Date;
+}
+
+interface UserDetails {
+    userName: string;
+    id: string;
+}
+
+interface BaseModel {
+    id: string;
+    createdBy: string;
+    createdAt: Date;
+}
+
+interface UpdatedMetaData {
+    updatedBy: string | null;
+    updatedAt: Date | null;
+}
+
+interface DeletionMetaData {
+    deletedBy: string | null;
+    deletedAt: Date | null;
+}
+
+export {
+    ITrackable,
+    Note,
+    UserDetails,
+    BaseModel,
+    UpdatedMetaData,
+    DeletionMetaData,
+};

@@ -1,5 +1,5 @@
 const { OrderItem } = require("sequelize");
-import { LeadSource, LeadStatus, Assignee, FollowDetails, ILead, LeadAddress, UserDetails, Note, ITrackable, Affiliate, ExtraFields } from '../../interfaces/leads'
+import { LeadSource, LeadStatus, Assignee, FollowDetails, ILead, LeadAddress, UserDetails, Note, ITrackable, Affiliate, ExtraFields } from '../../interfaces'
 
 export type TLeadStatus = {
   status: LeadStatus,

@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 import {
     TemplateType,
-    DocumentData,
+    jsonData,
     SendResponse,
     TemplateList,
     FieldType,
@@ -71,7 +71,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
         return error.response && error.response.status === 401;
     }
 
-    public async sendDocumentUsingTemplate(templateId, data): Promise<SendResponse> {
+    public async sendDocumentUsingTemplate(templateId: string, data: any): Promise<SendResponse> {
         return await this.handleTokenError(async () => {
             try {
                 const accessToken = await this.getAccessTokenFromDb();

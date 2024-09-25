@@ -7,7 +7,7 @@ import { get, isEmpty } from "lodash";
 import FormData from 'form-data';
 import fs from 'fs';
 import crypto from 'crypto';
-
+import { jsonData } from "../../../types";
 const { ZOHO_WEBHOOK_SECRET } = process.env;
 
 export default class ZohoSignController {
@@ -137,7 +137,7 @@ export default class ZohoSignController {
                 res.status(403).json('No template found');
             }
 
-            const jsonData = {
+            const jsonData: jsonData = {
                 "templates": {
                     "field_data": {
                         "field_text_data": {},
@@ -187,16 +187,18 @@ export default class ZohoSignController {
 
             const sendDocument = await new ZohoSignRepo().sendDocumentUsingTemplate(templateId, data);
             if (sendDocument) {
-                const newDoc = {
-                    id: sendDocument?.data?.requests.request_id,
-                    name: sendDocument?.data?.requests.request_name,
-                    url: '',
-                    status: sendDocument?.data?.requests.request_status,
-                    additionalInfo: sendDocument?.data?.requests.notes,
-                };
-                await new ContractRepo().updateContractDoc(contractId, newDoc);
+                // const newDoc = {
+                //     docId: sendDocument?.data?.requests.request_id,
+                //     sentBy: ,
+                //     createdAt: Date,
+                //     status: sendDocument?.data?.requests.request_status,
+                //     docLink: '',
+                //     signedDate: Date | null,
+                //     notes: sendDocument?.data?.requests.notes,
+                // };
+                // await new ContractRepo().updateContractDoc(contractId, newDoc);
 
-                res.status(200).json(sendDocument.message);
+                res.status(200).json(sendDocument);
             }
         } catch (error) {
             console.log(error);

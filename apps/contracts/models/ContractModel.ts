@@ -14,7 +14,7 @@ export class ContractRepo implements IContractsController<TContract, TQueryFilte
 
     public async updateContractDoc(contractId: string, docData: any): Promise<TContract> {
         const [affectedCount, updatedContracts] = await ContractModel.update(
-            { doc: docData },
+            { signedDocs: docData },
             { where: { id: contractId }, returning: true }
         );
 

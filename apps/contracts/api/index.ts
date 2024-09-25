@@ -26,55 +26,151 @@ const {
  *           schema:
  *             type: object
  *             required:
- *               - leadId
  *               - status
+ *               - leadId
  *               - templateId
  *               - amount
  *               - dueDate
  *               - validity
  *               - createdBy
  *             properties:
- *               leadId:
- *                 type: string
- *                 example: "1"
  *               status:
  *                 type: string
  *                 enum: ["draft", "active", "expired", "terminated"]
- *                 example: "draft"
+ *                 example: "active"
+ *                 description: The status of the contract.
+ *               terminationDetails:
+ *                 type: object
+ *                 description: Details about the contract termination if applicable.
+ *                 properties:
+ *                   UserDetails:
+ *                     type: object
+ *                     required: true
+ *                     description: Details of the user initiating the termination.
+ *                   reason:
+ *                     type: string
+ *                     example: "Client requested termination"
+ *                     description: Reason for terminating the contract.
+ *                   date:
+ *                     type: string
+ *                     format: date
+ *                     example: "2023-09-15"
+ *                     description: Date of termination.
+ *               payment:
+ *                 type: object
+ *                 description: Payment details associated with the contract.
+ *                 properties:
+ *                   paymentId:
+ *                     type: string
+ *                     example: "payment123"
+ *                     description: ID of the payment.
+ *                   amount:
+ *                     type: number
+ *                     example: 1500.00
+ *                     description: Amount paid.
+ *                   date:
+ *                     type: string
+ *                     format: date
+ *                     example: "2023-09-15"
+ *                     description: Date of payment.
+ *                   status:
+ *                     type: string
+ *                     enum: ["pending", "completed", "failed"]
+ *                     example: "pending"
+ *                     description: Status of the payment.
+ *                   additionalInfo:
+ *                     type: string
+ *                     example: "Payment processed via wire transfer"
+ *                     description: Additional information about the payment.
+ *               leadId:
+ *                 type: string
+ *                 example: "lead123"
+ *                 description: ID of the lead associated with the contract.
  *               templateId:
  *                 type: string
- *                 example: "template123"
+ *                 example: "template456"
+ *                 description: ID of the template used for the contract.
  *               amount:
  *                 type: number
- *                 example: 1500.00
+ *                 example: 2500.00
+ *                 description: Total amount for the contract.
  *               signedDate:
  *                 type: string
  *                 format: date
- *                 example: "2023-09-15"
+ *                 example: "2023-09-20"
+ *                 description: Date when the contract was signed.
  *               dueDate:
  *                 type: string
  *                 format: date
  *                 example: "2024-09-15"
+ *                 description: Due date for the contract.
  *               validity:
  *                 type: object
- *                 required:
- *                   - from
- *                   - to
+ *                 description: Validity period of the contract.
  *                 properties:
  *                   from:
  *                     type: string
  *                     format: date
  *                     example: "2023-09-15"
+ *                     description: Start date of the validity.
  *                   to:
  *                     type: string
  *                     format: date
  *                     example: "2024-09-15"
+ *                     description: End date of the validity.
  *               additionalInfo:
  *                 type: string
- *                 example: "Additional contract information"
+ *                 example: "Additional contract details"
+ *                 description: Any additional information regarding the contract.
  *               createdBy:
  *                 type: string
  *                 example: "admin123"
+ *                 description: ID of the user who created the contract.
+ *               updatedBy:
+ *                 type: string
+ *                 example: "admin456"
+ *                 description: ID of the user who last updated the contract.
+ *               deletedBy:
+ *                 type: string
+ *                 example: "admin789"
+ *                 description: ID of the user who deleted the contract, if applicable.
+ *               signedDocs:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     docId:
+ *                       type: string
+ *                       example: "signedDoc123"
+ *                       description: ID of the signed document.
+ *                     sentBy:
+ *                       type: object
+ *                       required: true
+ *                       description: Details of the sender of the signed document.
+ *                     createdAt:
+ *                       type: string
+ *                       format: date
+ *                       example: "2023-09-21"
+ *                       description: Creation date of the signed document.
+ *                     status:
+ *                       type: string
+ *                       enum: ["sent", "received", "signed"]
+ *                       example: "signed"
+ *                       description: Status of the signed document.
+ *                     docLink:
+ *                       type: string
+ *                       example: "https://example.com/signedDocument.pdf"
+ *                       description: Link to the signed document.
+ *                     signedDate:
+ *                       type: string
+ *                       format: date
+ *                       example: "2023-09-22"
+ *                       description: Date when the document was signed.
+ *                     notes:
+ *                       type: string
+ *                       example: "Notes regarding the signed document."
+ *                       description: Any notes related to the signed document.
+ *             description: Contract creation request body.
  *     responses:
  *       '201':
  *         description: Contract created successfully
@@ -156,38 +252,152 @@ const {
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - status
+ *               - leadId
+ *               - templateId
+ *               - amount
+ *               - dueDate
+ *               - validity
+ *               - createdBy
  *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: ["draft", "active", "expired", "terminated"]
+ *                 example: "active"
+ *                 description: The status of the contract.
+ *               terminationDetails:
+ *                 type: object
+ *                 description: Details about the contract termination if applicable.
+ *                 properties:
+ *                   UserDetails:
+ *                     type: object
+ *                     required: true
+ *                     description: Details of the user initiating the termination.
+ *                   reason:
+ *                     type: string
+ *                     example: "Client requested termination"
+ *                     description: Reason for terminating the contract.
+ *                   date:
+ *                     type: string
+ *                     format: date
+ *                     example: "2023-09-15"
+ *                     description: Date of termination.
+ *               payment:
+ *                 type: object
+ *                 description: Payment details associated with the contract.
+ *                 properties:
+ *                   paymentId:
+ *                     type: string
+ *                     example: "payment123"
+ *                     description: ID of the payment.
+ *                   amount:
+ *                     type: number
+ *                     example: 1500.00
+ *                     description: Amount paid.
+ *                   date:
+ *                     type: string
+ *                     format: date
+ *                     example: "2023-09-15"
+ *                     description: Date of payment.
+ *                   status:
+ *                     type: string
+ *                     enum: ["pending", "completed", "failed"]
+ *                     example: "pending"
+ *                     description: Status of the payment.
+ *                   additionalInfo:
+ *                     type: string
+ *                     example: "Payment processed via wire transfer"
+ *                     description: Additional information about the payment.
+ *               leadId:
+ *                 type: string
+ *                 example: "lead123"
+ *                 description: ID of the lead associated with the contract.
  *               templateId:
  *                 type: string
- *                 example: "template123"
+ *                 example: "template456"
+ *                 description: ID of the template used for the contract.
  *               amount:
  *                 type: number
- *                 example: 1600.00
+ *                 example: 2500.00
+ *                 description: Total amount for the contract.
  *               signedDate:
  *                 type: string
  *                 format: date
- *                 example: "2023-09-16"
+ *                 example: "2023-09-20"
+ *                 description: Date when the contract was signed.
  *               dueDate:
  *                 type: string
  *                 format: date
- *                 example: "2024-09-16"
+ *                 example: "2024-09-15"
+ *                 description: Due date for the contract.
  *               validity:
  *                 type: object
+ *                 description: Validity period of the contract.
  *                 properties:
  *                   from:
  *                     type: string
  *                     format: date
- *                     example: "2023-09-16"
+ *                     example: "2023-09-15"
+ *                     description: Start date of the validity.
  *                   to:
  *                     type: string
  *                     format: date
- *                     example: "2024-09-16"
+ *                     example: "2024-09-15"
+ *                     description: End date of the validity.
  *               additionalInfo:
  *                 type: string
- *                 example: "Updated contract information"
+ *                 example: "Additional contract details"
+ *                 description: Any additional information regarding the contract.
+ *               createdBy:
+ *                 type: string
+ *                 example: "admin123"
+ *                 description: ID of the user who created the contract.
  *               updatedBy:
  *                 type: string
  *                 example: "admin456"
+ *                 description: ID of the user who last updated the contract.
+ *               deletedBy:
+ *                 type: string
+ *                 example: "admin789"
+ *                 description: ID of the user who deleted the contract, if applicable.
+ *               signedDocs:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     docId:
+ *                       type: string
+ *                       example: "signedDoc123"
+ *                       description: ID of the signed document.
+ *                     sentBy:
+ *                       type: object
+ *                       required: true
+ *                       description: Details of the sender of the signed document.
+ *                     createdAt:
+ *                       type: string
+ *                       format: date
+ *                       example: "2023-09-21"
+ *                       description: Creation date of the signed document.
+ *                     status:
+ *                       type: string
+ *                       enum: ["sent", "received", "signed"]
+ *                       example: "signed"
+ *                       description: Status of the signed document.
+ *                     docLink:
+ *                       type: string
+ *                       example: "https://example.com/signedDocument.pdf"
+ *                       description: Link to the signed document.
+ *                     signedDate:
+ *                       type: string
+ *                       format: date
+ *                       example: "2023-09-22"
+ *                       description: Date when the document was signed.
+ *                     notes:
+ *                       type: string
+ *                       example: "Notes regarding the signed document."
+ *                       description: Any notes related to the signed document.
+ *             description: Contract creation request body.
  *     responses:
  *       '200':
  *         description: Contract updated successfully

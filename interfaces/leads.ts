@@ -1,17 +1,37 @@
-export interface BaseModel {
-    id: string;
-    createdBy: string;
-    createdAt: Date;
+import type { UpdatedMetaData, BaseModel, DeletionMetaData, ITrackable, Note, UserDetails } from "../interfaces";
+
+enum EXTRA_FIELDS_TYPES {
+    TEXT = "text",
+    NUMBER = "number",
+    DATE = "date",
+    BOOLEAN = "boolean",
 }
 
-export interface UpdatedMetaData {
-    updatedBy: string | null;
-    updatedAt: Date | null;
+enum followStatus {
+    FOLLOWED_UP = "followed-up",
+    NOT_FOLLOWED_UP = "not-followed-up",
 }
 
-export interface DeletionMetaData {
-    deletedBy: string | null;
-    deletedAt: Date | null;
+enum LeadSource {
+    ADMIN = "admin",
+    SEARCH = "search",
+    CONTENT = "content",
+    SOCIAL_MEDIA = "social-media",
+    EMAIL_MARKETING = "email-marketing",
+    PAID = "paid",
+    EVENT = "event",
+    REFERRAL = "referral"
+}
+
+enum LeadStatus {
+    NEW = "new",
+    CONTACTED = "contacted",
+    QUALIFIED = "qualified",
+    PROPOSAL_SENT = "proposal-sent",
+    NEGOTIATION = "negotiation",
+    CONVERTED = "converted",
+    LOST = "lost",
+    FOLLOWED_UP = "followed-up",
 }
 
 interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
@@ -42,12 +62,6 @@ interface ExtraFields {
     type: EXTRA_FIELDS_TYPES,
 }
 
-enum EXTRA_FIELDS_TYPES {
-    TEXT = "text",
-    NUMBER = "number",
-    DATE = "date",
-    BOOLEAN = "boolean",
-}
 
 interface Affiliate {
     affiliate: string,
@@ -63,54 +77,10 @@ interface LeadAddress {
     GSTIN: string | null;
 }
 
-interface Note {
-    note: string;
-    userDetails: UserDetails;
-    date: Date;
-}
-
-interface ITrackable {
-    userDetails: UserDetails;
-    events: string;
-    timeline: Date;
-}
-
-enum followStatus {
-    FOLLOWED_UP = "followed-up",
-    NOT_FOLLOWED_UP = "not-followed-up",
-}
-
-enum LeadSource {
-    ADMIN = "admin",
-    SEARCH = "search",
-    CONTENT = "content",
-    SOCIAL_MEDIA = "social-media",
-    EMAIL_MARKETING = "email-marketing",
-    PAID = "paid",
-    EVENT = "event",
-    REFERRAL = "referral"
-}
-
-enum LeadStatus {
-    NEW = "new",
-    CONTACTED = "contacted",
-    QUALIFIED = "qualified",
-    PROPOSAL_SENT = "proposal-sent",
-    NEGOTIATION = "negotiation",
-    CONVERTED = "converted",
-    LOST = "lost",
-    FOLLOWED_UP = "followed-up",
-}
-
 interface Assignee {
     assignedTo: UserDetails;
     assignedBy: UserDetails;
     assignedDate: Date;
-}
-
-interface UserDetails {
-    userName: string;
-    id: string;
 }
 
 interface FollowDetails {
@@ -125,4 +95,14 @@ interface FollowDetails {
 }
 
 // Export types
-export { ILead, LeadStatus, LeadSource, Assignee, FollowDetails, UserDetails, LeadAddress, ITrackable, Note, followStatus, ExtraFields, Affiliate };
+export {
+    ILead,
+    LeadStatus,
+    LeadSource,
+    Assignee,
+    FollowDetails,
+    LeadAddress,
+    followStatus,
+    ExtraFields,
+    Affiliate
+};

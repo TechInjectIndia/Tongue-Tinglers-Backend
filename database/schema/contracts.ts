@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../config";
-import { CONTRACT_STATUS, CONTRACT_PAYMENT_STATUS, CONTRACT_DOCUMENT_STATUS, IContract } from '../../interfaces';
+import { CONTRACT_STATUS, CONTRACT_PAYMENT_STATUS, CONTRACT_DOCUMENT_STATUS, IContract, ITrackable, SignDoc, UserDetails, Note } from '../../interfaces';
 const { INTEGER, STRING, FLOAT, DATE, JSONB, ENUM, UUIDV4 } = DataTypes;
 import { LeadsModel } from './lead/lead.model';  // Adjust the import path as necessary
 import { UserModel } from './user/user.model';  // Adjust the import path as necessary
@@ -9,11 +9,11 @@ interface ContractCreationAttributes extends Optional<IContract, 'id' | 'created
 class ContractModel extends Model<IContract, ContractCreationAttributes> implements IContract {
     public id!: string;
     public status!: CONTRACT_STATUS;
-    public terminationDetails!: null | {
-        id: string;
+    public terminationDetails: null | {
+        UserDetails: UserDetails;
         reason: string;
         date: Date;
-    };
+    }
     public doc!: null | {
         id: string;
         name: string;
@@ -28,7 +28,6 @@ class ContractModel extends Model<IContract, ContractCreationAttributes> impleme
         status: CONTRACT_PAYMENT_STATUS;
         additionalInfo: string;
     };
-    public userId!: string | null;
     public leadId!: string | null;
     public templateId!: string;
     public amount!: number;
@@ -38,7 +37,10 @@ class ContractModel extends Model<IContract, ContractCreationAttributes> impleme
         to: Date;
         from: Date;
     };
-    public additionalInfo!: string;
+    public notes: Note[] | null;
+    public additionalInfo!: string | null;
+    public logs: ITrackable[] | null;
+    public signedDocs: SignDoc[] | null;
     public createdBy!: string;
     public updatedBy!: string | null;
     public deletedBy!: string | null;
@@ -68,16 +70,8 @@ ContractModel.init({
         type: JSONB,
         allowNull: true,
     },
-    doc: {
-        type: JSONB,
-        allowNull: true,
-    },
     payment: {
         type: JSONB,
-        allowNull: true,
-    },
-    userId: {
-        type: STRING,
         allowNull: true,
     },
     leadId: {
@@ -86,11 +80,11 @@ ContractModel.init({
     },
     templateId: {
         type: STRING,
-        allowNull: false,
+        allowNull: true,
     },
     amount: {
         type: FLOAT,
-        allowNull: false,
+        allowNull: true,
     },
     signedDate: {
         type: DATE,
@@ -103,6 +97,18 @@ ContractModel.init({
     validity: {
         type: JSONB,
         allowNull: false,
+    },
+    logs: {
+        type: JSONB,
+        allowNull: true,
+    },
+    signedDocs: {
+        type: JSONB,
+        allowNull: true,
+    },
+    notes: {
+        type: JSONB,
+        allowNull: true,
     },
     additionalInfo: {
         type: STRING,

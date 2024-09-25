@@ -121,7 +121,7 @@ const createLeadBody = Joi.object().keys({
             'any.required': 'Email is required.',
         }),
     address: ADDRESS_SCHEMA.required(),
-    additionalInfo: Joi.string().optional(),
+    additionalInfo: Joi.string().allow(null).optional(),
     status: Joi.string().valid(...Object.values(LeadStatus))
         .messages({
             'any.only': `Status must be one of: ${Object.values(LeadStatus).join(', ')}.`,
@@ -138,7 +138,7 @@ const createLeadBody = Joi.object().keys({
     sourceInfo: Joi.string().optional(),
     notes: Joi.array().items(NOTE_SCHEMA).optional(),
     logs: Joi.array().items(LOGS_SCHEMA).optional(),
-    pruposalModals: Joi.array().items(Joi.string()).optional().allow(null),
+    proposalModals: Joi.array().items(Joi.string()).optional().allow(null),
     franchiseModals: Joi.array().items(Joi.string()).optional().allow(null),
     affiliate: Joi.array().items(Joi.object().keys({
         id: Joi.string().required().messages({ 'any.required': 'Affiliate ID is required.' }),
@@ -189,7 +189,7 @@ const editLeadBody = Joi.object().keys({
     sourceInfo: Joi.string().optional(),
     notes: Joi.array().items(NOTE_SCHEMA).optional(),
     logs: Joi.array().items(LOGS_SCHEMA).optional(),
-    pruposalModals: Joi.array().items(Joi.string()).optional().allow(null),
+    proposalModals: Joi.array().items(Joi.string()).optional().allow(null),
     franchiseModals: Joi.array().items(Joi.string()).optional().allow(null),
     affiliate: Joi.array().items(Joi.object().keys({
         id: Joi.string().required().messages({ 'any.required': 'Affiliate ID is required.' }),

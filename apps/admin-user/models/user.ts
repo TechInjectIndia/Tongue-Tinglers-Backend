@@ -42,9 +42,12 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     public async getAllUsers(filters: TListFilters): Promise<TUsersList> {
         const total = await UserModel.count({
             where: {
-                email: {
-                    [Op.like]: `%${filters.search}%`,
-                },
+                [Op.or]: [
+                    { firstName: { [Op.like]: `%${filters.search}%` } },
+                    { lastName: { [Op.like]: `%${filters.search}%` } },
+                    { email: { [Op.like]: `%${filters.search}%` } },
+                    { userName: { [Op.like]: `%${filters.search}%` } },
+                ],
             },
         });
         const data = await UserModel.findAll({
@@ -52,9 +55,12 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
             offset: filters.offset,
             limit: filters.limit,
             where: {
-                email: {
-                    [Op.like]: `%${filters.search}%`,
-                },
+                [Op.or]: [
+                    { firstName: { [Op.like]: `%${filters.search}%` } },
+                    { lastName: { [Op.like]: `%${filters.search}%` } },
+                    { email: { [Op.like]: `%${filters.search}%` } },
+                    { userName: { [Op.like]: `%${filters.search}%` } },
+                ],
             },
         });
         return { total, data };

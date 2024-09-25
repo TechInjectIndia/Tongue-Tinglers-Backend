@@ -25,7 +25,7 @@ export default class WebLeadController {
                     );
             }
 
-            const createLead = { ...req?.body, source: LeadSource.WEBSITE, status: LeadStatus.NEW };
+            const createLead = { ...req?.body, source: LeadSource.SEARCH, status: LeadStatus.NEW };
             const Lead = await new LeadRepo().create(createLead);
 
             // Email Starts - New lead generated email sent to the user

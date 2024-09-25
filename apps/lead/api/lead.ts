@@ -44,7 +44,7 @@ const router = express.Router();
  *               - sourceInfo
  *               - notes
  *               - logs
- *               - pruposalModals
+ *               - proposalModals
  *               - franchiseModals
  *               - affiliate
  *               - marketing
@@ -176,7 +176,7 @@ const router = express.Router();
  *                           type: string
  *                         id:
  *                           type: string
- *               pruposalModals:
+ *               proposalModals:
  *                 type: array
  *                 items:
  *                   type: string
@@ -240,7 +240,7 @@ const router = express.Router();
  *               - sourceInfo
  *               - notes
  *               - logs
- *               - pruposalModals
+ *               - proposalModals
  *               - franchiseModals
  *               - affiliate
  *               - marketing
@@ -373,7 +373,7 @@ const router = express.Router();
  *                           type: string
  *                         id:
  *                           type: string
- *               pruposalModals:
+ *               proposalModals:
  *                 type: array
  *                 items:
  *                   type: string

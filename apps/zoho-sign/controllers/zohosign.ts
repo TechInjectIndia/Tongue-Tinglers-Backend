@@ -123,21 +123,21 @@ export default class ZohoSignController {
             const templateId = get(req.body, "templateId", '');
             const contractId = get(req.body, "contractId", '');
             const recipientName = get(req.body, "recipientName", '');
-            const notes = get(req.body, "notes", '');
+            // const notes = get(req.body, "notes", '');
             const recipientEmail = get(req.body, "recipientEmail", '');
             let prefilledValues = get(req.body, "prefilledValues", '');
 
-            const contractDetails = await new ContractRepo().get(contractId as string)
-            if (!contractDetails) {
-                res.status(403).json('No contract found');
-            }
+            // const contractDetails = await new ContractRepo().get(contractId as string)
+            // if (!contractDetails) {
+            //     res.status(403).json('No contract found');
+            // }
 
             const getTemplate = await new ZohoSignRepo().getTemplateFields(templateId as string);
             if (!getTemplate) {
                 res.status(403).json('No template found');
             }
 
-            const jsonData: jsonData = {
+            const jsonData = {
                 "templates": {
                     "field_data": {
                         "field_text_data": {},
@@ -146,7 +146,7 @@ export default class ZohoSignController {
                         "field_radio_data": {}
                     },
                     "actions": [],
-                    "notes": notes
+                    "notes": ''
                 }
             };
 
@@ -167,7 +167,6 @@ export default class ZohoSignController {
                     });
                 });
             }
-
             if (getTemplate.actions.length > 0) {
                 getTemplate.actions.forEach(action => {
                     jsonData.templates.actions.push({
@@ -181,10 +180,11 @@ export default class ZohoSignController {
                     });
                 });
             }
-
+            
+            console.log('1234', jsonData)
             let data = new FormData();
             data.append('data', JSON.stringify(jsonData));
-
+            
             const sendDocument = await new ZohoSignRepo().sendDocumentUsingTemplate(templateId, data);
             if (sendDocument) {
                 // const newDoc = {

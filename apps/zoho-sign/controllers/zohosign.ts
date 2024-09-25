@@ -123,14 +123,14 @@ export default class ZohoSignController {
             const templateId = get(req.body, "templateId", '');
             const contractId = get(req.body, "contractId", '');
             const recipientName = get(req.body, "recipientName", '');
-            // const notes = get(req.body, "notes", '');
+            const notes = get(req.body, "notes", '');
             const recipientEmail = get(req.body, "recipientEmail", '');
             let prefilledValues = get(req.body, "prefilledValues", '');
 
-            // const contractDetails = await new ContractRepo().get(contractId as string)
-            // if (!contractDetails) {
-            //     res.status(403).json('No contract found');
-            // }
+            const contractDetails = await new ContractRepo().get(contractId as string)
+            if (!contractDetails) {
+                res.status(403).json('No contract found');
+            }
 
             const getTemplate = await new ZohoSignRepo().getTemplateFields(templateId as string);
             if (!getTemplate) {
@@ -146,7 +146,7 @@ export default class ZohoSignController {
                         "field_radio_data": {}
                     },
                     "actions": [],
-                    "notes": ''
+                    "notes": notes
                 }
             };
 

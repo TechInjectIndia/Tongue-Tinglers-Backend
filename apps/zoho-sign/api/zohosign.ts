@@ -80,7 +80,29 @@ const router = express.Router();
  *         description: ID of the template to retrieve
  *     responses:
  *       '200':
- *         description: Zoho Sign created successfully
+ *         description: All template fields retreived
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Zoho Sign not found
+ * 
+ * /api/zoho-sign/document/{documentId}:
+ *   get:
+ *     summary: get all details by document ID
+ *     tags: [Zoho Sign]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: documentId
+ *         required: true
+ *         default: 1
+ *         schema:
+ *           type: string
+ *         description: ID of the document to retrieve
+ *     responses:
+ *       '200':
+ *         description: Zoho Sign doc retreived successfully
  *       '401':
  *         description: Unauthorized
  *       '404':
@@ -89,6 +111,7 @@ const router = express.Router();
 
 router.post('/send-document', ZohoSignController.sendDocumentUsingTemplate);
 router.get('/templates', ZohoSignController.getTemplates);
+router.get('/document/:documentId', ZohoSignController.getDocument);
 router.get('/get-fields/:templateId', ZohoSignController.getFieldsByTemplate);
 router.post('/callback', ZohoSignController.callback);
 // ====== Zoho Sign Ends ======

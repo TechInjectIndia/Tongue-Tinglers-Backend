@@ -1,4 +1,4 @@
-import { TemplateType, DocumentData, SendResponse, TemplateList } from "../../../../types";
+import { TemplateType, DocumentData, SendResponse, TemplateList, DocumentDetails } from "../../../../types";
 
 /**
  * Interface for Zoho Sign Controller.
@@ -30,6 +30,12 @@ interface IZohoSignController<T> {
      * @returns Promise resolving to a list of templates.
      */
     getTemplates(): Promise<TemplateList>;
+
+    /**
+     * Retrieve a document.
+     * @returns Promise resolving to document.
+     */
+    getDocument(documentId: string): Promise<DocumentDetails>;
 }
 
 export default IZohoSignController;

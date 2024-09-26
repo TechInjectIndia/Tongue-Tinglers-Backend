@@ -114,7 +114,7 @@ export default class ZohoSignController {
                 break;
         }
 
-        res.json({ status: 'success' });
+        res.send({ status: 'success' });
     };
 
     // Send document to franchise using template
@@ -129,12 +129,12 @@ export default class ZohoSignController {
 
             const contractDetails = await new ContractRepo().get(contractId as string)
             if (!contractDetails) {
-                res.status(403).json('No contract found');
+                res.status(403).send('No contract found');
             }
 
             const getTemplate = await new ZohoSignRepo().getTemplateFields(templateId as string);
             if (!getTemplate) {
-                res.status(403).json('No template found');
+                res.status(403).send('No template found');
             }
 
             const jsonData = {
@@ -180,11 +180,10 @@ export default class ZohoSignController {
                     });
                 });
             }
-            
-            console.log('1234', jsonData)
+
             let data = new FormData();
             data.append('data', JSON.stringify(jsonData));
-            
+
             const sendDocument = await new ZohoSignRepo().sendDocumentUsingTemplate(templateId, data);
             if (sendDocument) {
                 // const newDoc = {
@@ -197,12 +196,23 @@ export default class ZohoSignController {
                 //     notes: sendDocument?.data?.requests.notes,
                 // };
                 // await new ContractRepo().updateContractDoc(contractId, newDoc);
-
-                res.status(200).json(sendDocument);
+                res.status(200).send({
+                    success: true,
+                    message: 'Document sent successfully',
+                    data: sendDocument,
+                });
+            } else {
+                return res.status(500).json({
+                    success: false,
+                    message: 'Failed to send document',
+                    data: {}
+                });
             }
         } catch (error) {
-            console.log(error);
-            res.status(500).json(error);
+            return res.status(500).json({
+                success: false,
+                message: error.message || 'An error occurred while sending the document'
+            });
         }
     };
 
@@ -211,11 +221,32 @@ export default class ZohoSignController {
         try {
             const getTemplate = await new ZohoSignRepo().getTemplates();
             if (getTemplate) {
-                return res.status(200).json(getTemplate);
+                return res.status(200).send(getTemplate);
             }
-            return res.status(403).json('No templates found');
+            return res.status(403).send('No templates found');
         } catch (error) {
-            return res.status(500).json(error.response);
+            return res.status(500).json({
+                success: false,
+                message: error.message || 'An error occurred while getting the templates'
+            });
+        }
+    };
+
+    // Get document
+    static async getDocument(req: Request, res: Response, next: NextFunction) {
+        try {
+            const documentId = get(req.body, "documentId", '');
+
+            const getTemplate = await new ZohoSignRepo().getDocument(documentId as string);
+            if (getTemplate) {
+                return res.status(200).send(getTemplate);
+            }
+            return res.status(403).send('No document found');
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: error.message || 'An error occurred while getting the documents'
+            });
         }
     };
 
@@ -225,12 +256,14 @@ export default class ZohoSignController {
         try {
             const getTemplateFields = await new ZohoSignRepo().getTemplateFields(templateId as string);
             if (!getTemplateFields) {
-                res.status(403).json('No template found');
+                res.status(403).send('No template found');
             }
-            res.status(200).json(getTemplateFields);
+            res.status(200).send(getTemplateFields);
         } catch (error) {
-            console.log(error);
-            res.status(500).json(error.response.data);
+            return res.status(500).json({
+                success: false,
+                message: error.message || 'An error occurred while getting the fields of template'
+            });
         }
     };
 }

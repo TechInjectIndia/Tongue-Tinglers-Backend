@@ -20,6 +20,8 @@ export type SendResponse = {
 
 export type TemplateList = TemplateType[];
 
+export type DocumentDetails = {};
+
 export interface Field {
     field_label: string;
     is_mandatory: boolean;

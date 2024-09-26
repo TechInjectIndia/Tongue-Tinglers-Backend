@@ -5,6 +5,7 @@ import {
     SendResponse,
     TemplateList,
     FieldType,
+    DocumentDetails
 } from "../../../types";
 import { TokenModel } from "../../../database/schema";
 const axios = require('axios');
@@ -30,7 +31,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
             }
         } catch (error) {
             console.error('Error retrieving access token from DB:', error.message);
-            return error;
+            throw new Error(`Error retrieving access token from DB: ${error.message}`);
         }
     }
 
@@ -50,8 +51,9 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
             await TokenModel.upsertToken(response.data.access_token, true, 'zoho');
             return response.data.access_token;
         } catch (error) {
-            console.error('Error getting access token:', error.response ? error.response.data : error.message);
-            return error;
+            const errorMessage = error.response ? error.response.data : error.message;
+            console.error('Error getting access token from Zoho:', errorMessage);
+            throw new Error(`Error getting access token from Zoho: ${errorMessage}`);
         }
     }
 
@@ -63,6 +65,10 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 console.warn('Token error detected, refreshing token...');
                 await this.getAccessTokenFromZoho();
                 return await method();
+            } else {
+                const errorMessage = error.response ? error.response.data : error.message;
+                console.error('Error during API call:', errorMessage);
+                throw new Error(`Error during API call: ${errorMessage}`);
             }
         }
     }
@@ -90,51 +96,83 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
             } catch (error) {
                 const errorMessage = error.response ? error.response.data : error.message;
                 console.error('Error sending document:', errorMessage);
-                return new Error(`Failed to send document: ${errorMessage}`); // return a clear error
+                throw new Error(`Failed to send document: ${errorMessage}`);
             }
         });
     }
 
     public async getTemplates(): Promise<TemplateList> {
         return await this.handleTokenError(async () => {
-            const accessToken = await this.getAccessTokenFromDb();
-            const response = await axios.get(`${ZOHO_API_URL}/templates`, {
-                headers: {
-                    Authorization: `Zoho-oauthtoken ${accessToken}`,
-                },
-            });
-            return response.data.templates.map((template: any) => ({
-                templateId: template.template_id,
-                templateTitle: template.template_name
-            })) as TemplateList;
+            try {
+                const accessToken = await this.getAccessTokenFromDb();
+                const response = await axios.get(`${ZOHO_API_URL}/templates`, {
+                    headers: {
+                        Authorization: `Zoho-oauthtoken ${accessToken}`,
+                    },
+                });
+                return response.data.templates.map((template: any) => ({
+                    templateId: template.template_id,
+                    templateTitle: template.template_name
+                })) as TemplateList;
+            } catch (error) {
+                const errorMessage = error.response ? error.response.data : error.message;
+                console.error('Error retrieving templates:', errorMessage);
+                throw new Error(`Failed to retrieve templates: ${errorMessage}`);
+            }
+        });
+    }
+
+    public async getDocument(documentId: string): Promise<DocumentDetails> {
+        return await this.handleTokenError(async () => {
+            try {
+                const accessToken = await this.getAccessTokenFromDb();
+                const response = await axios.get(`${ZOHO_API_URL}/requests/${documentId}`, {
+                    headers: {
+                        Authorization: `Zoho-oauthtoken ${accessToken}`,
+                    },
+                });
+                return response.data;
+
+            } catch (error) {
+                const errorMessage = error.response ? error.response.data : error.message;
+                console.error('Error retrieving document:', errorMessage);
+                throw new Error(`Failed to retrieve document: ${errorMessage}`);
+            }
         });
     }
 
     public async getTemplateFields(templateId: string): Promise<FieldType> {
         return await this.handleTokenError(async () => {
-            const accessToken = await new ZohoSignRepo().getAccessTokenFromDb();
-            const response = await axios.get(`${ZOHO_API_URL}/templates/${templateId}`, {
-                headers: {
-                    Authorization: `Zoho-oauthtoken ${accessToken}`,
-                },
-            });
+            try {
 
-            return {
-                docs: response.data.templates.document_fields.map((docs: any) =>
-                ({
-                    document_id: docs.document_id,
-                    fields: docs.fields.map((field: any) => ({
-                        field_label: field.field_label,
-                        is_mandatory: field.is_mandatory,
-                        field_category: field.field_category,
-                        default_value: field.default_value,
-                    })),
-                })) || [],
-                actions: response.data.templates.actions.map((action: any) => ({
-                    action_id: action.action_id,
-                    action_type: action.action_type,
-                })) || [],
-            } as FieldType;
+                const accessToken = await new ZohoSignRepo().getAccessTokenFromDb();
+                const response = await axios.get(`${ZOHO_API_URL}/templates/${templateId}`, {
+                    headers: {
+                        Authorization: `Zoho-oauthtoken ${accessToken}`,
+                    },
+                });
+
+                return {
+                    docs: response.data.templates.document_fields.map((docs: any) =>
+                    ({
+                        document_id: docs.document_id,
+                        fields: docs.fields.map((field: any) => ({
+                            field_label: field.field_label,
+                            is_mandatory: field.is_mandatory,
+                            field_category: field.field_category,
+                            default_value: field.default_value,
+                        })),
+                    })) || [],
+                    actions: response.data.templates.actions.map((action: any) => ({
+                        action_id: action.action_id,
+                        action_type: action.action_type,
+                    })) || [],
+                } as FieldType;
+            } catch (error) {
+                const errorMessage = error.response ? error.response.data : error.message;
+                console.error('Error retrieving template fields:', errorMessage);
+                throw new Error(`Failed to retrieve template fields: ${errorMessage}`);
+            }
         });
     }
 }

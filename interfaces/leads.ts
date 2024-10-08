@@ -49,7 +49,7 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     other: Array<ExtraFields> | null;
 }
 
-interface FranchiseModels {
+interface FranchiseModels extends UpdatedMetaData, BaseModel, DeletionMetaData {
     id: string,
     description: string,
     title: string,
@@ -81,7 +81,7 @@ enum extraFieldTypes {
     DATE = "date"
 }
 
-interface Affiliate {
+interface Affiliate extends UpdatedMetaData, BaseModel, DeletionMetaData {
     id: string,
     type: Affiliate,
     codes: Record<string, string>
@@ -131,5 +131,7 @@ export {
     followStatus,
     ExtraFields,
     Affiliate,
-    FranchiseModels
+    FranchiseModels,
+    SeoImage,
+    SMDetails
 };

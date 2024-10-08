@@ -49,7 +49,7 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     other: Array<ExtraFields> | null;
 }
 
-interface FranchiseModels extends UpdatedMetaData, BaseModel, DeletionMetaData {
+interface FranchiseModels {
     id: string,
     description: string,
     title: string,
@@ -61,6 +61,23 @@ interface FranchiseModels extends UpdatedMetaData, BaseModel, DeletionMetaData {
     inclusions: string[],
     others: ExtraFields
 }
+
+type TPayloadFranchiseModel = {
+    description: string,
+    title: string,
+    reqArea: number,
+    images: SeoImage[],
+    investment: number,
+    runningCost: number,
+    bestFor: string[],
+    inclusions: string[],
+    others: ExtraFields
+}
+
+type FranchiseModelsList = {
+    total: number;
+    data: FranchiseModels[];
+};
 
 interface SeoImage {
     localFile: File | undefined;
@@ -81,8 +98,19 @@ enum extraFieldTypes {
     DATE = "date"
 }
 
-interface Affiliate extends UpdatedMetaData, BaseModel, DeletionMetaData {
+interface Affiliate {
     id: string,
+    type: Affiliate,
+    codes: Record<string, string>
+    sm: Record<string, SMDetails>
+}
+
+type AffiliatesList = {
+    total: number;
+    data: Affiliate[];
+};
+
+type TPayloadAffiliate = {
     type: Affiliate,
     codes: Record<string, string>
     sm: Record<string, SMDetails>
@@ -133,5 +161,9 @@ export {
     Affiliate,
     FranchiseModels,
     SeoImage,
-    SMDetails
+    SMDetails,
+    AffiliatesList,
+    TPayloadAffiliate,
+    FranchiseModelsList,
+    TPayloadFranchiseModel
 };

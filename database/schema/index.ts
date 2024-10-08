@@ -45,4 +45,6 @@ export * from "./token";
 
 // crm model starts
 export * from "./crm";
+export * from "./lead/affiliateModels";
+export * from "./lead/franchiseModels";
 // crm model ends

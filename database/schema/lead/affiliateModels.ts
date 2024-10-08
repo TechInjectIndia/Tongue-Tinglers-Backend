@@ -6,7 +6,7 @@ import { Affiliate } from "../../../interfaces";
 const { STRING, DATE, JSONB, NOW, UUIDV4 } = DataTypes;
 
 // Define the attributes for lead creation
-interface AffiliateCreationAttributes extends Optional<Affiliate, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
+interface AffiliateCreationAttributes extends Optional<Affiliate, 'id'> { }
 
 // Define the model class for AffiliateModel
 class AffiliateModel extends Model<Affiliate, AffiliateCreationAttributes> implements Affiliate {
@@ -14,12 +14,6 @@ class AffiliateModel extends Model<Affiliate, AffiliateCreationAttributes> imple
     public type!: Affiliate;
     public codes!: Record<string, string>;
     public sm!: Record<string, SMDetails>;
-    public createdBy!: string;
-    public updatedBy!: string | null;
-    public deletedBy!: string | null;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
-    public readonly deletedAt!: Date | null;
 }
 
 // Initialize the AffiliateModel
@@ -41,36 +35,6 @@ AffiliateModel.init({
     sm: {
         type: JSONB,
         allowNull: false,
-    },
-    createdBy: {
-        type: STRING,
-        allowNull: false,
-    },
-    updatedBy: {
-        type: STRING,
-        allowNull: true,
-    },
-    deletedBy: {
-        type: STRING,
-        allowNull: true,
-    },
-    createdAt: {
-        type: DATE,
-        allowNull: false,
-        defaultValue: NOW,
-        field: "created_at",
-    },
-    updatedAt: {
-        type: DATE,
-        allowNull: false,
-        defaultValue: NOW,
-        field: "updated_at",
-    },
-    deletedAt: {
-        type: DATE,
-        allowNull: true,
-        defaultValue: null,
-        field: "deleted_at",
     },
 }, {
     sequelize,

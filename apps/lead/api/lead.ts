@@ -11,6 +11,8 @@ import {
     validateConvertLeadParams 
 } from "../validations/lead";
 import { hasPermission } from '../../../middlewares';
+import affiliateRouter from "../../affiliate/api/";
+import franchiseModelRouter from "../../franchise_model/api/";
 
 const router = express.Router();
 
@@ -570,4 +572,6 @@ router.get("/get-status/:id", hasPermission('lead', 'update'), validateLeadStatu
 router.post("/convert-lead", hasPermission('lead', 'update'), validateConvertLeadParams, LeadController.convertLeadToFranchisee);
 // ====== Lead Ends ======
 
+router.use("/affiliate", affiliateRouter);
+router.use("/franchise-model", franchiseModelRouter);
 export default router;

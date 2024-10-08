@@ -62,6 +62,23 @@ interface FranchiseModels {
     others: ExtraFields
 }
 
+type TPayloadFranchiseModel = {
+    description: string,
+    title: string,
+    reqArea: number,
+    images: SeoImage[],
+    investment: number,
+    runningCost: number,
+    bestFor: string[],
+    inclusions: string[],
+    others: ExtraFields
+}
+
+type FranchiseModelsList = {
+    total: number;
+    data: FranchiseModels[];
+};
+
 interface SeoImage {
     localFile: File | undefined;
     url: string;
@@ -83,6 +100,17 @@ enum extraFieldTypes {
 
 interface Affiliate {
     id: string,
+    type: Affiliate,
+    codes: Record<string, string>
+    sm: Record<string, SMDetails>
+}
+
+type AffiliatesList = {
+    total: number;
+    data: Affiliate[];
+};
+
+type TPayloadAffiliate = {
     type: Affiliate,
     codes: Record<string, string>
     sm: Record<string, SMDetails>
@@ -131,5 +159,11 @@ export {
     followStatus,
     ExtraFields,
     Affiliate,
-    FranchiseModels
+    FranchiseModels,
+    SeoImage,
+    SMDetails,
+    AffiliatesList,
+    TPayloadAffiliate,
+    FranchiseModelsList,
+    TPayloadFranchiseModel
 };

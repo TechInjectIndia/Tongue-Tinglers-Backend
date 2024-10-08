@@ -37,6 +37,12 @@ const options = {
                 name: 'AUTH' // auth starts
             },
             {
+                name: 'Affiliate'
+            },
+            {
+                name: 'FranchiseModel'
+            },
+            {
                 name: 'Admin > Permissions'
             },
             {
@@ -179,6 +185,8 @@ const options = {
     // looks for configuration in specified directories
     apis: [
         './routes/*.ts',
+        './apps/affiliate/api/*.ts',
+        './apps/fraanchise_model/api/*.ts',
         './apps/pet-pooja/api/*.ts',
         './apps/zoho-sign/api/*.ts',
         './apps/referral/api/*.ts',

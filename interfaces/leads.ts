@@ -1,12 +1,5 @@
 import type { UpdatedMetaData, BaseModel, DeletionMetaData, ITrackable, Note, UserDetails } from "../interfaces";
 
-enum EXTRA_FIELDS_TYPES {
-    TEXT = "text",
-    NUMBER = "number",
-    DATE = "date",
-    BOOLEAN = "boolean",
-}
-
 enum followStatus {
     FOLLOWED_UP = "followed-up",
     NOT_FOLLOWED_UP = "not-followed-up",
@@ -50,22 +43,55 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     logs: Record<string, ITrackable[]>;
     notes: Note[] | null;
     proposalModals: Array<string> | null;
-    franchiseModals: Array<string> | null;
+    franchiseModals: Array<FranchiseModels> | null;
     affiliate: Array<Affiliate> | null;
     marketing: Array<string> | null;
     other: Array<ExtraFields> | null;
 }
 
+interface FranchiseModels {
+    id: string,
+    description: string,
+    title: string,
+    reqArea: number,
+    images: SeoImage[],
+    investment: number,
+    runningCost: number,
+    bestFor: string[],
+    inclusions: string[],
+    others: ExtraFields
+}
+
+interface SeoImage {
+    localFile: File | undefined;
+    url: string;
+    alt: string;
+}
+
 interface ExtraFields {
     key: string,
     value: string,
-    type: EXTRA_FIELDS_TYPES,
+    title: string,
+    type: extraFieldTypes
 }
 
+enum extraFieldTypes {
+    STRING = "string",
+    NUMBER = "number",
+    DATE = "date"
+}
 
 interface Affiliate {
-    affiliate: string,
-    affiliateId: string
+    id: string,
+    type: Affiliate,
+    codes: Record<string, string>
+    sm: Record<string, SMDetails>
+}
+
+interface SMDetails {
+    handle: string,
+    followers: number,
+    tags: string[]
 }
 
 interface LeadAddress {
@@ -104,5 +130,6 @@ export {
     LeadAddress,
     followStatus,
     ExtraFields,
-    Affiliate
+    Affiliate,
+    FranchiseModels
 };

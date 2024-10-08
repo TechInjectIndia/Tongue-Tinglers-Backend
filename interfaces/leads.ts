@@ -130,5 +130,6 @@ export {
     LeadAddress,
     followStatus,
     ExtraFields,
-    Affiliate
+    Affiliate,
+    FranchiseModels
 };

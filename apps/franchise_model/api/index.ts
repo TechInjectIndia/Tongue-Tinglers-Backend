@@ -43,11 +43,6 @@ const {
  *         - bestFor
  *         - inclusions
  *       properties:
- *         id:
- *           type: string
- *           format: uuid
- *           description: Unique identifier for the FranchiseModel
- *           example: "123e4567-e89b-12d3-a456-426614174000"
  *         description:
  *           type: string
  *           description: Detailed description of the franchise model

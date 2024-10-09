@@ -11,7 +11,7 @@ interface AffiliateCreationAttributes extends Optional<Affiliate, 'id'> { }
 // Define the model class for AffiliateModel
 class AffiliateModel extends Model<Affiliate, AffiliateCreationAttributes> implements Affiliate {
     public id!: string;
-    public type!: Affiliate;
+    public type!: string;
     public codes!: Record<string, string>;
     public sm!: Record<string, SMDetails>;
 }
@@ -40,7 +40,6 @@ AffiliateModel.init({
     sequelize,
     tableName: 'affiliate_models',
     timestamps: true,
-    paranoid: true, // enables soft deletion (paranoid mode)
 });
 
 // Export the model

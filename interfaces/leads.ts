@@ -100,7 +100,7 @@ enum extraFieldTypes {
 
 interface Affiliate {
     id: string,
-    type: Affiliate,
+    type: string,
     codes: Record<string, string>
     sm: Record<string, SMDetails>
 }
@@ -111,7 +111,7 @@ type AffiliatesList = {
 };
 
 type TPayloadAffiliate = {
-    type: Affiliate,
+    type: string,
     codes: Record<string, string>
     sm: Record<string, SMDetails>
 }

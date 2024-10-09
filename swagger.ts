@@ -186,7 +186,7 @@ const options = {
     apis: [
         './routes/*.ts',
         './apps/affiliate/api/*.ts',
-        './apps/fraanchise_model/api/*.ts',
+        './apps/franchise_model/api/*.ts',
         './apps/pet-pooja/api/*.ts',
         './apps/zoho-sign/api/*.ts',
         './apps/referral/api/*.ts',

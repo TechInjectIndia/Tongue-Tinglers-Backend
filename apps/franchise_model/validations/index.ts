@@ -4,10 +4,8 @@ import { validateReq } from "../../../libraries";
 
 // Define the SeoImage schema for validation
 const SeoImageSchema = Joi.object({
-    url: Joi.string().uri().required()
+    url: Joi.string().required()
         .messages({
-            'string.base': 'Image URL must be a string.',
-            'string.uri': 'Image URL must be a valid URI.',
             'any.required': 'Image URL is required.'
         }),
     altText: Joi.string().required()
@@ -30,7 +28,7 @@ const createFranchiseModelBody = Joi.object({
     title: Joi.string().required()
         .messages({ 'any.required': 'Title is required.' }),
     reqArea: Joi.number().integer().min(0).required()
-        .messages({ 
+        .messages({
             'number.base': 'Required area must be a number.',
             'number.integer': 'Required area must be an integer.',
             'number.min': 'Required area must be a positive number.',
@@ -43,14 +41,14 @@ const createFranchiseModelBody = Joi.object({
             'any.required': 'Images are required.'
         }),
     investment: Joi.number().precision(2).min(0).required()
-        .messages({ 
+        .messages({
             'number.base': 'Investment must be a number.',
             'number.precision': 'Investment can have up to two decimal places.',
             'number.min': 'Investment must be a positive number.',
             'any.required': 'Investment is required.'
         }),
     runningCost: Joi.number().precision(2).min(0).required()
-        .messages({ 
+        .messages({
             'number.base': 'Running cost must be a number.',
             'number.precision': 'Running cost can have up to two decimal places.',
             'number.min': 'Running cost must be a positive number.',
@@ -82,7 +80,7 @@ const editFranchiseModelBody = Joi.object({
     title: Joi.string().optional()
         .messages({ 'string.base': 'Title must be a string.' }),
     reqArea: Joi.number().integer().min(0).optional()
-        .messages({ 
+        .messages({
             'number.base': 'Required area must be a number.',
             'number.integer': 'Required area must be an integer.',
             'number.min': 'Required area must be a positive number.'
@@ -93,13 +91,13 @@ const editFranchiseModelBody = Joi.object({
             'array.min': 'At least one image is required.',
         }),
     investment: Joi.number().precision(2).min(0).optional()
-        .messages({ 
+        .messages({
             'number.base': 'Investment must be a number.',
             'number.precision': 'Investment can have up to two decimal places.',
             'number.min': 'Investment must be a positive number.',
         }),
     runningCost: Joi.number().precision(2).min(0).optional()
-        .messages({ 
+        .messages({
             'number.base': 'Running cost must be a number.',
             'number.precision': 'Running cost can have up to two decimal places.',
             'number.min': 'Running cost must be a positive number.',
@@ -120,40 +118,40 @@ const editFranchiseModelBody = Joi.object({
         }),
     others: ExtraFieldsSchema,
 }).or('description', 'title', 'reqArea', 'images', 'investment', 'runningCost', 'bestFor', 'inclusions', 'others')
-  .messages({
-      'object.missing': 'At least one field must be provided for update.'
-  });
+    .messages({
+        'object.missing': 'At least one field must be provided for update.'
+    });
 
 // Validation schema for editing FranchiseModel parameters
 const editFranchiseModelParams = Joi.object({
     id: Joi.string().uuid().required()
-        .messages({ 
+        .messages({
             'string.base': 'FranchiseModel ID must be a string.',
             'string.guid': 'FranchiseModel ID must be a valid UUID.',
-            'any.required': 'FranchiseModel ID is required.' 
+            'any.required': 'FranchiseModel ID is required.'
         }),
 });
 
 // Validation schema for listing FranchiseModels
 const listFranchiseModelQuery = Joi.object({
     size: Joi.number().integer().min(1).default(10)
-        .messages({ 
+        .messages({
             'number.base': 'Size must be a number.',
             'number.integer': 'Size must be an integer.',
             'number.min': 'Size must be at least 1.'
         }),
     skip: Joi.number().integer().min(0).default(0)
-        .messages({ 
+        .messages({
             'number.base': 'Skip must be a number.',
             'number.integer': 'Skip must be an integer.',
             'number.min': 'Skip cannot be negative.'
         }),
     search: Joi.string().trim().allow("").optional()
-        .messages({ 
+        .messages({
             'string.base': 'Search must be a string.'
         }),
     sorting: Joi.string().trim().allow("").optional()
-        .messages({ 
+        .messages({
             'string.base': 'Sorting must be a string.'
         }),
 });
@@ -163,11 +161,11 @@ const editMultipleIdsBody = Joi.object({
     ids: Joi.array().items(Joi.string().uuid())
         .min(1)
         .required()
-        .messages({ 
+        .messages({
             'array.base': 'IDs must be an array.',
             'array.min': 'At least one ID is required.',
             'string.guid': 'Each ID must be a valid UUID.',
-            'any.required': 'IDs are required.' 
+            'any.required': 'IDs are required.'
         }),
 });
 

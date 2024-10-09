@@ -25,7 +25,7 @@ export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
     public async list(filters: TListFilters): Promise<AffiliatesList> {
         const total = await AffiliateModel.count({
             where: {
-                codes: {
+                type: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
@@ -35,7 +35,7 @@ export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
             offset: filters.offset,
             limit: filters.limit,
             where: {
-                codes: {
+                type: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },

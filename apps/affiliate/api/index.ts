@@ -36,11 +36,6 @@ const {
  *         - codes
  *         - sm
  *       properties:
- *         id:
- *           type: string
- *           format: uuid
- *           description: Unique identifier for the Affiliate
- *           example: "123e4567-e89b-12d3-a456-426614174000"
  *         type:
  *           type: string
  *           description: Type of the Affiliate

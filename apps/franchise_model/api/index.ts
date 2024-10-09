@@ -12,7 +12,6 @@ const {
   validateEditMultipleIdsBody,
 } = FranchiseModelValidation;
 
-// ====== FranchiseModel Starts ======
 /**
  * @swagger
  * components:
@@ -29,8 +28,24 @@ const {
  *           description: Alternative text for the image
  *     ExtraFields:
  *       type: object
- *       additionalProperties:
- *         type: string
+ *       properties:
+ *         key:
+ *           type: string
+ *           description: Key for the extra field
+ *           example: "FranchiseTerm"
+ *         value:
+ *           type: string
+ *           description: Value of the extra field
+ *           example: "5 years"
+ *         title:
+ *           type: string
+ *           description: Title for display
+ *           example: "Franchise Duration"
+ *         type:
+ *           type: string
+ *           enum: [string, number, date]
+ *           description: Type of the extra field
+ *           example: "string"
  *     FranchiseModel:
  *       type: object
  *       required:
@@ -83,7 +98,9 @@ const {
  *             type: string
  *           example: ["Training", "Marketing Materials", "Initial Inventory"]
  *         others:
- *           $ref: '#/components/schemas/ExtraFields'
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/ExtraFields'
  */
 
 /**
@@ -317,20 +334,10 @@ const {
  *                 items:
  *                   type: string
  *                   format: uuid
- *                 description: Array of FranchiseModel IDs to delete
- *                 example: ["123e4567-e89b-12d3-a456-426614174000"]
+ *                 example: ["uuid1", "uuid2"]
  *     responses:
  *       '200':
  *         description: FranchiseModels deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 deletedCount:
- *                   type: integer
- *                   description: Number of FranchiseModels deleted
- *                   example: 2
  *       '400':
  *         description: Invalid request body
  *         content:
@@ -351,18 +358,7 @@ const {
  *                 error:
  *                   type: string
  *                   example: "Unauthorized access"
- *       '404':
- *         description: One or more FranchiseModels not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "One or more FranchiseModels not found"
  */
-
 router.post("/create", validateCreateFranchiseModelBody, FranchiseModelController.create);
 router.get("/list", validateListFranchiseModelQuery, FranchiseModelController.list);
 router.get("/get/:id", validateEditFranchiseModelParams, FranchiseModelController.get);

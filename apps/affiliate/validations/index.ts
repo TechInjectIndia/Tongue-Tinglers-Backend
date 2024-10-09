@@ -4,16 +4,19 @@ import { validateReq } from "../../../libraries";
 
 // Define the SMDetails schema for validation
 const SMDetailsSchema = Joi.object({
-    name: Joi.string().required()
+    handle: Joi.string().required()
         .messages({
-            'string.base': 'SM name must be a string.',
-            'any.required': 'SM name is required.'
+            'string.base': 'SM handle must be a string.',
+            'any.required': 'SM handle is required.'
         }),
-    url: Joi.string().uri().required()
+    followers: Joi.number().integer().required()
         .messages({
-            'string.base': 'SM URL must be a string.',
-            'string.uri': 'SM URL must be a valid URI.',
-            'any.required': 'SM URL is required.'
+            'number.base': 'Followers must be a number.',
+            'any.required': 'Followers count is required.'
+        }),
+    tags: Joi.array().items(Joi.string()).optional()
+        .messages({
+            'array.base': 'Tags must be an array of strings.'
         }),
 });
 

@@ -20,15 +20,20 @@ const {
  *     SMDetails:
  *       type: object
  *       properties:
- *         name:
+ *         handle:
  *           type: string
- *           description: Name of the social media platform
- *           example: "Twitter"
- *         url:
- *           type: string
- *           format: uri
- *           description: URL to the social media profile
- *           example: "https://twitter.com/affiliate"
+ *           description: Social media handle
+ *           example: "@affiliate_handle"
+ *         followers:
+ *           type: integer
+ *           description: Number of followers
+ *           example: 1500
+ *         tags:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Tags associated with the social media profile
+ *           example: ["influencer", "marketing"]
  *     AffiliateModel:
  *       type: object
  *       required:
@@ -51,8 +56,7 @@ const {
  *           description: Social media details associated with the Affiliate
  *           additionalProperties:
  *             $ref: '#/components/schemas/SMDetails'
- *           example: { "twitter": { "name": "Twitter", "url": "https://twitter.com/affiliate" } }
- * 
+ *           example: { "twitter": { "handle": "@affiliate_handle", "followers": 1500, "tags": ["influencer", "marketing"] } }
  */
 
 /**

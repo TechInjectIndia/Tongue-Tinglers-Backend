@@ -6,7 +6,7 @@ import { validateReq } from "../../../libraries";
 const SeoImageSchema = Joi.object({
     url: Joi.string().required()
         .messages({
-            'any.required': 'Image URL is required.'
+            'any.required': 'Image URL is required.',
         }),
     altText: Joi.string().required()
         .messages({
@@ -16,10 +16,12 @@ const SeoImageSchema = Joi.object({
 });
 
 // Define the ExtraFields schema for validation
-const ExtraFieldsSchema = Joi.object().pattern(
-    Joi.string(),
-    Joi.string()
-).optional();
+const ExtraFieldsSchema = Joi.array().items(Joi.object({
+    key: Joi.string().required(),
+    value: Joi.string().required(),
+    title: Joi.string().required(),
+    type: Joi.string().valid('string', 'number', 'date').required()
+})).optional();
 
 // Validation schema for creating a FranchiseModel
 const createFranchiseModelBody = Joi.object({

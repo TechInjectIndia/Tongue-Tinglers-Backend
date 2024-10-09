@@ -89,14 +89,6 @@ const {
  *           example: ["Training", "Marketing Materials", "Initial Inventory"]
  *         others:
  *           $ref: '#/components/schemas/ExtraFields'
- *         createdAt:
- *           type: string
- *           format: date-time
- *           description: Timestamp when the franchise model was created
- *         updatedAt:
- *           type: string
- *           format: date-time
- *           description: Timestamp when the franchise model was last updated
  */
 
 /**

@@ -57,18 +57,6 @@ const {
  *           additionalProperties:
  *             $ref: '#/components/schemas/SMDetails'
  *           example: { "twitter": { "name": "Twitter", "url": "https://twitter.com/affiliate" } }
- *         createdAt:
- *           type: string
- *           format: date-time
- *           description: Timestamp when the Affiliate was created
- *         updatedAt:
- *           type: string
- *           format: date-time
- *           description: Timestamp when the Affiliate was last updated
- *         deletedAt:
- *           type: string
- *           format: date-time
- *           description: Timestamp when the Affiliate was deleted (soft delete)
  * 
  */
 

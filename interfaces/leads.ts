@@ -42,12 +42,42 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     referBy: UserDetails | null;
     logs: Record<string, ITrackable[]>;
     notes: Note[] | null;
-    proposalModals: Array<string> | null;
+    proposalModals: Array<ProposalModels> | null;
     franchiseModals: Array<FranchiseModels> | null;
     affiliate: Array<Affiliate> | null;
     marketing: Array<string> | null;
     other: Array<ExtraFields> | null;
 }
+
+interface ProposalModels {
+    id: string,
+    title: string;
+    createdAt: Date;
+    createdBy: string;
+    updatedAt: Date | null;
+    updatedBy: string | null;
+    deletedAt: Date | null;
+    deletedBy: string | null;
+    budget: number;
+    files: Array<SeoImage>;
+}
+
+type TPayloadProposalModel = {
+    title: string;
+    createdAt: Date;
+    createdBy: string;
+    updatedAt: Date | null;
+    updatedBy: string | null;
+    deletedAt: Date | null;
+    deletedBy: string | null;
+    budget: number;
+    files: Array<SeoImage>;
+}
+
+type ProposalModelsList = {
+    total: number;
+    data: ProposalModels[];
+};
 
 interface FranchiseModels {
     id: string,
@@ -165,5 +195,8 @@ export {
     AffiliatesList,
     TPayloadAffiliate,
     FranchiseModelsList,
-    TPayloadFranchiseModel
+    TPayloadFranchiseModel,
+    ProposalModels,
+    TPayloadProposalModel,
+    ProposalModelsList
 };

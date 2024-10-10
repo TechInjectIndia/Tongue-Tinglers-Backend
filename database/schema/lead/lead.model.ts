@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { LeadSource, LeadStatus, Assignee, FollowDetails, LeadAddress, UserDetails, ITrackable, Note, Affiliate, ExtraFields, FranchiseModels } from '../../../interfaces';
+import { LeadSource, LeadStatus, Assignee, FollowDetails, LeadAddress, UserDetails, ITrackable, Note, Affiliate, ExtraFields, FranchiseModels, ProposalModels } from '../../../interfaces';
 import { sequelize } from "../../../config";
 import { ILead } from "../../../interfaces";
 import { UserModel } from '../user/user.model';
@@ -23,7 +23,7 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public referBy!: UserDetails;
     public logs!: Record<string, ITrackable[]>;
     public notes!: Note[] | null;
-    public proposalModals: Array<string> | null;
+    public proposalModals: Array<ProposalModels> | null;
     public franchiseModals: Array<FranchiseModels> | null;
     public affiliate: Array<Affiliate> | null;
     public marketing: Array<string> | null;

@@ -13,6 +13,7 @@ import {
 import { hasPermission } from '../../../middlewares';
 import affiliateRouter from "../../affiliate/api/";
 import franchiseModelRouter from "../../franchise_model/api/";
+import proposalModelRouter from "../../proposal_model/api/";
 
 const router = express.Router();
 
@@ -574,4 +575,5 @@ router.post("/convert-lead", hasPermission('lead', 'update'), validateConvertLea
 
 router.use("/affiliate", affiliateRouter);
 router.use("/franchise-model", franchiseModelRouter);
+router.use("/proposal-model", proposalModelRouter);
 export default router;

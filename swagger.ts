@@ -43,6 +43,9 @@ const options = {
                 name: 'FranchiseModel'
             },
             {
+                name: 'ProposalModel'
+            },
+            {
                 name: 'Admin > Permissions'
             },
             {
@@ -187,6 +190,7 @@ const options = {
         './routes/*.ts',
         './apps/affiliate/api/*.ts',
         './apps/franchise_model/api/*.ts',
+        './apps/proposal_model/api/*.ts',
         './apps/pet-pooja/api/*.ts',
         './apps/zoho-sign/api/*.ts',
         './apps/referral/api/*.ts',

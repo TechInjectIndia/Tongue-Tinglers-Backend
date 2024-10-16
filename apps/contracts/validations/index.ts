@@ -47,8 +47,8 @@ const createContractBody = Joi.object().keys({
             'any.required': 'Contract status is required.',
             'any.only': 'Status must be one of the predefined values.'
         }),
-    terminationDetails: terminationDetailsSchema.optional(),
-    payment: contractPaymentDetailsSchema.optional(),
+    terminationDetails: terminationDetailsSchema.allow(null).optional(),
+    payment: contractPaymentDetailsSchema.allow(null).optional(),
     leadId: Joi.string().required()
         .messages({ 'any.required': 'Lead ID is required.' }),
     templateId: Joi.string().required()

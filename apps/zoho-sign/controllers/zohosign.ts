@@ -83,7 +83,7 @@ export default class ZohoSignController {
             requestId as string
         );
 
-        let contractId = ''
+        let contractId = '';
         if (contractDetails) {
             contractId = contractDetails.id
         }
@@ -103,7 +103,7 @@ export default class ZohoSignController {
                 break;
             case "RequestCompleted":
                 if (contractId != '') {
-                    await this.handleZohoSignCaptured(contractId, { ...contractDetails.signedDocs, status: SIGN_STATUS.COMPLETED });
+                    await this.handleZohoSignCaptured(contractId, contractDetails, requestId, SIGN_STATUS.COMPLETED);
                 }
                 console.log("The request has been completed.");
                 break;
@@ -129,8 +129,20 @@ export default class ZohoSignController {
         res.send({ status: "success" });
     }
 
-    static async handleZohoSignCaptured(contractId: string, contractSignDocPayload: any) {
-        await new ContractRepo().updateContractDoc(contractId, contractSignDocPayload);
+    static async handleZohoSignCaptured(contractId, contractDetails, requestId, status) {
+        const signedDocs = contractDetails.signedDocs.map((doc) => {
+            if (doc.docId === requestId) {
+                return {
+                    ...doc,
+                    status: status
+                };
+            }
+            return doc;
+        });
+
+        await new ContractRepo().updateContractDoc(contractId, { signedDocs });
+
+        console.log("Updated signedDocs:", signedDocs);
     }
 
     // Send document to franchise using template
@@ -216,11 +228,16 @@ export default class ZohoSignController {
                     data
                 );
             if (sendDocument) {
+                const currentSignedDocs = Array.isArray(contractDetails.signedDocs) ?
+                    [...contractDetails.signedDocs] : [];
+
                 const contractSignDocPayload = {
-                    ...contractDetails.signedDocs,
-                    docId: sendDocument?.data?.requests.request_id,
+                    ...contractDetails.signedDocs[0],
+                    docId: sendDocument?.requests.request_id,
                 };
-                await new ContractRepo().updateContractDoc(contractId, contractSignDocPayload);
+
+                currentSignedDocs.push(contractSignDocPayload);
+                await new ContractRepo().updateContractDoc(contractId, currentSignedDocs);
 
                 return res.status(200).send({
                     success: true,

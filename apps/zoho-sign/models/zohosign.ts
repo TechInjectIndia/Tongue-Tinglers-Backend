@@ -68,6 +68,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 await this.getAccessTokenFromZoho();
                 return await method();
             } else {
+                console.log(error)
                 throw error;
             }
         }
@@ -77,7 +78,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
         return error.response && error.response.status === 401;
     }
 
-    public async sendDocumentUsingTemplate(templateId: string, data: any): Promise<SendResponse> {
+    public async sendDocumentUsingTemplate(templateId: string, data: any): Promise<any> {
         return await this.handleTokenError(async () => {
             try {
                 const accessToken = await this.getAccessTokenFromDb();
@@ -94,6 +95,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 const response = await axios.request(config);
                 return response.data;
             } catch (error) {
+                console.log(error)
                 throw error;
             }
         });
@@ -113,6 +115,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                     templateTitle: template.template_name
                 })) as TemplateList;
             } catch (error) {
+                console.log(error)
                 throw error;
             }
         });
@@ -130,6 +133,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 return response.data;
 
             } catch (error) {
+                console.log(error)
                 throw error;
             }
         });
@@ -162,6 +166,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                     })) || [],
                 } as FieldType;
             } catch (error) {
+                console.log(error)
                 throw error;
             }
         });

@@ -40,6 +40,9 @@ const options = {
                 name: 'Questions'
             },
             {
+                name: 'Campaigns-Ad'
+            },
+            {
                 name: 'Affiliate'
             },
             {
@@ -192,6 +195,7 @@ const options = {
     apis: [
         './routes/*.ts',
         './apps/questions/api/*.ts',
+        './apps/campaign/api/*.ts',
         './apps/affiliate/api/*.ts',
         './apps/franchise_model/api/*.ts',
         './apps/proposal_model/api/*.ts',

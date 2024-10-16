@@ -1,5 +1,8 @@
-import { UserDetails } from '../../interfaces/leads'
 
+interface UserDetails {
+  userName: string,
+  id: String
+}
 
 export type TUser = {
   id: string;

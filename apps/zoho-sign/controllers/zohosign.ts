@@ -225,14 +225,14 @@ export default class ZohoSignController {
                     data
                 );
             if (sendDocument) {
-                const newDoc = {
-                    id: sendDocument?.data?.requests.request_id,
-                    name: '',
-                    url: '',
-                    status: sendDocument?.data?.requests.request_status,
-                    additionalInfo: sendDocument?.data?.requests.notes
-                };
-                await new ContractRepo().updateContractDoc(contractId, newDoc);
+                // const newDoc = {
+                //     id: sendDocument?.data?.requests.request_id,
+                //     name: '',
+                //     url: '',
+                //     status: sendDocument?.data?.requests.request_status,
+                //     additionalInfo: sendDocument?.data?.requests.notes
+                // };
+                // await new ContractRepo().updateContractDoc(contractId, newDoc);
 
                 return res.status(200).send({
                     success: true,

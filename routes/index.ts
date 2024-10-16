@@ -81,7 +81,7 @@ router.use(`${ADMIN}/crm`, auth, campaignRouter);
 router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/question`, auth, questionRouter);
-router.use(`${ADMIN}/campaign-ad`, campaignAdRouter);
+router.use(`${ADMIN}/campaign-ad`, auth, campaignAdRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

@@ -84,8 +84,8 @@ const createContractBody = Joi.object().keys({
         .messages({ 'any.required': 'Template ID is required.' }),
     amount: Joi.number().required()
         .messages({ 'any.required': 'Amount is required.' }),
-    signedDate: Joi.date().optional(),
-    dueDate: Joi.date().required()
+    signedDate: Joi.date().allow(null).optional(),
+    dueDate: Joi.date().allow(null).required()
         .messages({ 'any.required': 'Due date is required.' }),
     validity: Joi.object().keys({
         from: Joi.date().required()
@@ -97,8 +97,8 @@ const createContractBody = Joi.object().keys({
     logs: Joi.array().items(LOGS_SCHEMA).optional(),
     createdBy: Joi.string().required()
         .messages({ 'any.required': 'Created by information is required.' }),
-    updatedBy: Joi.string().optional(),
-    deletedBy: Joi.string().optional(),
+    updatedBy: Joi.string().allow(null).optional(),
+    deletedBy: Joi.string().allow(null).optional(),
     signedDocs: Joi.array().items(signedDocsSchema).optional(),
 });
 
@@ -111,7 +111,7 @@ const editContractBody = Joi.object().keys({
     terminationDetails: terminationDetailsSchema.optional(),
     payment: contractPaymentDetailsSchema.optional(),
     amount: Joi.number().optional(),
-    signedDate: Joi.date().optional(),
+    signedDate: Joi.date().allow(null).optional(),
     dueDate: Joi.date().optional(),
     validity: Joi.object().optional(),
     additionalInfo: Joi.string().optional(),

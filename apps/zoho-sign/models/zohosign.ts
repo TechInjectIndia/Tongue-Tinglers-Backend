@@ -47,6 +47,9 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 }
             });
 
+            console.log(response);
+            
+
             await TokenModel.upsertToken(response.data.access_token, true, 'zoho');
             return response.data.access_token;
         } catch (error) {

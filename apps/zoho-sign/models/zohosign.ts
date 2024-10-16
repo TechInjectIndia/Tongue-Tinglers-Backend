@@ -30,7 +30,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 return await this.getAccessTokenFromZoho();
             }
         } catch (error) {
-            throw new Error(error);
+            throw error;
         }
     }
 
@@ -47,13 +47,10 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 }
             });
 
-            console.log(response);
-            
-
             await TokenModel.upsertToken(response.data.access_token, true, 'zoho');
             return response.data.access_token;
         } catch (error) {
-            throw new Error(error);
+            throw error;
         }
     }
 
@@ -61,8 +58,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
         try {
             return await method();
         } catch (error) {
-            console.log(error);
-            if (error) {
+            if (this.isTokenError(error)) {
                 await TokenModel.update({ isActive: false, accessToken: '' }, {
                     where: {
                         tokenType: 'zoho',
@@ -72,9 +68,13 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 await this.getAccessTokenFromZoho();
                 return await method();
             } else {
-                throw new Error(error);
+                throw error;
             }
         }
+    }
+
+    private isTokenError(error: any): boolean {
+        return error.response && error.response.status === 401;
     }
 
     public async sendDocumentUsingTemplate(templateId: string, data: any): Promise<SendResponse> {
@@ -94,7 +94,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 const response = await axios.request(config);
                 return response.data;
             } catch (error) {
-                throw new Error(error);
+                throw error;
             }
         });
     }
@@ -113,7 +113,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                     templateTitle: template.template_name
                 })) as TemplateList;
             } catch (error) {
-                throw new Error(error);
+                throw error;
             }
         });
     }
@@ -130,7 +130,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 return response.data;
 
             } catch (error) {
-                throw new Error(error);
+                throw error;
             }
         });
     }
@@ -162,7 +162,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                     })) || [],
                 } as FieldType;
             } catch (error) {
-                throw new Error(error);
+                throw error;
             }
         });
     }

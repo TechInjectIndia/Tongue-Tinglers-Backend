@@ -8,6 +8,8 @@ import FormData from "form-data";
 import fs from "fs";
 import crypto from "crypto";
 import { jsonData } from "../../../types";
+import { SIGN_STATUS } from '../../../interfaces';
+
 const { ZOHO_WEBHOOK_SECRET } = process.env;
 
 export default class ZohoSignController {
@@ -77,6 +79,8 @@ export default class ZohoSignController {
             console.log(`Document ID: ${documentId}`);
         });
 
+        const contractId = '';
+
         //     const newDoc = {
         //         id: sendDocument.document_id,
         //         name: sendDocument.document_name,
@@ -85,7 +89,6 @@ export default class ZohoSignController {
         //         additionalInfo: '',
         //     };
         //     await new ContractRepo().updateContractDoc(contractId, newDoc);
-
 
         // Handle different operation types
         switch (operationType) {
@@ -99,6 +102,7 @@ export default class ZohoSignController {
                 console.log("A document has been signed successfully.");
                 break;
             case "RequestCompleted":
+                // await this.handleZohoSignCaptured(contractId, SIGN_STATUS.COMPLETED);
                 console.log("The request has been completed.");
                 break;
             case "RequestRejected":
@@ -123,6 +127,21 @@ export default class ZohoSignController {
         res.send({ status: "success" });
     }
 
+    static async handleZohoSignCaptured(contractId: string, status: any) {
+        // const newDoc = {
+        // };
+
+        // const newDoc = {
+        //     id: sendDocument?.data?.requests.request_id,
+        //     name: '',
+        //     url: '',
+        //     status: sendDocument?.data?.requests.request_status,
+        //     additionalInfo: sendDocument?.data?.requests.notes
+        // };
+        
+        // await new ContractRepo().updateContractDoc(contractId, newDoc);
+    }
+
     // Send document to franchise using template
     static async sendDocumentUsingTemplate(
         req: Request,
@@ -140,16 +159,16 @@ export default class ZohoSignController {
             const contractDetails = await new ContractRepo().get(
                 contractId as string
             );
-            // if (!contractDetails) {
-            //     return res.status(401).send("No contract found");
-            // }
+            if (!contractDetails) {
+                return res.status(401).send("No contract found");
+            }
 
             const getTemplate = await new ZohoSignRepo().getTemplateFields(
                 templateId as string
             );
-            // if (!getTemplate) {
-            //     return res.status(401).send("No template found");
-            // }
+            if (!getTemplate) {
+                return res.status(401).send("No template found");
+            }
 
             const jsonData = {
                 templates: {
@@ -206,16 +225,15 @@ export default class ZohoSignController {
                     data
                 );
             if (sendDocument) {
-                // const newDoc = {
-                //     docId: sendDocument?.data?.requests.request_id,
-                //     sentBy: ,
-                //     createdAt: Date,
-                //     status: sendDocument?.data?.requests.request_status,
-                //     docLink: '',
-                //     signedDate: Date | null,
-                //     notes: sendDocument?.data?.requests.notes,
-                // };
-                // await new ContractRepo().updateContractDoc(contractId, newDoc);
+                const newDoc = {
+                    id: sendDocument?.data?.requests.request_id,
+                    name: '',
+                    url: '',
+                    status: sendDocument?.data?.requests.request_status,
+                    additionalInfo: sendDocument?.data?.requests.notes
+                };
+                await new ContractRepo().updateContractDoc(contractId, newDoc);
+
                 return res.status(200).send({
                     success: true,
                     message: "Document sent successfully",
@@ -232,7 +250,7 @@ export default class ZohoSignController {
             return res.status(500).json({
                 success: false,
                 message:
-                    error.message ||
+                    error?.response?.data?.message ||
                     "An error occurred while sending the document",
             });
         }

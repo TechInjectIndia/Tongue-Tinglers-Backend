@@ -13,8 +13,13 @@ const createQuestionBody = Joi.object().keys({
     }),
   required: Joi.boolean().required()
     .messages({ 'any.required': 'Required field is required.' }),
-  options: Joi.array().items(Joi.string()).optional().allow(null) // Allowing options to be optional or null
-    .messages({ 'array.base': 'Options must be an array of strings.' }),
+  options: Joi.array().items(
+    Joi.object().keys({
+      label: Joi.string().required().messages({ 'any.required': 'Label is required.' }),
+      value: Joi.string().required().messages({ 'any.required': 'Value is required.' })
+    })
+  ).optional().allow(null) // Allowing options to be optional or null
+    .messages({ 'array.base': 'Options must be an array of objects with label and value.' }),
 });
 
 // Validation schema for editing a dynamic form question
@@ -26,8 +31,13 @@ const editQuestionBody = Joi.object().keys({
       'any.only': 'Type must be one of [boolean, string, multi_choice, single_choice, number].'
     }),
   required: Joi.boolean().optional(),
-  options: Joi.array().items(Joi.string()).optional().allow(null)
-    .messages({ 'array.base': 'Options must be an array of strings.' }),
+  options: Joi.array().items(
+    Joi.object().keys({
+      label: Joi.string().required().messages({ 'any.required': 'Label is required.' }),
+      value: Joi.string().required().messages({ 'any.required': 'Value is required.' })
+    })
+  ).optional().allow(null)
+    .messages({ 'array.base': 'Options must be an array of objects with label and value.' }),
 });
 
 // Validation schema for editing dynamic form question parameters

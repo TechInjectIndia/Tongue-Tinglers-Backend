@@ -13,7 +13,23 @@ interface Question {
     id: string;
 }
 
+type TCampaignList = {
+    total: number,
+    data: ICampaign[]
+}
+
+type TPayloadCampaign = {
+    name: string;
+    description?: string;
+    startDate?: Date;
+    endDate?: Date;
+    questions: Question[];
+    createdBy: string;
+}
+
 export {
     ICampaign,
-    Question
+    Question,
+    TCampaignList,
+    TPayloadCampaign
 }

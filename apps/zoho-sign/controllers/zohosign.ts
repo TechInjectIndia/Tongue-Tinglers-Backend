@@ -79,16 +79,16 @@ export default class ZohoSignController {
             console.log(`Document ID: ${documentId}`);
         });
 
-        const contractId = '';
+        const contractDetails = await new ContractRepo().getContractByDocId(
+            requestId as string
+        );
 
-        //     const newDoc = {
-        //         id: sendDocument.document_id,
-        //         name: sendDocument.document_name,
-        //         url: sendDocument.document_url,
-        //         status: sendDocument.document_status,
-        //         additionalInfo: '',
-        //     };
-        //     await new ContractRepo().updateContractDoc(contractId, newDoc);
+        let contractId = ''
+        if (contractDetails) {
+            contractId = contractDetails.id
+        }
+        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> response', contractDetails);
+        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> response', contractDetails.id);
 
         // Handle different operation types
         switch (operationType) {
@@ -102,7 +102,9 @@ export default class ZohoSignController {
                 console.log("A document has been signed successfully.");
                 break;
             case "RequestCompleted":
-                // await this.handleZohoSignCaptured(contractId, SIGN_STATUS.COMPLETED);
+                if (contractId != '') {
+                    await this.handleZohoSignCaptured(contractId, { ...contractDetails.signedDocs, status: SIGN_STATUS.COMPLETED });
+                }
                 console.log("The request has been completed.");
                 break;
             case "RequestRejected":
@@ -127,19 +129,8 @@ export default class ZohoSignController {
         res.send({ status: "success" });
     }
 
-    static async handleZohoSignCaptured(contractId: string, status: any) {
-        // const newDoc = {
-        // };
-
-        // const newDoc = {
-        //     id: sendDocument?.data?.requests.request_id,
-        //     name: '',
-        //     url: '',
-        //     status: sendDocument?.data?.requests.request_status,
-        //     additionalInfo: sendDocument?.data?.requests.notes
-        // };
-        
-        // await new ContractRepo().updateContractDoc(contractId, newDoc);
+    static async handleZohoSignCaptured(contractId: string, contractSignDocPayload: any) {
+        await new ContractRepo().updateContractDoc(contractId, contractSignDocPayload);
     }
 
     // Send document to franchise using template
@@ -225,14 +216,11 @@ export default class ZohoSignController {
                     data
                 );
             if (sendDocument) {
-                // const newDoc = {
-                //     id: sendDocument?.data?.requests.request_id,
-                //     name: '',
-                //     url: '',
-                //     status: sendDocument?.data?.requests.request_status,
-                //     additionalInfo: sendDocument?.data?.requests.notes
-                // };
-                // await new ContractRepo().updateContractDoc(contractId, newDoc);
+                const contractSignDocPayload = {
+                    ...contractDetails.signedDocs,
+                    docId: sendDocument?.data?.requests.request_id,
+                };
+                await new ContractRepo().updateContractDoc(contractId, contractSignDocPayload);
 
                 return res.status(200).send({
                     success: true,

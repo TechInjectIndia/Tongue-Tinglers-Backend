@@ -12,6 +12,23 @@ import IContractsController from '../controllers/controller/IContractsController
 export class ContractRepo implements IContractsController<TContract, TQueryFilters> {
     constructor() { }
 
+    public async getContractByDocId(docId: string): Promise<TContract | null> {
+        try {
+            const contract = await ContractModel.findOne({
+                where: {
+                    signedDocs: {
+                        [Op.contains]: [{ docId }] as any,
+                    },
+                },
+            });
+
+            return contract;
+        } catch (error) {
+            console.error('Error fetching contract by docId:', error);
+            return null;
+        }
+    }
+
     public async updateContractDoc(contractId: string, docData: any): Promise<TContract> {
         const [affectedCount, updatedContracts] = await ContractModel.update(
             { signedDocs: docData },

@@ -35,7 +35,7 @@ export default class AddressController {
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
-            const user_id = get(req, 'user_id', 0);
+            const user_id = get(req, 'user_id', "");
 
             const Addresss = await new AddressRepo().list(user_id, {
                 offset: skip as number,
@@ -65,10 +65,10 @@ export default class AddressController {
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const user_id = get(req, 'user_id', 0);
+            const user_id = get(req, 'user_id', "");
             const updateAddress = req?.body;
             delete updateAddress.id
-            const Address = await new AddressRepo().update(user_id as number, id as number, updateAddress);
+            const Address = await new AddressRepo().update(user_id as string, id as number, updateAddress);
             return res
                 .status(200)
                 .send(
@@ -89,9 +89,9 @@ export default class AddressController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const user_id = get(req, 'user_id', 0);
+            const user_id = get(req, 'user_id', "");
 
-            const existingAddress = await new AddressRepo().get(id as number, user_id as number);
+            const existingAddress = await new AddressRepo().get(id as number, user_id as string);
 
             if (isEmpty(existingAddress)) {
                 return res
@@ -124,7 +124,7 @@ export default class AddressController {
     static async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const ids = get(req?.body, "ids", "");
-            const user_id = get(req, 'user_id', 0);
+            const user_id = get(req, 'user_id', "");
 
             const Address = await new AddressRepo().delete(user_id, ids);
             return res

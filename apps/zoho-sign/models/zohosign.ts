@@ -64,7 +64,13 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
         try {
             return await method();
         } catch (error) {
-            if (this.isTokenError(error)) {
+            const response = await TokenModel.update({ isActive: true }, {
+                where: {
+                    tokenType: 'zoho',
+                },
+            });
+
+            if (response) {
                 console.warn('Token error detected, refreshing token...');
                 await this.getAccessTokenFromZoho();
                 return await method();
@@ -147,7 +153,6 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
     public async getTemplateFields(templateId: string): Promise<FieldType> {
         return await this.handleTokenError(async () => {
             try {
-
                 const accessToken = await new ZohoSignRepo().getAccessTokenFromDb();
                 const response = await axios.get(`${ZOHO_API_URL}/templates/${templateId}`, {
                     headers: {

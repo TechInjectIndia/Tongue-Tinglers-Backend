@@ -51,6 +51,7 @@ import campaignRouter from "../apps/crm/api/campaign";
 import testUsersRouter from "../apps/test-user/api/user"; // for testing only
 import contractsRouter from "../apps/contracts/api";
 import questionRouter from "../apps/questions/api";
+import campaignAdRouter from "../apps/campaign/api";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -80,6 +81,7 @@ router.use(`${ADMIN}/crm`, auth, campaignRouter);
 router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/question`, auth, questionRouter);
+router.use(`${ADMIN}/campaign-ad`, campaignAdRouter);
 // ====== Admin ======
 
 // ====== Franchise ======
@@ -161,7 +163,7 @@ router.use(`/zoho-sign`, zohoSignApiRouter);
 // ====== Zoho Sign ======
 
 router.use(`/etest`, () => {
-    sendEmail('jasskaranofficial@gmail.com', 'subject', {heading: 'asd', description: 'qwe'});
+    sendEmail('jasskaranofficial@gmail.com', 'subject', { heading: 'asd', description: 'qwe' });
 });
 
 export default router;

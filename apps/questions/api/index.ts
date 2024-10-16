@@ -46,8 +46,21 @@ const {
  *               options:
  *                 type: array
  *                 items:
- *                   type: string
- *                 example: ["Red", "Blue", "Green"]
+ *                   type: object
+ *                   properties:
+ *                     label:
+ *                       type: string
+ *                       example: "Red"
+ *                     value:
+ *                       type: string
+ *                       example: "red"
+ *                 example: 
+ *                   - label: "Red"
+ *                     value: "red"
+ *                   - label: "Blue"
+ *                     value: "blue"
+ *                   - label: "Green"
+ *                     value: "green"
  *     responses:
  *       '201':
  *         description: Questions Question created successfully
@@ -134,7 +147,14 @@ const {
  *               options:
  *                 type: array
  *                 items:
- *                   type: string
+ *                   type: object
+ *                   properties:
+ *                     label:
+ *                       type: string
+ *                       example: "Red"
+ *                     value:
+ *                       type: string
+ *                       example: "red"
  *     responses:
  *       '200':
  *         description: Questions Question updated successfully

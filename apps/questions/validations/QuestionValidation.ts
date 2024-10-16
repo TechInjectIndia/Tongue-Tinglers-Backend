@@ -3,7 +3,7 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
 // Validation schema for creating a dynamic form question
-const createDynamicFormBody = Joi.object().keys({
+const createQuestionBody = Joi.object().keys({
   question: Joi.string().required()
     .messages({ 'any.required': 'Question is required.' }),
   type: Joi.string().valid('boolean', 'string', 'multi_choice', 'single_choice', 'number').required()
@@ -18,7 +18,7 @@ const createDynamicFormBody = Joi.object().keys({
 });
 
 // Validation schema for editing a dynamic form question
-const editDynamicFormBody = Joi.object().keys({
+const editQuestionBody = Joi.object().keys({
   question: Joi.string().optional()
     .messages({ 'any.required': 'Question is required.' }),
   type: Joi.string().valid('boolean', 'string', 'multi_choice', 'single_choice', 'number').optional()
@@ -31,13 +31,13 @@ const editDynamicFormBody = Joi.object().keys({
 });
 
 // Validation schema for editing dynamic form question parameters
-const editDynamicFormParams = Joi.object().keys({
+const editQuestionParams = Joi.object().keys({
   id: Joi.string().uuid().required()
     .messages({ 'any.required': 'Dynamic Form Question ID is required.' }),
 });
 
 // Validation schema for listing dynamic form questions
-const listDynamicFormQuery = Joi.object().keys({
+const listQuestionQuery = Joi.object().keys({
   size: Joi.number().integer().min(1).required()
     .messages({ 'any.required': 'Size is required.' }),
   skip: Joi.number().integer().min(0).required()
@@ -56,32 +56,32 @@ const editMultipleIdsBody = Joi.object().keys({
 });
 
 // Middleware for validating dynamic form question creation
-export const validateCreateDynamicFormBody = async (
+export const validateCreateQuestionBody = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => validateReq(req, res, next, createDynamicFormBody, "body");
+) => validateReq(req, res, next, createQuestionBody, "body");
 
 // Middleware for validating dynamic form question editing
-export const validateEditDynamicFormBody = async (
+export const validateEditQuestionBody = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => validateReq(req, res, next, editDynamicFormBody, "body");
+) => validateReq(req, res, next, editQuestionBody, "body");
 
 // Middleware for validating dynamic form question editing parameters
-export const validateEditDynamicFormParams = async (
+export const validateEditQuestionParams = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => validateReq(req, res, next, editDynamicFormParams, "params");
+) => validateReq(req, res, next, editQuestionParams, "params");
 
 // Middleware for validating dynamic form question listing queries
-export const validateListDynamicFormQuery = async (
+export const validateListQuestionQuery = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => validateReq(req, res, next, listDynamicFormQuery, "query");
+) => validateReq(req, res, next, listQuestionQuery, "query");
 
 // Middleware for validating editing multiple dynamic form questions
 export const validateEditMultipleIdsBody = async (

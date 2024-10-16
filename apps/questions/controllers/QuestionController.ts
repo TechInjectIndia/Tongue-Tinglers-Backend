@@ -2,21 +2,21 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { DynamicFormRepo } from '../models';
+import { QuestionRepo } from '../models';
 
-export default class DynamicFormController {
+export default class QuestionController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, 'user_id', '');
-            const payload = { ...req?.body, user_id: user_id };
-            const dynamicForm = await new DynamicFormRepo().create(payload);
+            const payload = { ...req?.body, createdBy: user_id };
+            const question = await new QuestionRepo().create(payload);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.CREATED,
-                        dynamicForm
+                        question
                     )
                 );
         } catch (err) {
@@ -35,9 +35,8 @@ export default class DynamicFormController {
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
-            const user_id = get(req, 'user_id', 0);
 
-            const dynamicForms = await new DynamicFormRepo().list(user_id, {
+            const questions = await new QuestionRepo().list({
                 offset: skip as number,
                 limit: size as number,
                 search: search as string,
@@ -51,7 +50,7 @@ export default class DynamicFormController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        dynamicForms
+                        questions
                     )
                 );
         } catch (err) {
@@ -64,19 +63,19 @@ export default class DynamicFormController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
-            const user_id = get(req, 'user_id', 0);
-            const updateDynamicForm = req?.body;
-            delete updateDynamicForm.id; // Ensure the ID is not included in the update payload
+            const id = get(req?.params, "id", "");
+            const updateQuestion = req?.body;
+            delete updateQuestion.id;
 
-            const updatedDynamicForm = await new DynamicFormRepo().update(user_id as number, id as number, updateDynamicForm);
+            const user_id = get(req, 'user_id', '');
+            const updatedQuestion = await new QuestionRepo().update(id as string, { ...updateQuestion, updatedBy: user_id });
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
-                        updatedDynamicForm
+                        updatedQuestion
                     )
                 );
         } catch (err) {
@@ -89,12 +88,11 @@ export default class DynamicFormController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
-            const user_id = get(req, 'user_id', 0);
+            const id = get(req?.params, "id", "");
 
-            const existingDynamicForm = await new DynamicFormRepo().get(id as number, user_id as number);
+            const existingQuestion = await new QuestionRepo().get(id as string);
 
-            if (isEmpty(existingDynamicForm)) {
+            if (isEmpty(existingQuestion)) {
                 return res
                     .status(400)
                     .send(
@@ -111,7 +109,7 @@ export default class DynamicFormController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        existingDynamicForm
+                        existingQuestion
                     )
                 );
         } catch (err) {
@@ -125,9 +123,8 @@ export default class DynamicFormController {
     static async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const ids = get(req?.body, "ids", "");
-            const user_id = get(req, 'user_id', 0);
 
-            const deletedCount = await new DynamicFormRepo().delete(user_id, ids);
+            const deletedCount = await new QuestionRepo().delete(ids);
             return res
                 .status(200)
                 .send(

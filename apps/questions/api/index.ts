@@ -1,25 +1,25 @@
-// src/routes/dynamicFormRoutes.ts
+// src/routes/QuestionRoutes.ts
 import * as express from "express";
-import DynamicFormController from "../controllers/DynamicFormController";
-import * as DynamicFormValidation from "../validations/DynamicFormValidation";
+import QuestionController from "../controllers/QuestionController";
+import * as QuestionValidation from "../validations/QuestionValidation";
 
 const router = express.Router();
 
 const {
-  validateCreateDynamicFormBody,
-  validateEditDynamicFormBody,
-  validateEditDynamicFormParams,
-  validateListDynamicFormQuery,
+  validateCreateQuestionBody,
+  validateEditQuestionBody,
+  validateEditQuestionParams,
+  validateListQuestionQuery,
   validateEditMultipleIdsBody,
-} = DynamicFormValidation;
+} = QuestionValidation;
 
-// ====== Dynamic Form Starts ====== 
+// ====== Questions Starts ====== 
 /**
  * @swagger
- * /api/admin/form/create:
+ * /api/admin/question/create:
  *   post:
- *     summary: Create a new Dynamic Form Question
- *     tags: [Dynamic Form]
+ *     summary: Create a new Questions Question
+ *     tags: [Questions]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -50,16 +50,16 @@ const {
  *                 example: ["Red", "Blue", "Green"]
  *     responses:
  *       '201':
- *         description: Dynamic Form Question created successfully
+ *         description: Questions Question created successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/form/list?size={size}&skip={skip}:
+ * /api/admin/question/list?size={size}&skip={skip}:
  *   get:
- *     summary: Get all Dynamic Form Questions
- *     tags: [Dynamic Form]
+ *     summary: Get all Questions Questions
+ *     tags: [Questions]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -77,16 +77,16 @@ const {
  *         description: How many rows to skip
  *     responses:
  *       '200':
- *         description: Dynamic Form Questions retrieved successfully
+ *         description: Questions Questions retrieved successfully
  *       '400':
  *         description: Invalid request
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/form/get/{id}:
+ * /api/admin/question/get/{id}:
  *   get:
- *     summary: Get a Dynamic Form Question by ID
- *     tags: [Dynamic Form]
+ *     summary: Get a Questions Question by ID
+ *     tags: [Questions]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -95,19 +95,19 @@ const {
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the Dynamic Form Question to retrieve
+ *         description: ID of the Questions Question to retrieve
  *     responses:
  *       '200':
- *         description: Dynamic Form Question retrieved successfully
+ *         description: Questions Question retrieved successfully
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Dynamic Form Question not found
+ *         description: Questions Question not found
  * 
- * /api/admin/form/update/{id}:
+ * /api/admin/question/update/{id}:
  *   put:
- *     summary: Update a Dynamic Form Question
- *     tags: [Dynamic Form]
+ *     summary: Update a Questions Question
+ *     tags: [Questions]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -116,7 +116,7 @@ const {
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the Dynamic Form Question to update
+ *         description: ID of the Questions Question to update
  *     requestBody:
  *       required: true
  *       content:
@@ -137,18 +137,18 @@ const {
  *                   type: string
  *     responses:
  *       '200':
- *         description: Dynamic Form Question updated successfully
+ *         description: Questions Question updated successfully
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Dynamic Form Question not found
+ *         description: Questions Question not found
  * 
- * /api/admin/form/delete:
+ * /api/admin/question/delete:
  *   delete:
- *     summary: Delete Dynamic Form Questions
- *     tags: [Dynamic Form]
+ *     summary: Delete Questions Questions
+ *     tags: [Questions]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -167,16 +167,16 @@ const {
  *                 example: ["1", "2"]
  *     responses:
  *       '200':
- *         description: Dynamic Form Questions deleted successfully
+ *         description: Questions Questions deleted successfully
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Dynamic Form Questions not found
+ *         description: Questions Questions not found
  */
-router.post("/create", validateCreateDynamicFormBody, DynamicFormController.create);
-router.get("/list", validateListDynamicFormQuery, DynamicFormController.list);
-router.get("/get/:id", validateEditDynamicFormParams, DynamicFormController.get);
-router.put("/update/:id", validateEditDynamicFormParams, validateEditDynamicFormBody, DynamicFormController.update);
-router.delete("/delete", validateEditMultipleIdsBody, DynamicFormController.delete);
+router.post("/create", validateCreateQuestionBody, QuestionController.create);
+router.get("/list", validateListQuestionQuery, QuestionController.list);
+router.get("/get/:id", validateEditQuestionParams, QuestionController.get);
+router.put("/update/:id", validateEditQuestionParams, validateEditQuestionBody, QuestionController.update);
+router.delete("/delete", validateEditMultipleIdsBody, QuestionController.delete);
 
 export default router;

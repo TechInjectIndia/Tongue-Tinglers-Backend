@@ -7,7 +7,7 @@ const { STRING, DATE, NOW, UUIDV4, JSONB } = DataTypes;
 
 interface CampaignCreationAttributes extends Optional<ICampaign, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
-class CampaignModel extends Model<ICampaign, CampaignCreationAttributes> implements ICampaign {
+class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes> implements ICampaign {
     public id!: string;
     public name!: string;
     public description?: string;
@@ -23,24 +23,24 @@ class CampaignModel extends Model<ICampaign, CampaignCreationAttributes> impleme
     public readonly deletedAt!: Date | null;
 
     public static associate() {
-        CampaignModel.belongsTo(UserModel, {
+        CampaignAdModel.belongsTo(UserModel, {
             foreignKey: 'createdBy',
             as: 'creator',
         });
 
-        CampaignModel.belongsTo(UserModel, {
+        CampaignAdModel.belongsTo(UserModel, {
             foreignKey: 'updatedBy',
             as: 'updater',
         });
 
-        CampaignModel.belongsTo(UserModel, {
+        CampaignAdModel.belongsTo(UserModel, {
             foreignKey: 'deletedBy',
             as: 'deleter',
         });
     }
 }
 
-CampaignModel.init({
+CampaignAdModel.init({
     id: {
         type: DataTypes.UUID,
         primaryKey: true,
@@ -113,6 +113,6 @@ CampaignModel.init({
     comment: 'Table to store campaigns',
 });
 
-CampaignModel.associate();
+CampaignAdModel.associate();
 
-export { CampaignModel };
+export { CampaignAdModel };

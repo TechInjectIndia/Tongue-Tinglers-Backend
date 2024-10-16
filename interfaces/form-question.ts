@@ -13,15 +13,30 @@ interface IOptions {
     value: string;
 }
 
-interface IFormQuestion extends UpdatedMetaData, BaseModel, DeletionMetaData {
+interface IQuestion extends UpdatedMetaData, BaseModel, DeletionMetaData {
     question: string;
     type: QuestionType;
     required: boolean;
     options?: IOptions[];
 }
 
+type TQuestionList = {
+    total: number,
+    data: IQuestion[]
+}
+
+type TPayloadQuestion = {
+    question: string;
+    type: QuestionType;
+    required: boolean;
+    options?: IOptions[];
+    createdBy: string;
+}
+
 export {
-    IFormQuestion,
+    IQuestion,
     QuestionType,
-    IOptions
+    IOptions,
+    TQuestionList,
+    TPayloadQuestion
 };

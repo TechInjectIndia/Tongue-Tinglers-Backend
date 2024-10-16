@@ -1,13 +1,13 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { QuestionType, IFormQuestion, IOptions } from '../../../interfaces';
+import { QuestionType, IQuestion, IOptions } from '../../../interfaces';
 import { sequelize } from "../../../config";
 import { UserModel } from '../user/user.model';
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
 
 // Define the creation attributes by making certain fields optional
-interface FormQuestionCreationAttributes extends Optional<IFormQuestion, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
+interface FormQuestionCreationAttributes extends Optional<IQuestion, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
-class DynamicFormModel extends Model<IFormQuestion, FormQuestionCreationAttributes> implements IFormQuestion {
+class questionModel extends Model<IQuestion, FormQuestionCreationAttributes> implements IQuestion {
     public id!: string;
     public question!: string;
     public type!: QuestionType;
@@ -23,14 +23,14 @@ class DynamicFormModel extends Model<IFormQuestion, FormQuestionCreationAttribut
 
     // Define associations (if any)
     public static associate() {
-        DynamicFormModel.belongsTo(UserModel, { foreignKey: 'createdBy', as: 'creator' });
-        DynamicFormModel.belongsTo(UserModel, { foreignKey: 'updatedBy', as: 'updater' });
-        DynamicFormModel.belongsTo(UserModel, { foreignKey: 'deletedBy', as: 'deleter' });
+        questionModel.belongsTo(UserModel, { foreignKey: 'createdBy', as: 'creator' });
+        questionModel.belongsTo(UserModel, { foreignKey: 'updatedBy', as: 'updater' });
+        questionModel.belongsTo(UserModel, { foreignKey: 'deletedBy', as: 'deleter' });
     }
 }
 
-// Initialize the DynamicFormModel
-DynamicFormModel.init({
+// Initialize the questionModel
+questionModel.init({
     id: {
         type: DataTypes.UUID,
         primaryKey: true,
@@ -91,10 +91,10 @@ DynamicFormModel.init({
     },
 }, {
     sequelize,
-    tableName: 'dynamic_form_questions',
+    tableName: 'questions_model',
     timestamps: true,
     paranoid: true,
     comment: 'Stores dynamic form questions with different question types',
 });
 
-export { DynamicFormModel, QuestionType };
+export { questionModel, QuestionType };

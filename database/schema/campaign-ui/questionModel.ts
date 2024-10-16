@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { QuestionType, IQuestion, IOptions } from '../../../interfaces';
 import { sequelize } from "../../../config";
 import { UserModel } from '../user/user.model';
-const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
+const { STRING, UUID, DATE, JSONB, ENUM, NOW, UUIDV4, BOOLEAN } = DataTypes;
 
 // Define the creation attributes by making certain fields optional
 interface FormQuestionCreationAttributes extends Optional<IQuestion, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
@@ -32,24 +32,23 @@ class questionModel extends Model<IQuestion, FormQuestionCreationAttributes> imp
 // Initialize the questionModel
 questionModel.init({
     id: {
-        type: DataTypes.UUID,
+        type: UUID,
         primaryKey: true,
         allowNull: false,
-        defaultValue: DataTypes.UUIDV4,
+        defaultValue: UUIDV4,
         comment: 'Unique identifier for the form question',
     },
     question: {
-        type: DataTypes.STRING,
+        type: STRING,
         allowNull: false,
         comment: 'The text of the question',
     },
     type: {
-        type: DataTypes.ENUM(...Object.values(QuestionType)),
+        type: ENUM(...Object.values(QuestionType)),
         allowNull: false,
-        comment: 'Type of the question (boolean, string, multi_choice, single_choice, number)',
     },
     required: {
-        type: DataTypes.BOOLEAN,
+        type: BOOLEAN,
         allowNull: false,
         defaultValue: false,
         comment: 'Indicates if the question is required',

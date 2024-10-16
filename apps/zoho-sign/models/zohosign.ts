@@ -30,8 +30,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 return await this.getAccessTokenFromZoho();
             }
         } catch (error) {
-            console.error('Error retrieving access token from DB:', error.message);
-            throw new Error(`Error retrieving access token from DB: ${error.message}`);
+            throw new Error(error);
         }
     }
 
@@ -51,9 +50,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
             await TokenModel.upsertToken(response.data.access_token, true, 'zoho');
             return response.data.access_token;
         } catch (error) {
-            const errorMessage = error.response ? error.response.data : error.message;
-            console.error('Error getting access token from Zoho:', errorMessage);
-            throw new Error(`Error getting access token from Zoho: ${errorMessage}`);
+            throw new Error(error);
         }
     }
 
@@ -61,26 +58,20 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
         try {
             return await method();
         } catch (error) {
-            const response = await TokenModel.update({ isActive: true }, {
-                where: {
-                    tokenType: 'zoho',
-                },
-            });
-
-            if (response) {
+            console.log(error);
+            if (error) {
+                await TokenModel.update({ isActive: false, accessToken: '' }, {
+                    where: {
+                        tokenType: 'zoho',
+                    },
+                });
                 console.warn('Token error detected, refreshing token...');
                 await this.getAccessTokenFromZoho();
                 return await method();
             } else {
-                const errorMessage = error.response ? error.response.data : error.message;
-                console.error('Error during API call:', errorMessage);
-                throw new Error(`Error during API call: ${errorMessage}`);
+                throw new Error(error);
             }
         }
-    }
-
-    private isTokenError(error: any): boolean {
-        return error.response && error.response.status === 401;
     }
 
     public async sendDocumentUsingTemplate(templateId: string, data: any): Promise<SendResponse> {
@@ -100,9 +91,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 const response = await axios.request(config);
                 return response.data;
             } catch (error) {
-                const errorMessage = error.response ? error.response.data : error.message;
-                console.error('Error sending document:', errorMessage);
-                throw new Error(`Failed to send document: ${errorMessage}`);
+                throw new Error(error);
             }
         });
     }
@@ -121,9 +110,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                     templateTitle: template.template_name
                 })) as TemplateList;
             } catch (error) {
-                const errorMessage = error.response ? error.response.data : error.message;
-                console.error('Error retrieving templates:', errorMessage);
-                throw new Error(`Failed to retrieve templates: ${errorMessage}`);
+                throw new Error(error);
             }
         });
     }
@@ -140,9 +127,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 return response.data;
 
             } catch (error) {
-                const errorMessage = error.response ? error.response.data : error.message;
-                console.error('Error retrieving document:', errorMessage);
-                throw new Error(`Failed to retrieve document: ${errorMessage}`);
+                throw new Error(error);
             }
         });
     }
@@ -174,9 +159,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                     })) || [],
                 } as FieldType;
             } catch (error) {
-                const errorMessage = error.response ? error.response.data : error.message;
-                console.error('Error retrieving template fields:', errorMessage);
-                throw new Error(`Failed to retrieve template fields: ${errorMessage}`);
+                throw new Error(error);
             }
         });
     }

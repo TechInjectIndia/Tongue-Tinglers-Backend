@@ -77,8 +77,6 @@ export default class ZohoSignController {
             console.log(`Document ID: ${documentId}`);
         });
 
-        // const sendDocument = await new ZohoSignRepo().sendDocumentUsingTemplate(templateId, data);
-        // if (sendDocument) {
         //     const newDoc = {
         //         id: sendDocument.document_id,
         //         name: sendDocument.document_name,
@@ -88,8 +86,6 @@ export default class ZohoSignController {
         //     };
         //     await new ContractRepo().updateContractDoc(contractId, newDoc);
 
-        //     console.log(sendDocument)
-        // }
 
         // Handle different operation types
         switch (operationType) {
@@ -144,16 +140,16 @@ export default class ZohoSignController {
             const contractDetails = await new ContractRepo().get(
                 contractId as string
             );
-            if (!contractDetails) {
-                res.status(403).send("No contract found");
-            }
+            // if (!contractDetails) {
+            //     return res.status(401).send("No contract found");
+            // }
 
             const getTemplate = await new ZohoSignRepo().getTemplateFields(
                 templateId as string
             );
-            if (!getTemplate) {
-                res.status(403).send("No template found");
-            }
+            // if (!getTemplate) {
+            //     return res.status(401).send("No template found");
+            // }
 
             const jsonData = {
                 templates: {
@@ -220,7 +216,7 @@ export default class ZohoSignController {
                 //     notes: sendDocument?.data?.requests.notes,
                 // };
                 // await new ContractRepo().updateContractDoc(contractId, newDoc);
-                res.status(200).send({
+                return res.status(200).send({
                     success: true,
                     message: "Document sent successfully",
                     data: sendDocument,

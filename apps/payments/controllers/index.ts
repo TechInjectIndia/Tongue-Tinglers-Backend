@@ -14,7 +14,7 @@ const razorpayInstance = new Razorpay({
 });
 
 export default class PaymentsController {
-    static async webhook(req: Request, res: Response, next: NextFunction) {
+    static async callback(req: Request, res: Response, next: NextFunction) {
         const receivedSignature = req.headers['x-razorpay-signature'];
         const webhookBody = JSON.stringify(req.body);
 
@@ -24,6 +24,7 @@ export default class PaymentsController {
         }
 
         const event = req.body;
+        console.log('>>>>>>>>>>>>>>>', event);
 
         switch (event.event) {
             case 'payment.captured':
@@ -49,7 +50,6 @@ export default class PaymentsController {
         };
 
         const paymentId = paymentDetails.paymentId;
-
         await new ContractRepo().updatePaymentStatus(paymentId, paymentDetails);
     }
 

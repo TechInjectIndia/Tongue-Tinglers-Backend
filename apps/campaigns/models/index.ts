@@ -11,7 +11,7 @@ import IBaseRepo from '../controllers/controller/IController';
 export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
     constructor() { }
 
-    public async get(id: number, user_id: string): Promise<TAddress> {
+    public async get(id: number, user_id: number): Promise<TAddress> {
         const data = await AddressModel.findOne({
             where: {
                 id,
@@ -21,7 +21,7 @@ export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
         return data;
     }
 
-    public async list(user_id: string, filters: TListFilters): Promise<TAddresssList> {
+    public async list(user_id: number, filters: TListFilters): Promise<TAddresssList> {
         const total = await AddressModel.count({
             where: {
                 street: {
@@ -49,7 +49,7 @@ export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
         return response;
     }
 
-    public async update(user_id: string, id: number, data: TPayloadAddress): Promise<[affectedCount: number]> {
+    public async update(user_id: number, id: number, data: TPayloadAddress): Promise<[affectedCount: number]> {
         return await AddressModel.update(data, {
             where: {
                 id: id,
@@ -58,7 +58,7 @@ export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
         });
     }
 
-    public async delete(user_id: string, ids: number[]): Promise<number> {
+    public async delete(user_id: number, ids: number[]): Promise<number> {
         const response = await AddressModel.destroy({
             where: {
                 id: ids,

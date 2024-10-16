@@ -2,21 +2,21 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { AddressRepo } from '../models';
+import { QuestionRepo } from '../models';
 
-export default class AddressController {
+export default class QuestionController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, 'user_id', '');
-            const payload = { ...req?.body, user_id: user_id };
-            const Address = await new AddressRepo().create(payload);
+            const payload = { ...req?.body, createdBy: user_id };
+            const question = await new QuestionRepo().create(payload);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.CREATED,
-                        Address
+                        question
                     )
                 );
         } catch (err) {
@@ -35,9 +35,8 @@ export default class AddressController {
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
-            const user_id = get(req, 'user_id', "");
 
-            const Addresss = await new AddressRepo().list(user_id, {
+            const questions = await new QuestionRepo().list({
                 offset: skip as number,
                 limit: size as number,
                 search: search as string,
@@ -51,7 +50,7 @@ export default class AddressController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        Addresss
+                        questions
                     )
                 );
         } catch (err) {
@@ -64,18 +63,19 @@ export default class AddressController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
-            const user_id = get(req, 'user_id', "");
-            const updateAddress = req?.body;
-            delete updateAddress.id
-            const Address = await new AddressRepo().update(user_id as string, id as number, updateAddress);
+            const id = get(req?.params, "id", "");
+            const updateQuestion = req?.body;
+            delete updateQuestion.id;
+
+            const user_id = get(req, 'user_id', '');
+            const updatedQuestion = await new QuestionRepo().update(id as string, { ...updateQuestion, updatedBy: user_id });
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
-                        Address
+                        updatedQuestion
                     )
                 );
         } catch (err) {
@@ -88,12 +88,11 @@ export default class AddressController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
-            const user_id = get(req, 'user_id', "");
+            const id = get(req?.params, "id", "");
 
-            const existingAddress = await new AddressRepo().get(id as number, user_id as string);
+            const existingQuestion = await new QuestionRepo().get(id as string);
 
-            if (isEmpty(existingAddress)) {
+            if (isEmpty(existingQuestion)) {
                 return res
                     .status(400)
                     .send(
@@ -110,7 +109,7 @@ export default class AddressController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        existingAddress
+                        existingQuestion
                     )
                 );
         } catch (err) {
@@ -124,16 +123,15 @@ export default class AddressController {
     static async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const ids = get(req?.body, "ids", "");
-            const user_id = get(req, 'user_id', "");
 
-            const Address = await new AddressRepo().delete(user_id, ids);
+            const deletedCount = await new QuestionRepo().delete(ids);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.DELETED,
-                        Address
+                        deletedCount
                     )
                 );
         } catch (err) {
@@ -143,5 +141,4 @@ export default class AddressController {
             });
         }
     }
-
 }

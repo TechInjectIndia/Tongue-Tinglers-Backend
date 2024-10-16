@@ -49,3 +49,6 @@ export * from "./lead/affiliateModels";
 export * from "./lead/franchiseModels";
 export * from "./lead/proposalModels";
 // crm model ends
+
+export * from "./campaign-ui/campaignAdModel";
+export * from "./campaign-ui/questionModel";

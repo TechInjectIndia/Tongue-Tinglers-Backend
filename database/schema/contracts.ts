@@ -2,8 +2,8 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../config";
 import { CONTRACT_STATUS, CONTRACT_PAYMENT_STATUS, CONTRACT_DOCUMENT_STATUS, IContract, ITrackable, SignDoc, UserDetails, Note } from '../../interfaces';
 const { INTEGER, STRING, FLOAT, DATE, JSONB, ENUM, UUIDV4 } = DataTypes;
-import { LeadsModel } from './lead/lead.model';  // Adjust the import path as necessary
-import { UserModel } from './user/user.model';  // Adjust the import path as necessary
+import { LeadsModel } from './lead/lead.model';
+import { UserModel } from './user/user.model';
 interface ContractCreationAttributes extends Optional<IContract, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class ContractModel extends Model<IContract, ContractCreationAttributes> implements IContract {

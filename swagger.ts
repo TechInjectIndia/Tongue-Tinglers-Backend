@@ -37,6 +37,9 @@ const options = {
                 name: 'AUTH' // auth starts
             },
             {
+                name: 'Questions'
+            },
+            {
                 name: 'Affiliate'
             },
             {
@@ -188,6 +191,7 @@ const options = {
     // looks for configuration in specified directories
     apis: [
         './routes/*.ts',
+        './apps/questions/api/*.ts',
         './apps/affiliate/api/*.ts',
         './apps/franchise_model/api/*.ts',
         './apps/proposal_model/api/*.ts',

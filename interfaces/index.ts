@@ -9,6 +9,8 @@ export * from './orders';
 export * from './crm';
 export * from './petpooja';
 export * from './contracts';
+export * from './form-question';
+export * from './campaign';
 
 interface ITrackable {
     userDetails: UserDetails;

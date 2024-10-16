@@ -50,6 +50,7 @@ import retortOrderRouter from "../apps/retort/api/orders";
 import campaignRouter from "../apps/crm/api/campaign";
 import testUsersRouter from "../apps/test-user/api/user"; // for testing only
 import contractsRouter from "../apps/contracts/api";
+import questionRouter from "../apps/questions/api";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -78,6 +79,7 @@ router.use(`${ADMIN}/retort/order`, auth, retortOrderRouter);
 router.use(`${ADMIN}/crm`, auth, campaignRouter);
 router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);
+router.use(`${ADMIN}/question`, auth, questionRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

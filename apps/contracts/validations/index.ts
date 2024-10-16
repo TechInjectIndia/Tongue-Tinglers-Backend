@@ -66,7 +66,7 @@ const contractPaymentDetailsSchema = Joi.object().keys({
         .messages({ 'any.required': 'Payment date is required.' }),
     status: Joi.string().valid(...Object.values(CONTRACT_PAYMENT_STATUS)).required()
         .messages({ 'any.only': 'Payment status must be one of the predefined values.' }),
-    additionalInfo: Joi.string().optional(),
+    additionalInfo: Joi.string().allow(null).optional(),
 });
 
 // Validation schema for creating a contract
@@ -93,13 +93,13 @@ const createContractBody = Joi.object().keys({
         to: Joi.date().required()
             .messages({ 'any.required': 'Validity to date is required.' }),
     }).required(),
-    additionalInfo: Joi.string().optional(),
+    additionalInfo: Joi.string().allow(null).optional(),
     logs: Joi.array().items(LOGS_SCHEMA).optional(),
     createdBy: Joi.string().required()
         .messages({ 'any.required': 'Created by information is required.' }),
     updatedBy: Joi.string().allow(null).optional(),
     deletedBy: Joi.string().allow(null).optional(),
-    signedDocs: Joi.array().items(signedDocsSchema).optional(),
+    signedDocs: Joi.array().allow(null).items(signedDocsSchema).optional(),
 });
 
 // Validation schema for editing a contract
@@ -114,7 +114,7 @@ const editContractBody = Joi.object().keys({
     signedDate: Joi.date().allow(null).optional(),
     dueDate: Joi.date().optional(),
     validity: Joi.object().optional(),
-    additionalInfo: Joi.string().optional(),
+    additionalInfo: Joi.string().allow(null).optional(),
     signedDocs: Joi.array().items(signedDocsSchema).optional(),
 });
 

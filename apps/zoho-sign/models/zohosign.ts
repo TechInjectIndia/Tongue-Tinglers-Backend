@@ -11,9 +11,28 @@ import { TokenModel } from "../../../database/schema";
 const axios = require('axios');
 const { ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN, ZOHO_API_URL, ZOHO_TOKEN_URL } = process.env;
 import IBaseRepo from '../controllers/controller/IZohoSignController';
+import { ContractRepo } from "../../contracts/models/ContractModel";
 
 export class ZohoSignRepo implements IBaseRepo<TemplateType> {
     constructor() { }
+
+    public async handleZohoSignCaptured(contractId, contractDetails, requestId, status) {
+        const signedDocs = contractDetails.signedDocs.map((doc) => {
+            if (doc.docId === requestId) {
+                return {
+                    ...doc,
+                    status: status
+                };
+            }
+            return doc;
+        });
+        console.log('132132', signedDocs)
+
+        await new ContractRepo().updateContractDoc(contractId, { signedDocs });
+
+        console.log("Updated signedDocs:", signedDocs);
+    }
+
 
     public async getAccessTokenFromDb(): Promise<string> {
         try {

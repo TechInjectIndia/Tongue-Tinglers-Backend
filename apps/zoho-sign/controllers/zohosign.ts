@@ -87,8 +87,6 @@ export default class ZohoSignController {
         if (contractDetails) {
             contractId = contractDetails.id
         }
-        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> response', contractDetails);
-        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> response', contractDetails.id);
 
         // Handle different operation types
         switch (operationType) {
@@ -99,12 +97,12 @@ export default class ZohoSignController {
                 console.log("A request has been viewed.");
                 break;
             case "RequestSigningSuccess":
+                if (contractId != '') {
+                    await new ZohoSignRepo().handleZohoSignCaptured(contractId, contractDetails, requestId, SIGN_STATUS.COMPLETED);
+                }
                 console.log("A document has been signed successfully.");
                 break;
             case "RequestCompleted":
-                if (contractId != '') {
-                    await this.handleZohoSignCaptured(contractId, contractDetails, requestId, SIGN_STATUS.COMPLETED);
-                }
                 console.log("The request has been completed.");
                 break;
             case "RequestRejected":
@@ -127,22 +125,6 @@ export default class ZohoSignController {
         }
 
         res.send({ status: "success" });
-    }
-
-    static async handleZohoSignCaptured(contractId, contractDetails, requestId, status) {
-        const signedDocs = contractDetails.signedDocs.map((doc) => {
-            if (doc.docId === requestId) {
-                return {
-                    ...doc,
-                    status: status
-                };
-            }
-            return doc;
-        });
-
-        await new ContractRepo().updateContractDoc(contractId, { signedDocs });
-
-        console.log("Updated signedDocs:", signedDocs);
     }
 
     // Send document to franchise using template

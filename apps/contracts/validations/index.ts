@@ -3,6 +3,35 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 import { CONTRACT_STATUS, CONTRACT_DOCUMENT_STATUS, CONTRACT_PAYMENT_STATUS, SIGN_STATUS } from '../../../interfaces/';
 
+// Schema for UserDetails
+const USER_DETAILS_SCHEMA = Joi.object().keys({
+    userName: Joi.string().required()
+        .messages({
+            'any.required': 'User name is required.',
+        }),
+    id: Joi.string().required()
+        .messages({
+            'any.required': 'User ID is required.',
+        }),
+});
+
+// Schema for Logs
+const LOGS_SCHEMA = Joi.object().keys({
+    userDetails: USER_DETAILS_SCHEMA.required()
+        .messages({
+            'any.required': 'User details are required for the note.',
+        }),
+    events: Joi.string().required()
+        .messages({
+            'any.required': 'Logs content is required.',
+        }),
+    timeline: Joi.date().iso().required()
+        .messages({
+            'date.iso': 'Date must be in ISO format.',
+            'any.required': 'Date is required.',
+        }),
+});
+
 // Define termination details schema as a constant
 const terminationDetailsSchema = Joi.object().keys({
     UserDetails: Joi.object().required()
@@ -64,7 +93,8 @@ const createContractBody = Joi.object().keys({
         to: Joi.date().required()
             .messages({ 'any.required': 'Validity to date is required.' }),
     }).required(),
-    additionalInfo: Joi.string().allow(null).optional(),
+    additionalInfo: Joi.string().optional(),
+    logs: Joi.array().items(LOGS_SCHEMA).optional(),
     createdBy: Joi.string().required()
         .messages({ 'any.required': 'Created by information is required.' }),
     updatedBy: Joi.string().allow(null).optional(),

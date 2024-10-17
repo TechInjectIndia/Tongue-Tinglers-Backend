@@ -52,3 +52,5 @@ export * from "./lead/proposalModels";
 
 export * from "./campaign-ui/campaignAdModel";
 export * from "./campaign-ui/questionModel";
+
+export * from "./files/fileModel";

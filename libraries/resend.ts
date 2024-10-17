@@ -53,7 +53,7 @@ export const sendEmail = async (to: string, subject: string, templateParams: {
             subject,
             html: result
         }).then((result) => {
-            console.log('>>>>>>>> res', result) 
+            console.log('>>>>>>>> res', result)
         }).catch((err) => {
             console.log('>>>>>>>>> err', err)
         });
@@ -61,6 +61,49 @@ export const sendEmail = async (to: string, subject: string, templateParams: {
         console.log('Error loading email', err);
     });
 }
+
+export const sendEmailFromRequest = async (
+    to: string,
+    subject: string,
+    body: string,
+    file?: { originalname: string, buffer: Buffer, mimetype: string },
+    filePath?: string,
+) => {
+    try {
+        const emailOptions: any = {
+            from: 'Nitesh@techinject.co.in',
+            to,
+            subject,
+            html: body,
+            attachments: []
+        };
+
+        if (file) {
+            emailOptions.attachments.push({
+                filename: file.originalname,
+                content: file.buffer,
+                contentType: file.mimetype,
+            });
+        }
+
+        if (filePath) {
+            const fileName = path.basename(filePath);
+            emailOptions.attachments.push({
+                path: filePath,
+                filename: fileName,
+            });
+        }
+
+        const result = await resend.emails.send(emailOptions);
+
+        console.log('Email sent:', result);
+        return result;
+
+    } catch (err) {
+        console.error('Error sending email:', err);
+        throw err;
+    }
+};
 
 export const getEmailTemplate = async (template: string, params?: any) => {
     const data = await ejs.renderFile(path.join(__dirname, `../static/views/email/${template}.ejs`), params ?? {});

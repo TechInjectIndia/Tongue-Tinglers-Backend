@@ -124,7 +124,7 @@ export default class ZohoSignController {
                 break;
         }
 
-        res.send({ status: "success" });
+        return res.status(200).send({ message: 'Success' });
     }
 
     // Send document to franchise using template

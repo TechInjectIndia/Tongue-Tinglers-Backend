@@ -13,7 +13,6 @@ type TFirebaseUser = {
 const serviceAccount: ServiceAccount = serviceAccountJson as ServiceAccount;
 console.log(CONFIG.BUCKET_URL);
 
-
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   storageBucket: CONFIG.BUCKET_URL
@@ -36,7 +35,6 @@ export const createFirebaseUser = async (user: TFirebaseUser) => {
 }
 
 export const uploadSingleFileToFirebase = async (req: any, destinationPath: string) => {
-
   const file = req?.file;
   const fileName = `${Date.now()}` + file.originalname;
   var buffer = new Uint8Array(file.buffer);
@@ -51,3 +49,32 @@ export const uploadSingleFileToFirebase = async (req: any, destinationPath: stri
 
   return url;
 }
+
+export const uploadFileToFirebase = async (file: any, destinationPath: string) => {
+  const fileName = `${Date.now()}` + file.originalname;
+  var buffer = new Uint8Array(file.buffer);
+
+  const fileUpload = bucket.file(destinationPath + '/' + fileName);
+
+  const result = new Date();
+  result.setFullYear(result.getFullYear() + 50);
+
+  const url = await fileUpload.getSignedUrl({ action: "read", expires: result });
+  await fileUpload.save(buffer, { resumable: true });
+
+  return url;
+}
+
+export const getAllFilesFromFirebase = async (prefix: string = '') => {
+  const [files] = await bucket.getFiles({ prefix }); // List files with optional prefix
+  return files.map(file => ({
+    name: file.name,
+    publicUrl: `https://storage.googleapis.com/${CONFIG.BUCKET_URL}/${file.name}`,
+    createdAt: file.metadata.timeCreated ? file.metadata.timeCreated.toString() : 'Unknown' // Ensure createdAt is a string
+  })); // Return file details
+};
+
+export const deleteFileFromFirebase = async (fileName: string) => {
+  const file = bucket.file(fileName);
+  await file.delete(); // Delete the file
+};

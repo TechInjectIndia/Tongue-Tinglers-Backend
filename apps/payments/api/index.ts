@@ -125,7 +125,7 @@ const {
  *                   example: "Internal server error."
  * 
  * /api/payments/callback:
- *   post:
+ *   get:
  *     summary: Razorpay webhook callback handler
  *     description: Handles Razorpay webhook events such as payment captured and payment failed.
  *     tags: [Payments]
@@ -227,7 +227,7 @@ const {
 // ====== Payments Starts ======
 router.post("/generate-link", hasPermission('payment', 'create'), validateGenerateLinkBody, PaymentsController.generatePaymentLink);
 router.get("/fetch-payment/:paymentId", hasPermission('payment', 'view'), PaymentsController.fetchPayment);
-router.post("/callback", PaymentsController.callback);
+router.get("/callback", PaymentsController.callback);
 // ====== Payments Ends ======
 
 export default router;

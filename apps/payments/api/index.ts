@@ -227,7 +227,7 @@ const {
 // ====== Payments Starts ======
 router.post("/generate-link", hasPermission('payment', 'create'), validateGenerateLinkBody, PaymentsController.generatePaymentLink);
 router.get("/fetch-payment/:paymentId", hasPermission('payment', 'view'), PaymentsController.fetchPayment);
-router.get("/callback", PaymentsController.callback);
+router.post("/callback", PaymentsController.callback);
 // ====== Payments Ends ======
 
 export default router;

@@ -46,7 +46,7 @@ export const sendEmail = async (to: string, subject: string, templateParams: {
     description: string
 }) => {
     const paramsData = templateParams ? { ...templateParams, ...defaultParams } : { ...defaultParams };
-    await ejs.renderFile(path.join(__dirname, "../views/email/index.ejs"), paramsData).then((result) => {
+    await ejs.renderFile(path.join(__dirname, "../static/views/email/index.ejs"), paramsData).then((result) => {
         resend.emails.send({
             from: 'Nitesh@techinject.co.in',
             to,
@@ -106,6 +106,6 @@ export const sendEmailFromRequest = async (
 };
 
 export const getEmailTemplate = async (template: string, params?: any) => {
-    const data = await ejs.renderFile(path.join(__dirname, `../views/email/${template}.ejs`), params ?? {});
+    const data = await ejs.renderFile(path.join(__dirname, `../static/views/email/${template}.ejs`), params ?? {});
     return data;
 }

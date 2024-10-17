@@ -2,6 +2,7 @@
   "name": "Tongue Tingler",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "engines": {
     "node": "^20.10.0"
   },
@@ -19,7 +20,7 @@
     "dev": "ts-node-dev --watch -r tsconfig-paths/register ./app.ts",
     "lint": "git diff --cached --name-only --diff-filter=d | grep '.ts$' | xargs eslint",
     "lint:fix": "npm run lint -- --fix",
-    "build": "tsc && copyfiles -u 1 ./static/**/* ./build/static",
+    "build": "tsc && node copy.js",
     "tsc-w": "tsc -w"
   },
   "dependencies": {
@@ -40,6 +41,7 @@
     "firebase": "^10.13.1",
     "firebase-admin": "^12.4.0",
     "form-data": "^4.0.0",
+    "fs-extra": "^11.2.0",
     "helmet": "^7.1.0",
     "helmet-csp": "^4.0.0",
     "html-pdf": "^3.0.1",
@@ -85,7 +87,6 @@
     "@types/node": "^22.5.2",
     "@types/pg": "^8.11.9",
     "@types/sequelize": "^4.28.20",
-    "copyfiles": "^2.4.1",
     "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",

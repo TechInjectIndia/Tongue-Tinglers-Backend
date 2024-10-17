@@ -1,7 +1,7 @@
-import { copy } from 'fs-extra';
+const fs = require('fs-extra');
 
 async function copyStaticFiles() {
-  await copy('./static', './build/static');
+  await fs.copy('./static', './build/static');
 }
 
 copyStaticFiles()

@@ -7,6 +7,7 @@ import { LeadRepo } from '../../lead/models/lead';
 import { CONTRACT_PAYMENT_STATUS } from '../../../interfaces';
 import { ContractPaymentDetails } from "../../../interfaces";
 import { CONFIG } from '../../../config';
+const { validateWebhookSignature } = require('razorpay/dist/utils/razorpay-utils')
 
 const razorpayInstance = new Razorpay({
     key_id: CONFIG.RP_ID_PROD,
@@ -15,13 +16,12 @@ const razorpayInstance = new Razorpay({
 
 export default class PaymentsController {
     static async callback(req: Request, res: Response, next: NextFunction) {
-        const receivedSignature = req.headers['x-razorpay-signature'];
-        const webhookBody = JSON.stringify(req.body);
+        const webhookSignature = req.headers['x-razorpay-signature'];
         const payload = req.body;
         const paymentId = payload.payload.payment.entity.id
         console.log("Payment Razorpay payload", payload);
 
-        const isVerified = razorpayInstance.utils.verifyWebhookSignature(webhookBody, receivedSignature, CONFIG.RP_WEBHOOK_SECRET);
+        const isVerified = validateWebhookSignature(JSON.stringify(payload), webhookSignature, CONFIG.RP_WEBHOOK_SECRET)
         if (isVerified) {
             const contractDetails = await new ContractRepo().getContractByPaymentId(
                 paymentId as string
@@ -42,6 +42,10 @@ export default class PaymentsController {
                 default:
                     console.log(`Unhandled payload: ${payload.event}`);
             }
+            return res.status(200).send({ message: 'Webhook Done' });
+        } else {
+            console.log('Webhook not verified')
+            return res.status(500).send({ message: 'Webhook not verified' });
         }
     }
 

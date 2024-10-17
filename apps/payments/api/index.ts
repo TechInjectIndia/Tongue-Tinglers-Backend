@@ -139,14 +139,60 @@ const {
  *             type: object
  *             required:
  *               - event
+ *               - payload
  *             properties:
+ *               entity:
+ *                 type: string
+ *                 description: The entity type, which is usually 'event' for webhook events.
+ *                 example: "event"
+ *               account_id:
+ *                 type: string
+ *                 description: Razorpay account ID.
+ *                 example: "acc_BFQ7uQEaa7j2z7"
  *               event:
  *                 type: string
  *                 description: The event type triggered by Razorpay (e.g., 'payment.captured', 'payment.failed').
  *                 example: "payment.captured"
+ *               contains:
+ *                 type: array
+ *                 description: The list of entities included in the event payload.
+ *                 items:
+ *                   type: string
+ *                 example: ["payment"]
  *               payload:
  *                 type: object
  *                 description: Event-specific payload, including payment details.
+ *                 properties:
+ *                   payment:
+ *                     type: object
+ *                     properties:
+ *                       entity:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             example: "pay_DESlfW9H8K9uqM"
+ *                           entity:
+ *                             type: string
+ *                             example: "payment"
+ *                           amount:
+ *                             type: number
+ *                             example: 100
+ *                           currency:
+ *                             type: string
+ *                             example: "INR"
+ *                           status:
+ *                             type: string
+ *                             example: "captured"
+ *                           method:
+ *                             type: string
+ *                             example: "netbanking"
+ *                           bank:
+ *                             type: string
+ *                             example: "HDFC"
+ *                           created_at:
+ *                             type: integer
+ *                             example: 1567674599
  *     parameters:
  *       - in: header
  *         name: x-razorpay-signature

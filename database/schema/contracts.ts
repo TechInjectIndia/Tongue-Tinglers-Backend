@@ -14,13 +14,6 @@ class ContractModel extends Model<IContract, ContractCreationAttributes> impleme
         reason: string;
         date: Date;
     }
-    public doc!: null | {
-        id: string;
-        name: string;
-        url: string;
-        status: CONTRACT_DOCUMENT_STATUS;
-        additionalInfo: string;
-    };
     public payment!: null | {
         paymentId: string;
         amount: number;

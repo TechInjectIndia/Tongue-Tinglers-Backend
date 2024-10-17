@@ -17,40 +17,32 @@ export default class PaymentsController {
     static async callback(req: Request, res: Response, next: NextFunction) {
         const receivedSignature = req.headers['x-razorpay-signature'];
         const webhookBody = JSON.stringify(req.body);
+        const payload = req.body;
+        const paymentId = payload.payload.payment.entity.id
+        console.log("Payment Razorpay payload", payload);
 
         const isVerified = razorpayInstance.utils.verifyWebhookSignature(webhookBody, receivedSignature, CONFIG.RP_WEBHOOK_SECRET);
-        if (!isVerified) {
-            return res.status(400).send('Invalid signature');
+        if (isVerified) {
+            const contractDetails = await new ContractRepo().getContractByPaymentId(
+                paymentId as string
+            );
+
+            let contractId = '';
+            if (contractDetails) {
+                contractId = contractDetails.id
+            }
+
+            switch (payload.event) {
+                case 'payment.captured':
+                    await new ContractRepo().updatePaymentStatus(contractId, CONTRACT_PAYMENT_STATUS.SUCCESS);
+                    break;
+                case 'payment.failed':
+                    await new ContractRepo().updatePaymentStatus(contractId, CONTRACT_PAYMENT_STATUS.FAILED);
+                    break;
+                default:
+                    console.log(`Unhandled payload: ${payload.event}`);
+            }
         }
-
-        const event = req.body;
-        console.log('>>>>>>>>>>>>>>>', event);
-
-        switch (event.event) {
-            case 'payment.captured':
-                await this.handlePaymentCaptured(event, CONTRACT_PAYMENT_STATUS.SUCCESS);
-                break;
-            case 'payment.failed':
-                await this.handlePaymentCaptured(event, CONTRACT_PAYMENT_STATUS.FAILED);
-                break;
-            default:
-                console.log(`Unhandled event: ${event.event}`);
-        }
-
-        res.status(200).send('Webhook received and verified');
-    }
-
-    static async handlePaymentCaptured(event: any, status: any) {
-        const paymentDetails = {
-            paymentId: event.payload.payment.entity.id,
-            amount: event.payload.payment.entity.amount / 100,
-            date: new Date(event.payload.payment.entity.created * 1000),
-            status: status,
-            additionalInfo: event.payload.payment.entity.notes,
-        };
-
-        const paymentId = paymentDetails.paymentId;
-        await new ContractRepo().updatePaymentStatus(paymentId, paymentDetails);
     }
 
     static async fetchPayment(req: Request, res: Response, next: NextFunction) {

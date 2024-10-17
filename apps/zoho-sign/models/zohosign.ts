@@ -26,7 +26,6 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
             }
             return doc;
         });
-        console.log('132132', signedDocs)
 
         await new ContractRepo().updateContractDoc(contractId, { signedDocs });
 

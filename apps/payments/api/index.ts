@@ -123,12 +123,65 @@ const {
  *                 message:
  *                   type: string
  *                   example: "Internal server error."
+ * 
+ * /api/payments/callback:
+ *   post:
+ *     summary: Razorpay webhook callback handler
+ *     description: Handles Razorpay webhook events such as payment captured and payment failed.
+ *     tags: [Payments]
+ *     security:
+ *       - none: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - event
+ *             properties:
+ *               event:
+ *                 type: string
+ *                 description: The event type triggered by Razorpay (e.g., 'payment.captured', 'payment.failed').
+ *                 example: "payment.captured"
+ *               payload:
+ *                 type: object
+ *                 description: Event-specific payload, including payment details.
+ *     parameters:
+ *       - in: header
+ *         name: x-razorpay-signature
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Razorpay signature to verify webhook authenticity.
+ *     responses:
+ *       '200':
+ *         description: Webhook received and verified
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               example: "Webhook received and verified"
+ *       '400':
+ *         description: Invalid signature or request body
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               example: "Invalid signature"
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               example: "Internal server error"
  */
 
 // ====== Payments Starts ======
 router.post("/generate-link", hasPermission('payment', 'create'), validateGenerateLinkBody, PaymentsController.generatePaymentLink);
 router.get("/fetch-payment/:paymentId", hasPermission('payment', 'view'), PaymentsController.fetchPayment);
-router.get("/callback", PaymentsController.callback);
+router.post("/callback", PaymentsController.callback);
 // ====== Payments Ends ======
 
 export default router;

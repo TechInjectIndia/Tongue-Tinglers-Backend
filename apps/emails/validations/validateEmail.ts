@@ -1,26 +1,35 @@
 import Joi from '@hapi/joi';
 import { Request, Response, NextFunction } from 'express';
-import { validateReq } from '../../../libraries'; // Assuming you have a custom validation middleware
+import { validateReq } from '../../../libraries';
 
-// Email validation schema
+// Validation schema for sending an email
 const emailSchema = Joi.object({
     to: Joi.string().email().required().messages({
-        'string.email': 'Please provide a valid email address.',
-        'any.required': 'Recipient email is required.',
+        'string.empty': `"to" cannot be an empty field`,
+        'string.email': `"to" must be a valid email`,
+        'any.required': `"to" is a required field`,
     }),
     subject: Joi.string().required().messages({
-        'any.required': 'Subject is required.',
+        'string.empty': `"subject" cannot be an empty field`,
+        'any.required': `"subject" is a required field`,
     }),
     body: Joi.string().required().messages({
-        'any.required': 'Email body is required.',
+        'string.empty': `"body" cannot be an empty field`,
+        'any.required': `"body" is a required field`,
     }),
-    filePath: Joi.string().optional().allow(null, '').messages({
-        'string.base': 'File path must be a string.',
-    }),
-    file: Joi.any().optional().messages({
-        'any.required': 'A file or file path must be provided.',
-    })
-}).xor('file', 'filePath') // Ensure that either file or filePath is provided, but not both.
+    filePaths: Joi.string().custom((value, helpers) => {
+        try {
+            const parsed = JSON.parse(value);
+            if (!Array.isArray(parsed)) {
+                throw new Error('must be an array');
+            }
+            return parsed;
+        } catch (e) {
+            throw new Error('must be a valid JSON string');
+        }
+    }).optional(),
+    files: Joi.array().optional(),
+});
 
 export const validateEmail = (req: Request, res: Response, next: NextFunction) => {
     validateReq(req, res, next, emailSchema, "body");

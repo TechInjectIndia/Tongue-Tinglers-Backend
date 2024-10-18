@@ -40,6 +40,7 @@
     "firebase": "^10.13.1",
     "firebase-admin": "^12.4.0",
     "form-data": "^4.0.0",
+    "fs": "0.0.1-security",
     "fs-extra": "^11.2.0",
     "helmet": "^7.1.0",
     "helmet-csp": "^4.0.0",
@@ -60,6 +61,7 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "ts-node-dev": "^2.0.0",
+    "winston": "^3.15.0",
     "xss-clean": "^0.1.4"
   },
   "husky": {

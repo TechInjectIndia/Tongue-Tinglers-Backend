@@ -53,6 +53,7 @@ import contractsRouter from "../apps/contracts/api";
 import questionRouter from "../apps/questions/api";
 import campaignAdRouter from "../apps/campaign/api";
 import filesRouter from "../apps/files/api/files";
+import emailsRouter from "../apps/emails/api/email";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -83,7 +84,8 @@ router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/question`, auth, questionRouter);
 router.use(`${ADMIN}/campaign-ad`, auth, campaignAdRouter);
-router.use(`${ADMIN}/files`, filesRouter);
+router.use(`${ADMIN}/files`, auth, filesRouter);
+router.use(`${ADMIN}/email`, emailsRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

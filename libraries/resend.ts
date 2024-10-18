@@ -2,6 +2,7 @@ import { Resend } from 'resend';
 import { CONFIG } from '../config';
 const path = require("path");
 const ejs = require("ejs");
+import { Multer } from 'multer'; // Import Multer types
 
 const resend = new Resend(CONFIG.RESEND_API_KEY);
 
@@ -66,42 +67,46 @@ export const sendEmailFromRequest = async (
     to: string,
     subject: string,
     body: string,
-    file?: { originalname: string, buffer: Buffer, mimetype: string },
-    filePath?: string,
+    files?: Multer.File[], // Array of files
+    filePaths?: { path: string; name: string }[], // Array of file paths and names
 ) => {
     try {
+        // Prepare the email options
         const emailOptions: any = {
             from: 'Nitesh@techinject.co.in',
             to,
             subject,
             html: body,
-            attachments: []
         };
 
-        if (file) {
-            emailOptions.attachments.push({
+        if (files && files.length > 0) {
+            emailOptions.attachments = files.map(file => ({
                 filename: file.originalname,
                 content: file.buffer,
                 contentType: file.mimetype,
-            });
+            }));
         }
 
-        if (filePath) {
-            const fileName = path.basename(filePath);
-            emailOptions.attachments.push({
-                path: filePath,
-                filename: fileName,
-            });
-        }
+        if (filePaths) {
+            if (filePaths && filePaths.length > 0) {
+                const filePathAttachments = filePaths.map(filePath => ({
+                    path: filePath.path,
+                    filename: filePath.name,
+                }));
 
+                emailOptions.attachments = [
+                    ...(emailOptions.attachments || []),
+                    ...filePathAttachments,
+                ];
+            }
+        }
         const result = await resend.emails.send(emailOptions);
 
         console.log('Email sent:', result);
         return result;
-
     } catch (err) {
         console.error('Error sending email:', err);
-        throw err;
+        throw err; // Propagate the error for further handling
     }
 };
 

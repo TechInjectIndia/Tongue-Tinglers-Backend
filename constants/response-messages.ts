@@ -33,6 +33,7 @@ export const ERROR_MESSAGE = {
 };
 
 export const SUCCESS_MESSAGE = {
+    SENT_EMAIL: 'Email sent successfully',
     REFERRAL_CODE_CREATED: 'Referral code created successfully',
     REFERRAL_CODE_VALID: 'Referral code is valid',
     ASSIGNED: "Assigned successfully",

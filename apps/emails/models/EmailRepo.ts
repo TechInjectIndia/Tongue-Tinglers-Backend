@@ -1,13 +1,20 @@
+import { EmailLogModel } from '../../../database/schema';
+
+export type TEmailLogPayload = {
+    to: string;
+    subject: string;
+    body: string;
+    sentAt?: Date;
+};
+
 export class EmailRepo {
-
-    public async sendEmail(to: string, subject: string, body: string, fileUrls: string[]) {
-        const mailOptions = {
-            from: 'your-email@gmail.com', // Replace with your email
-            to,
-            subject,
-            text: body,
-            attachments: fileUrls.map(url => ({ path: url })),
-        };
-
+    static async create(data: TEmailLogPayload): Promise<void> {
+        try {
+            await EmailLogModel.create(data);
+            console.log('Email log created successfully.');
+        } catch (error) {
+            console.error('Error creating email log:', error);
+            throw error;
+        }
     }
 }

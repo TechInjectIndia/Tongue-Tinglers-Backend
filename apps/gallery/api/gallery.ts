@@ -1,6 +1,6 @@
 import express from 'express';
-import FilesController from '../controllers/FileController';
-import { validateFileUpload, validateDeleteFiles, validateListFilesQuery } from '../validations/validateFileUpload';
+import GalleryController from '../controllers/GalleryController';
+import { } from '../validations/validateGallery';
 
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
@@ -8,24 +8,24 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/admin/files/search:
+ * /api/admin/gallery/search:
  *   get:
- *     summary: Search for files by name, message
- *     tags: [Files]
+ *     summary: Search for images by name or message
+ *     tags: [Gallery]
  *     parameters:
  *       - in: query
  *         name: name
  *         schema:
  *           type: string
- *         description: Name of the file to search for
+ *         description: Name of the image to search for
  *       - in: query
  *         name: message
  *         schema:
  *           type: string
- *         description: Message associated with the file
+ *         description: Message associated with the image
  *     responses:
  *       200:
- *         description: List of files matching the search criteria
+ *         description: List of images matching the search criteria
  *         content:
  *           application/json:
  *             schema:
@@ -44,14 +44,14 @@ const router = express.Router();
  *       400:
  *         description: Bad request
  */
-router.get('/search', FilesController.searchFiles);
+router.get('/search', GalleryController.searchImages);
 
 /**
  * @swagger
- * /api/admin/files:
+ * /api/admin/gallery:
  *   post:
- *     summary: Upload multiple files with individual names, messages, and recommended status
- *     tags: [Files]
+ *     summary: Upload multiple images with individual names, messages, and caption status
+ *     tags: [Gallery]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -61,18 +61,18 @@ router.get('/search', FilesController.searchFiles);
  *           schema:
  *             type: object
  *             required:
- *               - files
- *               - fileDetails
+ *               - images
+ *               - imageDetails
  *             properties:
- *               files:
+ *               images:
  *                 type: array
  *                 items:
  *                   type: string
  *                   format: binary
- *               fileDetails:
+ *               imageDetails:
  *                 type: string
- *                 description: A JSON string representation of an array of file details
- *                 example: '[{"name": "file1.jpg", "message": "This is file 1", "recommended": "true"}, {"name": "file2.jpg", "message": "This is file 2", "recommended": "false"}]'
+ *                 description: A JSON string representation of an array of image details
+ *                 example: '[{"name": "image1.jpg", "message": "This is image 1", "caption": "true"}, {"name": "image2.jpg", "message": "This is image 2", "caption": "false"}]'
  *     responses:
  *       '200':
  *         description: Uploaded successfully
@@ -81,18 +81,17 @@ router.get('/search', FilesController.searchFiles);
  *       '401':
  *         description: Unauthorized
  */
-router.post('/', upload.array('files'), FilesController.uploadFile);
+router.post('/', upload.array('images'), GalleryController.uploadImages);
 
 /**
  * @swagger
- * /api/admin/files:
+ * /api/admin/gallery:
  *   get:
- *     summary: Get all files
- *     tags: [Files]
- *     parameters:
+ *     summary: Get all images
+ *     tags: [Gallery]
  *     responses:
  *       200:
- *         description: List of files
+ *         description: List of images
  *         content:
  *           application/json:
  *             schema:
@@ -107,29 +106,29 @@ router.post('/', upload.array('files'), FilesController.uploadFile);
  *       400:
  *         description: Bad request
  */
-router.get('/', FilesController.getFiles);
+router.get('/', GalleryController.getImages);
 
 /**
  * @swagger
- * /api/admin/files/{id}:
+ * /api/admin/gallery/{id}:
  *   delete:
- *     summary: Delete a file
- *     tags: [Files]
+ *     summary: Delete an image
+ *     tags: [Gallery]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the file to delete
+ *         description: ID of the image to delete
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: File deleted successfully
+ *         description: Image deleted successfully
  *       404:
- *         description: File not found
+ *         description: Image not found
  *       400:
  *         description: Bad request
  */
-router.delete('/:id', FilesController.deleteFile);
+router.delete('/:id', GalleryController.deleteImage);
 
 export default router;

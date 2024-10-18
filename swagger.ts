@@ -43,6 +43,9 @@ const options = {
                 name: 'Files'
             },
             {
+                name: 'Gallery'
+            },
+            {
                 name: 'Questions'
             },
             {
@@ -202,6 +205,7 @@ const options = {
         './routes/*.ts',
         './apps/emails/api/*.ts',
         './apps/files/api/*.ts',
+        './apps/gallery/api/*.ts',
         './apps/questions/api/*.ts',
         './apps/campaign/api/*.ts',
         './apps/affiliate/api/*.ts',

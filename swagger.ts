@@ -37,6 +37,12 @@ const options = {
                 name: 'AUTH' // auth starts
             },
             {
+                name: 'Franchisee'
+            },
+            {
+                name: 'Admin > PDI Checklist'
+            },
+            {
                 name: 'Email'
             },
             {
@@ -203,6 +209,8 @@ const options = {
     // looks for configuration in specified directories
     apis: [
         './routes/*.ts',
+        './apps/franchisee/api/*.ts',
+        './apps/pdi-checklist/api/*.ts',
         './apps/emails/api/*.ts',
         './apps/files/api/*.ts',
         './apps/gallery/api/*.ts',

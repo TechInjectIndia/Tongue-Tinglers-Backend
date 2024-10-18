@@ -56,3 +56,6 @@ export * from "./campaign-ui/questionModel";
 export * from "./files/fileModel";
 export * from "./files/emailModel";
 export * from "./files/galleryModel";
+
+export * from "./franchise/franchiseeModel";
+export * from "./franchise/pdiModel";

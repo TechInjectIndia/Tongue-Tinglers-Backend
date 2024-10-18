@@ -55,6 +55,8 @@ import campaignAdRouter from "../apps/campaign/api";
 import filesRouter from "../apps/files/api/files";
 import emailsRouter from "../apps/emails/api/email";
 import galleryRouter from "../apps/gallery/api/gallery";
+import franchiseeRouter from "../apps/franchisee/api/franchisee";
+import pdiChecklistRouter from "../apps/pdi-checklist/api/pdiChecklist";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -67,7 +69,7 @@ router.use(`${ADMIN}/reviews`, auth, reviewsRouter);
 router.use(`${ADMIN}/profile`, auth, profileRouter);
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
 router.use(`/payments`, paymentsRouter); // pending
-router.use(`${ADMIN}/analytics/leads`, leadsAnalyticsRouter); // pending
+router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // pending
 router.use(`${ADMIN}/menu`, auth, menuRouter);
@@ -85,9 +87,11 @@ router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/question`, auth, questionRouter);
 router.use(`${ADMIN}/campaign-ad`, auth, campaignAdRouter);
-router.use(`${ADMIN}/files`, filesRouter);
+router.use(`${ADMIN}/files`, auth, filesRouter);
 router.use(`${ADMIN}/email`, auth, emailsRouter);
-router.use(`${ADMIN}/gallery`, galleryRouter);
+router.use(`${ADMIN}/gallery`, auth, galleryRouter);
+router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
+router.use(`${ADMIN}/pdi-checklist`, auth, pdiChecklistRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

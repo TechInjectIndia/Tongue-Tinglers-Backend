@@ -12,7 +12,7 @@ const {
 // ====== Analytics Retort Starts ======
 /**
  * @swagger
- * /api/admin/analytics/retort?range={range}:
+ * /api/admin/analytics/retort-supply?range={range}:
  *   get:
  *     summary: Get analytics
  *     tags: [Admin > Analytics > Retort]
@@ -29,13 +29,13 @@ const {
  *         description: Get order analytics
  *     responses:
  *       '200':
- *         description: Product Category retrieved successfully
+ *         description: Analytics data retrieved successfully.
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  */
-router.get("/list", validateListAnalyticsQuery, RetortAnalyticsController.list);
+router.get("/", validateListAnalyticsQuery, RetortAnalyticsController.list);
 // ====== Analytics Retort Ends ======
 
 export default router;

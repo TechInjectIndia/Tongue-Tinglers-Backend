@@ -6,7 +6,7 @@ interface ICampaign extends UpdatedMetaData, BaseModel, DeletionMetaData {
     description?: string;
     startDate?: Date;
     endDate?: Date;
-    questions: Question[];
+    questionList: Question[];
 }
 
 interface Question {
@@ -23,7 +23,7 @@ type TPayloadCampaign = {
     description?: string;
     startDate?: Date;
     endDate?: Date;
-    questions: Question[];
+    questionList: Question[];
     createdBy: string;
 }
 

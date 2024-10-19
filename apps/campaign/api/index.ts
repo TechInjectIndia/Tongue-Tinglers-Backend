@@ -13,7 +13,6 @@ const {
   validateDeleteMultipleIdsBody,
 } = CampaignValidation;
 
-// ====== Campaigns Starts ====== 
 /**
  * @swagger
  * /api/admin/campaign/create:
@@ -30,7 +29,7 @@ const {
  *             type: object
  *             required:
  *               - name
- *               - questions
+ *               - questionList
  *               - startDate
  *             properties:
  *               name:
@@ -47,43 +46,16 @@ const {
  *                 type: string
  *                 format: date-time
  *                 example: "2024-08-31T23:59:59Z"
- *               questions:
+ *               questionList:
  *                 type: array
  *                 items:
  *                   type: object
  *                   properties:
- *                     question:
+ *                     id:
  *                       type: string
- *                       example: "What is your favorite color?"
- *                     type:
- *                       type: string
- *                       enum: [boolean, string, multi_choice, single_choice, number]
- *                       example: "single_choice"
- *                     required:
- *                       type: boolean
- *                       example: true
- *                     options:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           label:
- *                             type: string
- *                             example: "Red"
- *                           value:
- *                             type: string
- *                             example: "red"
+ *                       example: "123e4567-e89b-12d3-a456-426614174000"
  *                 example: 
- *                   - question: "What is your favorite color?"
- *                     type: "single_choice"
- *                     required: true
- *                     options: 
- *                       - label: "Red"
- *                         value: "red"
- *                       - label: "Blue"
- *                         value: "blue"
- *                       - label: "Green"
- *                         value: "green"
+ *                   - id: "123e4567-e89b-12d3-a456-426614174000"
  *     responses:
  *       '201':
  *         description: Campaign created successfully
@@ -91,7 +63,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/campaign/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all campaigns Ad
@@ -118,7 +90,7 @@ const {
  *         description: Invalid request
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/campaign/get/{id}:
  *   get:
  *     summary: Get a campaign Ad by ID
@@ -139,7 +111,7 @@ const {
  *         description: Unauthorized
  *       '404':
  *         description: Campaign not found
- * 
+ *
  * /api/admin/campaign/update/{id}:
  *   put:
  *     summary: Update a campaign Ad
@@ -170,27 +142,13 @@ const {
  *               endDate:
  *                 type: string
  *                 format: date-time
- *               questions:
+ *               questionList:
  *                 type: array
  *                 items:
  *                   type: object
  *                   properties:
- *                     question:
+ *                     id:
  *                       type: string
- *                     type:
- *                       type: string
- *                       enum: [boolean, string, multi_choice, single_choice, number]
- *                     required:
- *                       type: boolean
- *                     options:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           label:
- *                             type: string
- *                           value:
- *                             type: string
  *     responses:
  *       '200':
  *         description: Campaign updated successfully
@@ -200,7 +158,7 @@ const {
  *         description: Unauthorized
  *       '404':
  *         description: Campaign not found
- * 
+ *
  * /api/admin/campaign/delete:
  *   delete:
  *     summary: Delete campaigns Ad

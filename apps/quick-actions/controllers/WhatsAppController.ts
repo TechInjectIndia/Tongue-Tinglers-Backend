@@ -21,11 +21,11 @@ export default class WhatsAppController {
 
             const notificationSend = await sendWhatsAppMessage(to, body, parsedFilePaths);
 
-            if (notificationSend) {
-                return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.SENT_NOTIFICATION));
-            } else {
-                return res.status(500).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.INTERNAL_SERVER_ERROR));
-            }
+            // if (notificationSend) {
+            //     return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.SENT_NOTIFICATION));
+            // } else {
+            //     return res.status(500).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.INTERNAL_SERVER_ERROR));
+            // }
         } catch (err) {
             console.error('Error sending WhatsApp notification:', err);
             return res.status(500).send({

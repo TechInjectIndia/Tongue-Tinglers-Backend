@@ -244,6 +244,7 @@ const options = {
         './apps/crm/api/*.ts',
         './apps/contracts/api/*.ts',
     ],
+    docExpansion: 'none', // Can minimize the displayed logs in the Swagger UI.
 }
 const swaggerSpec = swaggerJsdoc(options)
 function swaggerDocs(app, port) {

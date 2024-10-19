@@ -13,10 +13,10 @@ const createCampaignBody = Joi.object().keys({
   endDate: Joi.date().optional()
     .greater(Joi.ref('startDate'))
     .messages({ 'date.greater': 'End date must be after start date.' }),
-  questions: Joi.array().items(
+  questionList: Joi.array().items(
     Joi.object().keys({
-      label: Joi.string().required().messages({ 'any.required': 'Label is required.' }),
-      value: Joi.string().required().messages({ 'any.required': 'Value is required.' })
+      id: Joi.string().uuid().required()
+        .messages({ 'any.required': 'Question ID is required.' }),
     })
   ).required()
     .messages({ 'any.required': 'Questions are required.' }),
@@ -33,10 +33,10 @@ const editCampaignBody = Joi.object().keys({
   endDate: Joi.date().optional()
     .greater(Joi.ref('startDate'))
     .messages({ 'date.greater': 'End date must be after start date.' }),
-  questions: Joi.array().items(
+  questionList: Joi.array().items(
     Joi.object().keys({
-      label: Joi.string().required().messages({ 'any.required': 'Label is required.' }),
-      value: Joi.string().required().messages({ 'any.required': 'Value is required.' })
+      id: Joi.string().uuid().required()
+        .messages({ 'any.required': 'Question ID is required.' }),
     })
   ).optional()
     .messages({ 'array.base': 'Questions must be an array of objects.' }),

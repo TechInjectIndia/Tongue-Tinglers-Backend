@@ -2,6 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { QuestionType, IQuestion, IOptions } from '../../../interfaces';
 import { sequelize } from "../../../config";
 import { UserModel } from '../user/user.model';
+import { CampaignAdModel } from './campaignAdModel';
 const { STRING, UUID, DATE, JSONB, ENUM, NOW, UUIDV4, BOOLEAN } = DataTypes;
 
 // Define the creation attributes by making certain fields optional
@@ -26,6 +27,7 @@ class questionModel extends Model<IQuestion, FormQuestionCreationAttributes> imp
         questionModel.belongsTo(UserModel, { foreignKey: 'createdBy', as: 'creator' });
         questionModel.belongsTo(UserModel, { foreignKey: 'updatedBy', as: 'updater' });
         questionModel.belongsTo(UserModel, { foreignKey: 'deletedBy', as: 'deleter' });
+        questionModel.belongsTo(CampaignAdModel, { foreignKey: 'campaignId', as: 'campaign' }); // Associate with CampaignAdModel
     }
 }
 

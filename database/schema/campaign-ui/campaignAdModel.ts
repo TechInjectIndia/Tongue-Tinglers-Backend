@@ -1,7 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { UserModel } from '../user/user.model';
-import { ICampaign, Question } from '../../../interfaces';
+import { questionModel } from './questionModel';
+import { ICampaign } from '../../../interfaces';
 
 const { STRING, DATE, NOW, UUIDV4, JSONB } = DataTypes;
 
@@ -13,7 +14,7 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes> imple
     public description?: string;
     public startDate?: Date;
     public endDate?: Date;
-    public questions!: Question[];
+    public questionList!: string[];
 
     public createdBy!: string;
     public updatedBy!: string | null;
@@ -37,6 +38,11 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes> imple
             foreignKey: 'deletedBy',
             as: 'deleter',
         });
+
+        CampaignAdModel.hasMany(questionModel, {
+            foreignKey: 'campaignId',
+            as: 'questions',
+        });
     }
 }
 
@@ -58,7 +64,7 @@ CampaignAdModel.init({
         allowNull: true,
         comment: 'Description of the campaign',
     },
-    questions: {
+    questionList: {
         type: JSONB,
         allowNull: false,
         comment: 'List of questions associated with the campaign',

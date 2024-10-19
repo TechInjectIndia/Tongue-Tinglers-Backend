@@ -11,7 +11,7 @@ const router = express.Router();
  * /api/admin/email:
  *   post:
  *     summary: Send an email with multiple files or multiple file paths
- *     tags: [Email]
+ *     tags: [QuickActions]
  *     requestBody:
  *       required: true
  *       content:

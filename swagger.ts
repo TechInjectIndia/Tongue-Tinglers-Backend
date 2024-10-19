@@ -37,10 +37,19 @@ const options = {
                 name: 'AUTH' // auth starts
             },
             {
-                name: 'Email'
+                name: 'Franchisee'
+            },
+            {
+                name: 'Admin > PDI Checklist'
+            },
+            {
+                name: 'QuickActions'
             },
             {
                 name: 'Files'
+            },
+            {
+                name: 'Gallery'
             },
             {
                 name: 'Questions'
@@ -200,8 +209,11 @@ const options = {
     // looks for configuration in specified directories
     apis: [
         './routes/*.ts',
-        './apps/emails/api/*.ts',
+        './apps/franchisee/api/*.ts',
+        './apps/pdi-checklist/api/*.ts',
+        './apps/quick-actions/api/*.ts',
         './apps/files/api/*.ts',
+        './apps/gallery/api/*.ts',
         './apps/questions/api/*.ts',
         './apps/campaign/api/*.ts',
         './apps/affiliate/api/*.ts',
@@ -232,6 +244,7 @@ const options = {
         './apps/crm/api/*.ts',
         './apps/contracts/api/*.ts',
     ],
+    docExpansion: 'none', // Can minimize the displayed logs in the Swagger UI.
 }
 const swaggerSpec = swaggerJsdoc(options)
 function swaggerDocs(app, port) {

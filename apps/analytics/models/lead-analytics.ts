@@ -1,5 +1,4 @@
-const { Sequelize } = require('sequelize');
-
+import { Op, Sequelize } from "sequelize";
 import {
     TAnalyticsFilters,
     TAnalyticssList,
@@ -7,17 +6,18 @@ import {
 import { LeadsModel } from "../../../database/schema";
 
 export class AnalyticsModel {
-    constructor() { }
+    constructor() {}
 
+    // Lead Sources Analytics
     public async leadSources(startDate: Date, endDate: Date): Promise<TAnalyticssList | any> {
         const data = await LeadsModel.findAll({
             attributes: [
                 'source',
-                [Sequelize.fn('COUNT', Sequelize.col('source')), 'count']
+                [Sequelize.fn('COUNT', Sequelize.col('source')), 'count'] // Correct usage of Sequelize functions
             ],
             where: {
                 createdAt: {
-                    [Sequelize.between]: [startDate, endDate]
+                    [Op.between]: [startDate, endDate]  // Use Op.between
                 },
             },
             group: 'source'
@@ -25,15 +25,16 @@ export class AnalyticsModel {
         return data;
     }
 
+    // Conversion Rate Analytics
     public async conversionRate(startDate: Date, endDate: Date): Promise<TAnalyticssList | any> {
         const data = await LeadsModel.findAll({
             attributes: [
                 'status',
-                [Sequelize.fn('COUNT', Sequelize.col('status')), 'count']
+                [Sequelize.fn('COUNT', Sequelize.col('status')), 'count'] // Correct usage of Sequelize functions
             ],
             where: {
                 createdAt: {
-                    [Sequelize.between]: [startDate, endDate]
+                    [Op.between]: [startDate, endDate]
                 },
             },
             group: 'status'
@@ -41,7 +42,8 @@ export class AnalyticsModel {
         return data;
     }
 
+    // Sales Pipeline Analytics (implementation pending)
     public async salesPipeline(filters: TAnalyticsFilters): Promise<TAnalyticssList | any> {
-
+        // You can implement this function based on your business logic for the sales pipeline
     }
 }

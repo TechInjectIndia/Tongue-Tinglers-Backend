@@ -1,20 +1,15 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-
-interface FileAttributes {
-    id: string;
-    name: string;
-    url: string;
-    createdAt?: Date;
-    updatedAt?: Date;
-}
+import { FileAttributes } from "../../../interfaces";
 
 interface FileCreationAttributes extends Optional<FileAttributes, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class FileModel extends Model<FileAttributes, FileCreationAttributes> implements FileAttributes {
     public id!: string;
     public name!: string;
+    public message!: string;
     public url!: string;
+    public recommended!: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -28,6 +23,14 @@ FileModel.init({
     },
     name: {
         type: DataTypes.STRING,
+        allowNull: false,
+    },
+    message: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    recommended: {
+        type: DataTypes.BOOLEAN,
         allowNull: false,
     },
     url: {

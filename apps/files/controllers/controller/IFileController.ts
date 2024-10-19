@@ -6,24 +6,31 @@ import { Request, Response } from 'express';
 interface IFileController {
     /**
      * Upload a file.
-     * @param req - The Express request object.
+     * @param req - The Express request object containing file data.
      * @param res - The Express response object.
      */
     uploadFile(req: Request, res: Response): Promise<void>;
 
     /**
-     * Get all uploaded files.
+     * Retrieve all uploaded files.
      * @param req - The Express request object.
      * @param res - The Express response object.
      */
     getFiles(req: Request, res: Response): Promise<void>;
 
     /**
-     * Delete a file by ID.
-     * @param req - The Express request object.
+     * Delete a file by its name.
+     * @param req - The Express request object containing the file name to delete.
      * @param res - The Express response object.
      */
     deleteFile(req: Request, res: Response): Promise<void>;
+
+    /**
+     * Search for files based on optional parameters.
+     * @param req - The Express request object containing search parameters.
+     * @param res - The Express response object.
+     */
+    searchFiles(req: Request, res: Response): Promise<void>;
 }
 
 export default IFileController;

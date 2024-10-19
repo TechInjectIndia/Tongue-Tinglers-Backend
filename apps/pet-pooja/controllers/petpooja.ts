@@ -590,22 +590,25 @@ export default class PetPoojaController {
 
                 // Fetch data from Pet Pooja API
                 const data = body;
-
                 if (data.success === '1') {
-                    // Extract items and process stock data
                     const items = data.items;
                     let totalItems = 0;
                     for (const item of items) {
-                        // Process stock data
                         const itemId = item.itemid;
                         const stock = parseInt(item.in_stock, 10);
                         totalItems = totalItems + stock
                     }
                     const orderFromPetPooja = await new PetPoojaRepo().updateStockData(franchisee.id, { 'endStock': totalItems });
 
-                    console.log('Stock data processed and saved successfully');
+                    console.log(orderFromPetPooja);
+                    return res.status(200).send({
+                        message: 'Stock data processed and saved successfully',
+                    });
                 } else {
                     console.log('API response indicates failure:', data);
+                    return res.status(500).send({
+                        message: 'API response indicates failure',
+                    });
                 }
             }
         } catch (err) {
@@ -1153,9 +1156,13 @@ export default class PetPoojaController {
                     }
                     const orderFromPetPooja = await new PetPoojaRepo().saveStockData({ user_id: franchisee.id, 'startStock': totalItems, 'endStock': totalItems });
 
-                    console.log('Stock data processed and saved successfully');
+                    return res.status(200).send({
+                        message: 'Stock data processed and saved successfully',
+                    });
                 } else {
-                    console.log('API response indicates failure:', data);
+                    return res.status(500).send({
+                        message: 'API response indicates failure',
+                    });
                 }
             }
         } catch (err) {

@@ -26,7 +26,7 @@ export interface Address {
     lastName: string | null;
     email: string;
     phone: string | null;
-    gstin: string | null;
+    PAN: string | null;
 }
 
 export interface UserInformation {

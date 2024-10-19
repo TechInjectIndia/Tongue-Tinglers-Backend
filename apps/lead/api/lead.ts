@@ -74,7 +74,7 @@ const router = express.Router();
  *                     type: string
  *                   country:
  *                     type: string
- *                   GSTIN:
+ *                   PAN:
  *                     type: string
  *               additionalInfo:
  *                 type: string
@@ -270,7 +270,7 @@ const router = express.Router();
  *                     type: string
  *                   country:
  *                     type: string
- *                   GSTIN:
+ *                   PAN:
  *                     type: string
  *               additionalInfo:
  *                 type: string

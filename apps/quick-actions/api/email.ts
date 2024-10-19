@@ -8,7 +8,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/admin/email:
+ * /api/admin/quick-actions/email:
  *   post:
  *     summary: Send an email with multiple files or multiple file paths
  *     tags: [QuickActions]

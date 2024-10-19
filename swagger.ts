@@ -43,7 +43,7 @@ const options = {
                 name: 'Admin > PDI Checklist'
             },
             {
-                name: 'Email'
+                name: 'QuickActions'
             },
             {
                 name: 'Files'
@@ -211,7 +211,7 @@ const options = {
         './routes/*.ts',
         './apps/franchisee/api/*.ts',
         './apps/pdi-checklist/api/*.ts',
-        './apps/emails/api/*.ts',
+        './apps/quick-actions/api/*.ts',
         './apps/files/api/*.ts',
         './apps/gallery/api/*.ts',
         './apps/questions/api/*.ts',

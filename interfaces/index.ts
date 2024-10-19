@@ -11,6 +11,10 @@ export * from './petpooja';
 export * from './contracts';
 export * from './form-question';
 export * from './campaign';
+export * from './file';
+export * from './gallery';
+export * from './franchisee';
+export * from './pdiChecklist';
 
 interface ITrackable {
     userDetails: UserDetails;

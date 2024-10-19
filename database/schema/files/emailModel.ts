@@ -9,7 +9,7 @@ interface EmailLogAttributes {
     sentAt: Date;
 }
 
-interface EmailLogCreationAttributes extends Optional<EmailLogAttributes, 'id' | 'sentAt'> {}
+interface EmailLogCreationAttributes extends Optional<EmailLogAttributes, 'id' | 'sentAt'> { }
 
 class EmailLogModel extends Model<EmailLogAttributes, EmailLogCreationAttributes> implements EmailLogAttributes {
     public id!: string;
@@ -24,6 +24,7 @@ EmailLogModel.init({
         type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
     },
     to: {
         type: DataTypes.STRING,

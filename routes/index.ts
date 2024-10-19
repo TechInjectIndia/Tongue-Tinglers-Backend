@@ -53,7 +53,10 @@ import contractsRouter from "../apps/contracts/api";
 import questionRouter from "../apps/questions/api";
 import campaignAdRouter from "../apps/campaign/api";
 import filesRouter from "../apps/files/api/files";
-import emailsRouter from "../apps/emails/api/email";
+import quickActionsRouter from "../apps/quick-actions/api/";
+import galleryRouter from "../apps/gallery/api/gallery";
+import franchiseeRouter from "../apps/franchisee/api/franchisee";
+import pdiChecklistRouter from "../apps/pdi-checklist/api/pdiChecklist";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -85,7 +88,10 @@ router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/question`, auth, questionRouter);
 router.use(`${ADMIN}/campaign-ad`, auth, campaignAdRouter);
 router.use(`${ADMIN}/files`, auth, filesRouter);
-router.use(`${ADMIN}/email`, emailsRouter);
+router.use(`${ADMIN}/quick-actions`, auth, quickActionsRouter);
+router.use(`${ADMIN}/gallery`, auth, galleryRouter);
+router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
+router.use(`${ADMIN}/pdi-checklist`, auth, pdiChecklistRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

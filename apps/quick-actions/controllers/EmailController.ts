@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from '../../../constants';
 import { sendResponse, sendEmailFromRequest } from '../../../libraries';
-import { Multer } from 'multer'; // Import Multer types
+import { Multer } from 'multer';
+import { EmailRepo } from '../models/EmailRepo';
 
 export default class EmailController {
     static async sendEmail(req: Request, res: Response) {
@@ -9,10 +10,7 @@ export default class EmailController {
             const { to, subject, body, filePaths } = req.body;
             const files = req.files as Multer.File[];
 
-            // Initialize parsedFilePaths
             let parsedFilePaths: { path: string; name: string }[];
-
-            // Check the type of filePaths and parse accordingly
             if (typeof filePaths === 'string') {
                 try {
                     parsedFilePaths = JSON.parse(filePaths);
@@ -24,7 +22,6 @@ export default class EmailController {
                 }
             }
 
-            // Call the function to send the email
             const emailSend = await sendEmailFromRequest(
                 to,
                 subject,
@@ -34,6 +31,13 @@ export default class EmailController {
             );
 
             if (emailSend) {
+                await EmailRepo.create({
+                    to,
+                    subject,
+                    body,
+                    sentAt: new Date(),
+                });
+
                 return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.SENT_EMAIL));
             } else {
                 return res.status(500).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.INTERNAL_SERVER_ERROR));

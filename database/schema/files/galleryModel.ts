@@ -1,20 +1,20 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { FileAttributes } from "../../../interfaces";
+import { GalleryAttributes } from "../../../interfaces";
 
-interface FileCreationAttributes extends Optional<FileAttributes, 'id' | 'createdAt' | 'updatedAt'> { }
+interface GalleryCreationAttributes extends Optional<GalleryAttributes, 'id' | 'createdAt' | 'updatedAt'> { }
 
-class FileModel extends Model<FileAttributes, FileCreationAttributes> implements FileAttributes {
+class GalleryModel extends Model<GalleryAttributes, GalleryCreationAttributes> implements GalleryAttributes {
     public id!: string;
     public name!: string;
     public message!: string;
     public url!: string;
-    public recommended!: boolean;
+    public caption!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
 
-FileModel.init({
+GalleryModel.init({
     id: {
         type: DataTypes.STRING,
         primaryKey: true,
@@ -29,12 +29,12 @@ FileModel.init({
         type: DataTypes.STRING,
         allowNull: false,
     },
-    recommended: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-    },
     url: {
         type: DataTypes.TEXT,
+        allowNull: false,
+    },
+    caption: {
+        type: DataTypes.STRING,
         allowNull: false,
     },
     createdAt: {
@@ -49,8 +49,8 @@ FileModel.init({
     },
 }, {
     sequelize,
-    tableName: 'files',
+    tableName: 'gallery',
     timestamps: true,
 });
 
-export { FileModel };
+export { GalleryModel };

@@ -14,10 +14,8 @@ const createCampaignBody = Joi.object().keys({
     .greater(Joi.ref('startDate'))
     .messages({ 'date.greater': 'End date must be after start date.' }),
   questionList: Joi.array().items(
-    Joi.object().keys({
-      id: Joi.string().uuid().required()
-        .messages({ 'any.required': 'Question ID is required.' }),
-    })
+    Joi.string().uuid().required()
+      .messages({ 'any.required': 'Question ID is required.' })
   ).required()
     .messages({ 'any.required': 'Questions are required.' }),
 });
@@ -34,12 +32,10 @@ const editCampaignBody = Joi.object().keys({
     .greater(Joi.ref('startDate'))
     .messages({ 'date.greater': 'End date must be after start date.' }),
   questionList: Joi.array().items(
-    Joi.object().keys({
-      id: Joi.string().uuid().required()
-        .messages({ 'any.required': 'Question ID is required.' }),
-    })
+    Joi.string().uuid().required()
+      .messages({ 'any.required': 'Question ID is required.' })
   ).optional()
-    .messages({ 'array.base': 'Questions must be an array of objects.' }),
+    .messages({ 'array.base': 'Questions must be an array of strings.' }),
 });
 
 // Validation schema for editing campaign parameters

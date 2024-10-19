@@ -15,7 +15,7 @@ const {
 
 /**
  * @swagger
- * /api/admin/campaign/create:
+ * /api/admin/campaign-ad/create:
  *   post:
  *     summary: Create a new campaign Ad
  *     tags: [Campaigns-Ad]
@@ -49,13 +49,10 @@ const {
  *               questionList:
  *                 type: array
  *                 items:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       example: "123e4567-e89b-12d3-a456-426614174000"
+ *                   type: string
+ *                   example: "123e4567-e89b-12d3-a456-426614174000"
  *                 example: 
- *                   - id: "123e4567-e89b-12d3-a456-426614174000"
+ *                   - "123e4567-e89b-12d3-a456-426614174000"
  *     responses:
  *       '201':
  *         description: Campaign created successfully
@@ -64,7 +61,7 @@ const {
  *       '401':
  *         description: Unauthorized
  *
- * /api/admin/campaign/list?size={size}&skip={skip}:
+ * /api/admin/campaign-ad/list:
  *   get:
  *     summary: Get all campaigns Ad
  *     tags: [Campaigns-Ad]
@@ -73,13 +70,13 @@ const {
  *     parameters:
  *       - in: query
  *         name: size
- *         required: false
+ *         required: true
  *         schema:
  *           type: integer
  *         description: Size of the retrieved data
  *       - in: query
  *         name: skip
- *         required: false
+ *         required: true
  *         schema:
  *           type: integer
  *         description: How many rows to skip
@@ -91,7 +88,7 @@ const {
  *       '401':
  *         description: Unauthorized
  *
- * /api/admin/campaign/get/{id}:
+ * /api/admin/campaign-ad/get/{id}:
  *   get:
  *     summary: Get a campaign Ad by ID
  *     tags: [Campaigns-Ad]
@@ -112,7 +109,7 @@ const {
  *       '404':
  *         description: Campaign not found
  *
- * /api/admin/campaign/update/{id}:
+ * /api/admin/campaign-ad/update/{id}:
  *   put:
  *     summary: Update a campaign Ad
  *     tags: [Campaigns-Ad]
@@ -145,10 +142,7 @@ const {
  *               questionList:
  *                 type: array
  *                 items:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
+ *                   type: string
  *     responses:
  *       '200':
  *         description: Campaign updated successfully
@@ -159,7 +153,7 @@ const {
  *       '404':
  *         description: Campaign not found
  *
- * /api/admin/campaign/delete:
+ * /api/admin/campaign-ad/delete:
  *   delete:
  *     summary: Delete campaigns Ad
  *     tags: [Campaigns-Ad]

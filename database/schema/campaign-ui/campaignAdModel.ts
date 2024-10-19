@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { UserModel } from '../user/user.model';
 import { questionModel } from './questionModel';
-import { ICampaign, Question } from '../../../interfaces';
+import { ICampaign } from '../../../interfaces';
 
 const { STRING, DATE, NOW, UUIDV4, JSONB } = DataTypes;
 
@@ -14,7 +14,7 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes> imple
     public description?: string;
     public startDate?: Date;
     public endDate?: Date;
-    public questionList!: Question[];
+    public questionList!: string[];
 
     public createdBy!: string;
     public updatedBy!: string | null;

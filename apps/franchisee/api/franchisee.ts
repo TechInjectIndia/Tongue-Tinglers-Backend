@@ -10,7 +10,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/admin/franchisees:
+ * /api/admin/franchisee:
  *   post:
  *     summary: Create a new franchisee
  *     tags: [Franchisee]
@@ -26,13 +26,24 @@ const router = express.Router();
  *               ownerName:
  *                 type: string
  *               contactEmail:
- *                 type: array
- *                 items:
- *                   type: string
+ *                 type: string
  *               franchiseLocations:
  *                 type: array
  *                 items:
  *                   type: object
+ *                   properties:
+ *                     contactPhone:
+ *                       type: string
+ *                     location:
+ *                       type: string
+ *                     city:
+ *                       type: string
+ *                     state:
+ *                       type: string
+ *                     country:
+ *                       type: string
+ *                     zipCode:
+ *                       type: string
  *               establishedDate:
  *                 type: string
  *                 format: date-time
@@ -41,6 +52,7 @@ const router = express.Router();
  *                 format: date-time
  *               franchiseType:
  *                 type: string
+ *                 enum: ['master', 'single', 'multi']
  *               numberOfEmployees:
  *                 type: integer
  *               investmentAmount:
@@ -62,6 +74,64 @@ const router = express.Router();
  *                 type: boolean
  *               isActive:
  *                 type: boolean
+ *             example: 
+ *               {
+ *                 "name": "ABC Franchise",
+ *                 "ownerName": "John Doe",
+ *                 "contactEmail": "john.doe@abcfranchise.com",
+ *                 "contactNumber": "+1234567890",
+ *                 "franchiseLocations": [
+ *                   {
+ *                     "contactPhone": "+11234567890",
+ *                     "location": "Main Street 123",
+ *                     "city": "New York",
+ *                     "state": "NY",
+ *                     "country": "USA",
+ *                     "zipCode": "10001"
+ *                   }
+ *                 ],
+ *                 "establishedDate": "2010-05-20T00:00:00.000Z",
+ *                 "franchiseAgreementSignedDate": "2011-06-15T00:00:00.000Z",
+ *                 "franchiseType": "multi",
+ *                 "region": "North America",
+ *                 "description": "A leading franchise in fast food",
+ *                 "website": "https://www.abcfranchise.com",
+ *                 "socialMediaLinks": ["https://www.facebook.com/abcfranchise"],
+ *                 "logo": "https://www.abcfranchise.com/logo.png",
+ *                 "numberOfEmployees": 50,
+ *                 "investmentAmount": 100000,
+ *                 "royaltyPercentage": 5.5,
+ *                 "monthlyRevenue": 50000,
+ *                 "numberOfOutlets": 10,
+ *                 "menuSpecialty": "Burgers and Fries",
+ *                 "businessHours": "9 AM - 9 PM",
+ *                 "deliveryOptions": true,
+ *                 "isActive": true,
+ *                 "ratings": 4.5,
+ *                 "promotions": ["Summer Discount"],
+ *                 "targetMarket": "Young professionals",
+ *                 "sustainabilityPractices": "Recycling packaging",
+ *                 "trainingPrograms": ["Franchisee Onboarding"],
+ *                 "supportContact": "+1234567890",
+ *                 "operationalChallenges": ["Staffing issues"],
+ *                 "competitiveAdvantages": "High-quality products",
+ *                 "expansionPlans": "Opening 5 new outlets next year",
+ *                 "customerFeedback": ["Great service"],
+ *                 "industryCertifications": ["ISO 9001"],
+ *                 "affiliatePrograms": ["Loyalty Program"],
+ *                 "performanceMetrics": {"monthlyGrowth": 8.5, "customerSatisfaction": 92},
+ *                 "franchiseRenewalInfo": {
+ *                   "renewalDate": "2025-12-01T00:00:00.000Z",
+ *                   "conditions": "Based on performance metrics"
+ *                 },
+ *                 "partnerships": ["UberEats"],
+ *                 "marketingStrategies": ["Social media campaigns"],
+ *                 "trainingHistory": [
+ *                   {"date": "2022-03-15T00:00:00.000Z", "topic": "Food Safety Training"}
+ *                 ],
+ *                 "crisisManagementPlans": "Emergency response plan",
+ *                 "diversityInitiatives": "Inclusive hiring policies"
+ *               }
  *     responses:
  *       '201':
  *         description: Franchisee created successfully
@@ -72,7 +142,7 @@ router.post('/', validateCreateFranchiseeBody, FranchiseeController.createFranch
 
 /**
  * @swagger
- * /api/admin/franchisees:
+ * /api/admin/franchisee:
  *   get:
  *     summary: Retrieve all franchisees
  *     tags: [Franchisee]
@@ -86,16 +156,12 @@ router.post('/', validateCreateFranchiseeBody, FranchiseeController.createFranch
  *               items:
  *                 type: object
  *                 properties:
- *                   id:
- *                     type: string
  *                   name:
  *                     type: string
  *                   ownerName:
  *                     type: string
  *                   contactEmail:
- *                     type: array
- *                     items:
- *                       type: string
+ *                     type: string
  *                   franchiseLocations:
  *                     type: array
  *                     items:
@@ -119,7 +185,7 @@ router.get('/', FranchiseeController.getAllFranchisees);
 
 /**
  * @swagger
- * /api/admin/franchisees/{id}:
+ * /api/admin/franchisee/{id}:
  *   get:
  *     summary: Retrieve a franchisee by ID
  *     tags: [Franchisee]
@@ -153,7 +219,7 @@ router.get('/:id', validateEditFranchiseeParams, FranchiseeController.getFranchi
 
 /**
  * @swagger
- * /api/admin/franchisees/{id}:
+ * /api/admin/franchisee/{id}:
  *   put:
  *     summary: Update a franchisee by ID
  *     tags: [Franchisee]
@@ -176,18 +242,30 @@ router.get('/:id', validateEditFranchiseeParams, FranchiseeController.getFranchi
  *               ownerName:
  *                 type: string
  *               contactEmail:
- *                 type: array
- *                 items:
- *                   type: string
+ *                 type: string
  *               franchiseLocations:
  *                 type: array
  *                 items:
  *                   type: object
+ *                   properties:
+ *                     contactPhone:
+ *                       type: string
+ *                     location:
+ *                       type: string
+ *                     city:
+ *                       type: string
+ *                     state:
+ *                       type: string
+ *                     country:
+ *                       type: string
+ *                     zipCode:
+ *                       type: string
  *               establishedDate:
  *                 type: string
  *                 format: date-time
  *               franchiseType:
  *                 type: string
+ *                 enum: ['master', 'single', 'multi']
  *               numberOfEmployees:
  *                 type: integer
  *               investmentAmount:
@@ -209,6 +287,33 @@ router.get('/:id', validateEditFranchiseeParams, FranchiseeController.getFranchi
  *                 type: boolean
  *               isActive:
  *                 type: boolean
+ *             example:
+ *               {
+ *                 "name": "ABC Franchise Updated",
+ *                 "ownerName": "John Doe Updated",
+ *                 "contactEmail": "john.doe@abcfranchise.com",
+ *                 "franchiseLocations": [
+ *                   {
+ *                     "contactPhone": "+11234567890",
+ *                     "location": "Main Street 123",
+ *                     "city": "New York",
+ *                     "state": "NY",
+ *                     "country": "USA",
+ *                     "zipCode": "10001"
+ *                   }
+ *                 ],
+ *                 "establishedDate": "2010-05-20T00:00:00.000Z",
+ *                 "franchiseType": "multi",
+ *                 "numberOfEmployees": 50,
+ *                 "investmentAmount": 100000,
+ *                 "royaltyPercentage": 5.5,
+ *                 "monthlyRevenue": 55000,
+ *                 "numberOfOutlets": 11,
+ *                 "menuSpecialty": "Burgers and Fries",
+ *                 "businessHours": "9 AM - 10 PM",
+ *                 "deliveryOptions": true,
+ *                 "isActive": true
+ *               }
  *     responses:
  *       '200':
  *         description: Franchisee updated successfully
@@ -218,28 +323,5 @@ router.get('/:id', validateEditFranchiseeParams, FranchiseeController.getFranchi
  *         description: Invalid input
  */
 router.put('/:id', validateEditFranchiseeParams, validateEditFranchiseeBody, FranchiseeController.updateFranchisee);
-
-/**
- * @swagger
- * /api/admin/franchisees/{id}:
- *   delete:
- *     summary: Delete a franchisee by ID
- *     tags: [Franchisee]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID of the franchisee to delete
- *         schema:
- *           type: string
- *     responses:
- *       '200':
- *         description: Franchisee deleted successfully
- *       '404':
- *         description: Franchisee not found
- *       '400':
- *         description: Bad request
- */
-router.delete('/:id', validateEditFranchiseeParams, FranchiseeController.deleteFranchisee);
 
 export default router;

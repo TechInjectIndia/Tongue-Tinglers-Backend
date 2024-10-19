@@ -158,7 +158,7 @@ interface LeadAddress {
     state: string;
     zipCode: string;
     country: string;
-    GSTIN: string | null;
+    PAN: string | null;
 }
 
 interface Assignee {

@@ -90,7 +90,7 @@ const ADDRESS_SCHEMA = Joi.object().keys({
         .messages({ 'any.required': 'Zip code is required.' }),
     country: Joi.string().required()
         .messages({ 'any.required': 'Country is required.' }),
-    GSTIN: Joi.string().allow(null).optional(),
+    PAN: Joi.string().allow(null).optional(),
 });
 
 const ASSIGN_SCHEMA = Joi.object().keys({

@@ -58,6 +58,23 @@ export default class LeadAnalyticsController {
         }
     }
 
-    static async salesPipeline(req: Request, res: Response, next: NextFunction) {}
+    // Sales Pipeline Analytics
+    static async salesPipeline(req: Request, res: Response, next: NextFunction) {
+        try {
+            const period = get(req.query, "range", "");
+            const { start, end } = getDateRange(period);
 
+            const filters = { startDate: start, endDate: end };
+            const analytics = await new AnalyticsModel().salesPipeline(filters);
+
+            return res.status(200).send(
+                sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, analytics)
+            );
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
 }

@@ -1,41 +1,38 @@
-import * as express from "express";
+import { Router } from "express";
 import OrdersAnalyticsController from "../../controllers/orders-analytics";
-import * as AnalyticsValidation from "../../validations/orders-analytics";
-import { hasPermission } from '../../../../middlewares';
+import { validateListAnalyticsQuery } from "../../validations/orders-analytics";
+import { hasPermission } from "../../../../middlewares";
 
-const router = express.Router();
-
-const {
-  validateListAnalyticsQuery,
-} = AnalyticsValidation;
+const router = Router();
 
 // ====== Analytics Orders Starts ======
 /**
  * @swagger
  * /api/admin/analytics/orders?range={range}:
  *   get:
- *     summary: Get analytics
+ *     summary: Get order analytics
  *     tags: [Admin > Analytics > Orders]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: range
- *         default: Week
  *         required: true
  *         schema:
  *           type: string
- *           enum: [ "Week", "Month", "Year"]
- *         description: Get order analytics
+ *           enum: ["Week", "Month", "Year"]
+ *         description: Time range for the order analytics
+ *         example: "Week"
  *     responses:
  *       '200':
- *         description: Product Category retrieved successfully
+ *         description: Order analytics retrieved successfully
  *       '400':
- *         description: Invalid request body
+ *         description: Invalid request query
  *       '401':
  *         description: Unauthorized
  */
 router.get("/", validateListAnalyticsQuery, OrdersAnalyticsController.getOrdersCount);
+
 // ====== Analytics Orders Ends ======
 
 export default router;

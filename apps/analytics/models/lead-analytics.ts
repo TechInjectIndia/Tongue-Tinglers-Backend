@@ -6,10 +6,10 @@ import {
 import { LeadsModel } from "../../../database/schema";
 
 export class AnalyticsModel {
-    constructor() {}
+    constructor() { }
 
     // Lead Sources Analytics
-    public async leadSources(startDate: Date, endDate: Date): Promise<TAnalyticssList | any> {
+    public async leadSources(startDate: Date, endDate: Date): Promise<any> {
         const data = await LeadsModel.findAll({
             attributes: [
                 'source',
@@ -26,7 +26,7 @@ export class AnalyticsModel {
     }
 
     // Conversion Rate Analytics
-    public async conversionRate(startDate: Date, endDate: Date): Promise<TAnalyticssList | any> {
+    public async conversionRate(startDate: Date, endDate: Date): Promise<any> {
         const data = await LeadsModel.findAll({
             attributes: [
                 'status',
@@ -42,8 +42,23 @@ export class AnalyticsModel {
         return data;
     }
 
-    // Sales Pipeline Analytics (implementation pending)
-    public async salesPipeline(filters: TAnalyticsFilters): Promise<TAnalyticssList | any> {
-        // You can implement this function based on your business logic for the sales pipeline
+    public async salesPipeline(filters: any): Promise<any> {
+        const { startDate, endDate } = filters;
+
+        const data = await LeadsModel.findAll({
+            attributes: [
+                'status',
+                [Sequelize.fn('COUNT', Sequelize.col('status')), 'count']
+            ],
+            where: {
+                createdAt: {
+                    [Op.between]: [startDate, endDate]
+                }
+            },
+            group: 'status',
+            order: Sequelize.literal('count DESC') // Order by count in descending order
+        });
+
+        return data;
     }
 }

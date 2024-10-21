@@ -1,30 +1,50 @@
-const { Op } = require("sequelize");
+import { Op } from "sequelize"; // Corrected import statement for Op
 import {
     TAnalyticsFilters,
     TAnalyticssList,
 } from "../../../types/analytics";
-import { LeadsModel } from "../../../database/schema";
+import { RetortProductsModel } from "../../../database/schema"; // Import your model here
+import { LeadsModel } from "../../../database/schema"; // Ensure this is relevant to your analytics
 
 export class AnalyticsModel {
     constructor() { }
 
-    public async leadSources(filters: TAnalyticsFilters): Promise<TAnalyticssList | any> {
-        // Get leads get by website, facebook source
+    public async retortAnalytics(range: any): Promise<TAnalyticssList | any> {
+        try {
+            // Define the date range for filtering based on the 'range' parameter
+            let startDate: Date;
+            let endDate: Date = new Date();
 
-        // LeadsModel.findAll({
-        //     where: {
-        //         column: {
-        //             [Op.contains]: [{ id: '1' }]
-        //         }
-        //     }
-        // });
-    }
+            switch (range) {
+                case "Week":
+                    startDate = new Date();
+                    startDate.setDate(endDate.getDate() - 7);
+                    break;
+                case "Month":
+                    startDate = new Date();
+                    startDate.setMonth(endDate.getMonth() - 1);
+                    break;
+                case "Year":
+                    startDate = new Date();
+                    startDate.setFullYear(endDate.getFullYear() - 1);
+                    break;
+                default:
+                    throw new Error("Invalid range specified");
+            }
 
-    public async conversionRate(filters: TAnalyticsFilters): Promise<TAnalyticssList | any> {
-        // Get leads which are converted
-    }
+            // Query to fetch analytics data from RetortProductsModel based on the specified date range
+            const analyticsData = await RetortProductsModel.findAll({
+                where: {
+                    createdAt: {
+                        [Op.between]: [startDate, endDate], // Filter by createdAt date
+                    },
+                },
+            });
 
-    public async salesPipeline(filters: TAnalyticsFilters): Promise<TAnalyticssList | any> {
-
+            return analyticsData; // Return the fetched analytics data
+        } catch (error) {
+            console.error("Error fetching retort analytics:", error);
+            throw new Error("Failed to fetch retort analytics");
+        }
     }
 }

@@ -1,20 +1,16 @@
-import * as express from "express";
+import { Router } from "express";
 import LeadAnalyticsController from "../../controllers/lead-analytics";
-import * as AnalyticsValidation from "../../validations/lead-analytics";
-import { hasPermission } from '../../../../middlewares';
+import { validateListAnalyticsQuery } from "../../validations/lead-analytics";
+import { hasPermission } from "../../../../middlewares";
 
-const router = express.Router();
-
-const {
-  validateListAnalyticsQuery,
-} = AnalyticsValidation;
+const router = Router();
 
 // ====== Analytics Leads Starts ======
 /**
  * @swagger
  * /api/admin/analytics/leads/lead-sources?range={range}:
  *   get:
- *     summary: Get analytics
+ *     summary: Get lead sources analytics
  *     tags: [Admin > Analytics > Leads]
  *     security:
  *       - bearerAuth: []
@@ -25,19 +21,19 @@ const {
  *         required: true
  *         schema:
  *           type: string
- *           enum: [ "Week", "Month", "Year"]
- *         description: Get lead analytics
+ *           enum: ["Week", "Month", "Year"]
+ *         description: Time range for analytics
  *     responses:
  *       '200':
- *         description: Product Category retrieved successfully
+ *         description: Lead sources analytics retrieved successfully
  *       '400':
- *         description: Invalid request body
+ *         description: Invalid request query
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/analytics/leads/conversion-rate?range={range}:
  *   get:
- *     summary: Get analytics of conversion rate
+ *     summary: Get conversion rate analytics
  *     tags: [Admin > Analytics > Leads]
  *     security:
  *       - bearerAuth: []
@@ -48,20 +44,43 @@ const {
  *         required: true
  *         schema:
  *           type: string
- *           enum: [ "Week", "Month", "Year"]
- *         description: Get conversion rate for lead analytics
+ *           enum: ["Week", "Month", "Year"]
+ *         description: Time range for analytics
  *     responses:
  *       '200':
- *         description: Product Category retrieved successfully
+ *         description: Conversion rate analytics retrieved successfully
  *       '400':
- *         description: Invalid request body
+ *         description: Invalid request query
+ *       '401':
+ *         description: Unauthorized
+ *
+ * /api/admin/analytics/leads/sales-pipeline?range={range}:
+ *   get:
+ *     summary: Get sales pipeline analytics
+ *     tags: [Admin > Analytics > Leads]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: range
+ *         default: Week
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: ["Week", "Month", "Year"]
+ *         description: Time range for analytics
+ *     responses:
+ *       '200':
+ *         description: Sales pipeline analytics retrieved successfully
+ *       '400':
+ *         description: Invalid request query
  *       '401':
  *         description: Unauthorized
  */
 
 router.get("/lead-sources", validateListAnalyticsQuery, LeadAnalyticsController.leadSources);
 router.get("/conversion-rate", validateListAnalyticsQuery, LeadAnalyticsController.conversionRate);
-router.get("/sales-pipeline", LeadAnalyticsController.salesPipeline);
+router.get("/sales-pipeline", validateListAnalyticsQuery, LeadAnalyticsController.salesPipeline);
 // ====== Analytics Leads Ends ======
 
 export default router;

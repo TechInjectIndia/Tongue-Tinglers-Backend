@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { get, isEmpty } from "lodash";
+import { get } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { AnalyticsModel } from '../models/retort-analytics';
@@ -7,32 +7,21 @@ import { AnalyticsModel } from '../models/retort-analytics';
 export default class RetortAnalyticsController {
     static async list(req: Request, res: Response, next: NextFunction) {
         try {
-            const size = get(req?.query, "size", 10);
-            const skip = get(req?.query, "skip", 1);
-            const search = get(req?.query, "search", "");
-            const trashOnly = get(req?.query, "trashOnly", "");
-            let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.toString().split(" ");
+            // Extract the 'range' parameter from the query
+            const range = get(req.query, "range", "Week"); // Default to 'Week' if not provided
+            
+            // Here you can add additional logic based on the range if needed
+            const analytics = await new AnalyticsModel().retortAnalytics({ range }); // Adjust your method to accept the range parameter
 
-            const Analyticss = await new AnalyticsModel().leadSources({
-                offset: skip as number,
-                limit: size as number,
-                search: search as string,
-                sorting: sorting,
-                trashOnly: trashOnly as string
-            });
-
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FETCHED,
-                        Analyticss
-                    )
-                );
+            return res.status(200).send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.FETCHED,
+                    analytics
+                )
+            );
         } catch (err) {
-            console.log(err);
+            console.error("Error fetching analytics:", err); // Improved logging
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

@@ -23,7 +23,7 @@ const {
  *           type: string
  *           format: uri
  *           description: URL of the image
- *         altText:
+ *         alt:
  *           type: string
  *           description: Alternative text for the image
  *     ProposalModel:

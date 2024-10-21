@@ -60,8 +60,12 @@ export default class FranchiseeController {
     static async updateFranchisee(req: Request, res: Response) {
         try {
             const franchiseeId = req.params.id;
-            const franchiseeData = req.body;
+            let franchiseeData = req.body;
+            console.log(franchiseeId);
 
+            if (typeof franchiseeData === 'string') {
+                franchiseeData = JSON.parse(franchiseeData);
+            }
             const updatedFranchisee = await new FranchiseeRepo().updateFranchisee(franchiseeId, franchiseeData);
 
             if (!updatedFranchisee) {

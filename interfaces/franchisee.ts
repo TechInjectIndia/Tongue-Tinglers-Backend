@@ -27,9 +27,9 @@ interface FranchiseeAttributes {
     id: string;
     name: string;
     ownerName: string;
-    contactEmail: string[];
+    contactEmail: string;
     contactNumber?: string;
-    franchiseLocations: FranchiseeLocation[];
+    franchiseLocations?: FranchiseeLocation[];
     establishedDate: Date;
     franchiseAgreementSignedDate: Date;
     franchiseType: FranchiseType;

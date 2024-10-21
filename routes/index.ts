@@ -88,7 +88,7 @@ router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/question`, auth, questionRouter);
 router.use(`${ADMIN}/campaign-ad`, auth, campaignAdRouter);
-router.use(`${ADMIN}/files`, auth, filesRouter);
+router.use(`${ADMIN}/files`, filesRouter);
 router.use(`${ADMIN}/gallery`, auth, galleryRouter);
 router.use(`${ADMIN}/franchisee`, franchiseeRouter);
 router.use(`${ADMIN}/pdi-checklist`, auth, pdiChecklistRouter);

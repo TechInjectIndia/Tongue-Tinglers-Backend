@@ -10,9 +10,9 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
   public id!: string;
   public name!: string;
   public ownerName!: string;
-  public contactEmail!: string[];
+  public contactEmail!: string;
   public contactNumber!: string;
-  public franchiseLocations!: FranchiseeLocation[];
+  public franchiseLocations?: FranchiseeLocation[];
   public establishedDate!: Date;
   public franchiseAgreementSignedDate!: Date;
   public franchiseType!: FranchiseType;
@@ -35,7 +35,7 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
   public targetMarket!: string;
   public sustainabilityPractices!: string;
   public trainingPrograms!: string[];
-  public supportContact!: string;
+  public supportContact?: string;
   public operationalChallenges!: string[];
   public competitiveAdvantages!: string;
   public expansionPlans!: string;
@@ -43,7 +43,7 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
   public industryCertifications!: string[];
   public affiliatePrograms!: string[];
   public performanceMetrics!: { [key: string]: number };
-  public franchiseRenewalInfo!: { renewalDate: Date; conditions: string };
+  public franchiseRenewalInfo!: { renewalDate: Date; conditions: string } | null;
   public partnerships!: string[];
   public marketingStrategies!: string[];
   public trainingHistory!: { date: Date; topic: string }[];
@@ -70,9 +70,8 @@ FranchiseeModel.init(
       comment: "Name of the owner or primary contact",
     },
     contactEmail: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
+      type: DataTypes.STRING,
       allowNull: false,
-      comment: "Email addresses for contacting the franchisee",
     },
     contactNumber: {
       type: DataTypes.STRING,

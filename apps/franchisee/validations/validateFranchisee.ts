@@ -50,10 +50,9 @@ const franchiseeSchema = Joi.object({
                         "any.required": "ZIP code is required.",
                         "string.pattern.base": "ZIP code must be valid.",
                     }),
-            }).required()
+            }).optional()
         )
-        .min(1)
-        .required()
+        .optional()
         .messages({
             "any.required": "At least one franchise location is required.",
         }),
@@ -76,7 +75,7 @@ const franchiseeSchema = Joi.object({
     description: Joi.string().optional().allow("").messages({
         "string.empty": "Description cannot be empty.",
     }),
-    website: Joi.string().uri().optional().messages({
+    website: Joi.string().optional().allow("").messages({
         "string.uri": "Website must be a valid URL.",
     }),
     socialMediaLinks: Joi.array()
@@ -85,7 +84,7 @@ const franchiseeSchema = Joi.object({
         .messages({
             "string.uri": "Each social media link must be a valid URL.",
         }),
-    logo: Joi.string().uri().optional().messages({
+    logo: Joi.string().optional().allow("").messages({
         "string.uri": "Logo must be a valid URL.",
     }),
     numberOfEmployees: Joi.number().integer().min(0).required().messages({
@@ -141,7 +140,7 @@ const franchiseeSchema = Joi.object({
         "string.empty": "Sustainability practices cannot be empty.",
     }),
     trainingPrograms: Joi.array().items(Joi.string().optional()).optional(),
-    supportContact: Joi.string().trim().optional().messages({
+    supportContact: Joi.string().trim().optional().allow("").messages({
         "string.empty": "Support contact cannot be empty.",
     }),
     operationalChallenges: Joi.array().items(Joi.string().optional()).optional(),
@@ -165,7 +164,7 @@ const franchiseeSchema = Joi.object({
         conditions: Joi.string().optional().allow("").messages({
             "string.empty": "Renewal conditions cannot be empty.",
         }),
-    }).optional(),
+    }).optional().allow(""),
     partnerships: Joi.array().items(Joi.string().optional()).optional(),
     marketingStrategies: Joi.array().items(Joi.string().optional()).optional(),
     trainingHistory: Joi.array()

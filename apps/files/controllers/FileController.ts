@@ -3,6 +3,7 @@ import { FilesRepo } from '../models/FilesRepo'; // Adjust import as necessary
 import { sendResponse } from '../../../libraries';
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from '../../../constants';
 import { Multer } from 'multer';
+import { log } from 'console';
 
 export default class FilesController {
     static async searchFiles(req: Request, res: Response) {
@@ -23,6 +24,7 @@ export default class FilesController {
 
     static async uploadFile(req: Request, res: Response) {
         try {
+            console.log('>>>>>>>>>>>>>>', req);
             const files = req.files as Multer.File[];
             let fileDetails = req.body.fileDetails;
 

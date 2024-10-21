@@ -8,7 +8,7 @@ const SeoImageSchema = Joi.object({
         .messages({
             'any.required': 'Image URL is required.',
         }),
-    altText: Joi.string().required()
+    alt: Joi.string().required()
         .messages({
             'string.base': 'Alt text must be a string.',
             'any.required': 'Alt text is required.'

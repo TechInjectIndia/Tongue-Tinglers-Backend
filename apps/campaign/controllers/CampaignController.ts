@@ -10,7 +10,7 @@ export default class CampaignController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, 'user_id', '');
-            const payload = { ...req.body, createdBy: '' };
+            const payload = { ...req.body, createdBy: user_id };
             const campaign = await new CampaignAdRepo().create(payload); // Using the Sequelize model for creation
             return res
                 .status(201)

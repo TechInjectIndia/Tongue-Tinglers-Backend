@@ -36,7 +36,6 @@ export default class ZohoSignController {
     // Webhook endpoint
     static async callback(req: Request, res: Response, next: NextFunction) {
         const payload = req.body;
-        
 
         if (payload.requests && payload.requests.zsdocumentid) {
             const id = payload.requests.zsdocumentid;
@@ -44,7 +43,7 @@ export default class ZohoSignController {
                 await new ContractRepo().getContractByDocId(id);
 
             // console.log(existingContract);
-            
+
             if (existingContract) {
                 const data: SignDoc = {
                     docId: id,
@@ -65,11 +64,20 @@ export default class ZohoSignController {
                     existingContract.signedDate = new Date();
                 }
                 existingContract.signedDocs.push(data);
-                const res = await new ContractRepo().update(
+                console.log(existingContract);
+
+                await new ZohoSignRepo().handleZohoSignCaptured(
                     existingContract.id,
-                    existingContract
+                    existingContract,
+                    id,
+                    payload.requests.request_status
                 );
-                console.log(res);
+
+                // const res = await new ContractRepo().update(
+                //     existingContract.id,
+                //     existingContract
+                // );
+                // console.log(res);
             }
         }
         // Extract and process notifications data

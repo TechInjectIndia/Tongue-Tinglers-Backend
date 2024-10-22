@@ -42,6 +42,9 @@ export default class ZohoSignController {
             const id = payload.requests.zsdocumentid;
             const existingContract =
                 await new ContractRepo().getContractByDocId(id);
+
+            console.log(existingContract);
+            
             if (existingContract) {
                 const data: SignDoc = {
                     docId: id,

@@ -109,7 +109,7 @@ const editContractBody = Joi.object().keys({
             'any.only': 'Status must be one of the predefined values.'
         }),
     terminationDetails: terminationDetailsSchema.optional(),
-    payment: contractPaymentDetailsSchema.optional(),
+    payment: contractPaymentDetailsSchema.allow(null).optional(),
     amount: Joi.number().optional(),
     signedDate: Joi.date().allow(null).optional(),
     dueDate: Joi.date().optional(),

@@ -42,7 +42,7 @@ export default class ZohoSignController {
             const existingContract =
                 await new ContractRepo().getContractByDocId(id);
 
-            // console.log(existingContract);
+            console.log(existingContract);
 
             if (existingContract) {
                 const data: SignDoc = {
@@ -52,10 +52,10 @@ export default class ZohoSignController {
                         id: "webhook",
                     },
                     createdAt: new Date(),
-                    status: payload.requests.request_status,
+                    status: payload.requests.actions[0].action_status,
                     docLink: "",
                     signedDate:
-                        payload.requests.request_status === "completed"
+                        payload.requests.actions[0].action_status === "SIGNED"
                             ? new Date()
                             : null,
                     notes: null,

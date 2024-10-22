@@ -68,9 +68,7 @@ export default class ZohoSignController {
 
                 await new ZohoSignRepo().handleZohoSignCaptured(
                     existingContract.id,
-                    existingContract,
-                    id,
-                    payload.requests.request_status
+                    existingContract.signedDocs
                 );
 
                 // const res = await new ContractRepo().update(

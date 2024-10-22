@@ -16,16 +16,16 @@ import { ContractRepo } from "../../contracts/models/ContractModel";
 export class ZohoSignRepo implements IBaseRepo<TemplateType> {
     constructor() { }
 
-    public async handleZohoSignCaptured(contractId, contractDetails, requestId, status) {
-        const signedDocs = contractDetails.signedDocs.map((doc) => {
-            if (doc.docId === requestId) {
-                return {
-                    ...doc,
-                    status: status
-                };
-            }
-            return doc;
-        });
+    public async handleZohoSignCaptured(contractId, signedDocs) {
+        // const signedDocs = contractDetails.signedDocs.map((doc) => {
+        //     if (doc.docId === requestId) {
+        //         return {
+        //             ...doc,
+        //             status: status
+        //         };
+        //     }
+        //     return doc;
+        // });
 
         await new ContractRepo().updateContractDoc(contractId, { signedDocs });
 

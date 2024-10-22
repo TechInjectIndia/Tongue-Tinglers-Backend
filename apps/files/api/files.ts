@@ -1,10 +1,10 @@
 import express from 'express';
+import multer from 'multer';
 import FilesController from '../controllers/FileController';
 import { validateFileUpload, validateDeleteFiles, validateListFilesQuery } from '../validations/validateFileUpload';
 
-const multer = require('multer');
-const upload = multer({ storage: multer.memoryStorage() });
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 /**
  * @swagger

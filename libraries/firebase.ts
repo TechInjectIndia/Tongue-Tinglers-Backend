@@ -51,17 +51,21 @@ export const uploadSingleFileToFirebase = async (req: any, destinationPath: stri
 }
 
 export const uploadFileToFirebase = async (file: any, destinationPath: string) => {
-  const fileName = `${Date.now()}` + file.originalname;
-  var buffer = new Uint8Array(file.buffer);
+  const fileName = `${Date.now()}-${file.originalname}`;
+  const fileUpload = bucket.file(`${destinationPath}/${fileName}`);
 
-  const fileUpload = bucket.file(destinationPath + '/' + fileName);
+  // Check if buffer is available
+  if (!file.buffer) {
+    throw new Error("File buffer is undefined");
+  }
+
+  // Use the file.buffer directly
+  await fileUpload.save(file.buffer, { resumable: false });
 
   const result = new Date();
   result.setFullYear(result.getFullYear() + 50);
 
   const url = await fileUpload.getSignedUrl({ action: "read", expires: result });
-  await fileUpload.save(buffer, { resumable: true });
-
   return url;
 }
 

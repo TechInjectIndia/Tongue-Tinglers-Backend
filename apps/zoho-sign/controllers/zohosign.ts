@@ -43,7 +43,7 @@ export default class ZohoSignController {
             const existingContract =
                 await new ContractRepo().getContractByDocId(id);
 
-            console.log(existingContract);
+            // console.log(existingContract);
             
             if (existingContract) {
                 const data: SignDoc = {

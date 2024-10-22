@@ -36,7 +36,7 @@ export default class ZohoSignController {
     // Webhook endpoint
     static async callback(req: Request, res: Response, next: NextFunction) {
         const payload = req.body;
-        console.log("zoho payload", payload);
+        
 
         if (payload.requests && payload.requests.zsdocumentid) {
             const id = payload.requests.zsdocumentid;

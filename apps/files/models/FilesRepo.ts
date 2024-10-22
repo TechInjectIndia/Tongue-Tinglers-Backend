@@ -29,15 +29,15 @@ export class FilesRepo {
     }
 
     // Uploads a file to Firebase Storage and saves the file data in the database
-    public async uploadFile(file: any, destinationPath: string): Promise<string> {
+    public async uploadFile(file: any, fileInfo: any, destinationPath: string): Promise<string> {
         const urlArray = await uploadFileToFirebase(file, destinationPath);
         const url = urlArray[0];
 
         const newFile = await FileModel.create({
-            name: file.name,
-            message: file.message,
+            name: fileInfo.name,
+            message: fileInfo.message,
             url: url,
-            recommended: file.recommended
+            recommended: fileInfo.recommended
         });
 
         return newFile.url;

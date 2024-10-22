@@ -24,8 +24,8 @@ export default class FilesController {
 
     static async uploadFile(req: Request, res: Response) {
         try {
-            console.log('>>>>>>>>>>>>>>', req);
-            const files = req.files as Multer.File[];
+            const files = req.files as Multer.File;
+            // const files = req.body.files as Multer.File;
             let fileDetails = req.body.fileDetails;
 
             // Check if files were uploaded
@@ -35,7 +35,7 @@ export default class FilesController {
                 });
             }
 
-            let parsedFileDetails: { name: string; message: string; recommended: string }[];
+            let parsedFileDetails: any[] = [];
             if (typeof fileDetails === 'string') {
                 try {
                     parsedFileDetails = JSON.parse(fileDetails);
@@ -45,6 +45,8 @@ export default class FilesController {
                         message: 'Invalid fileDetails format. It should be a valid JSON string.',
                     });
                 }
+            } else {
+                parsedFileDetails = fileDetails;
             }
 
             // Check if the length of both arrays matches
@@ -65,7 +67,7 @@ export default class FilesController {
                     recommended: details.recommended === 'true',
                 };
 
-                const url = await new FilesRepo().uploadFile(fileInfo, 'uploads');
+                const url = await new FilesRepo().uploadFile(file, fileInfo, 'uploads');
                 return { originalname: file.originalname, url, recommended: fileInfo.recommended };
             });
 

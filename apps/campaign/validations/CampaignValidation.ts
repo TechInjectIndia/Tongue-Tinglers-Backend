@@ -8,11 +8,6 @@ const createCampaignBody = Joi.object().keys({
     .messages({ 'any.required': 'Campaign name is required.' }),
   description: Joi.string().optional()
     .messages({ 'string.base': 'Description must be a string.' }),
-  startDate: Joi.date().required()
-    .messages({ 'any.required': 'Start date is required.' }),
-  endDate: Joi.date().optional()
-    .greater(Joi.ref('startDate'))
-    .messages({ 'date.greater': 'End date must be after start date.' }),
   questionList: Joi.array().items(
     Joi.string().uuid().required()
       .messages({ 'any.required': 'Question ID is required.' })
@@ -26,11 +21,6 @@ const editCampaignBody = Joi.object().keys({
     .messages({ 'string.base': 'Campaign name must be a string.' }),
   description: Joi.string().optional()
     .messages({ 'string.base': 'Description must be a string.' }),
-  startDate: Joi.date().optional()
-    .messages({ 'date.base': 'Start date must be a valid date.' }),
-  endDate: Joi.date().optional()
-    .greater(Joi.ref('startDate'))
-    .messages({ 'date.greater': 'End date must be after start date.' }),
   questionList: Joi.array().items(
     Joi.string().uuid().required()
       .messages({ 'any.required': 'Question ID is required.' })

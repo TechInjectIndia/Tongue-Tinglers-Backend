@@ -12,8 +12,6 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes> imple
     public id!: string;
     public name!: string;
     public description?: string;
-    public startDate?: Date;
-    public endDate?: Date;
     public questionList!: string[];
 
     public createdBy!: string;
@@ -68,16 +66,6 @@ CampaignAdModel.init({
         type: JSONB,
         allowNull: false,
         comment: 'List of questions associated with the campaign',
-    },
-    startDate: {
-        type: DATE,
-        allowNull: false,
-        comment: 'Start date of the campaign',
-    },
-    endDate: {
-        type: DATE,
-        allowNull: true,
-        comment: 'End date of the campaign (optional)',
     },
     createdBy: {
         type: STRING,

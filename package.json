@@ -19,7 +19,8 @@
     "dev": "ts-node-dev --watch -r tsconfig-paths/register ./app.ts",
     "lint": "git diff --cached --name-only --diff-filter=d | grep '.ts$' | xargs eslint",
     "lint:fix": "npm run lint -- --fix",
-    "build": "tsc && node copy.js",
+    "build": "tsc && npm run copy",
+    "copy": "node --max-old-space-size=8192 copy.js",
     "tsc-w": "tsc -w"
   },
   "dependencies": {

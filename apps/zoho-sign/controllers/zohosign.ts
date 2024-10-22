@@ -8,7 +8,7 @@ import FormData from "form-data";
 import fs from "fs";
 import crypto from "crypto";
 import { jsonData } from "../../../types";
-import { SIGN_STATUS } from '../../../interfaces';
+import { SIGN_STATUS, SignDoc } from "../../../interfaces";
 
 const { ZOHO_WEBHOOK_SECRET } = process.env;
 
@@ -37,94 +37,131 @@ export default class ZohoSignController {
     static async callback(req: Request, res: Response, next: NextFunction) {
         const payload = req.body;
         console.log("zoho payload", payload);
-        // Extract and process notifications data
-        const notifications = payload.notifications || {};
-        const performedByEmail = notifications.performed_by_email;
-        const performedByName = notifications.performed_by_name;
-        const performedAt = notifications.performed_at;
-        const reason = notifications.reason;
-        const activity = notifications.activity;
-        const operationType = notifications.operation_type;
-        const actionId = notifications.action_id;
-        const ipAddress = notifications.ip_address;
 
-        // Convert timestamp from milliseconds to a Date object
-        const performedAtDate = new Date(performedAt);
-
-        // Log the data
-        console.log(
-            `Operation performed by: ${performedByName} (${performedByEmail})`
-        );
-        console.log(`Timestamp: ${performedAtDate}`);
-        console.log(`Reason: ${reason}`);
-        console.log(`Activity: ${activity}`);
-        console.log(`Operation Type: ${operationType}`);
-        console.log(`Action ID: ${actionId}`);
-        console.log(`IP Address: ${ipAddress}`);
-
-        // Extract and process requests data
-        const requests = payload.requests || {};
-        const requestName = requests.request_name;
-        const requestId = requests.request_id;
-        const documentIds = requests.document_ids || [];
-
-        // Log the requests data
-        console.log(`Request Name: ${requestName}`);
-        console.log(`Request ID: ${requestId}`);
-
-        documentIds.forEach((doc) => {
-            const documentName = doc.document_name;
-            const documentId = doc.document_id;
-            console.log(`Document Name: ${documentName}`);
-            console.log(`Document ID: ${documentId}`);
-        });
-
-        const contractDetails = await new ContractRepo().getContractByDocId(
-            requestId as string
-        );
-
-        let contractId = '';
-        if (contractDetails) {
-            contractId = contractDetails.id
-        }
-
-        // Handle different operation types
-        switch (operationType) {
-            case "RequestSubmitted":
-                console.log("A new request has been submitted.");
-                break;
-            case "RequestViewed":
-                console.log("A request has been viewed.");
-                break;
-            case "RequestSigningSuccess":
-                if (contractId != '') {
-                    await new ZohoSignRepo().handleZohoSignCaptured(contractId, contractDetails, requestId, SIGN_STATUS.COMPLETED);
+        if (payload.requests && payload.requests.zsdocumentid) {
+            const id = payload.requests.zsdocumentid;
+            const existingContract =
+                await new ContractRepo().getContractByDocId(id);
+            if (existingContract) {
+                const data: SignDoc = {
+                    docId: id,
+                    sentBy: {
+                        userName: "webhook",
+                        id: "webhook",
+                    },
+                    createdAt: new Date(),
+                    status: payload.requests.request_status,
+                    docLink: "",
+                    signedDate:
+                        payload.requests.request_status === "completed"
+                            ? new Date()
+                            : null,
+                    notes: null,
+                };
+                if (data.signedDate) {
+                    existingContract.signedDate = new Date();
                 }
-                console.log("A document has been signed successfully.");
-                break;
-            case "RequestCompleted":
-                console.log("The request has been completed.");
-                break;
-            case "RequestRejected":
-                console.log("The request has been rejected.");
-                break;
-            case "RequestRecalled":
-                console.log("The request has been recalled.");
-                break;
-            case "RequestForwarded":
-                console.log(
-                    "The request has been forwarded to another person."
+                existingContract.signedDocs.push(data);
+                const res = await new ContractRepo().update(
+                    existingContract.id,
+                    existingContract
                 );
-                break;
-            case "RequestExpired":
-                console.log("The request has expired.");
-                break;
-            default:
-                console.log("Unknown operation type.");
-                break;
+                console.log(res);
+            }
         }
+        // Extract and process notifications data
+        // const notifications = payload.notifications || {};
+        // const performedByEmail = notifications.performed_by_email;
+        // const performedByName = notifications.performed_by_name;
+        // const performedAt = notifications.performed_at;
+        // const reason = notifications.reason;
+        // const activity = notifications.activity;
+        // const operationType = notifications.operation_type;
+        // const actionId = notifications.action_id;
+        // const ipAddress = notifications.ip_address;
 
-        return res.status(200).send({ message: 'Success' });
+        // // Convert timestamp from milliseconds to a Date object
+        // const performedAtDate = new Date(performedAt);
+
+        // // Log the data
+        // console.log(
+        //     `Operation performed by: ${performedByName} (${performedByEmail})`
+        // );
+        // console.log(`Timestamp: ${performedAtDate}`);
+        // console.log(`Reason: ${reason}`);
+        // console.log(`Activity: ${activity}`);
+        // console.log(`Operation Type: ${operationType}`);
+        // console.log(`Action ID: ${actionId}`);
+        // console.log(`IP Address: ${ipAddress}`);
+
+        // // Extract and process requests data
+        // const requests = payload.requests || {};
+        // const requestName = requests.request_name;
+        // const requestId = requests.request_id;
+        // const documentIds = requests.document_ids || [];
+
+        // // Log the requests data
+        // console.log(`Request Name: ${requestName}`);
+        // console.log(`Request ID: ${requestId}`);
+
+        // documentIds.forEach((doc) => {
+        //     const documentName = doc.document_name;
+        //     const documentId = doc.document_id;
+        //     console.log(`Document Name: ${documentName}`);
+        //     console.log(`Document ID: ${documentId}`);
+        // });
+
+        // const contractDetails = await new ContractRepo().getContractByDocId(
+        //     requestId as string
+        // );
+
+        // let contractId = "";
+        // if (contractDetails) {
+        //     contractId = contractDetails.id;
+        // }
+
+        // // Handle different operation types
+        // switch (operationType) {
+        //     case "RequestSubmitted":
+        //         console.log("A new request has been submitted.");
+        //         break;
+        //     case "RequestViewed":
+        //         console.log("A request has been viewed.");
+        //         break;
+        //     case "RequestSigningSuccess":
+        //         if (contractId != "") {
+        //             await new ZohoSignRepo().handleZohoSignCaptured(
+        //                 contractId,
+        //                 contractDetails,
+        //                 requestId,
+        //                 SIGN_STATUS.COMPLETED
+        //             );
+        //         }
+        //         console.log("A document has been signed successfully.");
+        //         break;
+        //     case "RequestCompleted":
+        //         console.log("The request has been completed.");
+        //         break;
+        //     case "RequestRejected":
+        //         console.log("The request has been rejected.");
+        //         break;
+        //     case "RequestRecalled":
+        //         console.log("The request has been recalled.");
+        //         break;
+        //     case "RequestForwarded":
+        //         console.log(
+        //             "The request has been forwarded to another person."
+        //         );
+        //         break;
+        //     case "RequestExpired":
+        //         console.log("The request has expired.");
+        //         break;
+        //     default:
+        //         console.log("Unknown operation type.");
+        //         break;
+        // }
+
+        return res.status(200).send({ message: "Success" });
     }
 
     // Send document to franchise using template
@@ -210,16 +247,16 @@ export default class ZohoSignController {
                     data
                 );
             if (sendDocument) {
-                const currentSignedDocs = Array.isArray(contractDetails.signedDocs) ?
-                    [...contractDetails.signedDocs] : [];
+                // const currentSignedDocs = Array.isArray(contractDetails.signedDocs) ?
+                //     [...contractDetails.signedDocs] : [];
 
-                const contractSignDocPayload = {
-                    ...contractDetails.signedDocs[0],
-                    docId: sendDocument?.requests.request_id,
-                };
+                // const contractSignDocPayload = {
+                //     ...contractDetails.signedDocs[0],
+                //     docId: sendDocument?.requests.request_id,
+                // };
 
-                currentSignedDocs.push(contractSignDocPayload);
-                await new ContractRepo().updateContractDoc(contractId, currentSignedDocs);
+                // currentSignedDocs.push(contractSignDocPayload);
+                // await new ContractRepo().updateContractDoc(contractId, currentSignedDocs);
 
                 return res.status(200).send({
                     success: true,

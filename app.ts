@@ -21,6 +21,7 @@ const rateLimiter = new RateLimiterMemory({
 });
 import expressSanitizer from "express-sanitizer";
 import { folderPath } from "./path";
+import { ContractRepo } from "./apps/contracts/models/ContractModel";
 
 dotenv.config();
 // const env = dotenv.config({ path: `${__dirname}/.env` });
@@ -99,6 +100,11 @@ server.get("/", (_, res) => {
     res.send("Hello from Tongue tingler server");
 });
 server.use("/api", router);
+
+server.get("/test", async (req, res) => {
+    const existingContract = await new ContractRepo().getContractByDocId("DFA3A3580-ZJDF32NGJVEOQ86IZHCOICN5WCUB7YOLCNSSSBNJ48M");
+    res.json(existingContract);
+});
 
 const PORT = CONFIG.PORT;
 try {

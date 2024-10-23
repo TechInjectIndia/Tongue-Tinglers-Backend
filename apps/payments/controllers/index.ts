@@ -30,15 +30,17 @@ const razorpayInstance = new Razorpay({
 export default class PaymentsController {
     static async callback(req: Request, res: Response, next: NextFunction) {
         const webhookSignature = req.headers["x-razorpay-signature"];
-        const payload = req.body;
-        console.log("Payment Razorpay payload", payload.payment_link);
+        const body = req.body;
+        console.log("Payment Razorpay payload", body.payload);
         console.log(CONFIG.RP_WEBHOOK_SECRET);
 
         const isVerified = validateWebhookSignature(
-            JSON.stringify(payload),
+            JSON.stringify(body),
             webhookSignature,
             CONFIG.RP_WEBHOOK_SECRET
         );
+
+        const payload = body.payload
 
         if (isVerified) {
             if (

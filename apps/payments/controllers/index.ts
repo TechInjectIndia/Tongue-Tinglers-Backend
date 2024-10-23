@@ -32,6 +32,8 @@ export default class PaymentsController {
         const webhookSignature = req.headers["x-razorpay-signature"];
         const body = req.body;
         console.log("Payment Razorpay payload", body);
+        console.log(body.payload);
+        
         console.log(CONFIG.RP_WEBHOOK_SECRET);
 
         const isVerified = validateWebhookSignature(
@@ -40,45 +42,45 @@ export default class PaymentsController {
             CONFIG.RP_WEBHOOK_SECRET
         );
 
-        const payload = body.payload
+        // const payload = body.payload
 
         if (isVerified) {
-            if (
-                payload.payment_link &&
-                payload.payment_link.entity &&
-                payload.payment_link.entity.status
-            ) {
-                const paymentId = payload.payment_link.entity.id;
-                const status = payload.payment_link.entity.status;
-                const contractDetails =
-                    await new ContractRepo().getContractByPaymentId(
-                        paymentId as string
-                    );
+            // if (
+            //     payload.payment_link &&
+            //     payload.payment_link.entity &&
+            //     payload.payment_link.entity.status
+            // ) {
+            //     const paymentId = payload.payment_link.entity.id;
+            //     const status = payload.payment_link.entity.status;
+            //     const contractDetails =
+            //         await new ContractRepo().getContractByPaymentId(
+            //             paymentId as string
+            //         );
 
-                let contractId = "";
-                if (contractDetails) {
-                    contractId = contractDetails.id;
-                }
+            //     let contractId = "";
+            //     if (contractDetails) {
+            //         contractId = contractDetails.id;
+            //     }
 
-                const paymentDetails: ContractPaymentDetails = {
-                    paymentId: paymentId,
-                    amount: 0,
-                    date: new Date(),
-                    status: status,
-                    additionalInfo: "",
-                };
-                contractDetails.payment.push(paymentDetails);
+            //     const paymentDetails: ContractPaymentDetails = {
+            //         paymentId: paymentId,
+            //         amount: 0,
+            //         date: new Date(),
+            //         status: status,
+            //         additionalInfo: "",
+            //     };
+            //     contractDetails.payment.push(paymentDetails);
 
-                console.log("nitesh");
-                console.log(contractDetails);
+            //     console.log("nitesh");
+            //     console.log(contractDetails);
                 
                 
 
-                await new ContractRepo().updatePaymentStatus(
-                    contractId,
-                    contractDetails as unknown as ContractPaymentDetails[]
-                );
-            }
+            //     await new ContractRepo().updatePaymentStatus(
+            //         contractId,
+            //         contractDetails as unknown as ContractPaymentDetails[]
+            //     );
+            // }
             return res.status(200).send({ message: "Webhook Done" });
         } else {
             console.log("Webhook not verified");

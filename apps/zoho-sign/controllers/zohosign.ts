@@ -36,7 +36,6 @@ export default class ZohoSignController {
     // Webhook endpoint
     static async callback(req: Request, res: Response, next: NextFunction) {
         const payload = req.body;
-        console.log("zoho payload", payload);
 
         if (payload.requests && payload.requests.zsdocumentid) {
             const id = payload.requests.zsdocumentid;
@@ -44,7 +43,7 @@ export default class ZohoSignController {
                 await new ContractRepo().getContractByDocId(id);
 
             console.log(existingContract);
-            
+
             if (existingContract) {
                 const data: SignDoc = {
                     docId: id,
@@ -53,10 +52,10 @@ export default class ZohoSignController {
                         id: "webhook",
                     },
                     createdAt: new Date(),
-                    status: payload.requests.request_status,
+                    status: payload.requests.actions[0].action_status,
                     docLink: "",
                     signedDate:
-                        payload.requests.request_status === "completed"
+                        payload.requests.actions[0].action_status === "SIGNED"
                             ? new Date()
                             : null,
                     notes: null,
@@ -65,11 +64,20 @@ export default class ZohoSignController {
                     existingContract.signedDate = new Date();
                 }
                 existingContract.signedDocs.push(data);
-                const res = await new ContractRepo().update(
+                console.log(existingContract);
+
+                await new ZohoSignRepo().handleZohoSignCaptured(
                     existingContract.id,
-                    existingContract
+                    existingContract.signedDocs
                 );
-                console.log(res);
+
+                // const res = await new ContractRepo().update(
+                //     existingContract.id,
+                //     existingContract
+                // );
+                // console.log(res);
+            } else {
+                console.log("document not found");
             }
         }
         // Extract and process notifications data

@@ -9,7 +9,7 @@ export interface TContract {
         reason: string;
         date: Date;
     }
-    payment: ContractPaymentDetails | null;
+    payment: ContractPaymentDetails[] | null;
     leadId: string;
     templateId: string;
     amount: number;
@@ -37,7 +37,7 @@ export interface TContractPayload {
         reason: string;
         date: Date;
     }
-    payment: ContractPaymentDetails | null;
+    payment: ContractPaymentDetails[] | null;
     leadId: string;
     templateId: string;
     amount: number;

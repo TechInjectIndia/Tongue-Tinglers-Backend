@@ -101,11 +101,6 @@ server.get("/", (_, res) => {
 });
 server.use("/api", router);
 
-server.get("/test", async (req, res) => {
-    const existingContract = await new ContractRepo().getContractByDocId("DFA3A3580-ZJDF32NGJVEOQ86IZHCOICN5WCUB7YOLCNSSSBNJ48M");
-    res.json(existingContract);
-});
-
 const PORT = CONFIG.PORT;
 try {
     server.listen(PORT, () =>

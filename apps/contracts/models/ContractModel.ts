@@ -5,12 +5,17 @@ import {
     TContractsList,
     TContractPayload,
 } from "../../../types";
-import { CONTRACT_PAYMENT_STATUS, ContractPaymentDetails } from "../../../interfaces";
+import {
+    CONTRACT_PAYMENT_STATUS,
+    ContractPaymentDetails,
+} from "../../../interfaces";
 import { ContractModel } from "../../../database/schema";
-import IContractsController from '../controllers/controller/IContractsController';
+import IContractsController from "../controllers/controller/IContractsController";
 
-export class ContractRepo implements IContractsController<TContract, TQueryFilters> {
-    constructor() { }
+export class ContractRepo
+    implements IContractsController<TContract, TQueryFilters>
+{
+    constructor() {}
 
     public async getContractByDocId(docId: string): Promise<TContract | null> {
         try {
@@ -24,47 +29,52 @@ export class ContractRepo implements IContractsController<TContract, TQueryFilte
 
             return contract;
         } catch (error) {
-            console.error('Error fetching contract by docId:', error);
+            console.error("Error fetching contract by docId:", error);
             throw error;
         }
     }
 
-    public async updatePaymentStatus(contractId: string, status: CONTRACT_PAYMENT_STATUS): Promise<any> {
+    public async updatePaymentStatus(
+        contractId: string,
+        payment: ContractPaymentDetails[]
+    ): Promise<any> {
         try {
             const contract = await ContractModel.findByPk(contractId);
             if (!contract) {
-                throw new Error('Contract not found');
+                throw new Error("Contract not found");
             }
 
             await contract.update({
-                payment: {
-                    ...contract.payment,
-                    status,
-                },
+                payment,
             });
         } catch (error) {
-            console.error('Error updating payment status:', error);
+            console.error("Error updating payment status:", error);
             throw error;
         }
     }
 
-    public async getContractByPaymentId(paymentId: string): Promise<TContract | null> {
+    public async getContractByPaymentId(
+        paymentId: string
+    ): Promise<TContract | null> {
         try {
             const contract = await ContractModel.findOne({
                 where: {
-                    'payment.paymentId': paymentId
+                    "payment.paymentId": paymentId,
                 },
-                attributes: ['payment', 'id']
+                attributes: ["payment", "id"],
             });
 
             return contract;
         } catch (error) {
-            console.error('Error fetching contract by paymentId:', error);
+            console.error("Error fetching contract by paymentId:", error);
             throw error;
         }
     }
 
-    public async updateContractDoc(contractId: string, docData: any): Promise<TContract> {
+    public async updateContractDoc(
+        contractId: string,
+        docData: any
+    ): Promise<TContract> {
         const [affectedCount, updatedContracts] = await ContractModel.update(
             { signedDocs: docData },
             { where: { id: contractId }, returning: true }
@@ -87,9 +97,9 @@ export class ContractRepo implements IContractsController<TContract, TQueryFilte
         const data = await ContractModel.findOne({
             where: {
                 payment: {
-                    paymentId: paymentId
-                }
-            }
+                    paymentId: paymentId,
+                },
+            },
         });
         return data ? data.get() : null;
     }
@@ -122,14 +132,20 @@ export class ContractRepo implements IContractsController<TContract, TQueryFilte
         return { total, data };
     }
 
-    public async update(id: string, data: Partial<TContract>): Promise<[affectedCount: number]> {
+    public async update(
+        id: string,
+        data: Partial<TContract>
+    ): Promise<[affectedCount: number]> {
         const response = await ContractModel.update(data, {
             where: { id },
         });
         return response;
     }
 
-    public async updatePayment(contractId: string, paymentData: ContractPaymentDetails): Promise<boolean> {
+    public async updatePayment(
+        contractId: string,
+        paymentData: ContractPaymentDetails[]
+    ): Promise<boolean> {
         const [affectedCount] = await ContractModel.update(
             { payment: paymentData },
             { where: { id: contractId } }

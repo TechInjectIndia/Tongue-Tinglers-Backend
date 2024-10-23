@@ -39,6 +39,8 @@ export default class PaymentsController {
             webhookSignature,
             CONFIG.RP_WEBHOOK_SECRET
         );
+        console.log(isVerified);
+        
         if (isVerified) {
             const contractDetails =
                 await new ContractRepo().getContractByPaymentId(
@@ -49,6 +51,9 @@ export default class PaymentsController {
             if (contractDetails) {
                 contractId = contractDetails.id;
             }
+
+            console.log(contractId);
+            
 
             // switch (payload.event) {
             //     case 'payment.captured':
@@ -63,8 +68,9 @@ export default class PaymentsController {
             return res.status(200).send({ message: "Webhook Done" });
         } else {
             console.log("Webhook not verified");
-            return res.status(500).send({ message: "Webhook not verified" });
+            return res.status(200).send({ message: "Webhook not verified" });
         }
+
     }
 
     static async fetchPayment(req: Request, res: Response, next: NextFunction) {

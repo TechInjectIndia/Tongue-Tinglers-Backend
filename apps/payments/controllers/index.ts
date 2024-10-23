@@ -67,6 +67,11 @@ export default class PaymentsController {
                 };
                 contractDetails.payment.push(paymentDetails);
 
+                console.log("nitesh");
+                console.log(contractDetails);
+                
+                
+
                 await new ContractRepo().updatePaymentStatus(
                     contractId,
                     contractDetails as unknown as ContractPaymentDetails[]

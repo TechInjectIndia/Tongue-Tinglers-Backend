@@ -33,6 +33,7 @@ export default class PaymentsController {
         const body = req.body;
         console.log("Payment Razorpay payload", body);
         console.log(body.payload);
+        console.log(body.payload.payment_link);
         
         console.log(CONFIG.RP_WEBHOOK_SECRET);
 

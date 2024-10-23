@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { GalleryAttributes } from "../../../../interfaces";
 
 /**
  * Interface for Files Controller.
@@ -8,6 +9,7 @@ interface IGalleryController<T> {
     uploadImage(file: any, destinationPath: string): Promise<string>;
     getImages(prefix?: string): Promise<T[]>;
     deleteImage(imageName: string): Promise<void>;
+    update(id: string, data: GalleryAttributes): Promise<[affectedCount: number]>
 }
 
 export default IGalleryController;

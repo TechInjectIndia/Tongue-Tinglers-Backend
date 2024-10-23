@@ -49,6 +49,14 @@ export class GalleryRepo implements IGalleryController<GalleryAttributes> {
         return dbImages;
     }
 
+    public async update(id: string, data: GalleryAttributes): Promise<[affectedCount: number]> {
+        return await GalleryModel.update(data, {
+            where: {
+                id,
+            },
+        });
+    }
+
     // Delete an image by its name in Firebase and the database
     public async deleteImage(imageName: string): Promise<void> {
         await deleteFileFromFirebase(imageName);

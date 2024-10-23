@@ -19,8 +19,30 @@ type TPayloadCampaign = {
     createdBy: string;
 }
 
+interface ICampaignSubmisisons {
+    id: string;
+    campaignId: string;
+    response: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+type TPayloadCampaignSubmisisons = {
+    campaignId: string;
+    response: string;
+}
+
+type TCampaignSubmisisonsList = {
+    total: number,
+    data: ICampaignSubmisisons[]
+}
+
+
 export {
     ICampaign,
     TCampaignList,
-    TPayloadCampaign
+    TPayloadCampaign,
+    ICampaignSubmisisons,
+    TCampaignSubmisisonsList,
+    TPayloadCampaignSubmisisons
 }

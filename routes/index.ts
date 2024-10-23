@@ -52,6 +52,7 @@ import testUsersRouter from "../apps/test-user/api/user"; // for testing only
 import contractsRouter from "../apps/contracts/api";
 import questionRouter from "../apps/questions/api";
 import campaignAdRouter from "../apps/campaign/api";
+import campaignSubmissionsRouter from "../apps/campaign/api/campaignSubmissionsApi";
 import filesRouter from "../apps/files/api/files";
 import galleryRouter from "../apps/gallery/api/gallery";
 import franchiseeRouter from "../apps/franchisee/api/franchisee";
@@ -88,9 +89,10 @@ router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/question`, auth, questionRouter);
 router.use(`${ADMIN}/campaign-ad`, auth, campaignAdRouter);
+router.use(`${ADMIN}/campaign-submissions`, auth, campaignSubmissionsRouter);
 router.use(`${ADMIN}/files`, filesRouter);
 router.use(`${ADMIN}/gallery`, auth, galleryRouter);
-router.use(`${ADMIN}/franchisee`, franchiseeRouter);
+router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
 router.use(`${ADMIN}/pdi-checklist`, auth, pdiChecklistRouter);
 router.use(`${ADMIN}/quick-actions/email`, auth, quickActionEmailRouter);
 router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
@@ -145,6 +147,7 @@ import webTestimonialsRouter from "../apps/testimonials/api/web-testimonials";
 import webReviewsRouter from "../apps/reviews/api/web-reviews";
 import webProductsRouter from "../apps/ecommerce/api/web/products";
 import webRegisterRouter from "../apps/admin-user/api/customer-register";
+import webCampaignRouter from "../apps/campaign/api/web";
 
 // ====== Frontend routes ======
 // router.use(`/menu`, webMenuRouter); // pending
@@ -153,6 +156,8 @@ router.use(`/reviews`, webReviewsRouter);
 router.use(`/testimonials`, webTestimonialsRouter);
 router.use(`/product`, webProductsRouter);
 router.use(`/register`, webRegisterRouter);
+router.use(`/campaign-ad`, webCampaignRouter);
+
 // ====== Frontend ======
 
 // router.use(`/test-payment-link`, () => {

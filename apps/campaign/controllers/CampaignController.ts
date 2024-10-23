@@ -11,7 +11,7 @@ export default class CampaignController {
         try {
             const user_id = get(req, 'user_id', '');
             const payload = { ...req.body, createdBy: user_id };
-            const campaign = await new CampaignAdRepo().create(payload); // Using the Sequelize model for creation
+            const campaign = await new CampaignAdRepo().create(payload);
             return res
                 .status(201)
                 .send(

@@ -48,7 +48,7 @@ router.get('/search', FilesController.searchFiles);
 
 /**
  * @swagger
- * /api/admin/files:
+ * /api/admin/files/:
  *   post:
  *     summary: Upload multiple files with individual names, messages, and recommended status
  *     tags: [Files]
@@ -87,25 +87,30 @@ router.post('/', upload.array('files'), FilesController.uploadFile);
  * @swagger
  * /api/admin/files:
  *   get:
- *     summary: Get all files
+ *     summary: Get all
  *     tags: [Files]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
+ *       - in: query
+ *         name: size
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Size of the retrieved data
+ *       - in: query
+ *         name: skip
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: How many rows to skip
  *     responses:
- *       200:
- *         description: List of files
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   name:
- *                     type: string
- *                   url:
- *                     type: string
- *       400:
- *         description: Bad request
+ *       '200':
+ *         description: Data retrieved successfully
+ *       '400':
+ *         description: Invalid request
+ *       '401':
+ *         description: Unauthorized
  */
 router.get('/', FilesController.getFiles);
 

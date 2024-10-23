@@ -20,28 +20,6 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes> imple
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
-
-    public static associate() {
-        CampaignAdModel.belongsTo(UserModel, {
-            foreignKey: 'createdBy',
-            as: 'creator',
-        });
-
-        CampaignAdModel.belongsTo(UserModel, {
-            foreignKey: 'updatedBy',
-            as: 'updater',
-        });
-
-        CampaignAdModel.belongsTo(UserModel, {
-            foreignKey: 'deletedBy',
-            as: 'deleter',
-        });
-
-        CampaignAdModel.hasMany(questionModel, {
-            foreignKey: 'campaignId',
-            as: 'questions',
-        });
-    }
 }
 
 CampaignAdModel.init({
@@ -106,7 +84,5 @@ CampaignAdModel.init({
     paranoid: true,
     comment: 'Table to store campaigns',
 });
-
-CampaignAdModel.associate();
 
 export { CampaignAdModel };

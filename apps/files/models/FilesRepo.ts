@@ -31,6 +31,24 @@ export class FilesRepo {
         }
     }
 
+    public async update(id: string, data: any): Promise<any> {
+        const existingFile = await FileModel.findByPk(id);
+
+        if (!existingFile) {
+            throw new Error(`File with ID ${id} not found.`);
+        }
+
+        const updatedFile = await existingFile.update({
+            name: data.name,
+            message: data.message,
+            recommended: data.recommended,
+            url: data.url || existingFile.url,
+            updatedAt: new Date(),
+        });
+
+        return updatedFile;
+    }
+
     public async create(data: any): Promise<any> {
         const response = await FileModel.create({
             name: data.name,
@@ -38,6 +56,41 @@ export class FilesRepo {
             recommended: data.recommended
         });
         return response;
+    }
+
+    public async get(id: string): Promise<any> {
+        const data = await FileModel.findOne({
+            where: {
+                id,
+            },
+        });
+        return data;
+    }
+
+    public async updateFile(
+        id: string,
+        file: any,
+        fileInfo: any,
+        destinationPath: string
+    ): Promise<any> {
+        const urlArray = await uploadFileToFirebase(file, destinationPath);
+        const url = urlArray[0];
+
+        // Check if the file already exists in the database by name or other identifier
+        const existingFile = await FileModel.findOne({
+            where: { name: fileInfo.name },
+        });
+
+
+        const updatedFile = await FileModel.update({
+            name: fileInfo.name,
+            message: fileInfo.message,
+            recommended: fileInfo.recommended,
+            url: url || existingFile.url,
+            updatedAt: new Date(),
+        }, { where: { id: id } });
+
+        return updatedFile;
     }
 
     // Uploads a file to Firebase Storage and saves the file data in the database

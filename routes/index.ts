@@ -90,7 +90,7 @@ router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/question`, auth, questionRouter);
 router.use(`${ADMIN}/campaign-ad`, auth, campaignAdRouter);
 router.use(`${ADMIN}/campaign-submissions`, auth, campaignSubmissionsRouter);
-router.use(`${ADMIN}/files`, filesRouter);
+router.use(`${ADMIN}/files`, auth, filesRouter);
 router.use(`${ADMIN}/gallery`, auth, galleryRouter);
 router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
 router.use(`${ADMIN}/pdi-checklist`, auth, pdiChecklistRouter);

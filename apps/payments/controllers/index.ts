@@ -39,6 +39,8 @@ export default class PaymentsController {
             webhookSignature,
             CONFIG.RP_WEBHOOK_SECRET
         );
+        console.log(isVerified);
+        
         if (isVerified) {
             const contractDetails =
                 await new ContractRepo().getContractByPaymentId(

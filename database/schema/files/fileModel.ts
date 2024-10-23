@@ -35,7 +35,7 @@ FileModel.init({
     },
     url: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
     },
     createdAt: {
         type: DataTypes.DATE,

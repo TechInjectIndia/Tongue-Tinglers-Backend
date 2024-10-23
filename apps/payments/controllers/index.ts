@@ -32,7 +32,7 @@ export default class PaymentsController {
         const webhookSignature = req.headers["x-razorpay-signature"];
         const payload = req.body;
         const paymentId = "";
-        console.log("Payment Razorpay payload", payload);
+        console.log("Payment Razorpay payload", payload.payment_link);
         console.log(CONFIG.RP_WEBHOOK_SECRET);
         
 

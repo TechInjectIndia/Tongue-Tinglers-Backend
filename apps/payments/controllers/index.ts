@@ -39,7 +39,6 @@ export default class PaymentsController {
             webhookSignature,
             CONFIG.RP_WEBHOOK_SECRET
         );
-        console.log(isVerified);
         
         if (isVerified) {
             const contractDetails =
@@ -52,7 +51,9 @@ export default class PaymentsController {
                 contractId = contractDetails.id;
             }
 
-            console.log(contractId);
+            console.log("nitesh");
+            console.log(contractDetails);
+            
             
 
             // switch (payload.event) {

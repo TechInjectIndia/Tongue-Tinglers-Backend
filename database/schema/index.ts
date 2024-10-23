@@ -51,6 +51,7 @@ export * from "./lead/proposalModels";
 // crm model ends
 
 export * from "./campaign-ui/campaignAdModel";
+export * from "./campaign-ui/campaignSubmissions";
 export * from "./campaign-ui/questionModel";
 
 export * from "./files/fileModel";
@@ -59,3 +60,25 @@ export * from "./files/galleryModel";
 
 export * from "./franchise/franchiseeModel";
 export * from "./franchise/pdiModel";
+
+// --- Sequelize Associations Setup --- //
+
+// import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
+// import { questionModel } from "./campaign-ui/questionModel";
+
+// CampaignAdModel.belongsToMany(questionModel, {
+//     through: 'CampaignQuestions',
+//     foreignKey: 'campaignId',
+//     otherKey: 'questionId',
+//     as: 'questions',
+// });
+
+// questionModel.belongsToMany(CampaignAdModel, {
+//     through: 'CampaignQuestions',
+//     foreignKey: 'questionId',
+//     otherKey: 'campaignId',
+//     as: 'campaigns',
+// });
+
+console.log("Associations initialized successfully.");
+

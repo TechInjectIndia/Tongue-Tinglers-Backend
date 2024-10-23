@@ -131,4 +131,41 @@ router.get('/', GalleryController.getImages);
  */
 router.delete('/:id', GalleryController.deleteImage);
 
+/**
+ * @swagger
+ * 
+ * /api/admin/gallery/{id}:
+ *   put:
+ *     summary: Update Image data
+ *     tags: [Gallery]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the Image to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: updated successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: not found
+ */
+router.put("/:id", GalleryController.update);
+
 export default router;

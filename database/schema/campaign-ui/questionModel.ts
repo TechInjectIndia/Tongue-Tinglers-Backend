@@ -21,14 +21,6 @@ class questionModel extends Model<IQuestion, FormQuestionCreationAttributes> imp
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
-
-    // Define associations (if any)
-    public static associate() {
-        questionModel.belongsTo(UserModel, { foreignKey: 'createdBy', as: 'creator' });
-        questionModel.belongsTo(UserModel, { foreignKey: 'updatedBy', as: 'updater' });
-        questionModel.belongsTo(UserModel, { foreignKey: 'deletedBy', as: 'deleter' });
-        questionModel.belongsTo(CampaignAdModel, { foreignKey: 'campaignId', as: 'campaign' }); // Associate with CampaignAdModel
-    }
 }
 
 // Initialize the questionModel
@@ -98,4 +90,4 @@ questionModel.init({
     comment: 'Stores dynamic form questions with different question types',
 });
 
-export { questionModel, QuestionType };
+export { questionModel };

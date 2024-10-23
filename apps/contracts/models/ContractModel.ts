@@ -94,14 +94,15 @@ export class ContractRepo
     }
 
     public async getPaymentById(paymentId: string): Promise<TContract | null> {
-        const data = await ContractModel.findOne({
+        const contract = await ContractModel.findOne({
             where: {
-                payment: {
-                    paymentId: paymentId,
+                signedDocs: {
+                    [Op.contains]: [{ paymentId }] as any,
                 },
             },
         });
-        return data ? data.get() : null;
+
+        return contract;
     }
 
     public async get(id: string): Promise<TContract | null> {

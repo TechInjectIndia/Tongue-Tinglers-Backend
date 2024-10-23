@@ -58,29 +58,27 @@ export default class PaymentsController {
                         paymentId as string
                     );
 
-                let contractId = "";
-                if (contractDetails) {
-                    contractId = contractDetails.id;
-                }
+                    console.log(contractDetails);
+                    
 
-                const paymentDetails: ContractPaymentDetails = {
-                    paymentId: paymentId,
-                    amount: 0,
-                    date: new Date(),
-                    status: status,
-                    additionalInfo: "",
-                };
-                contractDetails.payment.push(paymentDetails);
+               
 
-                console.log("nitesh");
-                console.log(contractDetails);
+                // const paymentDetails: ContractPaymentDetails = {
+                //     paymentId: paymentId,
+                //     amount: 0,
+                //     date: new Date(),
+                //     status: status,
+                //     additionalInfo: "",
+                // };
+                
+                
                 
                 
 
-                await new ContractRepo().updatePaymentStatus(
-                    contractId,
-                    contractDetails as unknown as ContractPaymentDetails[]
-                );
+                // await new ContractRepo().updatePaymentStatus(
+                //     contractId,
+                //     contractDetails as unknown as ContractPaymentDetails[]
+                // );
             }
             return res.status(200).send({ message: "Webhook Done" });
         } else {

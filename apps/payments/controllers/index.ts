@@ -33,6 +33,8 @@ export default class PaymentsController {
         const payload = req.body;
         const paymentId = "";
         console.log("Payment Razorpay payload", payload);
+        console.log(CONFIG.RP_WEBHOOK_SECRET);
+        
 
         const isVerified = validateWebhookSignature(
             JSON.stringify(payload),

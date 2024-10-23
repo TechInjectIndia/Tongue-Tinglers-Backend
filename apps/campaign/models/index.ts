@@ -1,4 +1,5 @@
 import { Op } from "sequelize";
+import { sequelize } from "../../../config";
 import {
     TListFilters,
 } from "../../../types";
@@ -6,21 +7,29 @@ import {
     TCampaignList,
     TPayloadCampaign,
     ICampaign,
+    IQuestion
 } from "../../../interfaces";
-import { CampaignAdModel } from "../../../database/schema";
+import { CampaignAdModel, questionModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IController';
 
 export class CampaignAdRepo implements IBaseRepo<ICampaign, TListFilters> {
     constructor() { }
 
     public async get(id: string): Promise<ICampaign | null> {
-        // Retrieve a campaign by its ID
-        const data = await CampaignAdModel.findOne({
-            where: {
-                id,
-            },
-        });
-        return data;
+        const campaign = await CampaignAdModel.findOne({ where: { id } });
+
+        const { questionList } = campaign;
+
+        const questions = questionList?.length
+            ? await questionModel.findAll({ where: { id: questionList } })
+            : [];
+
+        const campaignWithQuestions = {
+            ...campaign.toJSON(),
+            questions: questions.map((q) => q.toJSON() as IQuestion),
+        };
+
+        return campaignWithQuestions;
     }
 
     public async list(filters: TListFilters): Promise<TCampaignList> {
@@ -44,7 +53,7 @@ export class CampaignAdRepo implements IBaseRepo<ICampaign, TListFilters> {
                 },
             },
         });
-        
+
         return { total, data };
     }
 

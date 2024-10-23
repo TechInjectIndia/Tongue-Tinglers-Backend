@@ -24,18 +24,10 @@ export default class FilesController {
 
     static async uploadFile(req: Request, res: Response) {
         try {
-            const files = req.files as Multer.File;
-            // const files = req.body.files as Multer.File;
-            let fileDetails = req.body.fileDetails;
-
-            // Check if files were uploaded
-            if (!files || files.length === 0) {
-                return res.status(400).send({
-                    message: "No files uploaded.",
-                });
-            }
-
             let parsedFileDetails: any[] = [];
+            let files: any[] = [];
+
+            let fileDetails = req.body.fileDetails;
             if (typeof fileDetails === 'string') {
                 try {
                     parsedFileDetails = JSON.parse(fileDetails);
@@ -49,34 +41,37 @@ export default class FilesController {
                 parsedFileDetails = fileDetails;
             }
 
-            // Check if the length of both arrays matches
-            if (files.length !== parsedFileDetails.length) {
-                return res.status(400).send({
-                    error: true,
-                    message: 'The number of files must match the number of file details provided.',
-                });
-            }
+            let result: any
+            if (req.files && req.files.length != 0) {
+                files = req.files as Multer.File;
 
-            // Process each file and upload it
-            const uploadPromises = files.map(async (file: Multer.File, index: number) => {
-                const details = parsedFileDetails[index];
+                // Process each file and upload it
+                const uploadPromises = files.map(async (file: Multer.File, index: number) => {
+                    const details = parsedFileDetails[index];
+                    const fileInfo = {
+                        originalname: file.originalname,
+                        message: details.message || '',
+                        name: details.name || '',
+                        recommended: details.recommended,
+                    };
+
+                    const url = await new FilesRepo().uploadFile(file, fileInfo, 'uploads');
+                    return { originalname: file.originalname, url, recommended: fileInfo.recommended };
+                });
+                result = await Promise.all(uploadPromises);
+            } else {
+                const details = parsedFileDetails[0];
                 const fileInfo = {
-                    originalname: file.originalname,
                     message: details.message || '',
                     name: details.name || '',
-                    recommended: details.recommended === 'true',
+                    recommended: details.recommended,
                 };
+                result = await new FilesRepo().create(fileInfo);
+            }
 
-                const url = await new FilesRepo().uploadFile(file, fileInfo, 'uploads');
-                return { originalname: file.originalname, url, recommended: fileInfo.recommended };
-            });
-
-            const uploadResults = await Promise.all(uploadPromises);
-
-            // Return the response with URLs and details
-            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPLOADED, { uploadResults }));
+            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPLOADED, { result }));
         } catch (err) {
-            console.error("Error uploading files:", err);
+            console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

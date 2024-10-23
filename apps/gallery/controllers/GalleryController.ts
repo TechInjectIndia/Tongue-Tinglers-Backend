@@ -1,12 +1,13 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from "express";
 import { GalleryRepo } from '../models/GalleryRepo';
 import { sendResponse } from '../../../libraries';
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from '../../../constants';
 import { Multer } from 'multer';
+import { get, isEmpty } from "lodash";
 
 export default class GalleryController {
     // Search for images by name or message
-    static async searchImages(req: Request, res: Response) {
+    static async searchImages(req: Request, res: Response, next: NextFunction) {
         const { name, message } = req.query;
 
         try {
@@ -23,7 +24,7 @@ export default class GalleryController {
     }
 
     // Upload multiple images with details
-    static async uploadImages(req: Request, res: Response) {
+    static async uploadImages(req: Request, res: Response, next: NextFunction) {
         try {
             const images = req.files as Multer.File[];
             let imageDetails = req.body.imageDetails;
@@ -81,8 +82,32 @@ export default class GalleryController {
         }
     }
 
+    static async update(req: Request, res: Response, next: NextFunction) {
+        try {
+            const id = get(req?.params, "id", "");
+            const payload = req?.body;
+            delete payload.id;
+
+            const payloadUpdated = await new GalleryRepo().update(id as string, { ...payload });
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPDATED,
+                        payloadUpdated
+                    )
+                );
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     // Get all images
-    static async getImages(req: Request, res: Response) {
+    static async getImages(req: Request, res: Response, next: NextFunction) {
         try {
             const images = await new GalleryRepo().getImages(); // Make sure to implement this method in GalleryRepo
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, images));
@@ -95,7 +120,7 @@ export default class GalleryController {
     }
 
     // Delete an image by ID
-    static async deleteImage(req: Request, res: Response) {
+    static async deleteImage(req: Request, res: Response, next: NextFunction) {
         try {
             const imageId = req.params.id; // Assuming image ID is passed in the path
             await new GalleryRepo().deleteImage(imageId); // Make sure to implement this method in GalleryRepo

@@ -1,6 +1,9 @@
 import { uploadFileToFirebase, getAllFilesFromFirebase, deleteFileFromFirebase } from '../../../libraries'; // Adjust import path as necessary
 import { FileModel } from "../../../database/schema";
 import { Op } from "sequelize";
+import {
+    ICampaignSubmisisons,
+} from "../../../interfaces";
 
 export class FilesRepo {
     public async searchFiles(name?: string, message?: string): Promise<any[]> {
@@ -26,6 +29,15 @@ export class FilesRepo {
             console.error('Error searching files:', error);
             throw new Error('Failed to search files.');
         }
+    }
+
+    public async create(data: any): Promise<any> {
+        const response = await FileModel.create({
+            name: data.name,
+            message: data.message,
+            recommended: data.recommended
+        });
+        return response;
     }
 
     // Uploads a file to Firebase Storage and saves the file data in the database

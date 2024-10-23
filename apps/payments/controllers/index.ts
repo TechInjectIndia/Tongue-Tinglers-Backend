@@ -50,6 +50,9 @@ export default class PaymentsController {
                 contractId = contractDetails.id;
             }
 
+            console.log(contractId);
+            
+
             // switch (payload.event) {
             //     case 'payment.captured':
             //         await new ContractRepo().updatePaymentStatus(contractId, CONTRACT_PAYMENT_STATUS.SUCCESS);

@@ -42,7 +42,7 @@ export default class PaymentsController {
             CONFIG.RP_WEBHOOK_SECRET
         );
         
-        if (isVerified && paymentId ) {
+        if (isVerified ) {
             const contractDetails =
                 await new ContractRepo().getContractByPaymentId(
                     paymentId as string

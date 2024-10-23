@@ -31,7 +31,7 @@ export default class PaymentsController {
     static async callback(req: Request, res: Response, next: NextFunction) {
         const webhookSignature = req.headers["x-razorpay-signature"];
         const payload = req.body;
-        const paymentId = payload.payload.payment.entity.id;
+        const paymentId = "";
         console.log("Payment Razorpay payload", payload);
 
         const isVerified = validateWebhookSignature(
@@ -39,9 +39,8 @@ export default class PaymentsController {
             webhookSignature,
             CONFIG.RP_WEBHOOK_SECRET
         );
-        console.log(isVerified);
         
-        if (isVerified) {
+        if (isVerified && paymentId ) {
             const contractDetails =
                 await new ContractRepo().getContractByPaymentId(
                     paymentId as string
@@ -52,7 +51,9 @@ export default class PaymentsController {
                 contractId = contractDetails.id;
             }
 
-            console.log(contractId);
+            console.log("nitesh");
+            console.log(contractDetails);
+            
             
 
             // switch (payload.event) {

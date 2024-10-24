@@ -68,7 +68,7 @@ export default class PaymentsController {
                     contractDetails.payment.push(paymentDetails);
                     await new ContractRepo().updatePaymentStatus(
                         contractDetails.id,
-                        contractDetails as unknown as ContractPaymentDetails[]
+                        contractDetails.payment as unknown as ContractPaymentDetails[]
                     );
                 }
             }

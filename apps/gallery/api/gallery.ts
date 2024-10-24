@@ -61,10 +61,10 @@ router.get('/search', GalleryController.searchImages);
  *           schema:
  *             type: object
  *             required:
- *               - images
+ *               - files
  *               - imageDetails
  *             properties:
- *               images:
+ *               files:
  *                 type: array
  *                 items:
  *                   type: string

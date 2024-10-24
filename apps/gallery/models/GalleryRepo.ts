@@ -28,15 +28,15 @@ export class GalleryRepo implements IGalleryController<GalleryAttributes> {
     }
 
     // Upload an image to Firebase Storage and save the image data in the database
-    public async uploadImage(file: any, destinationPath: string): Promise<string> {
+    public async uploadImage(file: any, fileInfo: any, destinationPath: string): Promise<string> {
         const urlArray = await uploadFileToFirebase(file, destinationPath);
         const url = urlArray[0];
 
         const newImage = await GalleryModel.create({
-            name: file.name,
-            message: file.message,
+            name: fileInfo.name,
+            message: fileInfo.message,
             url: url,
-            caption: file.caption
+            caption: fileInfo.caption
         });
 
         return newImage.url;

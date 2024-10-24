@@ -66,7 +66,7 @@ export default class GalleryController {
                     caption: details.caption,
                 };
 
-                const url = await new GalleryRepo().uploadImage(imageInfo, 'uploads');
+                const url = await new GalleryRepo().uploadImage(image, imageInfo, 'uploads');
                 return { originalname: image.originalname, url, name: details.name, message: details.message, caption: imageInfo.caption };
             });
 

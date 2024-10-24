@@ -42,9 +42,6 @@ export default class PaymentsController {
             webhookSignature,
             CONFIG.RP_WEBHOOK_SECRET
         );
-
-        // const payload = body.payload
-
         if (isVerified) {
             if (
                 body.payload &&
@@ -204,9 +201,17 @@ export default class PaymentsController {
                 additionalInfo: link.description,
             };
 
-            await new ContractRepo().updatePayment(contract_id, [
-                paymentPayload,
-            ]);
+            let contractPayment: ContractPaymentDetails[] = [];
+            if (contractDetails.payment) {
+                contractPayment = contractDetails.payment;
+                contractPayment.push(paymentPayload);
+            } else {
+                contractPayment = [paymentPayload];
+            }
+            await new ContractRepo().updatePayment(
+                contract_id,
+                contractPayment
+            );
 
             try {
                 const emailContent = await getEmailTemplate(

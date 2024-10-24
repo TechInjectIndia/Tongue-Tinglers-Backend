@@ -3,7 +3,7 @@ import { sequelize } from "../../../config";
 import { CampaignAdModel } from './campaignAdModel';
 import { ICampaignSubmisisons } from '../../../interfaces';
 
-const { STRING, DATE, NOW, UUIDV4 } = DataTypes;
+const { TEXT, DATE, NOW, UUIDV4 } = DataTypes;
 
 interface AnswerCreationAttributes extends Optional<ICampaignSubmisisons, 'id' | 'createdAt' | 'updatedAt'> { }
 
@@ -37,7 +37,7 @@ CampaignSubmissions.init({
         comment: 'The campaign this answer is associated with',
     },
     response: {
-        type: STRING,
+        type: TEXT,
         allowNull: false,
         comment: 'The actual answer provided by the user',
     },

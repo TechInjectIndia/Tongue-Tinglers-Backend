@@ -59,10 +59,13 @@ export class ContractRepo
         try {
             const contract = await ContractModel.findOne({
                 where: {
-                    "payment.paymentId": paymentId,
+                    signedDocs: {
+                        [Op.contains]: [{ paymentId }] as any,
+                    },
                 },
-                attributes: ["payment", "id"],
             });
+
+            return contract;
 
             return contract;
         } catch (error) {

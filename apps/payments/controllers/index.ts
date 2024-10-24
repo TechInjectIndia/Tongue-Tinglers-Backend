@@ -57,7 +57,7 @@ export default class PaymentsController {
                 if (contractDetails) {
                     const paymentDetails: ContractPaymentDetails = {
                         paymentId: paymentId,
-                        amount: 0,
+                        amount: body.payload.payment_link.entity.amount,
                         date: new Date(),
                         status: status,
                         additionalInfo: "",

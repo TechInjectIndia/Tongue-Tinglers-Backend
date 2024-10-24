@@ -10,7 +10,6 @@ export default class FilesController {
     static async updateFile(req: Request, res: Response) {
         try {
             const id = get(req?.params, "id", '');
-            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>');
             let parsedFileDetails: any[] = [];
             let uploadedFiles: any[] = [];
 

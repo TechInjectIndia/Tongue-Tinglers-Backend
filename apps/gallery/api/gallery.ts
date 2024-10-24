@@ -133,10 +133,50 @@ router.delete('/:id', GalleryController.deleteImage);
 
 /**
  * @swagger
- * 
  * /api/admin/gallery/{id}:
  *   put:
- *     summary: Update Image data
+ *     summary: Update image details and optionally upload new images
+ *     tags: [Gallery]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the image to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               files:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *               fileDetails:
+ *                 type: string
+ *                 description: A JSON string representation of an array of image details
+ *                 example: '[{"name": "image1.jpg", "message": "This is image 1", "caption": "true"}, {"name": "image2.jpg", "message": "This is image 2", "caption": "false"}]'
+ *     responses:
+ *       '200':
+ *         description: Updated successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ */
+router.put("/:id", GalleryController.update);
+
+/**
+ * @swagger
+ * /api/admin/gallery/get/{id}:
+ *   get:
+ *     summary: Get by ID
  *     tags: [Gallery]
  *     security:
  *       - bearerAuth: []
@@ -146,26 +186,34 @@ router.delete('/:id', GalleryController.deleteImage);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the Image to update
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               id:
- *                 type: string
+ *           format: uuid
+ *         description: ID to retrieve
  *     responses:
  *       '200':
- *         description: updated successfully
- *       '400':
- *         description: Invalid request body
+ *         description: Data retrieved successfully
+ *         content:
+ *           application/json:
  *       '401':
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized access"
  *       '404':
- *         description: not found
+ *         description: Data not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Data not found"
  */
-router.put("/:id", GalleryController.update);
+router.get("/get/:id", GalleryController.get);
 
 export default router;

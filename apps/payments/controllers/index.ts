@@ -34,7 +34,7 @@ export default class PaymentsController {
         console.log("Payment Razorpay payload", body);
         console.log(body.payload);
         console.log(body.payload.payment_link);
-        
+
         console.log(CONFIG.RP_WEBHOOK_SECRET);
 
         const isVerified = validateWebhookSignature(
@@ -47,7 +47,7 @@ export default class PaymentsController {
 
         if (isVerified) {
             if (
-                body.payload && 
+                body.payload &&
                 body.payload.payment_link &&
                 body.payload.payment_link.entity
             ) {
@@ -57,33 +57,20 @@ export default class PaymentsController {
                     await new ContractRepo().getContractByPaymentId(
                         paymentId as string
                     );
-
-                    console.log(paymentId);
-                    
-
-                    console.log("nitesh");
-                    
-                    console.log(contractDetails);
-                    
-
-               
-
-                // const paymentDetails: ContractPaymentDetails = {
-                //     paymentId: paymentId,
-                //     amount: 0,
-                //     date: new Date(),
-                //     status: status,
-                //     additionalInfo: "",
-                // };
-                
-                
-                
-                
-
-                // await new ContractRepo().updatePaymentStatus(
-                //     contractId,
-                //     contractDetails as unknown as ContractPaymentDetails[]
-                // );
+                if (contractDetails) {
+                    const paymentDetails: ContractPaymentDetails = {
+                        paymentId: paymentId,
+                        amount: 0,
+                        date: new Date(),
+                        status: status,
+                        additionalInfo: "",
+                    };
+                    contractDetails.payment.push(paymentDetails);
+                    await new ContractRepo().updatePaymentStatus(
+                        contractDetails.id,
+                        contractDetails as unknown as ContractPaymentDetails[]
+                    );
+                }
             }
             return res.status(200).send({ message: "Webhook Done" });
         } else {

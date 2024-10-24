@@ -58,6 +58,9 @@ export default class PaymentsController {
                         paymentId as string
                     );
 
+                    console.log(paymentId);
+                    
+
                     console.log("nitesh");
                     
                     console.log(contractDetails);

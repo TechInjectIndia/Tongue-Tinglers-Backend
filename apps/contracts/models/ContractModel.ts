@@ -59,11 +59,13 @@ export class ContractRepo
         try {
             const contract = await ContractModel.findOne({
                 where: {
-                    "payment.paymentId": paymentId,
+                    payment: {
+                        [Op.contains]: [{ paymentId }] as any,
+                    },
                 },
-                attributes: ["payment", "id"],
             });
 
+            return contract;
             return contract;
         } catch (error) {
             console.error("Error fetching contract by paymentId:", error);

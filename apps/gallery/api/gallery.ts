@@ -158,7 +158,7 @@ router.delete('/:id', GalleryController.deleteImage);
  *                 items:
  *                   type: string
  *                   format: binary
- *               fileDetails:
+ *               imageDetails:
  *                 type: string
  *                 description: A JSON string representation of an array of image details
  *                 example: '[{"name": "image1.jpg", "message": "This is image 1", "caption": "true"}, {"name": "image2.jpg", "message": "This is image 2", "caption": "false"}]'
@@ -170,7 +170,7 @@ router.delete('/:id', GalleryController.deleteImage);
  *       '401':
  *         description: Unauthorized
  */
-router.put("/:id", GalleryController.update);
+router.put("/:id", upload.array('files'), GalleryController.update);
 
 /**
  * @swagger

@@ -72,7 +72,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.ADMIN,
+                type: USER_TYPE.MASTER_FRANCHISE,
             },
         });
         const data = await UserModel.findAll({
@@ -83,7 +83,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.ADMIN
+                type: USER_TYPE.MASTER_FRANCHISE
             },
         });
         return { total, data };
@@ -97,7 +97,6 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                     { id: id },
                     { firebaseUid: id }
                 ],
-                type: USER_TYPE.ADMIN
             },
         });
         if (data) {
@@ -114,7 +113,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     }
 
     public async create(data: TAddUser): Promise<TUser> {
-        return await UserModel.create({ ...data, type: USER_TYPE.ADMIN });
+        return await UserModel.create({ ...data, type: USER_TYPE.MASTER_FRANCHISE });
     }
 
     public async update(id: string, data: TEditUser): Promise<[affectedCount: number]> {
@@ -146,7 +145,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.ADMIN,
+                type: USER_TYPE.MASTER_FRANCHISE,
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
@@ -159,7 +158,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.ADMIN,
+                type: USER_TYPE.MASTER_FRANCHISE,
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,

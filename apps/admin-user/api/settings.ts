@@ -1,6 +1,5 @@
 import * as express from "express";
 import SettingsController from "../controllers/settings";
-import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 
@@ -83,8 +82,8 @@ const { editSettings, getSettings, } = SettingsController;
  *         description: Settings not found
  * 
  */
-router.get("/:id", hasPermission('settings', 'create'), getSettings);
-router.put("/:id", hasPermission('settings', 'update'), editSettings);
+router.get("/:id", getSettings);
+router.put("/:id", editSettings);
 // ====== Settings Routes Ends ======
 
 export default router;

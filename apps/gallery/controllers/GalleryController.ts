@@ -95,9 +95,8 @@ export default class GalleryController {
             const uploadPromises = images.map(async (image: Multer.File, index: number) => {
                 const details = parsedImageDetails[index];
                 const imageInfo = {
-                    originalname: image.originalname,
-                    message: details.message || '',
                     name: details.name || '',
+                    message: details.message || '',
                     caption: details.caption,
                 };
 
@@ -116,26 +115,27 @@ export default class GalleryController {
             });
         }
     }
-    
+
     static async update(req: Request, res: Response) {
         try {
+            
             const id = get(req?.params, "id", '');
-            let parsedFileDetails: any[] = [];
+            let parsedImageDetails: any[] = [];
             let uploadedFiles: any[] = [];
-
-            // Parse fileDetails from the request body
-            const { fileDetails } = req.body;
-            if (typeof fileDetails === 'string') {
+            
+            // Parse imageDetails from the request body
+            const { imageDetails } = req.body;
+            if (typeof imageDetails === 'string') {
                 try {
-                    parsedFileDetails = JSON.parse(fileDetails);
+                    parsedImageDetails = JSON.parse(imageDetails);
                 } catch (error) {
                     return res.status(400).send({
                         error: true,
-                        message: 'Invalid fileDetails format. It should be a valid JSON string.',
+                        message: 'Invalid imageDetails format. It should be a valid JSON string.',
                     });
                 }
             } else {
-                parsedFileDetails = fileDetails || [];
+                parsedImageDetails = imageDetails || [];
             }
 
             let result: any;
@@ -144,27 +144,27 @@ export default class GalleryController {
 
                 // Process and upload each file
                 const uploadPromises = uploadedFiles.map(async (file, index) => {
-                    const details = parsedFileDetails[index] || {};
+                    const details = parsedImageDetails[index] || {};
 
                     const fileInfo = {
                         originalname: file.originalname,
                         message: details.message || '',
                         name: details.name || file.originalname,
-                        recommended: details.recommended || false,
+                        caption: details.caption || '',
                     };
 
                     const url = await new GalleryRepo().updateFile(id, file, fileInfo, 'uploads');
-                    return { originalname: file.originalname, url, recommended: fileInfo.recommended };
+                    return { originalname: file.originalname, url, caption: fileInfo.caption };
                 });
 
                 result = await Promise.all(uploadPromises);
             } else {
                 // Handle case where only file metadata is updated (no new files uploaded)
-                const details = parsedFileDetails[0] || {};
+                const details = parsedImageDetails[0] || {};
                 const fileInfo = {
                     message: details.message || '',
                     name: details.name || '',
-                    recommended: details.recommended || false,
+                    caption: details.caption || '',
                 };
 
                 result = await new GalleryRepo().update(id, fileInfo);

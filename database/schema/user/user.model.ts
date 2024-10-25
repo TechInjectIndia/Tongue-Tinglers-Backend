@@ -18,7 +18,7 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
     public email!: string;
     public userName!: string;
     public phoneNumber!: string;
-    public type!: string;
+    public type!: USER_TYPE;
     public status!: string;
     public cart: string;
     public refresh_token: string;

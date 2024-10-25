@@ -1,7 +1,6 @@
 import * as express from "express";
 import PaymentsController from "../controllers";
 import * as PaymentsValidation from "../validations";
-import { hasPermission } from '../../../middlewares';
 
 const router = express.Router();
 
@@ -225,8 +224,8 @@ const {
  */
 
 // ====== Payments Starts ======
-router.post("/generate-link", hasPermission('payment', 'create'), validateGenerateLinkBody, PaymentsController.generatePaymentLink);
-router.get("/fetch-payment/:paymentId", hasPermission('payment', 'view'), PaymentsController.fetchPayment);
+router.post("/generate-link", validateGenerateLinkBody, PaymentsController.generatePaymentLink);
+router.get("/fetch-payment/:paymentId", PaymentsController.fetchPayment);
 router.post("/callback", PaymentsController.callback);
 // ====== Payments Ends ======
 

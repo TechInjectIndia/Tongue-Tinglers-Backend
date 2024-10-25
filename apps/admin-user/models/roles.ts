@@ -18,7 +18,7 @@ export class RolesRepo implements IBaseRepo<TRole, TListFilters> {
         const data = await UserModel.findAll({
             where: {
                 role: ids,
-                type: USER_TYPE.ADMIN,
+                type: USER_TYPE.MASTER_FRANCHISE,
             },
         });
         return data;

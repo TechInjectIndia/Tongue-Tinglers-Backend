@@ -1,7 +1,6 @@
 import * as express from "express";
 import ProfileController from "../controllers/profile";
 import * as ProfileValidation from "../validations/profile";
-import { hasPermission } from '../../../middlewares';
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -57,8 +56,8 @@ const { update, get, uploadImage } = ProfileController;
  *         description: Profile not found
  */
 
-router.get("/", hasPermission('profile', 'create'), get);
-router.put("/", hasPermission('profile', 'update'), validateEditProfileBody, update);
+router.get("/", get);
+router.put("/", validateEditProfileBody, update);
 // ====== Profile Routes Ends ======
 
 router.post("/image/upload", upload.single('file'), uploadImage);

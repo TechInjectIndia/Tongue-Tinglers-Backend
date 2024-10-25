@@ -1,6 +1,7 @@
 import { QueryInterface, DataTypes } from 'sequelize';
 
 const permissionsData = [
+  // Existing permissions data
   {
     name: 'admin',
     description: 'Administrator permissions',
@@ -51,12 +52,27 @@ const permissionsData = [
     description: 'Follow-up permissions',
     active: true,
   },
+  {
+    name: 'contracts',
+    description: 'Contracts permissions',
+    active: true,
+  },
+  {
+    name: 'pdichecklist',
+    description: 'PDI Checklist permissions',
+    active: true,
+  },
+  {
+    name: 'retort',
+    description: 'Retort permissions',
+    active: true,
+  },
 ];
 
 const rolesData = [
   {
-    name: 'AdminRole',
-    description: 'Administrator role with full access',
+    name: 'super_franchise',
+    description: 'Super Franchise role with full access',
     role_permissions: JSON.stringify({
       user: ['create', 'update', 'delete', 'read'],
       permission: ['create', 'read', 'update', 'delete'],
@@ -68,6 +84,73 @@ const rolesData = [
       menu: ['create', 'read', 'update', 'delete'],
       lead: ['create', 'read', 'update', 'delete'],
       followup: ['create', 'read', 'update', 'delete'],
+      contracts: ['create', 'read', 'update', 'delete'],
+      pdichecklist: ['create', 'read', 'update', 'delete'],
+      retort: ['create', 'read', 'update', 'delete'],
+      
+    }),
+    active: true,
+  },
+  {
+    name: 'master_franchise',
+    description: 'Master Franchise role with specific access',
+    role_permissions: JSON.stringify({
+      user: ['create', 'update', 'delete', 'read'],
+      permission: ['create', 'read', 'update', 'delete'],
+      roles: ['create', 'read', 'update', 'delete'],
+      franchise: ['create', 'read', 'update', 'delete'],
+      customer: ['create', 'read', 'update', 'delete'],
+      testimonials: ['create', 'read', 'update', 'delete'],
+      reviews: ['create', 'read', 'update', 'delete'],
+      menu: ['create', 'read', 'update', 'delete'],
+      lead: ['create', 'read', 'update', 'delete'],
+      followup: ['create', 'read', 'update', 'delete'],
+      contracts: ['create', 'read', 'update', 'delete'],
+      pdichecklist: ['create', 'read', 'update', 'delete'],
+      retort: ['create', 'read', 'update', 'delete'],
+      
+    }),
+    active: true,
+  },
+  {
+    name: 'franchise',
+    description: 'Normal Franchise role with limited access',
+    role_permissions: JSON.stringify({
+      user: ['create', 'update', 'delete', 'read'],
+      permission: ['create', 'read', 'update', 'delete'],
+      roles: ['create', 'read', 'update', 'delete'],
+      franchise: ['create', 'read', 'update', 'delete'],
+      customer: ['create', 'read', 'update', 'delete'],
+      testimonials: ['create', 'read', 'update', 'delete'],
+      reviews: ['create', 'read', 'update', 'delete'],
+      menu: ['create', 'read', 'update', 'delete'],
+      lead: ['create', 'read', 'update', 'delete'],
+      followup: ['create', 'read', 'update', 'delete'],
+      contracts: ['create', 'read', 'update', 'delete'],
+      pdichecklist: ['create', 'read', 'update', 'delete'],
+      retort: ['create', 'read', 'update', 'delete'],
+      
+    }),
+    active: true,
+  },
+  {
+    name: 'customer',
+    description: 'Customer role with basic access',
+    role_permissions: JSON.stringify({
+      user: ['create', 'update', 'delete', 'read'],
+      permission: ['create', 'read', 'update', 'delete'],
+      roles: ['create', 'read', 'update', 'delete'],
+      franchise: ['create', 'read', 'update', 'delete'],
+      customer: ['create', 'read', 'update', 'delete'],
+      testimonials: ['create', 'read', 'update', 'delete'],
+      reviews: ['create', 'read', 'update', 'delete'],
+      menu: ['create', 'read', 'update', 'delete'],
+      lead: ['create', 'read', 'update', 'delete'],
+      followup: ['create', 'read', 'update', 'delete'],
+      contracts: ['create', 'read', 'update', 'delete'],
+      pdichecklist: ['create', 'read', 'update', 'delete'],
+      retort: ['create', 'read', 'update', 'delete'],
+      
     }),
     active: true,
   },
@@ -76,7 +159,7 @@ const rolesData = [
 export const up = async (queryInterface: QueryInterface) => {
   try {
     console.log("Inserting permissions...");
-    
+
     for (const permission of permissionsData) {
       const existingPermission = await queryInterface.rawSelect('admin_permissions', {
         where: { name: permission.name }

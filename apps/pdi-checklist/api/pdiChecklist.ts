@@ -144,9 +144,9 @@ const router = express.Router();
  *         description: PDI Checklist not found
  */
 
-router.post("/create", hasPermission('pdiChecklist', 'create'), validateCreatePdiChecklistBody, PdiChecklistController.create);
-router.put("/update/:id", hasPermission('pdiChecklist', 'update'), validateUpdatePdiChecklistParams, validateUpdatePdiChecklistBody, PdiChecklistController.update);
-router.get("/get/:id", hasPermission('pdiChecklist', 'read'), validateGetPdiChecklistParams, PdiChecklistController.get);
-router.delete("/delete", hasPermission('pdiChecklist', 'delete'), validateDeletePdiChecklistBody, PdiChecklistController.delete);
+router.post("/create", hasPermission('pdichecklist', 'create'), validateCreatePdiChecklistBody, PdiChecklistController.create);
+router.put("/update/:id", hasPermission('pdichecklist', 'update'), validateUpdatePdiChecklistParams, validateUpdatePdiChecklistBody, PdiChecklistController.update);
+router.get("/get/:id", hasPermission('pdichecklist', 'read'), validateGetPdiChecklistParams, PdiChecklistController.get);
+router.delete("/delete", hasPermission('pdichecklist', 'delete'), validateDeletePdiChecklistBody, PdiChecklistController.delete);
 
 export default router;

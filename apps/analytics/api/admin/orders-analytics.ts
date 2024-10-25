@@ -1,7 +1,6 @@
 import { Router } from "express";
 import OrdersAnalyticsController from "../../controllers/orders-analytics";
 import { validateListAnalyticsQuery } from "../../validations/orders-analytics";
-import { hasPermission } from "../../../../middlewares";
 
 const router = Router();
 

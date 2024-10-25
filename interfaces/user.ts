@@ -3,10 +3,10 @@ export interface cart {
 }
 
 export enum USER_TYPE {
-    CUSTOMER = "customer",
-    ADMIN = "admin",
-    FRANCHISE = "franchise",
-    MASTER_FRANCHISE = "master_franchise",
+    SUPER_FRANCHISE = "super_franchise", // Super-admin
+    MASTER_FRANCHISE = "master_franchise", // Admin
+    FRANCHISE = "franchise", // Normal-franchise
+    CUSTOMER = "customer", // customer
 }
 
 export enum USER_STATUS {

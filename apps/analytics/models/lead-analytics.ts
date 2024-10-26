@@ -59,6 +59,34 @@ export class AnalyticsModel {
         return data;
     }
 
+    public async leadTimeline(startDate: Date, endDate: Date, groupBy: any): Promise<any> {
+        if (!(startDate instanceof Date) || !(endDate instanceof Date) || startDate > endDate) {
+            throw new Error('Invalid date range provided.');
+        }
+
+        // Use PostgreSQL's date functions to format dates for grouping
+        const dateAttribute = groupBy === "day"
+            ? Sequelize.fn('DATE', Sequelize.col('created_at'))  // For grouping by day
+            : Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('created_at'));  // For grouping by month
+
+        const data = await LeadsModel.findAll({
+            attributes: [
+                [dateAttribute, 'date'],  // Alias for clarity
+                [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
+            ],
+            where: {
+                createdAt: {  // Use the correct column name
+                    [Op.between]: [startDate.toISOString(), endDate.toISOString()]
+                }
+            },
+            group: ['date'],  // Group by the date alias
+            order: [[dateAttribute, 'ASC']]
+        });
+
+        console.log(data); // Log the fetched data for debugging
+        return data;
+    }
+
     public async leadStatusByType(statusType, startDate: Date, endDate: Date): Promise<any> {
         const data = await LeadsModel.count({
             where: {

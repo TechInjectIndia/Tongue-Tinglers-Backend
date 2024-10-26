@@ -19,7 +19,7 @@ class ProductsModel extends Model<TProduct, ProductsCreationAttributes> implemen
     public description!: string;
     public price!: string;
     public stock!: string;
-    public type!: string;
+    public type!: PRODUCTS_TYPE;
     public total_ratings!: number;
     public ratings!: number;
     public discount!: string;

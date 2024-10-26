@@ -105,7 +105,9 @@ export default class ProductsController {
         try {
             const name = get(req?.body, "name", "");
             const createProduct = req?.body;
-            createProduct.slug = slugify(name, { lower: true });
+            if (createProduct.slug == '') {
+                createProduct.slug = slugify(name, { lower: true });
+            }
             const existingProduct = await new ProductRepo().getProductByName(name);
             if (existingProduct) {
                 return res

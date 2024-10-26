@@ -1,4 +1,5 @@
 const { OrderItem } = require("sequelize");
+import { PRODUCTS_TYPE } from '../../interfaces'
 
 // Product type Starts
 export type TProduct = {
@@ -9,7 +10,7 @@ export type TProduct = {
   price: string;
   stock: string;
   total_ratings: number;
-  type: string;
+  type: PRODUCTS_TYPE;
   ratings: number;
   discount: string;
   sold: string;
@@ -25,7 +26,7 @@ export type TEditProduct = {
   price: string;
   stock: string;
   total_ratings: number;
-  type: string;
+  type: PRODUCTS_TYPE;
   ratings: number;
   discount: string;
   sold: string;
@@ -34,7 +35,7 @@ export type TEditProduct = {
 
 export type TAddProduct = {
   name: string;
-  type: string;
+  type: PRODUCTS_TYPE;
   description: string;
   price: string;
   stock: string;

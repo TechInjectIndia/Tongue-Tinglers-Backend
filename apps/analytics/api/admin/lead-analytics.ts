@@ -156,7 +156,7 @@ const router = Router();
  *         description: Unauthorized
  */
 
-router.get("/lead-status-by-status-type", validateListAnalyticsQuery, LeadAnalyticsController.leadStatusByStatusType);
+router.get("/lead-status-by-status-type", LeadAnalyticsController.leadStatusByStatusType);
 router.get("/lead-status-franchise-id", validateListAnalyticsQuery, LeadAnalyticsController.leadStatusByFranchiseId);
 router.get("/lead-sources", validateListAnalyticsQuery, LeadAnalyticsController.leadSources);
 router.get("/lead-status", validateListAnalyticsQuery, LeadAnalyticsController.leadStatus);

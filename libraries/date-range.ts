@@ -1,15 +1,17 @@
 // Helper function to get the start of the current week (Monday)
 function getStartOfWeek(date: Date): Date {
     const start = new Date(date);
-    start.setDate(date.getDate() - date.getDay() + 1);
+    const day = date.getDay();
+    const diff = day === 0 ? -6 : 1 - day; // Adjust if it's Sunday to start on Monday
+    start.setDate(date.getDate() + diff);
     start.setHours(0, 0, 0, 0);
     return start;
 }
 
 // Helper function to get the end of the current week (Sunday)
 function getEndOfWeek(date: Date): Date {
-    const end = new Date(date);
-    end.setDate(date.getDate() - date.getDay() + 7);
+    const end = getStartOfWeek(date);
+    end.setDate(end.getDate() + 6); // Add 6 days to get Sunday
     end.setHours(23, 59, 59, 999);
     return end;
 }
@@ -33,11 +35,11 @@ function getLastMonthRange(date: Date): { start: Date; end: Date } {
     };
 }
 
-// Helper function to calculate last week’s start and end
+// Helper function to calculate last week’s start and end (Monday-Sunday)
 function getLastWeekRange(date: Date): { start: Date; end: Date } {
-    const lastWeekEnd = new Date(getStartOfWeek(date).getTime() - 1);
-    const lastWeekStart = getStartOfWeek(lastWeekEnd);
-    return { start: lastWeekStart, end: lastWeekEnd };
+    const end = new Date(getStartOfWeek(date).getTime() - 1); // Previous Sunday's end
+    const start = getStartOfWeek(end); // Previous Monday's start
+    return { start, end };
 }
 
 // Helper function to get the start of the year

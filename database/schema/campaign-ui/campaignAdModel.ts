@@ -11,6 +11,7 @@ interface CampaignCreationAttributes extends Optional<ICampaign, 'id' | 'created
 class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes> implements ICampaign {
     public id!: string;
     public name!: string;
+    public franchiseId?: string;
     public description?: string;
     public questionList!: string[];
 
@@ -29,6 +30,10 @@ CampaignAdModel.init({
         allowNull: false,
         defaultValue: UUIDV4,
         comment: 'Unique identifier for the campaign',
+    },
+    franchiseId: {
+        type: STRING,
+        allowNull: true,
     },
     name: {
         type: STRING,

@@ -1,56 +1,101 @@
-
-// Helper function to get the start of the week (Monday)
-function getStartOfWeek(date: any) {
-    const start = date.getDate() - date.getDay() + 1; // Adjusted to Monday
-    return new Date(date.setDate(start));
+// Helper function to get the start of the current week (Monday)
+function getStartOfWeek(date: Date): Date {
+    const start = new Date(date);
+    start.setDate(date.getDate() - date.getDay() + 1);
+    start.setHours(0, 0, 0, 0);
+    return start;
 }
 
-// Helper function to get the end of the week (Sunday)
-function getEndOfWeek(date: any) {
-    const end = date.getDate() - date.getDay() + 7; // Adjusted to Sunday
-    return new Date(date.setDate(end));
+// Helper function to get the end of the current week (Sunday)
+function getEndOfWeek(date: Date): Date {
+    const end = new Date(date);
+    end.setDate(date.getDate() - date.getDay() + 7);
+    end.setHours(23, 59, 59, 999);
+    return end;
 }
 
 // Helper function to get the start of the month
-function getStartOfMonth(date: any) {
-    return new Date(date.getFullYear(), date.getMonth(), 1);
+function getStartOfMonth(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), 1, 0, 0, 0, 0);
 }
 
 // Helper function to get the end of the month
-function getEndOfMonth(date: any) {
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+function getEndOfMonth(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999);
+}
+
+// Helper function to calculate last month’s start and end
+function getLastMonthRange(date: Date): { start: Date; end: Date } {
+    const lastMonth = new Date(date.getFullYear(), date.getMonth() - 1, 1);
+    return {
+        start: new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 1, 0, 0, 0, 0),
+        end: new Date(lastMonth.getFullYear(), lastMonth.getMonth() + 1, 0, 23, 59, 59, 999),
+    };
+}
+
+// Helper function to calculate last week’s start and end
+function getLastWeekRange(date: Date): { start: Date; end: Date } {
+    const lastWeekEnd = new Date(getStartOfWeek(date).getTime() - 1);
+    const lastWeekStart = getStartOfWeek(lastWeekEnd);
+    return { start: lastWeekStart, end: lastWeekEnd };
 }
 
 // Helper function to get the start of the year
-function getStartOfYear(date: any) {
-    return new Date(date.getFullYear(), 0, 1);
+function getStartOfYear(date: Date): Date {
+    return new Date(date.getFullYear(), 0, 1, 0, 0, 0, 0); // January 1st
 }
 
 // Helper function to get the end of the year
-function getEndOfYear(date: any) {
-    return new Date(date.getFullYear(), 11, 31);
+function getEndOfYear(date: Date): Date {
+    return new Date(date.getFullYear(), 11, 31, 23, 59, 59, 999); // December 31st
 }
 
-// Helper functions to calculate date ranges
-export function getDateRange(period) {
+// Helper function to calculate last year's start and end
+function getLastYearRange(date: Date): { start: Date; end: Date } {
+    const lastYear = date.getFullYear() - 1;
+    return {
+        start: new Date(lastYear, 0, 1, 0, 0, 0, 0),
+        end: new Date(lastYear, 11, 31, 23, 59, 59, 999),
+    };
+}
+
+// Main function to calculate date ranges
+export function getDateRange(period: string, startDate?: string, endDate?: string): { start: Date; end: Date } {
     const today = new Date();
-    let start: any, end: any;
+    let start: Date;
+    let end: Date;
 
     switch (period) {
-        case 'Week':
-            start = getStartOfWeek(new Date(today));
-            end = getEndOfWeek(new Date(today));
+        case 'this_week':
+            start = getStartOfWeek(today);
+            end = getEndOfWeek(today);
             break;
-        case 'Month':
-            start = getStartOfMonth(new Date(today));
-            end = getEndOfMonth(new Date(today));
+        case 'last_week':
+            ({ start, end } = getLastWeekRange(today));
             break;
-        case 'Year':
-            start = getStartOfYear(new Date(today));
-            end = getEndOfYear(new Date(today));
+        case 'this_month':
+            start = getStartOfMonth(today);
+            end = getEndOfMonth(today);
+            break;
+        case 'last_month':
+            ({ start, end } = getLastMonthRange(today));
+            break;
+        case 'this_year':
+            start = getStartOfYear(today);
+            end = getEndOfYear(today);
+            break;
+        case 'last_year':
+            ({ start, end } = getLastYearRange(today));
+            break;
+        case 'custom':
+            if (!startDate || !endDate) {
+                throw new Error("Custom date range requires both startDate and endDate");
+            }
+            start = new Date(startDate);
+            end = new Date(endDate);
             break;
         default:
-            throw new Error('Invalid period');
+            throw new Error("Invalid period specified");
     }
 
     return { start, end };

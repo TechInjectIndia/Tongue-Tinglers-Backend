@@ -35,3 +35,17 @@ export type TLeadsList = {
   total: number;
   data: ILead[];
 };
+
+export interface TLeadFilters {
+  offset: number;
+  limit: number;
+  search: string;
+  sorting: any;
+  userRole?: string;
+  userFranchiseeId?: string;
+  franchiseeId?: string;
+  dateRange: {
+    start: Date;
+    end: Date;
+  };
+}

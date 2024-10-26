@@ -8,10 +8,11 @@ const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
 interface LeadCreationAttributes extends Optional<ILead, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
 class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
-    public assign!: Assignee | null;
-    public status!: LeadStatus;
     public id!: string;
+    public campaignId?: string;
     public firstName!: string;
+    public status!: LeadStatus;
+    public assign!: Assignee | null;
     public lastName!: string;
     public phoneNumber!: string;
     public email!: string;
@@ -48,6 +49,10 @@ LeadsModel.init({
         primaryKey: true,
         allowNull: false,
         defaultValue: UUIDV4
+    },
+    campaignId: {
+        type: STRING,
+        allowNull: true
     },
     firstName: {
         type: STRING,

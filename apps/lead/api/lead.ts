@@ -33,6 +33,7 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             required:
+ *               - campaignId
  *               - firstName
  *               - lastName
  *               - phoneNumber
@@ -53,6 +54,8 @@ const router = express.Router();
  *               - marketing
  *               - other
  *             properties:
+ *               campaignId:
+ *                 type: string
  *               firstName:
  *                 type: string
  *               lastName:

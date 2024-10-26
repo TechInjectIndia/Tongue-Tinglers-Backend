@@ -49,7 +49,7 @@ export default class LeadAnalyticsController {
                 sendResponse(
                     RESPONSE_TYPE.SUCCESS,
                     SUCCESS_MESSAGE.FETCHED,
-                    chartData
+                    analyticsData
                 )
             );
         } catch (err) {

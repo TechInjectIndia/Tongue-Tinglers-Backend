@@ -25,6 +25,8 @@ interface TrainingHistory {
 
 interface FranchiseeAttributes {
     id: string;
+    userid?: string;
+    referBy?: string;
     name: string;
     ownerName: string;
     contactEmail: string;

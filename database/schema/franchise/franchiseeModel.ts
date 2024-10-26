@@ -8,6 +8,8 @@ interface FranchiseeCreationAttributes extends Optional<FranchiseeAttributes, 'i
 // Franchisee class model for the Sequelize ORM
 class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttributes> implements FranchiseeAttributes {
   public id!: string;
+  public userid?: string;
+  public referBy?: string;
   public name!: string;
   public ownerName!: string;
   public contactEmail!: string;
@@ -58,6 +60,14 @@ FranchiseeModel.init(
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
+    },
+    userid: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    referBy: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     name: {
       type: DataTypes.STRING,

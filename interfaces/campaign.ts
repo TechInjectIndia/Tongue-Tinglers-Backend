@@ -3,6 +3,7 @@ import type { UpdatedMetaData, BaseModel, DeletionMetaData } from ".";
 
 interface ICampaign extends UpdatedMetaData, BaseModel, DeletionMetaData {
     name: string;
+    franchiseId?: string;
     description?: string;
     questionList: string[];
 }

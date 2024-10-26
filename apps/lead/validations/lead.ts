@@ -102,6 +102,7 @@ const ASSIGN_SCHEMA = Joi.object().keys({
 
 // Validation for creating a lead
 const createLeadBody = Joi.object().keys({
+    campaignId: Joi.string().optional().allow(""),
     firstName: Joi.string().required()
         .messages({
             'any.required': 'First name is required.',
@@ -153,6 +154,7 @@ const createLeadBody = Joi.object().keys({
 
 // Validation for editing a lead body
 const editLeadBody = Joi.object().keys({
+    campaignId: Joi.string().optional().allow(""),
     firstName: Joi.string().required()
         .messages({
             'any.required': 'First name is required.',

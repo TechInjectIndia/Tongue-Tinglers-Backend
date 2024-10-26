@@ -42,8 +42,7 @@ export class AnalyticsModel {
         return data;
     }
 
-    public async salesPipeline(filters: any): Promise<any> {
-        const { startDate, endDate } = filters;
+    public async salesPipeline(startDate: Date, endDate: Date): Promise<any> {
 
         const data = await LeadsModel.findAll({
             attributes: [

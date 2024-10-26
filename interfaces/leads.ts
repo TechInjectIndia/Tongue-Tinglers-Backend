@@ -28,6 +28,7 @@ enum LeadStatus {
 }
 
 interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
+    campaignId?: string;
     assign: Assignee | null;
     status: LeadStatus;
     firstName: string;

@@ -9,15 +9,12 @@ export default class LeadAnalyticsController {
     static async leadSources(req: Request, res: Response, next: NextFunction) {
         try {
             const period = get(req?.query, "range", '');
-            const { start, end } = getDateRange(period);
+            const filter = get(req.query, "filter", "") as string;
+            const startDate = get(req.query, "startDate", "") as string;
+            const endDate = get(req.query, "endDate", "") as string;
+            const dateRange = getDateRange(filter, startDate, endDate);
 
-            // const data = [
-            //     { date: start.toISOString().split('T')[0], value: Math.random() * 100 },
-            //     { date: end.toISOString().split('T')[0], value: Math.random() * 100 }
-            // ];
-            // console.log(data)
-
-            const Analyticss = await new AnalyticsModel().leadSources(start, end);
+            const Analyticss = await new AnalyticsModel().leadSources(dateRange.start, dateRange.end);
             return res
                 .status(200)
                 .send(
@@ -38,9 +35,12 @@ export default class LeadAnalyticsController {
     static async conversionRate(req: Request, res: Response, next: NextFunction) {
         try {
             const period = get(req?.query, "range", '');
-            const { start, end } = getDateRange(period);
+            const filter = get(req.query, "filter", "") as string;
+            const startDate = get(req.query, "startDate", "") as string;
+            const endDate = get(req.query, "endDate", "") as string;
+            const dateRange = getDateRange(filter, startDate, endDate);
 
-            const Analyticss = await new AnalyticsModel().conversionRate(start, end);
+            const Analyticss = await new AnalyticsModel().conversionRate(dateRange.start, dateRange.end);
             return res
                 .status(200)
                 .send(
@@ -62,10 +62,12 @@ export default class LeadAnalyticsController {
     static async salesPipeline(req: Request, res: Response, next: NextFunction) {
         try {
             const period = get(req.query, "range", "");
-            const { start, end } = getDateRange(period);
+            const filter = get(req.query, "filter", "") as string;
+            const startDate = get(req.query, "startDate", "") as string;
+            const endDate = get(req.query, "endDate", "") as string;
+            const dateRange = getDateRange(filter, startDate, endDate);
 
-            const filters = { startDate: start, endDate: end };
-            const analytics = await new AnalyticsModel().salesPipeline(filters);
+            const analytics = await new AnalyticsModel().salesPipeline(dateRange.start, dateRange.end);
 
             return res.status(200).send(
                 sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, analytics)

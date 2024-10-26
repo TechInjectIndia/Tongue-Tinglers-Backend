@@ -29,12 +29,16 @@ const {
  *             type: object
  *             required:
  *               - name
+ *               - franchiseId
  *               - questionList
  *               - startDate
  *             properties:
  *               name:
  *                 type: string
  *                 example: "Summer Campaign"
+ *               franchiseId:
+ *                 type: string
+ *                 example: "franchiseId"
  *               description:
  *                 type: string
  *                 example: "A campaign for summer promotions"

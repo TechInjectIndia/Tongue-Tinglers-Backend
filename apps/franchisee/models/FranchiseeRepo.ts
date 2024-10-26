@@ -37,6 +37,20 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
         }
     }
 
+    // Retrieve a franchisee by ID
+    public async getFranchiseeByUserId(userId: string): Promise<FranchiseeAttributes | null> {
+        try {
+            const franchisee = await FranchiseeModel.findOne({
+                raw: true,
+                where: { userid: userId }
+            });
+            return franchisee;
+        } catch (error) {
+            console.error('Error fetching franchisee by ID:', error);
+            throw new Error('Failed to fetch franchisee by ID.');
+        }
+    }
+
     // Update a franchisee by ID
     public async updateFranchisee(franchiseeId: string, franchiseeData: Partial<FranchiseeAttributes>): Promise<FranchiseeAttributes | null> {
         try {

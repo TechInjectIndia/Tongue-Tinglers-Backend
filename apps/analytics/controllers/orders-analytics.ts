@@ -9,14 +9,12 @@ export default class OrdersAnalyticsController {
     static async getOrdersCount(req: Request, res: Response, next: NextFunction) {
         try {
             const period = get(req?.query, "range", '');
-            const { start, end } = getDateRange(period);
+            const filter = get(req.query, "filter", "") as string;
+            const startDate = get(req.query, "startDate", "") as string;
+            const endDate = get(req.query, "endDate", "") as string;
+            const dateRange = getDateRange(filter, startDate, endDate);
 
-            // const data = [
-            //     { date: start.toISOString().split('T')[0], value: Math.random() * 100 },
-            //     { date: end.toISOString().split('T')[0], value: Math.random() * 100 }
-            // ];
-
-            const Analyticss = await new AnalyticsModel().orderCountByDateWise(start, end);
+            const Analyticss = await new AnalyticsModel().orderCountByDateWise(dateRange.start, dateRange.end);
 
             return res
                 .status(200)

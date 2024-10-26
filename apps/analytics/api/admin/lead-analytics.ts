@@ -7,6 +7,28 @@ const router = Router();
 // ====== Analytics Leads Starts ======
 /**
  * @swagger
+ * /api/admin/analytics/leads/lead-timeline:
+ *   get:
+ *     summary: Get lead timeline
+ *     tags: [Admin > Analytics > Leads]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: filter
+ *         in: query
+ *         required: false
+ *         description: filter via "this_week", "last_week", "this_month", "last_month", "this_year", "last_year","custom"
+ *         schema:
+ *           type: string
+ *           example: this_week
+ *     responses:
+ *       '200':
+ *         description: Lead analytics retrieved successfully
+ *       '400':
+ *         description: Invalid request query
+ *       '401':
+ *         description: Unauthorized
+ * 
  * /api/admin/analytics/leads/lead-status-by-status-type:
  *   get:
  *     summary: Get lead status by status type analytics
@@ -156,12 +178,13 @@ const router = Router();
  *         description: Unauthorized
  */
 
+router.get("/lead-timeline", LeadAnalyticsController.leadTimeline);
 router.get("/lead-status-by-status-type", LeadAnalyticsController.leadStatusByStatusType);
-router.get("/lead-status-franchise-id", validateListAnalyticsQuery, LeadAnalyticsController.leadStatusByFranchiseId);
-router.get("/lead-sources", validateListAnalyticsQuery, LeadAnalyticsController.leadSources);
-router.get("/lead-status", validateListAnalyticsQuery, LeadAnalyticsController.leadStatus);
-router.get("/conversion-rate", validateListAnalyticsQuery, LeadAnalyticsController.conversionRate);
-router.get("/sales-pipeline", validateListAnalyticsQuery, LeadAnalyticsController.salesPipeline);
-// ====== Analytics Leads Ends ======
+router.get("/lead-status-franchise-id", LeadAnalyticsController.leadStatusByFranchiseId);
+router.get("/lead-sources", LeadAnalyticsController.leadSources);
+router.get("/lead-status", LeadAnalyticsController.leadStatus);
+router.get("/conversion-rate", LeadAnalyticsController.conversionRate);
+router.get("/sales-pipeline", LeadAnalyticsController.salesPipeline);
+// ====== Analytics Leads End======
 
 export default router;

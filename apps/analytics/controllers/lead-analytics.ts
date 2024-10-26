@@ -4,6 +4,7 @@ import { sendResponse, getDateRange } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { AnalyticsModel } from '../models/lead-analytics';
 import { CampaignAdRepo } from '../../campaign/models/index';
+import { subDays, eachDayOfInterval, eachMonthOfInterval, format } from 'date-fns';
 
 export default class LeadAnalyticsController {
 
@@ -32,6 +33,58 @@ export default class LeadAnalyticsController {
         }
     }
 
+    static async leadTimeline(req: Request, res: Response, next: NextFunction) {
+        try {
+            const filter = get(req.query, "filter", "") as string;
+            const startDate = get(req.query, "startDate", "") as string;
+            const endDate = get(req.query, "endDate", "") as string;
+            const dateRange = getDateRange(filter, startDate, endDate);
+    
+            // Determine grouping based on filter
+            let groupBy: string;
+            let dateInterval: Date[];
+    
+            if (filter === "this_week" || filter === "last_week") {
+                groupBy = "day";
+                dateInterval = eachDayOfInterval({ start: dateRange.start, end: dateRange.end });
+            } else if (filter === "this_month" || filter === "last_month") {
+                groupBy = "day";
+                dateInterval = eachDayOfInterval({ start: dateRange.start, end: dateRange.end });
+            } else if (filter === "this_year" || filter === "last_year") {
+                groupBy = "month";
+                dateInterval = eachMonthOfInterval({ start: dateRange.start, end: dateRange.end });
+            } else {
+                groupBy = "day";
+                dateInterval = eachDayOfInterval({ start: dateRange.start, end: dateRange.end });
+            }
+    
+            // Fetch lead data
+            const analyticsData = await new AnalyticsModel().leadTimeline(dateRange.start, dateRange.end, groupBy);
+    
+            // Map the data into an object for easy access
+            const dataMap = new Map(analyticsData.map(item => [item.get('date'), parseInt(item.get('count'), 10)]));
+    
+            // Fill in missing dates with count 0
+            const chartData = {
+                label: dateInterval.map(date => format(date, groupBy === 'day' ? 'yyyy-MM-dd' : 'yyyy-MM')),
+                data: dateInterval.map(date => dataMap.get(format(date, groupBy === 'day' ? 'yyyy-MM-dd' : 'yyyy-MM')) || 0),
+            };
+    
+            return res.status(200).send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.FETCHED,
+                    chartData
+                )
+            );
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     static async leadStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const filter = get(req.query, "filter", "") as string;
@@ -40,10 +93,6 @@ export default class LeadAnalyticsController {
             const dateRange = getDateRange(filter, startDate, endDate);
 
             const analyticsData = await new AnalyticsModel().leadStatus(dateRange.start, dateRange.end);
-            const chartData = {
-                label: analyticsData.map(item => item.status),
-                data: analyticsData.map(item => item.dataValues.count),
-            };
 
             return res.status(200).send(
                 sendResponse(

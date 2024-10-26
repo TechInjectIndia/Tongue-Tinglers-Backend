@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { FranchiseeRepo } from '../models/FranchiseeRepo'; // Adjust the import path as necessary
 import { sendResponse } from '../../../libraries';
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from '../../../constants';
+import { get, isEmpty } from "lodash";
 
 export default class FranchiseeController {
     // Create a new franchisee
@@ -12,7 +13,7 @@ export default class FranchiseeController {
             // Call the repository method to create a franchisee
             const newFranchisee = await new FranchiseeRepo().createFranchisee(franchiseeData);
 
-            return res.status(201).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, newFranchisee));
+            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, newFranchisee));
         } catch (error) {
             console.error('Error creating franchisee:', error);
             return res.status(500).send({
@@ -24,7 +25,9 @@ export default class FranchiseeController {
     // Retrieve all franchisees
     static async getAllFranchisees(req: Request, res: Response) {
         try {
-            const franchisees = await new FranchiseeRepo().getAllFranchisees();
+            const franchiseType = get(req.query, 'franchiseType');
+
+            const franchisees = await new FranchiseeRepo().getAllFranchisees(franchiseType as string);
 
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, franchisees));
         } catch (error) {

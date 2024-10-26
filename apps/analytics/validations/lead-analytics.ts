@@ -2,20 +2,20 @@ import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
-export const DATEFILTERS = {
-    Week: 'Week',
-    Month: 'Month',
-    Year: 'Year',
-};
-
 // Validation schema for metrics query
 const getMetricsQuery = Joi.object().keys({
-    range: Joi.string()
-        .valid(...Object.values(DATEFILTERS))
-        .optional()
-        .allow('')
+    filter: Joi.string().optional()
+        .valid("this_week", "last_week", "this_month", "last_month", "this_year", "last_year", "custom")
         .messages({
-            'any.only': `Range must be one of: ${Object.values(DATEFILTERS).join(', ')}.`,
+            'any.only': 'Invalid filter type.',
+        }),
+    startDate: Joi.string().optional().isoDate()
+        .messages({
+            'string.isoDate': 'Start date must be a valid ISO date.',
+        }),
+    endDate: Joi.string().optional().isoDate()
+        .messages({
+            'string.isoDate': 'End date must be a valid ISO date.',
         }),
 });
 

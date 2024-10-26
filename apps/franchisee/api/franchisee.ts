@@ -146,6 +146,13 @@ router.post('/', validateCreateFranchiseeBody, FranchiseeController.createFranch
  *   get:
  *     summary: Retrieve all franchisees
  *     tags: [Franchisee]
+ *     parameters:
+ *       - in: query
+ *         name: franchiseType
+ *         required: false
+ *         schema:
+ *           type: string
+ *           description: Filter franchisees by type (e.g., super_franchise, franchise, master_franchise)
  *     responses:
  *       '200':
  *         description: List of franchisees
@@ -161,7 +168,9 @@ router.post('/', validateCreateFranchiseeBody, FranchiseeController.createFranch
  *                   ownerName:
  *                     type: string
  *                   contactEmail:
- *                     type: string
+ *                     type: array
+ *                     items:
+ *                       type: string
  *                   franchiseLocations:
  *                     type: array
  *                     items:
@@ -169,8 +178,6 @@ router.post('/', validateCreateFranchiseeBody, FranchiseeController.createFranch
  *                   establishedDate:
  *                     type: string
  *                     format: date-time
- *                   franchiseType:
- *                     type: string
  *                   numberOfEmployees:
  *                     type: integer
  *                   investmentAmount:
@@ -182,6 +189,7 @@ router.post('/', validateCreateFranchiseeBody, FranchiseeController.createFranch
  *         description: Bad request
  */
 router.get('/', FranchiseeController.getAllFranchisees);
+
 
 /**
  * @swagger

@@ -14,16 +14,21 @@ export default class LeadAnalyticsController {
             const endDate = get(req.query, "endDate", "") as string;
             const dateRange = getDateRange(filter, startDate, endDate);
 
-            const Analyticss = await new AnalyticsModel().leadSources(dateRange.start, dateRange.end);
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FETCHED,
-                        Analyticss
-                    )
-                );
+            const analyticsData = await new AnalyticsModel().leadSources(dateRange.start, dateRange.end);
+            const chartData = {
+                label: analyticsData.map(item => item.source),
+                data: analyticsData.map(item => item.count),
+            };
+
+            console.log(analyticsData.map(item => item.source))
+
+            return res.status(200).send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.FETCHED,
+                    chartData
+                )
+            );
         } catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
@@ -40,16 +45,19 @@ export default class LeadAnalyticsController {
             const endDate = get(req.query, "endDate", "") as string;
             const dateRange = getDateRange(filter, startDate, endDate);
 
-            const Analyticss = await new AnalyticsModel().conversionRate(dateRange.start, dateRange.end);
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FETCHED,
-                        Analyticss
-                    )
-                );
+            const analyticsData = await new AnalyticsModel().conversionRate(dateRange.start, dateRange.end);
+            const chartData = {
+                label: analyticsData.map(item => item.source),
+                data: analyticsData.map(item => item.count),
+            };
+
+            return res.status(200).send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.FETCHED,
+                    chartData
+                )
+            );
         } catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
@@ -67,10 +75,18 @@ export default class LeadAnalyticsController {
             const endDate = get(req.query, "endDate", "") as string;
             const dateRange = getDateRange(filter, startDate, endDate);
 
-            const analytics = await new AnalyticsModel().salesPipeline(dateRange.start, dateRange.end);
+            const analyticsData = await new AnalyticsModel().salesPipeline(dateRange.start, dateRange.end);
+            const chartData = {
+                label: analyticsData.map(item => item.source),
+                data: analyticsData.map(item => item.count),
+            };
 
             return res.status(200).send(
-                sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, analytics)
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.FETCHED,
+                    chartData
+                )
             );
         } catch (err) {
             console.error("Error:", err);

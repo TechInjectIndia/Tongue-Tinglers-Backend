@@ -7,6 +7,64 @@ const router = Router();
 // ====== Analytics Leads Starts ======
 /**
  * @swagger
+ * /api/admin/analytics/leads/lead-status-by-status-type:
+ *   get:
+ *     summary: Get lead status by status type analytics
+ *     tags: [Admin > Analytics > Leads]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: filter
+ *         in: query
+ *         required: false
+ *         description: filter via "this_week", "last_week", "this_month", "last_month", "this_year", "last_year","custom"
+ *         schema:
+ *           type: string
+ *           example: this_week
+ *       - name: statusType
+ *         in: query
+ *         required: true
+ *         description: statusType
+ *         schema:
+ *           type: string
+ *           example: new
+ *     responses:
+ *       '200':
+ *         description: Lead sources analytics retrieved successfully
+ *       '400':
+ *         description: Invalid request query
+ *       '401':
+ *         description: Unauthorized
+ * 
+ * /api/admin/analytics/leads/lead-status-franchise-id:
+ *   get:
+ *     summary: Get lead status by franchise id analytics
+ *     tags: [Admin > Analytics > Leads]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: filter
+ *         in: query
+ *         required: false
+ *         description: filter via "this_week", "last_week", "this_month", "last_month", "this_year", "last_year","custom"
+ *         schema:
+ *           type: string
+ *           example: this_week
+ *       - name: franchiseId
+ *         in: query
+ *         required: true
+ *         description: franchiseId
+ *         schema:
+ *           type: string
+ *           example: 136546897
+ *     responses:
+ *       '200':
+ *         description: Lead sources analytics retrieved successfully
+ *       '400':
+ *         description: Invalid request query
+ *       '401':
+ *         description: Unauthorized
+ * 
  * /api/admin/analytics/leads/lead-sources:
  *   get:
  *     summary: Get lead sources analytics
@@ -29,7 +87,6 @@ const router = Router();
  *       '401':
  *         description: Unauthorized
  * 
- * @swagger
  * /api/admin/analytics/leads/lead-status:
  *   get:
  *     summary: Get lead status analytics
@@ -99,6 +156,8 @@ const router = Router();
  *         description: Unauthorized
  */
 
+router.get("/lead-status-by-status-type", validateListAnalyticsQuery, LeadAnalyticsController.leadStatusByStatusType);
+router.get("/lead-status-franchise-id", validateListAnalyticsQuery, LeadAnalyticsController.leadStatusByFranchiseId);
 router.get("/lead-sources", validateListAnalyticsQuery, LeadAnalyticsController.leadSources);
 router.get("/lead-status", validateListAnalyticsQuery, LeadAnalyticsController.leadStatus);
 router.get("/conversion-rate", validateListAnalyticsQuery, LeadAnalyticsController.conversionRate);

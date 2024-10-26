@@ -8,9 +8,9 @@ interface FranchiseeLocation {
 }
 
 enum FranchiseType {
-    MASTER = "master",
-    SINGLE = 'single',
-    MULTI = 'multi'
+    SUPER_FRANCHISE = "super_franchise",
+    MASTER_FRANCHISE = "master_franchise",
+    FRANCHISE = "franchise",
 }
 
 interface FranchiseeRenewalInfo {

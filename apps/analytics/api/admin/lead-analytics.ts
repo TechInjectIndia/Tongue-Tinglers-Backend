@@ -7,21 +7,20 @@ const router = Router();
 // ====== Analytics Leads Starts ======
 /**
  * @swagger
- * /api/admin/analytics/leads/lead-sources?range={range}:
+ * /api/admin/analytics/leads/lead-sources:
  *   get:
  *     summary: Get lead sources analytics
  *     tags: [Admin > Analytics > Leads]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: query
- *         name: range
- *         default: Week
- *         required: true
+ *       - name: filter
+ *         in: query
+ *         required: false
+ *         description: filter via "this_week", "last_week", "this_month", "last_month", "this_year", "last_year","custom"
  *         schema:
  *           type: string
- *           enum: ["Week", "Month", "Year"]
- *         description: Time range for analytics
+ *           example: this_week
  *     responses:
  *       '200':
  *         description: Lead sources analytics retrieved successfully

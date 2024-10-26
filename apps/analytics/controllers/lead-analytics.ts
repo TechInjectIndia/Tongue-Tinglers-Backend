@@ -36,40 +36,55 @@ export default class LeadAnalyticsController {
     static async leadTimeline(req: Request, res: Response, next: NextFunction) {
         try {
             const filter = get(req.query, "filter", "") as string;
-            const startDate = get(req.query, "startDate", "") as string;
-            const endDate = get(req.query, "endDate", "") as string;
-            const dateRange = getDateRange(filter, startDate, endDate);
-    
-            // Determine grouping based on filter
+            const startDateString = get(req.query, "startDate", "") as string;
+            const endDateString = get(req.query, "endDate", "") as string;
+
+            const dateRange = getDateRange(filter, startDateString, endDateString);
+
+            const startDate = new Date(dateRange.start);
+            const endDate = new Date(dateRange.end);
+
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || startDate > endDate) {
+                throw new Error('Invalid date range provided.');
+            }
+
             let groupBy: string;
             let dateInterval: Date[];
-    
-            if (filter === "this_week" || filter === "last_week") {
+
+            if (filter === "this_week" || filter === "last_week" || filter === "this_month" || filter === "last_month") {
                 groupBy = "day";
-                dateInterval = eachDayOfInterval({ start: dateRange.start, end: dateRange.end });
-            } else if (filter === "this_month" || filter === "last_month") {
-                groupBy = "day";
-                dateInterval = eachDayOfInterval({ start: dateRange.start, end: dateRange.end });
+                dateInterval = eachDayOfInterval({ start: startDate, end: endDate });
             } else if (filter === "this_year" || filter === "last_year") {
                 groupBy = "month";
-                dateInterval = eachMonthOfInterval({ start: dateRange.start, end: dateRange.end });
+                dateInterval = eachMonthOfInterval({ start: startDate, end: endDate });
             } else {
                 groupBy = "day";
-                dateInterval = eachDayOfInterval({ start: dateRange.start, end: dateRange.end });
+                dateInterval = eachDayOfInterval({ start: startDate, end: endDate });
             }
-    
+
             // Fetch lead data
-            const analyticsData = await new AnalyticsModel().leadTimeline(dateRange.start, dateRange.end, groupBy);
-    
-            // Map the data into an object for easy access
-            const dataMap = new Map(analyticsData.map(item => [item.get('date'), parseInt(item.get('count'), 10)]));
-    
-            // Fill in missing dates with count 0
+            const analyticsData = await new AnalyticsModel().leadTimeline(startDate, endDate, groupBy);
+
+            // Format dates in analyticsData to match dateInterval formatting
+            const formattedAnalyticsData = analyticsData.map(item => ({
+                date: format(new Date(item.get('date')), groupBy === 'day' ? 'yyyy-MM-dd' : 'yyyy-MM'),
+                count: parseInt(item.get('count'), 10),
+            }));
+
+            // Map the data into a Map object with formatted dates
+            const dataMap = new Map(formattedAnalyticsData.map(item => [item.date, item.count]));
+
+            console.log(dataMap);
+
+            // Prepare the chart data with missing dates filled as 0
             const chartData = {
                 label: dateInterval.map(date => format(date, groupBy === 'day' ? 'yyyy-MM-dd' : 'yyyy-MM')),
-                data: dateInterval.map(date => dataMap.get(format(date, groupBy === 'day' ? 'yyyy-MM-dd' : 'yyyy-MM')) || 0),
+                data: dateInterval.map(date => {
+                    const formattedDate = format(date, groupBy === 'day' ? 'yyyy-MM-dd' : 'yyyy-MM');
+                    return dataMap.get(formattedDate) || 0;
+                }),
             };
-    
+
             return res.status(200).send(
                 sendResponse(
                     RESPONSE_TYPE.SUCCESS,

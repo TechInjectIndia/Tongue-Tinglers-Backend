@@ -28,6 +28,29 @@ const router = Router();
  *         description: Invalid request query
  *       '401':
  *         description: Unauthorized
+ * 
+ * @swagger
+ * /api/admin/analytics/leads/lead-status:
+ *   get:
+ *     summary: Get lead status analytics
+ *     tags: [Admin > Analytics > Leads]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: filter
+ *         in: query
+ *         required: false
+ *         description: filter via "this_week", "last_week", "this_month", "last_month", "this_year", "last_year","custom"
+ *         schema:
+ *           type: string
+ *           example: this_week
+ *     responses:
+ *       '200':
+ *         description: Lead status analytics retrieved successfully
+ *       '400':
+ *         description: Invalid request query
+ *       '401':
+ *         description: Unauthorized
  *
  * /api/admin/analytics/leads/conversion-rate?range={range}:
  *   get:
@@ -77,6 +100,7 @@ const router = Router();
  */
 
 router.get("/lead-sources", validateListAnalyticsQuery, LeadAnalyticsController.leadSources);
+router.get("/lead-status", validateListAnalyticsQuery, LeadAnalyticsController.leadStatus);
 router.get("/conversion-rate", validateListAnalyticsQuery, LeadAnalyticsController.conversionRate);
 router.get("/sales-pipeline", validateListAnalyticsQuery, LeadAnalyticsController.salesPipeline);
 // ====== Analytics Leads Ends ======

@@ -5,9 +5,12 @@ import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constant
 import { LeadRepo } from '../models/lead';
 import { AdminRepo } from '../../admin-user/models/user';
 import { FranchiseRepo } from '../../admin-user/models/franchise';
-import { ITrackable, LeadStatus, USER_TYPE, USER_STATUS } from '../../../interfaces';
+import { FranchiseeRepo } from '../../franchisee/models/FranchiseeRepo';
+import { ITrackable, LeadStatus, USER_TYPE, USER_STATUS, FranchiseType } from '../../../interfaces';
 import { TAssignLead } from '../../../types';
 import { Sequelize } from 'sequelize';
+import jwt from "jsonwebtoken";
+import { CONFIG } from "../../../config";
 
 export default class LeadController {
 
@@ -20,7 +23,11 @@ export default class LeadController {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
 
-            const user_id = get(req, "user_id", 0);
+            if (existingLead.status === LeadStatus.CONVERTED) {
+                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.ALREADY_CONVERTED));
+            }
+
+            const user_id = get(req, "user_id", "");
             const payload = {
                 firstName: existingLead.firstName,
                 lastName: existingLead.lastName,
@@ -52,13 +59,35 @@ export default class LeadController {
             if (!firebaseUser?.success) {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, firebaseUser?.uid));
             }
+            // Send an link to user email with password token 
+            const token = jwt.sign({ email: payload.email }, CONFIG.ACCESS_TOKEN_SECRET, { expiresIn: CONFIG.ACCESS_TOKEN_EXPIRATION });
+            const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password?token=${token}`;
 
             const hashedPassword = await createPassword(payload.password);
-            await new FranchiseRepo().create({
+            const normalUser = await new FranchiseRepo().create({
                 ...payload,
                 password: hashedPassword,
                 firebaseUid: firebaseUser.uid,
+                password_token: token
             });
+
+            // await new FranchiseeRepo().createFranchisee({
+            //     userid: normalUser.id, // Optional: User ID of the franchisee creator
+            //     franchiseAgreementSignedDate: null, // Required: Agreement signed date
+            //     numberOfEmployees: 0, // Required: Number of employees
+            //     investmentAmount: 0, // Required: Investment amount
+            //     name: existingLead.firstName, // Required: Full name of the franchisee
+            //     ownerName: `${existingLead.firstName} ${existingLead.lastName}`, // Required: Owner name
+            //     contactEmail: existingLead.email, // Required: Contact email
+            //     contactNumber: existingLead.phoneNumber, // Optional: Contact number
+            //     establishedDate: new Date, // Required: Established date
+            //     franchiseType: FranchiseType.FRANCHISE, // Required: Type of franchise
+            //     region: null, // Required: Region
+            //     royaltyPercentage: 0, // Required: Royalty percentage
+            //     monthlyRevenue: 0, // Required: Monthly revenue
+            //     numberOfOutlets: 0, // Required: Number of outlets
+            //     isActive: true// Required: Active status
+            // });
 
             await new LeadRepo().updateStatus(id, { status: LeadStatus.CONVERTED });
 
@@ -67,6 +96,7 @@ export default class LeadController {
                     leadName: `${existingLead.firstName} ${existingLead.lastName}`,
                     leadEmail: existingLead.email,
                     leadPhone: existingLead.phoneNumber,
+                    passwordCreateLink
                 });
 
                 const mailOptions = {

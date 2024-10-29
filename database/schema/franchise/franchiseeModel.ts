@@ -10,6 +10,7 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
   public id!: string;
   public userid?: string;
   public referBy?: string;
+  public parentFranchise?: string;
   public name!: string;
   public ownerName!: string;
   public contactEmail!: string;
@@ -66,6 +67,10 @@ FranchiseeModel.init(
       allowNull: true,
     },
     referBy: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    parentFranchise: {
       type: DataTypes.STRING,
       allowNull: true,
     },

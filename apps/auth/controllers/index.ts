@@ -10,8 +10,127 @@ import {
 } from "../../../libraries";
 import { RESPONSE_TYPE, ERROR_MESSAGE, SUCCESS_MESSAGE } from "../../../constants";
 import { Auth } from '../models';
+import jwt from "jsonwebtoken";
+import { CONFIG } from "../../../config";
+import { verifyJwtToken, verifyFirebaseToken, verifyAndUpdatePassword } from "../../../libraries";
 
 export default class AuthController {
+    static async createPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const token = get(req.body, "token");
+            const newPassword = get(req.body, "new_password");
+
+            if (!token) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.TOKEN_NOT_PROVIDED
+                        )
+                    );
+            }
+
+            const jwtPayload = verifyJwtToken(token);
+            if (!jwtPayload) {
+                return res.status(401).send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.INVALID_TOKEN
+                    )
+                );
+            }
+
+            const firebaseUser = await new Auth().getUserByFirebaseId(token);
+            if (!firebaseUser) {
+                return res.status(404).send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.INVALID_TOKEN
+                    )
+                );
+            }
+
+            const firebaseUserId = firebaseUser.firebaseUid;
+            const result = await verifyAndUpdatePassword(firebaseUserId, newPassword);
+
+            if (result.success) {
+                const payloadUser = await new Auth().removePasswordToken(token);
+                console.log('payloadUser', payloadUser)
+                return res.status(200).send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.PASSWORD_CREATED
+                    )
+                );
+            } else {
+                return res.status(400).send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        result.message
+                    )
+                );
+            }
+        } catch (err) {
+            console.error(err);
+            return res.status(500).send({
+                message: "Error creating password: " + err.message,
+            });
+        }
+    }
+
+    /**
+    * Verifies the password reset token to ensure it is valid and not expired.
+    * @param req Express Request
+    * @param res Express Response
+    * @param next Express NextFunction
+    */
+    static async verifyPasswordToken(req: Request, res: Response, next: NextFunction) {
+        try {
+            // Extract token from the request body
+            const token = get(req?.body, "token", "");
+            if (!token) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.TOKEN_NOT_PROVIDED
+                        )
+                    );
+            }
+
+            // Verify the token using JWT
+            jwt.verify(token, CONFIG.ACCESS_TOKEN_SECRET, (err, decoded) => {
+                if (err) {
+                    return res
+                        .status(401)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                ERROR_MESSAGE.INVALID_OR_EXPIRED_TOKEN
+                            )
+                        );
+                }
+
+                // If token is valid, send a success response
+                return res
+                    .status(200)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.SUCCESS,
+                            SUCCESS_MESSAGE.TOKEN_VALID
+                        )
+                    );
+            });
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     static async login(req: Request, res: Response, next: NextFunction) {
         try {
             const email = get(req?.body, "email", "");
@@ -79,7 +198,7 @@ export default class AuthController {
         next: NextFunction
     ) {
         try {
-            const user_id = get(req, "user_id", );
+            const user_id = get(req, "user_id",);
             const old_password = get(req?.body, "old_password", "");
             const new_password = get(req?.body, "new_password", "");
 

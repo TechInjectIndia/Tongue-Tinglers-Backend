@@ -6,6 +6,8 @@ export const RESPONSE_TYPE = {
 };
 
 export const ERROR_MESSAGE = {
+    TOKEN_NOT_PROVIDED: "Token not provided.",
+    INVALID_OR_EXPIRED_TOKEN: "Token is invalid or has expired.",
     ADMIN_NOT_EXISTS: "Admin does not exist",
     CUSTOMER_NOT_EXISTS: "Customer does not exist",
     FRANCHISE_NOT_EXISTS: "Franchise does not exist",
@@ -26,6 +28,7 @@ export const ERROR_MESSAGE = {
     ROLE_ASSIGNED_TO_ADMIN: "This role is assigned and cannot be deleted",
     EXISTS: "already exists",
     NOT_EXISTS: "does not exists",
+    ALREADY_CONVERTED: "This lead has already been converted to a franchisee.",
     UPDATED: "updated successfully",
     REFERRAL_CODE_REQUIRED: 'Referral code is required',
     REFERRAL_CODE_NOT_EXISTS: 'Referral code does not exist',
@@ -33,6 +36,7 @@ export const ERROR_MESSAGE = {
 };
 
 export const SUCCESS_MESSAGE = {
+    TOKEN_VALID: "Token is valid",
     SENT_NOTIFICATION: "Message sent successfully",
     SENT_EMAIL: 'Email sent successfully',
     REFERRAL_CODE_CREATED: 'Referral code created successfully',
@@ -51,6 +55,7 @@ export const SUCCESS_MESSAGE = {
     ROLE_DELETED: "Role deleted successfully",
     ROLE_FETCHED: "Role fetched successfully",
     PASSWORD_UPDATED: "Password updated successfully",
+    PASSWORD_CREATED: "Password created successfully",
     FRANCHISE_CREATED: "Franchise user created successfully",
     FRANCHISE_FETCHED: "Franchise users fetched successfully",
     FRANCHISE_UPDATED: "Franchise user updated successfully",

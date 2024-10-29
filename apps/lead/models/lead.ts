@@ -59,7 +59,6 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
             raw: true,
             where: {
                 id: id,
-                status: LeadStatus.NEW,
             },
         });
         return data as ILead | null;

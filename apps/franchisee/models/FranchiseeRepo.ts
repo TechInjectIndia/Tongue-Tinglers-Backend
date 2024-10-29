@@ -1,11 +1,11 @@
 import { FranchiseeModel } from "../../../database/schema"; // Adjust import path as necessary
 import { Op } from "sequelize";
-import { FranchiseeAttributes } from "../../../interfaces";
+import { FranchiseeAttributes, AddFranchiseePayload } from "../../../interfaces";
 import IFranchiseeController from '../controllers/controller/IFranchiseeController';
 
 export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttributes> {
     // Create a new franchisee
-    public async createFranchisee(franchiseeData: FranchiseeAttributes): Promise<FranchiseeAttributes> {
+    public async createFranchisee(franchiseeData: AddFranchiseePayload): Promise<FranchiseeAttributes> {
         try {
             const newFranchisee = await FranchiseeModel.create(franchiseeData);
             return newFranchisee;

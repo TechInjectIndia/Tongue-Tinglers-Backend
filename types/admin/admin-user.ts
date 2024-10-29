@@ -20,6 +20,7 @@ export type TUser = {
   status: string;
   cart: string;
   access_token: string;
+  password_token: string;
   referralCode: string;
   referBy: UserDetails;
   refresh_token: string;
@@ -48,6 +49,7 @@ export type TAddUser = {
   type: string;
   role: number;
   referBy: UserDetails;
+  password_token?: string;
 };
 
 export type TEditUser = {

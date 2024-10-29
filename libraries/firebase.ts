@@ -20,6 +20,22 @@ admin.initializeApp({
 
 const bucket = admin.storage().bucket();
 
+export const verifyAndUpdatePassword = async (uid: string, newPassword: string) => {
+  try {
+    // Verify the user exists by fetching their details
+    const userRecord = await admin.auth().getUser(uid);
+
+    // If user is found, proceed to update the password
+    if (userRecord) {
+      console.log('userRecord', userRecord);
+      await admin.auth().updateUser(uid, { password: newPassword });
+      return { success: true, message: 'Password updated successfully.' };
+    }
+  } catch (error) {
+    return { success: false, message: error.message || 'Failed to update password.' };
+  }
+}
+
 export const verifyFirebaseToken = async (idToken: string) => {
   const decodedToken = await admin.auth().verifyIdToken(idToken);
   return decodedToken;

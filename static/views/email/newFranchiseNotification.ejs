@@ -1,12 +1,30 @@
-<div class="container">
-    <h1>New Franchise Created</h1>
-    <p>Hello Team,</p>
-    <p>A new franchise has been created:</p>
+<div class="container"
+    style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+    <h1 style="text-align: center; color: #4CAF50;">Welcome to Our Franchise
+        Network!</h1>
     <h3>Franchise Details</h3>
-    <p><strong>Name:</strong> <%= franchiseName %></p>
-    <p><strong>Email:</strong> <%= franchiseEmail %></p>
-    <p><strong>Phone:</strong> <%= franchisePhone %></p>
-    <div class="footer">
-        <p>Follow up promptly!</p>
+    <p><strong>Name:</strong> <%= leadName %></p>
+    <p><strong>Email:</strong> <%= leadEmail %></p>
+    <p><strong>Phone:</strong> <%= leadPhone %></p>
+
+    <p>We’re excited to have you join our franchise network. Please click the
+        link below to create your password and set up your account:</p>
+
+    <p style="text-align: center; margin-top: 20px;">
+        <a href="<%= passwordCreateLink %>"
+            style="display: inline-block; padding: 10px 20px; font-size: 16px; color: white; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">
+            Create Your Password
+        </a>
+    </p>
+
+    <p>If the button above doesn’t work, you can copy and paste the following
+        link into your browser:</p>
+    <p><a href="<%= passwordCreateLink %>"><%= passwordCreateLink %></a></p>
+
+    <div class="footer"
+        style="margin-top: 30px; border-top: 1px solid #ddd; padding-top: 10px;">
+        <p style="text-align: center; font-size: 14px; color: #777;">
+            Follow up promptly to complete your setup. Welcome to the team!
+        </p>
     </div>
 </div>

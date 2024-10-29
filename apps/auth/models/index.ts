@@ -48,6 +48,29 @@ export class Auth {
         return data;
     }
 
+    public async getUserByFirebaseId(token: string): Promise<TUser | any> {
+        const data = await UserModel.findOne({
+            where: {
+                password_token: token,
+            },
+        });
+        return data;
+    }
+
+    public async removePasswordToken(token: string): Promise<TUser | any> {
+        const data = await UserModel.update(
+            {
+                password_token: null,
+            },
+            {
+                where: {
+                    password_token: token,
+                },
+            }
+        );
+        return data;
+    }
+
     public async updateRefreshToken(data: TUpdateUserToken): Promise<boolean> {
         await UserModel.update(
             {

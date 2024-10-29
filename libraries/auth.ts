@@ -31,3 +31,12 @@ export const generateOtp = () => {
         })
     );
 };
+
+export const verifyJwtToken = (token: string) => {
+    try {
+        const decoded = jwt.verify(token, CONFIG.ACCESS_TOKEN_SECRET);
+        return decoded;
+    } catch (error) {
+        throw new Error('Invalid token');
+    }
+};

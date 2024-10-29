@@ -15,9 +15,13 @@ import IBaseRepo from '../controllers/controller/IController';
 export class CampaignAdRepo implements IBaseRepo<ICampaign, TListFilters> {
     constructor() { }
 
-    public async getCampaignsByFranchiseId(franchiseId: string): Promise<any> {
+    public async getCampaignsByFranchiseId(franchiseId: string, franchiseType: string): Promise<any> {
+        let whereOptions: any = { franchiseId: franchiseId };
+        if (franchiseType) {
+            whereOptions = { franchiseType: franchiseType };
+        }
         return await CampaignAdModel.findAll({
-            where: { franchiseId: franchiseId }
+            where: whereOptions
         });
     }
 

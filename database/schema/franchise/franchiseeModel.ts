@@ -8,50 +8,50 @@ interface FranchiseeCreationAttributes extends Optional<FranchiseeAttributes, 'i
 // Franchisee class model for the Sequelize ORM
 class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttributes> implements FranchiseeAttributes {
   public id!: string;
-  public userid?: string;
-  public referBy?: string;
-  public parentFranchise?: string;
+  public userid?: string | null;
+  public referBy?: string | null;
+  public parentFranchise?: string | null;
   public name!: string;
   public ownerName!: string;
   public contactEmail!: string;
-  public contactNumber!: string;
-  public franchiseLocations?: FranchiseeLocation[];
-  public establishedDate!: Date;
-  public franchiseAgreementSignedDate!: Date;
-  public franchiseType!: FranchiseType;
-  public region!: string;
-  public description!: string;
-  public website!: string;
-  public socialMediaLinks!: string[];
-  public logo!: string;
-  public numberOfEmployees!: number;
-  public investmentAmount!: number;
-  public royaltyPercentage!: number;
-  public monthlyRevenue!: number;
-  public numberOfOutlets!: number;
-  public menuSpecialty!: string;
-  public businessHours!: string;
-  public deliveryOptions!: boolean;
-  public isActive!: boolean;
-  public ratings!: number;
-  public promotions!: string[];
-  public targetMarket!: string;
-  public sustainabilityPractices!: string;
-  public trainingPrograms!: string[];
-  public supportContact?: string;
-  public operationalChallenges!: string[];
-  public competitiveAdvantages!: string;
-  public expansionPlans!: string;
-  public customerFeedback!: string[];
-  public industryCertifications!: string[];
-  public affiliatePrograms!: string[];
-  public performanceMetrics!: { [key: string]: number };
-  public franchiseRenewalInfo!: { renewalDate: Date; conditions: string } | null;
-  public partnerships!: string[];
-  public marketingStrategies!: string[];
-  public trainingHistory!: { date: Date; topic: string }[];
-  public crisisManagementPlans!: string;
-  public diversityInitiatives!: string;
+  public contactNumber!: string | null;
+  public franchiseLocations?: FranchiseeLocation[] | null;
+  public establishedDate!: Date | null;
+  public franchiseAgreementSignedDate!: Date | null;
+  public franchiseType!: FranchiseType | null;
+  public region!: string | null;
+  public description?: string | null;
+  public website?: string | null;
+  public socialMediaLinks?: string[] | null;
+  public logo?: string | null;
+  public numberOfEmployees!: number | null;
+  public investmentAmount!: number | null;
+  public royaltyPercentage!: number | null;
+  public monthlyRevenue!: number | null;
+  public numberOfOutlets!: number | null;
+  public menuSpecialty?: string | null;
+  public businessHours?: string | null;
+  public deliveryOptions?: boolean | null;
+  public isActive!: boolean | null;
+  public ratings?: number | null;
+  public promotions?: string[] | null;
+  public targetMarket?: string | null;
+  public sustainabilityPractices?: string | null;
+  public trainingPrograms?: string[] | null;
+  public supportContact?: string | null;
+  public operationalChallenges?: string[] | null;
+  public competitiveAdvantages?: string | null;
+  public expansionPlans?: string | null;
+  public customerFeedback?: string[] | null;
+  public industryCertifications?: string[] | null;
+  public affiliatePrograms?: string[] | null;
+  public performanceMetrics?: { [key: string]: number } | null;
+  public franchiseRenewalInfo?: { renewalDate: Date; conditions: string } | null;
+  public partnerships?: string[] | null;
+  public marketingStrategies?: string[] | null;
+  public trainingHistory?: { date: Date; topic: string }[] | null;
+  public crisisManagementPlans?: string | null;
+  public diversityInitiatives?: string | null;
 }
 
 // Initializing the model and its schema
@@ -95,26 +95,26 @@ FranchiseeModel.init(
     },
     franchiseLocations: {
       type: DataTypes.ARRAY(DataTypes.JSONB),
-      allowNull: false,
+      allowNull: true,
       comment: "Locations of the franchise outlets",
     },
     establishedDate: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
       comment: "Date when the franchise was established",
     },
     franchiseAgreementSignedDate: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
       comment: "Date when the franchise agreement was signed",
     },
     franchiseType: {
       type: DataTypes.ENUM(...Object.values(FranchiseType)),
-      allowNull: false,
+      allowNull: true,
     },
     region: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       comment: "Geographical region of operation for the franchisee",
     },
     description: {
@@ -139,27 +139,27 @@ FranchiseeModel.init(
     },
     numberOfEmployees: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       comment: "Total number of employees working under the franchisee",
     },
     investmentAmount: {
       type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
+      allowNull: true,
       comment: "Initial investment amount required to establish the franchise",
     },
     royaltyPercentage: {
       type: DataTypes.DECIMAL(5, 2),
-      allowNull: false,
+      allowNull: true,
       comment: "Percentage of revenue paid to the franchisor as royalties",
     },
     monthlyRevenue: {
       type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
+      allowNull: true,
       comment: "Average monthly revenue generated by the franchisee",
     },
     numberOfOutlets: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       comment: "Total number of outlets owned by the franchisee",
     },
     menuSpecialty: {
@@ -180,6 +180,7 @@ FranchiseeModel.init(
     isActive: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
+      allowNull: true,
       comment: "Indicates if the franchisee is currently active or not",
     },
     ratings: {
@@ -270,12 +271,12 @@ FranchiseeModel.init(
     crisisManagementPlans: {
       type: DataTypes.STRING,
       allowNull: true,
-      comment: "Plans for handling emergencies or crises effectively",
+      comment: "Details of crisis management plans in place",
     },
     diversityInitiatives: {
       type: DataTypes.STRING,
       allowNull: true,
-      comment: "Efforts towards diversity and inclusion in hiring and operations",
+      comment: "Description of diversity and inclusion initiatives",
     },
   },
   {

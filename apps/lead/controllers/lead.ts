@@ -71,23 +71,23 @@ export default class LeadController {
                 password_token: token
             });
 
-            // await new FranchiseeRepo().createFranchisee({
-            //     userid: normalUser.id, // Optional: User ID of the franchisee creator
-            //     franchiseAgreementSignedDate: null, // Required: Agreement signed date
-            //     numberOfEmployees: 0, // Required: Number of employees
-            //     investmentAmount: 0, // Required: Investment amount
-            //     name: existingLead.firstName, // Required: Full name of the franchisee
-            //     ownerName: `${existingLead.firstName} ${existingLead.lastName}`, // Required: Owner name
-            //     contactEmail: existingLead.email, // Required: Contact email
-            //     contactNumber: existingLead.phoneNumber, // Optional: Contact number
-            //     establishedDate: new Date, // Required: Established date
-            //     franchiseType: FranchiseType.FRANCHISE, // Required: Type of franchise
-            //     region: null, // Required: Region
-            //     royaltyPercentage: 0, // Required: Royalty percentage
-            //     monthlyRevenue: 0, // Required: Monthly revenue
-            //     numberOfOutlets: 0, // Required: Number of outlets
-            //     isActive: true// Required: Active status
-            // });
+            await new FranchiseeRepo().createFranchisee({
+                userid: normalUser.id, // Optional: User ID of the franchisee creator
+                franchiseAgreementSignedDate: null, // Required: Agreement signed date
+                numberOfEmployees: 0, // Required: Number of employees
+                investmentAmount: 0, // Required: Investment amount
+                name: existingLead.firstName, // Required: Full name of the franchisee
+                ownerName: `${existingLead.firstName} ${existingLead.lastName}`, // Required: Owner name
+                contactEmail: existingLead.email, // Required: Contact email
+                contactNumber: existingLead.phoneNumber, // Optional: Contact number
+                establishedDate: new Date, // Required: Established date
+                franchiseType: FranchiseType.FRANCHISE, // Required: Type of franchise
+                region: null, // Required: Region
+                royaltyPercentage: 0, // Required: Royalty percentage
+                monthlyRevenue: 0, // Required: Monthly revenue
+                numberOfOutlets: 0, // Required: Number of outlets
+                isActive: false// Required: Active status
+            });
 
             await new LeadRepo().updateStatus(id, { status: LeadStatus.CONVERTED });
 

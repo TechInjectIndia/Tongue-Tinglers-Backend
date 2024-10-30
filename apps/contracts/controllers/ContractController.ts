@@ -115,7 +115,7 @@ export default class ContractController {
             if (!deleted) {
                 return res.status(404).send(sendResponse(RESPONSE_TYPE.ERROR, 'Contracts not found'));
             }
-            return res.status(204).send();
+            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.DELETED));
         } catch (error) {
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,

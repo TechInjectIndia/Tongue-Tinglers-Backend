@@ -51,7 +51,7 @@ const signedDocsSchema = Joi.object().keys({
         .messages({ 'any.required': 'Creation date is required.' }),
     // status: Joi.string().valid(...Object.values(SIGN_STATUS)).required()
     //     .messages({ 'any.only': 'Status must be one of the predefined values.' }),
-     status: Joi.string().required()
+    status: Joi.string().required()
         .messages({ 'any.only': 'Status must be one of the predefined values.' }),
     docLink: Joi.string().allow(null),
     signedDate: Joi.date().allow(null),
@@ -110,7 +110,7 @@ const editContractBody = Joi.object().keys({
         .messages({
             'any.only': 'Status must be one of the predefined values.'
         }),
-    terminationDetails: terminationDetailsSchema.optional(),
+    terminationDetails: terminationDetailsSchema.allow(null).optional(),
     payment: Joi.array().allow(null).optional(),
     amount: Joi.number().optional(),
     signedDate: Joi.date().allow(null).optional(),

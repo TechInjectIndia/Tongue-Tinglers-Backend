@@ -24,9 +24,15 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public referBy!: UserDetails;
     public logs!: Record<string, ITrackable[]>;
     public notes!: Note[] | null;
-    public proposalModals: Array<ProposalModels> | null;
+    public proposalModals: Array<ProposalModels> | null; // todo put this in a separate table and make association
     public franchiseModals: Array<FranchiseModels> | null;
-    public affiliate: Array<Affiliate> | null;
+    /** todo how can one lead have multiple Affiliates associated to it,
+     if a lead comes from a campaign with an affiliate,
+     only 1 affiliate will be assigned to it
+     And the association also shouldn't be a direct one -> instead it should be:
+     affiliate->campaign->lead-> contract {which has payment & agreement association} -> Franchise
+     */
+    public affiliate: Array<Affiliate> | null;//todo make the changes as above
     public marketing: Array<string> | null;
     public other: Array<ExtraFields> | null;
     public createdBy!: string;
@@ -40,6 +46,7 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
         LeadsModel.belongsTo(UserModel, { foreignKey: 'createdBy', as: 'creator' });
         LeadsModel.belongsTo(UserModel, { foreignKey: 'updatedBy', as: 'updater' });
         LeadsModel.belongsTo(UserModel, { foreignKey: 'deletedBy', as: 'deleter' });
+        //associate with campaign
     }
 }
 

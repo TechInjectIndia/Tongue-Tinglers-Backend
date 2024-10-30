@@ -20,7 +20,7 @@ class ContractModel extends Model<IContract, ContractCreationAttributes> impleme
         date: Date;
         status: CONTRACT_PAYMENT_STATUS;
         additionalInfo: string;
-    }[];
+    }[]; // todo make it separate table and associate it
     public leadId!: string | null;
     public templateId!: string;
     public amount!: number;

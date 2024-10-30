@@ -1,4 +1,11 @@
-import type { UpdatedMetaData, BaseModel, DeletionMetaData, ITrackable, Note, UserDetails } from "../interfaces";
+import type {
+    UpdatedMetaData,
+    BaseModel,
+    DeletionMetaData,
+    ITrackable,
+    Note,
+    UserDetails,
+} from "../interfaces";
 
 enum followStatus {
     FOLLOWED_UP = "followed-up",
@@ -13,7 +20,7 @@ enum LeadSource {
     EMAIL_MARKETING = "email-marketing",
     PAID = "paid",
     EVENT = "event",
-    REFERRAL = "referral"
+    REFERRAL = "referral",
 }
 
 enum LeadStatus {
@@ -39,19 +46,19 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     additionalInfo: string | null;
     source: LeadSource;
     sourceInfo: string | null;
-    followDetails: Array<FollowDetails> | null;
-    referBy: UserDetails | null;
-    logs: Record<string, ITrackable[]>;
-    notes: Note[] | null;
-    proposalModals: Array<ProposalModels> | null;
-    franchiseModals: Array<FranchiseModels> | null;
-    affiliate: Array<Affiliate> | null;
+    followDetails: Array<FollowDetails> | null; // it should be in different table
+    referBy: UserDetails | null; // it should be in different table
+    logs: Record<string, ITrackable[]>; // it should be in different table
+    notes: Note[] | null; // it should be in different table
+    proposalModals: Array<ProposalModels> | null;  // it should be in different table
+    franchiseModals: Array<FranchiseModels> | null;  // it should be in different table
+    affiliate: Array<Affiliate> | null;  // it should be in different table
     marketing: Array<string> | null;
-    other: Array<ExtraFields> | null;
+    other: Array<ExtraFields> | null;  // it should be in different table
 }
 
 interface ProposalModels {
-    id: string,
+    id: string;
     title: string;
     createdAt: Date;
     createdBy: string;
@@ -60,7 +67,7 @@ interface ProposalModels {
     deletedAt: Date | null;
     deletedBy: string | null;
     budget: number;
-    files: Array<SeoImage>;
+    files: Array<SeoImage>;  // it should be in different table
 }
 
 type TPayloadProposalModel = {
@@ -72,8 +79,8 @@ type TPayloadProposalModel = {
     deletedAt: Date | null;
     deletedBy: string | null;
     budget: number;
-    files: Array<SeoImage>;
-}
+    files: Array<SeoImage>;  // it should be in different table
+};
 
 type ProposalModelsList = {
     total: number;
@@ -81,29 +88,29 @@ type ProposalModelsList = {
 };
 
 interface FranchiseModels {
-    id: string,
-    description: string,
-    title: string,
-    reqArea: number,
-    images: SeoImage[],
-    investment: number,
-    runningCost: number,
-    bestFor: string[],
-    inclusions: string[],
-    others: ExtraFields
+    id: string;
+    description: string;
+    title: string;
+    reqArea: number;
+    images: SeoImage[];  // it should be in different table
+    investment: number;
+    runningCost: number;
+    bestFor: string[];
+    inclusions: string[];
+    others: ExtraFields;   // it should be in different table and it should be array
 }
 
 type TPayloadFranchiseModel = {
-    description: string,
-    title: string,
-    reqArea: number,
-    images: SeoImage[],
-    investment: number,
-    runningCost: number,
-    bestFor: string[],
-    inclusions: string[],
-    others: ExtraFields
-}
+    description: string;
+    title: string;
+    reqArea: number;
+    images: SeoImage[];
+    investment: number;
+    runningCost: number;
+    bestFor: string[];
+    inclusions: string[];
+    others: ExtraFields;   // it should be in different table and it should be array
+};
 
 type FranchiseModelsList = {
     total: number;
@@ -117,23 +124,23 @@ interface SeoImage {
 }
 
 interface ExtraFields {
-    key: string,
-    value: string,
-    title: string,
-    type: extraFieldTypes
+    key: string;
+    value: string;
+    title: string;
+    type: extraFieldTypes;
 }
 
 enum extraFieldTypes {
     STRING = "string",
     NUMBER = "number",
-    DATE = "date"
+    DATE = "date",
 }
 
 interface Affiliate {
-    id: string,
-    type: string,
-    codes: Record<string, string>
-    sm: Record<string, SMDetails>
+    id: string;
+    type: string;
+    codes: Record<string, string>;  // it should be in different table 
+    sm: Record<string, SMDetails>;  // it should be in different table 
 }
 
 type AffiliatesList = {
@@ -142,15 +149,15 @@ type AffiliatesList = {
 };
 
 type TPayloadAffiliate = {
-    type: string,
-    codes: Record<string, string>
-    sm: Record<string, SMDetails>
-}
+    type: string;
+    codes: Record<string, string>; // it should be in different table 
+    sm: Record<string, SMDetails>; // it should be in different table 
+};
 
 interface SMDetails {
-    handle: string,
-    followers: number,
-    tags: string[]
+    handle: string;
+    followers: number;
+    tags: string[];
 }
 
 interface LeadAddress {
@@ -199,5 +206,5 @@ export {
     TPayloadFranchiseModel,
     ProposalModels,
     TPayloadProposalModel,
-    ProposalModelsList
+    ProposalModelsList,
 };

@@ -38,12 +38,12 @@ enum SIGN_STATUS {
 interface IContract extends UpdatedMetaData, BaseModel, DeletionMetaData {
     id: string;
     status: CONTRACT_STATUS;
-    terminationDetails: null | {
+    terminationDetails: null | { // it should be in different table and assocaite it  
         UserDetails: UserDetails; // updated
         reason: string;
         date: Date;
     };
-    payment: ContractPaymentDetails[] | null;
+    payment: ContractPaymentDetails[] | null; // it should be in different table and assocaite it   
     leadId: string;
     templateId: string;
     amount: number;
@@ -53,10 +53,10 @@ interface IContract extends UpdatedMetaData, BaseModel, DeletionMetaData {
         to: Date;
         from: Date;
     };
-    notes: Note[] | null;
+    notes: Note[] | null; // it should be in different table and assocaite it  
     additionalInfo: string;
-    logs: ITrackable[] | null; //update
-    signedDocs: SignDoc[] | null; //update
+    logs: ITrackable[] | null; //update // it should be in different table and assocaite it  
+    signedDocs: SignDoc[] | null; //update // it should be in different table and assocaite it  
 }
 
 interface SignDoc {

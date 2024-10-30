@@ -14,12 +14,12 @@ class FranchiseLeadModel extends Model<FranchiseModels, LeadCreationAttributes> 
     public description!: string;
     public title!: string;
     public reqArea!: number;
-    public images!: SeoImage[];
+    public images!: SeoImage[]; // it should be in different table 
     public investment!: number;
     public runningCost!: number;
     public bestFor!: string[];
     public inclusions!: string[];
-    public others!: ExtraFields;
+    public others!: ExtraFields; // it should be in different table and it should be array
 }
 
 // Initialize the franchise model

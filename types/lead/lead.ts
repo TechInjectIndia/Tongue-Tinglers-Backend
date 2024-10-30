@@ -43,7 +43,8 @@ export interface TLeadFilters {
   sorting: any;
   userRole?: string;
   userFranchiseeId?: string;
-  franchiseeId?: string;
+  franchiseId?: string;
+  franchiseData?: any;
   dateRange: {
     start: Date;
     end: Date;

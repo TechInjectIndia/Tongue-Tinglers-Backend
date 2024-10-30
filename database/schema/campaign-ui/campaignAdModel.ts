@@ -12,6 +12,7 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes> imple
     public id!: string;
     public name!: string;
     public franchiseId?: string;
+    public region?: string;
     public description?: string;
     public questionList!: string[];
 
@@ -32,6 +33,10 @@ CampaignAdModel.init({
         comment: 'Unique identifier for the campaign',
     },
     franchiseId: {
+        type: STRING,
+        allowNull: true,
+    },
+    region: {
         type: STRING,
         allowNull: true,
     },

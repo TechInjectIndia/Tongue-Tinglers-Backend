@@ -68,7 +68,6 @@ export class CampaignAdRepo implements IBaseRepo<ICampaign, TListFilters> {
     }
 
     public async create(data: TPayloadCampaign): Promise<ICampaign> {
-        console.log('>>>>>>>>> data', data);
         // Create a new campaign
         const response = await CampaignAdModel.create(data);
         return response;

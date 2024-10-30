@@ -6,7 +6,8 @@ import { validateReq } from "../../../libraries";
 const createCampaignBody = Joi.object().keys({
   name: Joi.string().required()
     .messages({ 'any.required': 'Campaign name is required.' }),
-  franchiseId: Joi.string().optional().allow(""),
+  franchiseId: Joi.string().optional().allow(null),
+  region: Joi.string().optional().allow(null),
   description: Joi.string().optional()
     .messages({ 'string.base': 'Description must be a string.' }),
   questionList: Joi.array().items(
@@ -20,7 +21,8 @@ const createCampaignBody = Joi.object().keys({
 const editCampaignBody = Joi.object().keys({
   name: Joi.string().optional()
     .messages({ 'string.base': 'Campaign name must be a string.' }),
-  franchiseId: Joi.string().optional().allow(""),
+  franchiseId: Joi.string().optional().allow(null),
+  region: Joi.string().optional().allow(null),
   description: Joi.string().optional()
     .messages({ 'string.base': 'Description must be a string.' }),
   questionList: Joi.array().items(

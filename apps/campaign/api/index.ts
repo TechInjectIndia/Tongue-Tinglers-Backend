@@ -30,6 +30,7 @@ const {
  *             required:
  *               - name
  *               - franchiseId
+ *               - region
  *               - questionList
  *               - startDate
  *             properties:
@@ -39,6 +40,9 @@ const {
  *               franchiseId:
  *                 type: string
  *                 example: "franchiseId"
+ *               region:
+ *                 type: string
+ *                 example: "punjab"
  *               description:
  *                 type: string
  *                 example: "A campaign for summer promotions"

@@ -442,7 +442,7 @@ router.post("/create", hasPermission('contracts', 'create'), validateCreateContr
 router.get("/list", hasPermission('contracts', 'read'), ContractController.list);
 router.get("/get/:id", hasPermission('contracts', 'read'), validateEditContractParams, ContractController.get);
 router.put("/update/:id", hasPermission('contracts', 'update'), validateEditContractParams, validateEditContractBody, ContractController.update);
-router.delete("/delete/:id", hasPermission('contracts', 'delete'), validateEditContractParams, ContractController.delete);
+router.delete("/delete", hasPermission('contracts', 'delete'), validateEditContractParams, ContractController.delete);
 // ====== Contracts Ends ======
 
 export default router;

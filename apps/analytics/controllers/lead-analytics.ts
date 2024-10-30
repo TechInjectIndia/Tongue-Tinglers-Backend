@@ -8,6 +8,7 @@ import { subDays, eachDayOfInterval, eachMonthOfInterval, format } from 'date-fn
 import { FranchiseeRepo } from '../../franchisee/models/FranchiseeRepo';
 import { RolesRepo } from '../../admin-user/models/roles';
 import { FranchiseType } from "../../../interfaces";
+import { TLeadFilters, } from "../../../types";
 
 export default class LeadAnalyticsController {
 
@@ -96,6 +97,7 @@ export default class LeadAnalyticsController {
             if (!franchiseData) {
                 return res.status(404).send({ message: 'Franchise data not found.' });
             }
+            console.log('franchiseData.franchiseType', franchiseData.franchiseType);
             switch (franchiseData.franchiseType) {
                 case FranchiseType.MASTER_FRANCHISE:
                     analyticsData = await new AnalyticsModel().leadTimelineForMasterFranchisee(startDate, endDate, groupBy, franchiseId);
@@ -143,6 +145,46 @@ export default class LeadAnalyticsController {
         }
     }
 
+    static async leadList(req: Request, res: Response, next: NextFunction): Promise<Response> {
+        try {
+            const user_id = get(req, 'user_id', '');
+            const size = get(req.query, "size", 100);
+            const skip = get(req.query, "skip", 0);
+            const search = get(req.query, "search", "") as string;
+            const sorting = get(req.query, "sorting", "id DESC").toString().split(" ");
+            const filter = get(req.query, "filter", "this_year") as string;
+            const startDate = get(req.query, "startDate", "") as string;
+            const endDate = get(req.query, "endDate", "") as string;
+            let leadsList: any = [];
+
+            // Calculate date range based on the filter type using the library function
+            const dateRange = getDateRange(filter, startDate, endDate);
+
+            const franchiseRepo = new FranchiseeRepo();
+            const franchiseId = get(req, 'franchise_id', '');
+
+            const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
+            if (!franchiseData) {
+                return res.status(404).send({ message: 'Franchise data not found.' });
+            }
+            console.log('franchiseData.franchiseType', franchiseData.franchiseType);
+            leadsList = await new AnalyticsModel().list({
+                offset: skip,
+                limit: size,
+                search,
+                sorting,
+                dateRange,
+                franchiseData,
+                franchiseId
+            } as TLeadFilters);
+            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, leadsList));
+
+        } catch (err) {
+            console.error(err);
+            return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR, error: err.message });
+        }
+    }
+
     static async leadStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const filter = get(req.query, "filter", "") as string;
@@ -175,7 +217,7 @@ export default class LeadAnalyticsController {
             const endDate = get(req.query, "endDate", "") as string;
             const dateRange = getDateRange(filter, startDate, endDate);
 
-            const campaigns = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseid as string, '');
+            const campaigns = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseid as string);
             // get leads where campaign id is campaigns.id using map
             const campaignIds = campaigns.map(campaign => campaign.id);
             const analyticsData = await new AnalyticsModel().getLeadStatusByCampaignIdsAndDateRange(campaignIds, dateRange.start, dateRange.end);

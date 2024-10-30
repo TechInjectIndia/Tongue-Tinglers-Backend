@@ -178,11 +178,118 @@ const router = Router();
  *         description: Unauthorized
  */
 
+/**
+ * @swagger
+ * /api/admin/analytics/leads/list:
+ *   get:
+ *     summary: Retrieve a paginated list of leads with filters, search, and sorting options
+ *     tags: [Admin > Analytics > Leads]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: size
+ *         in: query
+ *         required: false
+ *         description: Number of leads to retrieve per page (pagination size)
+ *         schema:
+ *           type: integer
+ *           example: 100
+ *       - name: skip
+ *         in: query
+ *         required: false
+ *         description: Number of leads to skip (offset) for pagination
+ *         schema:
+ *           type: integer
+ *           example: 0
+ *       - name: search
+ *         in: query
+ *         required: false
+ *         description: Search term to filter leads by name or other searchable fields
+ *         schema:
+ *           type: string
+ *           example: John Doe
+ *       - name: sorting
+ *         in: query
+ *         required: false
+ *         description: Sorting criteria, e.g., "id DESC" or "createdAt ASC"
+ *         schema:
+ *           type: string
+ *           example: "id DESC"
+ *       - name: filter
+ *         in: query
+ *         required: false
+ *         description: Filter by time range, e.g., "this_week", "last_week", etc.
+ *         schema:
+ *           type: string
+ *           example: this_year
+ *       - name: startDate
+ *         in: query
+ *         required: false
+ *         description: Custom start date for filtering leads (used with 'custom' filter)
+ *         schema:
+ *           type: string
+ *           format: date
+ *           example: "2024-01-01"
+ *       - name: endDate
+ *         in: query
+ *         required: false
+ *         description: Custom end date for filtering leads (used with 'custom' filter)
+ *         schema:
+ *           type: string
+ *           format: date
+ *           example: "2024-12-31"
+ *     responses:
+ *       '200':
+ *         description: Leads retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   description: Response status
+ *                   example: "success"
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *                   example: "Leads fetched successfully"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         description: Unique lead ID
+ *                       name:
+ *                         type: string
+ *                         description: Name of the lead
+ *                       status:
+ *                         type: string
+ *                         description: Current status of the lead
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         description: Date when the lead was created
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         description: Date when the lead was last updated
+ *       '400':
+ *         description: Invalid request query
+ *       '401':
+ *         description: Unauthorized
+ *       '500':
+ *         description: Internal server error
+ */
+
 router.get("/lead-timeline", LeadAnalyticsController.leadTimeline);
 router.get("/lead-status-by-status-type", LeadAnalyticsController.leadStatusByStatusType);
 router.get("/lead-status-franchise-id", LeadAnalyticsController.leadStatusByFranchiseId);
 router.get("/lead-sources", LeadAnalyticsController.leadSources);
 router.get("/lead-status", LeadAnalyticsController.leadStatus);
+router.get("/list", LeadAnalyticsController.leadList);
 router.get("/conversion-rate", LeadAnalyticsController.conversionRate);
 router.get("/sales-pipeline", LeadAnalyticsController.salesPipeline);
 // ====== Analytics Leads End======

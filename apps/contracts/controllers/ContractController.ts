@@ -106,12 +106,14 @@ export default class ContractController {
 
     static async delete(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req.params, 'id');
-            const deleted = await new ContractRepo().delete([id]);
+            const ids = get(req.body, 'ids');
+            if (!Array.isArray(ids) || ids.length === 0) {
+                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, 'Invalid ids provided'));
+            }
+
+            const deleted = await new ContractRepo().delete(ids);
             if (!deleted) {
-                return res.status(404).send(
-                    sendResponse(RESPONSE_TYPE.ERROR, 'Contract not found')
-                );
+                return res.status(404).send(sendResponse(RESPONSE_TYPE.ERROR, 'Contracts not found'));
             }
             return res.status(204).send();
         } catch (error) {

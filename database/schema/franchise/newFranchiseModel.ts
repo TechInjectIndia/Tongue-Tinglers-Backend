@@ -21,7 +21,7 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
     public ownerName!: string;
     public contactEmail!: string;
     public contactNumber!: string | null;
-    public franchiseLocation: FranchiseLocationModel;
+    public franchiseLocation: FranchiseLocationModel;  //delete it 
     public establishedDate!: Date | null;
     public franchiseAgreementSignedDate!: Date | null;
     public franchiseType!: FranchiseType; // defines what franchise owner is a super franchise, master franchise (TT company) or neither = franchise
@@ -32,32 +32,32 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
 
     public investmentAmount!: number | null; // dont save here this should be pulled from contracts
 
-    public royaltyPercentage!: number | null;
-    public monthlyRevenue!: number | null;
-    public numberOfOutlets!: number | null;
-    public menuSpecialty?: string | null;
-    public businessHours?: string | null;
-    public deliveryOptions?: boolean | null;
+    public royaltyPercentage!: number | null; //delete it
+    public monthlyRevenue!: number | null; //delete it
+    public numberOfOutlets!: number | null; //delete it
+    public menuSpecialty?: string | null; //delete it
+    public businessHours?: string | null; //delete it
+    public deliveryOptions?: boolean | null; //delete it
     public isActive!: boolean | null;
-    public ratings?: number | null;
-    public promotions?: string[] | null;
-    public targetMarket?: string | null;
-    public sustainabilityPractices?: string | null;
-    public trainingPrograms?: string[] | null;
-    public supportContact?: string | null;
-    public operationalChallenges?: string[] | null;
-    public competitiveAdvantages?: string | null;
-    public expansionPlans?: string | null;
-    public customerFeedback?: string[] | null;
-    public industryCertifications?: string[] | null;
-    public affiliatePrograms?: string[] | null;
-    public performanceMetrics?: { [key: string]: number } | null;
-    public franchiseRenewalInfo?: { renewalDate: Date; conditions: string } | null;
-    public partnerships?: string[] | null;
-    public marketingStrategies?: string[] | null;
-    public trainingHistory?: { date: Date; topic: string }[] | null;
-    public crisisManagementPlans?: string | null;
-    public diversityInitiatives?: string | null;
+    public ratings?: number | null; 
+    public promotions?: string[] | null; //delete it
+    public targetMarket?: string | null; //delete it
+    public sustainabilityPractices?: string | null; //delete it
+    public trainingPrograms?: string[] | null; //delete it
+    public supportContact?: string | null; //delete it
+    public operationalChallenges?: string[] | null; //delete it
+    public competitiveAdvantages?: string | null;  //delete it
+    public expansionPlans?: string | null; //delete it
+    public customerFeedback?: string[] | null; //delete it
+    public industryCertifications?: string[] | null; //delete it
+    public affiliatePrograms?: string[] | null; //delete it
+    public performanceMetrics?: { [key: string]: number } | null; //delete it
+    public franchiseRenewalInfo?: { renewalDate: Date; conditions: string } | null; 
+    public partnerships?: string[] | null; //delete it
+    public marketingStrategies?: string[] | null; //delete it
+    public trainingHistory?: { date: Date; topic: string }[] | null; //delete it
+    public crisisManagementPlans?: string | null; //delete it
+    public diversityInitiatives?: string | null; //delete it
 }
 
 // Initializing the model and its schema

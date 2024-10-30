@@ -12,8 +12,8 @@ interface AffiliateCreationAttributes extends Optional<Affiliate, 'id'> { }
 class AffiliateModel extends Model<Affiliate, AffiliateCreationAttributes> implements Affiliate {
     public id!: string;
     public type!: string;
-    public codes!: Record<string, string>;
-    public sm!: Record<string, SMDetails>;
+    public codes!: Record<string, string>; 
+    public sm!: Record<string, SMDetails>; //it should be in other table and make association
 }
 
 // Initialize the AffiliateModel

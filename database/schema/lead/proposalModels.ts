@@ -17,8 +17,12 @@ class ProposalLeadModels extends Model<ProposalModels, LeadCreationAttributes> i
     public updatedBy!: string | null;
     public deletedAt!: Date | null;
     public deletedBy!: string | null;
-    public budget!: number;
-    public files!: SeoImage[]; // change it into files[] 
+    public budget!: number;  
+    public files!: SeoImage[]; // change it into files[]  
+
+    //@todo 
+    //FranchiseModel:string - @todo add id of franchise models id 
+    // because we can make many proposal models using same franchise id with different price / budget 
 }
 
 // Initialize the Proposal model

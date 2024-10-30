@@ -12,7 +12,7 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public campaignId?: string;
     public firstName!: string;
     public status!: LeadStatus;
-    public assign!: Assignee | null; // it should be in different table 
+    public assign!: Assignee | null; 
     public lastName!: string;
     public phoneNumber!: string;
     public email!: string;
@@ -20,9 +20,9 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public additionalInfo!: string | null;
     public source!: LeadSource;
     public sourceInfo!: string | null;
-    public followDetails!: FollowDetails[] | null; // it should be in different table 
+    public followDetails!: FollowDetails[] | null; // todo put this in a separate table and make association
     public referBy!: UserDetails;
-    public logs!: Record<string, ITrackable[]>; // it should be in different table 
+    public logs!: Record<string, ITrackable[]>; // todo put this in a separate table and make association
     public notes!: Note[] | null;
     public proposalModals: Array<ProposalModels> | null; // todo put this in a separate table and make association
     public franchiseModals: Array<FranchiseModels> | null;
@@ -34,7 +34,7 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
      */
     public affiliate: Array<Affiliate> | null;//todo make the changes as above
     public marketing: Array<string> | null;
-    public other: Array<ExtraFields> | null;
+    public other: Array<ExtraFields> | null; // todo put this in a separate table and make association
 
     public createdBy!: string;
     public updatedBy!: string | null;

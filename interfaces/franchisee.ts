@@ -71,7 +71,7 @@ interface FranchiseeAttributes {
     diversityInitiatives?: string; //delete this
 
     // @todo add this
-    // 
+    //  contractId: string    @todo id of contract that is associated with this franchise if contract is expired then new contract id will be replaced  contract is in other table associate by id of contract
 }
 
 interface AddFranchiseePayload {

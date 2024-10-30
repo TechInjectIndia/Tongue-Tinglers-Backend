@@ -1,12 +1,14 @@
+// products.model.ts
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TProduct } from "../../../types";
 import { PRODUCTS_TYPE } from '../../../interfaces';
-import { ProductImagesModel } from './product_image.model'
-import { ProductCategoryModel } from './category.model'
-import { ProductCategoryMapModel } from './product_category_map.model'
-import { ProductTagModel } from './tag.model'
-import { ProductTagMapModel } from './product_tag_map'
+import { ProductImagesModel } from './product_image.model';
+import { ProductCategoryModel } from './category.model';
+import { ProductCategoryMapModel } from './product_category_map.model';
+import { ProductTagModel } from './tag.model';
+import { ProductTagMapModel } from './product_tag_map';
+import { StockModel } from './stockModel';
 
 const { INTEGER, STRING, TEXT, ENUM, BOOLEAN } = DataTypes;
 
@@ -17,14 +19,13 @@ class ProductsModel extends Model<TProduct, ProductsCreationAttributes> implemen
     public name!: string;
     public slug!: string;
     public description!: string;
-    public price!: string;
-    public stock!: string;
+    public price!: number;
     public type!: PRODUCTS_TYPE;
     public total_ratings!: number;
     public ratings!: number;
-    public discount!: string;
-    public sold!: string;
-    public active!: number;
+    public discount!: number;
+    public sold!: number;
+    public active!: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -52,11 +53,7 @@ ProductsModel.init({
     },
     type: {
         type: ENUM,
-        values: [...Object.values(PRODUCTS_TYPE)]
-    },
-    stock: {
-        type: INTEGER,
-        allowNull: false,
+        values: [...Object.values(PRODUCTS_TYPE)],
     },
     total_ratings: {
         type: INTEGER,
@@ -92,20 +89,23 @@ ProductsModel.init({
     timestamps: true,
 });
 
+// Relationships
 ProductsModel.hasMany(ProductImagesModel, { as: 'images' });
-
 ProductsModel.belongsToMany(ProductCategoryModel, {
     through: ProductCategoryMapModel,
     foreignKey: 'productId',
     otherKey: 'categoryId',
-    as: 'categories'
+    as: 'categories',
 });
 
 ProductsModel.belongsToMany(ProductTagModel, {
     through: ProductTagMapModel,
     foreignKey: 'productId',
     otherKey: 'tagId',
-    as: 'tags'
+    as: 'tags',
 });
+
+// Relationship with StockModel
+ProductsModel.hasOne(StockModel, { foreignKey: 'productId', as: 'stock' });
 
 export { ProductsModel };

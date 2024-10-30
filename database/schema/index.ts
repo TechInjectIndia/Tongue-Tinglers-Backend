@@ -15,6 +15,8 @@ export * from "./ecommerce/product_category_map.model";
 export * from "./ecommerce/product_image.model";
 export * from "./ecommerce/tag.model";
 export * from "./ecommerce/tag_image.model";
+export * from "./ecommerce/taxes";
+export * from "./ecommerce/stockModel";
 // ecommerce model ends
 
 // retort model starts
@@ -60,6 +62,7 @@ export * from "./files/galleryModel";
 
 export * from "./franchise/franchiseeModel";
 export * from "./franchise/pdiModel";
+export * from "./regions";
 
 // --- Sequelize Associations Setup --- //
 

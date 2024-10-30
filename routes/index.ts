@@ -30,6 +30,7 @@ import permissionsRouter from "../apps/admin-user/api/permissions";
 import adminUsersRouter from "../apps/admin-user/api/user";
 import customerUsersRouter from "../apps/admin-user/api/customer";
 import productRouter from "../apps/ecommerce/api/products";
+import taxesRouter from "../apps/ecommerce/api/taxes";
 import productCategoryRouter from "../apps/ecommerce/api/category";
 import orderRouter from "../apps/ecommerce/api/orders";
 import productTagRouter from "../apps/ecommerce/api/tags";
@@ -59,6 +60,7 @@ import franchiseeRouter from "../apps/franchisee/api/franchisee";
 import pdiChecklistRouter from "../apps/pdi-checklist/api/pdiChecklist";
 import quickActionEmailRouter from "../apps/quick-actions/api/email";
 import quickActionWhatsappRouter from "../apps/quick-actions/api/whatsapp";
+import regionRouter from "../apps/region/api/index";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -75,7 +77,8 @@ router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // pending
 router.use(`${ADMIN}/menu`, auth, menuRouter);
-router.use(`${ADMIN}/product`, auth, productRouter);
+router.use(`${ADMIN}/product`, productRouter);
+router.use(`${ADMIN}/tax`, auth, taxesRouter);
 router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
 router.use(`${ADMIN}/order`, auth, orderRouter);
 router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
@@ -96,6 +99,7 @@ router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
 router.use(`${ADMIN}/pdi-checklist`, auth, pdiChecklistRouter);
 router.use(`${ADMIN}/quick-actions/email`, auth, quickActionEmailRouter);
 router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
+router.use(`${ADMIN}/region`, regionRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

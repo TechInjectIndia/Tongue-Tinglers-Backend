@@ -15,8 +15,7 @@ class RetortProductsModel extends Model<TRetortProduct, RetortProductsCreationAt
     public name!: string;
     public slug!: string;
     public description!: string;
-    public price!: string;
-    public stock!: string;
+    public price!: number;
     public type!: PRODUCTS_TYPE;
     public total_ratings!: number;
     public ratings!: number;
@@ -51,10 +50,6 @@ RetortProductsModel.init({
     type: {
         type: ENUM,
         values: [...Object.values(PRODUCTS_TYPE)]
-    },
-    stock: {
-        type: INTEGER,
-        allowNull: false,
     },
     total_ratings: {
         type: INTEGER,

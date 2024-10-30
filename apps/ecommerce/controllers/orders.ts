@@ -27,7 +27,7 @@ export default class OrderController {
                             name: getProduct.name as string,
                             slug: getProduct.slug as string,
                             userId: user_id as string,
-                            price: getProduct.price as string,
+                            price: getProduct.price as number,
                             productId: product.id as number,
                             quantity: cartItems[index].quantity as number,
                             orderId: createOrder.id as number,

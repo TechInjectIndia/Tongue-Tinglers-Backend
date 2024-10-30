@@ -5,13 +5,14 @@ import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constant
 import { ProductRepo } from '../models/products';
 import { ProductCategoryRepo } from '../models/category';
 import { ProductCategoryMapRepo } from '../models/product-category-map';
+import { StockRepo } from '../models/stock';
 import slugify from 'slugify';
 
 export default class ProductsController {
     static async uploadImage(req: Request, res: Response, next: NextFunction) {
         try {
-            const moduleName = 'product'
-            await uploadSingleFileToFirebase(req as any, moduleName as string)
+            const moduleName = 'product';
+            await uploadSingleFileToFirebase(req as any, moduleName as string);
             return res
                 .status(200)
                 .send(
@@ -30,9 +31,9 @@ export default class ProductsController {
 
     static async assignCategory(req: Request, res: Response, next: NextFunction) {
         try {
-            const payload = req?.body;
-            const productId = req?.body.productId;
-            const categoryId = req?.body.categoryId;
+            const payload = req.body;
+            const productId = req.body.productId;
+            const categoryId = req.body.categoryId;
 
             const existingProduct = await new ProductRepo().get(productId as number);
             const existingCategory = await new ProductCategoryRepo().get(categoryId as number);
@@ -50,7 +51,6 @@ export default class ProductsController {
                             )
                         );
                 }
-
             }
             return res
                 .status(400)
@@ -70,8 +70,8 @@ export default class ProductsController {
 
     static async unAssignCategory(req: Request, res: Response, next: NextFunction) {
         try {
-            const productId = req?.body.productId;
-            const categoryId = req?.body.categoryId;
+            const productId = req.body.productId;
+            const categoryId = req.body.categoryId;
 
             const checkIfAlreadyLinked = await new ProductCategoryMapRepo().unassign(productId as number, categoryId as number);
             if (checkIfAlreadyLinked) {
@@ -103,11 +103,14 @@ export default class ProductsController {
 
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const name = get(req?.body, "name", "");
-            const createProduct = req?.body;
-            if (createProduct.slug == '') {
+            const name = get(req.body, "name", "");
+            const createProduct = req.body;
+
+            // Create slug if not provided
+            if (createProduct.slug === '') {
                 createProduct.slug = slugify(name, { lower: true });
             }
+
             const existingProduct = await new ProductRepo().getProductByName(name);
             if (existingProduct) {
                 return res
@@ -119,9 +122,17 @@ export default class ProductsController {
                         )
                     );
             }
-            // check if Name exist
-            // check if Slug exist
+
+            // Create the product
             const Product = await new ProductRepo().create(createProduct);
+
+            // Create stock for the product
+            const stockData = {
+                productId: Product.id,
+                quantity: createProduct.stock || 0, // Assuming stock quantity is sent in the request
+            };
+            await new StockRepo().create(stockData);
+
             return res
                 .status(200)
                 .send(
@@ -132,20 +143,18 @@ export default class ProductsController {
                     )
                 );
         } catch (err) {
-            console.log(err)
-            return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
+            console.log(err);
+            return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
 
     static async list(req: Request, res: Response, next: NextFunction) {
         try {
-            const size = get(req?.query, "size", 10);
-            const skip = get(req?.query, "skip", 1);
-            const search = get(req?.query, "search", "");
-            const trashOnly = get(req?.query, "trashOnly", "");
-            let sorting = get(req?.query, "sorting", "id DESC");
+            const size = get(req.query, "size", 10);
+            const skip = get(req.query, "skip", 1);
+            const search = get(req.query, "search", "");
+            const trashOnly = get(req.query, "trashOnly", "");
+            let sorting = get(req.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
 
             const Products = await new ProductRepo().list({
@@ -175,7 +184,7 @@ export default class ProductsController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
+            const id = get(req.params, "id", 0);
             const existingProduct = await new ProductRepo().get(id as number);
             if (isEmpty(existingProduct)) {
                 return res
@@ -188,10 +197,16 @@ export default class ProductsController {
                     );
             }
 
-            const createProduct = req?.body;
-            delete createProduct.id
+            const updateProductData = req.body;
+            delete updateProductData.id;
 
-            const Product = await new ProductRepo().update(id as number, createProduct);
+            const Product = await new ProductRepo().update(id as number, updateProductData);
+
+            // Update stock if quantity is provided
+            if (updateProductData.stock !== undefined) {
+                await new StockRepo().update(id as number, updateProductData.stock);
+            }
+
             return res
                 .status(200)
                 .send(
@@ -211,7 +226,7 @@ export default class ProductsController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
+            const id = get(req.params, "id", 0);
             const Product = await new ProductRepo().get(id as number);
 
             if (isEmpty(Product)) {
@@ -225,13 +240,16 @@ export default class ProductsController {
                     );
             }
 
+            // Get stock information
+            const stock = await new StockRepo().getByProductId(id as number);
+
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        Product
+                        { product: Product, stock }
                     )
                 );
         } catch (err) {
@@ -244,8 +262,12 @@ export default class ProductsController {
 
     static async delete(req: Request, res: Response, next: NextFunction) {
         try {
-            const ids = get(req?.body, "ids", "");
+            const ids = get(req.body, "ids", "");
             const Product = await new ProductRepo().delete(ids);
+
+            // Optionally, delete stock related to the product here
+            await new StockRepo().deleteByProductIds(ids); // Implement this in StockRepo if needed
+
             return res
                 .status(200)
                 .send(
@@ -263,4 +285,28 @@ export default class ProductsController {
         }
     }
 
+    static async updateStock(req: Request, res: Response, next: NextFunction) {
+        try {
+            const productId = get(req.params, "productId", 0);
+            const quantity = get(req.body, "quantity", 0);
+
+            const stock = await new StockRepo().getByProductId(productId as number);
+            if (!stock) {
+                return res
+                    .status(404)
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, 'Stock not found.'));
+            }
+
+            await new StockRepo().update(productId as number, quantity);
+
+            return res
+                .status(200)
+                .send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPDATED, stock));
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
 }

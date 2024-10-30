@@ -7,8 +7,7 @@ export type TRetortProduct = {
   name: string;
   slug: string;
   description: string;
-  price: string;
-  stock: string;
+  price: number;
   total_ratings: number;
   type: PRODUCTS_TYPE;
   ratings: number;
@@ -23,8 +22,7 @@ export type TEditRetortProduct = {
   name: string;
   slug: string;
   description: string;
-  price: string;
-  stock: string;
+  price: number;
   total_ratings: number;
   type: PRODUCTS_TYPE;
   ratings: number;
@@ -37,8 +35,7 @@ export type TAddRetortProduct = {
   name: string;
   type: PRODUCTS_TYPE;
   description: string;
-  price: string;
-  stock: string;
+  price: number;
   active: number;
 }
 

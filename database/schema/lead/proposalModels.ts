@@ -18,7 +18,7 @@ class ProposalLeadModels extends Model<ProposalModels, LeadCreationAttributes> i
     public deletedAt!: Date | null;
     public deletedBy!: string | null;
     public budget!: number;
-    public files!: SeoImage[]; // todo why is this Seo Image
+    public files!: SeoImage[]; // change it into files[] 
 }
 
 // Initialize the Proposal model

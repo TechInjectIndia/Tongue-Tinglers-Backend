@@ -41,34 +41,37 @@ interface FranchiseeAttributes {
     website?: string;
     socialMediaLinks?: string[];
     logo?: string;
-    numberOfEmployees: number;
+    numberOfEmployees: number; //delete this
     investmentAmount: number;
-    royaltyPercentage: number;
-    monthlyRevenue: number;
+    royaltyPercentage: number; //delete this
+    monthlyRevenue: number; 
     numberOfOutlets: number;
-    menuSpecialty?: string;
-    businessHours?: string;
+    menuSpecialty?: string; //delete this
+    businessHours?: string; //delete this
     deliveryOptions?: boolean;
     isActive: boolean;
-    ratings?: number;
-    promotions?: string[];
-    targetMarket?: string;
-    sustainabilityPractices?: string;
-    trainingPrograms?: string[];
-    supportContact?: string;
-    operationalChallenges?: string[];
-    competitiveAdvantages?: string;
-    expansionPlans?: string;
-    customerFeedback?: string[];
-    industryCertifications?: string[];
+    ratings?: number; //delete this
+    promotions?: string[]; //delete this
+    targetMarket?: string; //delete this
+    sustainabilityPractices?: string; //delete this
+    trainingPrograms?: string[]; //delete this
+    supportContact?: string; //delete this
+    operationalChallenges?: string[]; //delete this
+    competitiveAdvantages?: string; //delete this
+    expansionPlans?: string; //delete this
+    customerFeedback?: string[]; //delete this
+    industryCertifications?: string[]; //delete this
     affiliatePrograms?: string[];
     performanceMetrics?: { [key: string]: number };
     franchiseRenewalInfo?: FranchiseeRenewalInfo;
-    partnerships?: string[];
-    marketingStrategies?: string[];
-    trainingHistory?: TrainingHistory[];
-    crisisManagementPlans?: string;
-    diversityInitiatives?: string;
+    partnerships?: string[]; //delete this 
+    marketingStrategies?: string[]; //delete this
+    trainingHistory?: TrainingHistory[]; //delete this
+    crisisManagementPlans?: string; //delete this
+    diversityInitiatives?: string; //delete this
+
+    // @todo add this
+    // 
 }
 
 interface AddFranchiseePayload {

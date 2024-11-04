@@ -3,22 +3,41 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { FranchiseModelRepo } from '../models';
+import { ImageRepo } from '../models/ImageRepo';
+import { ExtraFieldRepo } from '../models/ExtraFieldRepo';
 
 export default class FranchiseModelController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, 'user_id', '');
-            const payload = { ...req?.body, user_id: user_id };
-            const FranchiseModel = await new FranchiseModelRepo().create(payload);
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CREATED,
-                        FranchiseModel
-                    )
+            const { images, others, ...franchiseData } = req.body;
+
+            // Create Franchise Model
+            const franchiseModel = await new FranchiseModelRepo().create({ ...franchiseData, user_id });
+
+            // Create Images
+            if (images && images.length > 0) {
+                const imagePromises = images.map(async image =>
+                    await new ImageRepo().create({ ...image, franchiseModelId: franchiseModel.id })
                 );
+                await Promise.all(imagePromises);
+            }
+
+            // Create Extra Fields
+            if (others && others.length > 0) {
+                const extraFieldPromises = others.map(async extra =>
+                    await new ExtraFieldRepo().create({ ...extra, franchiseModelId: franchiseModel.id })
+                );
+                await Promise.all(extraFieldPromises);
+            }
+
+            return res.status(200).send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.CREATED,
+                    franchiseModel
+                )
+            );
         } catch (err) {
             console.error("Error:", err);
             return res.status(500).send({

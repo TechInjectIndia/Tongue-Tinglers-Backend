@@ -17,7 +17,7 @@ const {
     ZOHO_TOKEN_URL,
 } = process.env;
 import IBaseRepo from "../controllers/controller/IZohoSignController";
-import { ContractRepo } from "../../contracts/models/ContractModel";
+import { ContractRepo } from "../../contracts/models/ContractRepo";
 
 export class ZohoSignRepo implements IBaseRepo<TemplateType> {
     constructor() {}

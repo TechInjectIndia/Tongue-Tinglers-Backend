@@ -48,7 +48,10 @@ export * from "./token";
 // crm model starts
 export * from "./crm";
 export * from "./lead/affiliateModels";
+export * from "./lead/smDetailsModel";
 export * from "./lead/franchiseModels";
+export * from "./lead/extraFieldsModel";
+export * from "./lead/SeoImageModel";
 export * from "./lead/proposalModels";
 // crm model ends
 
@@ -61,13 +64,19 @@ export * from "./files/emailModel";
 export * from "./files/galleryModel";
 
 export * from "./franchise/franchiseeModel";
+export * from "./franchise/franchiseLocationModel";
 export * from "./franchise/pdiModel";
-export * from "./regions";
+export * from "./franchise/regions";
+export * from "./franchise/smDetailsModel";
 
 // --- Sequelize Associations Setup --- //
 
 // import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
 // import { questionModel } from "./campaign-ui/questionModel";
+import { FranchiseLocationModel } from "./franchise/franchiseLocationModel";
+import { FranchiseeModel } from "./franchise/franchiseeModel";
+import { AffiliateModel } from "./lead/affiliateModels";
+import { SocialMediaDetailsModel } from "./lead/smDetailsModel";
 
 // CampaignAdModel.belongsToMany(questionModel, {
 //     through: 'CampaignQuestions',
@@ -82,6 +91,29 @@ export * from "./regions";
 //     otherKey: 'campaignId',
 //     as: 'campaigns',
 // });
+
+// Establish association with FranchiseLocationModel
+FranchiseeModel.hasOne(FranchiseLocationModel, {
+    foreignKey: 'franchiseeId',
+    as: 'location',
+});
+
+FranchiseLocationModel.belongsTo(FranchiseeModel, {
+    foreignKey: 'franchiseeId',
+    as: 'franchisee',
+});
+// Establish association with FranchiseLocationModel
+
+// Establish association with AffiliateModel
+AffiliateModel.hasMany(SocialMediaDetailsModel, {
+    foreignKey: 'affiliateId',
+    as: 'sm',
+});
+SocialMediaDetailsModel.belongsTo(AffiliateModel, {
+    foreignKey: 'affiliateId',
+    as: 'affiliate',
+});
+// Establish association with AffiliateModel
 
 console.log("Associations initialized successfully.");
 

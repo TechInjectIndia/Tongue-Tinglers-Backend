@@ -3,13 +3,61 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { AffiliateRepo } from '../models';
+import { SocialMediaDetailsRepo } from '../models/smDetailsRepo';
+import { constructNow } from "date-fns";
 
 export default class AffiliateController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '');
-            const payload = { ...req?.body, user_id: user_id };
+            const affiliateData = req.body;
+
+            // Extract the social media details
+            const { sm, type, codes } = affiliateData; // Destructure type and codes from affiliateData
+
+            // Ensure type and codes are provided
+            if (!type || !codes) {
+                return res.status(400).send({
+                    message: "Type and codes are required fields."
+                });
+            }
+
+            // Create payload for the affiliate
+            const payload = { ...affiliateData };
+
+            // Remove social media details from the payload for affiliate creation
+            delete payload.sm;
+
+            // Create the affiliate record
             const Affiliate = await new AffiliateRepo().create(payload);
+
+            // Check if social media details are provided
+            if (sm && typeof sm === 'object') {
+                // Iterate through social media entries
+                for (const [platform, details] of Object.entries(sm)) {
+                    // Type the details explicitly
+                    const socialMediaDetails: any = details;
+
+                    // Ensure the platform and required fields are provided
+                    if (!socialMediaDetails.handle || !socialMediaDetails.followers || !socialMediaDetails.tags) {
+                        return res.status(400).send({
+                            message: "Social media details must include handle, followers, and tags."
+                        });
+                    }
+
+                    // Prepare the social media detail object
+                    const socialMediaData: any = {
+                        affiliateId: Affiliate.id,
+                        platform, // Use the key as platform
+                        handle: socialMediaDetails.handle,
+                        followers: socialMediaDetails.followers,
+                        tags: socialMediaDetails.tags,
+                    };
+
+                    // Create the social media details
+                    await new SocialMediaDetailsRepo().create(socialMediaData);
+                }
+            }
+
             return res
                 .status(200)
                 .send(
@@ -67,15 +115,56 @@ export default class AffiliateController {
             const id = get(req?.params, "id", 0);
             const user_id = get(req, 'user_id', 0);
             const updateAffiliate = req?.body;
-            delete updateAffiliate.id
-            const Affiliate = await new AffiliateRepo().update(id as number, updateAffiliate);
+
+            // Check for social media details in the request
+            const { sm } = updateAffiliate;
+            delete updateAffiliate.sm; // Remove social media details from the update payload
+
+            // Update the affiliate record
+            const affiliate = await new AffiliateRepo().update(id as number, updateAffiliate);
+
+            // Check if social media details are provided
+            if (sm && typeof sm === 'object') {
+                // Iterate through social media entries
+                for (const [platform, details] of Object.entries(sm)) {
+                    // Type the details explicitly
+                    const socialMediaDetails: any = details;
+
+                    // Ensure required fields are provided
+                    if (!socialMediaDetails.handle || !socialMediaDetails.followers || !socialMediaDetails.tags) {
+                        return res.status(400).send({
+                            message: "Social media details must include handle, followers, and tags."
+                        });
+                    }
+
+                    // Prepare the social media detail object
+                    const socialMediaData: any = {
+                        affiliateId: id,
+                        platform, // Use the key as platform
+                        handle: socialMediaDetails.handle,
+                        followers: socialMediaDetails.followers,
+                        tags: socialMediaDetails.tags,
+                    };
+
+                    // Check if social media entry exists for the platform
+                    const existingSocialMedia = await new SocialMediaDetailsRepo().getByAffiliateAndPlatform(id as string, platform);
+                    if (existingSocialMedia) {
+                        // Update existing social media details
+                        await new SocialMediaDetailsRepo().update(existingSocialMedia.id, socialMediaData);
+                    } else {
+                        // Create new social media details if it doesn't exist
+                        await new SocialMediaDetailsRepo().create(socialMediaData);
+                    }
+                }
+            }
+
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
-                        Affiliate
+                        affiliate
                     )
                 );
         } catch (err) {

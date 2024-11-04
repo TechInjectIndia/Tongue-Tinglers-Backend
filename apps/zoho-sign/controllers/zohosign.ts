@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 const axios = require("axios");
 import { ZohoSignRepo } from "../models/zohosign";
-import { ContractRepo } from "../../contracts/models/ContractModel";
+import { ContractRepo } from "../../contracts/models/ContractRepo";
 import { sendResponse } from "../../../libraries";
 import { get, isEmpty } from "lodash";
 import FormData from "form-data";

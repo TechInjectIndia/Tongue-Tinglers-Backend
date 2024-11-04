@@ -1,19 +1,71 @@
 import { Request, Response } from 'express';
-import { FranchiseeRepo } from '../models/FranchiseeRepo'; // Adjust the import path as necessary
+import { FranchiseeRepo } from '../models/FranchiseeRepo';
+import { FranchiseSocialMediaDetailsRepo } from '../models/FranchiseSocialMediaDetailsRepo';
+import { FranchiseLocationRepo } from '../models/FranchiseLocationRepo';
+import { RegionRepo } from '../../region/models/RegionRepo';
+import { ContractRepo } from '../../contracts/models/ContractRepo';
 import { sendResponse } from '../../../libraries';
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from '../../../constants';
 import { get, isEmpty } from "lodash";
 
 export default class FranchiseeController {
     // Create a new franchisee
+
     static async createFranchisee(req: Request, res: Response) {
         try {
             const franchiseeData = req.body;
 
-            // Call the repository method to create a franchisee
-            const newFranchisee = await new FranchiseeRepo().createFranchisee(franchiseeData);
+            // Extract franchise location data
+            const { franchiseLocation, socialMediaDetails, ...franchiseeDetails } = franchiseeData;
 
-            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, newFranchisee));
+            delete franchiseeData.franchiseLocation
+            delete franchiseeData.socialMediaDetails;
+
+            // Check if the region exists
+            const regionRepo = new RegionRepo();
+            const regionExists = await regionRepo.get(franchiseeData.regionId);
+
+            if (!regionExists) {
+                return res.status(404).send({
+                    message: `Region does not exist.`,
+                });
+            }
+
+            // Check if all contracts exist
+            const contractRepo = new ContractRepo();
+            const contractIds = franchiseeDetails.contractIds || [];
+
+            const existingContracts = await Promise.all(
+                contractIds.map(contractId => contractRepo.get(contractId))
+            );
+
+            // Check if any of the contracts do not exist
+            const nonExistentContracts = contractIds.filter((id, index) => !existingContracts[index]);
+            if (nonExistentContracts.length > 0) {
+                return res.status(404).send({
+                    message: `Some contracts do not exist`,
+                });
+            }
+
+            // Call the repository method to create a franchisee
+            const newFranchisee = await new FranchiseeRepo().createFranchisee(franchiseeDetails);
+
+            franchiseLocation.franchiseeId = newFranchisee.id
+            // Create the franchise location first
+            const newFranchiseLocation = await new FranchiseLocationRepo().createFranchiseLocation(franchiseLocation);
+
+            // If socialMediaDetails exists, set franchiseeId and create social media details
+            if (socialMediaDetails && Array.isArray(socialMediaDetails)) {
+                await Promise.all(
+                    socialMediaDetails.map(socialMediaDetail => {
+                        // Assign the franchiseeId to each socialMediaDetail
+                        socialMediaDetail.franchiseeId = newFranchisee.id;
+                        return new FranchiseSocialMediaDetailsRepo().createSocialMediaDetails(socialMediaDetail);
+                    })
+                );
+            }
+
+            return res.status(201).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, newFranchisee));
         } catch (error) {
             console.error('Error creating franchisee:', error);
             return res.status(500).send({
@@ -63,19 +115,68 @@ export default class FranchiseeController {
     static async updateFranchisee(req: Request, res: Response) {
         try {
             const franchiseeId = req.params.id;
-            let franchiseeData = req.body;
-            console.log(franchiseeId);
+            const franchiseeData = req.body;
 
-            if (typeof franchiseeData === 'string') {
-                franchiseeData = JSON.parse(franchiseeData);
+            // Check if the region exists
+            const regionRepo = new RegionRepo();
+            if (franchiseeData.regionId) {
+                const regionExists = await regionRepo.get(franchiseeData.regionId);
+                if (!regionExists) {
+                    return res.status(404).send({
+                        message: 'Region does not exist.',
+                    });
+                }
             }
-            const updatedFranchisee = await new FranchiseeRepo().updateFranchisee(franchiseeId, franchiseeData);
 
-            if (!updatedFranchisee) {
+            // Check if the franchisee exists
+            const existingFranchisee = await new FranchiseeRepo().getFranchiseeById(franchiseeId);
+            if (!existingFranchisee) {
                 return res.status(404).send({
                     message: 'Franchisee not found.',
                 });
             }
+
+            // Update franchise location if provided
+            if (franchiseeData.franchiseLocation) {
+                const franchiseLocationRepo = new FranchiseLocationRepo();
+                await franchiseLocationRepo.updateFranchiseLocationByFranchiseId(franchiseeId, franchiseeData.franchiseLocation);
+            }
+
+            // Update social media details if provided
+            if (franchiseeData.socialMediaDetails) {
+                const socialMediaRepo = new FranchiseSocialMediaDetailsRepo();
+                await Promise.all(
+                    franchiseeData.socialMediaDetails.map(async (socialMediaDetail: any) => {
+                        if (socialMediaDetail.id) {
+                            // Update existing social media detail
+                            await socialMediaRepo.update(socialMediaDetail.id, socialMediaDetail);
+                        } else {
+                            // Create new social media detail if no id is provided
+                            socialMediaDetail.franchiseeId = franchiseeId;
+                            await socialMediaRepo.createSocialMediaDetails(socialMediaDetail);
+                        }
+                    })
+                );
+            }
+
+            // Check if all contracts exist
+            const contractRepo = new ContractRepo();
+            const contractIds = franchiseeData.contractIds || [];
+
+            const existingContracts = await Promise.all(
+                contractIds.map(contractId => contractRepo.get(contractId))
+            );
+
+            // Check if any of the contracts do not exist
+            const nonExistentContracts = contractIds.filter((id, index) => !existingContracts[index]);
+            if (nonExistentContracts.length > 0) {
+                return res.status(404).send({
+                    message: `Some contracts do not exist`,
+                });
+            }
+
+            // Call the repository method to update the franchisee
+            const updatedFranchisee = await new FranchiseeRepo().updateFranchisee(franchiseeId, franchiseeData);
 
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPDATED, updatedFranchisee));
         } catch (error) {

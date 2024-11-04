@@ -13,7 +13,7 @@ import {
     getEmailTemplate,
     EMAIL_TEMPLATE,
 } from "../../../libraries";
-import { ContractRepo } from "../../contracts/models/ContractModel";
+import { ContractRepo } from "../../contracts/models/ContractRepo";
 import { LeadRepo } from "../../lead/models/lead";
 import { CONTRACT_PAYMENT_STATUS } from "../../../interfaces";
 import { ContractPaymentDetails } from "../../../interfaces";

@@ -7,14 +7,14 @@ import {
     TPayloadRegion,
     IRegion,
 } from "../../../interfaces";
-import { Region } from "../../../database/schema";
+import { RegionModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IRegionController';
 
 export class RegionRepo implements IBaseRepo<IRegion, TListFilters> {
     constructor() { }
 
     public async get(id: string): Promise<IRegion | null> {
-        const data = await Region.findOne({
+        const data = await RegionModel.findOne({
             where: {
                 id,
             },
@@ -23,14 +23,14 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFilters> {
     }
 
     public async list(filters: TListFilters): Promise<TRegionList> {
-        const total = await Region.count({
+        const total = await RegionModel.count({
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await Region.findAll({
+        const data = await RegionModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -44,12 +44,12 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFilters> {
     }
 
     public async create(data: TPayloadRegion): Promise<IRegion> {
-        const response = await Region.create(data);
+        const response = await RegionModel.create(data);
         return response;
     }
 
     public async update(id: string, data: TPayloadRegion): Promise<[affectedCount: number]> {
-        return await Region.update(data, {
+        return await RegionModel.update(data, {
             where: {
                 id,
             },
@@ -57,7 +57,7 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFilters> {
     }
 
     public async delete(ids: string[]): Promise<number> {
-        const response = await Region.destroy({
+        const response = await RegionModel.destroy({
             where: {
                 id: ids,
             },

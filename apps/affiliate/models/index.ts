@@ -8,6 +8,7 @@ import {
     TListFilters,
 } from "../../../types";
 import { AffiliateModel } from "../../../database/schema";
+import { SocialMediaDetailsModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IController';
 
 export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
@@ -18,6 +19,9 @@ export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
             where: {
                 id,
             },
+            include: [
+                { model: SocialMediaDetailsModel, as: 'sm' },
+            ]
         });
         return data;
     }
@@ -44,6 +48,8 @@ export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
     }
 
     public async create(data: TPayloadAffiliate): Promise<Affiliate> {
+        console.log('payloadpayloadpayload', data)
+
         const response = await AffiliateModel.create(data);
         return response;
     }

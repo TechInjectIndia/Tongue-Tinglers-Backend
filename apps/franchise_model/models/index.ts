@@ -8,6 +8,8 @@ import {
     TListFilters,
 } from "../../../types";
 import { FranchiseLeadModel } from "../../../database/schema";
+import { ExtraFieldsModel } from "../../../database/schema";
+import { SeoImageModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IController';
 
 export class FranchiseModelRepo implements IBaseRepo<FranchiseModels, TListFilters> {
@@ -18,6 +20,16 @@ export class FranchiseModelRepo implements IBaseRepo<FranchiseModels, TListFilte
             where: {
                 id,
             },
+            include: [
+                {
+                    model: ExtraFieldsModel,
+                    as: 'extraFields',
+                },
+                {
+                    model: SeoImageModel,
+                    as: 'images',
+                }
+            ],
         });
         return data;
     }

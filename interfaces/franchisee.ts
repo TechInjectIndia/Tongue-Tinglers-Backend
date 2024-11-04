@@ -1,15 +1,50 @@
-interface FranchiseeLocation {
+interface FranchiseLocationAttributes {
+    id: string;
+    franchiseeId: string;
     contactPhone: string;
     location: string;
     city: string;
     state: string;
     country: string;
     zipCode: string;
+    createdAt: Date;
+    updatedAt: Date | null;
+}
+
+interface AddFranchiseLocationPayload {
+    contactPhone: string;
+    location: string;
+    city: string;
+    state: string;
+    country: string;
+    zipCode: string;
+    franchiseeId: string;
+}
+
+export default AddFranchiseLocationPayload;
+
+interface SocialMediaDetailsAttributesFranchisee {
+    id: string;
+    franchiseeId: string;
+    url: string;
+    type: SM_PLATFORM_FRANCHISE
+}
+
+interface AddSocialMediaDetailsAttributesFranchisee {
+    franchiseeId: string;
+    url: string;
+    type: SM_PLATFORM_FRANCHISE
+}
+
+enum SM_PLATFORM_FRANCHISE {
+    FB = "fb",
+    INSTAGRAM = "instagram",
+    YOUTUBE = "youtube"
 }
 
 enum FranchiseType {
-    SUPER_FRANCHISE = "super_franchise",
     MASTER_FRANCHISE = "master_franchise",
+    SUPER_FRANCHISE = "super_franchise",
     FRANCHISE = "franchise",
 }
 
@@ -25,104 +60,51 @@ interface TrainingHistory {
 
 interface FranchiseeAttributes {
     id: string;
-    userid?: string;
-    referBy?: string;
-    parentFranchise?: string;
+    userid: string | null;
+    referBy?: string | null;
+    parentFranchise?: string | null;
     name: string;
     ownerName: string;
     contactEmail: string;
-    contactNumber?: string;
-    franchiseLocations?: FranchiseeLocation[];
-    establishedDate: Date;
-    franchiseAgreementSignedDate: Date;
+    contactNumber: string | null;
+    establishedDate: Date | null;
+    franchiseAgreementSignedDate: Date | null;
     franchiseType: FranchiseType;
-    region: string;
-    description?: string;
-    website?: string;
-    socialMediaLinks?: string[];
-    logo?: string;
-    numberOfEmployees: number;
-    investmentAmount: number;
-    royaltyPercentage: number;
-    monthlyRevenue: number;
-    numberOfOutlets: number;
-    menuSpecialty?: string;
-    businessHours?: string;
-    deliveryOptions?: boolean;
-    isActive: boolean;
-    ratings?: number;
-    promotions?: string[];
-    targetMarket?: string;
-    sustainabilityPractices?: string;
-    trainingPrograms?: string[];
-    supportContact?: string;
-    operationalChallenges?: string[];
-    competitiveAdvantages?: string;
-    expansionPlans?: string;
-    customerFeedback?: string[];
-    industryCertifications?: string[];
-    affiliatePrograms?: string[];
-    performanceMetrics?: { [key: string]: number };
-    franchiseRenewalInfo?: FranchiseeRenewalInfo;
-    partnerships?: string[];
-    marketingStrategies?: string[];
-    trainingHistory?: TrainingHistory[];
-    crisisManagementPlans?: string;
-    diversityInitiatives?: string;
+    regionId: string;
+    contractIds: string[];
+    isActive: boolean | null;
+    ratings?: number | null;
+    franchiseRenewalInfo?: FranchiseeRenewalInfo | null;
 }
 
 interface AddFranchiseePayload {
-    userid?: string;
-    referBy?: string;
-    parentFranchise?: string;
+    userid: string | null;
+    referBy?: string | null;
+    parentFranchise?: string | null;
     name: string;
     ownerName: string;
     contactEmail: string;
-    contactNumber?: string;
-    franchiseLocations?: FranchiseeLocation[];
-    establishedDate: Date;
-    franchiseAgreementSignedDate: Date;
+    contactNumber: string | null;
+    establishedDate: Date | null;
+    franchiseAgreementSignedDate: Date | null;
     franchiseType: FranchiseType;
-    region: string;
-    description?: string;
-    website?: string;
-    socialMediaLinks?: string[];
-    logo?: string;
-    numberOfEmployees: number;
-    investmentAmount: number;
-    royaltyPercentage: number;
-    monthlyRevenue: number;
-    numberOfOutlets: number;
-    menuSpecialty?: string;
-    businessHours?: string;
-    deliveryOptions?: boolean;
-    isActive: boolean;
-    ratings?: number;
-    promotions?: string[];
-    targetMarket?: string;
-    sustainabilityPractices?: string;
-    trainingPrograms?: string[];
-    supportContact?: string;
-    operationalChallenges?: string[];
-    competitiveAdvantages?: string;
-    expansionPlans?: string;
-    customerFeedback?: string[];
-    industryCertifications?: string[];
-    affiliatePrograms?: string[];
-    performanceMetrics?: { [key: string]: number };
-    franchiseRenewalInfo?: FranchiseeRenewalInfo;
-    partnerships?: string[];
-    marketingStrategies?: string[];
-    trainingHistory?: TrainingHistory[];
-    crisisManagementPlans?: string;
-    diversityInitiatives?: string;
+    regionId: string;
+    socialMediaLinks?: { url: string, type: SM_PLATFORM_FRANCHISE }[];
+    contractIds: string[];
+    isActive: boolean | null;
+    ratings?: number | null;
+    franchiseRenewalInfo?: FranchiseeRenewalInfo | null;
 }
 
 export {
     FranchiseeAttributes,
     AddFranchiseePayload,
-    FranchiseeLocation,
+    FranchiseLocationAttributes,
     FranchiseeRenewalInfo,
     TrainingHistory,
-    FranchiseType
+    FranchiseType,
+    SM_PLATFORM_FRANCHISE,
+    SocialMediaDetailsAttributesFranchisee,
+    AddFranchiseLocationPayload,
+    AddSocialMediaDetailsAttributesFranchisee
 };

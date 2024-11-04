@@ -82,24 +82,24 @@ router.use(`${ADMIN}/tax`, auth, taxesRouter);
 router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
 router.use(`${ADMIN}/order`, auth, orderRouter);
 router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
-router.use(`${ADMIN}/lead`, auth, leadRouter);
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 router.use(`${ADMIN}/retort/product`, auth, retortProductRouter);
 router.use(`${ADMIN}/retort/category`, auth, retortProductCategoryRouter);
 router.use(`${ADMIN}/retort/order`, auth, retortOrderRouter);
 router.use(`${ADMIN}/crm`, auth, campaignRouter);
 router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
-router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/question`, auth, questionRouter);
 router.use(`${ADMIN}/campaign-ad`, auth, campaignAdRouter);
 router.use(`${ADMIN}/campaign-submissions`, auth, campaignSubmissionsRouter);
 router.use(`${ADMIN}/files`, auth, filesRouter);
 router.use(`${ADMIN}/gallery`, auth, galleryRouter);
-router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
 router.use(`${ADMIN}/pdi-checklist`, auth, pdiChecklistRouter);
 router.use(`${ADMIN}/quick-actions/email`, auth, quickActionEmailRouter);
 router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
-router.use(`${ADMIN}/region`, regionRouter);
+router.use(`${ADMIN}/region`, auth, regionRouter);
+router.use(`${ADMIN}/contracts`, auth, contractsRouter);
+router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
+router.use(`${ADMIN}/lead`, leadRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

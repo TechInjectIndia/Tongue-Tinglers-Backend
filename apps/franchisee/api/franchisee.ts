@@ -27,23 +27,8 @@ const router = express.Router();
  *                 type: string
  *               contactEmail:
  *                 type: string
- *               franchiseLocations:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     contactPhone:
- *                       type: string
- *                     location:
- *                       type: string
- *                     city:
- *                       type: string
- *                     state:
- *                       type: string
- *                     country:
- *                       type: string
- *                     zipCode:
- *                       type: string
+ *               contactNumber:
+ *                 type: string
  *               establishedDate:
  *                 type: string
  *                 format: date-time
@@ -52,85 +37,99 @@ const router = express.Router();
  *                 format: date-time
  *               franchiseType:
  *                 type: string
- *                 enum: ['master', 'single', 'multi']
- *               numberOfEmployees:
- *                 type: integer
- *               investmentAmount:
- *                 type: number
- *                 format: float
- *               royaltyPercentage:
- *                 type: number
- *                 format: float
- *               monthlyRevenue:
- *                 type: number
- *                 format: float
- *               numberOfOutlets:
- *                 type: integer
- *               menuSpecialty:
+ *                 enum: ['master_franchise', 'super_franchise', 'franchise']
+ *               regionId:
  *                 type: string
- *               businessHours:
+ *               userid:
  *                 type: string
- *               deliveryOptions:
- *                 type: boolean
+ *               referBy:
+ *                 type: string
+ *               parentFranchise:
+ *                 type: string
+ *               contractIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
  *               isActive:
  *                 type: boolean
+ *               ratings:
+ *                 type: number
+ *               franchiseRenewalInfo:
+ *                 type: object
+ *                 properties:
+ *                   renewalDate:
+ *                     type: string
+ *                     format: date-time
+ *                   conditions:
+ *                     type: string
+ *               franchiseLocation:
+ *                 type: object
+ *                 properties:
+ *                   contactPhone:
+ *                     type: string
+ *                     description: "Contact phone number for this franchise location"
+ *                   location:
+ *                     type: string
+ *                     description: "Specific location or address of the franchise"
+ *                   city:
+ *                     type: string
+ *                     description: "City where the franchise location is situated"
+ *                   state:
+ *                     type: string
+ *                     description: "State or region for the franchise location"
+ *                   country:
+ *                     type: string
+ *                     description: "Country of the franchise location"
+ *                   zipCode:
+ *                     type: string
+ *                     description: "Zip code or postal code for the franchise location"
+ *               socialMediaDetails:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     url:
+ *                       type: string
+ *                       description: "URL of the social media profile"
+ *                     type:
+ *                       type: string
+ *                       enum: ['fb', 'instagram', 'youtube']
+ *                       description: "Type of social media platform"
  *             example: 
  *               {
  *                 "name": "ABC Franchise",
  *                 "ownerName": "John Doe",
  *                 "contactEmail": "john.doe@abcfranchise.com",
  *                 "contactNumber": "+1234567890",
- *                 "franchiseLocations": [
- *                   {
- *                     "contactPhone": "+11234567890",
- *                     "location": "Main Street 123",
- *                     "city": "New York",
- *                     "state": "NY",
- *                     "country": "USA",
- *                     "zipCode": "10001"
- *                   }
- *                 ],
  *                 "establishedDate": "2010-05-20T00:00:00.000Z",
  *                 "franchiseAgreementSignedDate": "2011-06-15T00:00:00.000Z",
  *                 "franchiseType": "multi",
- *                 "region": "North America",
- *                 "description": "A leading franchise in fast food",
- *                 "website": "https://www.abcfranchise.com",
- *                 "socialMediaLinks": ["https://www.facebook.com/abcfranchise"],
- *                 "logo": "https://www.abcfranchise.com/logo.png",
- *                 "numberOfEmployees": 50,
- *                 "investmentAmount": 100000,
- *                 "royaltyPercentage": 5.5,
- *                 "monthlyRevenue": 50000,
- *                 "numberOfOutlets": 10,
- *                 "menuSpecialty": "Burgers and Fries",
- *                 "businessHours": "9 AM - 9 PM",
- *                 "deliveryOptions": true,
+ *                 "regionId": "region123",
+ *                 "contractIds": ["contract1", "contract2"],
  *                 "isActive": true,
  *                 "ratings": 4.5,
- *                 "promotions": ["Summer Discount"],
- *                 "targetMarket": "Young professionals",
- *                 "sustainabilityPractices": "Recycling packaging",
- *                 "trainingPrograms": ["Franchisee Onboarding"],
- *                 "supportContact": "+1234567890",
- *                 "operationalChallenges": ["Staffing issues"],
- *                 "competitiveAdvantages": "High-quality products",
- *                 "expansionPlans": "Opening 5 new outlets next year",
- *                 "customerFeedback": ["Great service"],
- *                 "industryCertifications": ["ISO 9001"],
- *                 "affiliatePrograms": ["Loyalty Program"],
- *                 "performanceMetrics": {"monthlyGrowth": 8.5, "customerSatisfaction": 92},
  *                 "franchiseRenewalInfo": {
  *                   "renewalDate": "2025-12-01T00:00:00.000Z",
  *                   "conditions": "Based on performance metrics"
  *                 },
- *                 "partnerships": ["UberEats"],
- *                 "marketingStrategies": ["Social media campaigns"],
- *                 "trainingHistory": [
- *                   {"date": "2022-03-15T00:00:00.000Z", "topic": "Food Safety Training"}
- *                 ],
- *                 "crisisManagementPlans": "Emergency response plan",
- *                 "diversityInitiatives": "Inclusive hiring policies"
+ *                 "franchiseLocation": {
+ *                   "contactPhone": "+11234567890",
+ *                   "location": "Main Street 123",
+ *                   "city": "New York",
+ *                   "state": "NY",
+ *                   "country": "USA",
+ *                   "zipCode": "10001"
+ *                 },
+ *                 "socialMediaDetails": [
+ *                   {
+ *                     "url": "https://facebook.com/abcfranchise",
+ *                     "type": "Facebook"
+ *                   },
+ *                   {
+ *                     "url": "https://twitter.com/abcfranchise",
+ *                     "type": "Twitter"
+ *                   }
+ *                 ]
  *               }
  *     responses:
  *       '201':
@@ -190,7 +189,6 @@ router.post('/', validateCreateFranchiseeBody, FranchiseeController.createFranch
  */
 router.get('/', FranchiseeController.getAllFranchisees);
 
-
 /**
  * @swagger
  * /api/admin/franchisee/{id}:
@@ -229,13 +227,13 @@ router.get('/:id', validateEditFranchiseeParams, FranchiseeController.getFranchi
  * @swagger
  * /api/admin/franchisee/{id}:
  *   put:
- *     summary: Update a franchisee by ID
+ *     summary: Update an existing franchisee
  *     tags: [Franchisee]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the franchisee to update
+ *         description: The ID of the franchisee to update
  *         schema:
  *           type: string
  *     requestBody:
@@ -251,84 +249,109 @@ router.get('/:id', validateEditFranchiseeParams, FranchiseeController.getFranchi
  *                 type: string
  *               contactEmail:
  *                 type: string
- *               franchiseLocations:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     contactPhone:
- *                       type: string
- *                     location:
- *                       type: string
- *                     city:
- *                       type: string
- *                     state:
- *                       type: string
- *                     country:
- *                       type: string
- *                     zipCode:
- *                       type: string
+ *               contactNumber:
+ *                 type: string
  *               establishedDate:
+ *                 type: string
+ *                 format: date-time
+ *               franchiseAgreementSignedDate:
  *                 type: string
  *                 format: date-time
  *               franchiseType:
  *                 type: string
- *                 enum: ['master', 'single', 'multi']
- *               numberOfEmployees:
- *                 type: integer
- *               investmentAmount:
- *                 type: number
- *                 format: float
- *               royaltyPercentage:
- *                 type: number
- *                 format: float
- *               monthlyRevenue:
- *                 type: number
- *                 format: float
- *               numberOfOutlets:
- *                 type: integer
- *               menuSpecialty:
+ *                 enum: ['master_franchise', 'super_franchise', 'franchise']
+ *               regionId:
  *                 type: string
- *               businessHours:
+ *               userid:
  *                 type: string
- *               deliveryOptions:
- *                 type: boolean
+ *               referBy:
+ *                 type: string
+ *               parentFranchise:
+ *                 type: string
+ *               contractIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
  *               isActive:
  *                 type: boolean
- *             example:
+ *               ratings:
+ *                 type: number
+ *               franchiseRenewalInfo:
+ *                 type: object
+ *                 properties:
+ *                   renewalDate:
+ *                     type: string
+ *                     format: date-time
+ *                   conditions:
+ *                     type: string
+ *               franchiseLocation:
+ *                 type: object
+ *                 properties:
+ *                   contactPhone:
+ *                     type: string
+ *                   location:
+ *                     type: string
+ *                   city:
+ *                     type: string
+ *                   state:
+ *                     type: string
+ *                   country:
+ *                     type: string
+ *                   zipCode:
+ *                     type: string
+ *               socialMediaDetails:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     url:
+ *                       type: string
+ *                     type:
+ *                       type: string
+ *                       enum: ['fb', 'instagram', 'youtube']
+ *             example: 
  *               {
- *                 "name": "ABC Franchise Updated",
- *                 "ownerName": "John Doe Updated",
+ *                 "name": "ABC Franchise",
+ *                 "ownerName": "John Doe",
  *                 "contactEmail": "john.doe@abcfranchise.com",
- *                 "franchiseLocations": [
- *                   {
- *                     "contactPhone": "+11234567890",
- *                     "location": "Main Street 123",
- *                     "city": "New York",
- *                     "state": "NY",
- *                     "country": "USA",
- *                     "zipCode": "10001"
- *                   }
- *                 ],
+ *                 "contactNumber": "+1234567890",
  *                 "establishedDate": "2010-05-20T00:00:00.000Z",
+ *                 "franchiseAgreementSignedDate": "2011-06-15T00:00:00.000Z",
  *                 "franchiseType": "multi",
- *                 "numberOfEmployees": 50,
- *                 "investmentAmount": 100000,
- *                 "royaltyPercentage": 5.5,
- *                 "monthlyRevenue": 55000,
- *                 "numberOfOutlets": 11,
- *                 "menuSpecialty": "Burgers and Fries",
- *                 "businessHours": "9 AM - 10 PM",
- *                 "deliveryOptions": true,
- *                 "isActive": true
+ *                 "regionId": "region123",
+ *                 "contractIds": ["contract1", "contract2"],
+ *                 "isActive": true,
+ *                 "ratings": 4.5,
+ *                 "franchiseRenewalInfo": {
+ *                   "renewalDate": "2025-12-01T00:00:00.000Z",
+ *                   "conditions": "Based on performance metrics"
+ *                 },
+ *                 "franchiseLocation": {
+ *                   "contactPhone": "+11234567890",
+ *                   "location": "Main Street 123",
+ *                   "city": "New York",
+ *                   "state": "NY",
+ *                   "country": "USA",
+ *                   "zipCode": "10001"
+ *                 },
+ *                 "socialMediaDetails": [
+ *                   {
+ *                     "url": "https://facebook.com/abcfranchise",
+ *                     "type": "fb"
+ *                   },
+ *                   {
+ *                     "url": "https://twitter.com/abcfranchise",
+ *                     "type": "twitter"
+ *                   }
+ *                 ]
  *               }
  *     responses:
  *       '200':
  *         description: Franchisee updated successfully
- *       '404':
- *         description: Franchisee not found
  *       '400':
  *         description: Invalid input
+ *       '404':
+ *         description: Franchisee not found
  */
 router.put('/:id', validateEditFranchiseeParams, validateEditFranchiseeBody, FranchiseeController.updateFranchisee);
 

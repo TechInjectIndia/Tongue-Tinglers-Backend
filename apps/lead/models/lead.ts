@@ -45,13 +45,13 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
                     model: AssignModel,
                     as: 'assign',
                     attributes: ['assignedTo', 'assignedBy', 'assignedDate'],
-                    include: [
-                        {
-                            model: UserModel, // Assuming UserModel is the model for user details
-                            as: 'userDetails', // Use the alias defined in the relationship
-                            attributes: ['id', 'userName'], // Specify the user details attributes you need
-                        }
-                    ],
+                    // include: [
+                    //     {
+                    //         model: UserModel, // Assuming UserModel is the model for user details
+                    //         as: 'userDetails', // Use the alias defined in the relationship
+                    //         attributes: ['id', 'userName'], // Specify the user details attributes you need
+                    //     }
+                    // ],
                 }
             ]
         });

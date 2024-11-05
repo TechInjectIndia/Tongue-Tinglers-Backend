@@ -140,3 +140,4 @@ FranchiseeModel.init(
 FranchiseeModel.associate();
 
 export { FranchiseeModel };
+//testing github workflows

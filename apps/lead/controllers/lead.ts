@@ -288,6 +288,27 @@ export default class LeadController {
                 updatedBy: user_id,
                 // logs: updatedLogs
             });
+            const { assign } = payload;
+
+            if (assign != null) {
+                const existingUser = await new AdminRepo().checkIfUserExist(assign.assignedTo.id);
+                if (!existingUser) {
+                    return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
+                }
+            }
+
+            delete payload.assign
+
+            if (assign != null) {
+                const assignPayload = {
+                    assignedTo: assign.assignedTo.id,
+                    assignedBy: user_id,
+                    assignedDate: assign.assignedDate,
+                };
+
+                // Create assignment in AssignRepo
+                await new AssignRepo().createOrUpdate(id, assignPayload);
+            }
 
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPDATED, updatedLead));
         } catch (err) {

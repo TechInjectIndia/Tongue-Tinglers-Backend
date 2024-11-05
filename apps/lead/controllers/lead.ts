@@ -3,6 +3,7 @@ import { get, isEmpty } from "lodash";
 import { sendResponse, createPassword, createFirebaseUser, sendEmail, getEmailTemplate, EMAIL_TEMPLATE, EMAIL_HEADING } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { LeadRepo } from '../models/lead';
+import { AssignRepo } from '../models/AssignRepo';
 import { AdminRepo } from '../../admin-user/models/user';
 import { FranchiseRepo } from '../../admin-user/models/franchise';
 import { FranchiseeRepo } from '../../franchisee/models/FranchiseeRepo';
@@ -143,7 +144,7 @@ export default class LeadController {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
 
-            const payload: TAssignLead = {
+            const payload: any = {
                 assign: assignee, // Directly assign the single assignee object
             };
 
@@ -180,6 +181,9 @@ export default class LeadController {
                 // }],
             };
 
+            const { assign } = payload;
+            delete payload.assign
+
             if (payload.referby) {
                 const existingReferral = await new AdminRepo().getByReferralCode(payload.referby);
                 if (!existingReferral) {
@@ -188,6 +192,20 @@ export default class LeadController {
             }
 
             const newLead = await new LeadRepo().create(payload);
+
+            // Check and create assignment if 'assign' object is provided in the request body
+            if (assign) {
+                const assignPayload = {
+                    assignedToId: payload.assign.assignedTo.id,
+                    assignedById: payload.assign.assignedBy.id,
+                    assignedDate: payload.assign.assignedDate,
+                    leadId: newLead.id, // Reference the new lead's ID
+                };
+
+                // Create assignment in AssignRepo
+                await new AssignRepo().create(assignPayload);
+            }
+
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, newLead));
         } catch (err) {
             console.error(err);

@@ -53,6 +53,7 @@ export * from "./lead/franchiseModels";
 export * from "./lead/extraFieldsModel";
 export * from "./lead/SeoImageModel";
 export * from "./lead/proposalModels";
+export * from "./lead/assigneeModels";
 // crm model ends
 
 export * from "./campaign-ui/campaignAdModel";

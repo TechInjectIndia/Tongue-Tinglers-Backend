@@ -120,7 +120,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
     }
 
     // Assign a lead to a user
-    public async assignLeadToUser(id: string, data: TAssignLead): Promise<[affectedCount: number]> {
+    public async assignLeadToUser(id: string, data: any): Promise<[affectedCount: number]> {
         try {
             const response = await LeadsModel.update(data, {
                 where: { id },

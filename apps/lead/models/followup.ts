@@ -33,7 +33,7 @@ export class FollowUpsRepo implements IBaseRepo<ILead, any> {
                             },
                         ],
                     },
-                    { 'assign.assignedTo': assignedToId },
+                    // { 'assign.assignedTo': assignedToId },
                 ],
             },
             include: [{

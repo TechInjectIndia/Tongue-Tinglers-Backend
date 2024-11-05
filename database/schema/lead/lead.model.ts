@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { LeadSource, LeadStatus, Assignee, FollowDetails, LeadAddress, UserDetails, ITrackable, Note, Affiliate, ExtraFields, FranchiseModels, ProposalModels } from '../../../interfaces';
+import { LeadSource, LeadStatus, FollowDetails, LeadAddress, UserDetails, ITrackable, Note, Affiliate, ExtraFields, FranchiseModels, ProposalModels } from '../../../interfaces';
 import { sequelize } from "../../../config";
 import { ILead } from "../../../interfaces";
 import { UserModel } from '../user/user.model';
@@ -12,7 +12,6 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public campaignId?: string;
     public firstName!: string;
     public status!: LeadStatus;
-    public assign!: Assignee | null;
     public lastName!: string;
     public phoneNumber!: string;
     public email!: string;
@@ -91,10 +90,6 @@ LeadsModel.init({
         allowNull: true
     },
     followDetails: {
-        type: JSONB,
-        allowNull: true
-    },
-    assign: {
         type: JSONB,
         allowNull: true
     },

@@ -62,6 +62,7 @@ import quickActionEmailRouter from "../apps/quick-actions/api/email";
 import quickActionWhatsappRouter from "../apps/quick-actions/api/whatsapp";
 import regionRouter from "../apps/region/api/index";
 import vendorRouter from "../apps/vendor/api/vendorApi";
+import cartRouter from "../apps/cart/api/cartApi";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -101,7 +102,8 @@ router.use(`${ADMIN}/region`, auth, regionRouter);
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
 router.use(`${ADMIN}/lead`, auth, leadRouter);
-router.use(`${ADMIN}/vendors`, vendorRouter);
+router.use(`${ADMIN}/vendors`, auth, vendorRouter);
+router.use(`cart`, auth, cartRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

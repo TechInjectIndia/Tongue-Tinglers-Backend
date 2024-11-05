@@ -37,6 +37,9 @@ const options = {
                 name: 'AUTH' // auth starts
             },
             {
+                name: 'Cart'
+            },
+            {
                 name: 'Admin > Vendors'
             },
             {
@@ -219,6 +222,7 @@ const options = {
     apis: [
         './routes/*.ts',
         './apps/region/api/*.ts',
+        './apps/cart/api/*.ts',
         './apps/vendor/api/*.ts',
         './apps/franchisee/api/*.ts',
         './apps/pdi-checklist/api/*.ts',

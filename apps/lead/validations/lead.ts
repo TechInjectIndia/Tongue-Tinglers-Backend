@@ -136,7 +136,7 @@ const createLeadBody = Joi.object().keys({
             'any.only': `Source must be one of: ${Object.values(LeadSource).join(', ')}.`,
             'any.required': 'Source is required.',
         }),
-    sourceInfo: Joi.string().optional(),
+    sourceInfo: Joi.string().optional().allow(null),
     notes: Joi.array().items(NOTE_SCHEMA).optional(),
     logs: Joi.array().items(LOGS_SCHEMA).optional(),
     proposalModals: Joi.array().items(Joi.string()).optional().allow(null),

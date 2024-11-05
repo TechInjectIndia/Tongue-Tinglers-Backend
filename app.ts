@@ -97,7 +97,7 @@ server.use(cors(corsOptions)); // Purpose: Provides a middleware for enabling Cr
 server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");
 server.get("/", (_, res) => {
-    res.send("Hello from Tongue tingler server");
+    res.send("Hello from aws Tongue tingler server");
 });
 server.use("/api", router);
 

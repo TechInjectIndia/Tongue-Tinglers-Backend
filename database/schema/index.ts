@@ -17,6 +17,9 @@ export * from "./ecommerce/tag.model";
 export * from "./ecommerce/tag_image.model";
 export * from "./ecommerce/taxes";
 export * from "./ecommerce/stockModel";
+export * from "./ecommerce/vendorsModel";
+export * from "./ecommerce/cartModel";
+export * from "./ecommerce/cartItemModel";
 // ecommerce model ends
 
 // retort model starts
@@ -150,6 +153,42 @@ SocialMediaDetailsModel.belongsTo(AffiliateModel, {
     as: 'affiliate',
 });
 // Establish association with AffiliateModel
+
+import { ProductsModel } from './ecommerce/product.model';
+import { ProductCategoryModel } from './ecommerce/category.model';
+import { ProductCategoryMapModel } from './ecommerce/product_category_map.model';
+
+ProductCategoryModel.belongsToMany(ProductsModel, {
+    through: ProductCategoryMapModel,
+    foreignKey: 'categoryId',
+    otherKey: 'productId',
+    as: 'products', // Ensure this alias matches
+});
+
+ProductsModel.belongsToMany(ProductCategoryModel, {
+    through: ProductCategoryMapModel,
+    foreignKey: 'productId',
+    otherKey: 'categoryId',
+    as: 'categories', // Ensure this alias matches
+});
+
+import { RetortProductsModel } from './retort/retort-product';
+import { RetortProductCategoryModel } from './retort/retort-category';
+import { RetortProductCategoryMapModel } from './retort/retort-product_category_map';
+
+RetortProductCategoryModel.belongsToMany(RetortProductsModel, {
+    through: RetortProductCategoryMapModel,
+    foreignKey: 'categoryId',
+    otherKey: 'productId',
+    as: 'products', // Ensure this alias matches
+});
+
+RetortProductsModel.belongsToMany(RetortProductCategoryModel, {
+    through: RetortProductCategoryMapModel,
+    foreignKey: 'productId',
+    otherKey: 'categoryId',
+    as: 'categories', // Ensure this alias matches
+});
 
 console.log("Associations initialized successfully.");
 

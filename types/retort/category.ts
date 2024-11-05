@@ -1,4 +1,5 @@
 const { OrderItem } = require("sequelize");
+import { RetortProductsModel } from '../../database/schema'
 
 // RetortProductCategory type Starts
 export type TRetortProductCategory = {
@@ -9,6 +10,7 @@ export type TRetortProductCategory = {
   slug: string;
   createdAt: Date;
   updatedAt: Date;
+  products?: RetortProductsModel[];
 };
 
 export type TEditRetortProductCategory = {

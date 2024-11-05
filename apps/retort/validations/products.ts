@@ -84,6 +84,23 @@ const editMultipleIdsBody = Joi.object().keys({
         }),
 });
 
+// Validation schema for assigning a category
+const assignCategoryBodySchema = Joi.object({
+    productId: Joi.number().required().messages({
+        'any.required': 'Product ID is required.'
+    }),
+    categoryId: Joi.number().required().messages({
+        'any.required': 'Category ID is required.'
+    }),
+});
+
+// Middleware for validating assign category body
+export const validateAssignCategoryBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, assignCategoryBodySchema, "body");
+
 // Middleware for creating product validation
 export const validateCreateProductsBody = async (
     req: Request,

@@ -8,3 +8,9 @@ export type TRetortProductCategoryLink = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type TAddRetortProductCategoryLink = {
+  productId: number;
+  categoryId: number;
+};
+

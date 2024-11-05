@@ -3,9 +3,84 @@ import { get, isEmpty } from "lodash";
 import { sendResponse, uploadSingleFileToFirebase } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { RetortProductRepo } from '../models/products';
+import { RetortProductCategoryRepo } from '../models/category';
+import { RetortProductCategoryMapRepo } from '../models/product-category-map';
 import slugify from 'slugify';
 
 export default class RetortProductsController {
+
+    static async assignCategory(req: Request, res: Response, next: NextFunction) {
+        try {
+            const payload = req.body;
+            const productId = req.body.productId;
+            const categoryId = req.body.categoryId;
+
+            const existingProduct = await new RetortProductRepo().get(productId as number);
+            const existingCategory = await new RetortProductCategoryRepo().get(categoryId as number);
+            if (existingProduct && existingCategory) {
+                const checkIfAlreadyLinked = await new RetortProductCategoryMapRepo().get(productId as number, categoryId as number);
+                if (!checkIfAlreadyLinked) {
+                    const createLink = await new RetortProductCategoryMapRepo().assign(payload);
+                    return res
+                        .status(200)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.SUCCESS,
+                                SUCCESS_MESSAGE.ASSIGNED,
+                                createLink
+                            )
+                        );
+                }
+            }
+            return res
+                .status(400)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        'Product or Category is missing!'
+                    )
+                );
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    static async unAssignCategory(req: Request, res: Response, next: NextFunction) {
+        try {
+            const productId = req.body.productId;
+            const categoryId = req.body.categoryId;
+
+            const checkIfAlreadyLinked = await new RetortProductCategoryMapRepo().unassign(productId as number, categoryId as number);
+            if (checkIfAlreadyLinked) {
+                return res
+                    .status(200)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.SUCCESS,
+                            SUCCESS_MESSAGE.UNASSIGNED,
+                            checkIfAlreadyLinked
+                        )
+                    );
+            }
+            return res
+                .status(400)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        'Something Went Wrong!'
+                    )
+                );
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     static async uploadImage(req: Request, res: Response, next: NextFunction) {
         try {
             const moduleName = 'retort-product'

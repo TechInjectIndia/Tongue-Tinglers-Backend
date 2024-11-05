@@ -3,6 +3,7 @@ import { get, isEmpty } from "lodash";
 import { sendResponse, uploadSingleFileToFirebase } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { ProductRepo } from '../models/products';
+import { VendorRepo } from '../../vendor/models/VendorRepo';
 import { ProductCategoryRepo } from '../models/category';
 import { ProductCategoryMapRepo } from '../models/product-category-map';
 import { StockRepo } from '../models/stock';
@@ -104,11 +105,26 @@ export default class ProductsController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const name = get(req.body, "name", "");
+            const vendorId = get(req.body, "vendorId", "");
             const createProduct = req.body;
 
             // Create slug if not provided
             if (createProduct.slug === '') {
                 createProduct.slug = slugify(name, { lower: true });
+            }
+
+            if (vendorId != null && vendorId != '') {
+                const existingVendor = await new VendorRepo().get(vendorId as string);
+                if (!existingVendor) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `Vendor ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
+                }
             }
 
             const existingProduct = await new ProductRepo().getProductByName(name);

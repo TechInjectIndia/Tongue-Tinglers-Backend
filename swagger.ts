@@ -37,6 +37,9 @@ const options = {
                 name: 'AUTH' // auth starts
             },
             {
+                name: 'Admin > Vendors'
+            },
+            {
                 name: 'Regions'
             },
             {
@@ -216,6 +219,7 @@ const options = {
     apis: [
         './routes/*.ts',
         './apps/region/api/*.ts',
+        './apps/vendor/api/*.ts',
         './apps/franchisee/api/*.ts',
         './apps/pdi-checklist/api/*.ts',
         './apps/quick-actions/api/*.ts',

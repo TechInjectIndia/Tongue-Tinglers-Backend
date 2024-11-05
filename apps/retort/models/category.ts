@@ -6,11 +6,22 @@ import {
     TAddRetortProductCategory,
     TEditRetortProductCategory,
 } from "../../../types/retort";
-import { RetortProductCategoryModel, RetortCategoryImageModel } from "../../../database/schema";
+import { RetortProductCategoryModel, RetortCategoryImageModel, RetortProductsModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/category/IProductsCategoryController';
 
 export class RetortProductCategoryRepo implements IBaseRepo<TRetortProductCategory, TRetortProductCategoryFilters> {
     constructor() { }
+
+    public async listAllCategoriesWithProducts(): Promise<TRetortProductCategory[]> {
+        const categories = await RetortProductCategoryModel.findAll({
+            include: [{
+                model: RetortProductsModel,
+                as: 'products', // Use the same alias defined in the association
+            }],
+        });
+
+        return categories;
+    }
 
     public async getRetortProductCategoryByName(name: string): Promise<TRetortProductCategory> {
         const data = await RetortProductCategoryModel.findOne({

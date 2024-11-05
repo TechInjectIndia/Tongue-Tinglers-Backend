@@ -61,6 +61,7 @@ import pdiChecklistRouter from "../apps/pdi-checklist/api/pdiChecklist";
 import quickActionEmailRouter from "../apps/quick-actions/api/email";
 import quickActionWhatsappRouter from "../apps/quick-actions/api/whatsapp";
 import regionRouter from "../apps/region/api/index";
+import vendorRouter from "../apps/vendor/api/vendorApi";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -79,12 +80,12 @@ router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // 
 router.use(`${ADMIN}/menu`, auth, menuRouter);
 router.use(`${ADMIN}/product`, productRouter);
 router.use(`${ADMIN}/tax`, auth, taxesRouter);
-router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
+router.use(`${ADMIN}/product/category`, productCategoryRouter);
 router.use(`${ADMIN}/order`, auth, orderRouter);
 router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);
-router.use(`${ADMIN}/retort/product`, auth, retortProductRouter);
-router.use(`${ADMIN}/retort/category`, auth, retortProductCategoryRouter);
+router.use(`${ADMIN}/retort/product`, retortProductRouter);
+router.use(`${ADMIN}/retort/category`, retortProductCategoryRouter);
 router.use(`${ADMIN}/retort/order`, auth, retortOrderRouter);
 router.use(`${ADMIN}/crm`, auth, campaignRouter);
 router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
@@ -97,9 +98,10 @@ router.use(`${ADMIN}/pdi-checklist`, auth, pdiChecklistRouter);
 router.use(`${ADMIN}/quick-actions/email`, auth, quickActionEmailRouter);
 router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
 router.use(`${ADMIN}/region`, auth, regionRouter);
-router.use(`${ADMIN}/contracts`, contractsRouter);
-router.use(`${ADMIN}/franchisee`, franchiseeRouter);
-router.use(`${ADMIN}/lead`, leadRouter);
+router.use(`${ADMIN}/contracts`, auth, contractsRouter);
+router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
+router.use(`${ADMIN}/lead`, auth, leadRouter);
+router.use(`${ADMIN}/vendors`, vendorRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

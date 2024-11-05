@@ -18,6 +18,9 @@ const createProductBodySchema = Joi.object({
     name: Joi.string().required().messages({
         'any.required': 'Product name is required.',
     }),
+    vendorId: Joi.string().optional().allow(null).messages({
+        'string.base': 'vendorId must be a string.',
+    }),
     slug: Joi.string().optional().allow("").messages({
         'string.base': 'Slug must be a string.',
     }),

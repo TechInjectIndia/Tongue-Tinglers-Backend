@@ -50,6 +50,9 @@ const {
  *               slug:
  *                 type: string
  *                 example: "product12"
+ *               vendorId:
+ *                 type: string
+ *                 example: "11112333546"
  *               description:
  *                 type: string
  *                 example: "desc"

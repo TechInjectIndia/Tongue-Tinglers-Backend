@@ -36,6 +36,7 @@ export const ERROR_MESSAGE = {
 };
 
 export const SUCCESS_MESSAGE = {
+    CLEARED: "Successfully cleared",
     TOKEN_VALID: "Token is valid",
     SENT_NOTIFICATION: "Message sent successfully",
     SENT_EMAIL: 'Email sent successfully',

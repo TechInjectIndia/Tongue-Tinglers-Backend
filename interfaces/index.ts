@@ -18,6 +18,8 @@ export * from './pdiChecklist';
 export * from './taxes';
 export * from './stocks';
 export * from './regions';
+export * from './vendor';
+export * from './cart';
 
 interface ITrackable {
     userDetails: UserDetails;

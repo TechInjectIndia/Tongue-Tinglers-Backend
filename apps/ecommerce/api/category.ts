@@ -105,6 +105,21 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
+ * 
+ * /api/admin/product/category/list-all:
+ *   get:
+ *     summary: Get all categories with products
+ *     tags: [Admin > Ecommerce > Product > Category]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Product Category retrieved successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
  * /api/admin/product/category/get/{id}:
  *   get:
  *     summary: Get a Category by ID
@@ -204,6 +219,7 @@ const {
  */
 router.post("/create", validateCreateProductCategoryBody, ProductCategoryController.create);
 router.get("/list", validateListProductCategoryQuery, ProductCategoryController.list);
+router.get("/list-all", ProductCategoryController.listAllCategoriesWithProducts);
 router.get("/get/:id", validateEditProductCategoryParams, ProductCategoryController.get);
 router.put("/update/:id", validateEditProductCategoryParams, validateEditProductCategoryBody, ProductCategoryController.update);
 router.delete("/delete", validateEditMultipleIdsBody, ProductCategoryController.delete);

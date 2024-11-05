@@ -9,6 +9,7 @@ const router = express.Router();
 
 const {
   validateCreateProductsBody,
+  validateAssignCategoryBody,
   validateEditProductsBody,
   validateEditProductsParams,
   validateListProductsQuery,
@@ -226,7 +227,67 @@ const {
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: products not found
+ *         description: products not found 
+ * 
+ * /api/admin/retort/product/assign-category:
+ *   post:
+ *     summary: Assign Category
+ *     tags: [Admin > Retort > Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - productId
+ *              - categoryId
+ *            properties:
+ *              productId:
+ *                type: number
+ *                default: 1 
+ *              categoryId:
+ *                type: number
+ *                default: 1
+ *     responses:
+ *       '200':
+ *         description: Assigned successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
+ * /api/admin/retort/product/unassign-category:
+ *   post:
+ *     summary: Un-Assign Category
+ *     tags: [Admin > Retort > Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - productId
+ *              - categoryId
+ *            properties:
+ *              productId:
+ *                type: number
+ *                default: 1 
+ *              categoryId:
+ *                type: number
+ *                default: 1
+ *     responses:
+ *       '200':
+ *         description: Un-Assigned successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
  */
 router.post("/create", hasPermission('retort', 'create'), validateCreateProductsBody, RetortProductsController.create);
 router.get("/list", hasPermission('retort', 'read'), validateListProductsQuery, RetortProductsController.list);
@@ -236,5 +297,7 @@ router.delete("/delete", hasPermission('retort', 'delete'), validateEditMultiple
 // ====== Products Ends ======
 
 router.post("/image/upload", hasPermission('retort', 'create'), upload.single('file'), RetortProductsController.uploadImage);
+router.post("/assign-category", validateAssignCategoryBody, RetortProductsController.assignCategory);
+router.post("/unassign-category", validateAssignCategoryBody, RetortProductsController.unAssignCategory);
 
 export default router;

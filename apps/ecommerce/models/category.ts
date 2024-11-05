@@ -6,11 +6,22 @@ import {
     TAddProductCategory,
     TEditProductCategory,
 } from "../../../types/ecommerce";
-import { ProductCategoryModel, CategoryImageModel } from "../../../database/schema";
+import { ProductCategoryModel, CategoryImageModel, ProductsModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/category/IProductsCategoryController';
 
 export class ProductCategoryRepo implements IBaseRepo<TProductCategory, TProductCategoryFilters> {
     constructor() { }
+
+    public async listAllCategoriesWithProducts(): Promise<TProductCategory[]> {
+        const categories = await ProductCategoryModel.findAll({
+            include: [{
+                model: ProductsModel,
+                as: 'products', // Use the same alias defined in the association
+            }],
+        });
+
+        return categories;
+    }
 
     public async getProductCategoryByName(name: string): Promise<TProductCategory> {
         const data = await ProductCategoryModel.findOne({

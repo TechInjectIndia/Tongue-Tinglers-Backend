@@ -6,8 +6,8 @@ import { LeadsModel } from './lead.model';
 // Define the attributes for Assign creation (Optional `id` if auto-generated)
 interface AssignAttributes {
     id?: string;
-    assignedToId: string; // Foreign key referencing UserDetails
-    assignedById: string; // Foreign key referencing UserDetails
+    assignedTo: string; // Foreign key referencing UserDetails
+    assignedBy: string; // Foreign key referencing UserDetails
     assignedDate: Date;
     leadId: string; // Foreign key referencing LeadsModel
 }
@@ -18,8 +18,8 @@ interface AssignCreationAttributes extends Optional<AssignAttributes, "id"> { }
 // Model class
 class AssignModel extends Model<AssignAttributes, AssignCreationAttributes> implements AssignAttributes {
     public id!: string;
-    public assignedToId!: string;
-    public assignedById!: string;
+    public assignedTo!: string;
+    public assignedBy!: string;
     public assignedDate!: Date;
     public leadId!: string;
 
@@ -28,9 +28,9 @@ class AssignModel extends Model<AssignAttributes, AssignCreationAttributes> impl
     public readonly updatedAt!: Date;
 
     public static associate() {
-        this.belongsTo(UserModel, { foreignKey: 'assignedToId', as: 'assignedTo', });
-        this.belongsTo(UserModel, { foreignKey: 'assignedById', as: 'assignedBy', });
-        this.belongsTo(LeadsModel, { foreignKey: 'leadId', as: 'lead', });
+        this.belongsTo(UserModel, { foreignKey: 'assignedTo', as: 'assignedToId', });
+        this.belongsTo(UserModel, { foreignKey: 'assignedBy', as: 'assignedById', });
+        this.belongsTo(LeadsModel, { foreignKey: 'leadId', as: 'leadData', });
     }
 }
 
@@ -42,16 +42,16 @@ AssignModel.init(
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true,
         },
-        assignedToId: {
-            type: DataTypes.UUID,
+        assignedTo: {
+            type: DataTypes.STRING,
             allowNull: false,
             references: {
                 model: UserModel,
                 key: "id",
             },
         },
-        assignedById: {
-            type: DataTypes.UUID,
+        assignedBy: {
+            type: DataTypes.STRING,
             allowNull: false,
             references: {
                 model: UserModel,
@@ -63,7 +63,7 @@ AssignModel.init(
             allowNull: false,
         },
         leadId: {
-            type: DataTypes.UUID,
+            type: DataTypes.STRING,
             allowNull: false,
             references: {
                 model: LeadsModel,

@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { TAssignLead, TQueryFilters } from '../../../../types';
 import { AssignAttributes } from '../../../../interfaces';
+import { AssignModel } from "../../../../database/schema"; // Ensure this points to the correct assignment schema
 
 /**
  * Interface for Assign Controller.
@@ -33,7 +34,7 @@ interface IAssignController<T, F extends TQueryFilters> {
      * @param payload - The data to update the assignment.
      * @returns Promise resolving to the affected count.
      */
-    update(id: string, payload: Partial<TAssignLead>): Promise<[affectedCount: number]>; // Using Partial to allow partial updates
+    createOrUpdate(leadId: string, data: Partial<TAssignLead>): Promise<[instance: AssignModel, created: boolean]>
 
     /**
      * Delete assignments by IDs.

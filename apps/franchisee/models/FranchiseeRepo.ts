@@ -23,9 +23,14 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
     public async getAllFranchisees(franchiseType: string): Promise<FranchiseeAttributes[]> {
         try {
             const whereClause = franchiseType ? { franchiseType } : {};
-            const franchisees = await FranchiseeModel.findAll({
-                where: whereClause
-            });
+            let franchisees: any;
+            if (franchiseType == '') {
+                franchisees = await FranchiseeModel.findAll();
+            } else {
+                franchisees = await FranchiseeModel.findAll({
+                    where: whereClause
+                });
+            }
 
             return franchisees;
         } catch (error) {

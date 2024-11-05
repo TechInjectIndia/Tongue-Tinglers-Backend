@@ -112,6 +112,16 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         }
     }
 
+    public async checkIfUserExist(id: string): Promise<any> {
+        const data = await UserModel.findOne({
+            raw: true,
+            where: {
+                id: id
+            },
+        });
+        return data;
+    }
+
     public async create(data: TAddUser): Promise<TUser> {
         return await UserModel.create({ ...data, type: USER_TYPE.MASTER_FRANCHISE });
     }

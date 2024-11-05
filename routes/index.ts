@@ -98,7 +98,7 @@ router.use(`${ADMIN}/quick-actions/email`, auth, quickActionEmailRouter);
 router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
 router.use(`${ADMIN}/region`, auth, regionRouter);
 router.use(`${ADMIN}/contracts`, contractsRouter);
-router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
+router.use(`${ADMIN}/franchisee`, franchiseeRouter);
 router.use(`${ADMIN}/lead`, auth, leadRouter);
 // ====== Admin ======
 

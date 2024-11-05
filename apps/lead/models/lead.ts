@@ -8,6 +8,7 @@ import {
 } from "../../../types";
 import { ITrackable } from "../../../interfaces";
 import { LeadsModel } from "../../../database/schema";
+import { AssignModel } from "../../../database/schema";
 import { LeadStatus, ILead } from '../../../interfaces'; // Use the LeadStatus enum from interfaces
 import IBaseRepo from '../controllers/controller/ILeadController';
 
@@ -37,9 +38,14 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
     public async getLeadByAttr(whereName: keyof ILead, whereVal: any, getAttributes: any = ['*']): Promise<ILead | null> {
         const whereAttributes = { [whereName]: whereVal };
         const data = await LeadsModel.findOne({
-            raw: true,
-            attributes: getAttributes,
-            where: whereAttributes
+            where: whereAttributes,
+            include: [
+                {
+                    model: AssignModel,
+                    as: 'assign',
+                    attributes: ['assignedTo', 'assignedBy', 'assignedDate']
+                }
+            ]
         });
         return data as ILead | null;
     }

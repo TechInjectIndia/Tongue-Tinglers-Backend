@@ -32,10 +32,10 @@ export class AssignRepo implements IBaseRepo<AssignAttributes, any> {
     }
 
     // Update an assignment
-    public async update(id: string, data: Partial<TAssignLead>): Promise<[affectedCount: number]> {
-        const response = await AssignModel.update(data, {
-            where: { id },
-        });
+    public async createOrUpdate(leadId: string, data: Partial<TAssignLead>): Promise<[instance: AssignModel, created: boolean]> {
+        // Add leadId to data to ensure it's included in the upsert check
+        const response = await AssignModel.upsert({ leadId, ...data });
+
         return response;
     }
 
@@ -59,7 +59,7 @@ export class AssignRepo implements IBaseRepo<AssignAttributes, any> {
         const data = await AssignModel.findOne({
             where: {
                 leadId,
-                assignedToId: userId,
+                assignedTo: userId,
             },
         });
         return data as AssignAttributes | null;

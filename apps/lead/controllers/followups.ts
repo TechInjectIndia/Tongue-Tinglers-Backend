@@ -6,15 +6,15 @@ export default class FollowUpsController {
     // Method to get today's follow-ups for a specific assigned user
     static async getTodayFollowUps(req: Request, res: Response): Promise<Response> {
         try {
-            const assignedToId = req.params.assignedTo;
+            const assignedTo = req.params.assignedTo;
 
-            if (!assignedToId) {
+            if (!assignedTo) {
                 return res.status(400).json({ message: 'Assigned user ID is required.' });
             }
 
             const attributes = ['id', 'firstName', 'lastName', 'email', 'followDetails'];
 
-            const followUps = await new FollowUpsRepo().getTodayFollowUps(String(assignedToId), attributes);
+            const followUps = await new FollowUpsRepo().getTodayFollowUps(String(assignedTo), attributes);
 
             return res.status(200).json(followUps);
         } catch (error) {

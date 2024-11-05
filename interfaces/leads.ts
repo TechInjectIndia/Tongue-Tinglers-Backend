@@ -29,8 +29,8 @@ enum LeadStatus {
 
 interface AssignAttributes {
     id?: string;
-    assignedToId: string;
-    assignedById: string;
+    assignedTo: string;
+    assignedBy: string;
     assignedDate: Date;
     leadId: string;
 }

@@ -14,6 +14,7 @@ import { Sequelize } from 'sequelize';
 import jwt from "jsonwebtoken";
 import { CONFIG } from "../../../config";
 import { TrustProductsEvaluationsContextImpl } from "twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEvaluations";
+import { constructNow } from "date-fns";
 
 export default class LeadController {
 
@@ -147,18 +148,22 @@ export default class LeadController {
     static async assignLeadToAdminUser(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {
             const id = get(req.body, "id", "");
-            const assignee = get(req.body, "assignee", {}); // Changed from assigneeArray to assignee
-            const existingLead = await new LeadRepo().getLeadByAttr('id', id);
+            const assignee = get(req.body, "assignedTo", {}); // Changed from assigneeArray to assignee
+            const user_id = get(req, 'user_id', '');
 
+            const existingLead = await new LeadRepo().getLeadByAttr('id', id);
             if (isEmpty(existingLead)) {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
 
             const payload: any = {
-                assign: assignee, // Directly assign the single assignee object
+                assignedTo: assignee.id,
+                assignedBy: user_id,
+                assignedDate: new Date(),
             };
 
-            const updatedLead = await new LeadRepo().assignLeadToUser(id, payload);
+            console.log('payloadpayloadpayloadpayload', payload);
+            const updatedLead = await new AssignRepo().createOrUpdate(id, payload);
 
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPDATED, updatedLead));
         } catch (err) {
@@ -172,8 +177,8 @@ export default class LeadController {
             const user_id = get(req, 'user_id', '');
             const user_name = get(req, 'user_name', '');
             const whereVal = get(req.body, "email", "");
-            const existingLead = await new LeadRepo().getLeadByAttr('email', whereVal);
 
+            const existingLead = await new LeadRepo().getLeadByAttr('email', whereVal);
             if (existingLead) {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.EXISTS));
             }
@@ -190,8 +195,15 @@ export default class LeadController {
                 //     timeline: new Date(),
                 // }],
             };
-
             const { assign } = payload;
+
+
+            const existingUser = await new AdminRepo().checkIfUserExist(assign.assignedTo.id);
+            if (!existingUser) {
+                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
+            }
+
+            console.log('existingUserexistingUserexistingUser', existingUser);
             delete payload.assign
 
             if (payload.referby) {
@@ -206,9 +218,9 @@ export default class LeadController {
             // Check and create assignment if 'assign' object is provided in the request body
             if (assign) {
                 const assignPayload = {
-                    assignedToId: payload.assign.assignedTo.id,
-                    assignedById: payload.assign.assignedBy.id,
-                    assignedDate: payload.assign.assignedDate,
+                    assignedTo: assign.assignedTo.id,
+                    assignedBy: user_id,
+                    assignedDate: assign.assignedDate,
                     leadId: newLead.id, // Reference the new lead's ID
                 };
 
@@ -287,8 +299,8 @@ export default class LeadController {
     static async get(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {
             const id = get(req.params, "id", "");
-            const existingLead = await new LeadRepo().getLeadByAttr('id', id);
 
+            const existingLead = await new LeadRepo().getLeadByAttr('id', id);
             if (isEmpty(existingLead)) {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }

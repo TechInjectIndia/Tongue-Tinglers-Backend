@@ -2,6 +2,7 @@ import { FranchiseeModel } from "../../../database/schema";
 import { RegionModel } from "../../../database/schema";
 import { ContractModel } from "../../../database/schema";
 import { FranchiseLocationModel } from "../../../database/schema";
+import { SocialMediaDetailsFranchiseModel } from "../../../database/schema";
 import { Op } from "sequelize";
 import { FranchiseeAttributes, AddFranchiseePayload } from "../../../interfaces";
 import IFranchiseeController from '../controllers/controller/IFranchiseeController';
@@ -40,7 +41,8 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
                 where: { id: franchiseeId },
                 include: [
                     { model: RegionModel, as: 'region' },
-                    { model: FranchiseLocationModel, as: 'location' }
+                    { model: FranchiseLocationModel, as: 'franchiseLocation' },
+                    { model: SocialMediaDetailsFranchiseModel, as: 'socialMediaDetails' }
                 ]
             });
 

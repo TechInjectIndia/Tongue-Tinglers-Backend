@@ -77,6 +77,7 @@ import { FranchiseLocationModel } from "./franchise/franchiseLocationModel";
 import { FranchiseeModel } from "./franchise/franchiseeModel";
 import { AffiliateModel } from "./lead/affiliateModels";
 import { SocialMediaDetailsModel } from "./lead/smDetailsModel";
+import { SocialMediaDetailsFranchiseModel } from "./franchise/smDetailsModel";
 
 // CampaignAdModel.belongsToMany(questionModel, {
 //     through: 'CampaignQuestions',
@@ -95,7 +96,7 @@ import { SocialMediaDetailsModel } from "./lead/smDetailsModel";
 // Establish association with FranchiseLocationModel
 FranchiseeModel.hasOne(FranchiseLocationModel, {
     foreignKey: 'franchiseeId',
-    as: 'location',
+    as: 'franchiseLocation',
 });
 
 FranchiseLocationModel.belongsTo(FranchiseeModel, {
@@ -103,6 +104,18 @@ FranchiseLocationModel.belongsTo(FranchiseeModel, {
     as: 'franchisee',
 });
 // Establish association with FranchiseLocationModel
+
+// Establish association with SocialMediaDetailsFranchiseModel
+FranchiseeModel.hasMany(SocialMediaDetailsFranchiseModel, {
+    foreignKey: 'franchiseeId',
+    as: 'socialMediaDetails',
+});
+
+SocialMediaDetailsFranchiseModel.belongsTo(FranchiseeModel, {
+    foreignKey: 'franchiseeId',
+    as: 'franchisee',
+});
+// Establish association with SocialMediaDetailsFranchiseModel
 
 // Establish association with AffiliateModel
 AffiliateModel.hasMany(SocialMediaDetailsModel, {

@@ -23,9 +23,9 @@ export default class LeadController {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
 
-            if (existingLead.status === LeadStatus.CONVERTED) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.ALREADY_CONVERTED));
-            }
+            // if (existingLead.status === LeadStatus.CONVERTED) {
+            //     return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.ALREADY_CONVERTED));
+            // }
 
             const user_id = get(req, "user_id", "");
             const payload = {
@@ -85,7 +85,7 @@ export default class LeadController {
                 contractIds: null
             });
 
-            await new LeadRepo().updateStatus(id, { status: LeadStatus.CONVERTED });
+            // await new LeadRepo().updateStatus(id, { status: LeadStatus.CONVERTED });
 
             try {
                 const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {

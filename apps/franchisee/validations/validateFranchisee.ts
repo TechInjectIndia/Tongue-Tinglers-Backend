@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
+import { SM_PLATFORM_FRANCHISE } from "../../../interfaces";
 
 // Validation schema for creating and editing a franchisee
 const franchiseeSchema = Joi.object({
@@ -9,8 +10,8 @@ const franchiseeSchema = Joi.object({
         "string.min": "Franchisee name must be at least 3 characters long.",
     }),
     userid: Joi.string().optional(),
-    referBy: Joi.string().optional(),
-    parentFranchise: Joi.string().optional(),
+    referBy: Joi.string().optional().allow(null),
+    parentFranchise: Joi.string().optional().allow(null),
     ownerName: Joi.string().trim().required().messages({
         "any.required": "Owner name is required.",
         "string.empty": "Owner name cannot be empty.",
@@ -50,7 +51,6 @@ const franchiseeSchema = Joi.object({
             "string.empty": "Country cannot be empty.",
         }),
         zipCode: Joi.string()
-            .pattern(/^\d{5}(-\d{4})?$/)
             .required()
             .messages({
                 "any.required": "ZIP code is required.",
@@ -92,15 +92,19 @@ const franchiseeSchema = Joi.object({
         conditions: Joi.string().optional().allow("").messages({
             "string.empty": "Renewal conditions cannot be empty.",
         }),
-    }).optional().allow(""),
+    }).optional().allow(null),
     socialMediaDetails: Joi.array().items(Joi.object({
-        url: Joi.string().uri().required().messages({
+        url: Joi.string().required().messages({
             "any.required": "Social media URL is required.",
             "string.uri": "Each URL must be a valid URI.",
         }),
-        type: Joi.string().valid('fb', 'instagram', 'youtube').required().messages({
-            "any.required": "Social media type is required.",
-        }),
+        type: Joi.string()
+            .valid(...Object.values(SM_PLATFORM_FRANCHISE)) // Ensure the type is one of the enum values
+            .required()
+            .messages({
+                "any.required": "Social media type is required.",
+                "any.allowOnly": "Social media type must be one of 'fb', 'instagram', or 'youtube'."
+            }),
     })).optional(),
 });
 

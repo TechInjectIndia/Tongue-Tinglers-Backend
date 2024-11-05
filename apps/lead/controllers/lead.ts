@@ -197,13 +197,11 @@ export default class LeadController {
             };
             const { assign } = payload;
 
-
             const existingUser = await new AdminRepo().checkIfUserExist(assign.assignedTo.id);
             if (!existingUser) {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
             }
 
-            console.log('existingUserexistingUserexistingUser', existingUser);
             delete payload.assign
 
             if (payload.referby) {
@@ -216,7 +214,7 @@ export default class LeadController {
             const newLead = await new LeadRepo().create(payload);
 
             // Check and create assignment if 'assign' object is provided in the request body
-            if (assign) {
+            if (assign != null) {
                 const assignPayload = {
                     assignedTo: assign.assignedTo.id,
                     assignedBy: user_id,

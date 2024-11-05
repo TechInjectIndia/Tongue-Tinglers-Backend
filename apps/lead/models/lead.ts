@@ -35,8 +35,13 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
         return data as TLeadStatus | null;
     }
 
+
     // Get lead by attribute
-    public async getLeadByAttr(whereName: keyof ILead, whereVal: any, getAttributes: any = ['*']): Promise<ILead | null> {
+    public async getLeadByAttr(
+        whereName: keyof ILead,
+        whereVal: any,
+        getAttributes: any = ['*']
+    ): Promise<any | null> {
         const whereAttributes = { [whereName]: whereVal };
         const data = await LeadsModel.findOne({
             where: whereAttributes,
@@ -45,17 +50,47 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
                     model: AssignModel,
                     as: 'assign',
                     attributes: ['assignedTo', 'assignedBy', 'assignedDate'],
-                    // include: [
-                    //     {
-                    //         model: UserModel, // Assuming UserModel is the model for user details
-                    //         as: 'userDetails', // Use the alias defined in the relationship
-                    //         attributes: ['id', 'userName'], // Specify the user details attributes you need
-                    //     }
-                    // ],
+                    include: [
+                        {
+                            model: UserModel,
+                            as: 'assignedUser', // Use the alias for assignedTo
+                            attributes: ['id', 'userName'],
+                        },
+                        {
+                            model: UserModel,
+                            as: 'assignerUser', // Use the alias for assignedBy
+                            attributes: ['id', 'userName'],
+                        }
+                    ],
                 }
-            ]
+            ],
         });
-        return data as ILead | null;
+
+        // console.log('data', data);
+        // // Format the response to match your desired structure
+        // if (data) {
+        //     const assignedTo = data.assign?.userDetails.find(user => user.id === data.assign?.assignedTo);
+        //     const assignedBy = data.assign?.userDetails.find(user => user.id === data.assign?.assignedBy);
+
+        //     const formattedLead: any = {
+        //         ...data.toJSON(), // Convert Sequelize instance to plain object
+        //         assign: {
+        //             assignedTo: assignedTo ? {
+        //                 id: assignedTo.id,
+        //                 userName: assignedTo.userName,
+        //             } : undefined, // Use undefined if there's no assignedTo
+        //             assignedBy: assignedBy ? {
+        //                 id: assignedBy.id,
+        //                 userName: assignedBy.userName,
+        //             } : undefined, // Use undefined if there's no assignedBy
+        //             assignedDate: data.assign?.assignedDate,
+        //         },
+        //     };
+
+        //     return formattedLead; // Return the formatted lead with optional assign
+        // }
+
+        return data;
     }
 
     // Get lead by ID

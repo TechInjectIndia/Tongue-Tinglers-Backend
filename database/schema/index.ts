@@ -81,6 +81,7 @@ import { SocialMediaDetailsModel } from "./lead/smDetailsModel";
 import { SocialMediaDetailsFranchiseModel } from "./franchise/smDetailsModel";
 import { AssignModel } from "./lead/assigneeModels";
 import { LeadsModel } from './lead/lead.model';
+import { UserModel } from './user/user.model';
 
 // CampaignAdModel.belongsToMany(questionModel, {
 //     through: 'CampaignQuestions',
@@ -119,6 +120,13 @@ SocialMediaDetailsFranchiseModel.belongsTo(FranchiseeModel, {
     as: 'franchisee',
 });
 // Establish association with SocialMediaDetailsFranchiseModel
+
+
+UserModel.hasMany(AssignModel, { foreignKey: 'assignedTo', as: 'assignmentsAsAssignedTo' });
+UserModel.hasMany(AssignModel, { foreignKey: 'assignedBy', as: 'assignmentsAsAssignedBy' });
+
+AssignModel.belongsTo(UserModel, { foreignKey: 'assignedTo', as: 'assignedUser' });
+AssignModel.belongsTo(UserModel, { foreignKey: 'assignedBy', as: 'assignerUser' });
 
 // Establish association with AssignModel
 LeadsModel.hasMany(AssignModel, {

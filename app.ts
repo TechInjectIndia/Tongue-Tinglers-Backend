@@ -21,7 +21,7 @@ const rateLimiter = new RateLimiterMemory({
 });
 import expressSanitizer from "express-sanitizer";
 import { folderPath } from "./path";
-import { ContractRepo } from "./apps/contracts/models/ContractModel";
+import { ContractRepo } from "./apps/contracts/models/ContractRepo";
 
 dotenv.config();
 // const env = dotenv.config({ path: `${__dirname}/.env` });

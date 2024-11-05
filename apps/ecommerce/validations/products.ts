@@ -4,7 +4,7 @@ import { validateReq } from "../../../libraries";
 import { PRODUCTS_TYPE } from '../../../interfaces/products';
 
 // Validation schema for assigning a category
-const AssignCategoryBody = Joi.object({
+const assignCategoryBodySchema = Joi.object({
     productId: Joi.number().required().messages({
         'any.required': 'Product ID is required.'
     }),
@@ -13,8 +13,8 @@ const AssignCategoryBody = Joi.object({
     }),
 });
 
-// Validation schema for creating products with all fields from the interface
-const createProductsBody = Joi.object({
+// Validation schema for creating products
+const createProductBodySchema = Joi.object({
     name: Joi.string().required().messages({
         'any.required': 'Product name is required.',
     }),
@@ -28,41 +28,48 @@ const createProductsBody = Joi.object({
         'any.required': 'Product type is required.',
         'any.only': `Type must be one of ${Object.values(PRODUCTS_TYPE).join(", ")}.`,
     }),
-    price: Joi.string().pattern(/^\d+(\.\d{1,2})?$/).required().messages({
+    price: Joi.number().required().greater(0).messages({
         'any.required': 'Price is required.',
-        'string.pattern.base': 'Price must be a valid number in string format.',
+        'number.base': 'Price must be a valid number.',
+        'number.greater': 'Price must be greater than 0.',
     }),
-    stock: Joi.string().pattern(/^\d+$/).required().messages({
+    total_ratings: Joi.number().integer().optional().allow(0).messages({
+        'number.base': 'Total ratings must be a valid integer.',
+    }),
+    ratings: Joi.number().integer().optional().allow(0).messages({
+        'number.base': 'Ratings must be a valid integer.',
+    }),
+    discount: Joi.number().optional().min(0).max(100).messages({
+        'number.base': 'Discount must be a valid number.',
+        'number.min': 'Discount cannot be negative.',
+        'number.max': 'Discount cannot exceed 100.',
+    }),
+    stock: Joi.number().integer().required().greater(-1).messages({
         'any.required': 'Stock is required.',
-        'string.pattern.base': 'Stock must be a valid integer in string format.',
+        'number.base': 'Stock must be a valid integer.',
+        'number.greater': 'Stock cannot be negative.',
     }),
-    discount: Joi.string().pattern(/^\d+(\.\d{1,2})?$/).required().messages({
-        'any.required': 'Discount is required.',
-        'string.pattern.base': 'Discount must be a valid number in string format.',
+    sold: Joi.number().integer().optional().allow(0).messages({
+        'number.base': 'Sold quantity must be a valid integer.',
     }),
-    sold: Joi.string().pattern(/^\d+$/).required().messages({
-        'any.required': 'Sold quantity is required.',
-        'string.pattern.base': 'Sold quantity must be a valid integer in string format.',
-    }),
-    active: Joi.number().integer().valid(0, 1).required().messages({
+    active: Joi.boolean().required().messages({
         'any.required': 'Active status is required.',
-        'number.base': 'Active status must be a number.',
-        'any.only': 'Active status must be either 0 (inactive) or 1 (active).',
+        'boolean.base': 'Active status must be either true or false.',
     }),
 });
 
 // Validation schema for editing products
-const editProductsBody = createProductsBody;
+const editProductBodySchema = createProductBodySchema;
 
 // Validation schema for editing product parameters
-const editProductsParams = Joi.object({
+const editProductParamsSchema = Joi.object({
     id: Joi.number().required().messages({
         'any.required': 'Product ID is required.',
     }),
 });
 
 // Validation schema for listing products
-const listProductsQuery = Joi.object({
+const listProductsQuerySchema = Joi.object({
     size: Joi.number().required().messages({
         'any.required': 'Size is required.',
     }),
@@ -74,7 +81,7 @@ const listProductsQuery = Joi.object({
 });
 
 // Validation schema for editing multiple product IDs
-const editMultipleIdsBody = Joi.object({
+const editMultipleIdsBodySchema = Joi.object({
     ids: Joi.array().min(1).required().messages({
         'array.min': 'At least one ID is required.',
         'any.required': 'IDs are required.'
@@ -86,39 +93,39 @@ export const validateAssignCategoryBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, AssignCategoryBody, "body");
+) => validateReq(req, res, next, assignCategoryBodySchema, "body");
 
 // Middleware for validating create products body
 export const validateCreateProductsBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, createProductsBody, "body");
+) => validateReq(req, res, next, createProductBodySchema, "body");
 
 // Middleware for validating edit products body
 export const validateEditProductsBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, editProductsBody, "body");
+) => validateReq(req, res, next, editProductBodySchema, "body");
 
 // Middleware for validating edit products parameters
 export const validateEditProductsParams = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, editProductsParams, "params");
+) => validateReq(req, res, next, editProductParamsSchema, "params");
 
 // Middleware for validating list products query
 export const validateListProductsQuery = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, listProductsQuery, "query");
+) => validateReq(req, res, next, listProductsQuerySchema, "query");
 
 // Middleware for validating edit multiple product IDs body
 export const validateEditMultipleIdsBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, editMultipleIdsBody, "body");
+) => validateReq(req, res, next, editMultipleIdsBodySchema, "body");

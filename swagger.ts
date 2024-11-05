@@ -37,6 +37,9 @@ const options = {
                 name: 'AUTH' // auth starts
             },
             {
+                name: 'Regions'
+            },
+            {
                 name: 'Franchisee'
             },
             {
@@ -101,6 +104,9 @@ const options = {
             },
             {
                 name: 'Admin > Ecommerce > Products'
+            },
+            {
+                name: 'Admin > Ecommerce > Taxes'
             },
             {
                 name: 'Admin > Ecommerce > Product > Category'
@@ -209,6 +215,7 @@ const options = {
     // looks for configuration in specified directories
     apis: [
         './routes/*.ts',
+        './apps/region/api/*.ts',
         './apps/franchisee/api/*.ts',
         './apps/pdi-checklist/api/*.ts',
         './apps/quick-actions/api/*.ts',

@@ -1,4 +1,8 @@
-import { FranchiseeModel } from "../../../database/schema"; // Adjust import path as necessary
+import { FranchiseeModel } from "../../../database/schema";
+import { RegionModel } from "../../../database/schema";
+import { ContractModel } from "../../../database/schema";
+import { FranchiseLocationModel } from "../../../database/schema";
+import { SocialMediaDetailsFranchiseModel } from "../../../database/schema";
 import { Op } from "sequelize";
 import { FranchiseeAttributes, AddFranchiseePayload } from "../../../interfaces";
 import IFranchiseeController from '../controllers/controller/IFranchiseeController';
@@ -31,10 +35,33 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
     }
 
     // Retrieve a franchisee by ID
-    public async getFranchiseeById(franchiseeId: string): Promise<FranchiseeAttributes | null> {
+    public async getFranchiseeById(franchiseeId: string): Promise<FranchiseeAttributes & { contracts?: ContractModel[] } | null> {
         try {
-            const franchisee = await FranchiseeModel.findByPk(franchiseeId);
-            return franchisee;
+            const franchisee = await FranchiseeModel.findOne({
+                where: { id: franchiseeId },
+                include: [
+                    { model: RegionModel, as: 'region' },
+                    { model: FranchiseLocationModel, as: 'franchiseLocation' },
+                    { model: SocialMediaDetailsFranchiseModel, as: 'socialMediaDetails' }
+                ]
+            });
+
+            if (franchisee) {
+                // Get contracts based on the contractIds
+                const contracts = await ContractModel.findAll({
+                    where: {
+                        id: franchisee.contractIds
+                    }
+                });
+
+                // Include contracts in the result
+                return {
+                    ...franchisee.toJSON(),
+                    contracts
+                };
+            }
+
+            return null;
         } catch (error) {
             console.error('Error fetching franchisee by ID:', error);
             throw new Error('Failed to fetch franchisee by ID.');

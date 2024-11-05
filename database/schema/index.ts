@@ -15,6 +15,8 @@ export * from "./ecommerce/product_category_map.model";
 export * from "./ecommerce/product_image.model";
 export * from "./ecommerce/tag.model";
 export * from "./ecommerce/tag_image.model";
+export * from "./ecommerce/taxes";
+export * from "./ecommerce/stockModel";
 // ecommerce model ends
 
 // retort model starts
@@ -46,7 +48,10 @@ export * from "./token";
 // crm model starts
 export * from "./crm";
 export * from "./lead/affiliateModels";
+export * from "./lead/smDetailsModel";
 export * from "./lead/franchiseModels";
+export * from "./lead/extraFieldsModel";
+export * from "./lead/SeoImageModel";
 export * from "./lead/proposalModels";
 // crm model ends
 
@@ -59,12 +64,20 @@ export * from "./files/emailModel";
 export * from "./files/galleryModel";
 
 export * from "./franchise/franchiseeModel";
+export * from "./franchise/franchiseLocationModel";
 export * from "./franchise/pdiModel";
+export * from "./franchise/regions";
+export * from "./franchise/smDetailsModel";
 
 // --- Sequelize Associations Setup --- //
 
 // import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
 // import { questionModel } from "./campaign-ui/questionModel";
+import { FranchiseLocationModel } from "./franchise/franchiseLocationModel";
+import { FranchiseeModel } from "./franchise/franchiseeModel";
+import { AffiliateModel } from "./lead/affiliateModels";
+import { SocialMediaDetailsModel } from "./lead/smDetailsModel";
+import { SocialMediaDetailsFranchiseModel } from "./franchise/smDetailsModel";
 
 // CampaignAdModel.belongsToMany(questionModel, {
 //     through: 'CampaignQuestions',
@@ -79,6 +92,41 @@ export * from "./franchise/pdiModel";
 //     otherKey: 'campaignId',
 //     as: 'campaigns',
 // });
+
+// Establish association with FranchiseLocationModel
+FranchiseeModel.hasOne(FranchiseLocationModel, {
+    foreignKey: 'franchiseeId',
+    as: 'franchiseLocation',
+});
+
+FranchiseLocationModel.belongsTo(FranchiseeModel, {
+    foreignKey: 'franchiseeId',
+    as: 'franchisee',
+});
+// Establish association with FranchiseLocationModel
+
+// Establish association with SocialMediaDetailsFranchiseModel
+FranchiseeModel.hasMany(SocialMediaDetailsFranchiseModel, {
+    foreignKey: 'franchiseeId',
+    as: 'socialMediaDetails',
+});
+
+SocialMediaDetailsFranchiseModel.belongsTo(FranchiseeModel, {
+    foreignKey: 'franchiseeId',
+    as: 'franchisee',
+});
+// Establish association with SocialMediaDetailsFranchiseModel
+
+// Establish association with AffiliateModel
+AffiliateModel.hasMany(SocialMediaDetailsModel, {
+    foreignKey: 'affiliateId',
+    as: 'sm',
+});
+SocialMediaDetailsModel.belongsTo(AffiliateModel, {
+    foreignKey: 'affiliateId',
+    as: 'affiliate',
+});
+// Establish association with AffiliateModel
 
 console.log("Associations initialized successfully.");
 

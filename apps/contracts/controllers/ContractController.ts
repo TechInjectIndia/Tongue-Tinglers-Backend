@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { get } from 'lodash';
 import { sendResponse } from '../../../libraries';
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from '../../../constants';
-import { ContractRepo } from '../models/ContractModel';
+import { ContractRepo } from '../models/ContractRepo';
 import { LeadRepo } from '../../lead/models/lead';
 import { TContractPayload } from '../../../types';
 

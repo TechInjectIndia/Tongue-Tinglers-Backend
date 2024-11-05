@@ -13,9 +13,13 @@ import {
     getEmailTemplate,
     EMAIL_TEMPLATE,
 } from "../../../libraries";
-import { ContractRepo } from "../../contracts/models/ContractModel";
+import { ContractRepo } from "../../contracts/models/ContractRepo";
 import { LeadRepo } from "../../lead/models/lead";
-import { CONTRACT_PAYMENT_STATUS } from "../../../interfaces";
+import {
+    CONTRACT_PAYMENT_STATUS,
+    CONTRACT_STATUS,
+    ITrackable,
+} from "../../../interfaces";
 import { ContractPaymentDetails } from "../../../interfaces";
 import { CONFIG } from "../../../config";
 const {
@@ -57,9 +61,16 @@ export default class PaymentsController {
                         additionalInfo: "",
                     };
                     contractDetails.payment.push(paymentDetails);
+
+                    let contractStatus = contractDetails.status;
+
+                    if (status.toLowerCase() === "paid") {
+                        contractStatus = CONTRACT_STATUS.PAYMENT_RECEIVED;
+                    }
                     await new ContractRepo().updatePaymentStatus(
                         contractDetails.id,
-                        contractDetails.payment as unknown as ContractPaymentDetails[]
+                        contractDetails.payment as unknown as ContractPaymentDetails[],
+                        contractStatus
                     );
                 }
             }
@@ -195,9 +206,17 @@ export default class PaymentsController {
                 additionalInfo: link.description,
             };
 
-            await new ContractRepo().updatePayment(contract_id, [
-                paymentPayload,
-            ]);
+            const logs: ITrackable[] = contractDetails.logs;
+            let status: CONTRACT_STATUS = contractDetails.status;
+
+            status = CONTRACT_STATUS.PAYMENT_LINK_SENT;
+
+            await new ContractRepo().updatePayment(
+                contract_id,
+                [paymentPayload],
+                logs,
+                status
+            );
 
             try {
                 const emailContent = await getEmailTemplate(

@@ -23,9 +23,9 @@ export default class LeadController {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
 
-            if (existingLead.status === LeadStatus.CONVERTED) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.ALREADY_CONVERTED));
-            }
+            // if (existingLead.status === LeadStatus.CONVERTED) {
+            //     return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.ALREADY_CONVERTED));
+            // }
 
             const user_id = get(req, "user_id", "");
             const payload = {
@@ -72,24 +72,20 @@ export default class LeadController {
             });
 
             await new FranchiseeRepo().createFranchisee({
-                userid: normalUser.id, // Optional: User ID of the franchisee creator
-                franchiseAgreementSignedDate: null, // Required: Agreement signed date
-                numberOfEmployees: 0, // Required: Number of employees
-                investmentAmount: 0, // Required: Investment amount
-                name: existingLead.firstName, // Required: Full name of the franchisee
-                ownerName: `${existingLead.firstName} ${existingLead.lastName}`, // Required: Owner name
-                contactEmail: existingLead.email, // Required: Contact email
-                contactNumber: existingLead.phoneNumber, // Optional: Contact number
-                establishedDate: new Date, // Required: Established date
-                franchiseType: FranchiseType.FRANCHISE, // Required: Type of franchise
-                region: null, // Required: Region
-                royaltyPercentage: 0, // Required: Royalty percentage
-                monthlyRevenue: 0, // Required: Monthly revenue
-                numberOfOutlets: 0, // Required: Number of outlets
-                isActive: false// Required: Active status
+                userid: normalUser.id,
+                franchiseAgreementSignedDate: null,
+                name: existingLead.firstName,
+                ownerName: `${existingLead.firstName} ${existingLead.lastName}`,
+                contactEmail: existingLead.email,
+                contactNumber: existingLead.phoneNumber,
+                establishedDate: new Date,
+                franchiseType: FranchiseType.FRANCHISE,
+                regionId: null,
+                isActive: false,
+                contractIds: null
             });
 
-            await new LeadRepo().updateStatus(id, { status: LeadStatus.CONVERTED });
+            // await new LeadRepo().updateStatus(id, { status: LeadStatus.CONVERTED });
 
             try {
                 const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {

@@ -13,7 +13,7 @@ class OrderItemsModel extends Model<TOrderItem, OrderItemsCreationAttributes> im
     public userId!: string;
     public productId!: number;
     public isRepeated!: number;
-    public price!: string;
+    public price!: number;
     public quantity!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -50,7 +50,7 @@ OrderItemsModel.init({
         allowNull: true,
     },
     price: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true,
     },
     quantity: {

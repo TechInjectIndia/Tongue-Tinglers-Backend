@@ -85,24 +85,20 @@ interface FranchiseModels {
     description: string,
     title: string,
     reqArea: number,
-    images: SeoImage[],
     investment: number,
     runningCost: number,
     bestFor: string[],
     inclusions: string[],
-    others: ExtraFields
 }
 
 type TPayloadFranchiseModel = {
     description: string,
     title: string,
     reqArea: number,
-    images: SeoImage[],
     investment: number,
     runningCost: number,
     bestFor: string[],
     inclusions: string[],
-    others: ExtraFields
 }
 
 type FranchiseModelsList = {
@@ -111,16 +107,26 @@ type FranchiseModelsList = {
 };
 
 interface SeoImage {
+    id: string,
+    localFile: File | undefined;
+    url: string;
+    alt: string;
+    franchiseModelId: string,
+}
+
+interface SeoImagePayload {
     localFile: File | undefined;
     url: string;
     alt: string;
 }
 
 interface ExtraFields {
+    id: string,
     key: string,
     value: string,
     title: string,
-    type: extraFieldTypes
+    type: extraFieldTypes,
+    franchiseModelId: string,
 }
 
 enum extraFieldTypes {
@@ -129,11 +135,40 @@ enum extraFieldTypes {
     DATE = "date"
 }
 
+enum socialMediaEnumsPlatform {
+    FB = "fb",
+    INSTAGRAM = "instagram",
+    YOUTUBE = "youtube",
+    TWITTER = "twitter",
+    LINKEDIN = "linkedin",
+    TIKTOK = "tiktok",
+    SNAPCHAT = "snapchat",
+    PINTEREST = "pinterest",
+    REDDIT = "reddit",
+    TUMBLR = "tumblr",
+}
+
+interface SocialMediaDetailsAttributes {
+    id: string;
+    affiliateId: string;
+    platform: socialMediaEnumsPlatform;  // e.g., 'FB', 'INSTAGRAM', 'YOUTUBE'
+    handle: string;
+    followers: number;
+    tags: string[];
+}
+
+interface SocialMediaDetailsAttributesPayload {
+    affiliateId: string;
+    platform: socialMediaEnumsPlatform;  // e.g., 'FB', 'INSTAGRAM', 'YOUTUBE'
+    handle: string;
+    followers: number;
+    tags: string[];
+}
+
 interface Affiliate {
     id: string,
     type: string,
     codes: Record<string, string>
-    sm: Record<string, SMDetails>
 }
 
 type AffiliatesList = {
@@ -144,13 +179,6 @@ type AffiliatesList = {
 type TPayloadAffiliate = {
     type: string,
     codes: Record<string, string>
-    sm: Record<string, SMDetails>
-}
-
-interface SMDetails {
-    handle: string,
-    followers: number,
-    tags: string[]
 }
 
 interface LeadAddress {
@@ -192,12 +220,16 @@ export {
     Affiliate,
     FranchiseModels,
     SeoImage,
-    SMDetails,
+    SocialMediaDetailsAttributes,
     AffiliatesList,
     TPayloadAffiliate,
     FranchiseModelsList,
     TPayloadFranchiseModel,
     ProposalModels,
     TPayloadProposalModel,
-    ProposalModelsList
+    ProposalModelsList,
+    SocialMediaDetailsAttributesPayload,
+    socialMediaEnumsPlatform,
+    extraFieldTypes,
+    SeoImagePayload
 };

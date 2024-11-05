@@ -15,6 +15,9 @@ export * from './file';
 export * from './gallery';
 export * from './franchisee';
 export * from './pdiChecklist';
+export * from './taxes';
+export * from './stocks';
+export * from './regions';
 
 interface ITrackable {
     userDetails: UserDetails;

@@ -7,7 +7,9 @@ import {
 } from "../../../types";
 import {
     CONTRACT_PAYMENT_STATUS,
+    CONTRACT_STATUS,
     ContractPaymentDetails,
+    ITrackable,
 } from "../../../interfaces";
 import { ContractModel } from "../../../database/schema";
 import IContractsController from "../controllers/controller/IContractsController";
@@ -16,6 +18,25 @@ export class ContractRepo
     implements IContractsController<TContract, TQueryFilters>
 {
     constructor() {}
+
+    // Method to fetch associated contracts
+    public async getAssociatedContracts(
+        contractIds: string[]
+    ): Promise<ContractModel[]> {
+        if (!contractIds || contractIds.length === 0) {
+            return [];
+        }
+
+        const contracts = await ContractModel.findAll({
+            where: {
+                id: {
+                    [Op.in]: contractIds, // Use Op.in to match multiple IDs
+                },
+            },
+        });
+
+        return contracts;
+    }
 
     public async getContractByDocId(docId: string): Promise<TContract | null> {
         try {
@@ -27,7 +48,7 @@ export class ContractRepo
                 },
             });
 
-            return contract;
+            return contract ? contract : null;
         } catch (error) {
             console.error("Error fetching contract by docId:", error);
             throw error;
@@ -36,7 +57,8 @@ export class ContractRepo
 
     public async updatePaymentStatus(
         contractId: string,
-        payment: ContractPaymentDetails[]
+        payment: ContractPaymentDetails[],
+        status: CONTRACT_STATUS
     ): Promise<any> {
         try {
             const contract = await ContractModel.findByPk(contractId);
@@ -46,6 +68,7 @@ export class ContractRepo
 
             await contract.update({
                 payment,
+                status
             });
         } catch (error) {
             console.error("Error updating payment status:", error);
@@ -110,7 +133,7 @@ export class ContractRepo
         const data = await ContractModel.findOne({
             where: { id },
         });
-        return data ? data.get() : null;
+        return data ? data : null;
     }
 
     public async list(filters: TQueryFilters): Promise<TContractsList> {
@@ -146,10 +169,12 @@ export class ContractRepo
 
     public async updatePayment(
         contractId: string,
-        paymentData: ContractPaymentDetails[]
+        paymentData: ContractPaymentDetails[],
+        logs: ITrackable[],
+        status: CONTRACT_STATUS
     ): Promise<boolean> {
         const [affectedCount] = await ContractModel.update(
-            { payment: paymentData },
+            { payment: paymentData, logs: logs, status: status },
             { where: { id: contractId } }
         );
 

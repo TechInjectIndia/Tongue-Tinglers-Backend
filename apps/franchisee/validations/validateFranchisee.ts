@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
+import { SM_PLATFORM_FRANCHISE } from "../../../interfaces";
 
 // Validation schema for creating and editing a franchisee
 const franchiseeSchema = Joi.object({
@@ -8,122 +9,73 @@ const franchiseeSchema = Joi.object({
         "string.empty": "Franchisee name cannot be empty.",
         "string.min": "Franchisee name must be at least 3 characters long.",
     }),
+    userid: Joi.string().optional(),
+    referBy: Joi.string().optional().allow(null),
+    parentFranchise: Joi.string().optional().allow(null),
     ownerName: Joi.string().trim().required().messages({
         "any.required": "Owner name is required.",
         "string.empty": "Owner name cannot be empty.",
     }),
-    contactEmail: Joi.string().email().required().min(1).required().messages({
-        "any.required": "At least one contact email is required.",
+    contactEmail: Joi.string().email().required().messages({
+        "any.required": "Contact email is required.",
         "string.email": "Please provide a valid email address.",
     }),
-    contactNumber: Joi.string().trim().required().messages({
-        "any.required": "Contact number is required.",
-        "string.empty": "Contact number cannot be empty.",
-    }),
-    franchiseLocations: Joi.array()
-        .items(
-            Joi.object({
-                contactPhone: Joi.string().trim().required().messages({
-                    "any.required": "Contact phone is required.",
-                    "string.empty": "Contact phone cannot be empty.",
-                }),
-                location: Joi.string().trim().required().messages({
-                    "any.required": "Location is required.",
-                    "string.empty": "Location cannot be empty.",
-                }),
-                city: Joi.string().trim().required().messages({
-                    "any.required": "City is required.",
-                    "string.empty": "City cannot be empty.",
-                }),
-                state: Joi.string().trim().required().messages({
-                    "any.required": "State is required.",
-                    "string.empty": "State cannot be empty.",
-                }),
-                country: Joi.string().trim().required().messages({
-                    "any.required": "Country is required.",
-                    "string.empty": "Country cannot be empty.",
-                }),
-                zipCode: Joi.string()
-                    .pattern(/^\d{5}(-\d{4})?$/)
-                    .required()
-                    .messages({
-                        "any.required": "ZIP code is required.",
-                        "string.pattern.base": "ZIP code must be valid.",
-                    }),
-            }).optional()
-        )
-        .optional()
+    contactNumber: Joi.string()
+        .trim()
+        .required()
+        .pattern(/^\+?[1-9]\d{1,14}$/) // Example regex for international phone numbers
         .messages({
-            "any.required": "At least one franchise location is required.",
+            "any.required": "Contact number is required.",
+            "string.empty": "Contact number cannot be empty.",
+            "string.pattern.base": "Contact number must be a valid format." // Custom message for pattern validation
         }),
+    franchiseLocation: Joi.object({
+        contactPhone: Joi.string().trim().required().messages({
+            "any.required": "Contact phone is required.",
+            "string.empty": "Contact phone cannot be empty.",
+        }),
+        location: Joi.string().trim().required().messages({
+            "any.required": "Location is required.",
+            "string.empty": "Location cannot be empty.",
+        }),
+        city: Joi.string().trim().required().messages({
+            "any.required": "City is required.",
+            "string.empty": "City cannot be empty.",
+        }),
+        state: Joi.string().trim().required().messages({
+            "any.required": "State is required.",
+            "string.empty": "State cannot be empty.",
+        }),
+        country: Joi.string().trim().required().messages({
+            "any.required": "Country is required.",
+            "string.empty": "Country cannot be empty.",
+        }),
+        zipCode: Joi.string()
+            .required()
+            .messages({
+                "any.required": "ZIP code is required.",
+                "string.pattern.base": "ZIP code must be valid.",
+            }),
+    }).required().messages({
+        "any.required": "Franchise location details are required.",
+    }),
     establishedDate: Joi.date().iso().required().messages({
         "any.required": "Established date is required.",
         "date.iso": "Established date must be in ISO format.",
     }),
     franchiseAgreementSignedDate: Joi.date().iso().required().messages({
         "any.required": "Franchise agreement signed date is required.",
-        "date.iso": "Date must be in ISO format.",
+        "date.iso": "Franchise agreement signed date must be in ISO format.",
     }),
-    franchiseType: Joi.string().required().messages({
+    franchiseType: Joi.string().valid('master_franchise', 'super_franchise', 'franchise').required().messages({
         "any.required": "Franchise type is required.",
         "string.empty": "Franchise type cannot be empty.",
     }),
-    region: Joi.string().required().messages({
-        "any.required": "Region is required.",
-        "string.empty": "Region cannot be empty.",
+    regionId: Joi.string().required().messages({
+        "any.required": "Region ID is required.",
+        "string.empty": "Region ID cannot be empty.",
     }),
-    description: Joi.string().optional().allow("").messages({
-        "string.empty": "Description cannot be empty.",
-    }),
-    website: Joi.string().optional().allow("").messages({
-        "string.uri": "Website must be a valid URL.",
-    }),
-    socialMediaLinks: Joi.array()
-        .items(Joi.string().uri().optional())
-        .optional()
-        .messages({
-            "string.uri": "Each social media link must be a valid URL.",
-        }),
-    logo: Joi.string().optional().allow("").messages({
-        "string.uri": "Logo must be a valid URL.",
-    }),
-    numberOfEmployees: Joi.number().integer().min(0).required().messages({
-        "any.required": "Number of employees is required.",
-        "number.base": "Number of employees must be a number.",
-        "number.integer": "Number of employees must be an integer.",
-        "number.min": "Number of employees cannot be negative.",
-    }),
-    investmentAmount: Joi.number().positive().required().messages({
-        "any.required": "Investment amount is required.",
-        "number.base": "Investment amount must be a number.",
-        "number.positive": "Investment amount must be a positive number.",
-    }),
-    royaltyPercentage: Joi.number().min(0).max(100).required().messages({
-        "any.required": "Royalty percentage is required.",
-        "number.base": "Royalty percentage must be a number.",
-        "number.min": "Royalty percentage cannot be less than 0.",
-        "number.max": "Royalty percentage cannot exceed 100.",
-    }),
-    monthlyRevenue: Joi.number().positive().required().messages({
-        "any.required": "Monthly revenue is required.",
-        "number.base": "Monthly revenue must be a number.",
-        "number.positive": "Monthly revenue must be a positive number.",
-    }),
-    numberOfOutlets: Joi.number().integer().min(0).required().messages({
-        "any.required": "Number of outlets is required.",
-        "number.base": "Number of outlets must be a number.",
-        "number.integer": "Number of outlets must be an integer.",
-        "number.min": "Number of outlets cannot be negative.",
-    }),
-    menuSpecialty: Joi.string().optional().allow("").messages({
-        "string.empty": "Menu specialty cannot be empty.",
-    }),
-    businessHours: Joi.string().optional().allow("").messages({
-        "string.empty": "Business hours cannot be empty.",
-    }),
-    deliveryOptions: Joi.boolean().required().messages({
-        "any.required": "Delivery options are required.",
-    }),
+    contractIds: Joi.array().items(Joi.string()).optional(),
     isActive: Joi.boolean().required().messages({
         "any.required": "Active status is required.",
     }),
@@ -132,30 +84,6 @@ const franchiseeSchema = Joi.object({
         "number.min": "Ratings cannot be less than 0.",
         "number.max": "Ratings cannot exceed 5.",
     }),
-    promotions: Joi.array().items(Joi.string().optional()).optional(),
-    targetMarket: Joi.string().optional().allow("").messages({
-        "string.empty": "Target market cannot be empty.",
-    }),
-    sustainabilityPractices: Joi.string().optional().allow("").messages({
-        "string.empty": "Sustainability practices cannot be empty.",
-    }),
-    trainingPrograms: Joi.array().items(Joi.string().optional()).optional(),
-    supportContact: Joi.string().trim().optional().allow("").messages({
-        "string.empty": "Support contact cannot be empty.",
-    }),
-    operationalChallenges: Joi.array().items(Joi.string().optional()).optional(),
-    competitiveAdvantages: Joi.string().optional().allow("").messages({
-        "string.empty": "Competitive advantages cannot be empty.",
-    }),
-    expansionPlans: Joi.string().optional().allow("").messages({
-        "string.empty": "Expansion plans cannot be empty.",
-    }),
-    customerFeedback: Joi.array().items(Joi.string().optional()).optional(),
-    industryCertifications: Joi.array().items(Joi.string().optional()).optional(),
-    affiliatePrograms: Joi.array().items(Joi.string().optional()).optional(),
-    performanceMetrics: Joi.object()
-        .pattern(Joi.string(), Joi.number().positive())
-        .optional(),
     franchiseRenewalInfo: Joi.object({
         renewalDate: Joi.date().iso().required().messages({
             "any.required": "Renewal date is required.",
@@ -164,29 +92,20 @@ const franchiseeSchema = Joi.object({
         conditions: Joi.string().optional().allow("").messages({
             "string.empty": "Renewal conditions cannot be empty.",
         }),
-    }).optional().allow(""),
-    partnerships: Joi.array().items(Joi.string().optional()).optional(),
-    marketingStrategies: Joi.array().items(Joi.string().optional()).optional(),
-    trainingHistory: Joi.array()
-        .items(
-            Joi.object({
-                date: Joi.date().iso().required().messages({
-                    "any.required": "Training date is required.",
-                    "date.iso": "Training date must be in ISO format.",
-                }),
-                topic: Joi.string().required().messages({
-                    "any.required": "Training topic is required.",
-                    "string.empty": "Training topic cannot be empty.",
-                }),
-            })
-        )
-        .optional(),
-    crisisManagementPlans: Joi.string().optional().allow("").messages({
-        "string.empty": "Crisis management plans cannot be empty.",
-    }),
-    diversityInitiatives: Joi.string().optional().allow("").messages({
-        "string.empty": "Diversity initiatives cannot be empty.",
-    }),
+    }).optional().allow(null),
+    socialMediaDetails: Joi.array().items(Joi.object({
+        url: Joi.string().required().messages({
+            "any.required": "Social media URL is required.",
+            "string.uri": "Each URL must be a valid URI.",
+        }),
+        type: Joi.string()
+            .valid(...Object.values(SM_PLATFORM_FRANCHISE)) // Ensure the type is one of the enum values
+            .required()
+            .messages({
+                "any.required": "Social media type is required.",
+                "any.allowOnly": "Social media type must be one of 'fb', 'instagram', or 'youtube'."
+            }),
+    })).optional(),
 });
 
 // Middleware for validating the request body for creating a franchisee

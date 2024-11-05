@@ -16,6 +16,154 @@ const {
 } = ProductsValidation;
 
 // ====== Products Starts ======
+
+/**
+ * @swagger
+ * /api/admin/product/create:
+ *   post:
+ *     summary: Create a new product
+ *     tags: [Admin > Ecommerce > Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - slug
+ *               - description
+ *               - price
+ *               - type
+ *               - total_ratings
+ *               - ratings
+ *               - discount
+ *               - stock
+ *               - sold
+ *               - active
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "product12" 
+ *               slug:
+ *                 type: string
+ *                 example: "product12"
+ *               description:
+ *                 type: string
+ *                 example: "desc"
+ *               price:
+ *                 type: number
+ *                 example: 123.00
+ *               type:
+ *                 type: string
+ *                 enum: [old, new, upcoming]
+ *               total_ratings:
+ *                 type: integer
+ *                 example: 0
+ *               ratings:
+ *                 type: integer
+ *                 example: 0
+ *               discount:
+ *                 type: integer
+ *                 example: 0
+ *               stock:
+ *                 type: integer
+ *                 example: 0
+ *               sold:
+ *                 type: integer
+ *                 example: 0
+ *               active:
+ *                 type: boolean
+ *                 example: true 
+ *     responses:
+ *       '200':
+ *         description: Product created successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ */
+
+/**
+ * @swagger
+ * /api/admin/product/update/{id}:
+ *   put:
+ *     summary: Update a Product
+ *     tags: [Admin > Ecommerce > Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the product to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - slug
+ *               - description
+ *               - price
+ *               - type
+ *               - total_ratings
+ *               - ratings
+ *               - discount
+ *               - stock
+ *               - sold
+ *               - active
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "AdminProductNew"
+ *               slug:
+ *                 type: string
+ *                 example: "AdminProductNew"
+ *               description:
+ *                 type: string
+ *                 example: "descr"
+ *               price:
+ *                 type: number
+ *                 example: 178
+ *               type:
+ *                 type: string
+ *                 enum: [old, new, upcoming]
+ *               total_ratings:
+ *                 type: integer
+ *                 example: 0
+ *               ratings:
+ *                 type: integer
+ *                 example: 0
+ *               discount:
+ *                 type: integer
+ *                 example: 0
+ *               stock:
+ *                 type: integer
+ *                 example: 0
+ *               sold:
+ *                 type: integer
+ *                 example: 0
+ *               active:
+ *                 type: boolean
+ *                 example: true
+ *     responses:
+ *       '200':
+ *         description: Product updated successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Product not found
+ */
+
 /**
  * @swagger
  * /api/admin/product/image/upload:
@@ -104,52 +252,6 @@ const {
  *       '401':
  *         description: Unauthorized
  * 
- * /api/admin/product/create:
- *   post:
- *     summary: Create a new products
- *     tags: [Admin > Ecommerce > Products]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *            type: object
- *            required:
- *              - name
- *              - description
- *              - price
- *              - type
- *              - stock
- *              - active
- *            properties:
- *              name:
- *                type: string
- *                default: product12 
- *              description:
- *                type: text
- *                default: desc
- *              price:
- *                type: text
- *                default: 123.00
- *              type:
- *                type: text
- *                default: new
- *              stock:
- *                type: integer
- *                default: 10
- *              active:
- *                type: boolean
- *                default: 0 
- *     responses:
- *       '200':
- *         description: products created successfully
- *       '400':
- *         description: Invalid request body
- *       '401':
- *         description: Unauthorized
- * 
  * /api/admin/product/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all products
@@ -201,62 +303,6 @@ const {
  *             schema:
  *               type: string
  *               description: ID of the products to retrieve
- *       '401':
- *         description: Unauthorized
- *       '404':
- *         description: products not found
- * 
- * /api/admin/product/update/{id}:
- *   put:
- *     summary: Update a Product
- *     tags: [Admin > Ecommerce > Products]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         default: 1
- *         required: true
- *         schema:
- *           type: string
- *         description: ID of the products to update
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *            type: object
- *            required:
- *              - name
- *              - description
- *              - price
- *              - type
- *              - stock
- *              - active
- *            properties:
- *              name:
- *                type: string
- *                default: AdminProductNew
- *              description:
- *                type: string
- *                default: descr
- *              price:
- *                type: number
- *                default: 178
- *              type:
- *                type: text
- *                default: upcoming
- *              stock:
- *                type: number
- *                default: 52
- *              active:
- *                type: string
- *                default: 1
- *     responses:
- *       '200':
- *         description: products updated successfully
- *       '400':
- *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  *       '404':

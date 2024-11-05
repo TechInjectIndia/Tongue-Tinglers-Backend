@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { TQueryFilters, TAddProduct, TEditProduct, TProductsList } from '../../../../../types';
+import { TQueryFilters, TAddRetortProduct, TEditRetortProduct, TRetortProductsList } from '../../../../../types';
 
 /**
  * Interface for Products Controller.
@@ -16,15 +16,16 @@ interface IProductsController<T, F extends TQueryFilters> {
      * List products with filtering options.
      * @param filters - The filtering options.
      * @returns Promise resolving to a list of products.
+     * 
      */
-    list(filters: F): Promise<TProductsList>;
+    list(filters: F): Promise<TRetortProductsList>;
 
     /**
      * Create a new product.
      * @param payload - The data to create the product.
      * @returns Promise resolving to the created product object.
      */
-    create(payload: TAddProduct): Promise<T>;
+    create(payload: TAddRetortProduct): Promise<T>;
 
     /**
      * Update an existing product.
@@ -32,7 +33,7 @@ interface IProductsController<T, F extends TQueryFilters> {
      * @param payload - The updated data for the product.
      * @returns Promise resolving to the affected count.
      */
-    update(id: number, payload: TEditProduct): Promise<[affectedCount: number]>;
+    update(id: number, payload: TEditRetortProduct): Promise<[affectedCount: number]>;
 
     /**
      * Delete products by their IDs.

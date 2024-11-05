@@ -9,6 +9,7 @@ import {
 import { ITrackable } from "../../../interfaces";
 import { LeadsModel } from "../../../database/schema";
 import { AssignModel } from "../../../database/schema";
+import { UserModel } from "../../../database/schema";
 import { LeadStatus, ILead } from '../../../interfaces'; // Use the LeadStatus enum from interfaces
 import IBaseRepo from '../controllers/controller/ILeadController';
 
@@ -43,7 +44,14 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
                 {
                     model: AssignModel,
                     as: 'assign',
-                    attributes: ['assignedTo', 'assignedBy', 'assignedDate']
+                    attributes: ['assignedTo', 'assignedBy', 'assignedDate'],
+                    include: [
+                        {
+                            model: UserModel, // Assuming UserModel is the model for user details
+                            as: 'userDetails', // Use the alias defined in the relationship
+                            attributes: ['id', 'userName'], // Specify the user details attributes you need
+                        }
+                    ],
                 }
             ]
         });

@@ -41,7 +41,7 @@ interface IAssignController<T, F extends TQueryFilters> {
      * @param ids - Array of assignment IDs to delete.
      * @returns Promise resolving to the count of deleted assignments.
      */
-    delete(ids: string[]): Promise<number>; // Assuming IDs are strings
+    delete(id: string): Promise<number>; // Assuming IDs are strings
 
     /**
      * Check if an assignment exists for a specific lead and user.

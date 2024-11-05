@@ -316,6 +316,8 @@ export default class LeadController {
 
                 // Create assignment in AssignRepo
                 await new AssignRepo().createOrUpdate(id, assignPayload);
+            }else{
+                await new AssignRepo().delete(id as string);
             }
 
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPDATED, updatedLead));

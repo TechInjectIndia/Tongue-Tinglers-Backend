@@ -40,11 +40,11 @@ export class AssignRepo implements IBaseRepo<AssignAttributes, any> {
     }
 
     // Delete assignments by an array of IDs
-    public async delete(ids: string[]): Promise<number> {
+    public async delete(id: string): Promise<number> {
         try {
             const deletedCount = await AssignModel.destroy({
                 where: {
-                    id: ids,
+                    leadId: id,
                 },
             });
             return deletedCount;

@@ -25,7 +25,7 @@ jobs:
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
             --targets "Key=tag:Environment,Values=Production" \
-            --parameters 'commands=["cd /home/ubuntu/tongue-tinglers/Tongue-Tinglers-Backend", "git pull origin main", "pnpm install", "npm run build", "pm2 restart all"]' \
+            --parameters '{"commands":["export HOME=/home/ubuntu", "cd /home/ubuntu/tongue-tinglers/Tongue-Tinglers-Backend", "git config --global --add safe.directory /home/ubuntu/tongue-tinglers/Tongue-Tinglers-Backend", "git pull origin main", "pnpm install", "export NODE_OPTIONS=--max-old-space-size=4096", "npm run build", "pm2 restart all"]}' \
             --comment "Deploying application from GitHub Actions" \
             --timeout-seconds 600 \
             --max-concurrency "1" \

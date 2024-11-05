@@ -19,7 +19,7 @@ const options = {
                 description: "Local server"
             },
             {
-                url: "<live url>",
+                url: "https://api.tonguetingler.com/",
                 description: "Live server"
             },
         ],

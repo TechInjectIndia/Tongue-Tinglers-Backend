@@ -219,7 +219,7 @@ export default class LeadController {
             if (assign != null) {
                 const assignPayload = {
                     assignedTo: assign.assignedTo.id,
-                    assignedBy: user_id,
+                    assignedBy: assign.assignedBy.id,
                     assignedDate: assign.assignedDate,
                     leadId: newLead.id, // Reference the new lead's ID
                 };
@@ -283,12 +283,14 @@ export default class LeadController {
             // const existingLogs = Array.isArray(existingLead.logs) ? existingLead.logs : [];
             // const updatedLogs = [...existingLogs, updateLog];
 
+            const { assign } = payload;
+            delete payload.assign
+
             const updatedLead = await new LeadRepo().update(id, {
                 ...payload,
                 updatedBy: user_id,
                 // logs: updatedLogs
             });
-            const { assign } = payload;
 
             if (assign != null) {
                 const existingUser = await new AdminRepo().checkIfUserExist(assign.assignedTo.id);
@@ -297,12 +299,10 @@ export default class LeadController {
                 }
             }
 
-            delete payload.assign
-
             if (assign != null) {
                 const assignPayload = {
                     assignedTo: assign.assignedTo.id,
-                    assignedBy: user_id,
+                    assignedBy: assign.assignedBy.id,
                     assignedDate: assign.assignedDate,
                 };
 

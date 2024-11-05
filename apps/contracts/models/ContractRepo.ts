@@ -68,6 +68,7 @@ export class ContractRepo
 
             await contract.update({
                 payment,
+                status
             });
         } catch (error) {
             console.error("Error updating payment status:", error);

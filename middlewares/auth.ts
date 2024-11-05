@@ -2,8 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../libraries";
 import { ERROR_MESSAGE, RESPONSE_TYPE } from "../constants";
 import { verifyFirebaseToken, getUserByFirebaseUid } from '../libraries';
-import { UserModel } from '../database/schema/user/user.model';
-import { RolesModel } from '../database/schema/admin-roles';
 
 const roles = { admin: ['read'], user: ['read'] };
 

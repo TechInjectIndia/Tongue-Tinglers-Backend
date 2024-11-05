@@ -21,7 +21,7 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
   public establishedDate!: Date | null;
   public franchiseAgreementSignedDate!: Date | null;
   public franchiseType!: FranchiseType;
-  public regionId!: string;
+  public regionId!: string | null;
   public contractIds!: string[];
   public isActive!: boolean | null;
   public ratings?: number | null;
@@ -34,7 +34,7 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
     this.belongsTo(FranchiseeModel, { foreignKey: 'parentFranchise', as: 'parentFranchiseAssociation', constraints: false });
 
     // Association with RegionModel
-    this.belongsTo(RegionModel, { foreignKey: 'regionId', as: 'region', });
+    this.belongsTo(RegionModel, { foreignKey: 'regionId', as: 'region', constraints: true });
   }
 }
 
@@ -106,7 +106,7 @@ FranchiseeModel.init(
         model: RegionModel,
         key: 'id',
       },
-      allowNull: false,
+      allowNull: true,
     },
     contractIds: {
       type: DataTypes.ARRAY(DataTypes.STRING),

@@ -4,6 +4,7 @@ import { sendResponse, createPassword, createFirebaseUser, sendEmail, getEmailTe
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { LeadRepo } from '../models/lead';
 import { AssignRepo } from '../models/AssignRepo';
+import { ContractRepo } from '../../contracts/models/ContractRepo';
 import { AdminRepo } from '../../admin-user/models/user';
 import { FranchiseRepo } from '../../admin-user/models/franchise';
 import { FranchiseeRepo } from '../../franchisee/models/FranchiseeRepo';
@@ -12,6 +13,7 @@ import { TAssignLead } from '../../../types';
 import { Sequelize } from 'sequelize';
 import jwt from "jsonwebtoken";
 import { CONFIG } from "../../../config";
+import { TrustProductsEvaluationsContextImpl } from "twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEvaluations";
 
 export default class LeadController {
 
@@ -21,12 +23,18 @@ export default class LeadController {
             const existingLead = await new LeadRepo().getLeadByStatus(id);
 
             if (!existingLead) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
+                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `Lead ${ERROR_MESSAGE.NOT_EXISTS}`));
             }
 
-            if (existingLead.status === LeadStatus.CONVERTED) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.ALREADY_CONVERTED));
+            // get contract
+            const existingContract = await new ContractRepo().getAssociatedContractsByLeadId(id as string);
+            if (!existingContract) {
+                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `Contract ${ERROR_MESSAGE.NOT_EXISTS}`));
             }
+
+            // if (existingLead.status === LeadStatus.CONVERTED) {
+            //     return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.ALREADY_CONVERTED));
+            // }
 
             const user_id = get(req, "user_id", "");
             const payload = {
@@ -60,9 +68,8 @@ export default class LeadController {
             if (!firebaseUser?.success) {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, firebaseUser?.uid));
             }
-            // Send an link to user email with password token 
+
             const token = jwt.sign({ email: payload.email }, CONFIG.ACCESS_TOKEN_SECRET, { expiresIn: CONFIG.ACCESS_TOKEN_EXPIRATION });
-            const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password?token=${token}`;
 
             const hashedPassword = await createPassword(payload.password);
             const normalUser = await new FranchiseRepo().create({
@@ -72,7 +79,7 @@ export default class LeadController {
                 password_token: token
             });
 
-            await new FranchiseeRepo().createFranchisee({
+            const franchiseResponse = await new FranchiseeRepo().createFranchisee({
                 userid: normalUser.id,
                 franchiseAgreementSignedDate: null,
                 name: existingLead.firstName,
@@ -83,10 +90,13 @@ export default class LeadController {
                 franchiseType: FranchiseType.FRANCHISE,
                 regionId: null,
                 isActive: false,
-                contractIds: null
+                contractIds: existingContract
             });
 
-            await new LeadRepo().updateStatus(id, { status: LeadStatus.CONVERTED });
+            // await new LeadRepo().updateStatus(id, { status: LeadStatus.CONVERTED });
+
+            // Send an link to user email with password token 
+            const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password?token=${token}`;
 
             try {
                 const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {

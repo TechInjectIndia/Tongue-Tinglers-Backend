@@ -70,7 +70,7 @@ interface FranchiseeAttributes {
     establishedDate: Date | null;
     franchiseAgreementSignedDate: Date | null;
     franchiseType: FranchiseType;
-    regionId: string;
+    regionId: string | null;
     contractIds: string[];
     isActive: boolean | null;
     ratings?: number | null;
@@ -88,7 +88,7 @@ interface AddFranchiseePayload {
     establishedDate: Date | null;
     franchiseAgreementSignedDate: Date | null;
     franchiseType: FranchiseType;
-    regionId: string;
+    regionId: string | null;
     socialMediaLinks?: { url: string, type: SM_PLATFORM_FRANCHISE }[];
     contractIds: string[];
     isActive: boolean | null;

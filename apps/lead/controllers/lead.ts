@@ -202,6 +202,10 @@ export default class LeadController {
                 if (!existingUser) {
                     return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
                 }
+                const existingassignedByUser = await new AdminRepo().checkIfUserExist(assign.assignedBy.id);
+                if (!existingassignedByUser) {
+                    return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
+                }
             }
 
             delete payload.assign
@@ -295,6 +299,10 @@ export default class LeadController {
             if (assign != null) {
                 const existingUser = await new AdminRepo().checkIfUserExist(assign.assignedTo.id);
                 if (!existingUser) {
+                    return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
+                }
+                const existingassignedByUser = await new AdminRepo().checkIfUserExist(assign.assignedBy.id);
+                if (!existingassignedByUser) {
                     return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
                 }
             }

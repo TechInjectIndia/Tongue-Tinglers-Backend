@@ -15,6 +15,7 @@ import jwt from "jsonwebtoken";
 import { CONFIG } from "../../../config";
 import { TrustProductsEvaluationsContextImpl } from "twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEvaluations";
 import { constructNow } from "date-fns";
+import { createLeadResponse } from '../../../libraries';
 
 export default class LeadController {
 
@@ -316,7 +317,7 @@ export default class LeadController {
 
                 // Create assignment in AssignRepo
                 await new AssignRepo().createOrUpdate(id, assignPayload);
-            }else{
+            } else {
                 await new AssignRepo().delete(id as string);
             }
 
@@ -336,7 +337,7 @@ export default class LeadController {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
 
-            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, existingLead));
+            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, createLeadResponse(existingLead)));
         } catch (err) {
             console.error(err);
             return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });

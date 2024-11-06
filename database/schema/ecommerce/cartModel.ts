@@ -2,7 +2,7 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
 import { ICartAttributes, TCartItem } from "../../../interfaces";
-import { CartItemModel } from './cartItemModel'; // Ensure correct case for import
+import { CartItemModel } from './CartItemModel';
 
 interface ICartCreationAttributes extends Optional<ICartAttributes, 'id'> { }
 

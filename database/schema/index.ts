@@ -19,7 +19,7 @@ export * from "./ecommerce/taxes";
 export * from "./ecommerce/stockModel";
 export * from "./ecommerce/vendorsModel";
 export * from "./ecommerce/cartModel";
-export * from "./ecommerce/cartItemModel";
+export * from "./ecommerce/CartItemModel";
 // ecommerce model ends
 
 // retort model starts

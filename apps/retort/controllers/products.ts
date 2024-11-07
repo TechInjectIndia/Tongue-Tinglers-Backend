@@ -215,7 +215,6 @@ export default class RetortProductsController {
             const id = get(req?.params, "id", 0);
             const categories = get(req.body, "categories", []);
 
-
             const existingProduct = await new RetortProductRepo().get(id as number);
             if (isEmpty(existingProduct)) {
                 return res

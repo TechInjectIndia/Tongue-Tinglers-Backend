@@ -6,17 +6,46 @@ import { hasPermission } from "../../../middlewares";
 const router = express.Router();
 
 const {
-  validateCreateCartBody,
-  validateUpdateCartBody,
-  validateCartParams,
+  validateAddProduct,
+  validateRemoveProduct,
+  validateUpdateProduct,
 } = CartValidation;
 
 // ====== Cart Starts ====== 
 /**
  * @swagger
- * /api/cart/create:
+ * 
+ * /api/cart/empty:
+ *   delete:
+ *     summary: Empty a Cart
+ *     tags: [Cart]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Cart emptied successfully
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Cart not found
+ * 
+ * /api/cart:
+ *   get:
+ *     summary: Get a Cart for the authenticated user
+ *     tags: [Cart]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Cart retrieved successfully
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Cart not found
+ * 
+ * /api/cart/product/add:
  *   post:
- *     summary: Create a new Cart
+ *     summary: Add a product to the cart
  *     tags: [Cart]
  *     security:
  *       - bearerAuth: []
@@ -27,78 +56,91 @@ const {
  *           schema:
  *             type: object
  *             required:
- *               - franchiseId
+ *               - product_id
+ *               - productType
+ *               - quantity
  *             properties:
- *               franchiseId:
+ *               product_id:
+ *                 type: number
+ *               productType:
  *                 type: string
+ *               quantity:
+ *                 type: integer
  *     responses:
  *       '200':
- *         description: Cart created successfully
+ *         description: Product added to the cart
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  * 
- * /api/cart/update/{cartId}:
- *   put:
- *     summary: Update a Cart Item
+ * /api/cart/product/delete:
+ *   delete:
+ *     summary: delete a product from the cart
  *     tags: [Cart]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: cartId
- *         required: true
- *         schema:
- *           type: string
- *         description: ID of the Cart to update
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - product_id
+ *               - productType
  *             properties:
  *               product_id:
- *                 type: string
- *               quantity:
- *                 type: integer
- *               price:
  *                 type: number
+ *               productType:
+ *                 type: string
  *     responses:
  *       '200':
- *         description: Cart item updated successfully
+ *         description: Product deleted from the cart
  *       '400':
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
  *       '404':
- *         description: Cart not found
+ *         description: Product or cart not found
  * 
- * /api/cart/empty/{cartId}:
- *   delete:
- *     summary: Empty a Cart
+ * /api/cart/product/remove:
+ *   put:
+ *     summary: remove a product in the cart
  *     tags: [Cart]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: cartId
- *         required: true
- *         schema:
- *           type: string
- *         description: ID of the Cart to empty
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - product_id
+ *               - productType
+ *               - quantity
+ *             properties:
+ *               product_id:
+ *                 type: number
+ *               productType:
+ *                 type: string
+ *               quantity:
+ *                 type: integer
  *     responses:
  *       '200':
- *         description: Cart emptied successfully
+ *         description: Product updated in the cart
+ *       '400':
+ *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- *       '404':
- *         description: Cart not found
+ * 
  */
-router.post("/create", hasPermission('cart', 'create'), validateCreateCartBody, CartController.create);
-router.put("/update/:cartId", hasPermission('cart', 'update'), validateCartParams, validateUpdateCartBody, CartController.update);
-router.delete("/empty/:cartId", hasPermission('cart', 'delete'), validateCartParams, CartController.empty);
+router.delete("/empty", CartController.empty);
+router.get("/", CartController.getCartById);
+router.post("/product/add", validateAddProduct, CartController.addProduct);
+router.put("/product/remove", validateUpdateProduct, CartController.removeProduct);
+router.delete("/product/delete", validateRemoveProduct, CartController.deleteProduct);
 
 export default router;
 // ====== Cart Ends ======

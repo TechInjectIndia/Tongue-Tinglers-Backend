@@ -2,23 +2,20 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
 import { ICartItemAttributes } from "../../../interfaces";
+import { CartModel } from './cartModel';
 
-interface ICartItemCreationAttributes extends Optional<ICartItemAttributes, 'id'> {}
+interface ICartItemCreationAttributes extends Optional<ICartItemAttributes, 'id'> { }
 
 class CartItemModel extends Model<ICartItemAttributes, ICartItemCreationAttributes> implements ICartItemAttributes {
     public id!: string;
     public cart_id!: string;
-    public productId!: string;
+    public productId!: number;
+    public productType!: string;
     public quantity!: number;
     public price!: number;
     public subtotal!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
-
-    static associate(models: any) {
-        // Each CartItem belongs to a Cart
-        CartItemModel.belongsTo(models.CartModel, { foreignKey: 'cart_id', as: 'cart' });
-    }
 }
 
 CartItemModel.init(
@@ -34,6 +31,10 @@ CartItemModel.init(
             allowNull: false,
         },
         productId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        productType: {
             type: DataTypes.STRING,
             allowNull: false,
         },

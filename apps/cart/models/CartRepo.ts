@@ -1,78 +1,197 @@
+import { CartModel } from "../../../database/schema";
+import { CartItemModel } from "../../../database/schema";
+import { ProductsModel } from "../../../database/schema";
 import { Op } from "sequelize";
-import {
-    TListFilters
-} from "../../../types";
-import {
-    TPayloadCart,
-    TCartItem,
-    TCartList,
-    ICartItemAttributes,
-} from "../../../interfaces";
-import { CartItemModel } from "../../../database/schema"; // Ensure this imports your actual Cart model
-import IBaseRepo from '../controllers/controller/ICartController'; // Ensure this interface is correctly defined
+import { CartItemRepo } from "../../cart-item/models/CartItemRepo";
 
 export class CartRepo {
-    constructor() { }
-
-    // In CartRepo.ts
-    public async get(id: string): Promise<any | null> {
+    // Create a new cart
+    async create(payload: any) {
         try {
-            const cart = await CartItemModel.findOne({ where: { id } });
-            return cart; // Return as ICartItemAttributes type
+            const cart = await CartModel.create(payload);
+            return cart;
+        } catch (error) {
+            throw new Error(`Error creating cart: ${error.message}`);
+        }
+    }
+
+    async updateTotalAmount(cartId: string) {
+        try {
+            // Get all cart items for the specific cart
+            const cartItems = await CartItemModel.findAll({ where: { cart_id: cartId } });
+
+            // Calculate the total amount for the cart by summing up subtotals (quantity * price)
+            let totalAmount = 0;
+            for (const item of cartItems) {
+                totalAmount += item.quantity * item.price; // Calculate subtotal for each item
+            }
+
+            // Update the total amount in the Cart table
+            await CartModel.update({ totalAmount }, { where: { id: cartId } });
+
+            const cart = await CartModel.findOne({ where: { id: cartId } });
+            if (!cart) {
+                return null; // Cart doesn't exist
+            }
+            return cart;
+        } catch (error) {
+            throw new Error(`Error updating total amount for cart: ${error.message}`);
+        }
+    }
+
+    // Add product to the cart
+    async addProduct(userId: string, productId: number, quantity: number, productType: string) {
+        try {
+            // Find if the cart already exists for the user
+            let cart = await CartModel.findOne({ where: { userId } });
+            if (!cart) {
+                // If cart doesn't exist, create a new cart
+                cart = await CartModel.create({ userId });
+            }
+
+            // Check if the product already exists in the cart
+            const existingProduct = await CartItemModel.findAll({
+                where: {
+                    productId,
+                    cart_id: cart.id,
+                    productType
+                },
+            });
+
+            let cartItemReponse: any;
+            if (existingProduct.length > 0) {
+                // If product exists, update the quantity and price
+                const updateCartItemData = {
+                    quantity: existingProduct[0].quantity + quantity,
+                };
+                cartItemReponse = await new CartItemRepo().update(cart.id as string, productId as number, productType, updateCartItemData);
+            } else {
+                // If product doesn't exist, add the new product to the cart
+                cartItemReponse = await new CartItemRepo().create({
+                    cart_id: cart.id,
+                    productId,
+                    productType,
+                    quantity,
+                });
+            }
+
+            const cartData = await this.updateTotalAmount(cart.id);
+            return cartData;
+        } catch (error) {
+            throw new Error(`Error adding product to cart: ${error.message}`);
+        }
+    }
+
+    // Remove product from the cart
+    async removeProduct(userId: string, productId: number, productType: string) {
+        try {
+            // Find the cart associated with the user
+            const cart = await CartModel.findOne({ where: { userId } });
+            if (!cart) {
+                return null; // Cart doesn't exist
+            }
+
+            // Use CartItemRepo to remove the product from the cart
+            const removedProduct = await new CartItemRepo().remove(cart.id, productId, productType);
+            if (!removedProduct) {
+                return null; // Product not found in the cart
+            }
+
+            const cartData = await this.updateTotalAmount(cart.id);
+            return cartData;
+        } catch (error) {
+            throw new Error(`Error removing product from cart: ${error.message}`);
+        }
+    }
+
+    // Update product in the cart (quantity or price)
+    async updateProduct(userId: string, productId: number, quantity: number, productType: string) {
+        try {
+            const cart = await CartModel.findOne({ where: { userId } });
+            if (!cart) {
+                return null; // Cart doesn't exist
+            }
+
+            // Check if the product already exists in the cart
+            const existingProduct = await CartItemModel.findAll({
+                where: {
+                    productId,
+                    cart_id: cart.id
+                },
+            });
+
+            if (existingProduct.length > 0) {
+                const updateCartItemData = {
+                    quantity: existingProduct[0].quantity - quantity,
+                };
+                if (updateCartItemData.quantity < 0) {
+                    const cartItem = await new CartItemRepo().remove(cart.id as string, productId as number, productType);
+                }else{
+                    const cartItem = await new CartItemRepo().update(cart.id as string, productId as number, productType, updateCartItemData);
+                }
+            }
+
+            const cartData = await this.updateTotalAmount(cart.id);
+            return cart;
+        } catch (error) {
+            throw new Error(`Error updating product in cart: ${error.message}`);
+        }
+    }
+
+    // Get a cart by user ID
+    async findById(userId: string) {
+        try {
+            const cart = await CartModel.findOne({
+                where: { userId },
+            });
+            return cart;
         } catch (error) {
             throw new Error(`Error fetching cart: ${error.message}`);
         }
     }
 
-    /**
-     * Create a new cart
-     * @param data - Cart data
-     * @returns Promise<ICartItemAttributes>
-     */
-    public async create(data: any): Promise<any> {
-        const response = await CartItemModel.create(data);
-        return response; // Return the created cart as ICartItemAttributes type
+    // Empty a cart (remove all products)
+    async empty(cartId: string) {
+        try {
+            const cart = await CartModel.findByPk(cartId);
+            if (!cart) {
+                return null; // Cart doesn't exist
+            }
+
+            // Remove all products related to the cart
+            await CartItemModel.destroy({
+                where: { cart_id: cartId },
+            });
+
+            return cart; // Return the cart after emptying it
+        } catch (error) {
+            throw new Error(`Error emptying cart: ${error.message}`);
+        }
     }
 
-    /**
-     * Update cart items
-     * @param id - The cart ID
-     * @param data - Data to update
-     * @returns Promise<number>
-     */
-    public async update(id: string, data: any): Promise<number> {
-        const [affectedCount] = await CartItemModel.update(data, {
-            where: {
-                id,
-            },
-        });
-        return affectedCount; // Return affected count directly
+    // Empty a cart (remove all products)
+    async update(cartId: string, updateCartData: any) {
+        try {
+            const cart = await CartModel.findByPk(cartId);
+            if (cart) {
+
+            }
+            return cart;
+        } catch (error) {
+            throw new Error(`Error emptying cart: ${error.message}`);
+        }
     }
 
-    /**
-     * Delete items from the cart
-     * @param ids - Array of cart item IDs to delete
-     * @returns Promise<number>
-     */
-    public async delete(ids: string[]): Promise<number> {
-        const response = await CartItemModel.destroy({
-            where: {
-                id: ids,
-            },
-        });
-        return response; // Return the number of deleted rows
-    }
-
-    /**
-     * Empty the cart
-     * @param id - The cart ID
-     * @returns Promise<void>
-     */
-    public async empty(id: string): Promise<void> {
-        await CartItemModel.destroy({
-            where: {
-                cart_id: id, // Assuming you have a cartId reference in your items
-            },
-        });
+    // Delete a cart by ID
+    async delete(cartId: string) {
+        try {
+            const cart = await CartModel.findByPk(cartId);
+            if (cart) {
+                await CartModel.destroy();
+            }
+            return cart;
+        } catch (error) {
+            throw new Error(`Error deleting cart: ${error.message}`);
+        }
     }
 }

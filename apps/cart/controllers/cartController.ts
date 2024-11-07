@@ -1,24 +1,62 @@
 import { NextFunction, Request, Response } from "express";
-import { get, isEmpty } from "lodash";
+import { get } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { CartRepo } from "../models/CartRepo";
+import { ProductRepo } from "../../ecommerce/models/products";
+import { RetortProductRepo } from "../../retort/models/products";
 
 export default class CartController {
-    // Create a new cart
-    static async create(req: Request, res: Response, next: NextFunction) {
+    // Add product to cart
+    static async addProduct(req: Request, res: Response, next: NextFunction) {
         try {
-            const payload = req.body;
-            const cart = await new CartRepo().create(payload);
-            return res
-                .status(201)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CREATED,
-                        cart
-                    )
-                );
+            const user_id = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
+            const { product_id, quantity, productType } = req.body;
+
+            if (!product_id || !quantity || !productType) {
+                return res.status(400).send({
+                    message: ERROR_MESSAGE.INVALID_REQUEST,
+                });
+            }
+
+            if (productType == 'retort') {
+                const existingProduct = await new RetortProductRepo().get(product_id as number);
+                if (!existingProduct) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `Product ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
+                }
+            }
+
+            if (productType == 'packaging') {
+                const existingProduct = await new ProductRepo().get(product_id as number);
+                if (!existingProduct) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `Product ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
+                }
+            }
+
+            // Add product to the cart
+            const cart = await new CartRepo().addProduct(user_id, product_id, quantity, productType);
+
+            return res.status(200).send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.CREATED,
+                    cart
+                )
+            );
         } catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
@@ -27,23 +65,62 @@ export default class CartController {
         }
     }
 
-    // Update cart items
-    static async update(req: Request, res: Response, next: NextFunction) {
+    // Remove a product from the cart
+    static async deleteProduct(req: Request, res: Response, next: NextFunction) {
         try {
-            const cartId = get(req.params, "cartId", "");
-            const updateCartData = req.body;
+            const user_id = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
+            const { product_id, productType } = req.body;
 
-            const updatedCart = await new CartRepo().update(cartId, updateCartData);
+            if (!product_id || !productType) {
+                return res.status(400).send({
+                    message: ERROR_MESSAGE.INVALID_REQUEST,
+                });
+            }
 
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED,
-                        updatedCart
-                    )
-                );
+            if (productType == 'retort') {
+                const existingProduct = await new RetortProductRepo().get(product_id as number);
+                if (!existingProduct) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `Product ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
+                }
+            }
+
+            if (productType == 'packaging') {
+                const existingProduct = await new ProductRepo().get(product_id as number);
+                if (!existingProduct) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `Product ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
+                }
+            }
+
+            // Remove product from the cart
+            const cart = await new CartRepo().removeProduct(user_id, product_id, productType);
+
+            if (!cart) {
+                return res.status(404).send({
+                    message: `Cart ${ERROR_MESSAGE.NOT_EXISTS}`,
+                });
+            }
+
+            return res.status(200).send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.UPDATED,
+                    cart
+                )
+            );
         } catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
@@ -52,21 +129,90 @@ export default class CartController {
         }
     }
 
-    // Empty the cart
+    // Update the quantity or price of a product in the cart
+    static async removeProduct(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user_id = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
+            const { product_id, quantity, productType } = req.body;
+
+            if (!product_id || !quantity || !productType) {
+                return res.status(400).send({
+                    message: ERROR_MESSAGE.INVALID_REQUEST,
+                });
+            }
+
+            if (productType == 'retort') {
+                const existingProduct = await new RetortProductRepo().get(product_id as number);
+                if (!existingProduct) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `Product ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
+                }
+            }
+
+            if (productType == 'packaging') {
+                const existingProduct = await new ProductRepo().get(product_id as number);
+                if (!existingProduct) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `Product ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
+                }
+            }
+
+            // Update product details in the cart
+            const updatedCart = await new CartRepo().updateProduct(user_id, product_id, quantity, productType);
+
+            if (!updatedCart) {
+                return res.status(404).send({
+                    message: `Cart ${ERROR_MESSAGE.NOT_EXISTS}`,
+                });
+            }
+
+            return res.status(200).send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.UPDATED,
+                    updatedCart
+                )
+            );
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    // Empty a cart
     static async empty(req: Request, res: Response, next: NextFunction) {
         try {
-            const cartId = get(req.params, "cartId", "");
+            const userId = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
+            const cart = await new CartRepo().findById(userId);
 
+            if (!cart) {
+                return res.status(404).send({
+                    message: ERROR_MESSAGE.CART_EMPTY,
+                });
+            }
+
+            const cartId = cart.id;
             await new CartRepo().empty(cartId);
-
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CLEARED,
-                    )
-                );
+            return res.status(200).send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.CLEARED
+                )
+            );
         } catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
@@ -75,21 +221,53 @@ export default class CartController {
         }
     }
 
-    // Delete items from the cart
-    static async delete(req: Request, res: Response, next: NextFunction) {
+    // Get a cart by ID
+    static async getCartById(req: Request, res: Response, next: NextFunction) {
         try {
-            const ids = get(req.body, "ids", []);
+            const userId = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
+            const cart = await new CartRepo().findById(userId);
 
-            const result = await new CartRepo().delete(ids);
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.DELETED,
-                        result
-                    )
-                );
+            if (!cart) {
+                return res.status(404).send({
+                    message: ERROR_MESSAGE.CART_EMPTY,
+                });
+            }
+
+            return res.status(200).send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.FETCHED,
+                    cart
+                )
+            );
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    // Delete a cart by ID
+    static async deleteCart(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
+            const cart = await new CartRepo().findById(userId);
+
+            if (!cart) {
+                return res.status(404).send({
+                    message: ERROR_MESSAGE.CART_EMPTY,
+                });
+            }
+
+            const cartId = cart.id;
+            await new CartRepo().delete(cartId);
+            return res.status(200).send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.DELETED
+                )
+            );
         } catch (err) {
             console.error("Error:", err);
             return res.status(500).send({

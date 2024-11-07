@@ -1,12 +1,13 @@
 // interfaces/ICartItemAttributes.ts
 
 export interface ICartItemAttributes {
-    id: string; // Unique identifier for the cart item
+    id?: string; // Unique identifier for the cart item
     cart_id: string; // ID of the cart to which this item belongs
-    productId: string; // ID of the product associated with this cart item
+    productId: number; // ID of the product associated with this cart item
+    productType: string;
     quantity: number; // Quantity of the product
-    price: number; // Price of the product
-    subtotal: number; // Calculated subtotal for this item (quantity * price)
+    price?: number; // Price of the product
+    subtotal?: number; // Calculated subtotal for this item (quantity * price)
     createdAt?: Date; // Date the cart item was created
     updatedAt?: Date; // Date the cart item was last updated
 }
@@ -29,7 +30,8 @@ export type TCartList = {
 
 // Structure for a single cart item
 export type TCartItem = {
-    productId: string; // ID of the product
+    productId: number; // ID of the product
+    productType: string;
     quantity: number; // Quantity of the product
     price: number; // Price of the product
     subtotal: number; // Calculated subtotal for this item (quantity * price)

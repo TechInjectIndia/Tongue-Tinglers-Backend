@@ -101,9 +101,9 @@ router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
 router.use(`${ADMIN}/region`, auth, regionRouter);
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
-router.use(`${ADMIN}/lead`, auth, leadRouter);
+router.use(`${ADMIN}/lead`, leadRouter);
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
-router.use(`cart`, auth, cartRouter);
+router.use(`/cart`, cartRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

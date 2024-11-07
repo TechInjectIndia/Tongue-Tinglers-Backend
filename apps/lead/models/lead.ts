@@ -66,30 +66,6 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
             ],
         });
 
-        // console.log('data', data);
-        // // Format the response to match your desired structure
-        // if (data) {
-        //     const assignedTo = data.assign?.userDetails.find(user => user.id === data.assign?.assignedTo);
-        //     const assignedBy = data.assign?.userDetails.find(user => user.id === data.assign?.assignedBy);
-
-        //     const formattedLead: any = {
-        //         ...data.toJSON(), // Convert Sequelize instance to plain object
-        //         assign: {
-        //             assignedTo: assignedTo ? {
-        //                 id: assignedTo.id,
-        //                 userName: assignedTo.userName,
-        //             } : undefined, // Use undefined if there's no assignedTo
-        //             assignedBy: assignedBy ? {
-        //                 id: assignedBy.id,
-        //                 userName: assignedBy.userName,
-        //             } : undefined, // Use undefined if there's no assignedBy
-        //             assignedDate: data.assign?.assignedDate,
-        //         },
-        //     };
-
-        //     return formattedLead; // Return the formatted lead with optional assign
-        // }
-
         return data;
     }
 

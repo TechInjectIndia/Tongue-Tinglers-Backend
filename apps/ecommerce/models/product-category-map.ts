@@ -11,7 +11,13 @@ import IBaseRepo from '../controllers/controller/IProductCategoryMapController';
 export class ProductCategoryMapRepo implements IBaseRepo<TProductCategoryLink, TProductFilters> {
     constructor() { }
 
-    async bulkCreate(categoryMappings: TProductCategoryLink[]): Promise<void> {
+    public async deleteByProductId(productId: number): Promise<void> {
+        await ProductCategoryMapModel.destroy({
+            where: { productId },
+        });
+    }
+
+    public async bulkCreate(categoryMappings: TProductCategoryLink[]): Promise<void> {
         await ProductCategoryMapModel.bulkCreate(categoryMappings);
     }
 

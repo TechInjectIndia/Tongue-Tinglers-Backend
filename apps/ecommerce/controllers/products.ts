@@ -280,6 +280,7 @@ export default class ProductsController {
                     })
                 );
             }
+
             if (categoryError) {
                 return res
                     .status(400)
@@ -289,6 +290,18 @@ export default class ProductsController {
                             `Some of the categories ${ERROR_MESSAGE.NOT_EXISTS}`
                         )
                     );
+            }
+
+            // Remove existing category mappings for the product
+            await new ProductCategoryMapRepo().deleteByProductId(id as number);
+
+            // Add Categories
+            if (categories.length > 0) {
+                const categoryMappings = categories.map((categoryId: number) => ({
+                    productId: id,
+                    categoryId,
+                }));
+                await new ProductCategoryMapRepo().bulkCreate(categoryMappings);
             }
 
             const updateProductData = req.body;

@@ -11,6 +11,16 @@ export default class CartController {
     static async addProduct(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, 'user_id', '');
+            if (user_id === '') {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `User ${ERROR_MESSAGE.NOT_EXISTS}`
+                        )
+                    );
+            }
             const { product_id, quantity, productType } = req.body;
 
             if (productType == 'retort') {

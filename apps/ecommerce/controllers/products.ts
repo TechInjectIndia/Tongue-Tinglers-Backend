@@ -107,6 +107,7 @@ export default class ProductsController {
             const name = get(req.body, "name", "");
             const vendorId = get(req.body, "vendorId", "");
             const createProduct = req.body;
+            const categories = get(req.body, "categories", []);
 
             // Create slug if not provided
             if (createProduct.slug === '') {
@@ -139,8 +140,43 @@ export default class ProductsController {
                     );
             }
 
+            // Validate category IDs
+            let categoryError = false;
+            if (Array.isArray(categories) && categories.length > 0) {
+                const validCategories = await Promise.all(
+                    categories.map(async (categoryId: number) => {
+                        const existingCategory = await new ProductCategoryRepo().get(categoryId);
+                        if (!existingCategory) {
+                            categoryError = true;
+                            throw new Error(`Category with ID ${categoryId} ${ERROR_MESSAGE.NOT_EXISTS}`);
+                        }
+                        return categoryId;
+                    })
+                );
+            }
+
+            if (categoryError) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `Some of the categories ${ERROR_MESSAGE.NOT_EXISTS}`
+                        )
+                    );
+            }
+
             // Create the product
             const Product = await new ProductRepo().create(createProduct);
+
+            // Add Categories
+            if (categories.length > 0) {
+                const categoryMappings = categories.map((categoryId: number) => ({
+                    productId: Product.id,
+                    categoryId,
+                }));
+                await new ProductCategoryMapRepo().bulkCreate(categoryMappings);
+            }
 
             // Create stock for the product
             const stockData = {
@@ -201,6 +237,9 @@ export default class ProductsController {
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req.params, "id", 0);
+            const categories = get(req.body, "categories", []);
+            const vendorId = get(req.body, "vendorId", "");
+
             const existingProduct = await new ProductRepo().get(id as number);
             if (isEmpty(existingProduct)) {
                 return res
@@ -209,6 +248,45 @@ export default class ProductsController {
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
                             ERROR_MESSAGE.NOT_EXISTS
+                        )
+                    );
+            }
+
+            if (vendorId != null && vendorId != '') {
+                const existingVendor = await new VendorRepo().get(vendorId as string);
+                if (!existingVendor) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `Vendor ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
+                }
+            }
+
+            // Validate category IDs
+            let categoryError = false;
+            if (Array.isArray(categories) && categories.length > 0) {
+                const validCategories = await Promise.all(
+                    categories.map(async (categoryId: number) => {
+                        const existingCategory = await new ProductCategoryRepo().get(categoryId);
+                        if (!existingCategory) {
+                            categoryError = true;
+                            throw new Error(`Category with ID ${categoryId} ${ERROR_MESSAGE.NOT_EXISTS}`);
+                        }
+                        return categoryId;
+                    })
+                );
+            }
+            if (categoryError) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `Some of the categories ${ERROR_MESSAGE.NOT_EXISTS}`
                         )
                     );
             }

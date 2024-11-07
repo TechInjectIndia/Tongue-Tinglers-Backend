@@ -21,6 +21,12 @@ const createProductBodySchema = Joi.object({
     vendorId: Joi.string().optional().allow(null).messages({
         'string.base': 'vendorId must be a string.',
     }),
+    categories: Joi.array().items(Joi.number().required()).min(1).required().messages({
+        'array.base': 'Categories must be an array of category IDs.',
+        'array.min': 'At least one category is required.',
+        'any.required': 'Categories are required.',
+        'number.base': 'Each category ID must be a number.',
+    }),
     slug: Joi.string().optional().allow("").messages({
         'string.base': 'Slug must be a string.',
     }),

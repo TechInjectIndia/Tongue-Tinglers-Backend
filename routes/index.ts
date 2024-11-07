@@ -102,7 +102,7 @@ router.use(`${ADMIN}/region`, auth, regionRouter);
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
 router.use(`${ADMIN}/lead`, auth, leadRouter);
-router.use(`${ADMIN}/vendors`, auth, vendorRouter);
+router.use(`${ADMIN}/vendors`, vendorRouter);
 router.use(`cart`, auth, cartRouter);
 // ====== Admin ======
 

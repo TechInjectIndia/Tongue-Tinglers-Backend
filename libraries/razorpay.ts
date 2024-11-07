@@ -52,7 +52,7 @@ export const createStandardPaymentLinkForOrders = async (data: { cart: any, fran
             currency: "INR",
             accept_partial: true,
             first_min_partial_amount: 100,
-            description: data.cart,
+            description: "",
             customer: {
                 name: `${data.franchise.name}`,
                 email: data.franchise.contactEmail,

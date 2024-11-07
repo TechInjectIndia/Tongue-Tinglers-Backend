@@ -67,7 +67,7 @@ export const createStandardPaymentLinkForOrders = async (data: { cart: any, fran
                 policy_name: "Tongue Tingler"
             },
             callback_url: `${CONFIG.FRONTEND_URL}/api/${CONFIG.RP_CALLBACK_ORDERS}`,
-            callback_method: "post"
+            callback_method: "get"
         });
 
         return response;

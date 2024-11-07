@@ -105,7 +105,7 @@ router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
 router.use(`${ADMIN}/lead`, leadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
-router.use(`/cart`, cartRouter);
+router.use(`/cart`, auth, cartRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

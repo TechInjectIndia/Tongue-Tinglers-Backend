@@ -9,6 +9,12 @@ const createProductsBody = Joi.object().keys({
         .messages({
             'any.required': 'Product name is required.'
         }),
+    categories: Joi.array().items(Joi.number().required()).min(1).required().messages({
+        'array.base': 'Categories must be an array of category IDs.',
+        'array.min': 'At least one category is required.',
+        'any.required': 'Categories are required.',
+        'number.base': 'Each category ID must be a number.',
+    }),
     description: Joi.string().required()
         .messages({
             'any.required': 'Product description is required.'
@@ -34,6 +40,12 @@ const editProductsBody = Joi.object().keys({
         .messages({
             'any.required': 'Product name is required.'
         }),
+    categories: Joi.array().items(Joi.number().required()).min(1).required().messages({
+        'array.base': 'Categories must be an array of category IDs.',
+        'array.min': 'At least one category is required.',
+        'any.required': 'Categories are required.',
+        'number.base': 'Each category ID must be a number.',
+    }),
     description: Joi.string().required()
         .messages({
             'any.required': 'Product description is required.'

@@ -63,11 +63,17 @@ const {
  *              - price
  *              - type
  *              - stock
+ *              - categories
  *              - active
  *            properties:
  *              name:
  *                type: string
  *                default: product12 
+ *              categories:
+ *                type: array
+ *                items:
+ *                  type: number
+ *                example: [1111223344, 223344556]
  *              description:
  *                type: text
  *                default: desc
@@ -170,6 +176,7 @@ const {
  *            required:
  *              - name
  *              - description
+ *              - categories
  *              - price
  *              - type
  *              - stock
@@ -178,6 +185,11 @@ const {
  *              name:
  *                type: string
  *                default: AdminProductNew
+ *              categories:
+ *                type: array
+ *                items:
+ *                  type: number
+ *                example: [1111223344, 223344556]
  *              description:
  *                type: string
  *                default: descr

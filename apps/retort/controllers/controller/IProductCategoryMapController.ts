@@ -1,9 +1,12 @@
-import { TQueryFilters, TRetortProductCategoryLink } from '../../../../types';
+import { TQueryFilters, TRetortProductCategoryLink, TAddRetortProductCategoryLink } from '../../../../types';
 
 /**
  * Interface for Product Category Map Controller.
  */
 interface IProductCategoryMapController<T, F extends TQueryFilters> {
+    bulkCreate(categoryMappings: TAddRetortProductCategoryLink[]): Promise<void>
+    deleteByProductId(productId: number): Promise<void>
+
     /**
      * Assign a product to a category.
      * @param payload - The data linking the product and category.

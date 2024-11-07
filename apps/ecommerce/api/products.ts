@@ -119,6 +119,7 @@ const {
  *             required:
  *               - name
  *               - slug
+ *               - categories
  *               - description
  *               - price
  *               - type
@@ -132,6 +133,11 @@ const {
  *               name:
  *                 type: string
  *                 example: "AdminProductNew"
+ *               categories:
+ *                 type: array
+ *                 items:
+ *                   type: number
+ *                 example: [1111223344, 223344556]
  *               slug:
  *                 type: string
  *                 example: "AdminProductNew"

@@ -15,7 +15,8 @@ import {
     EMAIL_TEMPLATE,
 } from "../../../libraries";
 import { ContractRepo } from "../../contracts/models/ContractRepo";
-import { LeadRepo } from "../../lead/models/lead";
+import { OrderRepo } from "../../ecommerce/models/orders";
+import { OrderItemRepo } from "../../ecommerce/models/orders-item";
 import {
     CONTRACT_PAYMENT_STATUS,
     CONTRACT_STATUS,
@@ -28,7 +29,9 @@ const {
 } = require("razorpay/dist/utils/razorpay-utils");
 import { get } from "lodash";
 import { CartModel } from "../../../database/schema";
+import { CartItemModel } from "../../../database/schema";
 import { FranchiseeModel } from "../../../database/schema";
+import { ORDER_TYPE, ORDER_STATUS } from '../../../interfaces';
 
 const razorpayInstance = new Razorpay({
     key_id: CONFIG.RP_ID_PROD,
@@ -160,7 +163,7 @@ export default class OrderPaymentController {
 
             // Find if the cart already exists for the user
             let cart = await CartModel.findOne({ where: { userId } });
-            if (!cart) {
+            if (!cart || !cart.items || cart.items.length === 0) {
                 return res
                     .status(404)
                     .send(sendResponse(RESPONSE_TYPE.ERROR, "Cart is empty"));
@@ -177,6 +180,7 @@ export default class OrderPaymentController {
                 cart: cart,
                 franchise: franchiseData
             });
+
             if (!link) {
                 return res
                     .status(500)
@@ -187,6 +191,40 @@ export default class OrderPaymentController {
                         )
                     );
             }
+
+            // Create the order and save order items
+            const newOrder = await new OrderRepo().create({
+                userId: userId,
+                trackingNumber: "",
+                shippingAddress: "",
+                paymentMethod: "Razorpay",
+                totalPrice: cart.totalAmount,
+                isRepeated: 0,
+                orderStatus: ORDER_STATUS.PROCESSED,
+                orderType: ORDER_TYPE.SAMPLE_ORDER,
+            });
+
+            // // Save each cart item as an order item
+            const orderItems = cart.items.map(item => ({
+                orderId: newOrder.id,
+                userId: userId,
+                productId: item.productId,
+                productType: item.productType,
+                quantity: item.quantity,
+                price: item.price,
+                subtotal: item.subtotal,
+            }));
+
+            await new OrderItemRepo().bulkCreate(orderItems);
+
+            // Remove all products related to the cart
+            await CartItemModel.destroy({
+                where: { cart_id: cart.id },
+            });
+
+            const cartData = await CartModel.destroy({
+                where: { id: cart.id },
+            });
 
             try {
                 const emailContent = await getEmailTemplate(

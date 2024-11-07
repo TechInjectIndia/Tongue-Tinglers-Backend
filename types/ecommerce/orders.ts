@@ -1,7 +1,7 @@
 const { OrderItem } = require("sequelize");
 
 export type TOrder = {
-  id: number;
+  id: string;
   userId: string;
   trackingNumber: string;
   shippingAddress: string;

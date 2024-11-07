@@ -9,7 +9,7 @@ import { UserModel } from '../user/user.model'
 interface OrdersCreationAttributes extends Optional<TOrder, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOrder {
-    public id!: number;
+    public id!: string;
     public userId!: string;
     public trackingNumber!: string;
     public shippingAddress!: string;
@@ -23,8 +23,8 @@ class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOr
 
 OrdersModel.init({
     id: {
-        type: INTEGER,
-        autoIncrement: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
     },
     userId: {
@@ -69,7 +69,7 @@ OrdersModel.init({
     timestamps: true,
 });
 
-OrdersModel.hasMany(OrderItemsModel,  { as: 'order_items' });
+OrdersModel.hasMany(OrderItemsModel, { as: 'order_items' });
 OrdersModel.belongsTo(UserModel, { foreignKey: 'userId' });
 
 export { OrdersModel };

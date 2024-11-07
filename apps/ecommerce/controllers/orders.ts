@@ -24,13 +24,13 @@ export default class OrderController {
                             isRepeated = 1;
                         }
                         const orderItemPayload = {
-                            name: getProduct.name as string,
-                            slug: getProduct.slug as string,
+                            orderId: createOrder.id as string,
                             userId: user_id as string,
-                            price: getProduct.price as number,
                             productId: product.id as number,
-                            quantity: cartItems[index].quantity as number,
-                            orderId: createOrder.id as number,
+                            productType: product.productType,
+                            quantity: product.quantity,
+                            price: product.price,
+                            subtotal: product.subtotal,
                             isRepeated: isRepeated
                         };
                         await new OrderItemRepo().create(orderItemPayload);

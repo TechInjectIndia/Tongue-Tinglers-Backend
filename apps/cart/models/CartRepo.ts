@@ -28,6 +28,11 @@ export class CartRepo {
                 totalAmount += item.quantity * item.price; // Calculate subtotal for each item
             }
 
+            if (cartItems && cartItems.length == 0) {
+                const cartData = await CartModel.destroy({
+                    where: { id: cartId },
+                });
+            }
             // Update the total amount in the Cart table
             await CartModel.update({ totalAmount }, { where: { id: cartId } });
 
@@ -190,7 +195,11 @@ export class CartRepo {
                 where: { cart_id: cartId },
             });
 
-            return cart; // Return the cart after emptying it
+            const cartData = await CartModel.destroy({
+                where: { id: cartId },
+            });
+
+            return cartData; // Return the cart after emptying it
         } catch (error) {
             throw new Error(`Error emptying cart: ${error.message}`);
         }

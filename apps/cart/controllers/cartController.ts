@@ -10,7 +10,7 @@ export default class CartController {
     // Add product to cart
     static async addProduct(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
+            const user_id = get(req, 'user_id', '');
             const { product_id, quantity, productType } = req.body;
 
             if (productType == 'retort') {
@@ -62,7 +62,7 @@ export default class CartController {
     // Remove a product from the cart
     static async deleteProduct(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
+            const user_id = get(req, 'user_id', '');
             const { product_id, productType } = req.body;
 
             if (productType == 'retort') {
@@ -120,7 +120,7 @@ export default class CartController {
     // Update the quantity or price of a product in the cart
     static async removeProduct(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
+            const user_id = get(req, 'user_id', '');
             const { product_id, quantity, productType } = req.body;
 
             if (productType == 'retort') {
@@ -178,7 +178,7 @@ export default class CartController {
     // Empty a cart
     static async empty(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
+            const userId = get(req, 'user_id', '');
             const cart = await new CartRepo().findById(userId);
 
             if (!cart) {
@@ -207,7 +207,7 @@ export default class CartController {
     // Get a cart by ID
     static async getCartById(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
+            const userId = get(req, 'user_id', '');
             const cart = await new CartRepo().findById(userId);
 
             if (!cart) {
@@ -234,7 +234,7 @@ export default class CartController {
     // Delete a cart by ID
     static async deleteCart(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
+            const userId = get(req, 'user_id', '');
             const cart = await new CartRepo().findById(userId);
 
             if (!cart) {

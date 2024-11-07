@@ -163,7 +163,7 @@ export default class OrderPaymentController {
 
             // Find if the cart already exists for the user
             let cart = await CartModel.findOne({ where: { userId } });
-            if (!cart || !cart.items || cart.items.length === 0) {
+            if (!cart) {
                 return res
                     .status(404)
                     .send(sendResponse(RESPONSE_TYPE.ERROR, "Cart is empty"));

@@ -26,7 +26,7 @@ OrderItemsModel.init({
         primaryKey: true,
     },
     orderId: {
-        type: INTEGER,
+        type: STRING,
         allowNull: false,
     },
     userId: {

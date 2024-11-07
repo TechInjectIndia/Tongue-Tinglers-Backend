@@ -50,7 +50,6 @@ export const createStandardPaymentLinkForOrders = async (data: { cart: any, fran
         const callbackUrl = `${CONFIG.FRONTEND_URL}/${CONFIG.RP_CALLBACK_ORDERS}`;
         console.log("Callback URL:", callbackUrl); // Log the URL to verify
 
-
         const response = await razorpayInstance.paymentLink.create({
             amount: Math.round(data.cart.totalAmount * 100),
             currency: "INR",

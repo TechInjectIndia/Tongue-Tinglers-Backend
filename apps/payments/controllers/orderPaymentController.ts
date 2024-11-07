@@ -181,6 +181,7 @@ export default class OrderPaymentController {
                 franchise: franchiseData
             });
 
+            console.log('link', link);
             if (!link) {
                 return res
                     .status(500)

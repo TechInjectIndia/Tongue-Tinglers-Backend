@@ -38,12 +38,13 @@ import leadRouter from "../apps/lead/api/lead";
 import followUpsRouter from "../apps/lead/api/followups";
 import profileRouter from "../apps/admin-user/api/profile";
 import settingsRouter from "../apps/admin-user/api/settings"; // pending
-import paymentsRouter from "../apps/payments/api"; // pending
+import paymentsRouter from "../apps/payments/api";
+import paymentsOrdersRouter from "../apps/payments/api/orderPayment";
 import reviewsRouter from "../apps/reviews/api/reviews";
 import testimonialsRouter from "../apps/testimonials/api/testimonials";
-import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics"; // pending
-import ordersAnalyticsRouter from "../apps/analytics/api/admin/orders-analytics"; // pending
-import retortAnalyticsRouter from "../apps/analytics/api/admin/retort-analytics"; // pending
+import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics";
+import ordersAnalyticsRouter from "../apps/analytics/api/admin/orders-analytics";
+import retortAnalyticsRouter from "../apps/analytics/api/admin/retort-analytics";
 import menuRouter from "../apps/menu/api/menu";
 import retortProductRouter from "../apps/retort/api/products";
 import retortProductCategoryRouter from "../apps/retort/api/category";
@@ -74,10 +75,11 @@ router.use(`${ADMIN}/testimonials`, auth, testimonialsRouter);
 router.use(`${ADMIN}/reviews`, auth, reviewsRouter);
 router.use(`${ADMIN}/profile`, auth, profileRouter);
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
-router.use(`/payments`, paymentsRouter); // pending
-router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter); // pending
-router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter); // pending
-router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // pending
+router.use(`/payments`, auth, paymentsRouter);
+router.use(`/order-payment`, auth, paymentsOrdersRouter);
+router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter);
+router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter);
+router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter);
 router.use(`${ADMIN}/menu`, auth, menuRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/tax`, auth, taxesRouter);

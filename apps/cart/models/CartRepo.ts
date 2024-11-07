@@ -62,9 +62,13 @@ export class CartRepo {
             if (existingProduct.length > 0) {
                 // If product exists, update the quantity and price
                 const updateCartItemData = {
-                    quantity: existingProduct[0].quantity + quantity,
+                    quantity: quantity,
                 };
-                cartItemReponse = await new CartItemRepo().update(cart.id as string, productId as number, productType, updateCartItemData);
+                if (quantity == 0) {
+                    const cartItem = await new CartItemRepo().remove(cart.id as string, productId as number, productType);
+                } else {
+                    cartItemReponse = await new CartItemRepo().update(cart.id as string, productId as number, productType, updateCartItemData);
+                }
             } else {
                 // If product doesn't exist, add the new product to the cart
                 cartItemReponse = await new CartItemRepo().create({
@@ -126,7 +130,7 @@ export class CartRepo {
                 };
                 if (updateCartItemData.quantity < 0) {
                     const cartItem = await new CartItemRepo().remove(cart.id as string, productId as number, productType);
-                }else{
+                } else {
                     const cartItem = await new CartItemRepo().update(cart.id as string, productId as number, productType, updateCartItemData);
                 }
             }

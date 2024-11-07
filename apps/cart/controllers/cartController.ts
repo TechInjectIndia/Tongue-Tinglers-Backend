@@ -206,11 +206,12 @@ export default class CartController {
             }
 
             const cartId = cart.id;
-            await new CartRepo().empty(cartId);
+            const cartData = await new CartRepo().empty(cartId);
             return res.status(200).send(
                 sendResponse(
                     RESPONSE_TYPE.SUCCESS,
-                    SUCCESS_MESSAGE.CLEARED
+                    SUCCESS_MESSAGE.CLEARED,
+                    cartData
                 )
             );
         } catch (err) {

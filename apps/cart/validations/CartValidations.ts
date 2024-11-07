@@ -39,7 +39,7 @@ const addProductSchema = Joi.object({
             'any.required': 'Product type is required.',
             'any.only': 'Product type must be either "retort" or "packaging".',
         }),
-    quantity: Joi.number().integer().min(1).required().messages({
+    quantity: Joi.number().integer().min(0).required().messages({
         'number.base': 'Quantity must be a number',
         'number.min': 'Quantity must be at least 1',
         'any.required': 'Quantity is required',

@@ -52,6 +52,6 @@ CartModel.init(
     }
 );
 
-CartModel.hasMany(CartItemModel, { foreignKey: 'cart_id', as: 'cartItems' });
+CartModel.hasMany(CartItemModel, { foreignKey: 'cart_id', as: 'items' });
 
 export { CartModel };

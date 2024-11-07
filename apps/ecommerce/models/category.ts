@@ -6,7 +6,7 @@ import {
     TAddProductCategory,
     TEditProductCategory,
 } from "../../../types/ecommerce";
-import { ProductCategoryModel, CategoryImageModel, ProductsModel } from "../../../database/schema";
+import { ProductCategoryModel, CategoryImageModel, ProductsModel, ProductImagesModel, StockModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/category/IProductsCategoryController';
 
 export class ProductCategoryRepo implements IBaseRepo<TProductCategory, TProductCategoryFilters> {
@@ -16,7 +16,16 @@ export class ProductCategoryRepo implements IBaseRepo<TProductCategory, TProduct
         const categories = await ProductCategoryModel.findAll({
             include: [{
                 model: ProductsModel,
-                as: 'products', // Use the same alias defined in the association
+                as: 'products',
+                include: [{
+                    model: ProductImagesModel,
+                    as: 'images',
+                },
+                {
+                    model: StockModel,
+                    as: 'stock',
+                }
+                ],
             }],
         });
 

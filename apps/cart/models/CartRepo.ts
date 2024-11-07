@@ -1,7 +1,9 @@
 import { CartModel } from "../../../database/schema";
 import { CartItemModel } from "../../../database/schema";
 import { ProductsModel } from "../../../database/schema";
-import { Op } from "sequelize";
+import { RetortProductsModel } from "../../../database/schema";
+import { ProductImagesModel } from "../../../database/schema";
+import { StockModel } from "../../../database/schema";
 import { CartItemRepo } from "../../cart-item/models/CartItemRepo";
 
 export class CartRepo {
@@ -147,6 +149,27 @@ export class CartRepo {
         try {
             const cart = await CartModel.findOne({
                 where: { userId },
+                include: [{
+                    model: CartItemModel,
+                    as: 'items',
+                    include: [{
+                        model: ProductsModel,
+                        as: 'product',
+                        include: [{
+                            model: ProductImagesModel,
+                            as: 'images',
+                        },
+                        {
+                            model: StockModel,
+                            as: 'stock',
+                        }
+                        ],
+                    },
+                    {
+                        model: RetortProductsModel,
+                        as: 'retortProduct',
+                    }],
+                }]
             });
             return cart;
         } catch (error) {

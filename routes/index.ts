@@ -79,9 +79,9 @@ router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter); // pending
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter); // pending
 router.use(`${ADMIN}/menu`, auth, menuRouter);
-router.use(`${ADMIN}/product`, auth, productRouter);
+router.use(`${ADMIN}/product`, productRouter);
 router.use(`${ADMIN}/tax`, auth, taxesRouter);
-router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
+router.use(`${ADMIN}/product/category`, productCategoryRouter);
 router.use(`${ADMIN}/order`, auth, orderRouter);
 router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);

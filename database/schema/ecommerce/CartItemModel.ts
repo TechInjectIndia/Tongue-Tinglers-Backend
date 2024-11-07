@@ -3,6 +3,8 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
 import { ICartItemAttributes } from "../../../interfaces";
 import { CartModel } from './cartModel';
+import { ProductsModel } from './product.model';
+import { RetortProductsModel } from '../retort/retort-product';
 
 interface ICartItemCreationAttributes extends Optional<ICartItemAttributes, 'id'> { }
 
@@ -16,6 +18,11 @@ class CartItemModel extends Model<ICartItemAttributes, ICartItemCreationAttribut
     public subtotal!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
+    public static associate() {
+        this.belongsTo(ProductsModel, { foreignKey: 'productId', as: 'product' });
+        this.belongsTo(RetortProductsModel, { foreignKey: 'productId', as: 'retortProduct' });
+    }
 }
 
 CartItemModel.init(
@@ -69,5 +76,7 @@ CartItemModel.init(
         timestamps: true,
     }
 );
+
+CartItemModel.associate();
 
 export { CartItemModel };

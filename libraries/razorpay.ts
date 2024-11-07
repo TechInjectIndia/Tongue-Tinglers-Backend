@@ -48,7 +48,7 @@ export const createStandardPaymentLink = async (data: { 'contract': TContract, '
 export const createStandardPaymentLinkForOrders = async (data: { cart: any, franchise: any }) => {
     try {
         const response = await razorpayInstance.paymentLink.create({
-            amount: data.cart.totalAmount,
+            amount: Math.round(data.cart.totalAmount * 100),
             currency: "INR",
             accept_partial: true,
             first_min_partial_amount: 100,

@@ -4,12 +4,12 @@ import { UserModel } from '../user/user.model';
 import { questionModel } from './questionModel';
 import { ICampaign } from '../../../interfaces';
 
-const { STRING, DATE, NOW, UUIDV4, JSONB } = DataTypes;
+const { STRING, INTEGER, DATE, NOW, UUIDV4, JSONB } = DataTypes;
 
 interface CampaignCreationAttributes extends Optional<ICampaign, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
 class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes> implements ICampaign {
-    public id!: string;
+    public id!: number;
     public name!: string;
     public franchiseId?: string;
     public region?: string;
@@ -26,11 +26,9 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes> imple
 
 CampaignAdModel.init({
     id: {
-        type: DataTypes.UUID,
+        type: INTEGER,
+        autoIncrement: true,
         primaryKey: true,
-        allowNull: false,
-        defaultValue: UUIDV4,
-        comment: 'Unique identifier for the campaign',
     },
     franchiseId: {
         type: STRING,

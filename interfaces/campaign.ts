@@ -1,7 +1,7 @@
 
-import type { UpdatedMetaData, BaseModel, DeletionMetaData } from ".";
+import type { UpdatedMetaData, BaseModelIdNumber, DeletionMetaData } from ".";
 
-interface ICampaign extends UpdatedMetaData, BaseModel, DeletionMetaData {
+interface ICampaign extends UpdatedMetaData, BaseModelIdNumber, DeletionMetaData {
     name: string;
     franchiseId?: string;
     region?: string;

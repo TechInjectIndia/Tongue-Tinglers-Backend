@@ -44,6 +44,12 @@ interface BaseModel {
     createdAt: Date;
 }
 
+interface BaseModelIdNumber {
+    id: number;
+    createdBy: string;
+    createdAt: Date;
+}
+
 interface UpdatedMetaData {
     updatedBy: string | null;
     updatedAt: Date | null;
@@ -61,4 +67,5 @@ export {
     BaseModel,
     UpdatedMetaData,
     DeletionMetaData,
+    BaseModelIdNumber
 };

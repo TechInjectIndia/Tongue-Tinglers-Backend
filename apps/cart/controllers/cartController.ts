@@ -95,13 +95,6 @@ export default class CartController {
 
             // Remove product from the cart
             const cart = await new CartRepo().removeProduct(user_id, product_id, productType);
-
-            if (!cart) {
-                return res.status(404).send({
-                    message: `Cart ${ERROR_MESSAGE.NOT_EXISTS}`,
-                });
-            }
-
             return res.status(200).send(
                 sendResponse(
                     RESPONSE_TYPE.SUCCESS,
@@ -153,7 +146,6 @@ export default class CartController {
 
             // Update product details in the cart
             const updatedCart = await new CartRepo().updateProduct(user_id, product_id, quantity, productType);
-
             if (!updatedCart) {
                 return res.status(404).send({
                     message: `Cart ${ERROR_MESSAGE.NOT_EXISTS}`,

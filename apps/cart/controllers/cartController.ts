@@ -13,12 +13,6 @@ export default class CartController {
             const user_id = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
             const { product_id, quantity, productType } = req.body;
 
-            if (!product_id || !quantity || !productType) {
-                return res.status(400).send({
-                    message: ERROR_MESSAGE.INVALID_REQUEST,
-                });
-            }
-
             if (productType == 'retort') {
                 const existingProduct = await new RetortProductRepo().get(product_id as number);
                 if (!existingProduct) {
@@ -70,12 +64,6 @@ export default class CartController {
         try {
             const user_id = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
             const { product_id, productType } = req.body;
-
-            if (!product_id || !productType) {
-                return res.status(400).send({
-                    message: ERROR_MESSAGE.INVALID_REQUEST,
-                });
-            }
 
             if (productType == 'retort') {
                 const existingProduct = await new RetortProductRepo().get(product_id as number);
@@ -134,12 +122,6 @@ export default class CartController {
         try {
             const user_id = get(req, 'user_id', '2f017e36-391f-4f31-bab3-c75f34aff48b');
             const { product_id, quantity, productType } = req.body;
-
-            if (!product_id || !quantity || !productType) {
-                return res.status(400).send({
-                    message: ERROR_MESSAGE.INVALID_REQUEST,
-                });
-            }
 
             if (productType == 'retort') {
                 const existingProduct = await new RetortProductRepo().get(product_id as number);

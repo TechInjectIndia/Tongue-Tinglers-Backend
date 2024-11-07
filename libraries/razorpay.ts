@@ -44,3 +44,35 @@ export const createStandardPaymentLink = async (data: { 'contract': TContract, '
         return new Error("Failed to create payment link");
     }
 }
+
+export const createStandardPaymentLinkForOrders = async (data: { cart: any, franchise: any }) => {
+    try {
+        const response = await razorpayInstance.paymentLink.create({
+            amount: data.cart.totalAmount,
+            currency: "INR",
+            accept_partial: true,
+            first_min_partial_amount: 100,
+            description: data.cart,
+            customer: {
+                name: `${data.franchise.name}`,
+                email: data.franchise.contactEmail,
+                contact: data.franchise.contactNumber
+            },
+            notify: {
+                sms: false,
+                email: false
+            },
+            reminder_enable: false,
+            notes: {
+                policy_name: "Tongue Tingler"
+            },
+            callback_url: CONFIG.RP_CALLBACK,
+            callback_method: "get"
+        });
+
+        return response;
+    } catch (err) {
+        console.error("Error creating payment link:", err);
+        return new Error("Failed to create payment link");
+    }
+}

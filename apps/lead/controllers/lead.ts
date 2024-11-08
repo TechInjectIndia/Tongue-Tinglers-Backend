@@ -22,16 +22,16 @@ export default class LeadController {
     static async convertLeadToFranchisee(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const id = get(req.body, "id", "");
-            const existingLead = await new LeadRepo().getLeadByStatus(id);
-
-            if (!existingLead) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `Lead ${ERROR_MESSAGE.NOT_EXISTS}`));
-            }
 
             // get contract
-            const existingContract = await new ContractRepo().getAssociatedContractsByLeadId(id as string);
+            const existingContract = await new ContractRepo().get(id as string);
             if (!existingContract) {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `Contract ${ERROR_MESSAGE.NOT_EXISTS}`));
+            }
+
+            const existingLead = await new LeadRepo().get(existingContract.leadId as string);
+            if (!existingLead) {
+                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `Lead ${ERROR_MESSAGE.NOT_EXISTS}`));
             }
 
             // if (existingLead.status === LeadStatus.CONVERTED) {
@@ -81,6 +81,8 @@ export default class LeadController {
                 password_token: token
             });
 
+            const existingAllContract = await new ContractRepo().getAssociatedContractsByLeadId(existingContract.leadId as string);
+
             const franchiseResponse = await new FranchiseeRepo().createFranchisee({
                 userid: normalUser.id,
                 franchiseAgreementSignedDate: null,
@@ -92,7 +94,8 @@ export default class LeadController {
                 franchiseType: FranchiseType.FRANCHISE,
                 regionId: null,
                 isActive: false,
-                contractIds: existingContract
+                contractIds: existingAllContract,
+                activeContract: existingContract.id,
             });
 
             // await new LeadRepo().updateStatus(id, { status: LeadStatus.CONVERTED });

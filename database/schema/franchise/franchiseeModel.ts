@@ -23,6 +23,7 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
   public franchiseType!: FranchiseType;
   public regionId!: string | null;
   public contractIds!: string[];
+  public activeContract!: string;
   public isActive!: boolean | null;
   public ratings?: number | null;
   public franchiseRenewalInfo?: { renewalDate: Date; conditions: string } | null;
@@ -110,8 +111,12 @@ FranchiseeModel.init(
     },
     contractIds: {
       type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: false,
+      allowNull: true,
       comment: "Array of contract IDs associated with the franchisee",
+    },
+    activeContract: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
     },
     isActive: {
       type: DataTypes.BOOLEAN,

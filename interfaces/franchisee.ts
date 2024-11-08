@@ -72,6 +72,7 @@ interface FranchiseeAttributes {
     franchiseType: FranchiseType;
     regionId: string | null;
     contractIds: string[];
+    activeContract: string;
     isActive: boolean | null;
     ratings?: number | null;
     franchiseRenewalInfo?: FranchiseeRenewalInfo | null;
@@ -91,6 +92,7 @@ interface AddFranchiseePayload {
     regionId: string | null;
     socialMediaLinks?: { url: string, type: SM_PLATFORM_FRANCHISE }[];
     contractIds: string[];
+    activeContract: string;
     isActive: boolean | null;
     ratings?: number | null;
     franchiseRenewalInfo?: FranchiseeRenewalInfo | null;

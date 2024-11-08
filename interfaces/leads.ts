@@ -50,7 +50,7 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     referBy: UserDetails | null;
     logs: Record<string, ITrackable[]>;
     notes: Note[] | null;
-    proposalModals: Array<ProposalModels> | null;
+    proposalModals: Array<TPayloadProposalModel> | null;
     franchiseModals: Array<FranchiseModels> | null;
     affiliate: Array<Affiliate> | null;
     marketing: Array<string> | null;
@@ -72,12 +72,6 @@ interface ProposalModels {
 
 type TPayloadProposalModel = {
     title: string;
-    createdAt: Date;
-    createdBy: string;
-    updatedAt: Date | null;
-    updatedBy: string | null;
-    deletedAt: Date | null;
-    deletedBy: string | null;
     budget: number;
     files: Array<SeoImage>;
 }

@@ -11,7 +11,7 @@ const createCampaignBody = Joi.object().keys({
   description: Joi.string().optional()
     .messages({ 'string.base': 'Description must be a string.' }),
   questionList: Joi.array().items(
-    Joi.string().uuid().required()
+    Joi.string().required()
       .messages({ 'any.required': 'Question ID is required.' })
   ).required()
     .messages({ 'any.required': 'Questions are required.' }),
@@ -26,7 +26,7 @@ const editCampaignBody = Joi.object().keys({
   description: Joi.string().optional()
     .messages({ 'string.base': 'Description must be a string.' }),
   questionList: Joi.array().items(
-    Joi.string().uuid().required()
+    Joi.string().required()
       .messages({ 'any.required': 'Question ID is required.' })
   ).optional()
     .messages({ 'array.base': 'Questions must be an array of strings.' }),
@@ -34,7 +34,7 @@ const editCampaignBody = Joi.object().keys({
 
 // Validation schema for editing campaign parameters
 const editCampaignParams = Joi.object().keys({
-  id: Joi.string().uuid().required()
+  id: Joi.number().required()
     .messages({ 'any.required': 'Campaign ID is required.' }),
 });
 

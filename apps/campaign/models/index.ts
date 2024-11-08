@@ -22,7 +22,7 @@ export class CampaignAdRepo implements IBaseRepo<ICampaign, TListFilters> {
         });
     }
 
-    public async get(id: string): Promise<ICampaign | null> {
+    public async get(id: number): Promise<ICampaign | null> {
         const campaign = await CampaignAdModel.findOne({ where: { id } });
 
         const { questionList } = campaign;
@@ -70,7 +70,7 @@ export class CampaignAdRepo implements IBaseRepo<ICampaign, TListFilters> {
         return response;
     }
 
-    public async update(id: string, data: TPayloadCampaign): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TPayloadCampaign): Promise<[affectedCount: number]> {
         // Update a campaign by its ID
         return await CampaignAdModel.update(data, {
             where: {
@@ -79,7 +79,7 @@ export class CampaignAdRepo implements IBaseRepo<ICampaign, TListFilters> {
         });
     }
 
-    public async delete(ids: string[]): Promise<number> {
+    public async delete(ids: number[]): Promise<number> {
         // Soft delete campaigns by IDs
         const response = await CampaignAdModel.destroy({
             where: {

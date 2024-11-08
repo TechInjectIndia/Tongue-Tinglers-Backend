@@ -107,7 +107,7 @@ const {
  *         name: id
  *         required: true
  *         schema:
- *           type: string
+ *           type: number
  *         description: ID of the campaign to retrieve
  *     responses:
  *       '200':
@@ -191,7 +191,7 @@ const {
  */
 router.post("/create", validateCreateCampaignBody, CampaignController.create);
 router.get("/list", validateListCampaignQuery, CampaignController.list);
-router.get("/get/:id", validateEditCampaignParams, CampaignController.get);
+router.get("/get/:id", CampaignController.get);
 router.put("/update/:id", validateEditCampaignParams, validateEditCampaignBody, CampaignController.update);
 router.delete("/delete", validateDeleteMultipleIdsBody, CampaignController.delete);
 

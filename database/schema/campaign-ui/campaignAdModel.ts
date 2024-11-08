@@ -29,6 +29,7 @@ CampaignAdModel.init({
         type: INTEGER,
         autoIncrement: true,
         primaryKey: true,
+        allowNull: false,
     },
     franchiseId: {
         type: STRING,

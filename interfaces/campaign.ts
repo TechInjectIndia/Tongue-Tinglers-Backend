@@ -16,6 +16,8 @@ type TCampaignList = {
 
 type TPayloadCampaign = {
     name: string;
+    region?: string;
+    franchiseId?: string;
     description?: string;
     questionList: string[];
     createdBy: string;
@@ -23,14 +25,14 @@ type TPayloadCampaign = {
 
 interface ICampaignSubmisisons {
     id: string;
-    campaignId: string;
+    campaignId: number;
     response: string;
     createdAt: Date;
     updatedAt: Date;
 }
 
 type TPayloadCampaignSubmisisons = {
-    campaignId: string;
+    campaignId: number;
     response: string;
 }
 
@@ -38,7 +40,6 @@ type TCampaignSubmisisonsList = {
     total: number,
     data: ICampaignSubmisisons[]
 }
-
 
 export {
     ICampaign,

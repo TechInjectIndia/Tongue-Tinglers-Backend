@@ -1,8 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TOrder } from "../../../types";
-import { ORDER_TYPE, ORDER_STATUS } from '../../../interfaces';
-const { INTEGER, STRING, TEXT, ENUM, BOOLEAN } = DataTypes;
+import { ORDER_TYPE, ORDER_STATUS, PAYMENT_STATUS } from '../../../interfaces';
+const { INTEGER, STRING, UUIDV4, ENUM, BOOLEAN } = DataTypes;
 import { OrderItemsModel } from './order_item.model'
 import { UserModel } from '../user/user.model'
 
@@ -14,6 +14,8 @@ class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOr
     public trackingNumber!: string;
     public shippingAddress!: string;
     public paymentMethod!: string;
+    public paymentStatus!: string;
+    public paymentId!: string;
     public totalPrice!: number;
     public orderStatus!: string;
     public orderType!: string;
@@ -23,9 +25,10 @@ class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOr
 
 OrdersModel.init({
     id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: STRING,
         primaryKey: true,
+        allowNull: false,
+        defaultValue: UUIDV4
     },
     userId: {
         type: STRING,
@@ -40,12 +43,21 @@ OrdersModel.init({
     paymentMethod: {
         type: STRING,
     },
+    paymentId: {
+        type: STRING,
+    },
     totalPrice: {
-        type: INTEGER,
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0,
     },
     orderStatus: {
         type: ENUM,
         values: [...Object.values(ORDER_STATUS)]
+    },
+    paymentStatus: {
+        type: ENUM,
+        values: [...Object.values(PAYMENT_STATUS)]
     },
     orderType: {
         type: ENUM,

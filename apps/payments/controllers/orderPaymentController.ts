@@ -1,37 +1,17 @@
 const Razorpay = require("razorpay");
 import { NextFunction, Request, Response } from "express";
-import {
-    RESPONSE_TYPE,
-    SUCCESS_MESSAGE,
-    ERROR_MESSAGE,
-} from "../../../constants";
-import { CartRepo } from '../../cart/models/CartRepo'
-import {
-    sendResponse,
-    createStandardPaymentLinkForOrders,
-    sendEmail,
-    EMAIL_HEADING,
-    getEmailTemplate,
-    EMAIL_TEMPLATE,
-} from "../../../libraries";
-import { ContractRepo } from "../../contracts/models/ContractRepo";
+import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
+import { sendResponse, createStandardPaymentLinkForOrders, sendEmail, EMAIL_HEADING, getEmailTemplate, EMAIL_TEMPLATE } from "../../../libraries";
 import { OrderRepo } from "../../ecommerce/models/orders";
 import { OrderItemRepo } from "../../ecommerce/models/orders-item";
-import {
-    CONTRACT_PAYMENT_STATUS,
-    CONTRACT_STATUS,
-    ITrackable,
-} from "../../../interfaces";
-import { ContractPaymentDetails } from "../../../interfaces";
 import { CONFIG } from "../../../config";
-const {
-    validateWebhookSignature,
-} = require("razorpay/dist/utils/razorpay-utils");
 import { get } from "lodash";
 import { CartModel } from "../../../database/schema";
+import { CartRepo } from "../../cart/models/CartRepo";
 import { CartItemModel } from "../../../database/schema";
 import { FranchiseeModel } from "../../../database/schema";
-import { ORDER_TYPE, ORDER_STATUS } from '../../../interfaces';
+import { ORDER_TYPE, ORDER_STATUS, PAYMENT_STATUS } from '../../../interfaces';
+const { validateWebhookSignature } = require("razorpay/dist/utils/razorpay-utils");
 
 const razorpayInstance = new Razorpay({
     key_id: CONFIG.RP_ID_PROD,
@@ -55,28 +35,15 @@ export default class OrderPaymentController {
             ) {
                 const paymentId = body.payload.payment_link.entity.id;
                 const status = body.payload.payment_link.entity.status;
-                const contractDetails =
-                    await new ContractRepo().getContractByPaymentId(
-                        paymentId as string
-                    );
-                if (contractDetails) {
-                    const paymentDetails: ContractPaymentDetails = {
-                        paymentId: paymentId,
-                        amount: body.payload.payment_link.entity.amount,
-                        date: new Date(),
-                        status: status,
-                        additionalInfo: "",
-                    };
-
-                    let contractStatus = contractDetails.status;
-
+                const orderDetails = await new OrderRepo().getOrderByPaymentId(paymentId as string);
+                if (orderDetails) {
+                    let orderStatus = orderDetails.orderStatus;
                     if (status.toLowerCase() === "paid") {
-                        contractStatus = CONTRACT_STATUS.PAYMENT_RECEIVED;
+                        orderStatus = PAYMENT_STATUS.PAID;
                     }
-                    await new ContractRepo().updatePaymentStatus(
-                        contractDetails.id,
-                        contractDetails.payment as unknown as ContractPaymentDetails[],
-                        contractStatus
+                    await new OrderRepo().update(
+                        orderDetails.id as string,
+                        { orderStatus }
                     );
                 }
             }
@@ -90,7 +57,6 @@ export default class OrderPaymentController {
     static async fetchPayment(req: Request, res: Response, next: NextFunction) {
         try {
             const { paymentId } = req.params;
-
             if (!paymentId) {
                 return res
                     .status(400)
@@ -102,8 +68,7 @@ export default class OrderPaymentController {
                     );
             }
 
-            const paymentDetailsFromRazorpay =
-                await razorpayInstance.payments.fetch(paymentId);
+            const paymentDetailsFromRazorpay = await razorpayInstance.payments.fetch(paymentId);
             if (!paymentDetailsFromRazorpay) {
                 return res
                     .status(404)
@@ -120,7 +85,7 @@ export default class OrderPaymentController {
             );
 
             const paymentDetailsFromRepo =
-                await new ContractRepo().getPaymentById(paymentId);
+                await new OrderRepo().getOrderByPaymentId(paymentId);
             if (!paymentDetailsFromRepo) {
                 return res
                     .status(404)
@@ -162,7 +127,7 @@ export default class OrderPaymentController {
             const userId = get(req, 'user_id', '');
 
             // Find if the cart already exists for the user
-            let cart = await CartModel.findOne({ where: { userId } });
+            let cart = await new CartRepo().findById(userId);
             if (!cart) {
                 return res
                     .status(404)
@@ -181,7 +146,7 @@ export default class OrderPaymentController {
                 franchise: franchiseData
             });
 
-            console.log('link', link);
+            console.log('link', link.id);
             if (!link) {
                 return res
                     .status(500)
@@ -195,25 +160,27 @@ export default class OrderPaymentController {
 
             // Create the order and save order items
             const newOrder = await new OrderRepo().create({
-                userId: userId,
-                trackingNumber: "",
-                shippingAddress: "",
-                paymentMethod: "Razorpay",
-                totalPrice: cart.totalAmount,
-                isRepeated: 0,
+                userId: userId as string,
+                trackingNumber: "" as string,
+                shippingAddress: "" as string,
+                paymentMethod: "Razorpay" as string,
+                paymentId: link.id,
+                totalPrice: cart.totalAmount as number,
+                isRepeated: 0 as number,
                 orderStatus: ORDER_STATUS.PROCESSED,
+                paymentStatus: PAYMENT_STATUS.PROCESSED,
                 orderType: ORDER_TYPE.SAMPLE_ORDER,
             });
 
-            // // Save each cart item as an order item
+            // Save each cart item as an order item
             const orderItems = cart.items.map(item => ({
-                orderId: newOrder.id,
-                userId: userId,
-                productId: item.productId,
-                productType: item.productType,
-                quantity: item.quantity,
-                price: item.price,
-                subtotal: item.subtotal,
+                orderId: newOrder.id as string,
+                userId: userId as string,
+                productId: item.productId as number,
+                productType: item.productType as string,
+                quantity: item.quantity as number,
+                price: item.price as number,
+                subtotal: item.subtotal as number,
             }));
 
             await new OrderItemRepo().bulkCreate(orderItems);

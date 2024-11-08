@@ -6,27 +6,26 @@ export type TOrder = {
   trackingNumber: string;
   shippingAddress: string;
   paymentMethod: string;
+  paymentId: string;
   totalPrice: number;
   orderStatus: string;
+  paymentStatus: string;
   orderType: string;
   createdAt: Date;
   updatedAt: Date;
 };
 
-export type TEditOrder = {
-  orderStatus: string;
+export type TOrderPayload = {
+  userId?: string;
+  trackingNumber?: string;
+  shippingAddress?: string;
+  paymentMethod?: string;
+  paymentId?: string;
+  totalPrice?: number;
+  isRepeated?: number;
+  paymentStatus?: string;
+  orderStatus?: string;
   orderType?: string;
-};
-
-export type TAddOrder = {
-  userId: string;
-  trackingNumber: string;
-  shippingAddress: string;
-  paymentMethod: string;
-  totalPrice: number;
-  isRepeated: number;
-  orderStatus: string;
-  orderType: string;
 };
 
 export type TOrdersList = {

@@ -47,7 +47,6 @@ export default class OrderController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -81,7 +80,6 @@ export default class OrderController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -93,7 +91,7 @@ export default class OrderController {
             const id = get(req?.params, "id", 0);
             const orderStatus = get(req?.body, "status", "");
 
-            const existingOrder = await new OrderRepo().get(id as number);
+            const existingOrder = await new OrderRepo().get(id as string);
             if (isEmpty(existingOrder)) {
                 return res
                     .status(400)
@@ -105,7 +103,7 @@ export default class OrderController {
                     );
             }
 
-            const Order = await new OrderRepo().update(id as number, { orderStatus });
+            const Order = await new OrderRepo().update(id as string, { orderStatus });
             return res
                 .status(200)
                 .send(
@@ -116,7 +114,6 @@ export default class OrderController {
                     )
                 );
         } catch (err) {
-            console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -126,7 +123,7 @@ export default class OrderController {
     static async orderStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const Order = await new OrderRepo().orderStatus(id as number);
+            const Order = await new OrderRepo().orderStatus(id as string);
 
             if (isEmpty(Order)) {
                 return res
@@ -149,7 +146,6 @@ export default class OrderController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -159,7 +155,7 @@ export default class OrderController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const Order = await new OrderRepo().get(id as number);
+            const Order = await new OrderRepo().get(id as string);
 
             if (isEmpty(Order)) {
                 return res
@@ -182,7 +178,6 @@ export default class OrderController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

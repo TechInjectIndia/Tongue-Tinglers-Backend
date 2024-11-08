@@ -1,10 +1,14 @@
 export enum ORDER_STATUS {
     PROCESSED = "processed",
-    PAID = "paid",
-    UNPAID = "un-paid",
     DELIVERED = "delivered",
     SHIPPED = "shipped",
     CANCELLED = "cancelled",
+}
+
+export enum PAYMENT_STATUS {
+    PAID = "paid",
+    UNPAID = "un-paid",
+    PROCESSED = "processed",
 }
 
 export enum ORDER_TYPE {

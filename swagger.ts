@@ -37,6 +37,9 @@ const options = {
                 name: 'AUTH' // auth starts
             },
             {
+                name: 'UserAddress'
+            },
+            {
                 name: 'Cart'
             },
             {
@@ -221,6 +224,7 @@ const options = {
     // looks for configuration in specified directories
     apis: [
         './routes/*.ts',
+        './apps/user-address/api/*.ts',
         './apps/region/api/*.ts',
         './apps/cart/api/*.ts',
         './apps/vendor/api/*.ts',

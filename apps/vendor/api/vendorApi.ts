@@ -2,7 +2,6 @@
 import * as express from "express";
 import VendorController from "../controllers/vendorController";
 import * as VendorValidation from "../validations/vendorValidations";
-import { hasPermission } from "../../../middlewares";
 
 const router = express.Router();
 
@@ -175,11 +174,11 @@ const {
  *       '404':
  *         description: Vendor not found
  */
-router.post("/create", hasPermission('vendors', 'create'), validateCreateVendorBody, VendorController.create);
-router.get("/list", hasPermission('vendors', 'read'), validateListVendorQuery, VendorController.list);
-router.get("/get/:id", hasPermission('vendors', 'read'), validateEditVendorParams, VendorController.get);
-router.put("/update/:id", hasPermission('vendors', 'update'), validateEditVendorParams, validateEditVendorBody, VendorController.update);
-router.delete("/delete", hasPermission('vendors', 'delete'), validateEditMultipleIdsBody, VendorController.delete);
+router.post("/create", validateCreateVendorBody, VendorController.create);
+router.get("/list", validateListVendorQuery, VendorController.list);
+router.get("/get/:id", validateEditVendorParams, VendorController.get);
+router.put("/update/:id", validateEditVendorParams, validateEditVendorBody, VendorController.update);
+router.delete("/delete", validateEditMultipleIdsBody, VendorController.delete);
 // ====== Vendors Ends ======
 
 export default router;

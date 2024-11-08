@@ -20,6 +20,7 @@ export * from './stocks';
 export * from './regions';
 export * from './vendor';
 export * from './cart';
+export * from './userAddress';
 
 interface ITrackable {
     userDetails: UserDetails;

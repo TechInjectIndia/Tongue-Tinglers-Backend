@@ -64,6 +64,7 @@ import quickActionWhatsappRouter from "../apps/quick-actions/api/whatsapp";
 import regionRouter from "../apps/region/api/index";
 import vendorRouter from "../apps/vendor/api/vendorApi";
 import cartRouter from "../apps/cart/api/cartApi";
+import userAddressRouter from "../apps/user-address/api/userAddressApi";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -106,6 +107,7 @@ router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
 router.use(`${ADMIN}/lead`, leadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`/cart`, auth, cartRouter);
+router.use(`/user-address`, auth, userAddressRouter);
 // ====== Admin ======
 
 // ====== Franchise ======

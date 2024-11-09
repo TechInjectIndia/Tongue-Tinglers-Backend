@@ -28,6 +28,7 @@ const {
  *             required:
  *               - status
  *               - leadId
+ *               - proposalData
  *               - templateId
  *               - amount
  *               - dueDate
@@ -39,6 +40,8 @@ const {
  *                 enum: ["draft", "active", "expired", "terminated"]
  *                 example: "active"
  *                 description: The status of the contract.
+ *               proposalData:
+ *                 type: object
  *               terminationDetails:
  *                 type: object
  *                 description: Details about the contract termination if applicable.

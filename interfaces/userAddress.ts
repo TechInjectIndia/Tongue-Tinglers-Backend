@@ -11,6 +11,7 @@ interface UserAddressAttributes {
     phone: string;
     gstin?: string;
     address: string;
+    houseNo: string;
     city: string;
     state: string;
     country: string;
@@ -33,6 +34,7 @@ interface IUserAddressPayload {
     phone: string;
     gstin?: string;
     address: string;
+    houseNo: string;
     city: string;
     state: string;
     country: string;

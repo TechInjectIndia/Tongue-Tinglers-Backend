@@ -4,51 +4,53 @@ import { validateReq } from "../../../libraries";
 
 // Validation schema for creating a user address
 const createUserAddressSchema = Joi.object({
-    title: Joi.string().required().messages({
-        'string.empty': 'Billing title is required.',
-        'any.required': 'Billing title is required.',
+    title: Joi.string().optional().messages({
+        'string.empty': 'title is required.',
+        'any.required': 'title is required.',
     }),
-    firstName: Joi.string().required().messages({
-        'string.empty': 'Billing first name is required.',
-        'any.required': 'Billing first name is required.',
+    firstName: Joi.string().optional().messages({
+        'string.empty': 'first name is required.',
+        'any.required': 'first name is required.',
     }),
-    lastName: Joi.string().required().messages({
-        'string.empty': 'Billing last name is required.',
-        'any.required': 'Billing last name is required.',
+    lastName: Joi.string().optional().messages({
+        'string.empty': 'last name is required.',
+        'any.required': 'last name is required.',
     }),
-    email: Joi.string().email().required().messages({
-        'string.empty': 'Billing email is required.',
-        'string.email': 'Billing email must be a valid email.',
-        'any.required': 'Billing email is required.',
+    email: Joi.string().email().optional().messages({
+        'string.empty': 'email is required.',
+        'string.email': 'email must be a valid email.',
+        'any.required': 'email is required.',
     }),
-    phone: Joi.string().required().messages({
-        'string.empty': 'Billing phone is required.',
-        'any.required': 'Billing phone is required.',
+    phone: Joi.string().optional().messages({
+        'string.empty': 'phone is required.',
+        'any.required': 'phone is required.',
     }),
-    gstin: Joi.string().optional().messages({
-        'string.empty': 'Billing GSTIN must be a string.',
+    gstin: Joi.optional(),
+    address: Joi.string().optional().messages({
+        'string.empty': 'address is required.',
+        'any.required': 'address is required.',
     }),
-    address: Joi.string().required().messages({
-        'string.empty': 'Billing address is required.',
-        'any.required': 'Billing address is required.',
+    houseNo: Joi.string().optional().messages({
+        'string.empty': 'address is required.',
+        'any.required': 'address is required.',
     }),
-    city: Joi.string().required().messages({
-        'string.empty': 'Billing city is required.',
-        'any.required': 'Billing city is required.',
+    city: Joi.string().optional().messages({
+        'string.empty': 'city is required.',
+        'any.required': 'city is required.',
     }),
-    state: Joi.string().required().messages({
-        'string.empty': 'Billing state is required.',
-        'any.required': 'Billing state is required.',
+    state: Joi.string().optional().messages({
+        'string.empty': 'state is required.',
+        'any.required': 'state is required.',
     }),
-    country: Joi.string().required().messages({
-        'string.empty': 'Billing country is required.',
-        'any.required': 'Billing country is required.',
+    country: Joi.string().optional().messages({
+        'string.empty': 'country is required.',
+        'any.required': 'country is required.',
     }),
-    zipCode: Joi.string().required().messages({
-        'string.empty': 'Billing ZIP code is required.',
-        'any.required': 'Billing ZIP code is required.',
+    zipCode: Joi.string().optional().messages({
+        'string.empty': 'ZIP code is required.',
+        'any.required': 'ZIP code is required.',
     }),
-    isActive: Joi.boolean().required().messages({
+    isActive: Joi.boolean().optional().messages({
         'any.required': 'The isActive field is required.',
         'boolean.base': 'The isActive field must be a boolean value.',
     })
@@ -76,7 +78,7 @@ export const validateUpdateUserAddress = (
 
 // Validation schema for deleting a user address by ID
 const deleteUserAddressSchema = Joi.object({
-    id: Joi.string().required().messages({
+    id: Joi.string().optional().messages({
         'any.required': 'ID is required.',
     }),
 });

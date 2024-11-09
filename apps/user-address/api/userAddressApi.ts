@@ -34,6 +34,7 @@ const {
  *               - email
  *               - phone
  *               - address
+ *               - houseNo
  *               - city
  *               - state
  *               - country
@@ -54,6 +55,8 @@ const {
  *               gstin:
  *                 type: string
  *               address:
+ *                 type: string
+ *               houseNo:
  *                 type: string
  *               city:
  *                 type: string
@@ -139,6 +142,8 @@ const {
  *               phone:
  *                 type: string
  *               address:
+ *                 type: string
+ *               houseNo:
  *                 type: string
  *               city:
  *                 type: string

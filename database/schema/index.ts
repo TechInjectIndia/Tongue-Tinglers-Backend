@@ -1,6 +1,7 @@
 // Admin model starts
 export * from "./user/user.model";
 export * from "./user/address";
+export * from "./user/userAddressModel";
 export * from "./admin-roles";
 export * from "./admin-permissions";
 // Admin model ends
@@ -20,7 +21,7 @@ export * from "./ecommerce/stockModel";
 export * from "./ecommerce/vendorsModel";
 export * from "./ecommerce/cartModel";
 export * from "./ecommerce/CartItemModel";
-export * from "./ecommerce/addressOrdersModel";
+export * from "./user/userAddressModel";
 // ecommerce model ends
 
 // retort model starts
@@ -86,6 +87,7 @@ import { SocialMediaDetailsFranchiseModel } from "./franchise/smDetailsModel";
 import { AssignModel } from "./lead/assigneeModels";
 import { LeadsModel } from './lead/lead.model';
 import { UserModel } from './user/user.model';
+import { UserAddressModel } from './user/userAddressModel';
 
 // CampaignAdModel.belongsToMany(questionModel, {
 //     through: 'CampaignQuestions',
@@ -125,6 +127,7 @@ SocialMediaDetailsFranchiseModel.belongsTo(FranchiseeModel, {
 });
 // Establish association with SocialMediaDetailsFranchiseModel
 
+UserModel.hasMany(UserAddressModel, { foreignKey: 'userId', as: 'address' });
 
 UserModel.hasMany(AssignModel, { foreignKey: 'assignedTo', as: 'assignmentsAsAssignedTo' });
 UserModel.hasMany(AssignModel, { foreignKey: 'assignedBy', as: 'assignmentsAsAssignedBy' });

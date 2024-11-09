@@ -1,7 +1,7 @@
 import { Model, DataTypes, Optional, } from 'sequelize';
 import { sequelize } from "../../../config";
 import { UserAddressAttributes } from "../../../interfaces";
-import { UserModel } from '../user/user.model';
+import { UserModel } from './user.model';
 
 // Optional attributes for model creation
 interface UserAddressCreationAttributes extends Optional<UserAddressAttributes, 'id' | 'gstin'> { }
@@ -19,6 +19,7 @@ class UserAddressModel extends Model<UserAddressAttributes, UserAddressCreationA
     public phone!: string;
     public gstin?: string;
     public address!: string;
+    public houseNo!: string;
     public city!: string;
     public state!: string;
     public country!: string;
@@ -46,7 +47,7 @@ UserAddressModel.init(
         // Billing address fields
         title: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         firstName: {
             type: DataTypes.STRING,
@@ -72,6 +73,10 @@ UserAddressModel.init(
             allowNull: true,
         },
         address: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        houseNo: {
             type: DataTypes.STRING,
             allowNull: false,
         },
@@ -104,7 +109,7 @@ UserAddressModel.init(
     }
 );
 
-UserAddressModel.belongsTo(UserModel, { foreignKey: 'userId', as: 'userData', });
+UserAddressModel.belongsTo(UserModel, { foreignKey: 'userId', as: 'addressData', });
 
 // Export the model for use in other parts of the project
 export { UserAddressModel };

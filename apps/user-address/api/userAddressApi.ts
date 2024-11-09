@@ -28,63 +28,43 @@ const {
  *           schema:
  *             type: object
  *             required:
- *               - billingTitle
- *               - billingFirstName
- *               - billingLastName
- *               - billingEmail
- *               - billingPhone
- *               - billingAddress
- *               - billingCity
- *               - billingState
- *               - billingCountry
- *               - billingZipCode
+ *               - title
+ *               - firstName
+ *               - lastName
+ *               - email
+ *               - phone
+ *               - address
+ *               - city
+ *               - state
+ *               - country
+ *               - zipCode
+ *               - isActive
  *             properties:
- *               billingTitle:
+ *               title:
  *                 type: string
- *               billingFirstName:
+ *               firstName:
  *                 type: string
- *               billingLastName:
+ *               lastName:
  *                 type: string
- *               billingEmail:
- *                 type: string
- *                 format: email
- *               billingPhone:
- *                 type: string
- *               billingGstin:
- *                 type: string
- *               billingAddress:
- *                 type: string
- *               billingCity:
- *                 type: string
- *               billingState:
- *                 type: string
- *               billingCountry:
- *                 type: string
- *               billingZipCode:
- *                 type: string
- *               shippingTitle:
- *                 type: string
- *               shippingFirstName:
- *                 type: string
- *               shippingLastName:
- *                 type: string
- *               shippingEmail:
+ *               email:
  *                 type: string
  *                 format: email
- *               shippingPhone:
+ *               phone:
  *                 type: string
- *               shippingGstin:
+ *               gstin:
  *                 type: string
- *               shippingAddress:
+ *               address:
  *                 type: string
- *               shippingCity:
+ *               city:
  *                 type: string
- *               shippingState:
+ *               state:
  *                 type: string
- *               shippingCountry:
+ *               country:
  *                 type: string
- *               shippingZipCode:
+ *               zipCode:
  *                 type: string
+ *               isActive:
+ *                 type: boolean
  *     responses:
  *       '201':
  *         description: User address created successfully
@@ -147,48 +127,29 @@ const {
  *           schema:
  *             type: object
  *             properties:
- *               billingTitle:
+ *               title:
  *                 type: string
- *               billingFirstName:
+ *               firstName:
  *                 type: string
- *               billingLastName:
+ *               lastName:
  *                 type: string
- *               billingEmail:
- *                 type: string
- *                 format: email
- *               billingPhone:
- *                 type: string
- *               billingAddress:
- *                 type: string
- *               billingCity:
- *                 type: string
- *               billingState:
- *                 type: string
- *               billingCountry:
- *                 type: string
- *               billingZipCode:
- *                 type: string
- *               shippingTitle:
- *                 type: string
- *               shippingFirstName:
- *                 type: string
- *               shippingLastName:
- *                 type: string
- *               shippingEmail:
+ *               email:
  *                 type: string
  *                 format: email
- *               shippingPhone:
+ *               phone:
  *                 type: string
- *               shippingAddress:
+ *               address:
  *                 type: string
- *               shippingCity:
+ *               city:
  *                 type: string
- *               shippingState:
+ *               state:
  *                 type: string
- *               shippingCountry:
+ *               country:
  *                 type: string
- *               shippingZipCode:
+ *               zipCode:
  *                 type: string
+ *               isActive:
+ *                 type: boolean
  *     responses:
  *       '200':
  *         description: User address updated successfully

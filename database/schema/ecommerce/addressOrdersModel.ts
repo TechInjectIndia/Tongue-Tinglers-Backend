@@ -4,7 +4,7 @@ import { UserAddressAttributes } from "../../../interfaces";
 import { UserModel } from '../user/user.model';
 
 // Optional attributes for model creation
-interface UserAddressCreationAttributes extends Optional<UserAddressAttributes, 'id' | 'billingGstin' | 'shippingGstin'> { }
+interface UserAddressCreationAttributes extends Optional<UserAddressAttributes, 'id' | 'gstin'> { }
 
 // Define the UserAddress model class
 class UserAddressModel extends Model<UserAddressAttributes, UserAddressCreationAttributes> implements UserAddressAttributes {
@@ -12,30 +12,18 @@ class UserAddressModel extends Model<UserAddressAttributes, UserAddressCreationA
     public userId!: string;
 
     // Billing address properties
-    public billingTitle!: string;
-    public billingFirstName!: string;
-    public billingLastName!: string;
-    public billingEmail!: string;
-    public billingPhone!: string;
-    public billingGstin?: string;
-    public billingAddress!: string;
-    public billingCity!: string;
-    public billingState!: string;
-    public billingCountry!: string;
-    public billingZipCode!: string;
-
-    // Shipping address properties
-    public shippingTitle!: string;
-    public shippingFirstName!: string;
-    public shippingLastName!: string;
-    public shippingEmail!: string;
-    public shippingPhone!: string;
-    public shippingGstin?: string;
-    public shippingAddress!: string;
-    public shippingCity!: string;
-    public shippingState!: string;
-    public shippingCountry!: string;
-    public shippingZipCode!: string;
+    public title!: string;
+    public firstName!: string;
+    public lastName!: string;
+    public email!: string;
+    public phone!: string;
+    public gstin?: string;
+    public address!: string;
+    public city!: string;
+    public state!: string;
+    public country!: string;
+    public zipCode!: string;
+    public isActive!: boolean;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -56,101 +44,57 @@ UserAddressModel.init(
         },
 
         // Billing address fields
-        billingTitle: {
+        title: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        billingFirstName: {
+        firstName: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        billingLastName: {
+        lastName: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        billingEmail: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                isEmail: true,
-            },
-        },
-        billingPhone: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        billingGstin: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        billingAddress: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        billingCity: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        billingState: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        billingCountry: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        billingZipCode: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-
-        // Shipping address fields
-        shippingTitle: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        shippingFirstName: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        shippingLastName: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        shippingEmail: {
+        email: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 isEmail: true,
             },
         },
-        shippingPhone: {
+        phone: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        shippingGstin: {
+        gstin: {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        shippingAddress: {
+        address: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        shippingCity: {
+        city: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        shippingState: {
+        state: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        shippingCountry: {
+        country: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        shippingZipCode: {
+        zipCode: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
         },
     },
     {

@@ -4,30 +4,18 @@ interface UserAddressAttributes {
     userId: string;
 
     // Billing address fields
-    billingTitle: string;
-    billingFirstName: string;
-    billingLastName: string;
-    billingEmail: string;
-    billingPhone: string;
-    billingGstin?: string;
-    billingAddress: string;
-    billingCity: string;
-    billingState: string;
-    billingCountry: string;
-    billingZipCode: string;
-
-    // Shipping address fields
-    shippingTitle: string;
-    shippingFirstName: string;
-    shippingLastName: string;
-    shippingEmail: string;
-    shippingPhone: string;
-    shippingGstin?: string;
-    shippingAddress: string;
-    shippingCity: string;
-    shippingState: string;
-    shippingCountry: string;
-    shippingZipCode: string;
+    title: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    gstin?: string;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    zipCode: string;
+    isActive: boolean;
 
     createdAt?: Date;
     updatedAt?: Date;
@@ -38,30 +26,18 @@ interface IUserAddressPayload {
     userId: string;
 
     // Billing address fields
-    billingTitle: string;
-    billingFirstName: string;
-    billingLastName: string;
-    billingEmail: string;
-    billingPhone: string;
-    billingGstin?: string;
-    billingAddress: string;
-    billingCity: string;
-    billingState: string;
-    billingCountry: string;
-    billingZipCode: string;
-
-    // Shipping address fields
-    shippingTitle: string;
-    shippingFirstName: string;
-    shippingLastName: string;
-    shippingEmail: string;
-    shippingPhone: string;
-    shippingGstin?: string;
-    shippingAddress: string;
-    shippingCity: string;
-    shippingState: string;
-    shippingCountry: string;
-    shippingZipCode: string;
+    title: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    gstin?: string;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    zipCode: string;
+    isActive: boolean;
 }
 
 export { UserAddressAttributes, IUserAddressPayload };

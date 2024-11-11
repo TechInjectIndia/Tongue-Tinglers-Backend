@@ -86,4 +86,36 @@ router.get('/fetch/:paymentId', OrderPaymentController.fetchPayment);
  */
 router.post('/generate-link', OrderPaymentController.generatePaymentLink);
 
+/**
+ * @swagger
+ * /api/order-payment/create-payment-intent:
+ *   post:
+ *     summary: Create a Razorpay payment intent.
+ *     description: Generates a payment intent (order) for the user's cart and creates a corresponding order in the system.
+ *     tags:
+ *       - Order Payment
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Payment intent created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *       404:
+ *         description: Cart or franchise data not found.
+ *       500:
+ *         description: Internal server error.
+ */
+router.post('/create-payment-intent', OrderPaymentController.createPaymentIntent);
+router.post('/payment/complete', OrderPaymentController.createOrderAndClearCart);
+
 export default router;

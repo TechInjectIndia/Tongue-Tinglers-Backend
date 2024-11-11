@@ -79,3 +79,41 @@ export const createStandardPaymentLinkForOrders = async (data: { cart: any, fran
         return new Error("Failed to create payment link");
     }
 }
+
+export const CreatePaymentIntentWithRazorpay = async (data: any) => {
+    try {
+        // Razorpay order creation payload
+        const paymentIntentPayload = {
+            amount: Math.round(data.cart.totalAmount * 100),
+            currency: "INR",
+            payment_capture: 1,
+            receipt: `order_rcpt_${Date.now()}`,
+            notes: {
+                policy_name: "Tongue Tingler"
+            },
+        };
+
+        // Create a payment intent (order) using Razorpay Orders API
+        const paymentIntent = await razorpayInstance.orders.create(paymentIntentPayload);
+
+        // Check if payment intent was created successfully
+        if (!paymentIntent || !paymentIntent.id) {
+            return {
+                status: 500,
+                message: "Failed to create payment intent."
+            };
+        }
+
+        return {
+            status: 200,
+            message: "Payment intent created successfully.",
+            data: { paymentIntentId: paymentIntent.id }
+        };
+    } catch (err) {
+        console.error("Error creating payment intent:", err);
+        return {
+            status: 500,
+            message: "Failed to create payment intent."
+        };
+    }
+};

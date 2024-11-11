@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TOrder } from "../../../types";
 import { ORDER_TYPE, ORDER_STATUS, PAYMENT_STATUS } from '../../../interfaces';
-const { INTEGER, STRING, UUIDV4, ENUM, BOOLEAN } = DataTypes;
+const { INTEGER, STRING, JSONB, UUIDV4, ENUM, BOOLEAN } = DataTypes;
 import { OrderItemsModel } from './order_item.model'
 import { UserModel } from '../user/user.model'
 
@@ -12,7 +12,7 @@ class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOr
     public id!: string;
     public userId!: string;
     public trackingNumber!: string;
-    public shippingAddress!: string;
+    public shippingAddress!: any;
     public paymentMethod!: string;
     public paymentStatus!: string;
     public paymentId!: string;
@@ -38,7 +38,7 @@ OrdersModel.init({
         type: STRING,
     },
     shippingAddress: {
-        type: STRING,
+        type: JSONB,
     },
     paymentMethod: {
         type: STRING,

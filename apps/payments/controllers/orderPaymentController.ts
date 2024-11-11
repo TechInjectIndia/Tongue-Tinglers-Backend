@@ -1,9 +1,10 @@
 const Razorpay = require("razorpay");
 import { NextFunction, Request, Response } from "express";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { sendResponse, createStandardPaymentLinkForOrders, sendEmail, EMAIL_HEADING, getEmailTemplate, EMAIL_TEMPLATE } from "../../../libraries";
+import { sendResponse, createStandardPaymentLinkForOrders, CreatePaymentIntentWithRazorpay, sendEmail, EMAIL_HEADING, getEmailTemplate, EMAIL_TEMPLATE } from "../../../libraries";
 import { OrderRepo } from "../../ecommerce/models/orders";
 import { OrderItemRepo } from "../../ecommerce/models/orders-item";
+import { UserAddressRepo } from "../../user-address/models/UserAddressRepo";
 import { CONFIG } from "../../../config";
 import { get } from "lodash";
 import { CartModel } from "../../../database/schema";
@@ -11,6 +12,7 @@ import { CartRepo } from "../../cart/models/CartRepo";
 import { CartItemModel } from "../../../database/schema";
 import { FranchiseeModel } from "../../../database/schema";
 import { ORDER_TYPE, ORDER_STATUS, PAYMENT_STATUS } from '../../../interfaces';
+import { AnyCnameRecord } from "dns";
 const { validateWebhookSignature } = require("razorpay/dist/utils/razorpay-utils");
 
 const razorpayInstance = new Razorpay({
@@ -27,6 +29,7 @@ export default class OrderPaymentController {
             webhookSignature,
             CONFIG.RP_WEBHOOK_SECRET
         );
+        console.log('payment body', body);
         if (isVerified) {
             if (
                 body.payload &&
@@ -40,6 +43,8 @@ export default class OrderPaymentController {
                     let orderStatus = orderDetails.orderStatus;
                     if (status.toLowerCase() === "paid") {
                         orderStatus = PAYMENT_STATUS.PAID;
+                    } else {
+                        orderStatus = PAYMENT_STATUS.UNPAID;
                     }
                     await new OrderRepo().update(
                         orderDetails.id as string,
@@ -235,6 +240,128 @@ export default class OrderPaymentController {
             return res
                 .status(500)
                 .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+        }
+    }
+
+
+    static async createOrderAndClearCart(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { paymentId } = req.body;
+
+            // get cart & cart items
+            const userId = get(req, 'user_id', '');
+
+            // Find if the cart already exists for the user
+            let cart = await new CartRepo().findById(userId);
+            if (!cart) {
+                return res
+                    .status(404)
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Cart is empty"));
+            }
+
+            let franchiseData = await FranchiseeModel.findOne({ where: { userid: userId } });
+            if (!franchiseData) {
+                return res
+                    .status(404)
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Franchise is missing"));
+            }
+
+            const getUserActiveAddress = await new UserAddressRepo().getActiveAddress(userId as string);
+
+            // Create the order and save order items
+            const newOrder = await new OrderRepo().create({
+                userId: userId as string,
+                trackingNumber: "" as string,
+                shippingAddress: getUserActiveAddress,
+                paymentMethod: "Razorpay" as string,
+                paymentId: paymentId,
+                totalPrice: cart.totalAmount as number,
+                isRepeated: 0 as number,
+                orderStatus: ORDER_STATUS.PROCESSED,
+                paymentStatus: PAYMENT_STATUS.PROCESSED,
+                orderType: ORDER_TYPE.SAMPLE_ORDER,
+            });
+
+            // Save each cart item as an order item
+            const orderItems = cart.items.map(item => ({
+                orderId: newOrder.id as string,
+                userId: userId as string,
+                productId: item.productId as number,
+                productType: item.productType as string,
+                quantity: item.quantity as number,
+                price: item.price as number,
+                subtotal: item.subtotal as number,
+            }));
+
+            await new OrderItemRepo().bulkCreate(orderItems);
+
+            // Remove all products related to the cart
+            await CartItemModel.destroy({
+                where: { cart_id: cart.id },
+            });
+
+            const cartData = await CartModel.destroy({
+                where: { id: cart.id },
+            });
+
+            return res.status(200).send(
+                sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, newOrder)
+            );
+        } catch (error) {
+            console.error("Error during order creation or clearing the cart:", error);
+            return res.status(500).send({ message: "Error during order creation or cart clearing" });
+        }
+    }
+
+
+    static async createPaymentIntent(req: Request, res: Response, next: NextFunction) {
+        try {
+            // Get user ID from request
+            const userId = get(req, 'user_id', '');
+
+            // Find if the cart already exists for the user
+            let cart = await new CartRepo().findById(userId);
+            if (!cart || cart.items.length === 0) {
+                return res
+                    .status(404)
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Cart is empty"));
+            }
+
+            // Retrieve franchisee data
+            let franchiseData = await FranchiseeModel.findOne({ where: { userid: userId } });
+            if (!franchiseData) {
+                return res
+                    .status(404)
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Franchise is missing"));
+            }
+
+            // Calculate total amount from cart items (Example: summing up all item prices)
+            const totalAmount = cart.items.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
+
+            // Prepare the data for CreatePaymentIntentWithRazorpay function
+            const data = {
+                cart: {
+                    totalAmount
+                },
+                franchise: franchiseData
+            };
+
+            // Call the utility function to create payment intent
+            const paymentIntentResponse = await CreatePaymentIntentWithRazorpay(data);
+
+            if (paymentIntentResponse.status === 500) {
+                return res.status(500).send(sendResponse(RESPONSE_TYPE.ERROR, paymentIntentResponse.message));
+            }
+
+            // Return success response with payment intent ID
+            return res.status(200).send(
+                sendResponse(RESPONSE_TYPE.SUCCESS, "Payment intent created successfully.", {
+                    paymentIntentId: paymentIntentResponse.data.paymentIntentId,
+                })
+            );
+        } catch (error) {
+            console.error("Error creating payment intent:", error);
+            return res.status(500).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.INTERNAL_SERVER_ERROR));
         }
     }
 }

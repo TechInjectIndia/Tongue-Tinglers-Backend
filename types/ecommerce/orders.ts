@@ -4,7 +4,7 @@ export type TOrder = {
   id: string;
   userId: string;
   trackingNumber: string;
-  shippingAddress: string;
+  shippingAddress: any;
   paymentMethod: string;
   paymentId: string;
   totalPrice: number;
@@ -18,7 +18,7 @@ export type TOrder = {
 export type TOrderPayload = {
   userId?: string;
   trackingNumber?: string;
-  shippingAddress?: string;
+  shippingAddress?: any;
   paymentMethod?: string;
   paymentId?: string;
   totalPrice?: number;

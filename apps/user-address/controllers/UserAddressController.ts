@@ -26,6 +26,23 @@ export default class UserAddressController {
         }
     }
 
+    static async getActiveAddress(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = get(req, 'user_id', '');
+            const addressResponse = await new UserAddressRepo().getActiveAddress(userId);
+            return res.status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        `Address ${SUCCESS_MESSAGE.CREATED}`,
+                        addressResponse
+                    )
+                );
+        } catch (error) {
+            next(error);
+        }
+    }
+
     static async list(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = get(req, 'user_id', '');

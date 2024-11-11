@@ -12,6 +12,20 @@ export class UserAddressRepo implements IUserAddressController<UserAddressAttrib
      */
     public async create(payload: IUserAddressPayload): Promise<UserAddressAttributes> {
         try {
+            const userId = payload.userId
+            // Check if the payload includes setting `isActive` to true
+            if (payload.isActive === true) {
+                // Update all other addresses for the same user to `isActive: false`
+                await UserAddressModel.update(
+                    { isActive: false },
+                    {
+                        where: {
+                            userId: userId,
+                        }
+                    }
+                );
+            }
+            // Update the current address
             const newUserAddress = await UserAddressModel.create(payload);
             return newUserAddress.get() as UserAddressAttributes;
         } catch (error) {
@@ -26,6 +40,20 @@ export class UserAddressRepo implements IUserAddressController<UserAddressAttrib
             },
         });
         return data;
+    }
+
+    public async getActiveAddress(userId: string): Promise<UserAddressAttributes | null> {
+        try {
+            const userAddress = await UserAddressModel.findOne({
+                where: {
+                    userId,
+                    isActive: true
+                }
+            });
+            return userAddress;
+        } catch (error) {
+            throw new Error(`Error fetching user address: ${(error as Error).message}`);
+        }
     }
 
     /**
@@ -73,7 +101,6 @@ export class UserAddressRepo implements IUserAddressController<UserAddressAttrib
                     }
                 );
             }
-            console.log('payloadpayloadpayloadpayloadpayloadpayload', payload);
             // Update the current address
             const updatedUserAddress = await userAddress.update(payload);
             return updatedUserAddress.get() as UserAddressAttributes;

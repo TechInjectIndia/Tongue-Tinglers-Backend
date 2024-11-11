@@ -2,6 +2,7 @@ import { UserAddressModel } from "../../../database/schema";
 import { UserAddressAttributes, IUserAddressPayload } from "../../../interfaces"; // Ensure these interfaces are defined
 import IUserAddressController from '../controllers/controller/IUserAddressController'; // Ensure this interface is correctly defined
 import { TListFilters } from "../../../types";
+const { Op } = require("sequelize");
 
 export class UserAddressRepo implements IUserAddressController<UserAddressAttributes, TListFilters> {
     /**
@@ -59,6 +60,21 @@ export class UserAddressRepo implements IUserAddressController<UserAddressAttrib
                 return null; // Address not found
             }
 
+            // Check if the update includes setting `isActive` to true
+            if (payload.isActive === true) {
+                // Update all other addresses for the same user to `isActive: false`
+                await UserAddressModel.update(
+                    { isActive: false },
+                    {
+                        where: {
+                            userId: userAddress.userId, // Assuming userId is a field in the UserAddressModel
+                            id: { [Op.ne]: id } // Ensure we don't update the current address being updated
+                        }
+                    }
+                );
+            }
+            console.log('payloadpayloadpayloadpayloadpayloadpayload', payload);
+            // Update the current address
             const updatedUserAddress = await userAddress.update(payload);
             return updatedUserAddress.get() as UserAddressAttributes;
         } catch (error) {

@@ -100,6 +100,9 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
             include: [{
                 model: UserAddressModel,
                 as: 'address',
+                order: [
+                    ['isActive', 'ASC']
+                ]
             }]
         });
         if (data) {

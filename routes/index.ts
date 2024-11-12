@@ -76,7 +76,7 @@ router.use(`${ADMIN}/testimonials`, auth, testimonialsRouter);
 router.use(`${ADMIN}/reviews`, auth, reviewsRouter);
 router.use(`${ADMIN}/profile`, auth, profileRouter);
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
-router.use(`/payments`, auth, paymentsRouter);
+router.use(`/payments`, paymentsRouter);
 router.use(`/order-payment`, auth, paymentsOrdersRouter);
 router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter);
 router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter);

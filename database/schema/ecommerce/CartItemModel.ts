@@ -2,7 +2,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
 import { ICartItemAttributes } from "../../../interfaces";
-import { CartModel } from './cartModel';
 import { ProductsModel } from './product.model';
 import { RetortProductsModel } from '../retort/retort-product';
 

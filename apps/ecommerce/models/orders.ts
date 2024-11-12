@@ -51,7 +51,7 @@ export class OrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
             include: [
                 {
                     model: OrderItemsModel,
-                    as: 'order_items'
+                    as: 'items'
                 },
             ],
         });

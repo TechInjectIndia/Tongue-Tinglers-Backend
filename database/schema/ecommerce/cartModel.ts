@@ -14,7 +14,7 @@ class CartModel extends Model<ICartAttributes, ICartCreationAttributes> implemen
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
-    public readonly items?: TCartItem[]; // Array of items in the cart
+    public readonly items?: TCartItem[];
 }
 
 CartModel.init(

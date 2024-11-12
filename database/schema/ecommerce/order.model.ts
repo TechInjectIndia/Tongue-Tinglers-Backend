@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { TOrder } from "../../../types";
+import { TOrder, TOrderItem } from "../../../types";
 import { ORDER_TYPE, ORDER_STATUS, PAYMENT_STATUS } from '../../../interfaces';
 const { INTEGER, STRING, JSONB, UUIDV4, ENUM, BOOLEAN } = DataTypes;
 import { OrderItemsModel } from './order_item.model'
@@ -19,6 +19,9 @@ class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOr
     public totalPrice!: number;
     public orderStatus!: string;
     public orderType!: string;
+
+    public readonly items?: TOrderItem[]; // Array of items in the cart
+
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -81,8 +84,8 @@ OrdersModel.init({
     timestamps: true,
 });
 
-OrdersModel.hasMany(OrderItemsModel, { as: 'order_items' });
 OrdersModel.belongsTo(UserModel, { foreignKey: 'userId' });
+OrdersModel.hasMany(OrderItemsModel, { foreignKey: 'orderId', as: 'items' });
 
 export { OrdersModel };
 

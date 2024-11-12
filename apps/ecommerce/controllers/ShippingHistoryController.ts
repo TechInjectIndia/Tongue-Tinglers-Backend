@@ -59,6 +59,12 @@ export default class ShippingHistoryController {
                 'Status should not be empty'
             ));
         }
+        if (status === 'Shipped' && trackingNumber == '') {
+            return res.status(404).json(sendResponse(
+                RESPONSE_TYPE.ERROR,
+                'Tracking Number should not be empty'
+            ));
+        }
 
         try {
             const updatedShippingHistory = await shippingHistoryRepo.updateShippingHistory(id, status, trackingNumber);

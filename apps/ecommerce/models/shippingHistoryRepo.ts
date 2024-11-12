@@ -62,38 +62,51 @@ export class ShippingHistoryRepo {
         }
     }
 
-    // Update shipping history for a given order
     public async updateShippingHistory(orderId: string, status: any, trackingNumber: any): Promise<[affectedCount: number]> {
         try {
-
             const shippingHistory = await ShippingHistoryModel.findOne({
                 where: { orderId },
             });
+
             if (!shippingHistory) {
                 throw new Error(`Shipping history not found for order ID: ${orderId}`);
             }
 
-            // Push the new activity data into the activities array
+            // Define the new activity to be added
             const newActivity: any = {
                 status: status,
                 time: new Date()
             };
 
-            let statusAcivity = shippingHistory.activities.push(newActivity);
-            const payload: any = {
-                activities: statusAcivity,
-                trackingNumber
+            // Check if 'activities' is an array, if not, initialize it
+            let array = shippingHistory.activities;
+
+            if (Array.isArray(array)) {
+                // If it's an array, push the new activity
+                array.push(newActivity);
+            } else {
+                // If it's not an array, initialize it and add the new activity
+                array = [newActivity];
             }
 
-            if (status != 'shipped') {
+            // Create the payload for updating the shipping history
+            const payload: any = {
+                activities: array,
+                trackingNumber
+            };
+
+            // Remove tracking number if the status is not 'shipped'
+            if (status !== 'Shipped') {
                 delete payload.trackingNumber;
             }
 
+            // Update the shipping history with the new data
             const response = await ShippingHistoryModel.update(payload, {
                 where: {
                     orderId,
                 },
             });
+
             return response;
         } catch (error) {
             console.error("Error updating shipping history:", error);

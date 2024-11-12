@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
-import { FranchiseeAttributes, SM_PLATFORM_FRANCHISE, FranchiseType } from '../../../interfaces';
+import { FranchiseeAttributes, FranchiseLocationAttributes, FranchiseType } from '../../../interfaces';
 import { UserModel } from '../user/user.model';
 import { RegionModel } from '../franchise/regions';
 import { ContractModel } from '../contracts'; // Import the ContractModel
@@ -27,6 +27,7 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
   public isActive!: boolean | null;
   public ratings?: number | null;
   public franchiseRenewalInfo?: { renewalDate: Date; conditions: string } | null;
+  public readonly franchiseLocation: FranchiseLocationAttributes[];
 
   public static associate() {
     this.belongsTo(UserModel, { foreignKey: 'userid', as: 'user', constraints: false });

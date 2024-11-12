@@ -76,6 +76,7 @@ interface FranchiseeAttributes {
     isActive: boolean | null;
     ratings?: number | null;
     franchiseRenewalInfo?: FranchiseeRenewalInfo | null;
+    franchiseLocation?: FranchiseLocationAttributes[];
 }
 
 interface AddFranchiseePayload {
@@ -96,6 +97,7 @@ interface AddFranchiseePayload {
     isActive: boolean | null;
     ratings?: number | null;
     franchiseRenewalInfo?: FranchiseeRenewalInfo | null;
+    franchiseLocation?: FranchiseLocationAttributes[];
 }
 
 export {

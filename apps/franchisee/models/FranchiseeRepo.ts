@@ -46,7 +46,7 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
                 where: { id: franchiseeId },
                 include: [
                     { model: RegionModel, as: 'region' },
-                    { model: FranchiseLocationModel, as: 'franchiseLocation' },
+                    { model: FranchiseLocationModel, as: 'franchiseLocation'},
                     { model: SocialMediaDetailsFranchiseModel, as: 'socialMediaDetails' }
                 ]
             });

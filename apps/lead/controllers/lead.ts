@@ -8,6 +8,7 @@ import { ContractRepo } from '../../contracts/models/ContractRepo';
 import { AdminRepo } from '../../admin-user/models/user';
 import { FranchiseRepo } from '../../admin-user/models/franchise';
 import { FranchiseeRepo } from '../../franchisee/models/FranchiseeRepo';
+import { FranchiseLocationRepo } from '../../franchisee/models/FranchiseLocationRepo';
 import { ITrackable, LeadStatus, USER_TYPE, USER_STATUS, FranchiseType } from '../../../interfaces';
 import { TAssignLead } from '../../../types';
 import { Sequelize } from 'sequelize';
@@ -96,6 +97,16 @@ export default class LeadController {
                 isActive: false,
                 contractIds: existingAllContract,
                 activeContract: existingContract.id,
+            });
+
+            await new FranchiseLocationRepo().createFranchiseLocation({
+                contactPhone: null,
+                location: null,
+                city: null,
+                state: null,
+                country: null,
+                zipCode: null,
+                franchiseeId: franchiseResponse.id,
             });
 
             // await new LeadRepo().updateStatus(id, { status: LeadStatus.CONVERTED });

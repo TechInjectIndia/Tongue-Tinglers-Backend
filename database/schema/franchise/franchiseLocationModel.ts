@@ -38,32 +38,32 @@ FranchiseLocationModel.init(
         },
         contactPhone: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
             comment: "Contact phone number for this franchise location",
         },
         location: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
             comment: "Specific location or address of the franchise",
         },
         city: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
             comment: "City where the franchise location is situated",
         },
         state: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
             comment: "State or region for the franchise location",
         },
         country: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
             comment: "Country of the franchise location",
         },
         zipCode: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
             comment: "Zip code or postal code for the franchise location",
         },
         createdAt: {

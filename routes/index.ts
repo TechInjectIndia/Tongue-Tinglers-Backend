@@ -78,7 +78,7 @@ router.use(`${ADMIN}/reviews`, auth, reviewsRouter);
 router.use(`${ADMIN}/profile`, auth, profileRouter);
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
 router.use(`/payments`, paymentsRouter); // dont add auth to this url
-router.use(`/order-payment`, auth, paymentsOrdersRouter);
+router.use(`/order-payment`, paymentsOrdersRouter); // dont add auth to this url
 router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter);
 router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter);
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter);

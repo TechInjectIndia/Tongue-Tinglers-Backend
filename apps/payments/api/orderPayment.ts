@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import OrderPaymentController from '../controllers/orderPaymentController'; // Adjust path as necessary
+import { auth } from '../../../middlewares/auth';
 
 const router = Router();
 
@@ -84,7 +85,7 @@ router.get('/fetch/:paymentId', OrderPaymentController.fetchPayment);
  *       500:
  *         description: Internal server error.
  */
-router.post('/generate-link', OrderPaymentController.generatePaymentLink);
+router.post('/generate-link', auth, OrderPaymentController.generatePaymentLink);
 
 /**
  * @swagger
@@ -115,7 +116,7 @@ router.post('/generate-link', OrderPaymentController.generatePaymentLink);
  *       500:
  *         description: Internal server error.
  */
-router.post('/create-payment-intent', OrderPaymentController.createPaymentIntent);
-router.post('/payment/complete', OrderPaymentController.createOrderAndClearCart);
+router.post('/create-payment-intent', auth, OrderPaymentController.createPaymentIntent);
+router.post('/payment/complete', auth, OrderPaymentController.createOrderAndClearCart);
 
 export default router;

@@ -5,13 +5,15 @@ import { sendResponse, createStandardPaymentLinkForOrders, CreatePaymentIntentWi
 import { OrderRepo } from "../../ecommerce/models/orders";
 import { OrderItemRepo } from "../../ecommerce/models/orders-item";
 import { UserAddressRepo } from "../../user-address/models/UserAddressRepo";
+import { ShippingHistoryRepo } from "../../ecommerce/models/shippingHistoryRepo";
 import { CONFIG } from "../../../config";
 import { get } from "lodash";
 import { CartModel } from "../../../database/schema";
 import { CartRepo } from "../../cart/models/CartRepo";
 import { CartItemModel } from "../../../database/schema";
 import { FranchiseeModel } from "../../../database/schema";
-import { ORDER_TYPE, ORDER_STATUS, PAYMENT_STATUS } from '../../../interfaces';
+import { ORDER_TYPE, PAYMENT_STATUS, ShippingStatus } from '../../../interfaces';
+import { OrderStatus } from "../../../types";
 import { AnyCnameRecord } from "dns";
 const { validateWebhookSignature } = require("razorpay/dist/utils/razorpay-utils");
 
@@ -40,15 +42,15 @@ export default class OrderPaymentController {
                 const status = body.payload.payment_link.entity.status;
                 const orderDetails = await new OrderRepo().getOrderByPaymentId(paymentId as string);
                 if (orderDetails) {
-                    let orderStatus = orderDetails.orderStatus;
+                    let paymentStatus = orderDetails.paymentStatus;
                     if (status.toLowerCase() === "paid") {
-                        orderStatus = PAYMENT_STATUS.PAID;
+                        paymentStatus = PAYMENT_STATUS.PAID;
                     } else {
-                        orderStatus = PAYMENT_STATUS.UNPAID;
+                        paymentStatus = PAYMENT_STATUS.UNPAID;
                     }
                     await new OrderRepo().update(
                         orderDetails.id as string,
-                        { orderStatus }
+                        { paymentStatus }
                     );
                 }
             }
@@ -172,7 +174,7 @@ export default class OrderPaymentController {
                 paymentId: link.id,
                 totalPrice: cart.totalAmount as number,
                 isRepeated: 0 as number,
-                orderStatus: ORDER_STATUS.PROCESSED,
+                orderStatus: OrderStatus.Processed,
                 paymentStatus: PAYMENT_STATUS.PROCESSED,
                 orderType: ORDER_TYPE.SAMPLE_ORDER,
             });
@@ -189,6 +191,17 @@ export default class OrderPaymentController {
             }));
 
             await new OrderItemRepo().bulkCreate(orderItems);
+
+            const shippingPayload = {
+                orderId: newOrder.id as string,
+                activities: [{
+                    status: ShippingStatus.OrderReceived,
+                    time: new Date().toISOString()
+                }],
+                trackingNumber: null,
+                date: new Date().toISOString()
+            };
+            await new ShippingHistoryRepo().addShippingHistory(newOrder.id as string, shippingPayload);
 
             // Remove all products related to the cart
             await CartItemModel.destroy({
@@ -277,7 +290,7 @@ export default class OrderPaymentController {
                 paymentId: paymentId,
                 totalPrice: cart.totalAmount as number,
                 isRepeated: 0 as number,
-                orderStatus: ORDER_STATUS.PROCESSED,
+                orderStatus: OrderStatus.Processed,
                 paymentStatus: PAYMENT_STATUS.PROCESSED,
                 orderType: ORDER_TYPE.SAMPLE_ORDER,
             });
@@ -294,6 +307,17 @@ export default class OrderPaymentController {
             }));
 
             await new OrderItemRepo().bulkCreate(orderItems);
+
+            const shippingPayload = {
+                orderId: newOrder.id as string,
+                activities: [{
+                    status: ShippingStatus.OrderReceived,
+                    time: new Date().toISOString()
+                }],
+                trackingNumber: null,
+                date: null
+            };
+            await new ShippingHistoryRepo().addShippingHistory(newOrder.id as string, shippingPayload);
 
             // Remove all products related to the cart
             await CartItemModel.destroy({

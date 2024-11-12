@@ -11,6 +11,7 @@ export * from "./ecommerce/category.model";
 export * from "./ecommerce/category_image.model";
 export * from "./ecommerce/order.model";
 export * from "./ecommerce/order_item.model";
+export * from "./ecommerce/shippingActivity";
 export * from "./ecommerce/product.model";
 export * from "./ecommerce/product_category_map.model";
 export * from "./ecommerce/product_image.model";

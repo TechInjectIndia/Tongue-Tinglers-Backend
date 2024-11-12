@@ -8,7 +8,7 @@ export type TOrder = {
   paymentMethod: string;
   paymentId: string;
   totalPrice: number;
-  orderStatus: string;
+  orderStatus: OrderStatus;
   paymentStatus: string;
   orderType: string;
   createdAt: Date;
@@ -24,7 +24,7 @@ export type TOrderPayload = {
   totalPrice?: number;
   isRepeated?: number;
   paymentStatus?: string;
-  orderStatus?: string;
+  orderStatus?: OrderStatus;
   orderType?: string;
 };
 
@@ -41,6 +41,11 @@ export type TOrderFilters = {
   trashOnly?: string;
 };
 
-export type TOrderStatus = {
-  status: number,
-};
+export enum OrderStatus {
+  Processed = 'Processed',
+  Pending = 'Pending',
+  Shipped = 'Shipped',
+  Delivered = 'Delivered',
+  Canceled = 'Canceled',
+  Returned = 'Returned',
+}

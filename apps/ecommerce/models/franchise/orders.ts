@@ -3,14 +3,14 @@ import {
     TOrder,
     TOrderFilters,
     TOrdersList,
-    TOrderStatus
+    OrderStatus
 } from "../../../../types/ecommerce";
 import { OrdersModel } from "../../../../database/schema";
 
 export class OrderModel {
     constructor() { }
 
-    public async getOrderByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<TOrderStatus | any> {
+    public async getOrderByAttr(whereName: any, whereVal: any, getAttributes: any = '*'): Promise<OrderStatus | any> {
         const whereAttributes = { [whereName]: whereVal }
         const data = await OrdersModel.findOne({
             raw: true,

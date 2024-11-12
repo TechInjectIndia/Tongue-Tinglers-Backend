@@ -88,10 +88,11 @@ export default class OrderController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
+            const orderId = get(req?.params, "id", 0);
             const orderStatus = get(req?.body, "status", "");
+            const ShippingStatus = get(req?.body, "ShippingStatus", "");
 
-            const existingOrder = await new OrderRepo().get(id as string);
+            const existingOrder = await new OrderRepo().get(orderId as string);
             if (isEmpty(existingOrder)) {
                 return res
                     .status(400)
@@ -103,7 +104,7 @@ export default class OrderController {
                     );
             }
 
-            const Order = await new OrderRepo().update(id as string, { orderStatus });
+            const Order = await new OrderRepo().update(orderId as string, { orderStatus });
             return res
                 .status(200)
                 .send(
@@ -178,6 +179,7 @@ export default class OrderController {
                     )
                 );
         } catch (err) {
+            console.log('error', err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

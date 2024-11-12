@@ -5,7 +5,7 @@ import {
     TOrdersList,
     TOrderPayload,
 } from "../../../types/ecommerce";
-import { OrdersModel, OrderItemsModel } from "../../../database/schema";
+import { OrdersModel, OrderItemsModel, ShippingHistoryModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IOrdersController';
 
 export class OrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
@@ -52,6 +52,9 @@ export class OrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
                 {
                     model: OrderItemsModel,
                     as: 'items'
+                },
+                {
+                    model: ShippingHistoryModel,
                 },
             ],
         });

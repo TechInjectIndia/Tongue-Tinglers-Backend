@@ -21,6 +21,7 @@ export * from './regions';
 export * from './vendor';
 export * from './cart';
 export * from './userAddress';
+export * from './shippingActivity';
 
 interface ITrackable {
     userDetails: UserDetails;

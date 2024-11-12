@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { TOrder, TOrderItem } from "../../../types";
-import { ORDER_TYPE, ORDER_STATUS, PAYMENT_STATUS } from '../../../interfaces';
+import { TOrder, TOrderItem, OrderStatus } from "../../../types";
+import { ORDER_TYPE, PAYMENT_STATUS } from '../../../interfaces';
 const { INTEGER, STRING, JSONB, UUIDV4, ENUM, BOOLEAN } = DataTypes;
 import { OrderItemsModel } from './order_item.model'
 import { UserModel } from '../user/user.model'
@@ -17,7 +17,7 @@ class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOr
     public paymentStatus!: string;
     public paymentId!: string;
     public totalPrice!: number;
-    public orderStatus!: string;
+    public orderStatus!: OrderStatus;
     public orderType!: string;
 
     public readonly items?: TOrderItem[]; // Array of items in the cart
@@ -56,7 +56,7 @@ OrdersModel.init({
     },
     orderStatus: {
         type: ENUM,
-        values: [...Object.values(ORDER_STATUS)]
+        values: [...Object.values(OrderStatus)]
     },
     paymentStatus: {
         type: ENUM,

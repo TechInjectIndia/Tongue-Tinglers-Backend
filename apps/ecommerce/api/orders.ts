@@ -178,7 +178,7 @@ router.post("/create", validateCreateOrderBody, OrderController.create);
 router.get("/list", validateListOrderQuery, OrderController.list);
 router.get("/get/:id", validateEditOrderParams, OrderController.get);
 router.get("/get-status/:id", validateEditOrderParams, OrderController.orderStatus);
-router.put("/update/:id", validateEditOrderParams, validateEditOrderBody, OrderController.update);
+router.put("/update/:id", OrderController.update);
 // ====== order Ends ======
 
 export default router;

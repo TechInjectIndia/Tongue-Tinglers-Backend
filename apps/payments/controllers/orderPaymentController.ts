@@ -174,7 +174,7 @@ export default class OrderPaymentController {
                 paymentId: link.id,
                 totalPrice: cart.totalAmount as number,
                 isRepeated: 0 as number,
-                orderStatus: OrderStatus.Processed,
+                orderStatus: OrderStatus.PROCESSED,
                 paymentStatus: PAYMENT_STATUS.PROCESSED,
                 orderType: ORDER_TYPE.SAMPLE_ORDER,
             });
@@ -290,7 +290,7 @@ export default class OrderPaymentController {
                 paymentId: paymentId,
                 totalPrice: cart.totalAmount as number,
                 isRepeated: 0 as number,
-                orderStatus: OrderStatus.Processed,
+                orderStatus: OrderStatus.PROCESSED,
                 paymentStatus: PAYMENT_STATUS.PROCESSED,
                 orderType: ORDER_TYPE.SAMPLE_ORDER,
             });

@@ -42,10 +42,7 @@ export type TOrderFilters = {
 };
 
 export enum OrderStatus {
-  Processed = 'Processed',
-  Pending = 'Pending',
-  Shipped = 'Shipped',
-  Delivered = 'Delivered',
-  Canceled = 'Canceled',
-  Returned = 'Returned',
+  PROCESSED = 'Processed',
+  PENDING = 'Pending',
+  CANCELED = 'Canceled',
 }

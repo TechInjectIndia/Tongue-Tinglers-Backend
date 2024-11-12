@@ -5,12 +5,13 @@ import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constant
 import { OrderRepo } from '../models/orders';
 import { ProductRepo } from '../models/products';
 import { OrderItemRepo } from '../models/orders-item';
+import { OrderStatus } from '../../../types';
 
 export default class OrderController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, 'user_id', '');
-            const payload = { ...req?.body, userId: user_id, paymentMethod: 'razorpay', orderStatus: 'processed' };
+            const payload = { ...req?.body, userId: user_id, paymentMethod: 'razorpay', orderStatus: OrderStatus.PROCESSED };
             const cartItems = req.body.cart_items;
 
             const createOrder = await new OrderRepo().create(payload);
@@ -89,8 +90,14 @@ export default class OrderController {
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const orderId = get(req?.params, "id", 0);
-            const orderStatus = get(req?.body, "status", "");
-            const ShippingStatus = get(req?.body, "ShippingStatus", "");
+            let orderStatusComing = get(req?.body, "orderStatus", 0);
+            let orderStatus = OrderStatus.PROCESSED;
+            if (orderStatusComing === 'Pending') {
+                orderStatus = OrderStatus.PENDING;
+            }
+            if (orderStatusComing === 'Canceled') {
+                orderStatus = OrderStatus.CANCELED;
+            }
 
             const existingOrder = await new OrderRepo().get(orderId as string);
             if (isEmpty(existingOrder)) {

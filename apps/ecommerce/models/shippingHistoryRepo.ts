@@ -1,4 +1,4 @@
-import { ShippingHistoryModel } from "../../../database/schema";
+import { ShippingHistoryModel, OrdersModel } from "../../../database/schema";
 import { IShippingHistory, IShippingActivity, IShippingHistoryPayload } from "../../../interfaces";
 import { Op } from "sequelize";
 
@@ -92,12 +92,16 @@ export class ShippingHistoryRepo {
             // Create the payload for updating the shipping history
             const payload: any = {
                 activities: array,
-                trackingNumber
             };
 
             // Remove tracking number if the status is not 'shipped'
-            if (status !== 'Shipped') {
-                delete payload.trackingNumber;
+            if (status === 'Shipped') {
+                // Update the Order with the new data
+                const response = await OrdersModel.update({ trackingNumber }, {
+                    where: {
+                        id: orderId,
+                    },
+                });
             }
 
             // Update the shipping history with the new data

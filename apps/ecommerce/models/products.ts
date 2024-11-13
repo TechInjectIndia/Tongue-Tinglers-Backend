@@ -7,10 +7,35 @@ import {
     TAddProduct,
 } from "../../../types/ecommerce";
 import { ProductsModel, ProductImagesModel, ProductCategoryModel, ProductTagModel, VendorModel } from "../../../database/schema";
+import { uploadFileToFirebase } from '../../../libraries';
 import IBaseRepo from '../controllers/controller/product/IProductsController';
 
 export class ProductRepo implements IBaseRepo<TProduct, TProductFilters> {
     constructor() { }
+
+    // Upload an image to Firebase Storage and save the image data in the database
+    public async uploadImage(productId: any, file: any, fileInfo: any, destinationPath: string): Promise<any> {
+
+        const findImage = await ProductImagesModel.findAll({
+            where: {
+                productId,
+                isMainImage: true
+            }
+        });
+
+        const urlArray = await uploadFileToFirebase(file, destinationPath);
+        const url = urlArray[0];
+        const newImage = await ProductImagesModel.create({
+            productId: productId,
+            fileName: fileInfo.name,
+            filePath: url,
+            originalName: fileInfo.name,
+            caption: fileInfo.caption,
+            isMainImage: findImage == null ? true : false,
+            fileSize: 0,
+        });
+        return newImage.filePath;
+    }
 
     public async create(data: TAddProduct): Promise<TProduct> {
         const response = await ProductsModel.create(data);

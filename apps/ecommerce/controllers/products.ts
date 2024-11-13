@@ -8,22 +8,62 @@ import { ProductCategoryRepo } from '../models/category';
 import { ProductCategoryMapRepo } from '../models/product-category-map';
 import { StockRepo } from '../models/stock';
 import slugify from 'slugify';
+import { Multer } from 'multer';
+import { ProductImagesModel } from "../../../database/schema";
+const { Op } = require("sequelize");
 
 export default class ProductsController {
     static async uploadImage(req: Request, res: Response, next: NextFunction) {
         try {
-            const moduleName = 'product';
-            await uploadSingleFileToFirebase(req as any, moduleName as string);
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPLOADED,
-                    )
-                );
+            const images = req.files as Multer.File[];
+            let imageDetails = req.body.imageDetails;
+            let productId = req.body.productId;
+
+            // Check if images were uploaded
+            if (!images || images.length === 0) {
+                return res.status(400).send({
+                    message: "No images uploaded.",
+                });
+            }
+
+            let parsedImageDetails: { name: string; caption: string }[];
+            if (typeof imageDetails === 'string') {
+                try {
+                    parsedImageDetails = JSON.parse(imageDetails);
+                } catch (error) {
+                    return res.status(400).send({
+                        error: true,
+                        message: 'Invalid imageDetails format. It should be a valid JSON string.',
+                    });
+                }
+            }
+
+            // Check if the length of both arrays matches
+            if (images.length !== parsedImageDetails.length) {
+                return res.status(400).send({
+                    error: true,
+                    message: 'The number of images must match the number of image details provided.',
+                });
+            }
+
+            // Process each image and upload it
+            const uploadPromises = images.map(async (image: Multer.File, index: number) => {
+                const details = parsedImageDetails[index];
+                const imageInfo = {
+                    name: details.name || '',
+                    caption: details.caption,
+                };
+
+                const url = await new ProductRepo().uploadImage(productId, image, imageInfo, 'product');
+                return { originalname: image.originalname, url, name: details.name, caption: imageInfo.caption };
+            });
+
+            const uploadResults = await Promise.all(uploadPromises);
+
+            // Return the response with URLs and details
+            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPLOADED, { uploadResults }));
         } catch (err) {
-            console.error("Error:", err);
+            console.error("Error uploading images:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -321,6 +361,75 @@ export default class ProductsController {
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
                         Product
+                    )
+                );
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    static async setImage(req: Request, res: Response, next: NextFunction) {
+        try {
+            const imageid = get(req.params, "id", 0);
+            const productId = get(req.params, "productid", 0);
+
+            console.log('productid', productId);
+            const existingProduct = await new ProductRepo().get(productId as number);
+            if (isEmpty(existingProduct)) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS
+                        )
+                    );
+            }
+
+            const existingProductImage = await ProductImagesModel.findOne({
+                where: {
+                    id: imageid,
+                },
+            });
+            if (isEmpty(existingProductImage)) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `Image ${ERROR_MESSAGE.NOT_EXISTS}`
+                        )
+                    );
+            }
+
+            await ProductImagesModel.update(
+                { isMainImage: false },
+                {
+                    where: {
+                        productId,
+                        id: { [Op.ne]: imageid }
+                    }
+                }
+            );
+            const data = {
+                isMainImage: true
+            }
+            const response = await ProductImagesModel.update(data, {
+                where: {
+                    id: imageid,
+                    productId
+                },
+            });
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPDATED,
+                        response
                     )
                 );
         } catch (err) {

@@ -26,6 +26,7 @@ class ProductsModel extends Model<TProduct, ProductsCreationAttributes> implemen
     public discount!: number;
     public sold!: number;
     public active!: boolean;
+    public readonly images?: [];
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
@@ -101,7 +102,7 @@ ProductsModel.init({
 });
 
 // Relationships
-ProductsModel.hasMany(ProductImagesModel, { as: 'images' });
+ProductsModel.hasMany(ProductImagesModel, { foreignKey: 'productId', as: 'images' });
 
 ProductsModel.belongsToMany(ProductTagModel, {
     through: ProductTagMapModel,

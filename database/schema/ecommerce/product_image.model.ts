@@ -1,7 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TProductImage } from "../../../types";
-const { STRING, INTEGER, DATE, NOW } = DataTypes;
+import { BOOLEAN } from "sequelize";
+const { STRING, INTEGER, TEXT, DATE, NOW } = DataTypes;
 
 interface OrderItemsCreationAttributes extends Optional<TProductImage, 'id' | 'createdAt' | 'updatedAt'> { }
 
@@ -11,7 +12,9 @@ class ProductImagesModel extends Model<TProductImage, OrderItemsCreationAttribut
     public fileName!: string;
     public filePath!: string;
     public originalName!: string;
+    public caption!: string;
     public fileSize!: number;
+    public isMainImage!: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -28,19 +31,28 @@ ProductImagesModel.init({
     },
     fileName: {
         type: STRING,
-        allowNull: false,
+        allowNull: true,
     },
     filePath: {
-        type: STRING,
-        allowNull: false,
+        type: TEXT,
+        allowNull: true,
     },
     originalName: {
         type: STRING,
-        allowNull: false,
+        allowNull: true,
+    },
+    caption: {
+        type: STRING,
+        allowNull: true,
     },
     fileSize: {
         type: INTEGER,
-        allowNull: false,
+        allowNull: true,
+    },
+    isMainImage: {
+        type: BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
     },
     createdAt: {
         type: DATE,

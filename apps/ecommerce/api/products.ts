@@ -194,9 +194,9 @@ const {
  *           schema:
  *            type: object
  *            required:
- *              - file
+ *              - files
  *            properties:
- *              file:
+ *              files:
  *                type: string
  *                format: binary
  *     responses:
@@ -353,10 +353,12 @@ router.post("/create", validateCreateProductsBody, ProductsController.create);
 router.get("/list", validateListProductsQuery, ProductsController.list);
 router.get("/get/:id", validateEditProductsParams, ProductsController.get);
 router.put("/update/:id", validateEditProductsParams, validateEditProductsBody, ProductsController.update);
+router.put("/set-image/:id/:productid", ProductsController.setImage);
 router.delete("/delete", validateEditMultipleIdsBody, ProductsController.delete);
+
 // ====== Products Ends ======
 
-router.post("/image/upload", upload.single('file'), ProductsController.uploadImage);
+router.post("/image/upload", upload.array('files'), ProductsController.uploadImage);
 router.post("/assign-category", validateAssignCategoryBody, ProductsController.assignCategory);
 router.post("/unassign-category", validateAssignCategoryBody, ProductsController.unAssignCategory);
 

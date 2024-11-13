@@ -14,6 +14,7 @@ export type TProduct = {
   ratings: number;
   discount: number;
   sold: number;
+  min_qty_order: number;
   active: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -30,6 +31,7 @@ export type TEditProduct = {
   ratings: number;
   discount: number;
   sold: number;
+  min_qty_order: number;
   active: boolean;
 }
 

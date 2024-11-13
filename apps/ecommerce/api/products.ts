@@ -43,6 +43,7 @@ const {
  *               - discount
  *               - stock
  *               - sold
+ *               - min_qty_order
  *               - active
  *             properties:
  *               name:
@@ -78,6 +79,9 @@ const {
  *                 type: integer
  *                 example: 0
  *               stock:
+ *                 type: integer
+ *                 example: 0
+ *               min_qty_order:
  *                 type: integer
  *                 example: 0
  *               sold:
@@ -127,6 +131,7 @@ const {
  *               - ratings
  *               - discount
  *               - stock
+ *               - min_qty_order
  *               - sold
  *               - active
  *             properties:
@@ -160,6 +165,9 @@ const {
  *                 type: integer
  *                 example: 0
  *               stock:
+ *                 type: integer
+ *                 example: 0
+ *               min_qty_order:
  *                 type: integer
  *                 example: 0
  *               sold:

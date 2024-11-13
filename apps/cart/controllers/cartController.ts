@@ -22,6 +22,8 @@ export default class CartController {
                     );
             }
             const { product_id, quantity, productType } = req.body;
+            let qty: any = null;
+            let name: any = null;
 
             if (productType == 'retort') {
                 const existingProduct = await new RetortProductRepo().get(product_id as number);
@@ -49,8 +51,22 @@ export default class CartController {
                             )
                         );
                 }
+                qty = existingProduct.min_qty_order
+                name = existingProduct.name
             }
 
+            if (qty != null && name != null && quantity != null) {
+                if (quantity < qty) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `Minimum quantity for ${name} is ${qty}`
+                            )
+                        );
+                }
+            }
             // Add product to the cart
             const cart = await new CartRepo().addProduct(user_id, product_id, quantity, productType);
 

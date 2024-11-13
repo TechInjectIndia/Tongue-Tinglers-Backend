@@ -25,6 +25,7 @@ class ProductsModel extends Model<TProduct, ProductsCreationAttributes> implemen
     public ratings!: number;
     public discount!: number;
     public sold!: number;
+    public min_qty_order!: number;
     public active!: boolean;
     public readonly images?: [];
     public readonly createdAt!: Date;
@@ -77,6 +78,9 @@ ProductsModel.init({
         type: INTEGER,
     },
     sold: {
+        type: INTEGER,
+    },
+    min_qty_order: {
         type: INTEGER,
     },
     active: {

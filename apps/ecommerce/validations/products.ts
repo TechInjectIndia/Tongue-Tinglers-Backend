@@ -58,6 +58,9 @@ const createProductBodySchema = Joi.object({
         'number.base': 'Stock must be a valid integer.',
         'number.greater': 'Stock cannot be negative.',
     }),
+    min_qty_order: Joi.number().integer().optional().allow(0).messages({
+        'number.base': 'Minimum quantity must be a valid integer.',
+    }),
     sold: Joi.number().integer().optional().allow(0).messages({
         'number.base': 'Sold quantity must be a valid integer.',
     }),

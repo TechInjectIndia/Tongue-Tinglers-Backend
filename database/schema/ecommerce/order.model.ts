@@ -18,7 +18,7 @@ class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOr
     public paymentId!: string;
     public totalPrice!: number;
     public orderStatus!: OrderStatus;
-    public orderType!: string;
+    public orderType!: ORDER_TYPE;
 
     public readonly items?: TOrderItem[]; // Array of items in the cart
 

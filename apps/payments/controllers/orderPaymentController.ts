@@ -153,7 +153,6 @@ export default class OrderPaymentController {
                 franchise: franchiseData
             });
 
-            console.log('link', link.id);
             if (!link) {
                 return res
                     .status(500)
@@ -176,7 +175,7 @@ export default class OrderPaymentController {
                 isRepeated: 0 as number,
                 orderStatus: OrderStatus.PROCESSED,
                 paymentStatus: PAYMENT_STATUS.PROCESSED,
-                orderType: ORDER_TYPE.SAMPLE_ORDER,
+                orderType: ORDER_TYPE.FRANCHISE,
             });
 
             // Save each cart item as an order item

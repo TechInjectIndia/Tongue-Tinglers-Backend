@@ -16,7 +16,7 @@ export class FranchiseOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
             attributes: ['orderStatus'],
             where: {
                 id,
-                orderType: ORDER_TYPE.RETORT
+                orderType: ORDER_TYPE.FRANCHISE
             },
         });
         return data;
@@ -25,7 +25,7 @@ export class FranchiseOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
         const data = await OrdersModel.findOne({
             where: {
                 id,
-                orderType: ORDER_TYPE.RETORT
+                orderType: ORDER_TYPE.FRANCHISE
             },
         });
         return data;
@@ -38,7 +38,7 @@ export class FranchiseOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
                     [Op.like]: `%${filters.search}%`,
                 },
                 userId: filters.user_id,
-                orderType: ORDER_TYPE.RETORT
+                orderType: ORDER_TYPE.FRANCHISE
             },
         });
         const data = await OrdersModel.findAll({
@@ -50,7 +50,7 @@ export class FranchiseOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
                     [Op.like]: `%${filters.search}%`,
                 },
                 userId: filters.user_id,
-                orderType: ORDER_TYPE.RETORT
+                orderType: ORDER_TYPE.FRANCHISE
             },
         });
         return { total, data };

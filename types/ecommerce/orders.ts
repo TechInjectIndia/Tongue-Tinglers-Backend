@@ -1,16 +1,17 @@
 const { OrderItem } = require("sequelize");
+import { ORDER_TYPE } from '../../interfaces';
 
 export type TOrder = {
   id: string;
-  userId: string;
-  trackingNumber: string;
-  shippingAddress: any;
-  paymentMethod: string;
-  paymentId: string;
-  totalPrice: number;
-  orderStatus: OrderStatus;
-  paymentStatus: string;
-  orderType: string;
+  userId?: string;
+  trackingNumber?: string;
+  shippingAddress?: any;
+  paymentMethod?: string;
+  paymentId?: string;
+  totalPrice?: number;
+  orderStatus?: OrderStatus;
+  paymentStatus?: string;
+  orderType?: ORDER_TYPE;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -25,7 +26,7 @@ export type TOrderPayload = {
   isRepeated?: number;
   paymentStatus?: string;
   orderStatus?: OrderStatus;
-  orderType?: string;
+  orderType?: ORDER_TYPE;
 };
 
 export type TOrdersList = {

@@ -5,7 +5,6 @@ export enum PAYMENT_STATUS {
 }
 
 export enum ORDER_TYPE {
-    RETORT = "retort",
+    FRANCHISE = "franchise",
     SAMPLE_ORDER = "sample-order",
-    CONTRACT = "contract",
 }

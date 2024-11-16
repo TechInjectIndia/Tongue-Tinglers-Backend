@@ -65,6 +65,22 @@ const {
  *         schema:
  *           type: integer
  *         description: Number of Areas to skip
+ *       - in: query
+ *         name: id
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: title
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: createdBy
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: List of Areas retrieved successfully

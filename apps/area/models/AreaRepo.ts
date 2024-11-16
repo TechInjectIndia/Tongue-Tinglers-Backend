@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import {
-    TListFilters,
+    TListFiltersAreas,
 } from "../../../types";
 import {
     TAreaList,
@@ -10,7 +10,7 @@ import {
 import { AreaModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IAreaController';
 
-export class AreaRepo implements IBaseRepo<IArea, TListFilters> {
+export class AreaRepo implements IBaseRepo<IArea, TListFiltersAreas> {
     constructor() { }
 
     public async get(id: number): Promise<IArea | null> {
@@ -22,24 +22,43 @@ export class AreaRepo implements IBaseRepo<IArea, TListFilters> {
         return data;
     }
 
-    public async list(filters: TListFilters): Promise<TAreaList> {
+    public async list(filters: TListFiltersAreas): Promise<TAreaList> {
+        // Initialize the whereCondition object
+        const whereCondition: any = {};
+
+        // If the search term is provided, apply it to the relevant fields
+        if (filters.search) {
+            whereCondition[Op.or] = [
+                { id: { [Op.like]: `%${filters.search}%` } },
+                { title: { [Op.like]: `%${filters.search}%` } },
+                { createdBy: { [Op.like]: `%${filters.search}%` } },
+            ];
+        }
+
+        // Add additional filters (e.g., id, region) if provided
+        if (filters.filters?.id) {
+            whereCondition.id = { [Op.eq]: filters.filters.id };
+        }
+        if (filters.filters?.title) {
+            whereCondition.title = { [Op.like]: `%${filters.filters.title}%` };
+        }
+        if (filters.filters?.createdBy) {
+            whereCondition.createdBy = { [Op.eq]: filters.filters.createdBy };
+        }
+
+        // Count total regions matching the search criteria
         const total = await AreaModel.count({
-            where: {
-                title: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
+            where: whereCondition,
         });
+
+        // Retrieve the regions with pagination, sorting, and the updated whereCondition
         const data = await AreaModel.findAll({
-            order: [filters?.sorting],
+            order: [filters?.sorting], // Ensure sorting is sanitized
             offset: filters.offset,
             limit: filters.limit,
-            where: {
-                title: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
+            where: whereCondition,
         });
+
         return { total, data };
     }
 

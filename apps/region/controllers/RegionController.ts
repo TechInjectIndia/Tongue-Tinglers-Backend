@@ -68,7 +68,6 @@ export default class RegionController {
             let sorting = get(req.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
 
-
             const id = get(req.query, "id", "");
             const title = get(req.query, "title", "");
             const area = get(req.query, "area", "");

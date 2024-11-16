@@ -28,9 +28,23 @@ export type TListFiltersRegions = {
     sorting?: any;
     trashOnly?: string;
     filters?: {
-        regionId?: number;
+        id?: number;
         title?: string;
         area?: string;
+        createdBy?: string;
+        [key: string]: any;
+    };
+};
+
+export type TListFiltersAreas = {
+    offset: number;
+    limit: number;
+    search?: string;
+    sorting?: any;
+    trashOnly?: string;
+    filters?: {
+        id?: number;
+        title?: string;
         createdBy?: string;
         [key: string]: any;
     };

@@ -22,15 +22,16 @@ export class ImageRepo implements IImageController<SeoImage, TListFilters> {
         return await SeoImageModel.create(data);
     }
 
-    // public async update(id: number, data: TPayloadFranchiseModel): Promise<[number]> {
-    //     return await SeoImageModel.update(data, {
-    //         where: { id },
-    //     });
-    // }
+    public async update(id: string, data: SeoImage): Promise<[number, SeoImage[]]> {
+        return await SeoImageModel.update(data, {
+            where: { id },
+            returning: true, // Optional: returns the updated rows
+        });
+    }
 
-    public async delete(ids: number[]): Promise<number> {
+    public async deleteByFranchiseModelId(franchiseModelId: string): Promise<number> {
         return await SeoImageModel.destroy({
-            where: { id: ids },
+            where: { franchiseModelId },
         });
     }
 }

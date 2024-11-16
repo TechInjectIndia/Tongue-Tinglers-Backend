@@ -1,20 +1,23 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TOrderItem } from "../../../types";
+import { ProductsModel } from './product.model';
+import { RetortProductsModel } from '../retort/retort-product';
+
 const { INTEGER, STRING, DATE, NOW } = DataTypes;
 
 interface OrderItemsCreationAttributes extends Optional<TOrderItem, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class OrderItemsModel extends Model<TOrderItem, OrderItemsCreationAttributes> implements TOrderItem {
     public id!: number;
-    public name!: string;
-    public slug!: string;
-    public orderId!: number;
-    public userId!: string;
-    public productId!: number;
-    public isRepeated!: number;
-    public price!: number;
-    public quantity!: number;
+    public orderId: string;
+    public userId: string;
+    public productId: number;
+    public productType: string;
+    public quantity: number;
+    public price: number;
+    public subtotal: number;
+    public isRepeated: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -25,16 +28,8 @@ OrderItemsModel.init({
         autoIncrement: true,
         primaryKey: true,
     },
-    name: {
-        type: STRING,
-        allowNull: false,
-    },
-    slug: {
-        type: STRING,
-        allowNull: false,
-    },
     orderId: {
-        type: INTEGER,
+        type: STRING,
         allowNull: false,
     },
     userId: {
@@ -49,13 +44,24 @@ OrderItemsModel.init({
         type: INTEGER,
         allowNull: true,
     },
-    price: {
-        type: INTEGER,
-        allowNull: true,
+    productType: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     quantity: {
-        type: INTEGER,
-        allowNull: true,
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+    },
+    price: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0,
+    },
+    subtotal: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0,
     },
     createdAt: {
         type: DATE,

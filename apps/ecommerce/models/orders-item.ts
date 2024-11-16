@@ -10,6 +10,10 @@ import IBaseRepo from '../controllers/controller/IOrderItemsController';
 export class OrderItemRepo implements IBaseRepo<TAddOrderItem, TOrderFilters> {
     constructor() { }
 
+    public async bulkCreate(orderItems: Array<any>) {
+        return await OrderItemsModel.bulkCreate(orderItems);
+    }
+
     public async checkRepeatedOrder(userId: string, productId: number): Promise<TOrderItem> {
         const data = await OrderItemsModel.findOne({
             where: {

@@ -81,8 +81,8 @@ export default class CampaignController {
     // Method to get a specific campaign by ID
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req.params, "id", "");
-            const existingCampaign = await new CampaignAdRepo().get(id as string);
+            const id = get(req.params, "id", 0);
+            const existingCampaign = await new CampaignAdRepo().get(id as number);
 
             if (isEmpty(existingCampaign)) {
                 return res.status(404).send(

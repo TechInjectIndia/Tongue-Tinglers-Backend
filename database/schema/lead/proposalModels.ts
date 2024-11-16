@@ -70,7 +70,7 @@ ProposalLeadModels.init({
 
 }, {
     sequelize,
-    tableName: 'Proposal_model',
+    tableName: 'proposal_model',
     timestamps: false, // Disable automatic timestamp management since we're defining our own
 });
 

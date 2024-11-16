@@ -4,8 +4,7 @@ import { sequelize } from "../../../config";
 import { TProduct } from "../../../types";
 import { PRODUCTS_TYPE } from '../../../interfaces';
 import { ProductImagesModel } from './product_image.model';
-import { ProductCategoryModel } from './category.model';
-import { ProductCategoryMapModel } from './product_category_map.model';
+import { VendorModel } from './vendorsModel';
 import { ProductTagModel } from './tag.model';
 import { ProductTagMapModel } from './product_tag_map';
 import { StockModel } from './stockModel';
@@ -17,6 +16,7 @@ interface ProductsCreationAttributes extends Optional<TProduct, 'id' | 'createdA
 class ProductsModel extends Model<TProduct, ProductsCreationAttributes> implements TProduct {
     public id!: number;
     public name!: string;
+    public vendorId?: string | null;
     public slug!: string;
     public description!: string;
     public price!: number;
@@ -25,9 +25,14 @@ class ProductsModel extends Model<TProduct, ProductsCreationAttributes> implemen
     public ratings!: number;
     public discount!: number;
     public sold!: number;
+    public min_qty_order!: number;
     public active!: boolean;
+    public readonly images?: [];
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
+    public static associate() {
+    }
 }
 
 ProductsModel.init({
@@ -35,6 +40,14 @@ ProductsModel.init({
         type: INTEGER,
         autoIncrement: true,
         primaryKey: true,
+    },
+    vendorId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        references: {
+            model: VendorModel,
+            key: "id",
+        },
     },
     name: {
         type: STRING,
@@ -67,6 +80,9 @@ ProductsModel.init({
     sold: {
         type: INTEGER,
     },
+    min_qty_order: {
+        type: INTEGER,
+    },
     active: {
         type: BOOLEAN,
         allowNull: false,
@@ -90,13 +106,7 @@ ProductsModel.init({
 });
 
 // Relationships
-ProductsModel.hasMany(ProductImagesModel, { as: 'images' });
-ProductsModel.belongsToMany(ProductCategoryModel, {
-    through: ProductCategoryMapModel,
-    foreignKey: 'productId',
-    otherKey: 'categoryId',
-    as: 'categories',
-});
+ProductsModel.hasMany(ProductImagesModel, { foreignKey: 'productId', as: 'images' });
 
 ProductsModel.belongsToMany(ProductTagModel, {
     through: ProductTagMapModel,
@@ -107,5 +117,6 @@ ProductsModel.belongsToMany(ProductTagModel, {
 
 // Relationship with StockModel
 ProductsModel.hasOne(StockModel, { foreignKey: 'productId', as: 'stock' });
+ProductsModel.belongsTo(VendorModel, { foreignKey: 'vendorId', as: 'vendorData', });
 
 export { ProductsModel };

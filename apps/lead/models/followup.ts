@@ -6,7 +6,7 @@ import IBaseRepo from '../controllers/controller/IFollowUpsController';
 export class FollowUpsRepo implements IBaseRepo<ILead, any> {
     constructor() { }
 
-    public async getTodayFollowUps(assignedToId: string, attributes: string[] = []): Promise<ILead[]> {
+    public async getTodayFollowUps(assignedTo: string, attributes: string[] = []): Promise<ILead[]> {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const tomorrow = new Date(today);
@@ -33,7 +33,7 @@ export class FollowUpsRepo implements IBaseRepo<ILead, any> {
                             },
                         ],
                     },
-                    { 'assign.assignedTo': assignedToId },
+                    // { 'assign.assignedTo': assignedTo },
                 ],
             },
             include: [{

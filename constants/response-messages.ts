@@ -6,8 +6,9 @@ export const RESPONSE_TYPE = {
 };
 
 export const ERROR_MESSAGE = {
-    TOKEN_NOT_PROVIDED: "Token not provided.",
-    INVALID_OR_EXPIRED_TOKEN: "Token is invalid or has expired.",
+    TOKEN_NOT_PROVIDED: "Token not provided",
+    CART_EMPTY: "Cart Is empty",
+    INVALID_OR_EXPIRED_TOKEN: "Token is invalid or has expired",
     ADMIN_NOT_EXISTS: "Admin does not exist",
     CUSTOMER_NOT_EXISTS: "Customer does not exist",
     FRANCHISE_NOT_EXISTS: "Franchise does not exist",
@@ -36,6 +37,7 @@ export const ERROR_MESSAGE = {
 };
 
 export const SUCCESS_MESSAGE = {
+    CLEARED: "Successfully cleared",
     TOKEN_VALID: "Token is valid",
     SENT_NOTIFICATION: "Message sent successfully",
     SENT_EMAIL: 'Email sent successfully',

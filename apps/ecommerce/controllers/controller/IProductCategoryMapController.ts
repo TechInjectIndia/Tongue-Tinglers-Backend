@@ -4,6 +4,10 @@ import { TQueryFilters, TProductCategoryLink } from '../../../../types';
  * Interface for Product Category Map Controller.
  */
 interface IProductCategoryMapController<T, F extends TQueryFilters> {
+    deleteByProductId(productId: number): Promise<void>
+
+    bulkCreate(categoryMappings: TProductCategoryLink[]): Promise<void>
+
     /**
      * Assign a product to a category.
      * @param payload - The data linking the product and category.

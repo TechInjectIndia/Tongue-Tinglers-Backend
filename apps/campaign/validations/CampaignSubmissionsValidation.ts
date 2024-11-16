@@ -42,7 +42,7 @@ export const validateListCampaignQuery = async (
 
 // Validation for editing campaign parameters (if needed)
 const editCampaignParams = Joi.object().keys({
-  id: Joi.string().uuid().required()
+  id: Joi.string().required()
     .messages({
       'any.required': 'ID is required.',
       'string.base': 'ID must be a valid UUID.'

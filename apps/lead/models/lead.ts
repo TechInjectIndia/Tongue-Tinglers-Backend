@@ -8,6 +8,8 @@ import {
 } from "../../../types";
 import { ITrackable } from "../../../interfaces";
 import { LeadsModel } from "../../../database/schema";
+import { AssignModel } from "../../../database/schema";
+import { UserModel } from "../../../database/schema";
 import { LeadStatus, ILead } from '../../../interfaces'; // Use the LeadStatus enum from interfaces
 import IBaseRepo from '../controllers/controller/ILeadController';
 
@@ -33,15 +35,38 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
         return data as TLeadStatus | null;
     }
 
+
     // Get lead by attribute
-    public async getLeadByAttr(whereName: keyof ILead, whereVal: any, getAttributes: any = ['*']): Promise<ILead | null> {
+    public async getLeadByAttr(
+        whereName: keyof ILead,
+        whereVal: any,
+        getAttributes: any = ['*']
+    ): Promise<any | null> {
         const whereAttributes = { [whereName]: whereVal };
         const data = await LeadsModel.findOne({
-            raw: true,
-            attributes: getAttributes,
-            where: whereAttributes
+            where: whereAttributes,
+            include: [
+                {
+                    model: AssignModel,
+                    as: 'assign',
+                    attributes: ['assignedTo', 'assignedBy', 'assignedDate'],
+                    include: [
+                        {
+                            model: UserModel,
+                            as: 'assignedUser', // Use the alias for assignedTo
+                            attributes: ['id', 'userName'],
+                        },
+                        {
+                            model: UserModel,
+                            as: 'assignerUser', // Use the alias for assignedBy
+                            attributes: ['id', 'userName'],
+                        }
+                    ],
+                }
+            ],
         });
-        return data as ILead | null;
+
+        return data;
     }
 
     // Get lead by ID
@@ -120,7 +145,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
     }
 
     // Assign a lead to a user
-    public async assignLeadToUser(id: string, data: TAssignLead): Promise<[affectedCount: number]> {
+    public async assignLeadToUser(id: string, data: any): Promise<[affectedCount: number]> {
         try {
             const response = await LeadsModel.update(data, {
                 where: { id },

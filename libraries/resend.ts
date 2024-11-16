@@ -101,7 +101,10 @@ export const sendEmailFromRequest = async (
             }
         }
         const result = await resend.emails.send(emailOptions);
-
+        if (result.error) {
+            console.error('Error sending email:', result.error);
+            throw result.error; // Propagate the error for further handling
+        }
         console.log('Email sent:', result);
         return result;
     } catch (err) {

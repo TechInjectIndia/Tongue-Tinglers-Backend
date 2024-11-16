@@ -22,15 +22,9 @@ export class ExtraFieldRepo implements IExtraFieldController<ExtraFields, TListF
         return await ExtraFieldsModel.create(data);
     }
 
-    public async update(id: number, data: TPayloadFranchiseModel): Promise<[number]> {
-        return await ExtraFieldsModel.update(data, {
-            where: { id },
-        });
-    }
-
-    public async delete(ids: number[]): Promise<number> {
+    public async deleteByFranchiseModelId(franchiseModelId: string): Promise<number> {
         return await ExtraFieldsModel.destroy({
-            where: { id: ids },
+            where: { franchiseModelId },
         });
     }
 }

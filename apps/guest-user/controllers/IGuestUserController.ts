@@ -1,4 +1,4 @@
-import { TQueryFilters, TUserWithPermission } from "../../../../types";
+import { TQueryFilters, TUserWithPermission } from "../../../types";
 
 interface IGuestUserController<T, F extends TQueryFilters> {
     get(id: string): Promise<TUserWithPermission>;

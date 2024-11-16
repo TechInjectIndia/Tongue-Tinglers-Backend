@@ -19,36 +19,27 @@ const SeoImageSchema = Joi.object({
 const createProposalModelBody = Joi.object({
     title: Joi.string().required()
         .messages({ 'any.required': 'Title is required.' }),
-    budget: Joi.number().precision(2).min(0).required()
+    franchiseModel: Joi.string().required()
         .messages({
-            'number.base': 'Budget must be a number.',
-            'number.precision': 'Budget can have up to two decimal places.',
-            'number.min': 'Budget must be a positive number.',
-            'any.required': 'Budget is required.'
+            'any.required': 'Franchise Model is required.'
         }),
-    files: Joi.array().items(SeoImageSchema).min(1).required()
+    prices: Joi.string().required()
         .messages({
-            'array.base': 'Files must be an array.',
-            'array.min': 'At least one file is required.',
-            'any.required': 'Files are required.'
+            'any.required': 'Prices data is required.'
         }),
+
 });
 
 // Validation schema for editing a ProposalModel
 const editProposalModelBody = Joi.object({
     title: Joi.string().optional()
         .messages({ 'string.base': 'Title must be a string.' }),
-    budget: Joi.number().precision(2).min(0).optional()
-        .messages({
-            'number.base': 'Budget must be a number.',
-            'number.precision': 'Budget can have up to two decimal places.',
-            'number.min': 'Budget must be a positive number.',
-        }),
-    files: Joi.array().items(SeoImageSchema).optional()
-        .messages({
-            'array.base': 'Files must be an array.',
-        }),
-}).or('title', 'budget', 'files') // At least one field must be provided for update
+    prices: Joi.string().optional()
+        .messages({ 'string.base': 'Prices must be a string.' }),
+    franchiseModel: Joi.string().optional()
+        .messages({ 'string.base': 'Franchise Model must be a string.' }),
+
+}).or('title', 'prices', 'franchiseModel',) // At least one field must be provided for update
     .messages({
         'object.missing': 'At least one field must be provided for update.'
     });

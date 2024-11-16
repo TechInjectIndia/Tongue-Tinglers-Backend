@@ -9,16 +9,17 @@ interface LeadCreationAttributes extends Optional<ProposalModels, 'id' | 'create
 
 // Define the model class for ProposalModels
 class ProposalLeadModels extends Model<ProposalModels, LeadCreationAttributes> implements ProposalModels {
-    public id!: string;
+    public id!: number;
+    public franchiseModel!: string;
     public title!: string;
+    /* comma separated string */
+    public prices!: string;
     public createdAt!: Date;
     public createdBy!: string;
     public updatedAt!: Date | null;
     public updatedBy!: string | null;
     public deletedAt!: Date | null;
     public deletedBy!: string | null;
-    public budget!: number;
-    public files!: SeoImage[];
 }
 
 // Initialize the Proposal model
@@ -30,6 +31,14 @@ ProposalLeadModels.init({
         defaultValue: UUIDV4,
     },
     title: {
+        type: STRING,
+        allowNull: false,
+    },
+    prices: {
+        type: STRING,
+        allowNull: false,
+    },
+    franchiseModel: {
         type: STRING,
         allowNull: false,
     },
@@ -58,14 +67,7 @@ ProposalLeadModels.init({
         type: STRING,
         allowNull: true,
     },
-    budget: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-    },
-    files: {
-        type: JSONB,
-        allowNull: false,
-    },
+
 }, {
     sequelize,
     tableName: 'Proposal_model',

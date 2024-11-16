@@ -51,28 +51,30 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
 }
 
 interface ProposalModels {
-    id: string,
-    title: string;
+    id: number,
+    title: string,
+    /* comma separated string */
+    prices: string;
+    franchiseModel: string;
     createdAt: Date;
     createdBy: string;
     updatedAt: Date | null;
     updatedBy: string | null;
     deletedAt: Date | null;
     deletedBy: string | null;
-    budget: number;
-    files: Array<SeoImage>;
 }
 
 type TPayloadProposalModel = {
     title: string;
+    /* comma separated string */
+    prices: string;
+    frenchiseModel: string;
     createdAt: Date;
     createdBy: string;
     updatedAt: Date | null;
     updatedBy: string | null;
     deletedAt: Date | null;
     deletedBy: string | null;
-    budget: number;
-    files: Array<SeoImage>;
 }
 
 type ProposalModelsList = {

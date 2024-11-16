@@ -3,7 +3,7 @@ import { get } from "lodash";
 import { createFirebaseUser, createPassword, EMAIL_HEADING, EMAIL_TEMPLATE, getEmailTemplate, sendEmail, sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { GuestUserRepo } from "../models/guest-user";
-import { Auth } from "firebase-admin/lib/auth/auth";
+import admin from 'firebase-admin';
 import { USER_TYPE } from "../../../interfaces/user";
 
 
@@ -45,7 +45,7 @@ export default class GuestController {
             const user_id = get(req, 'user_id', "");
             const payload = { ...req?.body, createdBy: user_id };
 
-            const existingAdmin = await new Auth().getUserByEmail(payload.email);
+            const existingAdmin = await admin.auth().getUserByEmail(payload.email);
             if (existingAdmin) {
                 return res
                     .status(400)

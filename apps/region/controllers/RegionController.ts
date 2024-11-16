@@ -9,8 +9,8 @@ export default class RegionController {
         try {
             const user_id = get(req, 'user_id', '');
             const payload = { ...req.body, createdBy: user_id };
-            const region = await new RegionRepo().create(payload);
 
+            const region = await new RegionRepo().create(payload);
             return res
                 .status(200)
                 .send(
@@ -64,12 +64,11 @@ export default class RegionController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req.params, "id", "");
+            const id = get(req.params, "id", 0);
             const updateData = req.body;
             delete updateData.id;
-
             const user_id = get(req, "user_id", "");
-            const updatedRegion = await new RegionRepo().update(id as string, { ...updateData, updatedBy: user_id });
+            const updatedRegion = await new RegionRepo().update(id as number, { ...updateData, updatedBy: user_id });
 
             return res
                 .status(200)
@@ -90,8 +89,8 @@ export default class RegionController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req.params, "id", "");
-            const existingRegion = await new RegionRepo().get(id as string);
+            const id = get(req.params, "id", 0);
+            const existingRegion = await new RegionRepo().get(id as number);
 
             if (!existingRegion) {
                 return res

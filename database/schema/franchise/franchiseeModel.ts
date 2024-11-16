@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
 import { FranchiseeAttributes, FranchiseLocationAttributes, FranchiseType } from '../../../interfaces';
 import { UserModel } from '../user/user.model';
-import { RegionModel } from './RegionsModel';
+import { RegionModel } from '../region-area/RegionsModel';
 import { ContractModel } from '../contracts'; // Import the ContractModel
 
 // Franchisee creation attributes, making 'id' optional for creation

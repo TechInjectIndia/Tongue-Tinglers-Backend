@@ -14,4 +14,4 @@ build/
 .nvmrc
 package-lock.json
 firebase-adminsdk.json
-/logs/
+/logs/*

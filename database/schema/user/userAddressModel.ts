@@ -109,7 +109,5 @@ UserAddressModel.init(
     }
 );
 
-UserAddressModel.belongsTo(UserModel, { foreignKey: 'userId', as: 'addressData', });
-
 // Export the model for use in other parts of the project
 export { UserAddressModel };

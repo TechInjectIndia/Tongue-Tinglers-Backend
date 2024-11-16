@@ -3,7 +3,6 @@ import type { UpdatedMetaData, BaseModelIdNumber, DeletionMetaData } from "../in
 
 interface IRegion extends UpdatedMetaData, BaseModelIdNumber, DeletionMetaData {
     title: string;
-    area: number[];
 }
 
 interface TPayloadRegion {

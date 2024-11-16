@@ -1,4 +1,6 @@
 // Admin model starts
+import {RegionModel} from "./region-area/RegionsModel";
+
 export * from "./user/user.model";
 export * from "./user/address";
 export * from "./user/userAddressModel";
@@ -73,8 +75,8 @@ export * from "./files/galleryModel";
 export * from "./franchise/franchiseeModel";
 export * from "./franchise/franchiseLocationModel";
 export * from "./franchise/pdiModel";
-export * from "./franchise/RegionsModel";
-export * from "./franchise/AreaModel";
+export * from "./region-area/RegionsModel";
+export * from "./region-area/AreaModel";
 export * from "./franchise/smDetailsModel";
 
 // --- Sequelize Associations Setup --- //
@@ -181,6 +183,8 @@ ProductsModel.belongsToMany(ProductCategoryModel, {
 import { RetortProductsModel } from './retort/retort-product';
 import { RetortProductCategoryModel } from './retort/retort-category';
 import { RetortProductCategoryMapModel } from './retort/retort-product_category_map';
+import {AreaModel} from "./region-area/AreaModel";
+import {sequelize} from "../../config";
 
 RetortProductCategoryModel.belongsToMany(RetortProductsModel, {
     through: RetortProductCategoryMapModel,
@@ -195,6 +199,18 @@ RetortProductsModel.belongsToMany(RetortProductCategoryModel, {
     otherKey: 'categoryId',
     as: 'categories', // Ensure this alias matches
 });
+
+RegionModel.associate();
+AreaModel.associate();
+
+// Sync the models with the database
+sequelize.sync({ force: true }) // Set `force: true` for development to reset tables
+    .then(() => {
+        console.log('Database synchronized');
+    })
+    .catch((err) => {
+        console.error('Error synchronizing database:', err);
+    });
 
 console.log("Associations initialized successfully.");
 

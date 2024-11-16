@@ -49,6 +49,9 @@ const options = {
                 name: 'Regions'
             },
             {
+                name: 'Areas'
+            },
+            {
                 name: 'Franchisee'
             },
             {
@@ -225,6 +228,7 @@ const options = {
     apis: [
         './routes/*.ts',
         './apps/user-address/api/*.ts',
+        './apps/area/api/*.ts',
         './apps/region/api/*.ts',
         './apps/cart/api/*.ts',
         './apps/vendor/api/*.ts',

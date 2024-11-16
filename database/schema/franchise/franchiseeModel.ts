@@ -146,3 +146,4 @@ FranchiseeModel.init(
 FranchiseeModel.associate();
 
 export { FranchiseeModel };
+

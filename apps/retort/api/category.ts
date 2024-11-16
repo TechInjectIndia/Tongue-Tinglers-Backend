@@ -106,6 +106,21 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
+ * 
+ * /api/admin/retort/category/list-all:
+ *   get:
+ *     summary: Get all categories with products
+ *     tags: [Admin > Retort > Product > Category]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Product Category retrieved successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ * 
  * /api/admin/retort/category/get/{id}:
  *   get:
  *     summary: Get a Category by ID
@@ -205,6 +220,7 @@ const {
  */
 router.post("/create", hasPermission('retort', 'create'), validateCreateProductCategoryBody, RetortProductCategoryController.create);
 router.get("/list", hasPermission('retort', 'read'), validateListProductCategoryQuery, RetortProductCategoryController.list);
+router.get("/list-all", hasPermission('retort', 'read'), RetortProductCategoryController.listAllCategoriesWithProducts);
 router.get("/get/:id", hasPermission('retort', 'read'), validateEditProductCategoryParams, RetortProductCategoryController.get);
 router.put("/update/:id", hasPermission('retort', 'update'), validateEditProductCategoryParams, validateEditProductCategoryBody, RetortProductCategoryController.update);
 router.delete("/delete", hasPermission('retort', 'delete'), validateEditMultipleIdsBody, RetortProductCategoryController.delete);

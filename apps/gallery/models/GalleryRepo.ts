@@ -1,4 +1,4 @@
-import { uploadFileToFirebase, getAllFilesFromFirebase, deleteFileFromFirebase } from '../../../libraries'; // Adjust import path as necessary
+import { uploadFileToFirebase, getAllFilesFromFirebase, deleteFileFromFirebase } from '../../../libraries';
 import { GalleryModel } from "../../../database/schema";
 import { Op } from "sequelize";
 import { GalleryAttributes } from "../../../interfaces";

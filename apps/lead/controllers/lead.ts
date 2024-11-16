@@ -3,24 +3,36 @@ import { get, isEmpty } from "lodash";
 import { sendResponse, createPassword, createFirebaseUser, sendEmail, getEmailTemplate, EMAIL_TEMPLATE, EMAIL_HEADING } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { LeadRepo } from '../models/lead';
+import { AssignRepo } from '../models/AssignRepo';
+import { ContractRepo } from '../../contracts/models/ContractRepo';
 import { AdminRepo } from '../../admin-user/models/user';
 import { FranchiseRepo } from '../../admin-user/models/franchise';
 import { FranchiseeRepo } from '../../franchisee/models/FranchiseeRepo';
+import { FranchiseLocationRepo } from '../../franchisee/models/FranchiseLocationRepo';
 import { ITrackable, LeadStatus, USER_TYPE, USER_STATUS, FranchiseType } from '../../../interfaces';
 import { TAssignLead } from '../../../types';
 import { Sequelize } from 'sequelize';
 import jwt from "jsonwebtoken";
 import { CONFIG } from "../../../config";
+import { TrustProductsEvaluationsContextImpl } from "twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEvaluations";
+import { constructNow } from "date-fns";
+import { createLeadResponse } from '../../../libraries';
 
 export default class LeadController {
 
     static async convertLeadToFranchisee(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const id = get(req.body, "id", "");
-            const existingLead = await new LeadRepo().getLeadByStatus(id);
 
+            // get contract
+            const existingContract = await new ContractRepo().get(id as string);
+            if (!existingContract) {
+                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `Contract ${ERROR_MESSAGE.NOT_EXISTS}`));
+            }
+
+            const existingLead = await new LeadRepo().get(existingContract.leadId as string);
             if (!existingLead) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
+                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `Lead ${ERROR_MESSAGE.NOT_EXISTS}`));
             }
 
             // if (existingLead.status === LeadStatus.CONVERTED) {
@@ -59,9 +71,8 @@ export default class LeadController {
             if (!firebaseUser?.success) {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, firebaseUser?.uid));
             }
-            // Send an link to user email with password token 
+
             const token = jwt.sign({ email: payload.email }, CONFIG.ACCESS_TOKEN_SECRET, { expiresIn: CONFIG.ACCESS_TOKEN_EXPIRATION });
-            const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password?token=${token}`;
 
             const hashedPassword = await createPassword(payload.password);
             const normalUser = await new FranchiseRepo().create({
@@ -71,7 +82,9 @@ export default class LeadController {
                 password_token: token
             });
 
-            await new FranchiseeRepo().createFranchisee({
+            const existingAllContract = await new ContractRepo().getAssociatedContractsByLeadId(existingContract.leadId as string);
+
+            const franchiseResponse = await new FranchiseeRepo().createFranchisee({
                 userid: normalUser.id,
                 franchiseAgreementSignedDate: null,
                 name: existingLead.firstName,
@@ -82,10 +95,24 @@ export default class LeadController {
                 franchiseType: FranchiseType.FRANCHISE,
                 regionId: null,
                 isActive: false,
-                contractIds: null
+                contractIds: existingAllContract,
+                activeContract: existingContract.id,
+            });
+
+            await new FranchiseLocationRepo().createFranchiseLocation({
+                contactPhone: null,
+                location: null,
+                city: null,
+                state: null,
+                country: null,
+                zipCode: null,
+                franchiseeId: franchiseResponse.id,
             });
 
             // await new LeadRepo().updateStatus(id, { status: LeadStatus.CONVERTED });
+
+            // Send an link to user email with password token 
+            const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password?token=${token}`;
 
             try {
                 const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
@@ -136,18 +163,22 @@ export default class LeadController {
     static async assignLeadToAdminUser(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {
             const id = get(req.body, "id", "");
-            const assignee = get(req.body, "assignee", {}); // Changed from assigneeArray to assignee
-            const existingLead = await new LeadRepo().getLeadByAttr('id', id);
+            const assignee = get(req.body, "assignedTo", {}); // Changed from assigneeArray to assignee
+            const user_id = get(req, 'user_id', '');
 
+            const existingLead = await new LeadRepo().getLeadByAttr('id', id);
             if (isEmpty(existingLead)) {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
 
-            const payload: TAssignLead = {
-                assign: assignee, // Directly assign the single assignee object
+            const payload: any = {
+                assignedTo: assignee.id,
+                assignedBy: user_id,
+                assignedDate: new Date(),
             };
 
-            const updatedLead = await new LeadRepo().assignLeadToUser(id, payload);
+            console.log('payloadpayloadpayloadpayload', payload);
+            const updatedLead = await new AssignRepo().createOrUpdate(id, payload);
 
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPDATED, updatedLead));
         } catch (err) {
@@ -161,8 +192,8 @@ export default class LeadController {
             const user_id = get(req, 'user_id', '');
             const user_name = get(req, 'user_name', '');
             const whereVal = get(req.body, "email", "");
-            const existingLead = await new LeadRepo().getLeadByAttr('email', whereVal);
 
+            const existingLead = await new LeadRepo().getLeadByAttr('email', whereVal);
             if (existingLead) {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.EXISTS));
             }
@@ -179,6 +210,20 @@ export default class LeadController {
                 //     timeline: new Date(),
                 // }],
             };
+            const { assign } = payload;
+
+            if (assign != null) {
+                const existingUser = await new AdminRepo().checkIfUserExist(assign.assignedTo.id);
+                if (!existingUser) {
+                    return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
+                }
+                const existingassignedByUser = await new AdminRepo().checkIfUserExist(assign.assignedBy.id);
+                if (!existingassignedByUser) {
+                    return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
+                }
+            }
+
+            delete payload.assign
 
             if (payload.referby) {
                 const existingReferral = await new AdminRepo().getByReferralCode(payload.referby);
@@ -188,6 +233,20 @@ export default class LeadController {
             }
 
             const newLead = await new LeadRepo().create(payload);
+
+            // Check and create assignment if 'assign' object is provided in the request body
+            if (assign != null) {
+                const assignPayload = {
+                    assignedTo: assign.assignedTo.id,
+                    assignedBy: assign.assignedBy.id,
+                    assignedDate: assign.assignedDate,
+                    leadId: newLead.id, // Reference the new lead's ID
+                };
+
+                // Create assignment in AssignRepo
+                await new AssignRepo().create(assignPayload);
+            }
+
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, newLead));
         } catch (err) {
             console.error(err);
@@ -243,11 +302,38 @@ export default class LeadController {
             // const existingLogs = Array.isArray(existingLead.logs) ? existingLead.logs : [];
             // const updatedLogs = [...existingLogs, updateLog];
 
+            const { assign } = payload;
+            delete payload.assign
+
             const updatedLead = await new LeadRepo().update(id, {
                 ...payload,
                 updatedBy: user_id,
                 // logs: updatedLogs
             });
+
+            if (assign != null) {
+                const existingUser = await new AdminRepo().checkIfUserExist(assign.assignedTo.id);
+                if (!existingUser) {
+                    return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
+                }
+                const existingassignedByUser = await new AdminRepo().checkIfUserExist(assign.assignedBy.id);
+                if (!existingassignedByUser) {
+                    return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
+                }
+            }
+
+            if (assign != null) {
+                const assignPayload = {
+                    assignedTo: assign.assignedTo.id,
+                    assignedBy: assign.assignedBy.id,
+                    assignedDate: assign.assignedDate,
+                };
+
+                // Create assignment in AssignRepo
+                await new AssignRepo().createOrUpdate(id, assignPayload);
+            } else {
+                await new AssignRepo().delete(id as string);
+            }
 
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPDATED, updatedLead));
         } catch (err) {
@@ -259,13 +345,13 @@ export default class LeadController {
     static async get(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {
             const id = get(req.params, "id", "");
-            const existingLead = await new LeadRepo().getLeadByAttr('id', id);
 
+            const existingLead = await new LeadRepo().getLeadByAttr('id', id);
             if (isEmpty(existingLead)) {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
 
-            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, existingLead));
+            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, createLeadResponse(existingLead)));
         } catch (err) {
             console.error(err);
             return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });

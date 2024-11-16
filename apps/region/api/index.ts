@@ -1,7 +1,6 @@
-// src/routes/RegionRoutes.ts
-import * as express from "express";
-import RegionController from "../controllers/RegionController";
-import * as RegionValidation from "../validations/RegionValidation";
+import * as express from 'express';
+import RegionController from '../controllers/RegionController';
+import * as RegionValidation from '../validations/RegionValidation';
 
 const router = express.Router();
 
@@ -13,12 +12,19 @@ const {
   validateEditMultipleIdsBody,
 } = RegionValidation;
 
-// ====== Regions Starts ======
+// ===== Swagger Documentation =====
+/**
+ * @swagger
+ * tags:
+ *   name: Regions
+ *   description: API for managing regions
+ */
+
 /**
  * @swagger
  * /api/admin/region/create:
  *   post:
- *     summary: Create a new Region
+ *     summary: Create a new region
  *     tags: [Regions]
  *     security:
  *       - bearerAuth: []
@@ -29,61 +35,100 @@ const {
  *           schema:
  *             type: object
  *             required:
- *               - name
- *               - code
- *               - description
- *               - isActive
+ *               - title
+ *               - area
  *             properties:
- *               name:
+ *               title:
  *                 type: string
  *                 example: "Northern Region"
- *               code:
- *                 type: string
- *                 example: "Country Name"
- *               description:
- *                 type: string
- *                 example: "Country Name"
- *               isActive:
- *                 type: boolean
- *                 example: true
+ *               area:
+ *                 type: array
+ *                 items:
+ *                   type: number
+ *                 example: [100, 200]
  *     responses:
- *       '201':
+ *       201:
  *         description: Region created successfully
- *       '400':
- *         description: Invalid request body
- *       '401':
+ *       400:
+ *         description: Bad request
+ *       401:
  *         description: Unauthorized
  *
- * /api/admin/region/list?size={size}&skip={skip}:
+ * /api/admin/region/list:
  *   get:
- *     summary: Get all Regions
+ *     summary: Get all region with filtering and pagination
  *     tags: [Regions]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: size
- *         required: false
+ *         required: true
  *         schema:
  *           type: integer
- *         description: Size of the retrieved data
+ *         description: Number of records to retrieve per page (limit).
  *       - in: query
  *         name: skip
- *         required: false
+ *         required: true
  *         schema:
  *           type: integer
- *         description: How many rows to skip
+ *         description: Number of records to skip (offset).
+ *       - in: query
+ *         name: search
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Search keyword for matching regions based on name, franchise ID, region, description, or other relevant fields.
+ *       - in: query
+ *         name: sorting
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [id ASC, id DESC, name ASC, name DESC, createdAt ASC, createdAt DESC]
+ *         description: Sorting order for the results, e.g., 'id ASC' or 'createdAt DESC'.
+ *       - in: query
+ *         name: id
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Filter regions by id.
+ *       - in: query
+ *         name: title
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Filter regions by title.
+ *       - in: query
+ *         name: area
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Filter regions by area.
+ *       - in: query
+ *         name: createdBy
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Filter regions by createdBy.
+ *       - in: query
+ *         name: trashOnly
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Flag to return only regions marked for deletion (trash).
  *     responses:
  *       '200':
- *         description: Regions retrieved successfully
+ *         description: regions retrieved successfully
  *       '400':
  *         description: Invalid request
  *       '401':
  *         description: Unauthorized
- *
+ *       '500':
+ *         description: Internal server error
+ * 
  * /api/admin/region/get/{id}:
  *   get:
- *     summary: Get a Region by ID
+ *     summary: Get a region by ID
  *     tags: [Regions]
  *     security:
  *       - bearerAuth: []
@@ -92,19 +137,19 @@ const {
  *         name: id
  *         required: true
  *         schema:
- *           type: string
- *         description: ID of the Region to retrieve
+ *           type: number
+ *         description: ID of the region
  *     responses:
- *       '200':
- *         description: Region retrieved successfully
- *       '401':
+ *       200:
+ *         description: Region details retrieved successfully
+ *       401:
  *         description: Unauthorized
- *       '404':
+ *       404:
  *         description: Region not found
  *
  * /api/admin/region/update/{id}:
  *   put:
- *     summary: Update a Region
+ *     summary: Update a region by ID
  *     tags: [Regions]
  *     security:
  *       - bearerAuth: []
@@ -113,8 +158,8 @@ const {
  *         name: id
  *         required: true
  *         schema:
- *           type: string
- *         description: ID of the Region to update
+ *           type: number
+ *         description: ID of the region to update
  *     requestBody:
  *       required: true
  *       content:
@@ -122,27 +167,27 @@ const {
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               title:
  *                 type: string
- *               code:
- *                 type: string
- *               description:
- *                 type: string
- *               isActive:
- *                 type: boolean
+ *                 example: "Updated Region"
+ *               area:
+ *                 type: array
+ *                 items:
+ *                   type: number
+ *                 example: [150, 250]
  *     responses:
- *       '200':
+ *       200:
  *         description: Region updated successfully
- *       '400':
- *         description: Invalid request body
- *       '401':
+ *       400:
+ *         description: Bad request
+ *       401:
  *         description: Unauthorized
- *       '404':
+ *       404:
  *         description: Region not found
  *
  * /api/admin/region/delete:
  *   delete:
- *     summary: Delete Regions
+ *     summary: Delete one or more regions
  *     tags: [Regions]
  *     security:
  *       - bearerAuth: []
@@ -158,20 +203,22 @@ const {
  *               ids:
  *                 type: array
  *                 items:
- *                   type: string
- *                 example: ["1", "2"]
+ *                   type: number
+ *                 example: [1, 2]
  *     responses:
- *       '200':
+ *       200:
  *         description: Regions deleted successfully
- *       '401':
+ *       401:
  *         description: Unauthorized
- *       '404':
- *         description: Region not found
+ *       404:
+ *         description: One or more regions not found
  */
-router.post("/create", validateCreateRegionBody, RegionController.create);
-router.get("/list", validateListRegionQuery, RegionController.list);
-router.get("/get/:id", validateEditRegionParams, RegionController.get);
-router.put("/update/:id", validateEditRegionParams, validateEditRegionBody, RegionController.update);
-router.delete("/delete", validateEditMultipleIdsBody, RegionController.delete);
+
+// ===== Route Definitions =====
+router.post('/create', RegionController.create);
+router.get('/list', RegionController.list);
+router.get('/get/:id', RegionController.get);
+router.put('/update/:id', RegionController.update);
+router.delete('/delete', RegionController.delete);
 
 export default router;

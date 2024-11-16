@@ -19,7 +19,7 @@ const options = {
                 description: "Local server"
             },
             {
-                url: "<live url>",
+                url: "https://api.tonguetingler.com/",
                 description: "Live server"
             },
         ],
@@ -37,7 +37,19 @@ const options = {
                 name: 'AUTH' // auth starts
             },
             {
+                name: 'UserAddress'
+            },
+            {
+                name: 'Cart'
+            },
+            {
+                name: 'Admin > Vendors'
+            },
+            {
                 name: 'Regions'
+            },
+            {
+                name: 'Areas'
             },
             {
                 name: 'Franchisee'
@@ -215,7 +227,11 @@ const options = {
     // looks for configuration in specified directories
     apis: [
         './routes/*.ts',
+        './apps/user-address/api/*.ts',
+        './apps/area/api/*.ts',
         './apps/region/api/*.ts',
+        './apps/cart/api/*.ts',
+        './apps/vendor/api/*.ts',
         './apps/franchisee/api/*.ts',
         './apps/pdi-checklist/api/*.ts',
         './apps/quick-actions/api/*.ts',

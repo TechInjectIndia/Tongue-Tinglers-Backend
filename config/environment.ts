@@ -20,6 +20,7 @@ export const CONFIG = {
     RP_SECRET_PROD: process.env.RP_SECRET_PROD,
     RP_WEBHOOK_SECRET: process.env.RP_WEBHOOK_SECRET,
     RP_CALLBACK: process.env.RP_CALLBACK,
+    RP_CALLBACK_ORDERS: process.env.RP_CALLBACK_ORDERS,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL,
     FRONTEND_URL: process.env.FRONTEND_URL,
     // TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,

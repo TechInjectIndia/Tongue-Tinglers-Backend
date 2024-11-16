@@ -3,13 +3,13 @@ import { sequelize } from "../../../config";
 import { CampaignAdModel } from './campaignAdModel';
 import { ICampaignSubmisisons } from '../../../interfaces';
 
-const { TEXT, DATE, NOW, UUIDV4 } = DataTypes;
+const { TEXT, DATE, INTEGER, NOW, UUIDV4 } = DataTypes;
 
 interface AnswerCreationAttributes extends Optional<ICampaignSubmisisons, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class CampaignSubmissions extends Model<ICampaignSubmisisons, AnswerCreationAttributes> implements ICampaignSubmisisons {
     public id!: string;
-    public campaignId!: string;
+    public campaignId!: number;
     public response!: string;
 
     public readonly createdAt!: Date;
@@ -32,9 +32,8 @@ CampaignSubmissions.init({
         comment: 'Unique identifier for the answer',
     },
     campaignId: {
-        type: DataTypes.UUID,
+        type: INTEGER,
         allowNull: false,
-        comment: 'The campaign this answer is associated with',
     },
     response: {
         type: TEXT,

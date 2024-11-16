@@ -1,28 +1,30 @@
 const { OrderItem } = require("sequelize");
+import { ProductsModel } from '../../database/schema'
 
 // ProductCategory type Starts
-export type TProductCategory = {
-  id: number;
+export interface TProductCategory {
+  id: number; // Adjust based on your actual type
   name: string;
-  description: string;
-  active: number;
-  slug: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
+  description: string; // Ensure you have this field
+  active: boolean; // Ensure you have this field
+  slug: string; // Ensure you have this field
+  createdAt: Date; // Ensure you have this field
+  updatedAt: Date; // Ensure you have this field
+  products?: ProductsModel[];
+}
 
 export type TEditProductCategory = {
   name: string;
   slug: string;
   description: string;
-  active: number;
+  active: boolean;
 };
 
 export type TAddProductCategory = {
   name: string;
   slug: string;
   description: string;
-  active: number;
+  active: boolean;
 };
 
 export type TProductCategorysList = {

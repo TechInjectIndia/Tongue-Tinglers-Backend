@@ -3,6 +3,7 @@ import type {
     BaseModel,
     DeletionMetaData,
     ITrackable,
+    ProposalModels,
     Note,
     UserDetails,
 } from "../interfaces";
@@ -38,6 +39,7 @@ enum SIGN_STATUS {
 interface IContract extends UpdatedMetaData, BaseModel, DeletionMetaData {
     id: string;
     status: CONTRACT_STATUS;
+    proposalData: ProposalModels | null;
     terminationDetails: null | {
         UserDetails: UserDetails; // updated
         reason: string;

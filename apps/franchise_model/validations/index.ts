@@ -4,6 +4,7 @@ import { validateReq } from "../../../libraries";
 
 // Define the SeoImage schema for validation
 const SeoImageSchema = Joi.object({
+    id: Joi.string().optional().allow(""),
     url: Joi.string().required()
         .messages({
             'any.required': 'Image URL is required.',
@@ -20,7 +21,7 @@ const ExtraFieldsSchema = Joi.array().items(Joi.object({
     key: Joi.string().required(),
     value: Joi.string().required(),
     title: Joi.string().required(),
-    type: Joi.string().valid('string', 'number', 'date').required()
+    type: Joi.string().required()
 })).optional();
 
 // Validation schema for creating a FranchiseModel

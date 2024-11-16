@@ -5,6 +5,8 @@ import { TQueryFilters, TAddUser, TEditUser, TEditUserProfile, TUsersList, TUser
  * Interface for User Controller.
  */
 interface IUserController<T, F extends TQueryFilters> {
+    checkIfUserExist(id: string): Promise<any>
+
     /**
      * List users with filters.
      * @param filters - Filtering options.
@@ -32,7 +34,7 @@ interface IUserController<T, F extends TQueryFilters> {
      * @param payload - The data to update the user.
      * @returns Promise resolving to the affected count.
      */
-    update(id: string, payload: TEditUser): Promise<[affectedCount: number]>; 
+    update(id: string, payload: TEditUser): Promise<[affectedCount: number]>;
 
     /**
      * Delete users by IDs.
@@ -69,7 +71,7 @@ interface IUserController<T, F extends TQueryFilters> {
      * @param payload - The data to update the user profile.
      * @returns Promise resolving to the affected count.
      */
-    updateProfile(id: string, payload: TEditUserProfile): Promise<[affectedCount: number]>; 
+    updateProfile(id: string, payload: TEditUserProfile): Promise<[affectedCount: number]>;
 
     /**
      * Get a user by referral code.

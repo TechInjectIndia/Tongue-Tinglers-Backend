@@ -69,7 +69,7 @@ FranchiseLeadModel.init({
 // Define the associations
 FranchiseLeadModel.hasMany(ExtraFieldsModel, {
     foreignKey: 'franchiseModelId',
-    as: 'extraFields',
+    as: 'others',
 });
 
 FranchiseLeadModel.hasMany(SeoImageModel, {

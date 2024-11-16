@@ -37,7 +37,10 @@ export class RetortProductRepo implements IBaseRepo<TRetortProduct, TRetortProdu
             },
             {
                 model: RetortProductCategoryModel,
-                as: 'categories'
+                as: 'categories',
+                through: {
+                    attributes: ['id'],
+                }
             },]
         });
         return data;

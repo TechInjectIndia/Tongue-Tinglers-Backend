@@ -26,12 +26,7 @@ const createProposalModelBody = Joi.object({
             'number.min': 'Budget must be a positive number.',
             'any.required': 'Budget is required.'
         }),
-    files: Joi.array().items(SeoImageSchema).min(1).required()
-        .messages({
-            'array.base': 'Files must be an array.',
-            'array.min': 'At least one file is required.',
-            'any.required': 'Files are required.'
-        }),
+    files: Joi.optional(),
 });
 
 // Validation schema for editing a ProposalModel
@@ -44,10 +39,7 @@ const editProposalModelBody = Joi.object({
             'number.precision': 'Budget can have up to two decimal places.',
             'number.min': 'Budget must be a positive number.',
         }),
-    files: Joi.array().items(SeoImageSchema).optional()
-        .messages({
-            'array.base': 'Files must be an array.',
-        }),
+    files: Joi.optional(),
 }).or('title', 'budget', 'files') // At least one field must be provided for update
     .messages({
         'object.missing': 'At least one field must be provided for update.'

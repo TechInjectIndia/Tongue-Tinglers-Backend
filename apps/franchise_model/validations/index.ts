@@ -127,7 +127,7 @@ const editFranchiseModelBody = Joi.object({
 
 // Validation schema for editing FranchiseModel parameters
 const editFranchiseModelParams = Joi.object({
-    id: Joi.string().uuid().required()
+    id: Joi.string().required()
         .messages({
             'string.base': 'FranchiseModel ID must be a string.',
             'string.guid': 'FranchiseModel ID must be a valid UUID.',

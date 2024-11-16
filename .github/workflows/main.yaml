@@ -20,6 +20,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Fix permissions
+        run: |
+          sudo chown -R ubuntu:ubuntu /home/ubuntu/tongue-tinglers/Tongue-Tinglers-Backend
+          chmod -R u+w /home/ubuntu/tongue-tinglers/Tongue-Tinglers-Backend
+
       - name: Run deployment command on EC2
         run: |
           aws ssm send-command \

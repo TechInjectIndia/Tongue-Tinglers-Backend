@@ -103,7 +103,7 @@ FranchiseeModel.init(
       allowNull: false,
     },
     regionId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       references: {
         model: RegionModel,
         key: 'id',

@@ -1,14 +1,14 @@
 
-import type { UpdatedMetaData, BaseModelIdNumber, DeletionMetaData } from "../interfaces";
+import type { UpdatedMetaData, BaseModel, DeletionMetaData } from "../interfaces";
 
-interface IRegion extends UpdatedMetaData, BaseModelIdNumber, DeletionMetaData {
+interface IRegion extends UpdatedMetaData, BaseModel, DeletionMetaData {
     title: string;
-    area: number[];
+    area: number[] | null;
 }
 
 interface TPayloadRegion {
     title: string;
-    area: number[];
+    area: number[] | null;
     createdBy?: string;
     updatedBy?: string;
 }

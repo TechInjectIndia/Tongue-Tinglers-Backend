@@ -19,28 +19,27 @@ const SeoImageSchema = Joi.object({
 const createProposalModelBody = Joi.object({
     title: Joi.string().required()
         .messages({ 'any.required': 'Title is required.' }),
-    budget: Joi.number().precision(2).min(0).required()
+    franchiseModel: Joi.string().required()
         .messages({
-            'number.base': 'Budget must be a number.',
-            'number.precision': 'Budget can have up to two decimal places.',
-            'number.min': 'Budget must be a positive number.',
-            'any.required': 'Budget is required.'
+            'any.required': 'Franchise Model is required.'
         }),
-    files: Joi.optional(),
+    prices: Joi.string().required()
+        .messages({
+            'any.required': 'Prices data is required.'
+        }),
+
 });
 
 // Validation schema for editing a ProposalModel
 const editProposalModelBody = Joi.object({
     title: Joi.string().optional()
         .messages({ 'string.base': 'Title must be a string.' }),
-    budget: Joi.number().precision(2).min(0).optional()
-        .messages({
-            'number.base': 'Budget must be a number.',
-            'number.precision': 'Budget can have up to two decimal places.',
-            'number.min': 'Budget must be a positive number.',
-        }),
-    files: Joi.optional(),
-}).or('title', 'budget', 'files') // At least one field must be provided for update
+    prices: Joi.string().optional()
+        .messages({ 'string.base': 'Prices must be a string.' }),
+    franchiseModel: Joi.string().optional()
+        .messages({ 'string.base': 'Franchise Model must be a string.' }),
+
+}).or('title', 'prices', 'franchiseModel',) // At least one field must be provided for update
     .messages({
         'object.missing': 'At least one field must be provided for update.'
     });

@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import {
-    TListFilters,
+    TListFiltersRegions,
 } from "../../../types";
 import {
     TRegionList,
@@ -10,7 +10,7 @@ import {
 import { RegionModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IRegionController';
 
-export class RegionRepo implements IBaseRepo<IRegion, TListFilters> {
+export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
     constructor() { }
 
     public async get(id: number): Promise<IRegion | null> {
@@ -22,24 +22,55 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFilters> {
         return data;
     }
 
-    public async list(filters: TListFilters): Promise<TRegionList> {
+    public async list(filters: TListFiltersRegions): Promise<TRegionList> {
+        // Initialize the whereCondition object
+        const whereCondition: any = {};
+
+        // If the search term is provided, apply it to the relevant fields
+        if (filters.search) {
+            whereCondition[Op.or] = [
+                { title: { [Op.like]: `%${filters.search}%` } },
+                { createdBy: { [Op.like]: `%${filters.search}%` } },
+            ];
+
+            // Only apply the search on numeric fields (id, area) if the search term is a number
+            // if (!isNaN(Number(filters.search))) {
+            //     whereCondition[Op.or].push(
+            //         { id: { [Op.eq]: filters.search } },
+            //         {
+            //             area: { [Op.contains]: [Number(filters.search)] }
+            //         }
+            //     )
+            // }
+        }
+
+        // Add additional filters (e.g., id, region) if provided
+        if (filters.filters?.id) {
+            whereCondition.id = { [Op.eq]: filters.filters.id };
+        }
+        if (filters.filters?.title) {
+            whereCondition.title = { [Op.like]: `%${filters.filters.title}%` };
+        }
+        // if (filters.filters?.area) {
+        //     whereCondition.area = { [Op.contains]: [filters.filters.area] };
+        // }
+        if (filters.filters?.createdBy) {
+            whereCondition.createdBy = { [Op.eq]: filters.filters.createdBy };
+        }
+
+        // Count total regions matching the search criteria
         const total = await RegionModel.count({
-            where: {
-                title: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
+            where: whereCondition,
         });
+
+        // Retrieve the regions with pagination, sorting, and the updated whereCondition
         const data = await RegionModel.findAll({
-            order: [filters?.sorting],
+            order: [filters?.sorting], // Ensure sorting is sanitized
             offset: filters.offset,
             limit: filters.limit,
-            where: {
-                title: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
+            where: whereCondition,
         });
+
         return { total, data };
     }
 

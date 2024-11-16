@@ -68,12 +68,25 @@ export default class RegionController {
             let sorting = get(req.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
 
+
+            const id = get(req.query, "id", "");
+            const title = get(req.query, "title", "");
+            const area = get(req.query, "area", "");
+            const createdBy = get(req.query, "createdBy", "");
+
+            const filters = {};
+            if (id) filters["id"] = id;
+            if (title) filters["title"] = title;
+            if (area) filters["area"] = area;
+            if (createdBy) filters["createdBy"] = createdBy;
+
             const regions = await new RegionRepo().list({
                 offset: skip as number,
                 limit: size as number,
                 search: search as string,
                 sorting,
                 trashOnly: trashOnly as string,
+                filters
             });
 
             return res

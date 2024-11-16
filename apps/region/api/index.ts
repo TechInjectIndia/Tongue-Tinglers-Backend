@@ -56,29 +56,76 @@ const {
  *
  * /api/admin/region/list:
  *   get:
- *     summary: Retrieve a list of regions
+ *     summary: Get all region with filtering and pagination
  *     tags: [Regions]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: size
+ *         required: true
  *         schema:
  *           type: integer
- *         description: Number of regions to retrieve
+ *         description: Number of records to retrieve per page (limit).
  *       - in: query
  *         name: skip
+ *         required: true
  *         schema:
  *           type: integer
- *         description: Number of regions to skip
+ *         description: Number of records to skip (offset).
+ *       - in: query
+ *         name: search
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Search keyword for matching regions based on name, franchise ID, region, description, or other relevant fields.
+ *       - in: query
+ *         name: sorting
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [id ASC, id DESC, name ASC, name DESC, createdAt ASC, createdAt DESC]
+ *         description: Sorting order for the results, e.g., 'id ASC' or 'createdAt DESC'.
+ *       - in: query
+ *         name: id
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Filter regions by id.
+ *       - in: query
+ *         name: title
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Filter regions by title.
+ *       - in: query
+ *         name: area
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Filter regions by area.
+ *       - in: query
+ *         name: createdBy
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Filter regions by createdBy.
+ *       - in: query
+ *         name: trashOnly
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Flag to return only regions marked for deletion (trash).
  *     responses:
- *       200:
- *         description: List of regions retrieved successfully
- *       400:
- *         description: Bad request
- *       401:
+ *       '200':
+ *         description: regions retrieved successfully
+ *       '400':
+ *         description: Invalid request
+ *       '401':
  *         description: Unauthorized
- *
+ *       '500':
+ *         description: Internal server error
+ * 
  * /api/admin/region/get/{id}:
  *   get:
  *     summary: Get a region by ID

@@ -20,3 +20,18 @@ export type TListFiltersCampaigns = {
         [key: string]: any;
     };
 };
+
+export type TListFiltersRegions = {
+    offset: number;
+    limit: number;
+    search?: string;
+    sorting?: any;
+    trashOnly?: string;
+    filters?: {
+        regionId?: number;
+        title?: string;
+        area?: string;
+        createdBy?: string;
+        [key: string]: any;
+    };
+};

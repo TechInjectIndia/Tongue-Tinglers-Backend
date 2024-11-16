@@ -271,12 +271,12 @@ export default class OrderPaymentController {
                     .send(sendResponse(RESPONSE_TYPE.ERROR, "Cart is empty"));
             }
 
-            let franchiseData = await FranchiseeModel.findOne({ where: { userid: userId } });
-            if (!franchiseData) {
-                return res
-                    .status(404)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Franchise is missing"));
-            }
+            // let franchiseData = await FranchiseeModel.findOne({ where: { userid: userId } });
+            // if (!franchiseData) {
+            //     return res
+            //         .status(404)
+            //         .send(sendResponse(RESPONSE_TYPE.ERROR, "Franchise is missing"));
+            // }
 
             const getUserActiveAddress = await new UserAddressRepo().getActiveAddress(userId as string);
 

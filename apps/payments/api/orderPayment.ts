@@ -117,6 +117,7 @@ router.post('/generate-link', auth, OrderPaymentController.generatePaymentLink);
  *         description: Internal server error.
  */
 router.post('/create-payment-intent', auth, OrderPaymentController.createPaymentIntent);
+router.post('/create-payment-intent-sample-kit', auth, OrderPaymentController.createPaymentIntentForSampleKit);
 router.post('/payment/complete', auth, OrderPaymentController.createOrderAndClearCart);
 
 export default router;

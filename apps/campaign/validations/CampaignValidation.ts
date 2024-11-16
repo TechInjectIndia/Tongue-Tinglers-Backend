@@ -5,31 +5,65 @@ import { validateReq } from "../../../libraries";
 // Validation schema for creating a campaign
 const createCampaignBody = Joi.object().keys({
   name: Joi.string().required()
-    .messages({ 'any.required': 'Campaign name is required.' }),
-  franchiseId: Joi.string().optional().allow(null),
-  region: Joi.string().optional().allow(null),
-  description: Joi.string().optional()
-    .messages({ 'string.base': 'Description must be a string.' }),
-  questionList: Joi.array().items(
-    Joi.string().required()
-      .messages({ 'any.required': 'Question ID is required.' })
-  ).required()
-    .messages({ 'any.required': 'Questions are required.' }),
+    .messages({
+      'any.required': 'Campaign name is required.'
+    }),
+  description: Joi.string().required()
+    .messages({
+      'any.required': 'Description is required.'
+    }),
+  proposalIds: Joi.string().required()
+    .messages({
+      'any.required': 'Proposal ids are required.'
+    }),
+  affiliateId: Joi.string().allow(null).required()
+    .messages({
+      'any.required': 'Affiliate id is required.',
+    }),
+  franchiseId: Joi.string().allow(null).required()
+    .messages({
+      'any.required': 'Franchise id is required.',
+    }),
+  questionIds: Joi.string().required()
+    .messages({
+      'any.required': 'Question ids are required.',
+    }),
+  regionId: Joi.string().required()
+    .messages({
+      'any.required': 'Region id is required.',
+    }),
 });
 
 // Validation schema for editing a campaign
 const editCampaignBody = Joi.object().keys({
-  name: Joi.string().optional()
-    .messages({ 'string.base': 'Campaign name must be a string.' }),
-  franchiseId: Joi.string().optional().allow(null),
-  region: Joi.string().optional().allow(null),
-  description: Joi.string().optional()
-    .messages({ 'string.base': 'Description must be a string.' }),
-  questionList: Joi.array().items(
-    Joi.string().required()
-      .messages({ 'any.required': 'Question ID is required.' })
-  ).optional()
-    .messages({ 'array.base': 'Questions must be an array of strings.' }),
+  name: Joi.string().required()
+    .messages({
+      'any.required': 'Campaign name is required.'
+    }),
+  description: Joi.string().required()
+    .messages({
+      'any.required': 'Description is required.'
+    }),
+  proposalIds: Joi.string().required()
+    .messages({
+      'any.required': 'Proposal ids are required.'
+    }),
+  affiliateId: Joi.string().allow(null).required()
+    .messages({
+      'any.required': 'Affiliate id is required.',
+    }),
+  franchiseId: Joi.string().allow(null).required()
+    .messages({
+      'any.required': 'Franchise id is required.',
+    }),
+  questionIds: Joi.string().required()
+    .messages({
+      'any.required': 'Question ids are required.',
+    }),
+  regionId: Joi.string().required()
+    .messages({
+      'any.required': 'Region id is required.',
+    }),
 });
 
 // Validation schema for editing campaign parameters

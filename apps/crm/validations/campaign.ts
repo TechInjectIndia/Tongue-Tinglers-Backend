@@ -17,22 +17,29 @@ const createCampaignBody = Joi.object().keys({
         .messages({
             'any.required': 'Campaign name is required.'
         }),
-    subject: Joi.string().required()
+    description: Joi.string().required()
         .messages({
-            'any.required': 'Subject is required.'
+            'any.required': 'Description is required.'
         }),
-    body: Joi.string().required()
+    proposalIds: Joi.string().required()
         .messages({
-            'any.required': 'Body is required.'
+            'any.required': 'Proposal ids are required.'
         }),
-    scheduledAt: Joi.date().iso().required()
+    affiliateId: Joi.string().allow(null).required()
         .messages({
-            'any.required': 'Scheduled date is required.',
-            'date.iso': 'Scheduled date must be in ISO format.'
+            'any.required': 'Affiliate id is required.',
         }),
-    status: Joi.string().valid(...Object.values(CAMPAIGN_STATUS)).optional().allow('')
+    franchiseId: Joi.string().allow(null).required()
         .messages({
-            'any.only': 'Status must be one of the predefined values.'
+            'any.required': 'Franchise id is required.',
+        }),
+    questionIds: Joi.string().required()
+        .messages({
+            'any.required': 'Question ids are required.',
+        }),
+    regionId: Joi.string().required()
+        .messages({
+            'any.required': 'Region id is required.',
         }),
 });
 
@@ -42,19 +49,29 @@ const editCampaignBody = Joi.object().keys({
         .messages({
             'any.required': 'Campaign name is required.'
         }),
-    subject: Joi.string().optional(),
-    body: Joi.string().required()
+    description: Joi.string().required()
         .messages({
-            'any.required': 'Body is required.'
+            'any.required': 'Description is required.'
         }),
-    scheduledAt: Joi.date().iso().required()
+    proposalIds: Joi.string().required()
         .messages({
-            'any.required': 'Scheduled date is required.',
-            'date.iso': 'Scheduled date must be in ISO format.'
+            'any.required': 'Proposal ids are required.'
         }),
-    status: Joi.string().valid(...Object.values(CAMPAIGN_STATUS)).optional().allow('')
+    affiliateId: Joi.string().allow(null).required()
         .messages({
-            'any.only': 'Status must be one of the predefined values.'
+            'any.required': 'Affiliate id is required.',
+        }),
+    franchiseId: Joi.string().allow(null).required()
+        .messages({
+            'any.required': 'Franchise id is required.',
+        }),
+    questionIds: Joi.string().required()
+        .messages({
+            'any.required': 'Question ids are required.',
+        }),
+    regionId: Joi.string().required()
+        .messages({
+            'any.required': 'Region id is required.',
         }),
 });
 

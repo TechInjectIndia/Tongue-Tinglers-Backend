@@ -27,8 +27,8 @@ interface Config {
 const config: Config = {
   development: {
     username: 'postgres',
-    password: 'postgres',
-    database: 'tt',
+    password: 'root',
+    database: 'tongue_tingler',
     host: '127.0.0.1',
     dialect: 'postgres',
   },

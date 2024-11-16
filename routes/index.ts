@@ -9,6 +9,7 @@ const router = Router();
 const ADMIN = '/admin';
 const FRANCHISE = '/franchise';
 const CUSTOMER = '/customer';
+const GUEST = '/guest'
 
 // ====== Auth ======
 import { auth } from '../middlewares/auth';
@@ -28,6 +29,7 @@ import franchiseRouter from "../apps/admin-user/api/franchise";
 import rolesRouter from "../apps/admin-user/api/roles";
 import permissionsRouter from "../apps/admin-user/api/permissions";
 import adminUsersRouter from "../apps/admin-user/api/user";
+import guestUsersRouter from "../apps/guest-user/api/guest-user";
 import customerUsersRouter from "../apps/admin-user/api/customer";
 import productRouter from "../apps/ecommerce/api/products";
 import taxesRouter from "../apps/ecommerce/api/taxes";
@@ -112,7 +114,11 @@ router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`/cart`, auth, cartRouter);
 router.use(`/user-address`, auth, userAddressRouter);
+
+
 // ====== Admin ======
+// Guest users
+router.use(`${GUEST}/users`, auth, guestUsersRouter);
 
 // ====== Franchise ======
 // ====== Franchise imports ======

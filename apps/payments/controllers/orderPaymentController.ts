@@ -350,13 +350,14 @@ export default class OrderPaymentController {
                     .send(sendResponse(RESPONSE_TYPE.ERROR, "Cart is empty"));
             }
 
+            // todo @Nitesh: commented this check this once.
             // Retrieve franchisee data
-            let franchiseData = await FranchiseeModel.findOne({ where: { userid: userId } });
-            if (!franchiseData) {
-                return res
-                    .status(404)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Franchise is missing"));
-            }
+            // let franchiseData = await FranchiseeModel.findOne({ where: { userid: userId } });
+            // if (!franchiseData) {
+            //     return res
+            //         .status(404)
+            //         .send(sendResponse(RESPONSE_TYPE.ERROR, "Franchise is missing"));
+            // }
 
             // Calculate total amount from cart items (Example: summing up all item prices)
             const totalAmount = cart.items.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
@@ -366,7 +367,7 @@ export default class OrderPaymentController {
                 cart: {
                     totalAmount
                 },
-                franchise: franchiseData
+                // franchise: franchiseData
             };
 
             // Call the utility function to create payment intent

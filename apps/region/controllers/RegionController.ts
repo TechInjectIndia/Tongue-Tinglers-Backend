@@ -3,12 +3,43 @@ import { get } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { RegionRepo } from "../models/RegionRepo";
+import { AreaRepo } from "../../area/models/AreaRepo";
 
 export default class RegionController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, 'user_id', '');
             const payload = { ...req.body, createdBy: user_id };
+            const { area } = { ...req.body };
+
+            if (!Array.isArray(area)) {
+                return res.status(400).send({
+                    message: 'Area must be an array.',
+                });
+            }
+
+            if (area.length === 0) {
+                return res.status(400).send({
+                    message: 'Area cannot be an empty array.',
+                });
+            }
+
+            if (!area.every((item) => typeof item === 'number')) {
+                return res.status(400).send({
+                    message: 'Each area value must be a number.',
+                });
+            }
+
+            for (let item of area) {
+                const areaResponse = await new AreaRepo().get(item);
+
+                // If area does not exist, return an error
+                if (!areaResponse) {
+                    return res.status(404).send({
+                        message: `Area with ID ${item} does not exist.`,
+                    });
+                }
+            }
 
             const region = await new RegionRepo().create(payload);
             return res
@@ -68,8 +99,38 @@ export default class RegionController {
             const updateData = req.body;
             delete updateData.id;
             const user_id = get(req, "user_id", "");
-            const updatedRegion = await new RegionRepo().update(id as number, { ...updateData, updatedBy: user_id });
+            const { area } = { ...req.body };
 
+            if (!Array.isArray(area)) {
+                return res.status(400).send({
+                    message: 'Area must be an array.',
+                });
+            }
+
+            if (area.length === 0) {
+                return res.status(400).send({
+                    message: 'Area cannot be an empty array.',
+                });
+            }
+
+            if (!area.every((item) => typeof item === 'number')) {
+                return res.status(400).send({
+                    message: 'Each area value must be a number.',
+                });
+            }
+
+            for (let item of area) {
+                const areaResponse = await new AreaRepo().get(item);
+
+                // If area does not exist, return an error
+                if (!areaResponse) {
+                    return res.status(404).send({
+                        message: `Area with ID ${item} does not exist.`,
+                    });
+                }
+            }
+
+            const updatedRegion = await new RegionRepo().update(id as number, { ...updateData, updatedBy: user_id });
             return res
                 .status(200)
                 .send(

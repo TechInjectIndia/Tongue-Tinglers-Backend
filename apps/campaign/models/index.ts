@@ -1,7 +1,7 @@
 import { Op } from "sequelize";
 import { sequelize } from "../../../config";
 import {
-    TListFilters,
+    TListFiltersCampaigns,
 } from "../../../types";
 import {
     TCampaignList,
@@ -12,7 +12,7 @@ import {
 import { CampaignAdModel, questionModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IController';
 
-export class CampaignAdRepo implements IBaseRepo<ICampaign, TListFilters> {
+export class CampaignAdRepo implements IBaseRepo<ICampaign, TListFiltersCampaigns> {
     constructor() { }
 
     public async getCampaignsByFranchiseId(franchiseId: string): Promise<any> {
@@ -39,26 +39,36 @@ export class CampaignAdRepo implements IBaseRepo<ICampaign, TListFilters> {
         return campaignWithQuestions;
     }
 
-    public async list(filters: TListFilters): Promise<TCampaignList> {
+    public async list(filters: TListFiltersCampaigns): Promise<TCampaignList> {
+        // Initialize the whereCondition object
+        const whereCondition: any = {
+            [Op.or]: [
+                { name: { [Op.like]: `%${filters.search}%` } },
+                { franchiseId: { [Op.like]: `%${filters.search}%` } },
+                { region: { [Op.like]: `%${filters.search}%` } },
+                { description: { [Op.like]: `%${filters.search}%` } },
+            ]
+        };
+
+        // Add additional filters (e.g., franchiseId, region) if provided
+        if (filters.filters?.franchiseId) {
+            whereCondition.franchiseId = { [Op.eq]: filters.filters.franchiseId };
+        }
+        if (filters.filters?.region) {
+            whereCondition.region = { [Op.eq]: filters.filters.region };
+        }
+
         // Count total campaigns matching the search criteria
         const total = await CampaignAdModel.count({
-            where: {
-                name: {
-                    [Op.like]: `%${filters.search}%`, // Assuming you search by campaign name
-                },
-            },
+            where: whereCondition,
         });
 
-        // Retrieve the campaigns with pagination and sorting
+        // Retrieve the campaigns with pagination, sorting, and the updated whereCondition
         const data = await CampaignAdModel.findAll({
-            order: [filters?.sorting], // Sorting should be validated before usage
+            order: [filters?.sorting], // Ensure sorting is sanitized
             offset: filters.offset,
             limit: filters.limit,
-            where: {
-                name: {
-                    [Op.like]: `%${filters.search}%`, // Assuming you search by campaign name
-                },
-            },
+            where: whereCondition,
         });
 
         return { total, data };

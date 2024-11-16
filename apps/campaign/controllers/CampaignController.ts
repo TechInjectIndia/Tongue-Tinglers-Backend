@@ -55,13 +55,21 @@ export default class CampaignController {
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
+            
+            const franchiseId = get(req.query, "franchiseId", "");
+            const region = get(req.query, "region", "");
+
+            const filters = {};
+            if (franchiseId) filters["franchiseId"] = franchiseId;
+            if (region) filters["region"] = region;
 
             const campaigns = await new CampaignAdRepo().list({
                 offset: skip as number,
                 limit: size as number,
                 search: search as string,
                 sorting: sorting,
-                trashOnly: trashOnly as string
+                trashOnly: trashOnly as string,
+                filters
             });
 
             return res

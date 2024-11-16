@@ -15,6 +15,7 @@ const {
 
 /**
  * @swagger
+ * 
  * /api/admin/campaign-ad/create:
  *   post:
  *     summary: Create a new campaign Ad
@@ -68,10 +69,10 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- *
+ * 
  * /api/admin/campaign-ad/list:
  *   get:
- *     summary: Get all campaigns Ad
+ *     summary: Get all campaign ads with filtering and pagination
  *     tags: [Campaigns-Ad]
  *     security:
  *       - bearerAuth: []
@@ -81,13 +82,44 @@ const {
  *         required: true
  *         schema:
  *           type: integer
- *         description: Size of the retrieved data
+ *         description: Number of records to retrieve per page (limit).
  *       - in: query
  *         name: skip
  *         required: true
  *         schema:
  *           type: integer
- *         description: How many rows to skip
+ *         description: Number of records to skip (offset).
+ *       - in: query
+ *         name: search
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Search keyword for matching campaigns based on name, franchise ID, region, description, or other relevant fields.
+ *       - in: query
+ *         name: sorting
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [id ASC, id DESC, name ASC, name DESC, createdAt ASC, createdAt DESC]
+ *         description: Sorting order for the results, e.g., 'id ASC' or 'createdAt DESC'.
+ *       - in: query
+ *         name: franchiseId
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Filter campaigns by franchise ID.
+ *       - in: query
+ *         name: region
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Filter campaigns by region.
+ *       - in: query
+ *         name: trashOnly
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Flag to return only campaigns marked for deletion (trash).
  *     responses:
  *       '200':
  *         description: Campaigns retrieved successfully
@@ -95,7 +127,9 @@ const {
  *         description: Invalid request
  *       '401':
  *         description: Unauthorized
- *
+ *       '500':
+ *         description: Internal server error
+ * 
  * /api/admin/campaign-ad/get/{id}:
  *   get:
  *     summary: Get a campaign Ad by ID

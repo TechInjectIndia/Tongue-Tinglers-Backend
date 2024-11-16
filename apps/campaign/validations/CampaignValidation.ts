@@ -44,8 +44,18 @@ const listCampaignQuery = Joi.object().keys({
     .messages({ 'any.required': 'Size is required.' }),
   skip: Joi.number().integer().min(0).required()
     .messages({ 'any.required': 'Skip is required.' }),
-  search: Joi.string().optional().allow(""),
-  sorting: Joi.string().optional().allow(""),
+  search: Joi.string().optional().allow("")
+    .messages({ 'string.base': 'Search must be a string.' }),
+  sorting: Joi.string().optional().allow("")
+    .valid("id ASC", "id DESC", "name ASC", "name DESC", "createdAt ASC", "createdAt DESC")
+    .messages({ 'any.only': 'Sorting must be one of id ASC, id DESC, name ASC, name DESC, createdAt ASC, createdAt DESC.' }),
+  franchiseId: Joi.string().optional().allow("")
+    .messages({ 'string.base': 'Franchise ID must be a string.' }),
+  region: Joi.string().optional().allow("")
+    .messages({ 'string.base': 'Region must be a string.' }),
+  trashOnly: Joi.string().optional().allow("")
+    .valid("true", "false")
+    .messages({ 'any.only': 'TrashOnly must be either "true" or "false".' }),
 });
 
 // Validation schema for deleting multiple campaigns

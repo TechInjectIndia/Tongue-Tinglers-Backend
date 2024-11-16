@@ -199,10 +199,12 @@ router.use(`/etest`, () => {
     sendEmail('jasskaranofficial@gmail.com', 'subject', { heading: 'asd', description: 'qwe' });
 });
 
+
+
 router.use(`/health`, (_, res) => {
     return res.status(200).json({
         success: true,
-        message: "CICD Done!",
+        message: "CICD Done AGAIN !",
     });
 });
 

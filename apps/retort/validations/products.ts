@@ -9,6 +9,12 @@ const createProductsBody = Joi.object().keys({
         .messages({
             'any.required': 'Product name is required.'
         }),
+    categories: Joi.array().items(Joi.number().required()).min(1).required().messages({
+        'array.base': 'Categories must be an array of category IDs.',
+        'array.min': 'At least one category is required.',
+        'any.required': 'Categories are required.',
+        'number.base': 'Each category ID must be a number.',
+    }),
     description: Joi.string().required()
         .messages({
             'any.required': 'Product description is required.'
@@ -34,6 +40,12 @@ const editProductsBody = Joi.object().keys({
         .messages({
             'any.required': 'Product name is required.'
         }),
+    categories: Joi.array().items(Joi.number().required()).min(1).required().messages({
+        'array.base': 'Categories must be an array of category IDs.',
+        'array.min': 'At least one category is required.',
+        'any.required': 'Categories are required.',
+        'number.base': 'Each category ID must be a number.',
+    }),
     description: Joi.string().required()
         .messages({
             'any.required': 'Product description is required.'
@@ -83,6 +95,23 @@ const editMultipleIdsBody = Joi.object().keys({
             'any.required': 'IDs are required.'
         }),
 });
+
+// Validation schema for assigning a category
+const assignCategoryBodySchema = Joi.object({
+    productId: Joi.number().required().messages({
+        'any.required': 'Product ID is required.'
+    }),
+    categoryId: Joi.number().required().messages({
+        'any.required': 'Category ID is required.'
+    }),
+});
+
+// Middleware for validating assign category body
+export const validateAssignCategoryBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, assignCategoryBodySchema, "body");
 
 // Middleware for creating product validation
 export const validateCreateProductsBody = async (

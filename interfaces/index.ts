@@ -18,6 +18,11 @@ export * from './pdiChecklist';
 export * from './taxes';
 export * from './stocks';
 export * from './regions';
+export * from './area';
+export * from './vendor';
+export * from './cart';
+export * from './userAddress';
+export * from './shippingActivity';
 
 interface ITrackable {
     userDetails: UserDetails;
@@ -42,6 +47,12 @@ interface BaseModel {
     createdAt: Date;
 }
 
+interface BaseModelIdNumber {
+    id: number;
+    createdBy: string;
+    createdAt: Date;
+}
+
 interface UpdatedMetaData {
     updatedBy: string | null;
     updatedAt: Date | null;
@@ -59,4 +70,5 @@ export {
     BaseModel,
     UpdatedMetaData,
     DeletionMetaData,
+    BaseModelIdNumber
 };

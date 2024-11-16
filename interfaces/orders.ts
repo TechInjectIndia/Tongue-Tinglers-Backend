@@ -1,14 +1,10 @@
-export enum ORDER_STATUS {
-    PROCESSED = "processed",
+export enum PAYMENT_STATUS {
     PAID = "paid",
     UNPAID = "un-paid",
-    DELIVERED = "delivered",
-    SHIPPED = "shipped",
-    CANCELLED = "cancelled",
+    PROCESSED = "processed",
 }
 
 export enum ORDER_TYPE {
-    RETORT = "retort",
+    FRANCHISE = "franchise",
     SAMPLE_ORDER = "sample-order",
-    CONTRACT = "contract",
 }

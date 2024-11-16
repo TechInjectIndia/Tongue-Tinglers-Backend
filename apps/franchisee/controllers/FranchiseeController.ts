@@ -4,9 +4,11 @@ import { FranchiseSocialMediaDetailsRepo } from '../models/FranchiseSocialMediaD
 import { FranchiseLocationRepo } from '../models/FranchiseLocationRepo';
 import { RegionRepo } from '../../region/models/RegionRepo';
 import { ContractRepo } from '../../contracts/models/ContractRepo';
-import { sendResponse } from '../../../libraries';
+import { sendResponse, sendEmail, getEmailTemplate, EMAIL_TEMPLATE, EMAIL_HEADING } from '../../../libraries';
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from '../../../constants';
 import { get, isEmpty } from "lodash";
+import jwt from "jsonwebtoken";
+import { CONFIG } from "../../../config";
 
 export default class FranchiseeController {
     // Create a new franchisee
@@ -63,6 +65,31 @@ export default class FranchiseeController {
                         return new FranchiseSocialMediaDetailsRepo().createSocialMediaDetails(socialMediaDetail);
                     })
                 );
+            }
+
+            const token = jwt.sign({ email: franchiseeData.email }, CONFIG.ACCESS_TOKEN_SECRET, { expiresIn: CONFIG.ACCESS_TOKEN_EXPIRATION });
+            const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password?token=${token}`;
+
+            try {
+                const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
+                    leadName: `${franchiseeData.firstName} ${franchiseeData.lastName}`,
+                    leadEmail: franchiseeData.email,
+                    leadPhone: franchiseeData.contactNumber,
+                    passwordCreateLink
+                });
+
+                const mailOptions = {
+                    to: franchiseeData.email,
+                    subject: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
+                    templateParams: {
+                        heading: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
+                        description: emailContent,
+                    },
+                };
+
+                await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
+            } catch (emailError) {
+                console.error("Error sending email:", emailError);
             }
 
             return res.status(201).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, newFranchisee));

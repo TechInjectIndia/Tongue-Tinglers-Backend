@@ -97,6 +97,27 @@ export default class ProductCategory {
         }
     }
 
+    static async listAllCategoriesWithProducts(req: Request, res: Response, next: NextFunction) {
+        try {
+            const Products = await new ProductCategoryRepo().listAllCategoriesWithProducts();
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        Products
+                    )
+                );
+        } catch (err) {
+            console.log(err);
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);

@@ -27,7 +27,7 @@ export class CampaignSubmissionsRepo implements IBaseRepo<ICampaignSubmisisons, 
         // Count total campaigns matching the search criteria
         const total = await CampaignSubmissions.count({
             where: {
-                campaignId: {
+                response: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
@@ -39,7 +39,7 @@ export class CampaignSubmissionsRepo implements IBaseRepo<ICampaignSubmisisons, 
             offset: filters.offset,
             limit: filters.limit,
             where: {
-                campaignId: {
+                response: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },

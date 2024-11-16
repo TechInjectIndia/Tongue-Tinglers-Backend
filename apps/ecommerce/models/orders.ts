@@ -3,21 +3,37 @@ import {
     TOrder,
     TOrderFilters,
     TOrdersList,
-    TEditOrder,
-    TAddOrder,
+    TOrderPayload,
 } from "../../../types/ecommerce";
-import { OrdersModel, OrderItemsModel } from "../../../database/schema";
+import { OrdersModel, OrderItemsModel, ShippingHistoryModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IOrdersController';
 
 export class OrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
     constructor() { }
 
-    public async create(data: TAddOrder): Promise<TOrder> {
+    public async getOrderByPaymentId(
+        paymentId: string
+    ): Promise<TOrder | null> {
+        try {
+            const orderDetails = await OrdersModel.findOne({
+                where: {
+                    paymentId: paymentId
+                },
+            });
+
+            return orderDetails;
+        } catch (error) {
+            console.error("Error fetching orderDetails by paymentId:", error);
+            throw error;
+        }
+    }
+
+    public async create(data: TOrderPayload): Promise<TOrder> {
         const response = await OrdersModel.create(data);
         return response;
     }
 
-    public async orderStatus(id: number): Promise<TOrder> {
+    public async orderStatus(id: string): Promise<TOrder> {
         const data = await OrdersModel.findOne({
             where: {
                 id,
@@ -27,7 +43,7 @@ export class OrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
         return data;
     }
 
-    public async get(id: number): Promise<TOrder> {
+    public async get(id: string): Promise<TOrder> {
         const data = await OrdersModel.findOne({
             where: {
                 id,
@@ -35,7 +51,10 @@ export class OrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
             include: [
                 {
                     model: OrderItemsModel,
-                    as: 'order_items'
+                    as: 'items'
+                },
+                {
+                    model: ShippingHistoryModel,
                 },
             ],
         });
@@ -63,7 +82,7 @@ export class OrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
         return { total, data };
     }
 
-    public async update(id: number, data: TEditOrder): Promise<[affectedCount: number]> {
+    public async update(id: string, data: TOrderPayload): Promise<[affectedCount: number]> {
         const response = await OrdersModel.update(data, {
             where: {
                 id,

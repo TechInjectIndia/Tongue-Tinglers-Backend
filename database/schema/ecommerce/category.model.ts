@@ -1,20 +1,24 @@
 import { DataTypes, Model, Optional, } from "sequelize";
 import { sequelize } from "../../../config";
-import { TProductCategory } from "../../../types";
-const { STRING, TEXT, DATE, INTEGER, NOW, BOOLEAN } = DataTypes;
+import { IProductCategory } from "../../../interfaces";
 import { CategoryImageModel } from './category_image.model'
+import { ProductsModel } from './product.model'
+import { ProductCategoryMapModel } from './product_category_map.model'
+const { STRING, TEXT, DATE, INTEGER, NOW, BOOLEAN } = DataTypes;
 
-interface ProductCategoryCreationAttributes extends Optional<TProductCategory, 'id' | 'createdAt' | 'updatedAt'> { }
+interface ProductCategoryCreationAttributes extends Optional<IProductCategory, 'id' | 'createdAt' | 'updatedAt'> { }
 
-class ProductCategoryModel extends Model<TProductCategory, ProductCategoryCreationAttributes> implements TProductCategory {
+class ProductCategoryModel extends Model<IProductCategory, ProductCategoryCreationAttributes> implements IProductCategory {
     public id!: number;
     public name: string;
     public slug: string;
     public description: string;
-    public active: number;
+    public active: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date;
+
+    public readonly products?: ProductsModel[];
 }
 
 ProductCategoryModel.init({

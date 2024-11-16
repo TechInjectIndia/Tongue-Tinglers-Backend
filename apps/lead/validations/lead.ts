@@ -102,7 +102,7 @@ const ASSIGN_SCHEMA = Joi.object().keys({
 
 // Validation for creating a lead
 const createLeadBody = Joi.object().keys({
-    campaignId: Joi.string().optional().allow(""),
+    campaignId: Joi.optional().allow(null),
     firstName: Joi.string().required()
         .messages({
             'any.required': 'First name is required.',
@@ -122,7 +122,7 @@ const createLeadBody = Joi.object().keys({
             'any.required': 'Email is required.',
         }),
     address: ADDRESS_SCHEMA.required(),
-    additionalInfo: Joi.string().allow(null).optional(),
+    additionalInfo: Joi.allow(null).optional(),
     status: Joi.string().valid(...Object.values(LeadStatus))
         .messages({
             'any.only': `Status must be one of: ${Object.values(LeadStatus).join(', ')}.`,
@@ -136,10 +136,10 @@ const createLeadBody = Joi.object().keys({
             'any.only': `Source must be one of: ${Object.values(LeadSource).join(', ')}.`,
             'any.required': 'Source is required.',
         }),
-    sourceInfo: Joi.string().optional(),
+    sourceInfo: Joi.optional().allow(null),
     notes: Joi.array().items(NOTE_SCHEMA).optional(),
     logs: Joi.array().items(LOGS_SCHEMA).optional(),
-    proposalModals: Joi.array().items(Joi.string()).optional().allow(null),
+    proposalModals: Joi.array().items().optional().allow(null),
     franchiseModals: Joi.array().items(Joi.string()).optional().allow(null),
     affiliate: Joi.array().items(Joi.object().keys({
         id: Joi.string().required().messages({ 'any.required': 'Affiliate ID is required.' }),
@@ -174,7 +174,7 @@ const editLeadBody = Joi.object().keys({
             'any.required': 'Email is required.',
         }),
     address: ADDRESS_SCHEMA.required(),
-    additionalInfo: Joi.string().allow(null).optional(),
+    additionalInfo: Joi.allow(null).optional(),
     status: Joi.string().valid(...Object.values(LeadStatus))
         .messages({
             'any.only': `Status must be one of: ${Object.values(LeadStatus).join(', ')}.`,
@@ -188,10 +188,10 @@ const editLeadBody = Joi.object().keys({
             'any.only': `Source must be one of: ${Object.values(LeadSource).join(', ')}.`,
             'any.required': 'Source is required.',
         }),
-    sourceInfo: Joi.string().optional(),
+    sourceInfo: Joi.optional().allow(null),
     notes: Joi.array().items(NOTE_SCHEMA).optional(),
     logs: Joi.array().items(LOGS_SCHEMA).optional(),
-    proposalModals: Joi.array().items(Joi.string()).optional().allow(null),
+    proposalModals: Joi.array().items().optional().allow(null),
     franchiseModals: Joi.array().items(Joi.string()).optional().allow(null),
     affiliate: Joi.array().items(Joi.object().keys({
         id: Joi.string().required().messages({ 'any.required': 'Affiliate ID is required.' }),

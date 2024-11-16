@@ -6,6 +6,28 @@ import { RetortProductCategoryRepo } from '../models/category';
 const slugify = require('slugify');
 
 export default class RetortProductCategory {
+
+    static async listAllCategoriesWithProducts(req: Request, res: Response, next: NextFunction) {
+        try {
+            const Products = await new RetortProductCategoryRepo().listAllCategoriesWithProducts();
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        Products
+                    )
+                );
+        } catch (err) {
+            console.log(err);
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     static async uploadImage(req: Request, res: Response, next: NextFunction) {
         try {
             const moduleName = 'retort-category'

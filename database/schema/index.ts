@@ -1,6 +1,7 @@
 // Admin model starts
 export * from "./user/user.model";
 export * from "./user/address";
+export * from "./user/userAddressModel";
 export * from "./admin-roles";
 export * from "./admin-permissions";
 // Admin model ends
@@ -10,6 +11,7 @@ export * from "./ecommerce/category.model";
 export * from "./ecommerce/category_image.model";
 export * from "./ecommerce/order.model";
 export * from "./ecommerce/order_item.model";
+export * from "./ecommerce/shippingActivity";
 export * from "./ecommerce/product.model";
 export * from "./ecommerce/product_category_map.model";
 export * from "./ecommerce/product_image.model";
@@ -17,6 +19,10 @@ export * from "./ecommerce/tag.model";
 export * from "./ecommerce/tag_image.model";
 export * from "./ecommerce/taxes";
 export * from "./ecommerce/stockModel";
+export * from "./ecommerce/vendorsModel";
+export * from "./ecommerce/cartModel";
+export * from "./ecommerce/CartItemModel";
+export * from "./user/userAddressModel";
 // ecommerce model ends
 
 // retort model starts
@@ -53,6 +59,7 @@ export * from "./lead/franchiseModels";
 export * from "./lead/extraFieldsModel";
 export * from "./lead/SeoImageModel";
 export * from "./lead/proposalModels";
+export * from "./lead/assigneeModels";
 // crm model ends
 
 export * from "./campaign-ui/campaignAdModel";
@@ -66,7 +73,8 @@ export * from "./files/galleryModel";
 export * from "./franchise/franchiseeModel";
 export * from "./franchise/franchiseLocationModel";
 export * from "./franchise/pdiModel";
-export * from "./franchise/regions";
+export * from "./franchise/RegionsModel";
+export * from "./franchise/AreaModel";
 export * from "./franchise/smDetailsModel";
 
 // --- Sequelize Associations Setup --- //
@@ -78,6 +86,10 @@ import { FranchiseeModel } from "./franchise/franchiseeModel";
 import { AffiliateModel } from "./lead/affiliateModels";
 import { SocialMediaDetailsModel } from "./lead/smDetailsModel";
 import { SocialMediaDetailsFranchiseModel } from "./franchise/smDetailsModel";
+import { AssignModel } from "./lead/assigneeModels";
+import { LeadsModel } from './lead/lead.model';
+import { UserModel } from './user/user.model';
+import { UserAddressModel } from './user/userAddressModel';
 
 // CampaignAdModel.belongsToMany(questionModel, {
 //     through: 'CampaignQuestions',
@@ -117,6 +129,26 @@ SocialMediaDetailsFranchiseModel.belongsTo(FranchiseeModel, {
 });
 // Establish association with SocialMediaDetailsFranchiseModel
 
+UserModel.hasMany(UserAddressModel, { foreignKey: 'userId', as: 'address' });
+
+UserModel.hasMany(AssignModel, { foreignKey: 'assignedTo', as: 'assignmentsAsAssignedTo' });
+UserModel.hasMany(AssignModel, { foreignKey: 'assignedBy', as: 'assignmentsAsAssignedBy' });
+
+AssignModel.belongsTo(UserModel, { foreignKey: 'assignedTo', as: 'assignedUser' });
+AssignModel.belongsTo(UserModel, { foreignKey: 'assignedBy', as: 'assignerUser' });
+
+// Establish association with AssignModel
+LeadsModel.hasMany(AssignModel, {
+    foreignKey: 'leadId',
+    as: 'assign',
+});
+
+AssignModel.belongsTo(LeadsModel, {
+    foreignKey: 'leadId',
+    as: 'lead',
+});
+// Establish association with AssignModel
+
 // Establish association with AffiliateModel
 AffiliateModel.hasMany(SocialMediaDetailsModel, {
     foreignKey: 'affiliateId',
@@ -127,6 +159,42 @@ SocialMediaDetailsModel.belongsTo(AffiliateModel, {
     as: 'affiliate',
 });
 // Establish association with AffiliateModel
+
+import { ProductsModel } from './ecommerce/product.model';
+import { ProductCategoryModel } from './ecommerce/category.model';
+import { ProductCategoryMapModel } from './ecommerce/product_category_map.model';
+
+ProductCategoryModel.belongsToMany(ProductsModel, {
+    through: ProductCategoryMapModel,
+    foreignKey: 'categoryId',
+    otherKey: 'productId',
+    as: 'products', // Ensure this alias matches
+});
+
+ProductsModel.belongsToMany(ProductCategoryModel, {
+    through: ProductCategoryMapModel,
+    foreignKey: 'productId',
+    otherKey: 'categoryId',
+    as: 'categories', // Ensure this alias matches
+});
+
+import { RetortProductsModel } from './retort/retort-product';
+import { RetortProductCategoryModel } from './retort/retort-category';
+import { RetortProductCategoryMapModel } from './retort/retort-product_category_map';
+
+RetortProductCategoryModel.belongsToMany(RetortProductsModel, {
+    through: RetortProductCategoryMapModel,
+    foreignKey: 'categoryId',
+    otherKey: 'productId',
+    as: 'products', // Ensure this alias matches
+});
+
+RetortProductsModel.belongsToMany(RetortProductCategoryModel, {
+    through: RetortProductCategoryMapModel,
+    foreignKey: 'productId',
+    otherKey: 'categoryId',
+    as: 'categories', // Ensure this alias matches
+});
 
 console.log("Associations initialized successfully.");
 

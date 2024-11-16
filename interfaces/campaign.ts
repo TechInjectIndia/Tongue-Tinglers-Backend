@@ -1,7 +1,7 @@
 
-import type { UpdatedMetaData, BaseModel, DeletionMetaData } from ".";
+import type { UpdatedMetaData, BaseModelIdNumber, DeletionMetaData } from ".";
 
-interface ICampaign extends UpdatedMetaData, BaseModel, DeletionMetaData {
+interface ICampaign extends UpdatedMetaData, BaseModelIdNumber, DeletionMetaData {
     name: string;
     franchiseId?: string;
     region?: string;
@@ -16,6 +16,8 @@ type TCampaignList = {
 
 type TPayloadCampaign = {
     name: string;
+    region?: string;
+    franchiseId?: string;
     description?: string;
     questionList: string[];
     createdBy: string;
@@ -23,14 +25,14 @@ type TPayloadCampaign = {
 
 interface ICampaignSubmisisons {
     id: string;
-    campaignId: string;
+    campaignId: number;
     response: string;
     createdAt: Date;
     updatedAt: Date;
 }
 
 type TPayloadCampaignSubmisisons = {
-    campaignId: string;
+    campaignId: number;
     response: string;
 }
 
@@ -38,7 +40,6 @@ type TCampaignSubmisisonsList = {
     total: number,
     data: ICampaignSubmisisons[]
 }
-
 
 export {
     ICampaign,

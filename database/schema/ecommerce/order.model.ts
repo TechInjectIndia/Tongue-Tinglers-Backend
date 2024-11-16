@@ -1,31 +1,37 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { TOrder } from "../../../types";
-import { ORDER_TYPE, ORDER_STATUS } from '../../../interfaces';
-const { INTEGER, STRING, TEXT, ENUM, BOOLEAN } = DataTypes;
+import { TOrder, TOrderItem, OrderStatus } from "../../../types";
+import { ORDER_TYPE, PAYMENT_STATUS } from '../../../interfaces';
+const { INTEGER, STRING, JSONB, UUIDV4, ENUM, BOOLEAN } = DataTypes;
 import { OrderItemsModel } from './order_item.model'
 import { UserModel } from '../user/user.model'
 
 interface OrdersCreationAttributes extends Optional<TOrder, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOrder {
-    public id!: number;
+    public id!: string;
     public userId!: string;
     public trackingNumber!: string;
-    public shippingAddress!: string;
+    public shippingAddress!: any;
     public paymentMethod!: string;
+    public paymentStatus!: string;
+    public paymentId!: string;
     public totalPrice!: number;
-    public orderStatus!: string;
-    public orderType!: string;
+    public orderStatus!: OrderStatus;
+    public orderType!: ORDER_TYPE;
+
+    public readonly items?: TOrderItem[]; // Array of items in the cart
+
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
 
 OrdersModel.init({
     id: {
-        type: INTEGER,
-        autoIncrement: true,
+        type: STRING,
         primaryKey: true,
+        allowNull: false,
+        defaultValue: UUIDV4
     },
     userId: {
         type: STRING,
@@ -35,17 +41,26 @@ OrdersModel.init({
         type: STRING,
     },
     shippingAddress: {
-        type: STRING,
+        type: JSONB,
     },
     paymentMethod: {
         type: STRING,
     },
+    paymentId: {
+        type: STRING,
+    },
     totalPrice: {
-        type: INTEGER,
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0,
     },
     orderStatus: {
         type: ENUM,
-        values: [...Object.values(ORDER_STATUS)]
+        values: [...Object.values(OrderStatus)]
+    },
+    paymentStatus: {
+        type: ENUM,
+        values: [...Object.values(PAYMENT_STATUS)]
     },
     orderType: {
         type: ENUM,
@@ -69,8 +84,8 @@ OrdersModel.init({
     timestamps: true,
 });
 
-OrdersModel.hasMany(OrderItemsModel,  { as: 'order_items' });
 OrdersModel.belongsTo(UserModel, { foreignKey: 'userId' });
+OrdersModel.hasMany(OrderItemsModel, { foreignKey: 'orderId', as: 'items' });
 
 export { OrdersModel };
 

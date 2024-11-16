@@ -3,7 +3,9 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries"; // Adjust this import path as necessary
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants"; // Adjust this import path as necessary
-import { CampaignAdRepo } from "../models"; // Adjust this import path as necessary
+import { CampaignAdRepo } from "../models";
+import { FranchiseeRepo } from "../../franchisee/models/FranchiseeRepo";
+import { RegionRepo } from "../../region/models/RegionRepo";
 
 export default class CampaignController {
     // Method to create a campaign
@@ -11,6 +13,21 @@ export default class CampaignController {
         try {
             const user_id = get(req, 'user_id', '');
             const payload = { ...req.body, createdBy: user_id };
+
+            const franchiseExist = await new FranchiseeRepo().getFranchiseeById(payload.franchiseId);
+            if (!franchiseExist) {
+                return res.status(200)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.SUCCESS,
+                            `Franchisee ${ERROR_MESSAGE.NOT_EXISTS}`)
+                    );
+            }
+
+            // const regionExist = await new RegionRepo().get(payload.region);
+            // if(!regionExist){
+
+            // }
             const campaign = await new CampaignAdRepo().create(payload);
             return res
                 .status(201)
@@ -38,13 +55,21 @@ export default class CampaignController {
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
+            
+            const franchiseId = get(req.query, "franchiseId", "");
+            const region = get(req.query, "region", "");
+
+            const filters = {};
+            if (franchiseId) filters["franchiseId"] = franchiseId;
+            if (region) filters["region"] = region;
 
             const campaigns = await new CampaignAdRepo().list({
                 offset: skip as number,
                 limit: size as number,
                 search: search as string,
                 sorting: sorting,
-                trashOnly: trashOnly as string
+                trashOnly: trashOnly as string,
+                filters
             });
 
             return res
@@ -67,12 +92,12 @@ export default class CampaignController {
     // Method to update a campaign
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req.params, "id", "");
+            const id = get(req.params, "id", 0);
             const updatePayload = { ...req.body };
             delete updatePayload.id; // Remove id from the update payload
 
             const user_id = get(req, 'user_id', '');
-            const updatedCampaign = await new CampaignAdRepo().update(id as string, { ...updatePayload, updatedBy: user_id });
+            const updatedCampaign = await new CampaignAdRepo().update(id as number, { ...updatePayload, updatedBy: user_id });
 
             return res
                 .status(200)
@@ -94,8 +119,8 @@ export default class CampaignController {
     // Method to get a specific campaign by ID
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req.params, "id", "");
-            const existingCampaign = await new CampaignAdRepo().get(id as string);
+            const id = get(req.params, "id", 0);
+            const existingCampaign = await new CampaignAdRepo().get(id as number);
 
             if (isEmpty(existingCampaign)) {
                 return res.status(404).send(

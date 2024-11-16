@@ -9,7 +9,7 @@ import {
     TUserWithPermission,
     TUpdateUserReferralCode
 } from "../../../types";
-import { UserModel, RolesModel } from "../../../database/schema";
+import { UserModel, RolesModel, UserAddressModel } from "../../../database/schema";
 import { USER_TYPE, USER_STATUS } from '../../../interfaces';
 import IBaseRepo from '../controllers/controller/IUserController';
 
@@ -91,25 +91,41 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
 
     public async get(id: string): Promise<TUserWithPermission> {
         const data = await UserModel.findOne({
-            raw: true,
             where: {
                 [Op.or]: [
                     { id: id },
                     { firebaseUid: id }
                 ],
             },
+            include: [{
+                model: UserAddressModel,
+                as: 'address',
+                order: [
+                    ['isActive', 'ASC']
+                ]
+            }]
         });
         if (data) {
             const role = await RolesModel.findOne({
                 raw: true,
                 where: {
-                    id: data?.role
+                    id: data?.dataValues.role
                 }
             })
-            return { ...data, permissions: role?.role_permissions ?? '' };
+            return { ...data.dataValues, permissions: role?.role_permissions ?? '' };
         } else {
-            return { ...data, permissions: '' };
+            return { ...data.dataValues, permissions: '' };
         }
+    }
+
+    public async checkIfUserExist(id: string): Promise<any> {
+        const data = await UserModel.findOne({
+            raw: true,
+            where: {
+                id: id
+            },
+        });
+        return data;
     }
 
     public async create(data: TAddUser): Promise<TUser> {

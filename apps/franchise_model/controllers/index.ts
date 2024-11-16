@@ -83,20 +83,55 @@ export default class FranchiseModelController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
+            const id = get(req.params, "id", 0);
             const user_id = get(req, 'user_id', 0);
-            const updateFranchiseModel = req?.body;
-            delete updateFranchiseModel.id
-            const FranchiseModel = await new FranchiseModelRepo().update(id as number, updateFranchiseModel);
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED,
-                        FranchiseModel
-                    )
+            const { images, others, ...franchiseData } = req.body;
+
+            // Update Franchise Model
+            delete franchiseData.images
+            delete franchiseData.others
+            const franchiseModel = await new FranchiseModelRepo().update(id as string, { ...franchiseData, user_id });
+
+            // Update Images  
+            if (images && images.length > 0) {
+                const imageRepo = new ImageRepo();
+
+                // Separate images with and without id
+                const imagesWithId = images.filter((image: any) => image.id);
+                const newImages = images.filter((image: any) => !image.id);
+
+                // Update images with id
+                const updatePromises = imagesWithId.map(async (image) => {
+                    return await imageRepo.update(image.id, { ...image, franchiseModelId: id as string });
+                });
+
+                // Add new images without id
+                const createPromises = newImages.map(async (image) => {
+                    return await imageRepo.create({ ...image, franchiseModelId: id as string });
+                });
+
+                await Promise.all([...updatePromises, ...createPromises]);
+            }
+
+            // Update Extra Fields
+            if (others && others.length > 0) {
+                // First, delete any existing extra fields associated with the franchise model
+                await new ExtraFieldRepo().deleteByFranchiseModelId(id as string);
+
+                // Add new extra fields
+                const extraFieldPromises = others.map(async (extra) =>
+                    await new ExtraFieldRepo().create({ ...extra, franchiseModelId: id as string })
                 );
+                await Promise.all(extraFieldPromises);
+            }
+
+            return res.status(200).send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.UPDATED,
+                    franchiseModel
+                )
+            );
         } catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
@@ -110,7 +145,7 @@ export default class FranchiseModelController {
             const id = get(req?.params, "id", 0);
             const user_id = get(req, 'user_id', 0);
 
-            const existingFranchiseModel = await new FranchiseModelRepo().get(id as number);
+            const existingFranchiseModel = await new FranchiseModelRepo().get(id as string);
 
             if (isEmpty(existingFranchiseModel)) {
                 return res

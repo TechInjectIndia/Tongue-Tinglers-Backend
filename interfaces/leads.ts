@@ -27,9 +27,16 @@ enum LeadStatus {
     FOLLOWED_UP = "followed-up",
 }
 
+interface AssignAttributes {
+    id?: string;
+    assignedTo: string;
+    assignedBy: string;
+    assignedDate: Date;
+    leadId: string;
+}
+
 interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     campaignId?: string;
-    assign: Assignee | null;
     status: LeadStatus;
     firstName: string;
     lastName: string;
@@ -43,7 +50,7 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     referBy: UserDetails | null;
     logs: Record<string, ITrackable[]>;
     notes: Note[] | null;
-    proposalModals: Array<ProposalModels> | null;
+    proposalModals: Array<TPayloadProposalModel> | null;
     franchiseModals: Array<FranchiseModels> | null;
     affiliate: Array<Affiliate> | null;
     marketing: Array<string> | null;
@@ -192,12 +199,6 @@ interface LeadAddress {
     PAN: string | null;
 }
 
-interface Assignee {
-    assignedTo: UserDetails;
-    assignedBy: UserDetails;
-    assignedDate: Date;
-}
-
 interface FollowDetails {
     followedDate: Date | null;
     followedBy: UserDetails;
@@ -214,7 +215,6 @@ export {
     ILead,
     LeadStatus,
     LeadSource,
-    Assignee,
     FollowDetails,
     LeadAddress,
     followStatus,
@@ -233,5 +233,6 @@ export {
     SocialMediaDetailsAttributesPayload,
     socialMediaEnumsPlatform,
     extraFieldTypes,
-    SeoImagePayload
+    SeoImagePayload,
+    AssignAttributes
 };

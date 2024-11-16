@@ -14,10 +14,10 @@ const options = {
             version: '1.0.0',
         },
         servers: [
-            // {
-            //     url: "http://localhost:3001/",
-            //     description: "Local server"
-            // },
+            {
+                url: "http://localhost:3001/",
+                description: "Local server"
+            },
             {
                 url: "https://api.tonguetingler.com/",
                 description: "Live server"

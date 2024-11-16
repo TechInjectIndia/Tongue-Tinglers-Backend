@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
 import { FranchiseeAttributes, FranchiseLocationAttributes, FranchiseType } from '../../../interfaces';
 import { UserModel } from '../user/user.model';
-import { RegionModel } from '../franchise/regions';
+import { RegionModel } from './RegionsModel';
 import { ContractModel } from '../contracts'; // Import the ContractModel
 
 // Franchisee creation attributes, making 'id' optional for creation
@@ -103,7 +103,7 @@ FranchiseeModel.init(
       allowNull: false,
     },
     regionId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       references: {
         model: RegionModel,
         key: 'id',
@@ -146,3 +146,4 @@ FranchiseeModel.init(
 FranchiseeModel.associate();
 
 export { FranchiseeModel };
+

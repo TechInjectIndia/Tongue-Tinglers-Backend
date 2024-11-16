@@ -73,7 +73,8 @@ export * from "./files/galleryModel";
 export * from "./franchise/franchiseeModel";
 export * from "./franchise/franchiseLocationModel";
 export * from "./franchise/pdiModel";
-export * from "./franchise/regions";
+export * from "./franchise/RegionsModel";
+export * from "./franchise/AreaModel";
 export * from "./franchise/smDetailsModel";
 
 // --- Sequelize Associations Setup --- //

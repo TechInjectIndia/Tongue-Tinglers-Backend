@@ -9,6 +9,7 @@ const router = Router();
 const ADMIN = '/admin';
 const FRANCHISE = '/franchise';
 const CUSTOMER = '/customer';
+const GUEST = '/guest'
 
 // ====== Auth ======
 import { auth } from '../middlewares/auth';
@@ -28,6 +29,7 @@ import franchiseRouter from "../apps/admin-user/api/franchise";
 import rolesRouter from "../apps/admin-user/api/roles";
 import permissionsRouter from "../apps/admin-user/api/permissions";
 import adminUsersRouter from "../apps/admin-user/api/user";
+import guestUsersRouter from "../apps/guest-user/api/guest-user";
 import customerUsersRouter from "../apps/admin-user/api/customer";
 import productRouter from "../apps/ecommerce/api/products";
 import taxesRouter from "../apps/ecommerce/api/taxes";
@@ -62,6 +64,7 @@ import pdiChecklistRouter from "../apps/pdi-checklist/api/pdiChecklist";
 import quickActionEmailRouter from "../apps/quick-actions/api/email";
 import quickActionWhatsappRouter from "../apps/quick-actions/api/whatsapp";
 import regionRouter from "../apps/region/api/index";
+import areaRouter from "../apps/area/api/index";
 import cartRouter from "../apps/cart/api/cartApi";
 import shippingHistory from "../apps/ecommerce/api/shippingHistoryApi";
 import userAddressRouter from "../apps/user-address/api/userAddressApi";
@@ -103,6 +106,7 @@ router.use(`${ADMIN}/pdi-checklist`, auth, pdiChecklistRouter);
 router.use(`${ADMIN}/quick-actions/email`, auth, quickActionEmailRouter);
 router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
 router.use(`${ADMIN}/region`, auth, regionRouter);
+router.use(`${ADMIN}/area`, auth, areaRouter);
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
 router.use(`${ADMIN}/lead`, leadRouter); // dont add auth to this url
@@ -110,7 +114,11 @@ router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`/cart`, auth, cartRouter);
 router.use(`/user-address`, auth, userAddressRouter);
+
+
 // ====== Admin ======
+// Guest users
+router.use(`${GUEST}/users`, auth, guestUsersRouter);
 
 // ====== Franchise ======
 // ====== Franchise imports ======
@@ -195,6 +203,15 @@ router.use(`/zoho-sign`, zohoSignApiRouter);
 
 router.use(`/etest`, () => {
     sendEmail('jasskaranofficial@gmail.com', 'subject', { heading: 'asd', description: 'qwe' });
+});
+
+
+
+router.use(`/health`, (_, res) => {
+    return res.status(200).json({
+        success: true,
+        message: "CICD Done Once AGAIN !",
+    });
 });
 
 export default router;

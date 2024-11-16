@@ -20,7 +20,7 @@
     "lint": "git diff --cached --name-only --diff-filter=d | grep '.ts$' | xargs eslint",
     "lint:fix": "npm run lint -- --fix",
     "build": "tsc && npm run copy",
-    "copy": "node --max-old-space-size=8192 copy.js",
+    "copy": "node --max-old-space-size=4096 copy.js",
     "tsc-w": "tsc -w"
   },
   "dependencies": {

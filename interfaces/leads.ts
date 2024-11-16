@@ -75,7 +75,7 @@ type TPayloadProposalModel = {
     title: string;
     /* comma separated string */
     prices: string;
-    frenchiseModel: string;
+    franchiseModel: string;
     createdAt: Date;
     createdBy: string;
     updatedAt: Date | null;

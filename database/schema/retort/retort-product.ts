@@ -87,11 +87,4 @@ RetortProductsModel.init({
 
 RetortProductsModel.hasMany(RetortProductImagesModel, { as: 'images' });
 
-RetortProductsModel.belongsToMany(RetortProductCategoryModel, {
-    through: RetortProductCategoryMapModel,
-    foreignKey: 'productId',
-    otherKey: 'categoryId',
-    as: 'categories'
-});
-
 export { RetortProductsModel };

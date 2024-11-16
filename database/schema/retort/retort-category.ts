@@ -3,6 +3,7 @@ import { sequelize } from "../../../config";
 import { TRetortProductCategory } from "../../../types";
 const { STRING, TEXT, DATE, INTEGER, NOW, BOOLEAN } = DataTypes;
 import { RetortCategoryImageModel } from './retort-category_image'
+import { RetortProductsModel } from './retort-product'
 
 interface RetortProductCategoryCreationAttributes extends Optional<TRetortProductCategory, 'id' | 'createdAt' | 'updatedAt'> { }
 
@@ -15,6 +16,8 @@ class RetortProductCategoryModel extends Model<TRetortProductCategory, RetortPro
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date;
+
+    public readonly products?: RetortProductsModel[];
 }
 
 RetortProductCategoryModel.init({

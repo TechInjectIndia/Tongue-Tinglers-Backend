@@ -1,10 +1,12 @@
 import { Response } from "express";
-import { TQueryFilters, TAddProductCategory, TEditProductCategory, TProductCategorysList } from '../../../../../types';
+import { TProductCategory, TQueryFilters, TAddProductCategory, TEditProductCategory, TProductCategorysList } from '../../../../../types';
 
 /**
  * Interface for Product Categories Controller.
  */
 interface IProductsCategorysController<T, F extends TQueryFilters> {
+    listAllCategoriesWithProducts(): Promise<TProductCategory[]>
+
     /**
      * Get a product category by its name.
      * @param name - The name of the product category.
@@ -39,7 +41,7 @@ interface IProductsCategorysController<T, F extends TQueryFilters> {
      * @param payload - The data to update the product category.
      * @returns Promise resolving to the affected count.
      */
-    update(id: number, payload: TEditProductCategory): Promise<[affectedCount: number]>; 
+    update(id: number, payload: TEditProductCategory): Promise<[affectedCount: number]>;
 
     /**
      * Delete product categories by IDs.

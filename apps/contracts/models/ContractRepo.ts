@@ -15,9 +15,8 @@ import { ContractModel } from "../../../database/schema";
 import IContractsController from "../controllers/controller/IContractsController";
 
 export class ContractRepo
-    implements IContractsController<TContract, TQueryFilters>
-{
-    constructor() {}
+    implements IContractsController<TContract, TQueryFilters> {
+    constructor() { }
 
     // Method to fetch associated contracts
     public async getAssociatedContracts(
@@ -36,6 +35,16 @@ export class ContractRepo
         });
 
         return contracts;
+    }
+
+    public async getAssociatedContractsByLeadId(leadId: string): Promise<string[]> {
+        const contracts = await ContractModel.findAll({
+            where: { leadId: leadId },
+            attributes: ['id'], // Select only the 'id' attribute
+        });
+
+        // Map to extract only the 'id' attribute
+        return contracts ? contracts.map(contract => contract.id) : null;
     }
 
     public async getContractByDocId(docId: string): Promise<TContract | null> {

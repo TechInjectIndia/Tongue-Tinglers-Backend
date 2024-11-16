@@ -79,6 +79,7 @@ const createContractBody = Joi.object().keys({
             'any.only': 'Status must be one of the predefined values.'
         }),
     terminationDetails: terminationDetailsSchema.allow(null).optional(),
+    proposalData: Joi.object().allow(null).optional(),
     payment: contractPaymentDetailsSchema.allow(null).optional(),
     leadId: Joi.string().required()
         .messages({ 'any.required': 'Lead ID is required.' }),
@@ -110,6 +111,7 @@ const editContractBody = Joi.object().keys({
         .messages({
             'any.only': 'Status must be one of the predefined values.'
         }),
+    proposalData: Joi.object().allow(null).optional(),
     terminationDetails: terminationDetailsSchema.allow(null).optional(),
     payment: Joi.array().allow(null).optional(),
     amount: Joi.number().optional(),

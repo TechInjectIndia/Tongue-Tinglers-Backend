@@ -1,8 +1,8 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
-import { FranchiseeAttributes, SM_PLATFORM_FRANCHISE, FranchiseType } from '../../../interfaces';
+import { FranchiseeAttributes, FranchiseLocationAttributes, FranchiseType } from '../../../interfaces';
 import { UserModel } from '../user/user.model';
-import { RegionModel } from '../franchise/regions';
+import { RegionModel } from './RegionsModel';
 import { ContractModel } from '../contracts'; // Import the ContractModel
 
 // Franchisee creation attributes, making 'id' optional for creation
@@ -21,11 +21,13 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
   public establishedDate!: Date | null;
   public franchiseAgreementSignedDate!: Date | null;
   public franchiseType!: FranchiseType;
-  public regionId!: string;
+  public regionId!: string | null;
   public contractIds!: string[];
+  public activeContract!: string;
   public isActive!: boolean | null;
   public ratings?: number | null;
   public franchiseRenewalInfo?: { renewalDate: Date; conditions: string } | null;
+  public readonly franchiseLocation: FranchiseLocationAttributes[];
 
   public static associate() {
     this.belongsTo(UserModel, { foreignKey: 'userid', as: 'user', constraints: false });
@@ -34,7 +36,7 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
     this.belongsTo(FranchiseeModel, { foreignKey: 'parentFranchise', as: 'parentFranchiseAssociation', constraints: false });
 
     // Association with RegionModel
-    this.belongsTo(RegionModel, { foreignKey: 'regionId', as: 'region', });
+    this.belongsTo(RegionModel, { foreignKey: 'regionId', as: 'region', constraints: true });
   }
 }
 
@@ -101,17 +103,21 @@ FranchiseeModel.init(
       allowNull: false,
     },
     regionId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       references: {
         model: RegionModel,
         key: 'id',
       },
-      allowNull: false,
+      allowNull: true,
     },
     contractIds: {
       type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: false,
+      allowNull: true,
       comment: "Array of contract IDs associated with the franchisee",
+    },
+    activeContract: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
     },
     isActive: {
       type: DataTypes.BOOLEAN,

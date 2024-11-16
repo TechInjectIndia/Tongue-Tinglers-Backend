@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { TOrder, TOrderFilters, TOrdersList, TOrderStatus } from "../../../../../types";
+import { TOrder, TOrderFilters, TOrdersList } from "../../../../../types";
 
 /**
  * Interface for Franchise Order Controller.

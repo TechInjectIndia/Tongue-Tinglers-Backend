@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { TQueryFilters, TOrdersList, TEditOrder, TAddOrder } from '../../../../types';
+import { TQueryFilters, TOrdersList, TOrderPayload } from '../../../../types';
 
 /**
  * Interface for Orders Controller.
@@ -10,21 +10,21 @@ interface IOrdersController<T, F extends TQueryFilters> {
      * @param id - The ID of the order.
      * @returns Promise resolving to the order.
      */
-    get(id: number): Promise<T>;
+    get(id: string): Promise<T>;
 
     /**
      * Get the status of an order by its ID.
      * @param id - The ID of the order.
      * @returns Promise resolving to the order's status.
      */
-    orderStatus(id: number): Promise<T>;
+    orderStatus(id: string): Promise<T>;
 
     /**
      * Create a new order.
      * @param payload - The data to create the order.
      * @returns Promise resolving to the created order.
      */
-    create(payload: TAddOrder): Promise<T>;
+    create(payload: TOrderPayload): Promise<T>;
 
     /**
      * List orders with filters.
@@ -39,7 +39,7 @@ interface IOrdersController<T, F extends TQueryFilters> {
      * @param payload - The data to update the order.
      * @returns Promise resolving to the affected count.
      */
-    update(id: number, payload: TEditOrder): Promise<[affectedCount: number]>;
+    update(id: string, payload: TOrderPayload): Promise<[affectedCount: number]>;
 }
 
 export default IOrdersController;

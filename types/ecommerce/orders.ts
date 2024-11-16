@@ -1,32 +1,32 @@
 const { OrderItem } = require("sequelize");
+import { ORDER_TYPE } from '../../interfaces';
 
 export type TOrder = {
-  id: number;
-  userId: string;
-  trackingNumber: string;
-  shippingAddress: string;
-  paymentMethod: string;
-  totalPrice: number;
-  orderStatus: string;
-  orderType: string;
+  id: string;
+  userId?: string;
+  trackingNumber?: string;
+  shippingAddress?: any;
+  paymentMethod?: string;
+  paymentId?: string;
+  totalPrice?: number;
+  orderStatus?: OrderStatus;
+  paymentStatus?: string;
+  orderType?: ORDER_TYPE;
   createdAt: Date;
   updatedAt: Date;
 };
 
-export type TEditOrder = {
-  orderStatus: string;
-  orderType?: string;
-};
-
-export type TAddOrder = {
-  userId: string;
-  trackingNumber: string;
-  shippingAddress: string;
-  paymentMethod: string;
-  totalPrice: number;
-  isRepeated: number;
-  orderStatus: string;
-  orderType: string;
+export type TOrderPayload = {
+  userId?: string;
+  trackingNumber?: string;
+  shippingAddress?: any;
+  paymentMethod?: string;
+  paymentId?: string;
+  totalPrice?: number;
+  isRepeated?: number;
+  paymentStatus?: string;
+  orderStatus?: OrderStatus;
+  orderType?: ORDER_TYPE;
 };
 
 export type TOrdersList = {
@@ -42,6 +42,8 @@ export type TOrderFilters = {
   trashOnly?: string;
 };
 
-export type TOrderStatus = {
-  status: number,
-};
+export enum OrderStatus {
+  PROCESSED = 'Processed',
+  PENDING = 'Pending',
+  CANCELED = 'Canceled',
+}

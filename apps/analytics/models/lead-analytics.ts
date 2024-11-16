@@ -13,7 +13,7 @@ export class AnalyticsModel {
     public async list(filters: TLeadFilters): Promise<TLeadsList> {
         const whereConditions: any = {};
 
-        let campaignIds: string[] = [];
+        let campaignIds: number[] = [];
 
         if (filters.franchiseId) {
             const franchiseRepo = new FranchiseeRepo();

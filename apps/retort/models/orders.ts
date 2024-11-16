@@ -3,8 +3,7 @@ import {
     TOrder,
     TOrderFilters,
     TOrdersList,
-    TEditOrder,
-    TAddOrder,
+    TOrderPayload,
 } from "../../../types/ecommerce";
 import { OrdersModel, OrderItemsModel } from "../../../database/schema";
 import { ORDER_TYPE } from '../../../interfaces';
@@ -17,14 +16,14 @@ export class RetortOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
         const data = await OrdersModel.findOne({
             where: {
                 id,
-                orderType: ORDER_TYPE.RETORT
+                orderType: ORDER_TYPE.FRANCHISE
             },
             attributes: ['orderStatus']
         });
         return data;
     }
 
-    public async create(data: TAddOrder): Promise<TOrder> {
+    public async create(data: TOrderPayload): Promise<TOrder> {
         const response = await OrdersModel.create(data);
         return response;
     }
@@ -33,7 +32,7 @@ export class RetortOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
         const data = await OrdersModel.findOne({
             where: {
                 id,
-                orderType: ORDER_TYPE.RETORT
+                orderType: ORDER_TYPE.FRANCHISE
             },
             include: [
                 {
@@ -51,7 +50,7 @@ export class RetortOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
                 trackingNumber: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                orderType: ORDER_TYPE.RETORT
+                orderType: ORDER_TYPE.FRANCHISE
             },
         });
         const data = await OrdersModel.findAll({
@@ -62,17 +61,17 @@ export class RetortOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
                 trackingNumber: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                orderType: ORDER_TYPE.RETORT
+                orderType: ORDER_TYPE.FRANCHISE
             },
         });
         return { total, data };
     }
 
-    public async update(id: number, data: TEditOrder): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TOrderPayload): Promise<[affectedCount: number]> {
         const response = await OrdersModel.update(data, {
             where: {
                 id,
-                orderType: ORDER_TYPE.RETORT
+                orderType: ORDER_TYPE.FRANCHISE
             },
         });
         return response;

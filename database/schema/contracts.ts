@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../config";
-import { CONTRACT_STATUS, CONTRACT_PAYMENT_STATUS, CONTRACT_DOCUMENT_STATUS, IContract, ITrackable, SignDoc, UserDetails, Note } from '../../interfaces';
+import { CONTRACT_STATUS, ProposalModels, CONTRACT_PAYMENT_STATUS, CONTRACT_DOCUMENT_STATUS, IContract, ITrackable, SignDoc, UserDetails, Note } from '../../interfaces';
 const { INTEGER, STRING, FLOAT, DATE, JSONB, ENUM, UUIDV4 } = DataTypes;
 import { LeadsModel } from './lead/lead.model';
 import { UserModel } from './user/user.model';
@@ -9,6 +9,7 @@ interface ContractCreationAttributes extends Optional<IContract, 'id' | 'created
 class ContractModel extends Model<IContract, ContractCreationAttributes> implements IContract {
     public id!: string;
     public status!: CONTRACT_STATUS;
+    public proposalData: ProposalModels | null;
     public terminationDetails: null | {
         UserDetails: UserDetails;
         reason: string;
@@ -58,6 +59,10 @@ ContractModel.init({
         type: ENUM,
         values: [...Object.values(CONTRACT_STATUS)],
         allowNull: false,
+    },
+    proposalData: {
+        type: JSONB,
+        allowNull: true,
     },
     terminationDetails: {
         type: JSONB,

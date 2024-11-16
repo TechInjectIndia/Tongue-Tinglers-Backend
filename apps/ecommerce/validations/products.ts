@@ -18,6 +18,15 @@ const createProductBodySchema = Joi.object({
     name: Joi.string().required().messages({
         'any.required': 'Product name is required.',
     }),
+    vendorId: Joi.string().optional().allow(null).messages({
+        'string.base': 'vendorId must be a string.',
+    }),
+    categories: Joi.array().items(Joi.number().required()).min(1).required().messages({
+        'array.base': 'Categories must be an array of category IDs.',
+        'array.min': 'At least one category is required.',
+        'any.required': 'Categories are required.',
+        'number.base': 'Each category ID must be a number.',
+    }),
     slug: Joi.string().optional().allow("").messages({
         'string.base': 'Slug must be a string.',
     }),
@@ -48,6 +57,9 @@ const createProductBodySchema = Joi.object({
         'any.required': 'Stock is required.',
         'number.base': 'Stock must be a valid integer.',
         'number.greater': 'Stock cannot be negative.',
+    }),
+    min_qty_order: Joi.number().integer().optional().allow(0).messages({
+        'number.base': 'Minimum quantity must be a valid integer.',
     }),
     sold: Joi.number().integer().optional().allow(0).messages({
         'number.base': 'Sold quantity must be a valid integer.',

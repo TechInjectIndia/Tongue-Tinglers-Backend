@@ -7,7 +7,9 @@ export type TProductImage = {
   fileName: string;
   filePath: string;
   originalName: string;
+  caption: string;
   fileSize: number;
+  isMainImage: boolean;
   createdAt: Date;
   updatedAt: Date;
 };

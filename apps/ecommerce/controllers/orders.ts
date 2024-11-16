@@ -5,12 +5,13 @@ import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constant
 import { OrderRepo } from '../models/orders';
 import { ProductRepo } from '../models/products';
 import { OrderItemRepo } from '../models/orders-item';
+import { OrderStatus } from '../../../types';
 
 export default class OrderController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, 'user_id', '');
-            const payload = { ...req?.body, userId: user_id, paymentMethod: 'razorpay', orderStatus: 'processed' };
+            const payload = { ...req?.body, userId: user_id, paymentMethod: 'razorpay', orderStatus: OrderStatus.PROCESSED };
             const cartItems = req.body.cart_items;
 
             const createOrder = await new OrderRepo().create(payload);
@@ -24,13 +25,13 @@ export default class OrderController {
                             isRepeated = 1;
                         }
                         const orderItemPayload = {
-                            name: getProduct.name as string,
-                            slug: getProduct.slug as string,
+                            orderId: createOrder.id as string,
                             userId: user_id as string,
-                            price: getProduct.price as number,
                             productId: product.id as number,
-                            quantity: cartItems[index].quantity as number,
-                            orderId: createOrder.id as number,
+                            productType: product.productType,
+                            quantity: product.quantity,
+                            price: product.price,
+                            subtotal: product.subtotal,
                             isRepeated: isRepeated
                         };
                         await new OrderItemRepo().create(orderItemPayload);
@@ -47,7 +48,6 @@ export default class OrderController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -81,7 +81,6 @@ export default class OrderController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -90,10 +89,17 @@ export default class OrderController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
-            const orderStatus = get(req?.body, "status", "");
+            const orderId = get(req?.params, "id", 0);
+            let orderStatusComing = get(req?.body, "orderStatus", 0);
+            let orderStatus = OrderStatus.PROCESSED;
+            if (orderStatusComing === 'Pending') {
+                orderStatus = OrderStatus.PENDING;
+            }
+            if (orderStatusComing === 'Canceled') {
+                orderStatus = OrderStatus.CANCELED;
+            }
 
-            const existingOrder = await new OrderRepo().get(id as number);
+            const existingOrder = await new OrderRepo().get(orderId as string);
             if (isEmpty(existingOrder)) {
                 return res
                     .status(400)
@@ -105,7 +111,7 @@ export default class OrderController {
                     );
             }
 
-            const Order = await new OrderRepo().update(id as number, { orderStatus });
+            const Order = await new OrderRepo().update(orderId as string, { orderStatus });
             return res
                 .status(200)
                 .send(
@@ -116,7 +122,6 @@ export default class OrderController {
                     )
                 );
         } catch (err) {
-            console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -126,7 +131,7 @@ export default class OrderController {
     static async orderStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const Order = await new OrderRepo().orderStatus(id as number);
+            const Order = await new OrderRepo().orderStatus(id as string);
 
             if (isEmpty(Order)) {
                 return res
@@ -149,7 +154,6 @@ export default class OrderController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -159,7 +163,7 @@ export default class OrderController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const Order = await new OrderRepo().get(id as number);
+            const Order = await new OrderRepo().get(id as string);
 
             if (isEmpty(Order)) {
                 return res
@@ -182,7 +186,7 @@ export default class OrderController {
                     )
                 );
         } catch (err) {
-            console.log(err);
+            console.log('error', err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });

@@ -83,5 +83,4 @@ AreaModel.init(
         tableName: 'Areas',
     }
 );
-
 export { AreaModel };

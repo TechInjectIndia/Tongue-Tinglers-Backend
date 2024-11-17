@@ -1,61 +1,47 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
-    "inlineSources": true,
-    "target": "es6", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "module": "commonjs", /* Specify what module code is generated. */
-    "outDir": "./build",
-    "allowJs": true,
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
+    "target": "ES2020", /* Use a modern target for better compatibility with Sequelize v6. */
+    "module": "commonjs", /* CommonJS is suitable for Node.js applications. */
+    "outDir": "./build", /* Output directory for compiled JavaScript files. */
+    "sourceMap": true, /* Generates source maps for debugging. */
+    "inlineSources": true, /* Inline source maps for easier debugging. */
+    "allowJs": true, /* Allow JavaScript files in your project. */
+    "moduleResolution": "node", /* Use Node.js module resolution. */
+    "resolveJsonModule": true, /* Enable importing of JSON files. */
+    "esModuleInterop": true, /* Enables better interoperability with CommonJS modules. */
+    "skipLibCheck": true, /* Skip type checks for library files to avoid conflicts. */
+    "forceConsistentCasingInFileNames": true, /* Ensure file casing consistency. */
     "lib": [
-      "es2019",
-      "dom"
-    ],
-    "baseUrl": "server",
+      "ES2020",
+      "DOM"
+    ], /* Include modern JavaScript and DOM libraries. */
+    "baseUrl": "./server", /* Base URL for module resolution. */
     "paths": {
-      "@constants": [
-        "./constants"
-      ],
-      "config/*": [
-        "./config/*"
-      ],
-      "contracts/*": [
-        "./contracts/*"
-      ],
-      "controllers/*": [
-        "./controllers/*"
-      ],
-      "database/*": [
-        "./database/*"
-      ],
-      "libraries/*": [
-        "libraries/*"
-      ],
-      "interfaces/*": [
-        "./interfaces/*"
-      ],
-      "middlewares/*": [
-        "./middlewares/*"
-      ],
-      "models/*": [
-        "./models/*"
-      ],
-      "routes/*": [
-        "./routes/*"
-      ],
-      "services/*": [
-        "./services/*"
-      ]
-    }
+      "@constants": ["./constants"],
+      "config/*": ["./config/*"],
+      "contracts/*": ["./contracts/*"],
+      "controllers/*": ["./controllers/*"],
+      "database/*": ["./database/*"],
+      "libraries/*": ["./libraries/*"],
+      "interfaces/*": ["./interfaces/*"],
+      "middlewares/*": ["./middlewares/*"],
+      "models/*": ["./models/*"],
+      "routes/*": ["./routes/*"],
+      "services/*": ["./services/*"]
+    },
+    "downlevelIteration": true /* Enables iteration features for older targets. */
   },
-  "downlevelIteration": true,
   "include": [
     "./server/**/*",
     "./app.ts",
-    "src/**/*.ts"
-, "types", "database", "config", "constants", "routes", "libraries"  ],
+    "src/**/*.ts",
+    "types",
+    "database",
+    "config",
+    "constants",
+    "routes",
+    "libraries"
+  ],
   "exclude": [
     "node_modules"
   ]

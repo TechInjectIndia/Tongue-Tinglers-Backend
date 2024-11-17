@@ -1,5 +1,26 @@
 // Admin model starts
 import {RegionModel} from "./region-area/RegionsModel";
+// import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
+// import { questionModel } from "./campaign-ui/questionModel";
+import {FranchiseLocationModel} from "./franchise/franchiseLocationModel";
+import {FranchiseeModel} from "./franchise/franchiseeModel";
+import {AffiliateModel} from "./lead/affiliateModels";
+import {SocialMediaDetailsModel} from "./lead/smDetailsModel";
+import {SocialMediaDetailsFranchiseModel} from "./franchise/smDetailsModel";
+import {AssignModel} from "./lead/assigneeModels";
+import {LeadsModel} from './lead/lead.model';
+import {UserModel} from './user/user.model';
+import {UserAddressModel} from './user/userAddressModel';
+import {ProductsModel} from './ecommerce/product.model';
+import {ProductCategoryModel} from './ecommerce/category.model';
+import {ProductCategoryMapModel} from './ecommerce/product_category_map.model';
+import {RetortProductsModel} from './retort/retort-product';
+import {RetortProductCategoryModel} from './retort/retort-category';
+import {
+    RetortProductCategoryMapModel
+} from './retort/retort-product_category_map';
+import {AreaModel} from "./region-area/AreaModel";
+import {sequelize} from "../../config";
 
 export * from "./user/user.model";
 export * from "./user/address";
@@ -81,18 +102,6 @@ export * from "./franchise/smDetailsModel";
 
 // --- Sequelize Associations Setup --- //
 
-// import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
-// import { questionModel } from "./campaign-ui/questionModel";
-import { FranchiseLocationModel } from "./franchise/franchiseLocationModel";
-import { FranchiseeModel } from "./franchise/franchiseeModel";
-import { AffiliateModel } from "./lead/affiliateModels";
-import { SocialMediaDetailsModel } from "./lead/smDetailsModel";
-import { SocialMediaDetailsFranchiseModel } from "./franchise/smDetailsModel";
-import { AssignModel } from "./lead/assigneeModels";
-import { LeadsModel } from './lead/lead.model';
-import { UserModel } from './user/user.model';
-import { UserAddressModel } from './user/userAddressModel';
-
 // CampaignAdModel.belongsToMany(questionModel, {
 //     through: 'CampaignQuestions',
 //     foreignKey: 'campaignId',
@@ -131,13 +140,17 @@ SocialMediaDetailsFranchiseModel.belongsTo(FranchiseeModel, {
 });
 // Establish association with SocialMediaDetailsFranchiseModel
 
-UserModel.hasMany(UserAddressModel, { foreignKey: 'userId', as: 'address' });
+UserModel.hasMany(UserAddressModel, {foreignKey: 'userId', as: 'address'});
 
-UserModel.hasMany(AssignModel, { foreignKey: 'assignedTo', as: 'assignmentsAsAssignedTo' });
-UserModel.hasMany(AssignModel, { foreignKey: 'assignedBy', as: 'assignmentsAsAssignedBy' });
+UserModel.hasMany(AssignModel,
+    {foreignKey: 'assignedTo', as: 'assignmentsAsAssignedTo'});
+UserModel.hasMany(AssignModel,
+    {foreignKey: 'assignedBy', as: 'assignmentsAsAssignedBy'});
 
-AssignModel.belongsTo(UserModel, { foreignKey: 'assignedTo', as: 'assignedUser' });
-AssignModel.belongsTo(UserModel, { foreignKey: 'assignedBy', as: 'assignerUser' });
+AssignModel.belongsTo(UserModel,
+    {foreignKey: 'assignedTo', as: 'assignedUser'});
+AssignModel.belongsTo(UserModel,
+    {foreignKey: 'assignedBy', as: 'assignerUser'});
 
 // Establish association with AssignModel
 LeadsModel.hasMany(AssignModel, {
@@ -162,10 +175,6 @@ SocialMediaDetailsModel.belongsTo(AffiliateModel, {
 });
 // Establish association with AffiliateModel
 
-import { ProductsModel } from './ecommerce/product.model';
-import { ProductCategoryModel } from './ecommerce/category.model';
-import { ProductCategoryMapModel } from './ecommerce/product_category_map.model';
-
 ProductCategoryModel.belongsToMany(ProductsModel, {
     through: ProductCategoryMapModel,
     foreignKey: 'categoryId',
@@ -179,12 +188,6 @@ ProductsModel.belongsToMany(ProductCategoryModel, {
     otherKey: 'categoryId',
     as: 'categories', // Ensure this alias matches
 });
-
-import { RetortProductsModel } from './retort/retort-product';
-import { RetortProductCategoryModel } from './retort/retort-category';
-import { RetortProductCategoryMapModel } from './retort/retort-product_category_map';
-import {AreaModel} from "./region-area/AreaModel";
-import {sequelize} from "../../config";
 
 RetortProductCategoryModel.belongsToMany(RetortProductsModel, {
     through: RetortProductCategoryMapModel,
@@ -200,17 +203,22 @@ RetortProductsModel.belongsToMany(RetortProductCategoryModel, {
     as: 'categories', // Ensure this alias matches
 });
 
+// todo @jaskaran this
+// Sync the models with the database
+// sequelize.sync({ force: true }) // Set `force: true` for development to
+// reset tables .then(() => { console.log('Database synchronized'); })
+// .catch((err) => { console.error('Error synchronizing database:', err); });
 RegionModel.associate();
 AreaModel.associate();
 
-// Sync the models with the database
-sequelize.sync({ force: true }) // Set `force: true` for development to reset tables
+sequelize.sync({ force: false })
     .then(() => {
-        console.log('Database synchronized');
+        console.log("Associations initialized successfully.")
+        console.log(Object.keys(RegionModel.prototype)); // List available methods
     })
     .catch((err) => {
         console.error('Error synchronizing database:', err);
+        console.trace(err.stack)
     });
 
-console.log("Associations initialized successfully.");
 

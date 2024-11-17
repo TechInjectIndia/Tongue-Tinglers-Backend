@@ -6,6 +6,7 @@ import { RegionRepo } from "../models/RegionRepo";
 import { AreaRepo } from "../../area/models/AreaRepo";
 
 export default class RegionController {
+
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, 'user_id', '');
@@ -87,6 +88,45 @@ export default class RegionController {
                 trashOnly: trashOnly as string,
                 filters
             });
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        regions
+                    )
+                );
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    static async getAreasWithRegions(req: Request, res: Response, next: NextFunction) {
+        try {
+            const size = get(req.query, "size", 10);
+            const skip = get(req.query, "skip", 0);
+            const search = get(req.query, "search", "");
+            const trashOnly = get(req.query, "trashOnly", "");
+            let sorting = get(req.query, "sorting", "id DESC");
+            sorting = sorting.toString().split(" ");
+
+            const id = get(req.query, "id", "");
+            const title = get(req.query, "title", "");
+            const area = get(req.query, "area", "");
+            const createdBy = get(req.query, "createdBy", "");
+
+            const filters = {};
+            if (id) filters["id"] = id;
+            if (title) filters["title"] = title;
+            if (area) filters["area"] = area;
+            if (createdBy) filters["createdBy"] = createdBy;
+
+            const regions = await new RegionRepo().getRegionsWithAreas();
 
             return res
                 .status(200)

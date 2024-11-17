@@ -1,37 +1,42 @@
-// models/Region.ts
-import { Model, DataTypes, Optional } from 'sequelize';
-import { sequelize } from "../../../config";
-import { IRegion } from '../../../interfaces';
-import { UserModel } from '../user/user.model';
+import {
+    BelongsToManySetAssociationsMixin,
+    DataTypes,
+    Model,
+    Optional,
+} from "sequelize";
+import {sequelize} from "../../../config";
+import { IRegion} from "../../../interfaces";
 import {AreaModel} from "./AreaModel";
 
-interface RegionCreationAttributes extends Optional<IRegion, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
-class RegionModel extends Model<IRegion, RegionCreationAttributes> implements IRegion {
-    public id: number;
-    public title: string;
+interface RegionCreationAttributes
+    extends Optional<IRegion, "id" | "createdAt" | "updatedAt" | "deletedAt" | "updatedBy" | "deletedBy"> {
+}
+
+class RegionModel extends Model<IRegion, RegionCreationAttributes>
+    implements IRegion {
+    public id!: number;
+    public title!: string;
 
     public createdBy!: string;
+    public createdAt!: Date;
+
     public updatedBy!: string | null;
+    public updatedAt!: Date | null;
+
     public deletedBy!: string | null;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
-    public readonly deletedAt!: Date | null;
+    public deletedAt!: Date | null;
 
+    // Association methods
+    public setAreas!: BelongsToManySetAssociationsMixin<AreaModel, number>;
+
+    // Associations
     public static associate() {
-        // Association with UserModel
-
-        RegionModel.belongsTo(UserModel, { foreignKey: 'createdBy', as: 'creator', onDelete: 'SET NULL' });
-        RegionModel.belongsTo(UserModel, { foreignKey: 'updatedBy', as: 'updater', onDelete: 'SET NULL' });
-        RegionModel.belongsTo(UserModel, { foreignKey: 'deletedBy', as: 'deleter', onDelete: 'SET NULL' });
-
-        // Many-to-Many association with AreaModel
-
         RegionModel.belongsToMany(AreaModel, {
-            through: 'RegionArea', // Name of the join table
-            foreignKey: 'regionId',
-            otherKey: 'areaId',
-            as: 'areas',
+            through: "RegionArea",
+            foreignKey: "regionId",
+            otherKey: "areaId",
+            as: "areas",
         });
     }
 }
@@ -41,7 +46,7 @@ RegionModel.init(
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true
+            autoIncrement: true,
         },
         title: {
             type: DataTypes.STRING(255),
@@ -49,38 +54,34 @@ RegionModel.init(
         },
         createdBy: {
             type: DataTypes.STRING,
-            allowNull: false
-        },
-        updatedBy: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        deletedBy: {
-            type: DataTypes.STRING,
-            allowNull: true
+            allowNull: false,
         },
         createdAt: {
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: DataTypes.NOW,
-            field: "created_at",
+        },
+        updatedBy: {
+            type: DataTypes.STRING,
+            allowNull: true,
         },
         updatedAt: {
             type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
-            field: "updated_at",
+            allowNull: true,
+        },
+        deletedBy: {
+            type: DataTypes.STRING,
+            allowNull: true,
         },
         deletedAt: {
             type: DataTypes.DATE,
             allowNull: true,
-            defaultValue: null,
-            field: "deleted_at",
         },
     },
     {
         sequelize,
-        tableName: 'regions',
+        tableName: "regions",
+        timestamps: false, // Set to true if you want Sequelize to manage createdAt and updatedAt
     }
 );
 

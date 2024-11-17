@@ -1,98 +1,158 @@
-import { Op } from "sequelize";
-import {
-    TListFiltersRegions,
-} from "../../../types";
-import {
-    TRegionList,
-    TPayloadRegion,
-    IRegion,
-} from "../../../interfaces";
-import { RegionModel } from "../../../database/schema";
-import IBaseRepo from '../controllers/controller/IRegionController';
+import {AreaModel, RegionModel} from "../../../database/schema";
+import {IRegion, TPayloadRegion, TRegionList} from "../../../interfaces";
+import {TListFiltersRegions} from "../../../types";
+import IBaseRepo from "../controllers/controller/IRegionController";
+import {Op} from "sequelize";
+
 
 export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
-    constructor() { }
-
-    public async get(id: number): Promise<IRegion | null> {
-        const data = await RegionModel.findOne({
-            where: {
-                id,
-            },
-        });
-        return data;
+    constructor() {
     }
 
+    /**
+     * Get a single region by ID
+     * @param id Region ID
+     * @returns IRegion or null
+     */
+    public async get(id: number): Promise<IRegion | null> {
+        return await RegionModel.findOne({
+            rejectOnEmpty: false,
+            where: {id}
+        });
+    }
+
+    /**
+     * List regions with filters and pagination
+     * @param filters Filters and pagination options
+     * @returns TRegionList
+     */
     public async list(filters: TListFiltersRegions): Promise<TRegionList> {
-        // Initialize the whereCondition object
         const whereCondition: any = {};
 
-        // If the search term is provided, apply it to the relevant fields
+        // Apply search term to relevant fields
         if (filters.search) {
             whereCondition[Op.or] = [
-                { title: { [Op.like]: `%${filters.search}%` } },
-                { createdBy: { [Op.like]: `%${filters.search}%` } },
+                {title: {[Op.like]: `%${filters.search}%`}},
+                {createdBy: {[Op.like]: `%${filters.search}%`}},
             ];
-
-            // Only apply the search on numeric fields (id, area) if the search term is a number
-            // if (!isNaN(Number(filters.search))) {
-            //     whereCondition[Op.or].push(
-            //         { id: { [Op.eq]: filters.search } },
-            //         {
-            //             area: { [Op.contains]: [Number(filters.search)] }
-            //         }
-            //     )
-            // }
         }
 
-        // Add additional filters (e.g., id, region) if provided
+        // Apply additional filters
         if (filters.filters?.id) {
-            whereCondition.id = { [Op.eq]: filters.filters.id };
+            whereCondition.id = {[Op.eq]: filters.filters.id};
         }
         if (filters.filters?.title) {
-            whereCondition.title = { [Op.like]: `%${filters.filters.title}%` };
+            whereCondition.title = {[Op.like]: `%${filters.filters.title}%`};
         }
-        // if (filters.filters?.area) {
-        //     whereCondition.area = { [Op.contains]: [filters.filters.area] };
-        // }
         if (filters.filters?.createdBy) {
-            whereCondition.createdBy = { [Op.eq]: filters.filters.createdBy };
+            whereCondition.createdBy = {[Op.eq]: filters.filters.createdBy};
         }
 
-        // Count total regions matching the search criteria
+        // Count total regions
         const total = await RegionModel.count({
-            where: whereCondition,
+            group: undefined,
+            where: whereCondition
         });
 
-        // Retrieve the regions with pagination, sorting, and the updated whereCondition
+        // Retrieve paginated regions
         const data = await RegionModel.findAll({
-            order: [filters?.sorting], // Ensure sorting is sanitized
+            order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
             where: whereCondition,
         });
 
-        return { total, data };
+        const json = data.map(rm=>rm.toJSON<IRegion>());
+
+
+
+        return {total:total.reduce((acc,next)=>acc+next.count,0), data:json};
     }
 
+    /**
+     * Create a new region with associated areas
+     * @param data Region payload
+     * @returns IRegion
+     */
     public async create(data: TPayloadRegion): Promise<IRegion> {
-        const response = await RegionModel.create(data);
-        return response;
-    }
+        const {area, ...regionData} = data;
 
-    public async update(id: number, data: TPayloadRegion): Promise<[affectedCount: number]> {
-        return await RegionModel.update(data, {
-            where: {
-                id,
-            },
+        // Validate areas and check their existence
+        const existingAreas = await AreaModel.findAll({
+            where: {id: area},
+            attributes: ['id'],
         });
+
+        const existingAreaIds = existingAreas.map((a) => a.id);
+        const nonExistingAreaIds = area.filter(
+            (id) => !existingAreaIds.includes(id));
+
+        if (nonExistingAreaIds.length > 0) {
+            throw new Error(`Areas with IDs ${nonExistingAreaIds.join(
+                ", ")} do not exist.`);
+        }
+
+        // Create region
+        const region = await RegionModel.create(regionData);
+
+        // Associate areas with the region
+        await region.setAreas(area);
+
+        // Return the region with associated areas
+        return await RegionModel.findOne({
+            rejectOnEmpty: false,
+            where: {id: region.id},
+            include: [
+                {
+                    model: AreaModel,
+                    as: "areas",
+                    attributes: ["id", "title"],
+                    through: {attributes: []},
+                },
+            ]
+        }) as IRegion;
     }
 
+    /**
+     * Update an existing region
+     * @param id Region ID
+     * @param data Region payload
+     * @returns Affected row count
+     */
+    public async update(id: number,
+        data: TPayloadRegion): Promise<[affectedCount: number]> {
+        const [affectedCount]=  await RegionModel.update(data, {
+            returning: true,
+            where: {id}
+        });
+        return [affectedCount];
+    }
+
+    /**
+     * Delete regions by IDs
+     * @param ids Array of region IDs
+     * @returns Number of deleted rows
+     */
     public async delete(ids: number[]): Promise<number> {
-        const response = await RegionModel.destroy({
-            where: {
-                id: ids,
-            },
+        return await RegionModel.destroy({
+            where: {id: ids},
         });
-        return response;
+    }
+
+    /**
+     * Get all regions with their associated areas
+     * @returns Array of regions with areas
+     */
+    public async getRegionsWithAreas(): Promise<IRegion[]> {
+        return await RegionModel.findAll({
+            include: [
+                {
+                    model: AreaModel,
+                    as: "areas",
+                    attributes: ["id", "title"],
+                    through: {attributes: []},
+                },
+            ],
+        });
     }
 }

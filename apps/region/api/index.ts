@@ -125,7 +125,7 @@ const {
  *         description: Unauthorized
  *       '500':
  *         description: Internal server error
- * 
+ *
  * /api/admin/region/get/{id}:
  *   get:
  *     summary: Get a region by ID
@@ -216,7 +216,7 @@ const {
 
 // ===== Route Definitions =====
 router.post('/create', RegionController.create);
-router.get('/list', RegionController.list);
+router.get('/list', RegionController.getAreasWithRegions);
 router.get('/get/:id', RegionController.get);
 router.put('/update/:id', RegionController.update);
 router.delete('/delete', RegionController.delete);

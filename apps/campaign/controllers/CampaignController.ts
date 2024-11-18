@@ -2,7 +2,11 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries"; // Adjust this import path as necessary
-import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants"; // Adjust this import path as necessary
+import {
+    RESPONSE_TYPE,
+    SUCCESS_MESSAGE,
+    ERROR_MESSAGE,
+} from "../../../constants"; // Adjust this import path as necessary
 import { CampaignAdRepo } from "../models";
 import { FranchiseeRepo } from "../../franchisee/models/FranchiseeRepo";
 import { RegionRepo } from "../../region/models/RegionRepo";
@@ -11,16 +15,20 @@ export default class CampaignController {
     // Method to create a campaign
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '');
+            const user_id = get(req, "user_id", "");
             const payload = { ...req.body, createdBy: user_id };
 
-            const franchiseExist = await new FranchiseeRepo().getFranchiseeById(payload.franchiseId);
+            const franchiseExist = await new FranchiseeRepo().getFranchiseeById(
+                payload.franchiseId
+            );
             if (!franchiseExist) {
-                return res.status(200)
+                return res
+                    .status(200)
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.SUCCESS,
-                            `Franchisee ${ERROR_MESSAGE.NOT_EXISTS}`)
+                            `Franchisee ${ERROR_MESSAGE.NOT_EXISTS}`
+                        )
                     );
             }
 
@@ -55,7 +63,7 @@ export default class CampaignController {
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
-            
+
             const franchiseId = get(req.query, "franchiseId", "");
             const region = get(req.query, "region", "");
 
@@ -69,7 +77,7 @@ export default class CampaignController {
                 search: search as string,
                 sorting: sorting,
                 trashOnly: trashOnly as string,
-                filters
+                filters,
             });
 
             return res
@@ -96,8 +104,11 @@ export default class CampaignController {
             const updatePayload = { ...req.body };
             delete updatePayload.id; // Remove id from the update payload
 
-            const user_id = get(req, 'user_id', '');
-            const updatedCampaign = await new CampaignAdRepo().update(id as number, { ...updatePayload, updatedBy: user_id });
+            const user_id = get(req, "user_id", "");
+            const updatedCampaign = await new CampaignAdRepo().update(
+                id as number,
+                { ...updatePayload, updatedBy: user_id }
+            );
 
             return res
                 .status(200)
@@ -120,15 +131,19 @@ export default class CampaignController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req.params, "id", 0);
-            const existingCampaign = await new CampaignAdRepo().get(id as number);
+            const existingCampaign = await new CampaignAdRepo().get(
+                id as number
+            );
 
             if (isEmpty(existingCampaign)) {
-                return res.status(404).send(
-                    sendResponse(
-                        RESPONSE_TYPE.ERROR,
-                        ERROR_MESSAGE.NOT_EXISTS
-                    )
-                );
+                return res
+                    .status(404)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS
+                        )
+                    );
             }
 
             return res
@@ -154,12 +169,14 @@ export default class CampaignController {
             const ids = get(req.body, "ids", []);
 
             if (!Array.isArray(ids) || ids.length === 0) {
-                return res.status(400).send(
-                    sendResponse(
-                        RESPONSE_TYPE.ERROR,
-                        "IDs must be an array and cannot be empty."
-                    )
-                );
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            "IDs must be an array and cannot be empty."
+                        )
+                    );
             }
 
             const deletedCount = await new CampaignAdRepo().delete(ids);

@@ -12,9 +12,11 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes> imple
     public id!: number;
     public name!: string;
     public franchiseId?: string;
-    public region?: string;
+    public regionId?: number;
     public description?: string;
     public questionList!: string[];
+    public affiliateId?: string;
+    public franchiseModelList!: string[];
 
     public createdBy!: string;
     public updatedBy!: string | null;
@@ -35,10 +37,10 @@ CampaignAdModel.init({
         type: STRING,
         allowNull: true,
     },
-    region: {
-        type: STRING,
+    regionId: {
+        type: INTEGER,
         allowNull: true,
-    },
+    }, // Update region to regionId
     name: {
         type: STRING,
         allowNull: false,
@@ -54,6 +56,15 @@ CampaignAdModel.init({
         allowNull: false,
         comment: 'List of questions associated with the campaign',
     },
+    affiliateId: {
+        type: STRING,
+        allowNull: true,
+    }, // New field added
+    franchiseModelList: {
+        type: JSONB,
+        allowNull: true,
+        comment: 'List of franchise model associated with the campaign',
+    }, // New field added
     createdBy: {
         type: STRING,
         allowNull: false,

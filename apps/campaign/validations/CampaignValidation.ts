@@ -7,7 +7,7 @@ const createCampaignBody = Joi.object().keys({
   name: Joi.string().required()
     .messages({ 'any.required': 'Campaign name is required.' }),
   franchiseId: Joi.string().optional().allow(null),
-  region: Joi.string().optional().allow(null),
+  regionId: Joi.number().optional().allow(null),
   description: Joi.string().optional()
     .messages({ 'string.base': 'Description must be a string.' }),
   questionList: Joi.array().items(
@@ -15,6 +15,12 @@ const createCampaignBody = Joi.object().keys({
       .messages({ 'any.required': 'Question ID is required.' })
   ).required()
     .messages({ 'any.required': 'Questions are required.' }),
+  affiliateId: Joi.string().optional().allow(null),
+  franchiseModelList: Joi.array().items(
+      Joi.string().required()
+        .messages({ 'any.required': 'Question ID is required.' })
+    ).required()
+      .messages({ 'any.required': 'Questions are required.' }),
 });
 
 // Validation schema for editing a campaign

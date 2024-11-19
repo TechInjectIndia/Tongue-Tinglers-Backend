@@ -41,15 +41,15 @@ export class OrganizationRepo implements IBaseRepo<IOrganization, TListFilters> 
             const userId = -1;
 
 
-            /* create address */
-            const address = await new AddressRepo().createForUser({
-                city: data.city,
-                country: data.country,
-                postalCode: data.postalCode,
-                state: data.state,
-                street: data.street,
-                user_id: userId.toString(),
-            });
+            // /* create address */
+            // const address = await new AddressRepo().createForUser({
+            //     city: data.city,
+            //     country: data.country,
+            //     postalCode: data.postalCode,
+            //     state: data.state,
+            //     street: data.street,
+            //     user_id: userId.toString(),
+            // });
 
             /* convert into db format */
             const dbData: any = {
@@ -67,9 +67,9 @@ export class OrganizationRepo implements IBaseRepo<IOrganization, TListFilters> 
             };
 
             /* save organization*/
+            console.log("creating");
             const response = await OrganizationTableModel.create(dbData);
 
-            console.log("creating");
 
             // (await t).commit();
             console.log("Created");

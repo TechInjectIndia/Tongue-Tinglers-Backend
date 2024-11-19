@@ -70,6 +70,9 @@ import shippingHistory from "../apps/ecommerce/api/shippingHistoryApi";
 import userAddressRouter from "../apps/user-address/api/userAddressApi";
 import vendorRouter from "../apps/vendor/api/vendorApi";
 
+/* organization router */
+import organizationRouter from "../apps/organization/api/index";
+
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
 router.use(`${ADMIN}/customer`, auth, customerUsersRouter);
@@ -179,6 +182,8 @@ router.use(`/testimonials`, webTestimonialsRouter);
 router.use(`/product`, webProductsRouter);
 router.use(`/register`, webRegisterRouter);
 router.use(`/campaign-ad`, webCampaignRouter);
+/* organization router */
+router.use(`/organization`, organizationRouter);
 
 // ====== Frontend ======
 

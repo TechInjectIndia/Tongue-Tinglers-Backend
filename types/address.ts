@@ -20,6 +20,15 @@ export type TPayloadAddress = {
   country: string;
 };
 
+export type TPayloadAddressUser = {
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  user_id: string;
+};
+
 export type TAddresssList = {
   total: number;
   data: TAddress[];

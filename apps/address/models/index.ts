@@ -4,6 +4,7 @@ import {
     TAddresssList,
     TPayloadAddress,
     TListFilters,
+    TPayloadAddressUser,
 } from "../../../types/";
 import { AddressModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IController';
@@ -45,6 +46,11 @@ export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
     }
 
     public async create(data: TPayloadAddress): Promise<TAddress> {
+        const response = await AddressModel.create(data);
+        return response;
+    }
+   
+    public async createForUser(data: TPayloadAddressUser): Promise<TAddress> {
         const response = await AddressModel.create(data);
         return response;
     }

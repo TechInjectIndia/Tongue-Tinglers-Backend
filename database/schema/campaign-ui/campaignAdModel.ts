@@ -50,7 +50,7 @@ CampaignAdModel.init(
             allowNull: true,
         },
         regionId: {
-            type: STRING,
+            type: INTEGER,
             references: {
                 model: RegionModel,
                 key: "id",

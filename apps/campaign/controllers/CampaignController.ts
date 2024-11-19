@@ -36,6 +36,20 @@ export default class CampaignController {
             // if(!regionExist){
 
             // }
+
+            const campaignExist = await new CampaignAdRepo().getByName(
+                payload.name
+            );
+            if (campaignExist) {
+                return res
+                    .status(409)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `${payload.name} campaign ${ERROR_MESSAGE.EXISTS}`
+                        )
+                    );
+            }
             const campaign = await new CampaignAdRepo().create(payload);
             return res
                 .status(201)

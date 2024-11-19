@@ -33,7 +33,7 @@ export class OrganizationRepo implements IBaseRepo<IOrganization, TListFilters> 
     }
 
     public async create(data: IOrganizationPayload): Promise<boolean> {
-        const t = sequelize.transaction();
+        // const t = sequelize.transaction();
         try {
 
             /* get user id */
@@ -71,7 +71,7 @@ export class OrganizationRepo implements IBaseRepo<IOrganization, TListFilters> 
 
             console.log("creating");
 
-            (await t).commit();
+            // (await t).commit();
             console.log("Created");
 
             return true;
@@ -79,7 +79,7 @@ export class OrganizationRepo implements IBaseRepo<IOrganization, TListFilters> 
             console.log("error");
             console.log(error);
 
-            (await t).rollback();
+            // (await t).rollback();
             return false;
         }
     }

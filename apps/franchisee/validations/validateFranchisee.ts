@@ -71,9 +71,9 @@ const franchiseeSchema = Joi.object({
         "any.required": "Franchise type is required.",
         "string.empty": "Franchise type cannot be empty.",
     }),
-    regionId: Joi.string().required().messages({
-        "any.required": "Region ID is required.",
-        "string.empty": "Region ID cannot be empty.",
+    regionId: Joi.number().required().messages({
+        "number.base": "Ratings must be a number.",
+        "number.min": "Ratings cannot be less than 0.",
     }),
     contractIds: Joi.array().items(Joi.string()).optional(),
     isActive: Joi.boolean().required().messages({

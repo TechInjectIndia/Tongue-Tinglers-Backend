@@ -106,6 +106,10 @@ const franchiseeSchema = Joi.object({
                 "any.allowOnly": "Social media type must be one of 'fb', 'instagram', or 'youtube'."
             }),
     })).optional(),
+    organizationId: Joi.number().required().messages({
+        "any.required": "Organization id is required.",
+        "number.base": "Organization id must be a number.",
+    }),
 });
 
 // Middleware for validating the request body for creating a franchisee

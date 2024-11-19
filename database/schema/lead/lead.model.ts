@@ -3,6 +3,7 @@ import { LeadSource, LeadStatus, FollowDetails, LeadAddress, UserDetails, ITrack
 import { sequelize } from "../../../config";
 import { ILead } from "../../../interfaces";
 import { UserModel } from '../user/user.model';
+import { INTEGER } from "sequelize";
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
 
 interface LeadCreationAttributes extends Optional<ILead, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
@@ -23,7 +24,8 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public referBy!: UserDetails;
     public logs!: Record<string, ITrackable[]>;
     public notes!: Note[] | null;
-    public proposalModals: Array<TPayloadProposalModel> | null;
+    public proposalModalId?: string | null;
+    public amount?: number | null;
     public franchiseModals: Array<FranchiseModels> | null;
     public affiliate: Array<Affiliate> | null;
     public marketing: Array<string> | null;
@@ -105,8 +107,12 @@ LeadsModel.init({
         type: JSONB,
         allowNull: true
     },
-    proposalModals: {
-        type: JSONB,
+    proposalModalId: {
+        type: STRING,
+        allowNull: true
+    },
+    amount: {
+        type: INTEGER,
         allowNull: true
     },
     franchiseModals: {

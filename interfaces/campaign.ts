@@ -7,7 +7,7 @@ interface ICampaign extends UpdatedMetaData, BaseModelIdNumber, DeletionMetaData
     regionId: number;
     description?: string;
     questionList: string[];
-    affiliateId: string
+    affiliateId?: string
     proposalIds: string[];
     start: Date;
     to: Date;

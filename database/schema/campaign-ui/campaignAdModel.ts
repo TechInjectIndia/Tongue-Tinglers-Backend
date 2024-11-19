@@ -24,7 +24,7 @@ class CampaignAdModel
     public regionId: number;
     public description?: string;
     public questionList!: string[];
-    public affiliateId: string;
+    public affiliateId?: string;
     public proposalIds!: string[];
     public start!: Date;
     public to!: Date;

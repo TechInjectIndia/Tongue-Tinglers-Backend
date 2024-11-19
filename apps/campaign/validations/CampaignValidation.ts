@@ -22,9 +22,7 @@ const createCampaignBody = Joi.object().keys({
         )
         .required()
         .messages({ "any.required": "Questions are required." }),
-    affiliateId: Joi.string()
-        .required()
-        .messages({ "any.required": "Affiliate Id are required." }),
+    affiliateId: Joi.string().optional().allow(null),
     proposalIds: Joi.array()
         .items(
             Joi.string()

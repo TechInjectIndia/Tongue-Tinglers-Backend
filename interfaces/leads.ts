@@ -50,7 +50,8 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     referBy: UserDetails | null;
     logs: Record<string, ITrackable[]>;
     notes: Note[] | null;
-    proposalModals: Array<TPayloadProposalModel> | null;
+    proposalModalId?: string | null;
+    amount?: number | null;
     franchiseModals: Array<FranchiseModels> | null;
     affiliate: Array<Affiliate> | null;
     marketing: Array<string> | null;

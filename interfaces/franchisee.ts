@@ -77,6 +77,7 @@ interface FranchiseeAttributes {
     ratings?: number | null;
     franchiseRenewalInfo?: FranchiseeRenewalInfo | null;
     franchiseLocation?: FranchiseLocationAttributes[];
+    organizationId: string;
 }
 
 interface AddFranchiseePayload {

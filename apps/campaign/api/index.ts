@@ -6,20 +6,21 @@ import * as CampaignValidation from "../validations/CampaignValidation";
 const router = express.Router();
 
 const {
-  validateCreateCampaignBody,
-  validateEditCampaignBody,
-  validateEditCampaignParams,
-  validateListCampaignQuery,
-  validateDeleteMultipleIdsBody,
+    validateCreateCampaignBody,
+    validateEditCampaignBody,
+    validateEditCampaignParams,
+    validateListCampaignQuery,
+    validateDeleteMultipleIdsBody,
 } = CampaignValidation;
 
 /**
  * @swagger
- * 
+ *
  * /api/admin/campaign-ad/create:
  *   post:
  *     summary: Create a new campaign Ad
- *     tags: [Campaigns-Ad]
+ *     tags:
+ *       - Campaigns-Ad
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -31,37 +32,53 @@ const {
  *             required:
  *               - name
  *               - franchiseId
- *               - region
+ *               - regionId
  *               - questionList
- *               - startDate
+ *               - start
+ *               - to
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Summer Campaign"
- *               franchiseId:
- *                 type: string
- *                 example: "franchiseId"
- *               region:
- *                 type: string
- *                 example: "punjab"
+ *                 example: "Test 2"
+ *                 description: "Name of the campaign"
  *               description:
  *                 type: string
- *                 example: "A campaign for summer promotions"
- *               startDate:
- *                 type: string
- *                 format: date-time
- *                 example: "2024-06-01T00:00:00Z"
- *               endDate:
- *                 type: string
- *                 format: date-time
- *                 example: "2024-08-31T23:59:59Z"
+ *                 example: "Test"
+ *                 description: "Description of the campaign"
  *               questionList:
  *                 type: array
  *                 items:
  *                   type: string
- *                   example: "123e4567-e89b-12d3-a456-426614174000"
- *                 example: 
- *                   - "123e4567-e89b-12d3-a456-426614174000"
+ *                   example: "c83e8df1-d958-489a-9f6f-17fb09d6927d"
+ *                 description: "List of question IDs associated with the campaign"
+ *               franchiseId:
+ *                 type: string
+ *                 example: "cb5511e3-82b8-4a7d-9dec-8769a747dc64"
+ *                 description: "Franchise ID associated with the campaign"
+ *               regionId:
+ *                 type: integer
+ *                 example: 1
+ *                 description: "Region ID associated with the campaign"
+ *               affiliateId:
+ *                 type: string
+ *                 example: "a61f854a-1234-4a67-a428-d77473be7c59"
+ *                 description: "Affiliate ID associated with the campaign"
+ *               proposalIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   example: "c83e8df1-d958-489a-9f6f-17fb09d6927d"
+ *                 description: "List of proposal IDs associated with the campaign"
+ *               start:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2024-11-19"
+ *                 description: "Start date of the campaign"
+ *               to:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2024-11-20"
+ *                 description: "End date of the campaign"
  *     responses:
  *       '201':
  *         description: Campaign created successfully
@@ -69,7 +86,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/campaign-ad/list:
  *   get:
  *     summary: Get all campaign ads with filtering and pagination
@@ -129,7 +146,7 @@ const {
  *         description: Unauthorized
  *       '500':
  *         description: Internal server error
- * 
+ *
  * /api/admin/campaign-ad/get/{id}:
  *   get:
  *     summary: Get a campaign Ad by ID
@@ -151,7 +168,7 @@ const {
  *       '404':
  *         description: Campaign not found
  *
- * /api/admin/campaign-ad/update/{id}:
+* /api/admin/campaign-ad/update/{id}:
  *   put:
  *     summary: Update a campaign Ad
  *     tags: [Campaigns-Ad]
@@ -173,18 +190,46 @@ const {
  *             properties:
  *               name:
  *                 type: string
+ *                 example: "Test Updated"
+ *                 description: Name of the campaign
  *               description:
  *                 type: string
- *               startDate:
- *                 type: string
- *                 format: date-time
- *               endDate:
- *                 type: string
- *                 format: date-time
+ *                 example: "Test"
+ *                 description: Description of the campaign
  *               questionList:
  *                 type: array
  *                 items:
  *                   type: string
+ *                 example: ["c83e8df1-d958-489a-9f6f-17fb09d6927d", "82928a12-f2f9-4212-9189-5ae20242c438"]
+ *                 description: List of question IDs associated with the campaign
+ *               franchiseId:
+ *                 type: string
+ *                 example: "cb5511e3-82b8-4a7d-9dec-8769a747dc64"
+ *                 description: Franchise ID associated with the campaign
+ *               regionId:
+ *                 type: integer
+ *                 example: 1
+ *                 description: Region ID associated with the campaign
+ *               affiliateId:
+ *                 type: string
+ *                 example: "a61f854a-1234-4a67-a428-d77473be7c59"
+ *                 description: Affiliate ID associated with the campaign
+ *               proposalIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["c83e8df1-d958-489a-9f6f-17fb09d6927d", "82928a12-f2f9-4212-9189-5ae20242c438"]
+ *                 description: List of proposal IDs associated with the campaign
+ *               start:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2024-11-19"
+ *                 description: Start date of the campaign
+ *               to:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2024-11-20"
+ *                 description: End date of the campaign
  *     responses:
  *       '200':
  *         description: Campaign updated successfully
@@ -226,7 +271,16 @@ const {
 router.post("/create", validateCreateCampaignBody, CampaignController.create);
 router.get("/list", validateListCampaignQuery, CampaignController.list);
 router.get("/get/:id", CampaignController.get);
-router.put("/update/:id", validateEditCampaignParams, validateEditCampaignBody, CampaignController.update);
-router.delete("/delete", validateDeleteMultipleIdsBody, CampaignController.delete);
+router.put(
+    "/update/:id",
+    validateEditCampaignParams,
+    validateEditCampaignBody,
+    CampaignController.update
+);
+router.delete(
+    "/delete",
+    validateDeleteMultipleIdsBody,
+    CampaignController.delete
+);
 
 export default router;

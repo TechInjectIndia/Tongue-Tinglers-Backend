@@ -65,11 +65,11 @@ export default class CampaignController {
             sorting = sorting.toString().split(" ");
 
             const franchiseId = get(req.query, "franchiseId", "");
-            const region = get(req.query, "region", "");
+            const regionId = get(req.query, "regionId", "");
 
             const filters = {};
             if (franchiseId) filters["franchiseId"] = franchiseId;
-            if (region) filters["region"] = region;
+            if (regionId) filters["regionId"] = regionId;
 
             const campaigns = await new CampaignAdRepo().list({
                 offset: skip as number,

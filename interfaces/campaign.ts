@@ -4,11 +4,13 @@ import type { UpdatedMetaData, BaseModelIdNumber, DeletionMetaData } from ".";
 interface ICampaign extends UpdatedMetaData, BaseModelIdNumber, DeletionMetaData {
     name: string;
     franchiseId?: string;
-    regionId?: number;
+    regionId: number;
     description?: string;
     questionList: string[];
-    affiliateId?: string
-    franchiseModelList: string[];
+    affiliateId: string
+    proposalIds: string[];
+    start: Date;
+    to: Date;
 }
 
 type TCampaignList = {

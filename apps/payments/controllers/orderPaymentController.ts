@@ -1,7 +1,19 @@
 const Razorpay = require("razorpay");
 import { NextFunction, Request, Response } from "express";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { sendResponse, createStandardPaymentLinkForOrders, CreatePaymentIntentWithRazorpay, sendEmail, EMAIL_HEADING, getEmailTemplate, EMAIL_TEMPLATE } from "../../../libraries";
+import {
+    RESPONSE_TYPE,
+    SUCCESS_MESSAGE,
+    ERROR_MESSAGE,
+} from "../../../constants";
+import {
+    sendResponse,
+    createStandardPaymentLinkForOrders,
+    CreatePaymentIntentWithRazorpay,
+    sendEmail,
+    EMAIL_HEADING,
+    getEmailTemplate,
+    EMAIL_TEMPLATE,
+} from "../../../libraries";
 import { OrderRepo } from "../../ecommerce/models/orders";
 import { OrderItemRepo } from "../../ecommerce/models/orders-item";
 import { UserAddressRepo } from "../../user-address/models/UserAddressRepo";
@@ -12,10 +24,16 @@ import { CartModel } from "../../../database/schema";
 import { CartRepo } from "../../cart/models/CartRepo";
 import { CartItemModel } from "../../../database/schema";
 import { FranchiseeModel } from "../../../database/schema";
-import { ORDER_TYPE, PAYMENT_STATUS, ShippingStatus } from '../../../interfaces';
+import {
+    ORDER_TYPE,
+    PAYMENT_STATUS,
+    ShippingStatus,
+} from "../../../interfaces";
 import { OrderStatus } from "../../../types";
 import { AnyCnameRecord } from "dns";
-const { validateWebhookSignature } = require("razorpay/dist/utils/razorpay-utils");
+const {
+    validateWebhookSignature,
+} = require("razorpay/dist/utils/razorpay-utils");
 
 const razorpayInstance = new Razorpay({
     key_id: CONFIG.RP_ID_PROD,
@@ -29,9 +47,9 @@ export default class OrderPaymentController {
         const isVerified = validateWebhookSignature(
             JSON.stringify(body),
             webhookSignature,
-            CONFIG.RP_WEBHOOK_SECRET
+            CONFIG.RP_WEBHOOK_SECRET,
         );
-        console.log('payment body', body);
+        console.log("payment body", body);
         if (isVerified) {
             if (
                 body.payload &&
@@ -40,7 +58,9 @@ export default class OrderPaymentController {
             ) {
                 const paymentId = body.payload.payment_link.entity.id;
                 const status = body.payload.payment_link.entity.status;
-                const orderDetails = await new OrderRepo().getOrderByPaymentId(paymentId as string);
+                const orderDetails = await new OrderRepo().getOrderByPaymentId(
+                    paymentId as string,
+                );
                 if (orderDetails) {
                     let paymentStatus = orderDetails.paymentStatus;
                     if (status.toLowerCase() === "paid") {
@@ -48,10 +68,9 @@ export default class OrderPaymentController {
                     } else {
                         paymentStatus = PAYMENT_STATUS.UNPAID;
                     }
-                    await new OrderRepo().update(
-                        orderDetails.id as string,
-                        { paymentStatus }
-                    );
+                    await new OrderRepo().update(orderDetails.id as string, {
+                        paymentStatus,
+                    });
                 }
             }
             return res.status(200).send({ message: "Webhook Done" });
@@ -70,25 +89,26 @@ export default class OrderPaymentController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            "Payment ID is required."
-                        )
+                            "Payment ID is required.",
+                        ),
                     );
             }
 
-            const paymentDetailsFromRazorpay = await razorpayInstance.payments.fetch(paymentId);
+            const paymentDetailsFromRazorpay =
+                await razorpayInstance.payments.fetch(paymentId);
             if (!paymentDetailsFromRazorpay) {
                 return res
                     .status(404)
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            "Payment not found in Razorpay."
-                        )
+                            "Payment not found in Razorpay.",
+                        ),
                     );
             }
             console.log(
                 "Payment Details from Razorpay:",
-                paymentDetailsFromRazorpay
+                paymentDetailsFromRazorpay,
             );
 
             const paymentDetailsFromRepo =
@@ -99,13 +119,13 @@ export default class OrderPaymentController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            "Payment not found in local repository."
-                        )
+                            "Payment not found in local repository.",
+                        ),
                     );
             }
             console.log(
                 "Payment Details from Repository:",
-                paymentDetailsFromRepo
+                paymentDetailsFromRepo,
             );
 
             return res.status(200).send(
@@ -115,8 +135,8 @@ export default class OrderPaymentController {
                     {
                         paymentDetailsFromRazorpay: paymentDetailsFromRazorpay,
                         paymentDetailsFromRepo: paymentDetailsFromRepo,
-                    }
-                )
+                    },
+                ),
             );
         } catch (err) {
             console.error("Error fetching payment details:", err);
@@ -127,11 +147,11 @@ export default class OrderPaymentController {
     static async generatePaymentLink(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ) {
         try {
             // get cart & cart items
-            const userId = get(req, 'user_id', '');
+            const userId = get(req, "user_id", "");
 
             // Find if the cart already exists for the user
             let cart = await new CartRepo().findById(userId);
@@ -141,16 +161,23 @@ export default class OrderPaymentController {
                     .send(sendResponse(RESPONSE_TYPE.ERROR, "Cart is empty"));
             }
 
-            let franchiseData = await FranchiseeModel.findOne({ where: { userid: userId } });
+            let franchiseData = await FranchiseeModel.findOne({
+                where: { userid: userId },
+            });
             if (!franchiseData) {
                 return res
                     .status(404)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Franchise is missing"));
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            "Franchise is missing",
+                        ),
+                    );
             }
 
             const link = await createStandardPaymentLinkForOrders({
                 cart: cart,
-                franchise: franchiseData
+                franchise: franchiseData,
             });
 
             if (!link) {
@@ -159,8 +186,8 @@ export default class OrderPaymentController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            "Failed to create payment link."
-                        )
+                            "Failed to create payment link.",
+                        ),
                     );
             }
 
@@ -179,7 +206,7 @@ export default class OrderPaymentController {
             });
 
             // Save each cart item as an order item
-            const orderItems = cart.items.map(item => ({
+            const orderItems = cart.items.map((item) => ({
                 orderId: newOrder.id as string,
                 userId: userId as string,
                 productId: item.productId as number,
@@ -193,14 +220,19 @@ export default class OrderPaymentController {
 
             const shippingPayload = {
                 orderId: newOrder.id as string,
-                activities: [{
-                    status: ShippingStatus.OrderReceived,
-                    time: new Date().toISOString()
-                }],
+                activities: [
+                    {
+                        status: ShippingStatus.OrderReceived,
+                        time: new Date().toISOString(),
+                    },
+                ],
                 trackingNumber: null,
-                date: new Date().toISOString()
+                date: new Date().toISOString(),
             };
-            await new ShippingHistoryRepo().addShippingHistory(newOrder.id as string, shippingPayload);
+            await new ShippingHistoryRepo().addShippingHistory(
+                newOrder.id as string,
+                shippingPayload,
+            );
 
             // Remove all products related to the cart
             await CartItemModel.destroy({
@@ -217,7 +249,7 @@ export default class OrderPaymentController {
                     {
                         email: franchiseData.contactEmail,
                         link: link.short_url,
-                    }
+                    },
                 );
 
                 const mailOptions = {
@@ -232,7 +264,7 @@ export default class OrderPaymentController {
                 await sendEmail(
                     mailOptions.to,
                     mailOptions.subject,
-                    mailOptions.templateParams
+                    mailOptions.templateParams,
                 );
             } catch (emailError) {
                 console.error("Error sending email:", emailError);
@@ -244,8 +276,8 @@ export default class OrderPaymentController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.CREATED,
-                        link
-                    )
+                        link,
+                    ),
                 );
         } catch (err) {
             console.error("Error generating payment link:", err);
@@ -255,13 +287,16 @@ export default class OrderPaymentController {
         }
     }
 
-
-    static async createOrderAndClearCart(req: Request, res: Response, next: NextFunction) {
+    static async createOrderAndClearCart(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
         try {
             const { paymentId } = req.body;
 
             // get cart & cart items
-            const userId = get(req, 'user_id', '');
+            const userId = get(req, "user_id", "");
 
             // Find if the cart already exists for the user
             let cart = await new CartRepo().findById(userId);
@@ -271,14 +306,15 @@ export default class OrderPaymentController {
                     .send(sendResponse(RESPONSE_TYPE.ERROR, "Cart is empty"));
             }
 
-            let franchiseData = await FranchiseeModel.findOne({ where: { userid: userId } });
-            if (!franchiseData) {
-                return res
-                    .status(404)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Franchise is missing"));
-            }
+            // let franchiseData = await FranchiseeModel.findOne({ where: { userid: userId } });
+            // if (!franchiseData) {
+            //     return res
+            //         .status(404)
+            //         .send(sendResponse(RESPONSE_TYPE.ERROR, "Franchise is missing"));
+            // }
 
-            const getUserActiveAddress = await new UserAddressRepo().getActiveAddress(userId as string);
+            const getUserActiveAddress =
+                await new UserAddressRepo().getActiveAddress(userId as string);
 
             // Create the order and save order items
             const newOrder = await new OrderRepo().create({
@@ -295,7 +331,7 @@ export default class OrderPaymentController {
             });
 
             // Save each cart item as an order item
-            const orderItems = cart.items.map(item => ({
+            const orderItems = cart.items.map((item) => ({
                 orderId: newOrder.id as string,
                 userId: userId as string,
                 productId: item.productId as number,
@@ -309,14 +345,19 @@ export default class OrderPaymentController {
 
             const shippingPayload = {
                 orderId: newOrder.id as string,
-                activities: [{
-                    status: ShippingStatus.OrderReceived,
-                    time: new Date().toISOString()
-                }],
+                activities: [
+                    {
+                        status: ShippingStatus.OrderReceived,
+                        time: new Date().toISOString(),
+                    },
+                ],
                 trackingNumber: null,
-                date: null
+                date: null,
             };
-            await new ShippingHistoryRepo().addShippingHistory(newOrder.id as string, shippingPayload);
+            await new ShippingHistoryRepo().addShippingHistory(
+                newOrder.id as string,
+                shippingPayload,
+            );
 
             // Remove all products related to the cart
             await CartItemModel.destroy({
@@ -327,20 +368,34 @@ export default class OrderPaymentController {
                 where: { id: cart.id },
             });
 
-            return res.status(200).send(
-                sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, newOrder)
-            );
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.CREATED,
+                        newOrder,
+                    ),
+                );
         } catch (error) {
-            console.error("Error during order creation or clearing the cart:", error);
-            return res.status(500).send({ message: "Error during order creation or cart clearing" });
+            console.error(
+                "Error during order creation or clearing the cart:",
+                error,
+            );
+            return res.status(500).send({
+                message: "Error during order creation or cart clearing",
+            });
         }
     }
 
-
-    static async createPaymentIntent(req: Request, res: Response, next: NextFunction) {
+    static async createPaymentIntent(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
         try {
             // Get user ID from request
-            const userId = get(req, 'user_id', '');
+            const userId = get(req, "user_id", "");
 
             // Find if the cart already exists for the user
             let cart = await new CartRepo().findById(userId);
@@ -350,41 +405,119 @@ export default class OrderPaymentController {
                     .send(sendResponse(RESPONSE_TYPE.ERROR, "Cart is empty"));
             }
 
+            // todo @Nitesh: commented this check this once.
             // Retrieve franchisee data
-            let franchiseData = await FranchiseeModel.findOne({ where: { userid: userId } });
-            if (!franchiseData) {
-                return res
-                    .status(404)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Franchise is missing"));
-            }
+            // let franchiseData = await FranchiseeModel.findOne({ where: { userid: userId } });
+            // if (!franchiseData) {
+            //     return res
+            //         .status(404)
+            //         .send(sendResponse(RESPONSE_TYPE.ERROR, "Franchise is missing"));
+            // }
 
             // Calculate total amount from cart items (Example: summing up all item prices)
-            const totalAmount = cart.items.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
+            const totalAmount = cart.items.reduce(
+                (sum: number, item: any) => sum + item.price * item.quantity,
+                0,
+            );
 
             // Prepare the data for CreatePaymentIntentWithRazorpay function
             const data = {
                 cart: {
-                    totalAmount
+                    totalAmount,
                 },
-                franchise: franchiseData
+                // franchise: franchiseData
             };
 
             // Call the utility function to create payment intent
-            const paymentIntentResponse = await CreatePaymentIntentWithRazorpay(data);
+            const paymentIntentResponse =
+                await CreatePaymentIntentWithRazorpay(data);
 
             if (paymentIntentResponse.status === 500) {
-                return res.status(500).send(sendResponse(RESPONSE_TYPE.ERROR, paymentIntentResponse.message));
+                return res
+                    .status(500)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            paymentIntentResponse.message,
+                        ),
+                    );
             }
 
             // Return success response with payment intent ID
             return res.status(200).send(
-                sendResponse(RESPONSE_TYPE.SUCCESS, "Payment intent created successfully.", {
-                    paymentIntentId: paymentIntentResponse.data.paymentIntentId,
-                })
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    "Payment intent created successfully.",
+                    {
+                        paymentIntentId:
+                            paymentIntentResponse.data.paymentIntentId,
+                    },
+                ),
             );
         } catch (error) {
             console.error("Error creating payment intent:", error);
-            return res.status(500).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.INTERNAL_SERVER_ERROR));
+            return res
+                .status(500)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                    ),
+                );
+        }
+    }
+
+    // todo @Nitesh used for client meeting, delete later😭
+    static async createPaymentIntentForSampleKit(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const totalAmount = 1098;
+
+            const data = {
+                cart: {
+                    totalAmount,
+                },
+            };
+
+            // Call the utility function to create payment intent
+            const paymentIntentResponse =
+                await CreatePaymentIntentWithRazorpay(data);
+
+            if (paymentIntentResponse.status === 500) {
+                return res
+                    .status(500)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            paymentIntentResponse.message,
+                        ),
+                    );
+            }
+
+            // Return success response with payment intent ID
+            return res.status(200).send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    "Payment intent created successfully.",
+                    {
+                        paymentIntentId:
+                            paymentIntentResponse.data.paymentIntentId,
+                    },
+                ),
+            );
+        } catch (error) {
+            console.error("Error creating payment intent:", error);
+            return res
+                .status(500)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                    ),
+                );
         }
     }
 }

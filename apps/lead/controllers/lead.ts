@@ -94,7 +94,7 @@ export default class LeadController {
                 },
                 notes: null,
                 additionalInfo: "",
-                logs: null,
+                logs: [],
                 signedDocs: null,
                 createdBy: `${user_id}`,
             };

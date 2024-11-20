@@ -89,7 +89,7 @@ export default class LeadController {
                 templates &&
                 Array.isArray(templates) &&
                 templates.length > 0 &&
-                templates[0].template
+                templates[0].templateId
             ) {
                 templateId = templates[0].templateId;
             }

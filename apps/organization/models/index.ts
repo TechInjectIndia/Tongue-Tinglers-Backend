@@ -110,6 +110,13 @@ export class OrganizationRepo
                     [Op.like]: `%${filters.search}%`,
                 },
             },
+            include: [
+                {
+                    model: AddressModel,
+                    as: 'address',
+                    attributes: ['user_id', 'street', 'city', 'state', 'postalCode', 'country'],
+                },
+            ],
         });
 
         return { total, data };

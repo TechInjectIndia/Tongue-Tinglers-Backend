@@ -189,11 +189,24 @@ export default class ContractController {
             // get contract
             const existingContract = await new ContractRepo().get(id as string);
 
+
+            console.log("contract");
+            console.log(existingContract);
+            
+            
             const existingLead = await new LeadRepo().get(id as string);
+
+            console.log("lead");
+            console.log(existingContract);
+
 
             const existingCampaign = await new CampaignAdRepo().get(
                 existingLead.campaignId
             );
+
+            console.log("existing campaign");
+            console.log(existingCampaign);
+
 
             let AddFranchiseePayloa: AddFranchiseePayload = {
                 userid: "1",

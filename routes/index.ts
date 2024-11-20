@@ -1,27 +1,27 @@
 import { Router } from "express";
 import { Request, Response } from "express";
-const multer = require('multer');
+const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
 import { sendEmail } from "../libraries";
 
 const router = Router();
 
-const ADMIN = '/admin';
-const FRANCHISE = '/franchise';
-const CUSTOMER = '/customer';
-const GUEST = '/guest'
+const ADMIN = "/admin";
+const FRANCHISE = "/franchise";
+const CUSTOMER = "/customer";
+const GUEST = "/guest";
 
 // ====== Auth ======
-import { auth } from '../middlewares/auth';
+import { auth } from "../middlewares/auth";
 import authRouter from "../apps/auth/api";
 router.use(`/auth`, authRouter);
 // ====== Auth ======
 
 import addressRouter from "../apps/address/api";
-router.use('/user/address', auth, addressRouter);
+router.use("/user/address", auth, addressRouter);
 
 import referralRouter from "../apps/referral/api";
-router.use('/referral', referralRouter);
+router.use("/referral", referralRouter);
 
 // ====== Admin ======
 // ====== Admin imports ======
@@ -118,7 +118,6 @@ router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`/cart`, auth, cartRouter);
 router.use(`/user-address`, auth, userAddressRouter);
 
-
 // ====== Admin ======
 // Guest users
 router.use(`${GUEST}/users`, auth, guestUsersRouter);
@@ -141,8 +140,16 @@ router.use(`${FRANCHISE}/profile`, auth, franchiseProfileRouter);
 router.use(`${FRANCHISE}/settings`, auth, franchiseSettingsRouter); // pending
 router.use(`${FRANCHISE}/order`, auth, franchiseOrderRouter);
 router.use(`/retort/order`, auth, franchiseRetortOrderRouter);
-router.use(`${FRANCHISE}/analytics/orders`, auth, franchiseOrderAnalyticsRouter); // pending
-router.use(`${FRANCHISE}/analytics/retort`, auth, franchiseRetortAnalyticsRouter); // pending
+router.use(
+    `${FRANCHISE}/analytics/orders`,
+    auth,
+    franchiseOrderAnalyticsRouter
+); // pending
+router.use(
+    `${FRANCHISE}/analytics/retort`,
+    auth,
+    franchiseRetortAnalyticsRouter
+); // pending
 router.use(`${FRANCHISE}/testimonials`, auth, franchiseTestimonialsRouter);
 
 // ====== Franchise ======
@@ -183,7 +190,7 @@ router.use(`/product`, webProductsRouter);
 router.use(`/register`, webRegisterRouter);
 router.use(`/campaign-ad`, webCampaignRouter);
 /* organization router */
-router.use(`/organization`, organizationRouter);
+router.use(`/organization`, auth, organizationRouter);
 
 // ====== Frontend ======
 
@@ -191,10 +198,14 @@ router.use(`/organization`, organizationRouter);
 //     createStandardPaymentLink();
 // });
 
-router.post(`/upload-file`, upload.single('file'), async (req: Request, res: Response) => {
-    // await uploadSingleFileToFirebase(req);
-    // res.send('done');
-});
+router.post(
+    `/upload-file`,
+    upload.single("file"),
+    async (req: Request, res: Response) => {
+        // await uploadSingleFileToFirebase(req);
+        // res.send('done');
+    }
+);
 
 // ====== Pet Pooja ======
 import petPoojaApiRouter from "../apps/pet-pooja/api/petpooja";
@@ -207,10 +218,11 @@ router.use(`/zoho-sign`, zohoSignApiRouter);
 // ====== Zoho Sign ======
 
 router.use(`/etest`, () => {
-    sendEmail('jasskaranofficial@gmail.com', 'subject', { heading: 'asd', description: 'qwe' });
+    sendEmail("jasskaranofficial@gmail.com", "subject", {
+        heading: "asd",
+        description: "qwe",
+    });
 });
-
-
 
 router.use(`/health`, (_, res) => {
     return res.status(200).json({

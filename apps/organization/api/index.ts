@@ -1,17 +1,16 @@
-// src/routes/CampaignRoutes.ts
 import * as express from "express";
 import * as Validations from "../validations/OrganizationValidation";
 import OrganizationController from "../controllers/OrganizationController";
+import { validateEditOrganizationBody, validateEditOrgParams, validateListOrgQuery } from "../validations/OrganizationValidation";
 
 const router = express.Router();
 
-const {
-  validateCreateOrganizationBody
-} = Validations;
+const { validateCreateOrganizationBody } = Validations;
 
+// SWAGGER IS PENDING
 /**
  * @swagger
- * 
+ *
  * /api/admin/campaign-ad/create:
  *   post:
  *     summary: Create a new campaign Ad
@@ -56,7 +55,7 @@ const {
  *                 items:
  *                   type: string
  *                   example: "123e4567-e89b-12d3-a456-426614174000"
- *                 example: 
+ *                 example:
  *                   - "123e4567-e89b-12d3-a456-426614174000"
  *     responses:
  *       '201':
@@ -65,7 +64,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/campaign-ad/list:
  *   get:
  *     summary: Get all campaign ads with filtering and pagination
@@ -125,7 +124,7 @@ const {
  *         description: Unauthorized
  *       '500':
  *         description: Internal server error
- * 
+ *
  * /api/admin/campaign-ad/get/{id}:
  *   get:
  *     summary: Get a campaign Ad by ID
@@ -219,6 +218,17 @@ const {
  *       '404':
  *         description: Campaigns not found
  */
-router.post("/create", validateCreateOrganizationBody, OrganizationController.create);
+router.post(
+    "/create",
+    validateCreateOrganizationBody,
+    OrganizationController.create
+);
+
+router.get("/get/:id", validateEditOrgParams, OrganizationController.get);
+ 
+router.put("/update/:id",validateEditOrgParams, validateEditOrganizationBody, OrganizationController.update);
+router.delete("/delete", validateEditOrgParams, OrganizationController.delete);
+
+router.get("/list", validateListOrgQuery, OrganizationController.list);
 
 export default router;

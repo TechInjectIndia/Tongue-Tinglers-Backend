@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { IOrganization } from "../../../interfaces/organization";
+import { AddressModel } from "../../../database/schema";
 
 const { STRING, INTEGER, DATE, NOW, } = DataTypes;
 
@@ -8,6 +9,7 @@ interface OrganizationCreationAttributes extends Optional<IOrganization, 'id' | 
 
 class OrganizationTableModel extends Model<IOrganization, OrganizationCreationAttributes> implements IOrganization {
     public id!: number;
+    public prospectId: string;
     public name: string;
     public contactPersonName: string;
     public contactNumber: string;
@@ -27,6 +29,10 @@ class OrganizationTableModel extends Model<IOrganization, OrganizationCreationAt
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
+
+    public static associate() {
+        this.belongsTo(AddressModel, { foreignKey: 'addressId', as: 'address', });
+    }
 }
 
 OrganizationTableModel.init({
@@ -34,6 +40,10 @@ OrganizationTableModel.init({
         type: INTEGER,
         autoIncrement: true,
         primaryKey: true,
+        allowNull: false,
+    },
+    prospectId: {
+        type: STRING,
         allowNull: false,
     },
     name: {
@@ -55,6 +65,10 @@ OrganizationTableModel.init({
 
     addressId: {
         type: INTEGER,
+        references: {
+            model: AddressModel,
+            key: 'id',
+        },
         allowNull: false,
     },
 
@@ -122,5 +136,7 @@ OrganizationTableModel.init({
     paranoid: true,
     comment: 'Table to store organizations',
 });
+
+OrganizationTableModel.associate();
 
 export { OrganizationTableModel };

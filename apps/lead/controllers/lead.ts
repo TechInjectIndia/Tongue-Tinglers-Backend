@@ -50,7 +50,7 @@ export default class LeadController {
                 password: 'Test@123#',
                 createdBy: `${user_id}`,
                 role: 1,
-                type: USER_TYPE.FRANCHISE,
+                type: USER_TYPE.PROSPECT,
                 status: USER_STATUS.ACTIVE,
                 referBy: existingLead.referBy,
             };

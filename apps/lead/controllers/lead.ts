@@ -81,14 +81,17 @@ export default class LeadController {
             };
 
             let templateId: "";
-            const getTemplate: any[] = await new ZohoSignRepo().getTemplates();
+            const templates: any[] = await new ZohoSignRepo().getTemplates();
+
+            console.log(templates);
+            
             if (
-                getTemplate &&
-                Array.isArray(getTemplate) &&
-                getTemplate.length > 0 &&
-                getTemplate[0].template
+                templates &&
+                Array.isArray(templates) &&
+                templates.length > 0 &&
+                templates[0].template
             ) {
-                templateId = getTemplate[0].templateId;
+                templateId = templates[0].templateId;
             }
 
             const prospectData: TContractPayload = {

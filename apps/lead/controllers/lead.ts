@@ -1,38 +1,63 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
-import { sendResponse, createPassword, createFirebaseUser, sendEmail, getEmailTemplate, EMAIL_TEMPLATE, EMAIL_HEADING } from "../../../libraries";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { LeadRepo } from '../models/lead';
-import { AssignRepo } from '../models/AssignRepo';
-import { ContractRepo } from '../../contracts/models/ContractRepo';
-import { AdminRepo } from '../../admin-user/models/user';
-import { FranchiseRepo } from '../../admin-user/models/franchise';
-import { FranchiseeRepo } from '../../franchisee/models/FranchiseeRepo';
-import { FranchiseLocationRepo } from '../../franchisee/models/FranchiseLocationRepo';
-import { ITrackable, LeadStatus, USER_TYPE, USER_STATUS, FranchiseType } from '../../../interfaces';
-import { TAssignLead } from '../../../types';
-import { Sequelize } from 'sequelize';
+import {
+    sendResponse,
+    createPassword,
+    createFirebaseUser,
+    sendEmail,
+    getEmailTemplate,
+    EMAIL_TEMPLATE,
+    EMAIL_HEADING,
+} from "../../../libraries";
+import {
+    RESPONSE_TYPE,
+    SUCCESS_MESSAGE,
+    ERROR_MESSAGE,
+} from "../../../constants";
+import { LeadRepo } from "../models/lead";
+import { AssignRepo } from "../models/AssignRepo";
+import { ContractRepo } from "../../contracts/models/ContractRepo";
+import { AdminRepo } from "../../admin-user/models/user";
+import { FranchiseRepo } from "../../admin-user/models/franchise";
+import { USER_TYPE, USER_STATUS } from "../../../interfaces";
 import jwt from "jsonwebtoken";
 import { CONFIG } from "../../../config";
-import { TrustProductsEvaluationsContextImpl } from "twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEvaluations";
-import { constructNow } from "date-fns";
-import { createLeadResponse } from '../../../libraries';
+import { createLeadResponse } from "../../../libraries";
 
 export default class LeadController {
-
-    static async convertLeadToFranchisee(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    static async convertLeadToFranchisee(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const id = get(req.body, "id", "");
 
             // get contract
             const existingContract = await new ContractRepo().get(id as string);
             if (!existingContract) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `Contract ${ERROR_MESSAGE.NOT_EXISTS}`));
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `Contract ${ERROR_MESSAGE.NOT_EXISTS}`
+                        )
+                    );
             }
 
-            const existingLead = await new LeadRepo().get(existingContract.leadId as string);
+            const existingLead = await new LeadRepo().get(
+                existingContract.leadId as string
+            );
             if (!existingLead) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `Lead ${ERROR_MESSAGE.NOT_EXISTS}`));
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `Lead ${ERROR_MESSAGE.NOT_EXISTS}`
+                        )
+                    );
             }
 
             // if (existingLead.status === LeadStatus.CONVERTED) {
@@ -47,17 +72,25 @@ export default class LeadController {
                 email: existingLead.email,
                 userName: existingLead.email,
                 phoneNumber: existingLead.phoneNumber,
-                password: 'Test@123#',
+                password: "12345678",
                 createdBy: `${user_id}`,
-                role: 1,
+                role: 0,
                 type: USER_TYPE.PROSPECT,
                 status: USER_STATUS.ACTIVE,
                 referBy: existingLead.referBy,
             };
 
-            const existingFranchise = await new FranchiseRepo().getFranchiseByEmail(payload.email);
+            const existingFranchise =
+                await new FranchiseRepo().getFranchiseByEmail(payload.email);
             if (existingFranchise) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.FRANCHISE_EXISTS));
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.FRANCHISE_EXISTS
+                        )
+                    );
             }
 
             const firebaseUser = await createFirebaseUser({
@@ -69,58 +102,69 @@ export default class LeadController {
             });
 
             if (!firebaseUser?.success) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, firebaseUser?.uid));
+                return res
+                    .status(400)
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, firebaseUser?.uid));
             }
 
-            const token = jwt.sign({ email: payload.email }, CONFIG.ACCESS_TOKEN_SECRET, { expiresIn: CONFIG.ACCESS_TOKEN_EXPIRATION });
+            const token = jwt.sign(
+                { email: payload.email },
+                CONFIG.ACCESS_TOKEN_SECRET,
+                { expiresIn: CONFIG.ACCESS_TOKEN_EXPIRATION }
+            );
 
             const hashedPassword = await createPassword(payload.password);
             const normalUser = await new FranchiseRepo().create({
                 ...payload,
                 password: hashedPassword,
                 firebaseUid: firebaseUser.uid,
-                password_token: token
+                password_token: token,
             });
 
-            const existingAllContract = await new ContractRepo().getAssociatedContractsByLeadId(existingContract.leadId as string);
+            await new AdminRepo().create(normalUser);
 
-            const franchiseResponse = await new FranchiseeRepo().createFranchisee({
-                userid: normalUser.id,
-                franchiseAgreementSignedDate: null,
-                name: existingLead.firstName,
-                ownerName: `${existingLead.firstName} ${existingLead.lastName}`,
-                contactEmail: existingLead.email,
-                contactNumber: existingLead.phoneNumber,
-                establishedDate: new Date,
-                franchiseType: FranchiseType.FRANCHISE,
-                regionId: null,
-                isActive: false,
-                contractIds: existingAllContract,
-                activeContract: existingContract.id,
-            });
+            // const existingAllContract = await new ContractRepo().getAssociatedContractsByLeadId(existingContract.leadId as string);
 
-            await new FranchiseLocationRepo().createFranchiseLocation({
-                contactPhone: null,
-                location: null,
-                city: null,
-                state: null,
-                country: null,
-                zipCode: null,
-                franchiseeId: franchiseResponse.id,
-            });
+            // const franchiseResponse = await new FranchiseeRepo().createFranchisee({
+            //     userid: normalUser.id,
+            //     franchiseAgreementSignedDate: null,
+            //     name: existingLead.firstName,
+            //     ownerName: `${existingLead.firstName} ${existingLead.lastName}`,
+            //     contactEmail: existingLead.email,
+            //     contactNumber: existingLead.phoneNumber,
+            //     establishedDate: new Date,
+            //     franchiseType: FranchiseType.FRANCHISE,
+            //     regionId: null,
+            //     isActive: false,
+            //     contractIds: existingAllContract,
+            //     activeContract: existingContract.id,
+            // });
+
+            // await new FranchiseLocationRepo().createFranchiseLocation({
+            //     contactPhone: null,
+            //     location: null,
+            //     city: null,
+            //     state: null,
+            //     country: null,
+            //     zipCode: null,
+            //     franchiseeId: franchiseResponse.id,
+            // });
 
             // await new LeadRepo().updateStatus(id, { status: LeadStatus.CONVERTED });
 
-            // Send an link to user email with password token 
+            // Send an link to user email with password token
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password?token=${token}`;
 
             try {
-                const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
-                    leadName: `${existingLead.firstName} ${existingLead.lastName}`,
-                    leadEmail: existingLead.email,
-                    leadPhone: existingLead.phoneNumber,
-                    passwordCreateLink
-                });
+                const emailContent = await getEmailTemplate(
+                    EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED,
+                    {
+                        leadName: `${existingLead.firstName} ${existingLead.lastName}`,
+                        leadEmail: existingLead.email,
+                        leadPhone: existingLead.phoneNumber,
+                        passwordCreateLink,
+                    }
+                );
 
                 const mailOptions = {
                     to: existingLead.email,
@@ -131,44 +175,93 @@ export default class LeadController {
                     },
                 };
 
-                await sendEmail(mailOptions.to, mailOptions.subject, mailOptions.templateParams);
+                await sendEmail(
+                    mailOptions.to,
+                    mailOptions.subject,
+                    mailOptions.templateParams
+                );
             } catch (emailError) {
                 console.error("Error sending email:", emailError);
             }
 
-            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FRANCHISE_CREATED));
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FRANCHISE_CREATED
+                    )
+                );
         } catch (err) {
             console.error(err);
-            return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+            return res
+                .status(500)
+                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
 
-    static async getLeadStatus(req: Request, res: Response, next: NextFunction): Promise<Response> {
+    static async getLeadStatus(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<Response> {
         try {
             const id = get(req.params, "id", "");
-            const getAttributes = ['status'];
-            const existingLead = await new LeadRepo().getLeadStatus('id', id, getAttributes);
+            const getAttributes = ["status"];
+            const existingLead = await new LeadRepo().getLeadStatus(
+                "id",
+                id,
+                getAttributes
+            );
 
             if (isEmpty(existingLead)) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS
+                        )
+                    );
             }
 
-            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, existingLead));
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        existingLead
+                    )
+                );
         } catch (err) {
             console.error(err);
-            return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+            return res
+                .status(500)
+                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
 
-    static async assignLeadToAdminUser(req: Request, res: Response, next: NextFunction): Promise<Response> {
+    static async assignLeadToAdminUser(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<Response> {
         try {
             const id = get(req.body, "id", "");
             const assignee = get(req.body, "assignedTo", {}); // Changed from assigneeArray to assignee
-            const user_id = get(req, 'user_id', '');
+            const user_id = get(req, "user_id", "");
 
-            const existingLead = await new LeadRepo().getLeadByAttr('id', id);
+            const existingLead = await new LeadRepo().getLeadByAttr("id", id);
             if (isEmpty(existingLead)) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS
+                        )
+                    );
             }
 
             const payload: any = {
@@ -177,25 +270,49 @@ export default class LeadController {
                 assignedDate: new Date(),
             };
 
-            console.log('payloadpayloadpayloadpayload', payload);
-            const updatedLead = await new AssignRepo().createOrUpdate(id, payload);
+            console.log("payloadpayloadpayloadpayload", payload);
+            const updatedLead = await new AssignRepo().createOrUpdate(
+                id,
+                payload
+            );
 
-            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPDATED, updatedLead));
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPDATED,
+                        updatedLead
+                    )
+                );
         } catch (err) {
             console.error(err);
-            return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+            return res
+                .status(500)
+                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
 
-    static async create(req: Request, res: Response, next: NextFunction): Promise<Response> {
+    static async create(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<Response> {
         try {
-            const user_id = get(req, 'user_id', '');
-            const user_name = get(req, 'user_name', '');
+            const user_id = get(req, "user_id", "");
+            const user_name = get(req, "user_name", "");
             const whereVal = get(req.body, "email", "");
 
-            const existingLead = await new LeadRepo().getLeadByAttr('email', whereVal);
+            const existingLead = await new LeadRepo().getLeadByAttr(
+                "email",
+                whereVal
+            );
             if (existingLead) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.EXISTS));
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.EXISTS)
+                    );
             }
 
             const payload = {
@@ -213,22 +330,49 @@ export default class LeadController {
             const { assign } = payload;
 
             if (assign != null) {
-                const existingUser = await new AdminRepo().checkIfUserExist(assign.assignedTo.id);
+                const existingUser = await new AdminRepo().checkIfUserExist(
+                    assign.assignedTo.id
+                );
                 if (!existingUser) {
-                    return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
                 }
-                const existingassignedByUser = await new AdminRepo().checkIfUserExist(assign.assignedBy.id);
+                const existingassignedByUser =
+                    await new AdminRepo().checkIfUserExist(
+                        assign.assignedBy.id
+                    );
                 if (!existingassignedByUser) {
-                    return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
                 }
             }
 
-            delete payload.assign
+            delete payload.assign;
 
             if (payload.referby) {
-                const existingReferral = await new AdminRepo().getByReferralCode(payload.referby);
+                const existingReferral =
+                    await new AdminRepo().getByReferralCode(payload.referby);
                 if (!existingReferral) {
-                    return res.status(404).send(sendResponse(RESPONSE_TYPE.ERROR, `Referral code ${ERROR_MESSAGE.NOT_EXISTS}`));
+                    return res
+                        .status(404)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `Referral code ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
                 }
             }
 
@@ -247,19 +391,35 @@ export default class LeadController {
                 await new AssignRepo().create(assignPayload);
             }
 
-            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, newLead));
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.CREATED,
+                        newLead
+                    )
+                );
         } catch (err) {
             console.error(err);
-            return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+            return res
+                .status(500)
+                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
 
-    static async list(req: Request, res: Response, next: NextFunction): Promise<Response> {
+    static async list(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<Response> {
         try {
             const size = get(req.query, "size", 10);
             const skip = get(req.query, "skip", 1);
             const search = get(req.query, "search", "");
-            const sorting = get(req.query, "sorting", "id DESC").toString().split(" ");
+            const sorting = get(req.query, "sorting", "id DESC")
+                .toString()
+                .split(" ");
 
             const leadsList = await new LeadRepo().list({
                 offset: skip as number,
@@ -268,27 +428,52 @@ export default class LeadController {
                 sorting: sorting,
             });
 
-            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, leadsList));
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        leadsList
+                    )
+                );
         } catch (err) {
             console.error(err);
-            return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+            return res
+                .status(500)
+                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
 
-    static async update(req: Request, res: Response, next: NextFunction): Promise<Response> {
+    static async update(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<Response> {
         try {
-            const user_id = get(req, 'user_id', '');
+            const user_id = get(req, "user_id", "");
             // const user_name = get(req, 'user_name', '');
             const id = get(req.params, "id", "");
             const payload = req.body;
 
-            let getAttributes: any = ['*'];
-            const whereName = 'id'
+            let getAttributes: any = ["*"];
+            const whereName = "id";
             const whereVal = id;
 
-            const existingLead = await new LeadRepo().getLeadByAttr(whereName, whereVal, getAttributes);
+            const existingLead = await new LeadRepo().getLeadByAttr(
+                whereName,
+                whereVal,
+                getAttributes
+            );
             if (isEmpty(existingLead)) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS
+                        )
+                    );
             }
 
             // const updateLog: ITrackable = {
@@ -303,7 +488,7 @@ export default class LeadController {
             // const updatedLogs = [...existingLogs, updateLog];
 
             const { assign } = payload;
-            delete payload.assign
+            delete payload.assign;
 
             const updatedLead = await new LeadRepo().update(id, {
                 ...payload,
@@ -312,13 +497,32 @@ export default class LeadController {
             });
 
             if (assign != null) {
-                const existingUser = await new AdminRepo().checkIfUserExist(assign.assignedTo.id);
+                const existingUser = await new AdminRepo().checkIfUserExist(
+                    assign.assignedTo.id
+                );
                 if (!existingUser) {
-                    return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
                 }
-                const existingassignedByUser = await new AdminRepo().checkIfUserExist(assign.assignedBy.id);
+                const existingassignedByUser =
+                    await new AdminRepo().checkIfUserExist(
+                        assign.assignedBy.id
+                    );
                 if (!existingassignedByUser) {
-                    return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`));
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`
+                            )
+                        );
                 }
             }
 
@@ -335,51 +539,114 @@ export default class LeadController {
                 await new AssignRepo().delete(id as string);
             }
 
-            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPDATED, updatedLead));
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPDATED,
+                        updatedLead
+                    )
+                );
         } catch (err) {
             console.error(err);
-            return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+            return res
+                .status(500)
+                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
 
-    static async get(req: Request, res: Response, next: NextFunction): Promise<Response> {
+    static async get(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<Response> {
         try {
             const id = get(req.params, "id", "");
 
-            const existingLead = await new LeadRepo().getLeadByAttr('id', id);
+            const existingLead = await new LeadRepo().getLeadByAttr("id", id);
             if (isEmpty(existingLead)) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS
+                        )
+                    );
             }
 
-            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, createLeadResponse(existingLead)));
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        createLeadResponse(existingLead)
+                    )
+                );
         } catch (err) {
             console.error(err);
-            return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+            return res
+                .status(500)
+                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
 
-    static async delete(req: Request, res: Response, next: NextFunction): Promise<Response> {
+    static async delete(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<Response> {
         try {
             const ids = get(req.body, "ids", []);
             if (!Array.isArray(ids) || ids.length === 0) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, "No IDs provided for deletion."));
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            "No IDs provided for deletion."
+                        )
+                    );
             }
 
             // Check if leads exist
-            const existingLeads = await Promise.all(ids.map(id => new LeadRepo().getLeadByAttr('id', id, ['*'])));
-            const nonExistentIds = ids.filter((id, index) => !existingLeads[index]);
+            const existingLeads = await Promise.all(
+                ids.map((id) => new LeadRepo().getLeadByAttr("id", id, ["*"]))
+            );
+            const nonExistentIds = ids.filter(
+                (id, index) => !existingLeads[index]
+            );
 
             if (nonExistentIds.length > 0) {
-                return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, `Leads not found: ${nonExistentIds.join(", ")}`));
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `Leads not found: ${nonExistentIds.join(", ")}`
+                        )
+                    );
             }
 
             // Proceed with deletion
             const deletedCount = await new LeadRepo().delete(ids);
 
-            return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.DELETED, { deletedCount }));
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.DELETED,
+                        { deletedCount }
+                    )
+                );
         } catch (err) {
             console.error(err);
-            return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+            return res
+                .status(500)
+                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
 }

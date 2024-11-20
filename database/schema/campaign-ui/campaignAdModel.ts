@@ -21,7 +21,7 @@ class CampaignAdModel
     public id!: number;
     public name!: string;
     public franchiseId?: string;
-    public regionId: number;
+    public regionId: string;
     public description?: string;
     public questionList!: string[];
     public affiliateId?: string;

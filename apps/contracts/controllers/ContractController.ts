@@ -195,6 +195,9 @@ export default class ContractController {
 
             const organization = await new OrganizationRepo().getByProspectId(id);
 
+            console.log("lead");
+            console.log(organization);
+
             const existingLead = await new LeadRepo().getLeadByAttr(
                 "id",
                 existingContract.leadId

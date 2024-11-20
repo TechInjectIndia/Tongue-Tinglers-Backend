@@ -194,7 +194,7 @@ export default class ContractController {
             console.log(existingContract);
             
             
-            const existingLead = await new LeadRepo().get(id as string);
+            const existingLead = await new LeadRepo().get(existingContract.leadId as string);
 
             console.log("lead");
             console.log(existingLead);

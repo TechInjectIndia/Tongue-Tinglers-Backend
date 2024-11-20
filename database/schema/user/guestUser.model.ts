@@ -141,7 +141,7 @@ GuestUserModel.init({
     },
 }, {
     sequelize,
-    tableName: 'users',
+    tableName: 'Guestusers',
     timestamps: true,
     paranoid: true
 });

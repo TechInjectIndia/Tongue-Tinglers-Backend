@@ -110,7 +110,7 @@ export default class AdminController {
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
                 emailVerified: true,
-                phoneNumber: payload.phoneNumber,
+                phoneNumber: null,
                 password: payload.password,
                 disabled: false,
             });
@@ -198,7 +198,7 @@ export default class AdminController {
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
                 emailVerified: true,
-                phoneNumber: payload.phoneNumber,
+                phoneNumber: null,
                 password: payload.password,
                 disabled: false,
             });

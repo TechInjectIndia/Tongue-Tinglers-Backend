@@ -71,7 +71,7 @@ const franchiseeSchema = Joi.object({
         "any.required": "Franchise type is required.",
         "string.empty": "Franchise type cannot be empty.",
     }),
-    regionId: Joi.number().required().messages({
+    regionId: Joi.any().required().messages({
         "number.base": "Ratings must be a number.",
         "number.min": "Ratings cannot be less than 0.",
     }),
@@ -106,7 +106,7 @@ const franchiseeSchema = Joi.object({
                 "any.allowOnly": "Social media type must be one of 'fb', 'instagram', or 'youtube'."
             }),
     })).optional(),
-    organizationId: Joi.number().required().messages({
+    organizationId: Joi.number().allow(null).messages({
         "any.required": "Organization id is required.",
         "number.base": "Organization id must be a number.",
     }),

@@ -14,9 +14,10 @@ const editProfileBody = Joi.object().keys({
             'string.min': 'Last name must be at least 2 characters long.',
             'string.max': 'Last name must be less than 30 characters long.',
         }),
-    phoneNumber: Joi.string().pattern(/^\+\d{1,3}\d{9,}$/).optional()
+    phoneNumber: Joi.string().min(10).required()
         .messages({
-            'string.pattern.base': 'Phone number must be in international format (e.g., +1234567890).',
+            'string.min': 'Password must be at least 10 characters long.',
+            'any.required': 'Phone number is required.'
         }),
     profilePhoto: Joi.string().optional()
 });

@@ -10,11 +10,11 @@ const { validateCreateOrganizationBody } = Validations;
 // SWAGGER IS PENDING
 /**
  * @swagger
- *
- * /api/admin/campaign-ad/create:
+ * todo fix me @nitesh
+ * /api/admin/organization/create:
  *   post:
- *     summary: Create a new campaign Ad
- *     tags: [Campaigns-Ad]
+ *     summary: Create a new Organization
+ *     tags: [Organization]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -225,7 +225,7 @@ router.post(
 );
 
 router.get("/get/:id", validateEditOrgParams, OrganizationController.get);
- 
+
 router.put("/update/:id",validateEditOrgParams, validateEditOrganizationBody, OrganizationController.update);
 router.delete("/delete", validateEditOrgParams, OrganizationController.delete);
 

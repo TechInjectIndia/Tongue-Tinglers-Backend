@@ -8,7 +8,7 @@ const createCampaignBody = Joi.object().keys({
         .required()
         .messages({ "any.required": "Campaign name is required." }),
     franchiseId: Joi.string().optional().allow(null),
-    regionId: Joi.number()
+    regionId: Joi.any()
         .required()
         .messages({ "any.required": "Region Id are required." }),
     description: Joi.string()

@@ -4,7 +4,7 @@ import type { UpdatedMetaData, BaseModelIdNumber, DeletionMetaData } from ".";
 interface ICampaign extends UpdatedMetaData, BaseModelIdNumber, DeletionMetaData {
     name: string;
     franchiseId?: string;
-    regionId: number;
+    regionId: string;
     description?: string;
     questionList: string[];
     affiliateId?: string

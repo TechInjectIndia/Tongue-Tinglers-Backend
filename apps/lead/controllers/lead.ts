@@ -24,6 +24,7 @@ import jwt from "jsonwebtoken";
 import { CONFIG } from "../../../config";
 import { createLeadResponse } from "../../../libraries";
 import { TContractPayload } from "../../../types/contracts";
+import { ZohoSignRepo } from "../../zoho-sign/models/zohosign";
 
 export default class LeadController {
     static async convertLeadToProspect(
@@ -79,12 +80,26 @@ export default class LeadController {
                 referBy: existingLead.referBy,
             };
 
+            let templateId: "";
+            const templates: any[] = await new ZohoSignRepo().getTemplates();
+
+            console.log(templates);
+            
+            if (
+                templates &&
+                Array.isArray(templates) &&
+                templates.length > 0 &&
+                templates[0].template
+            ) {
+                templateId = templates[0].templateId;
+            }
+
             const prospectData: TContractPayload = {
                 status: CONTRACT_STATUS.ACTIVE,
                 terminationDetails: null,
                 payment: null,
                 leadId: id,
-                templateId: "",
+                templateId: templateId,
                 amount: existingLead.amount,
                 signedDate: null,
                 dueDate: new Date(),
@@ -94,8 +109,8 @@ export default class LeadController {
                 },
                 notes: null,
                 additionalInfo: "",
-                logs: null,
-                signedDocs: null,
+                logs: [],
+                signedDocs: [],
                 createdBy: `${user_id}`,
             };
 

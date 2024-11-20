@@ -25,7 +25,7 @@ import { CONFIG } from "../../../config";
 import { createLeadResponse } from "../../../libraries";
 
 export default class LeadController {
-    static async convertLeadToFranchisee(
+    static async convertLeadToPropect(
         req: Request,
         res: Response,
         next: NextFunction
@@ -35,19 +35,19 @@ export default class LeadController {
 
             // get contract
             const existingContract = await new ContractRepo().get(id as string);
-            if (!existingContract) {
+            if (existingContract) {
                 return res
                     .status(400)
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            `Contract ${ERROR_MESSAGE.NOT_EXISTS}`
+                            `Prospect ${ERROR_MESSAGE.EXISTS}`
                         )
                     );
             }
 
             const existingLead = await new LeadRepo().get(
-                existingContract.leadId as string
+                id as string
             );
             if (!existingLead) {
                 return res

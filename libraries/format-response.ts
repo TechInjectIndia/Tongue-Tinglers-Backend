@@ -55,3 +55,8 @@ export const createLeadResponse = (obj: any) => {
     } : null
   }
 }
+
+export const createLeadsResponse = (data: any[]) => {
+  return data.map((lead) => createLeadResponse(lead));
+};
+

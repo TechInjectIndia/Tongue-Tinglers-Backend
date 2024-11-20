@@ -382,4 +382,36 @@ export default class LeadController {
             return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
+
+    static async searchLead(req: Request, res: Response, next: NextFunction) {
+        try {
+            const size = get(req?.query, "size", 10);
+            const skip = get(req?.query, "skip", 1);
+            const search = get(req?.query, "search", "");
+            let sorting = get(req?.query, "sorting", "id DESC");
+            sorting = sorting.toString().split(" ");
+
+            const leads = await new LeadRepo().searchLead({
+                offset: skip as number,
+                limit: size as number,
+                search: search as string,
+                sorting: sorting,
+            });
+            
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        leads
+                    )
+                );
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
 }

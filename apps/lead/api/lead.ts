@@ -564,6 +564,32 @@ const router = express.Router();
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
+ * 
+ * /api/admin/lead/search-lead?size={size}&skip={skip}:
+ *   get:
+ *     summary: Get all Leads
+ *     tags: [Admin > Lead]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: size
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Size of the retrieved data
+ *       - in: query
+ *         name: skip
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: How many Rows want to skip
+ *     responses:
+ *       '200':
+ *         description: Leads retrieved successfully
+ *       '401':
+ *         description: Unauthorized
+ *
  */
 router.post(
     "/create",
@@ -614,6 +640,12 @@ router.post(
     hasPermission("lead", "update"),
     validateConvertLeadParams,
     LeadController.convertLeadToFranchisee
+);
+router.get(
+    "/search-lead",
+    hasPermission("lead", "read"),
+    validateListLeadQuery,
+    LeadController.searchLead
 );
 // ====== Lead Ends ======
 

@@ -23,25 +23,27 @@ export default class LeadAnalyticsController {
             const startDate = get(req.query, "startDate", "") as string;
             const endDate = get(req.query, "endDate", "") as string;
             const dateRange = getDateRange(filter, startDate, endDate);
-            let analyticsData: any[] = [];
 
-            const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
-            if (!franchiseData) {
-                return res.status(404).send({ message: 'Franchise data not found.' });
-            }
-            switch (franchiseData.franchiseType) {
-                case FranchiseType.MASTER_FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadStatusByTypeForMasterFranchisee(statusType, dateRange.start, dateRange.end, franchiseId);
-                    break;
-                case FranchiseType.SUPER_FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadStatusByTypeForSuperFranchisee(statusType, dateRange.start, dateRange.end, franchiseId, franchiseData);
-                    break;
-                case FranchiseType.FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadStatusByTypeForFranchisee(statusType, dateRange.start, dateRange.end, franchiseData);
-                    break;
-                default:
-                    return res.status(400).send({ message: 'Invalid franchise type.' });
-            }
+
+            // const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
+            // if (!franchiseData) {
+            //     return res.status(404).send({ message: 'Franchise data not found.' });
+            // }
+            // switch (franchiseData.franchiseType) {
+            //     case FranchiseType.MASTER_FRANCHISE:
+            //         analyticsData = await new AnalyticsModel().leadStatusByTypeForMasterFranchisee(statusType, dateRange.start, dateRange.end, franchiseId);
+            //         break;
+            //     case FranchiseType.SUPER_FRANCHISE:
+            //         analyticsData = await new AnalyticsModel().leadStatusByTypeForSuperFranchisee(statusType, dateRange.start, dateRange.end, franchiseId, franchiseData);
+            //         break;
+            //     case FranchiseType.FRANCHISE:
+            //         analyticsData = await new AnalyticsModel().leadStatusByTypeForFranchisee(statusType, dateRange.start, dateRange.end, franchiseData);
+            //         break;
+            //     default:
+            //         return res.status(400).send({ message: 'Invalid franchise type.' });
+            // }
+
+            const analyticsData = await new AnalyticsModel().leadStatusByTypeForSuperFranchisee(statusType, dateRange.start, dateRange.end);
 
             return res.status(200).send(
                 sendResponse(

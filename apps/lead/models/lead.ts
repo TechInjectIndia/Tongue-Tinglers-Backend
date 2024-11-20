@@ -10,14 +10,18 @@ import { ITrackable } from "../../../interfaces";
 import { LeadsModel } from "../../../database/schema";
 import { AssignModel } from "../../../database/schema";
 import { UserModel } from "../../../database/schema";
-import { LeadStatus, ILead } from '../../../interfaces'; // Use the LeadStatus enum from interfaces
-import IBaseRepo from '../controllers/controller/ILeadController';
+import { LeadStatus, ILead } from "../../../interfaces"; // Use the LeadStatus enum from interfaces
+import IBaseRepo from "../controllers/controller/ILeadController";
+import { createLeadsResponse } from "../../../libraries";
 
 export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
-    constructor() { }
+    constructor() {}
 
     // Update the status of a lead
-    public async updateStatus(id: string, data: TLeadStatus): Promise<[affectedCount: number]> {
+    public async updateStatus(
+        id: string,
+        data: TLeadStatus
+    ): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
             where: { id },
         });
@@ -25,22 +29,25 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
     }
 
     // Get lead status by any attribute
-    public async getLeadStatus(whereName: keyof ILead, whereVal: any, getAttributes: any = ['*']): Promise<TLeadStatus | null> {
+    public async getLeadStatus(
+        whereName: keyof ILead,
+        whereVal: any,
+        getAttributes: any = ["*"]
+    ): Promise<TLeadStatus | null> {
         const whereAttributes = { [whereName]: whereVal };
         const data = await LeadsModel.findOne({
             raw: true,
             attributes: getAttributes,
-            where: whereAttributes
+            where: whereAttributes,
         });
         return data as TLeadStatus | null;
     }
-
 
     // Get lead by attribute
     public async getLeadByAttr(
         whereName: keyof ILead,
         whereVal: any,
-        getAttributes: any = ['*']
+        getAttributes: any = ["*"]
     ): Promise<any | null> {
         const whereAttributes = { [whereName]: whereVal };
         const data = await LeadsModel.findOne({
@@ -48,21 +55,21 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
             include: [
                 {
                     model: AssignModel,
-                    as: 'assign',
-                    attributes: ['assignedTo', 'assignedBy', 'assignedDate'],
+                    as: "assign",
+                    attributes: ["assignedTo", "assignedBy", "assignedDate"],
                     include: [
                         {
                             model: UserModel,
-                            as: 'assignedUser', // Use the alias for assignedTo
-                            attributes: ['id', 'userName'],
+                            as: "assignedUser", // Use the alias for assignedTo
+                            attributes: ["id", "userName"],
                         },
                         {
                             model: UserModel,
-                            as: 'assignerUser', // Use the alias for assignedBy
-                            attributes: ['id', 'userName'],
-                        }
+                            as: "assignerUser", // Use the alias for assignedBy
+                            attributes: ["id", "userName"],
+                        },
                     ],
-                }
+                },
             ],
         });
 
@@ -73,7 +80,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
     public async get(id: string): Promise<ILead | null> {
         const data = await LeadsModel.findOne({
             raw: true,
-            where: { id }
+            where: { id },
         });
         return data as ILead | null;
     }
@@ -90,7 +97,10 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
     }
 
     // Check if lead exists with a specific email and exclude a specific ID
-    public async checkLeadExist(email: string, excludeId: string): Promise<ILead | null> {
+    public async checkLeadExist(
+        email: string,
+        excludeId: string
+    ): Promise<ILead | null> {
         const data = await LeadsModel.findOne({
             where: {
                 email: email,
@@ -137,7 +147,10 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
     }
 
     // Update lead information
-    public async update(id: string, data: TLeadPayload): Promise<[affectedCount: number]> {
+    public async update(
+        id: string,
+        data: TLeadPayload
+    ): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
             where: { id },
         });
@@ -145,7 +158,10 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
     }
 
     // Assign a lead to a user
-    public async assignLeadToUser(id: string, data: any): Promise<[affectedCount: number]> {
+    public async assignLeadToUser(
+        id: string,
+        data: any
+    ): Promise<[affectedCount: number]> {
         try {
             const response = await LeadsModel.update(data, {
                 where: { id },
@@ -173,4 +189,54 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
         }
     }
 
+    // Search leads with filters
+    public async searchLead(filters: TListFilters): Promise<TLeadsList> {
+        const total = await LeadsModel.count({
+            where: {
+                [Op.or]: [
+                    { id: { [Op.like]: `%${filters.search}%` } },
+                    { firstName: { [Op.like]: `%${filters.search}%` } },
+                    { lastName: { [Op.like]: `%${filters.search}%` } },
+                    { email: { [Op.like]: `%${filters.search}%` } },
+                ],
+            },
+        });
+
+        const leads = await LeadsModel.findAll({
+            order: [filters?.sorting],
+            offset: filters.offset,
+            limit: filters.limit,
+            where: {
+                [Op.or]: [
+                    { id: { [Op.like]: `%${filters.search}%` } },
+                    { firstName: { [Op.like]: `%${filters.search}%` } },
+                    { lastName: { [Op.like]: `%${filters.search}%` } },
+                    { email: { [Op.like]: `%${filters.search}%` } },
+                ],
+            },
+            include: [
+                {
+                    model: AssignModel,
+                    as: "assign",
+                    attributes: ["assignedTo", "assignedBy", "assignedDate"],
+                    include: [
+                        {
+                            model: UserModel,
+                            as: "assignedUser", // Use the alias for assignedTo
+                            attributes: ["id", "userName"],
+                        },
+                        {
+                            model: UserModel,
+                            as: "assignerUser", // Use the alias for assignedBy
+                            attributes: ["id", "userName"],
+                        },
+                    ],
+                },
+            ],
+        });
+
+        const data = createLeadsResponse(leads);
+
+        return { total, data } as TLeadsList;
+    }
 }

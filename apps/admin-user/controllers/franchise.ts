@@ -62,7 +62,7 @@ export default class FranchiseController {
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
                 emailVerified: true,
-                phoneNumber: payload.phoneNumber,
+                phoneNumber: null,
                 password: payload.password,
                 disabled: false
             });
@@ -90,7 +90,7 @@ export default class FranchiseController {
                 const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
                     franchiseName: payload.name,
                     franchiseEmail: payload.email,
-                    franchisePhone: payload.phoneNumber,
+                    franchisePhone: null,
                 });
 
                 const mailOptions = {

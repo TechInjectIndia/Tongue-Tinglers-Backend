@@ -1,12 +1,11 @@
-export interface cart {
-
-}
+export interface cart {}
 
 export enum USER_TYPE {
     SUPER_FRANCHISE = "super_franchise", // Super-admin
     MASTER_FRANCHISE = "master_franchise", // Admin
     FRANCHISE = "franchise", // Normal-franchise
     CUSTOMER = "customer", // customer
+    PROSPECT = "prospect",
 }
 
 export enum USER_STATUS {
@@ -47,5 +46,5 @@ export interface UserInformation {
     deletedBy: string | null;
     deletedAt: Date | null;
     role: number | null;
-    address: Array<Address>
+    address: Array<Address>;
 }

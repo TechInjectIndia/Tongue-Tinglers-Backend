@@ -61,7 +61,7 @@ export default class CustomerController {
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
                 emailVerified: true,
-                phoneNumber: payload.phoneNumber,
+                phoneNumber: null,
                 password: payload.password,
                 disabled: false
             });

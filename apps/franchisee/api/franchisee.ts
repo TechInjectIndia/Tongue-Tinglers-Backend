@@ -54,6 +54,8 @@ const router = express.Router();
  *                 type: boolean
  *               ratings:
  *                 type: number
+ *               organizationId:
+ *                 type: number
  *               franchiseRenewalInfo:
  *                 type: object
  *                 properties:
@@ -108,6 +110,7 @@ const router = express.Router();
  *                 "contractIds": ["contract1", "contract2"],
  *                 "isActive": true,
  *                 "ratings": 4.5,
+ *                 "organizationId" : 1,
  *                 "franchiseRenewalInfo": {
  *                   "renewalDate": "2025-12-01T00:00:00.000Z",
  *                   "conditions": "Based on performance metrics"
@@ -276,6 +279,8 @@ router.get('/:id', validateEditFranchiseeParams, FranchiseeController.getFranchi
  *                 type: boolean
  *               ratings:
  *                 type: number
+ *               organizationId:
+ *                 type: number
  *               franchiseRenewalInfo:
  *                 type: object
  *                 properties:
@@ -322,6 +327,7 @@ router.get('/:id', validateEditFranchiseeParams, FranchiseeController.getFranchi
  *                 "contractIds": ["contract1", "contract2"],
  *                 "isActive": true,
  *                 "ratings": 4.5,
+ *                 "organizationId" : 1,
  *                 "franchiseRenewalInfo": {
  *                   "renewalDate": "2025-12-01T00:00:00.000Z",
  *                   "conditions": "Based on performance metrics"

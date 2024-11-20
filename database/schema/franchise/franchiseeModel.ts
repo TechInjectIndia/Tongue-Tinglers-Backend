@@ -28,6 +28,7 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
   public ratings?: number | null;
   public franchiseRenewalInfo?: { renewalDate: Date; conditions: string } | null;
   public readonly franchiseLocation: FranchiseLocationAttributes[];
+  public organizationId!: string;
 
   public static associate() {
     this.belongsTo(UserModel, { foreignKey: 'userid', as: 'user', constraints: false });
@@ -134,7 +135,11 @@ FranchiseeModel.init(
       type: DataTypes.JSONB,
       allowNull: true,
       comment: "Information regarding franchise renewal terms and conditions",
-    }
+    },
+    organizationId: {
+      type: DataTypes.STRING,
+      allowNull: true,// Once the organization table is created, update allowNull: true to allowNull: false
+    },
   },
   {
     sequelize,

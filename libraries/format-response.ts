@@ -36,7 +36,8 @@ export const createLeadResponse = (obj: any) => {
     "referBy": obj?.referBy ?? null,
     "logs": obj?.logs ?? [],
     "notes": obj?.notes ?? [],
-    "proposalModals": obj?.proposalModals ?? [],
+    "proposalModalId": obj?.proposalModalId,
+    "amount": obj?.amount,
     "franchiseModals": obj?.franchiseModals ?? [],
     "affiliate": obj?.affiliate ?? [],
     "marketing": obj?.marketing ?? [],
@@ -54,3 +55,8 @@ export const createLeadResponse = (obj: any) => {
     } : null
   }
 }
+
+export const createLeadsResponse = (data: any[]) => {
+  return data.map((lead) => createLeadResponse(lead));
+};
+

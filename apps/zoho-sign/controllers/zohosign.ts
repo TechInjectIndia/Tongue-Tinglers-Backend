@@ -258,16 +258,16 @@ export default class ZohoSignController {
                     data
                 );
             if (sendDocument) {
-                const currentSignedDocs = Array.isArray(contractDetails.signedDocs) ?
-                    [...contractDetails.signedDocs] : [];
+                // const currentSignedDocs = Array.isArray(contractDetails.signedDocs) ?
+                //     [...contractDetails.signedDocs] : [];
 
-                const contractSignDocPayload = {
-                    ...contractDetails.signedDocs[0],
-                    docId: sendDocument?.requests.request_id,
-                };
+                // const contractSignDocPayload = {
+                //     ...contractDetails.signedDocs[0],
+                //     docId: sendDocument?.requests.request_id,
+                // };
 
-                currentSignedDocs.push(contractSignDocPayload);
-                await new ContractRepo().updateContractDoc(contractId, currentSignedDocs);
+                // currentSignedDocs.push(contractSignDocPayload);
+                // await new ContractRepo().updateContractDoc(contractId, currentSignedDocs);
 
                 return res.status(200).send({
                     success: true,

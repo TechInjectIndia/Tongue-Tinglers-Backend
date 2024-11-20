@@ -19,13 +19,14 @@ import { AssignRepo } from "../models/AssignRepo";
 import { ContractRepo } from "../../contracts/models/ContractRepo";
 import { AdminRepo } from "../../admin-user/models/user";
 import { FranchiseRepo } from "../../admin-user/models/franchise";
-import { USER_TYPE, USER_STATUS } from "../../../interfaces";
+import { USER_TYPE, USER_STATUS, CONTRACT_STATUS } from "../../../interfaces";
 import jwt from "jsonwebtoken";
 import { CONFIG } from "../../../config";
 import { createLeadResponse } from "../../../libraries";
+import { TContractPayload } from "../../../types/contracts";
 
 export default class LeadController {
-    static async convertLeadToPropect(
+    static async convertLeadToProspect(
         req: Request,
         res: Response,
         next: NextFunction
@@ -46,9 +47,7 @@ export default class LeadController {
                     );
             }
 
-            const existingLead = await new LeadRepo().get(
-                id as string
-            );
+            const existingLead = await new LeadRepo().get(id as string);
             if (!existingLead) {
                 return res
                     .status(400)
@@ -80,18 +79,40 @@ export default class LeadController {
                 referBy: existingLead.referBy,
             };
 
-            const existingFranchise =
-                await new FranchiseRepo().getFranchiseByEmail(payload.email);
-            if (existingFranchise) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.FRANCHISE_EXISTS
-                        )
-                    );
-            }
+            const prospectData: TContractPayload = {
+                status: CONTRACT_STATUS.ACTIVE,
+                terminationDetails: null,
+                payment: null,
+                leadId: id,
+                templateId: "",
+                amount: existingLead.amount,
+                signedDate: null,
+                dueDate: new Date(),
+                validity: {
+                    to: new Date(),
+                    from: new Date(),
+                },
+                notes: null,
+                additionalInfo: "",
+                logs: null,
+                signedDocs: null,
+                createdBy: `${user_id}`,
+            };
+
+            const prospect = await new ContractRepo().create(prospectData);
+
+            // const existingFranchise =
+            //     await new FranchiseRepo().getFranchiseByEmail(payload.email);
+            // if (existingFranchise) {
+            //     return res
+            //         .status(400)
+            //         .send(
+            //             sendResponse(
+            //                 RESPONSE_TYPE.ERROR,
+            //                 ERROR_MESSAGE.FRANCHISE_EXISTS
+            //             )
+            //         );
+            // }
 
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
@@ -156,21 +177,23 @@ export default class LeadController {
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password?token=${token}`;
 
             try {
-                const emailContent = await getEmailTemplate(
-                    EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED,
-                    {
-                        leadName: `${existingLead.firstName} ${existingLead.lastName}`,
-                        leadEmail: existingLead.email,
-                        leadPhone: existingLead.phoneNumber,
-                        passwordCreateLink,
-                    }
-                );
+                // const emailContent = await getEmailTemplate(
+                //     EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED,
+                //     {
+                //         leadName: `${existingLead.firstName} ${existingLead.lastName}`,
+                //         leadEmail: existingLead.email,
+                //         leadPhone: existingLead.phoneNumber,
+                //         passwordCreateLink,
+                //     }
+                // );
+
+                const emailContent = `Hi Your Lead converted into Prospect Now Add Your Organisation using link: https://tonguetingler.vercel.app/organization-setup?prospectId=${prospect.id} using password:123456`;
 
                 const mailOptions = {
                     to: existingLead.email,
-                    subject: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
+                    subject: EMAIL_HEADING.PROSPECT_GENERATED,
                     templateParams: {
-                        heading: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
+                        heading: EMAIL_HEADING.PROSPECT_GENERATED,
                         description: emailContent,
                     },
                 };
@@ -189,7 +212,7 @@ export default class LeadController {
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FRANCHISE_CREATED
+                        SUCCESS_MESSAGE.PROSPECT_CREATED
                     )
                 );
         } catch (err) {
@@ -664,7 +687,7 @@ export default class LeadController {
                 search: search as string,
                 sorting: sorting,
             });
-            
+
             return res
                 .status(200)
                 .send(

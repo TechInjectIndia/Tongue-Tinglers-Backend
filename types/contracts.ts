@@ -1,5 +1,12 @@
-import internal from 'stream';
-import { CONTRACT_STATUS, ContractPaymentDetails, UserDetails, Note, ITrackable, SignDoc } from '../interfaces';
+import internal from "stream";
+import {
+    CONTRACT_STATUS,
+    ContractPaymentDetails,
+    UserDetails,
+    Note,
+    ITrackable,
+    SignDoc,
+} from "../interfaces";
 
 export interface TContract {
     id: string;
@@ -8,7 +15,7 @@ export interface TContract {
         UserDetails: UserDetails;
         reason: string;
         date: Date;
-    }
+    };
     payment: ContractPaymentDetails[] | null;
     leadId: string;
     templateId: string;
@@ -16,13 +23,14 @@ export interface TContract {
     signedDate: Date | null;
     dueDate: Date;
     validity: {
-        to: Date,
-        from: Date
+        to: Date;
+        from: Date;
     };
     notes: Note[] | null;
-    additionalInfo: string,
+    additionalInfo: string;
     logs: ITrackable[] | null;
     signedDocs: SignDoc[] | null;
+    createdBy:string;
 }
 
 export interface TContractsList {
@@ -32,23 +40,24 @@ export interface TContractsList {
 
 export interface TContractPayload {
     status: CONTRACT_STATUS;
+    createdBy: string;
     terminationDetails: null | {
         UserDetails: UserDetails;
         reason: string;
         date: Date;
-    }
+    };
     payment: ContractPaymentDetails[] | null;
     leadId: string;
-    templateId: string;
+    templateId: string | null;
     amount: number;
     signedDate: Date | null;
     dueDate: Date;
     validity: {
-        to: Date,
-        from: Date
+        to: Date;
+        from: Date;
     };
     notes: Note[] | null;
-    additionalInfo: string,
+    additionalInfo: string;
     logs: ITrackable[] | null;
     signedDocs: SignDoc[] | null;
 }
@@ -56,22 +65,22 @@ export interface TContractPayload {
 export type jsonData = {
     templates: {
         field_data: {
-            field_text_data: {},
-            field_boolean_data: {},
-            field_date_data: {},
-            field_radio_data: {}
-        },
-        actions: Actions[],
-        notes: string
-    }
+            field_text_data: {};
+            field_boolean_data: {};
+            field_date_data: {};
+            field_radio_data: {};
+        };
+        actions: Actions[];
+        notes: string;
+    };
 };
 
 interface Actions {
-    recipient_name: string,
-    recipient_email: string,
-    action_id: string,
-    action_type: string,
-    signing_order: number,
-    verify_recipient: string,
-    private_notes: string
-};
+    recipient_name: string;
+    recipient_email: string;
+    action_id: string;
+    action_type: string;
+    signing_order: number;
+    verify_recipient: string;
+    private_notes: string;
+}

@@ -639,7 +639,7 @@ router.post(
     "/convert-lead",
     hasPermission("lead", "update"),
     validateConvertLeadParams,
-    LeadController.convertLeadToPropect
+    LeadController.convertLeadToProspect
 );
 router.get(
     "/search-lead",

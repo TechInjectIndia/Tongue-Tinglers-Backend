@@ -188,28 +188,8 @@ export default class ContractController {
 
             // get contract
             const existingContract = await new ContractRepo().get(id as string);
-            if (existingContract) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            `Prospect ${ERROR_MESSAGE.EXISTS}`
-                        )
-                    );
-            }
 
             const existingLead = await new LeadRepo().get(id as string);
-            if (!existingLead) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            `Lead ${ERROR_MESSAGE.NOT_EXISTS}`
-                        )
-                    );
-            }
 
             const existingCampaign = await new CampaignAdRepo().get(
                 existingLead.campaignId

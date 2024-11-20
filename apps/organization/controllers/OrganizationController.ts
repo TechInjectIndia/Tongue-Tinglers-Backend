@@ -32,8 +32,8 @@ export default class OrganizationController {
     static async get(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {
             const id = get(req.params, "id", "");
-
-            const existingOrganization = await new OrganizationRepo().get(id);
+                // todo remove type casting
+            const existingOrganization = await new OrganizationRepo().get(id as unknown as number);
             if (isEmpty(existingOrganization)) {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
@@ -51,12 +51,12 @@ export default class OrganizationController {
             const id = get(req.params, "id", "");
             const payload = { ...req.body, createdBy: user_id };
 
-            const existingOrganization = await new OrganizationRepo().get(id);
+            const existingOrganization = await new OrganizationRepo().get(id as unknown as number);
             if (isEmpty(existingOrganization)) {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
 
-            const updatedOrganization = await new OrganizationRepo().update(id, payload);
+            const updatedOrganization = await new OrganizationRepo().update(id as unknown as number, payload);
 
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPDATED, updatedOrganization));
         } catch (err) {
@@ -69,7 +69,7 @@ export default class OrganizationController {
         try {
             const id = get(req.params, "id", "");
 
-            const existingOrganization = await new OrganizationRepo().get(id);
+            const existingOrganization = await new OrganizationRepo().get(id as unknown as number);
             if (isEmpty(existingOrganization)) {
                 return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
@@ -77,7 +77,7 @@ export default class OrganizationController {
             const deletedCount = await new OrganizationRepo().delete(id);
 
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.DELETED, { deletedCount }));
-            
+
         } catch (err) {
             console.error(err);
             return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });

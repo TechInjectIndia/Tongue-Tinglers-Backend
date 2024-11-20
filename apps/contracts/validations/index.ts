@@ -118,7 +118,7 @@ const editContractBody = Joi.object().keys({
     signedDate: Joi.date().allow(null).optional(),
     dueDate: Joi.date().optional(),
     validity: Joi.object().optional(),
-    additionalInfo: Joi.string().allow(null).optional(),
+    additionalInfo: Joi.string().allow(null, '').optional(),
     signedDocs: Joi.array().items(signedDocsSchema).optional(),
 });
 

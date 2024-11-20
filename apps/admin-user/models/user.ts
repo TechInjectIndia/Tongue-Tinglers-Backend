@@ -129,7 +129,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     }
 
     public async create(data: TAddUser): Promise<TUser> {
-        return await UserModel.create({ ...data, type: USER_TYPE.MASTER_FRANCHISE });
+        return await UserModel.create({ ...data});
     }
 
     public async update(id: string, data: TEditUser): Promise<[affectedCount: number]> {

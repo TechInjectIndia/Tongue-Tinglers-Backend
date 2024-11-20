@@ -1,14 +1,22 @@
 import * as express from "express";
-import AdminController from "../controllers/user";
+// import AdminController from "../controllers/user";
 import * as AdminValidation from "../validations/user";
+import AdminController from "../../admin-user/controllers/user";
 
 const router = express.Router();
 
-const {
-  validateCreateAdminBody,
-} = AdminValidation;
+const { validateCreateAdminBody } = AdminValidation;
 
-const { addAdmin } = AdminController;
+// const { addAdmin } = AdminController;
+const {
+    getAdmins,
+    getAllUsers,
+    addAdmin,
+    editAdmin,
+    deleteAdmin,
+    getAdmin,
+    addProspectUser,
+} = AdminController;
 
 // ====== Admins Routes Start ======
 /**
@@ -54,7 +62,7 @@ const { addAdmin } = AdminController;
  *                default: active
  *              role:
  *                type: number
- *                default: 0 
+ *                default: 0
  *     responses:
  *       '200':
  *         description: User created successfully
@@ -64,6 +72,7 @@ const { addAdmin } = AdminController;
  *         description: Unauthorized
  */
 router.post("/create", validateCreateAdminBody, addAdmin);
+router.post("/prospect", validateCreateAdminBody, addProspectUser);
 // ====== Admins Routes Ends ======
 
 export default router;

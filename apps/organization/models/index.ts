@@ -10,7 +10,11 @@ import {
     ICampaign,
     IQuestion,
 } from "../../../interfaces";
-import { AddressModel, CampaignAdModel, questionModel } from "../../../database/schema";
+import {
+    AddressModel,
+    CampaignAdModel,
+    questionModel,
+} from "../../../database/schema";
 import IBaseRepo from "../controllers/controller/IController";
 import {
     IOrganization,
@@ -24,7 +28,6 @@ export class OrganizationRepo
     implements IBaseRepo<IOrganization, TListFilters>
 {
     constructor() {}
-    
 
     public async create(data: TOrganization): Promise<any> {
         const address = await new AddressRepo().createForUser({
@@ -63,15 +66,45 @@ export class OrganizationRepo
             include: [
                 {
                     model: AddressModel,
-                    as: 'address',
-                    attributes: ['user_id', 'street', 'city', "state", 'postalCode', 'country'],
-                }
+                    as: "address",
+                    attributes: [
+                        "user_id",
+                        "street",
+                        "city",
+                        "state",
+                        "postalCode",
+                        "country",
+                    ],
+                },
+            ],
+        });
+        return data;
+    }
+    public async getByProspectId(id: any): Promise<IOrganization | null> {
+        const data = await OrganizationTableModel.findOne({
+            where: { prospectId: id },
+            include: [
+                {
+                    model: AddressModel,
+                    as: "address",
+                    attributes: [
+                        "user_id",
+                        "street",
+                        "city",
+                        "state",
+                        "postalCode",
+                        "country",
+                    ],
+                },
             ],
         });
         return data;
     }
 
-    public async update(id: number, data: any): Promise<[affectedCount: number]> {
+    public async update(
+        id: number,
+        data: any
+    ): Promise<[affectedCount: number]> {
         const response = await OrganizationTableModel.update(data, {
             where: { id },
         });
@@ -113,13 +146,19 @@ export class OrganizationRepo
             include: [
                 {
                     model: AddressModel,
-                    as: 'address',
-                    attributes: ['user_id', 'street', 'city', 'state', 'postalCode', 'country'],
+                    as: "address",
+                    attributes: [
+                        "user_id",
+                        "street",
+                        "city",
+                        "state",
+                        "postalCode",
+                        "country",
+                    ],
                 },
             ],
         });
 
         return { total, data };
     }
-
 }

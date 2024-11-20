@@ -24,6 +24,7 @@ import {
 import { CampaignAdRepo } from "../../campaign/models";
 import { AdminRepo } from "../../admin-user/models/user";
 import { CONFIG } from "../../../config/environment";
+import { OrganizationRepo } from "../../organization/models";
 
 export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -189,16 +190,18 @@ export default class ContractController {
             // get contract
             const existingContract = await new ContractRepo().get(id as string);
 
-
             console.log("contract");
             console.log(existingContract);
-            
-            
-            const existingLead = await new LeadRepo().getLeadByAttr("id", existingContract.leadId);
+
+            const organization = await new OrganizationRepo().getByProspectId(id);
+
+            const existingLead = await new LeadRepo().getLeadByAttr(
+                "id",
+                existingContract.leadId
+            );
 
             console.log("lead");
             console.log(existingLead);
-
 
             const existingCampaign = await new CampaignAdRepo().get(
                 existingLead.campaignId
@@ -206,7 +209,6 @@ export default class ContractController {
 
             console.log("existing campaign");
             console.log(existingCampaign);
-
 
             let AddFranchiseePayloa: AddFranchiseePayload = {
                 userid: "1",
@@ -221,6 +223,7 @@ export default class ContractController {
                 contractIds: [],
                 activeContract: "",
                 isActive: false,
+                organizationId: organization.id
             };
 
             const franchiseResponse =

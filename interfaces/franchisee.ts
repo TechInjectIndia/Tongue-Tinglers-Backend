@@ -99,6 +99,7 @@ interface AddFranchiseePayload {
     ratings?: number | null;
     franchiseRenewalInfo?: FranchiseeRenewalInfo | null;
     franchiseLocation?: FranchiseLocationAttributes[];
+    organizationId: any;
 }
 
 export {

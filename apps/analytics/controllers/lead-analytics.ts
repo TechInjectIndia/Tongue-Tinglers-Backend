@@ -93,24 +93,26 @@ export default class LeadAnalyticsController {
                 dateInterval = eachDayOfInterval({ start: startDate, end: endDate });
             }
 
-            const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
-            if (!franchiseData) {
-                return res.status(404).send({ message: 'Franchise data not found.' });
-            }
-            console.log('franchiseData.franchiseType', franchiseData.franchiseType);
-            switch (franchiseData.franchiseType) {
-                case FranchiseType.MASTER_FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadTimelineForMasterFranchisee(startDate, endDate, groupBy, franchiseId);
-                    break;
-                case FranchiseType.SUPER_FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadTimelineForSuperFranchisee(startDate, endDate, groupBy, franchiseData, franchiseId);
-                    break;
-                case FranchiseType.FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadTimelineForFranchisee(startDate, endDate, groupBy, franchiseData);
-                    break;
-                default:
-                    return res.status(400).send({ message: 'Invalid franchise type.' });
-            }
+            // const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
+            // if (!franchiseData) {
+            //     return res.status(404).send({ message: 'Franchise data not found.' });
+            // }
+            // console.log('franchiseData.franchiseType', franchiseData.franchiseType);
+            //todo remove harcoding of super franchise in this api
+            // switch (franchiseData.franchiseType) {
+            //     // case FranchiseType.MASTER_FRANCHISE:
+            //     //     analyticsData = await new AnalyticsModel().leadTimelineForMasterFranchisee(startDate, endDate, groupBy, franchiseId);
+            //     //     break;
+            //     case FranchiseType.SUPER_FRANCHISE:
+            //         analyticsData = await new AnalyticsModel().leadTimelineForSuperFranchisee(startDate, endDate, groupBy, franchiseData, franchiseId);
+            //         break;
+            //     // case FranchiseType.FRANCHISE:
+            //     //     analyticsData = await new AnalyticsModel().leadTimelineForFranchisee(startDate, endDate, groupBy, franchiseData);
+            //     //     break;
+            //     default:
+            //         return res.status(400).send({ message: 'Invalid franchise type.' });
+            // }
+            analyticsData = await new AnalyticsModel().leadTimelineForSuperFranchisee(startDate, endDate, groupBy);
 
             // Format dates in analyticsData to match dateInterval formatting
             const formattedAnalyticsData = analyticsData.map(item => ({

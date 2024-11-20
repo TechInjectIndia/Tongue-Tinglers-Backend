@@ -23,6 +23,7 @@ import { CONFIG } from "../../../config";
 import { createLeadResponse } from "../../../libraries";
 import { TContractPayload } from "../../../types/contracts";
 import { ZohoSignRepo } from "../../zoho-sign/models/zohosign";
+import { TAddUser } from "../../../types/admin/admin-user";
 
 export default class LeadController {
     static async convertLeadToProspect(
@@ -148,13 +149,20 @@ export default class LeadController {
             );
 
             const hashedPassword = await createPassword(payload.password);
-            const normalUser = await new FranchiseRepo().create({
-                ...payload,
-                password: hashedPassword,
-                firebaseUid: firebaseUser.uid,
-                password_token: token,
-            });
 
+            let normalUser: TAddUser = {
+                firebaseUid: firebaseUser.uid,
+                password: hashedPassword,
+                firstName: payload.firstName,
+                lastName: payload.lastName,
+                nameForSearch: payload.nameForSearch,
+                email: payload.email,
+                userName: payload.userName,
+                phoneNumber: payload.phoneNumber,
+                type: USER_TYPE.PROSPECT,
+                role: 0,
+                referBy: undefined,
+            };
             await new AdminRepo().create(normalUser);
 
             // const existingAllContract = await new ContractRepo().getAssociatedContractsByLeadId(existingContract.leadId as string);

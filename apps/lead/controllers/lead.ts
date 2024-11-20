@@ -110,7 +110,7 @@ export default class LeadController {
                 notes: null,
                 additionalInfo: "",
                 logs: [],
-                signedDocs: [],
+                signedDocs: null,
                 createdBy: `${user_id}`,
             };
 

@@ -5,8 +5,6 @@ import {
     createPassword,
     createFirebaseUser,
     sendEmail,
-    getEmailTemplate,
-    EMAIL_TEMPLATE,
     EMAIL_HEADING,
 } from "../../../libraries";
 import {
@@ -84,7 +82,7 @@ export default class LeadController {
             const templates: any[] = await new ZohoSignRepo().getTemplates();
 
             console.log(templates);
-            
+
             if (
                 templates &&
                 Array.isArray(templates) &&

@@ -1,6 +1,6 @@
 import * as express from "express";
 import LeadController from "../controllers/lead";
-import { 
+import {
     validateCreateLeadBody,
     validateListLeadQuery,
     validateEditLeadParams,
@@ -8,9 +8,9 @@ import {
     validateEditMultipleIdsBody,
     validateAssignLeadBody,
     validateLeadStatusBody,
-    validateConvertLeadParams 
+    validateConvertLeadParams,
 } from "../validations/lead";
-import { hasPermission } from '../../../middlewares';
+import { hasPermission } from "../../../middlewares";
 import affiliateRouter from "../../affiliate/api/";
 import franchiseModelRouter from "../../franchise_model/api/";
 import proposalModelRouter from "../../proposal_model/api/";
@@ -182,10 +182,10 @@ const router = express.Router();
  *                           type: string
  *                         id:
  *                           type: string
- *               proposalModals:
- *                 type: array
- *                 items:
- *                   type: string
+ *               proposalModalId:
+ *                 type: string
+ *               amount:
+ *                 type: number
  *               franchiseModals:
  *                 type: array
  *                 items:
@@ -211,7 +211,7 @@ const router = express.Router();
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/lead/update/{id}:
  *   put:
  *     summary: Update a lead
@@ -410,7 +410,7 @@ const router = express.Router();
  *         description: Unauthorized
  *       '404':
  *         description: Lead not found
- * 
+ *
  * /api/admin/lead/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all Leads
@@ -435,7 +435,7 @@ const router = express.Router();
  *         description: Leads retrieved successfully
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/lead/get/{id}:
  *   get:
  *     summary: Get a lead by ID
@@ -456,7 +456,7 @@ const router = express.Router();
  *         description: Unauthorized
  *       '404':
  *         description: Lead not found
- * 
+ *
  * /api/admin/lead/delete:
  *   delete:
  *     summary: Delete a lead
@@ -483,7 +483,7 @@ const router = express.Router();
  *         description: Unauthorized
  *       '404':
  *         description: Lead not found
- * 
+ *
  * /api/admin/lead/assign-lead:
  *   put:
  *     summary: Assign lead to other users
@@ -518,7 +518,7 @@ const router = express.Router();
  *         description: Unauthorized
  *       '404':
  *         description: Lead not found
- * 
+ *
  * /api/admin/lead/get-status/{id}:
  *   get:
  *     summary: Get status for lead
@@ -539,7 +539,7 @@ const router = express.Router();
  *         description: Unauthorized
  *       '404':
  *         description: Lead not found
- * 
+ *
  * /api/admin/lead/convert-lead:
  *   post:
  *     summary: Convert Lead to franchisee
@@ -564,16 +564,89 @@ const router = express.Router();
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
+ * 
+ * /api/admin/lead/search-lead?size={size}&skip={skip}:
+ *   get:
+ *     summary: Get all Leads
+ *     tags: [Admin > Lead]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: size
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Size of the retrieved data
+ *       - in: query
+ *         name: skip
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: How many Rows want to skip
+ *     responses:
+ *       '200':
+ *         description: Leads retrieved successfully
+ *       '401':
+ *         description: Unauthorized
+ *
  */
-router.post("/create", hasPermission('lead', 'create'), validateCreateLeadBody, LeadController.create);
-router.get("/list", hasPermission('lead', 'read'), validateListLeadQuery, LeadController.list);
-router.get("/get/:id", hasPermission('lead', 'read'), validateEditLeadParams, LeadController.get);
-router.put("/update/:id", hasPermission('lead', 'update'), validateEditLeadParams, validateEditLeadBody, LeadController.update);
-router.delete("/delete", hasPermission('lead', 'delete'), validateEditMultipleIdsBody, LeadController.delete);
+router.post(
+    "/create",
+    hasPermission("lead", "create"),
+    validateCreateLeadBody,
+    LeadController.create
+);
+router.get(
+    "/list",
+    hasPermission("lead", "read"),
+    validateListLeadQuery,
+    LeadController.list
+);
+router.get(
+    "/get/:id",
+    hasPermission("lead", "read"),
+    validateEditLeadParams,
+    LeadController.get
+);
+router.put(
+    "/update/:id",
+    hasPermission("lead", "update"),
+    validateEditLeadParams,
+    validateEditLeadBody,
+    LeadController.update
+);
+router.delete(
+    "/delete",
+    hasPermission("lead", "delete"),
+    validateEditMultipleIdsBody,
+    LeadController.delete
+);
 
-router.put("/assign-lead", hasPermission('lead', 'update'), validateAssignLeadBody, LeadController.assignLeadToAdminUser);
-router.get("/get-status/:id", hasPermission('lead', 'update'), validateLeadStatusBody, LeadController.getLeadStatus);
-router.post("/convert-lead", hasPermission('lead', 'update'), validateConvertLeadParams, LeadController.convertLeadToFranchisee);
+router.put(
+    "/assign-lead",
+    hasPermission("lead", "update"),
+    validateAssignLeadBody,
+    LeadController.assignLeadToAdminUser
+);
+router.get(
+    "/get-status/:id",
+    hasPermission("lead", "update"),
+    validateLeadStatusBody,
+    LeadController.getLeadStatus
+);
+router.post(
+    "/convert-lead",
+    hasPermission("lead", "update"),
+    validateConvertLeadParams,
+    LeadController.convertLeadToFranchisee
+);
+router.get(
+    "/search-lead",
+    hasPermission("lead", "read"),
+    validateListLeadQuery,
+    LeadController.searchLead
+);
 // ====== Lead Ends ======
 
 router.use("/affiliate", affiliateRouter);

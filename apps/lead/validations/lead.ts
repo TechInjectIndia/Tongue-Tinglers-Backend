@@ -139,7 +139,8 @@ const createLeadBody = Joi.object().keys({
     sourceInfo: Joi.optional().allow(null),
     notes: Joi.array().items(NOTE_SCHEMA).optional(),
     logs: Joi.array().items(LOGS_SCHEMA).optional(),
-    proposalModals: Joi.array().items().optional().allow(null),
+    proposalModalId: Joi.string().optional().allow(null),
+    amount: Joi.number().optional().allow(null),
     franchiseModals: Joi.array().items(Joi.string()).optional().allow(null),
     affiliate: Joi.array().items(Joi.object().keys({
         id: Joi.string().required().messages({ 'any.required': 'Affiliate ID is required.' }),
@@ -191,7 +192,8 @@ const editLeadBody = Joi.object().keys({
     sourceInfo: Joi.optional().allow(null),
     notes: Joi.array().items(NOTE_SCHEMA).optional(),
     logs: Joi.array().items(LOGS_SCHEMA).optional(),
-    proposalModals: Joi.array().items().optional().allow(null),
+    proposalModalId: Joi.string().optional().allow(null),
+    amount: Joi.number().optional().allow(null),
     franchiseModals: Joi.array().items(Joi.string()).optional().allow(null),
     affiliate: Joi.array().items(Joi.object().keys({
         id: Joi.string().required().messages({ 'any.required': 'Affiliate ID is required.' }),

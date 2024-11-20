@@ -79,7 +79,7 @@ export * from "./franchise/smDetailsModel";
 
 // --- Sequelize Associations Setup --- //
 
-// import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
+import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
 // import { questionModel } from "./campaign-ui/questionModel";
 import { FranchiseLocationModel } from "./franchise/franchiseLocationModel";
 import { FranchiseeModel } from "./franchise/franchiseeModel";
@@ -90,6 +90,10 @@ import { AssignModel } from "./lead/assigneeModels";
 import { LeadsModel } from './lead/lead.model';
 import { UserModel } from './user/user.model';
 import { UserAddressModel } from './user/userAddressModel';
+import { RegionModel } from './franchise/RegionsModel';
+import { ProposalLeadModels } from './lead/proposalModels';
+
+// Establish association with CampaignAdModel
 
 // CampaignAdModel.belongsToMany(questionModel, {
 //     through: 'CampaignQuestions',
@@ -104,6 +108,21 @@ import { UserAddressModel } from './user/userAddressModel';
 //     otherKey: 'campaignId',
 //     as: 'campaigns',
 // });
+
+CampaignAdModel.hasOne(RegionModel, {
+    foreignKey: 'regionId',
+    as: 'region',
+});
+
+CampaignAdModel.hasOne(AffiliateModel, {
+    foreignKey: 'affiliateId',
+    as: 'affiliate',
+});
+
+CampaignAdModel.hasMany(ProposalLeadModels, {
+    foreignKey: 'proposalIds',
+    as: 'proposals',
+});
 
 // Establish association with FranchiseLocationModel
 FranchiseeModel.hasOne(FranchiseLocationModel, {

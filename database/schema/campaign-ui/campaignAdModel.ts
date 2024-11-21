@@ -12,16 +12,15 @@ interface CampaignCreationAttributes
     extends Optional<
         ICampaign,
         "id" | "createdAt" | "updatedAt" | "deletedAt"
-    > {}
+    > { }
 
 class CampaignAdModel
     extends Model<ICampaign, CampaignCreationAttributes>
-    implements ICampaign
-{
+    implements ICampaign {
     public id!: number;
     public name!: string;
     public franchiseId?: string;
-    public regionId: string;
+    public regionId: number;
     public description?: string;
     public questionList!: string[];
     public affiliateId?: string;
@@ -50,7 +49,7 @@ CampaignAdModel.init(
             allowNull: true,
         },
         regionId: {
-            type: STRING,
+            type: INTEGER,
             references: {
                 model: RegionModel,
                 key: "id",

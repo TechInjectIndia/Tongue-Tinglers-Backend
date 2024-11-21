@@ -1,7 +1,7 @@
 
-import type { UpdatedMetaData, BaseModel, DeletionMetaData } from "../interfaces";
+import type { UpdatedMetaData, BaseModel, DeletionMetaData, BaseModelIdNumber } from "../interfaces";
 
-interface IRegion extends UpdatedMetaData, BaseModel, DeletionMetaData {
+interface IRegion extends UpdatedMetaData, BaseModelIdNumber, DeletionMetaData {
     title: string;
     area: number[] | null;
 }

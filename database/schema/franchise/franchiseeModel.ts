@@ -21,7 +21,7 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
   public establishedDate!: Date | null;
   public franchiseAgreementSignedDate!: Date | null;
   public franchiseType!: FranchiseType;
-  public regionId!: string | null;
+  public regionId!: number | null;
   public contractIds!: string[];
   public activeContract!: string;
   public isActive!: boolean | null;
@@ -104,7 +104,7 @@ FranchiseeModel.init(
       allowNull: false,
     },
     regionId: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       references: {
         model: RegionModel,
         key: 'id',

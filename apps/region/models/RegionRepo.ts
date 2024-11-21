@@ -75,6 +75,7 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
     }
 
     public async create(data: TPayloadRegion): Promise<IRegion> {
+
         const response = await RegionModel.create(data);
         return response;
     }

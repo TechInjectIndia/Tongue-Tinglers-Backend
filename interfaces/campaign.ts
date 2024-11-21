@@ -20,7 +20,7 @@ type TCampaignList = {
 
 type TPayloadCampaign = {
     name: string;
-    region?: string;
+    region?: number;
     franchiseId?: string;
     description?: string;
     questionList: string[];

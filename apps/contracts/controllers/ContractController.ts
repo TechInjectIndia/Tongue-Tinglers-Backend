@@ -264,9 +264,9 @@ export default class ContractController {
 
                 const mailOptions = {
                     to: existingLead.email,
-                    subject: EMAIL_HEADING.PROSPECT_GENERATED,
+                    subject: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
                     templateParams: {
-                        heading: EMAIL_HEADING.PROSPECT_GENERATED,
+                        heading: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
                         description: emailContent,
                     },
                 };

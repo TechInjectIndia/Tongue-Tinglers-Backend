@@ -25,10 +25,21 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
             const whereClause = franchiseType ? { franchiseType } : {};
             let franchisees: any;
             if (franchiseType == '') {
-                franchisees = await FranchiseeModel.findAll();
+                franchisees = await FranchiseeModel.findAll({
+                    include: [
+                        { model: RegionModel, as: 'region' },
+                        { model: FranchiseLocationModel, as: 'franchiseLocation'},
+                        { model: SocialMediaDetailsFranchiseModel, as: 'socialMediaDetails' }
+                    ]
+                });
             } else {
                 franchisees = await FranchiseeModel.findAll({
-                    where: whereClause
+                    where: whereClause,
+                    include: [
+                        { model: RegionModel, as: 'region' },
+                        { model: FranchiseLocationModel, as: 'franchiseLocation'},
+                        { model: SocialMediaDetailsFranchiseModel, as: 'socialMediaDetails' }
+                    ]
                 });
             }
 
@@ -78,7 +89,10 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
         try {
             const franchisee = await FranchiseeModel.findOne({
                 raw: true,
-                where: { userid: userId }
+                where: { userid: userId },
+                include: [
+                    { model: FranchiseLocationModel, as: 'franchiseLocation'}
+                ]
             });
             return franchisee;
         } catch (error) {

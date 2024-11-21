@@ -20,8 +20,8 @@ export default class FranchiseeController {
             // Extract franchise location data
             const { franchiseLocation, socialMediaDetails, ...franchiseeDetails } = franchiseeData;
 
-            delete franchiseeData.franchiseLocation
-            delete franchiseeData.socialMediaDetails;
+            // delete franchiseeData.franchiseLocation
+            // delete franchiseeData.socialMediaDetails;
 
             // Check if the region exists
             const regionRepo = new RegionRepo();

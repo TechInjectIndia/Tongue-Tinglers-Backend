@@ -247,7 +247,7 @@ export default class ContractController {
             // await new LeadRepo().updateStatus(id, { status: LeadStatus.CONVERTED });
 
             // Send an link to user email with password token
-            const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password`;
+            const passwordCreateLink = `https:tonguetingler.vercel.app/create-password`;
 
             try {
                 const emailContent = await getEmailTemplate(

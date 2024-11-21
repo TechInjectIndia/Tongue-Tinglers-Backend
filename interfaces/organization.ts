@@ -1,6 +1,9 @@
 import { BaseModelIdNumber, DeletionMetaData, UpdatedMetaData } from ".";
 
-interface IOrganization extends UpdatedMetaData, BaseModelIdNumber, DeletionMetaData {
+interface IOrganization
+    extends UpdatedMetaData,
+        BaseModelIdNumber,
+        DeletionMetaData {
     id: number;
     prospectId: string;
     name: string;
@@ -15,6 +18,7 @@ interface IOrganization extends UpdatedMetaData, BaseModelIdNumber, DeletionMeta
     bankAccountNumber: string;
     bankIFSCCode: string;
     masterFranchiseId: number | null;
+    rootUserId: string | null;
 }
 
 interface IOrganizationPayload {
@@ -34,9 +38,11 @@ interface IOrganizationPayload {
     bankAccountNumber: string;
     bankIFSCCode: string;
     masterFranchiseId: number | null;
+    rootUserId: string | null;
 }
 
 interface TOrganization {
+    rootUserId: string | null;
     prospectId: string;
     name: string;
     contactPersonName: string;
@@ -53,7 +59,7 @@ interface TOrganization {
     bankAccountNumber: string;
     bankIFSCCode: string;
     masterFranchiseId: number | null;
-    createdBy: string
+    createdBy: string;
 }
 
 export { type IOrganization, type IOrganizationPayload, type TOrganization };

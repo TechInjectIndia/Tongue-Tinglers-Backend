@@ -1,7 +1,7 @@
 import * as express from "express";
 import ContractController from "../controllers/ContractController";
 import * as ContractValidation from "../validations/index";
-import { hasPermission } from "../../../middlewares";
+import { auth, hasPermission } from "../../../middlewares";
 
 const router = express.Router();
 
@@ -443,12 +443,14 @@ const {
 // ====== Contracts Starts ======
 router.post(
     "/create",
+    auth,
     hasPermission("contracts", "create"),
     validateCreateContractBody,
     ContractController.create
 );
 router.get(
     "/list",
+    auth,
     hasPermission("contracts", "read"),
     ContractController.list
 );
@@ -460,6 +462,7 @@ router.get(
 );
 router.put(
     "/update/:id",
+    auth,
     hasPermission("contracts", "update"),
     validateEditContractParams,
     validateEditContractBody,
@@ -467,10 +470,11 @@ router.put(
 );
 router.delete(
     "/delete",
+    auth,
     hasPermission("contracts", "delete"),
     ContractController.delete
 );
-router.post("/convert", ContractController.convert);
+router.post("/convert",  auth, ContractController.convert);
 // ====== Contracts Ends ======
 
 export default router;

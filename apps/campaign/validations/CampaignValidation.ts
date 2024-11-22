@@ -7,8 +7,8 @@ const createCampaignBody = Joi.object().keys({
     name: Joi.string()
         .required()
         .messages({ "any.required": "Campaign name is required." }),
-    franchiseId: Joi.string().optional().allow(null),
-    regionId: Joi.any()
+    franchiseId: Joi.number().optional().allow(null),
+    regionId: Joi.number()
         .required()
         .messages({ "any.required": "Region Id are required." }),
     description: Joi.string()
@@ -16,16 +16,16 @@ const createCampaignBody = Joi.object().keys({
         .messages({ "string.base": "Description must be a string." }),
     questionList: Joi.array()
         .items(
-            Joi.string()
+            Joi.number()
                 .required()
                 .messages({ "any.required": "Question ID is required." })
         )
         .required()
         .messages({ "any.required": "Questions are required." }),
-    affiliateId: Joi.string().optional().allow(null),
+    affiliateId: Joi.number().optional().allow(null),
     proposalIds: Joi.array()
         .items(
-            Joi.string()
+            Joi.number()
                 .required()
                 .messages({ "any.required": "proposal Id is required." })
         )

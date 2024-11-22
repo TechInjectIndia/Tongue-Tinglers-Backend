@@ -4,6 +4,7 @@ import { sequelize } from "../../../config";
 import { ILead } from "../../../interfaces";
 import { UserModel } from '../user/user.model';
 import { INTEGER } from "sequelize";
+import { NUMBER } from "sequelize";
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
 
 interface LeadCreationAttributes extends Optional<ILead, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
@@ -24,7 +25,7 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public referBy!: UserDetails;
     public logs!: Record<string, ITrackable[]>;
     public notes!: Note[] | null;
-    public proposalModalId?: string | null;
+    public proposalModalId?: number | null;
     public amount?: number | null;
     public franchiseModals: Array<FranchiseModels> | null;
     public affiliate: Array<Affiliate> | null;
@@ -107,7 +108,7 @@ LeadsModel.init({
         allowNull: true
     },
     proposalModalId: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true
     },
     amount: {

@@ -315,6 +315,37 @@ export default class AdminController {
             });
         }
     }
+    static async getAdminFirebaseUid(req: Request, res: Response, next: NextFunction) {
+        try {
+            const fireabseUid = get(req?.params, "id");
+            const existingAdmin = await new AdminRepo().getUsingFireaseUid(fireabseUid as string);
+            if (!existingAdmin?.id) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.ADMIN_NOT_EXISTS
+                        )
+                    );
+            }
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.ADMIN_FETCHED,
+                        existingAdmin
+                    )
+                );
+        } catch (err) {
+            console.log(err);
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
 
     static async editProfile(req: Request, res: Response, next: NextFunction) {
         try {

@@ -7,31 +7,44 @@ import {
     TEditUserProfile,
     TUsersList,
     TUserWithPermission,
-    TUpdateUserReferralCode
+    TUpdateUserReferralCode,
 } from "../../../types";
-import { UserModel, RolesModel, UserAddressModel } from "../../../database/schema";
-import { USER_TYPE, USER_STATUS } from '../../../interfaces';
-import IBaseRepo from '../controllers/controller/IUserController';
+import {
+    UserModel,
+    RolesModel,
+    UserAddressModel,
+} from "../../../database/schema";
+import { USER_TYPE, USER_STATUS } from "../../../interfaces";
+import IBaseRepo from "../controllers/controller/IUserController";
 
 export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
-    constructor() { }
+    constructor() {}
 
     public async getByReferralCode(referralCode: string) {
-        const data = await UserModel.findOne({ where: { referralCode: referralCode } });
+        const data = await UserModel.findOne({
+            where: { referralCode: referralCode },
+        });
         return data;
     }
 
     public async getAllFranchiseByCode(referralCode: string) {
-        const franchisee = await UserModel.findAll({ where: { referBy: referralCode } });
+        const franchisee = await UserModel.findAll({
+            where: { referBy: referralCode },
+        });
         return franchisee;
     }
 
     public async existsByReferralCode(referralCode: string): Promise<boolean> {
-        const count = await UserModel.count({ where: { referralCode: referralCode } });
+        const count = await UserModel.count({
+            where: { referralCode: referralCode },
+        });
         return count > 0;
     }
 
-    public async saveReferral(id: number, data: TUpdateUserReferralCode): Promise<[affectedCount: number]> {
+    public async saveReferral(
+        id: number,
+        data: TUpdateUserReferralCode
+    ): Promise<[affectedCount: number]> {
         return await UserModel.update(data, {
             where: {
                 id,
@@ -83,38 +96,66 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.MASTER_FRANCHISE
+                type: USER_TYPE.MASTER_FRANCHISE,
             },
         });
         return { total, data };
     }
 
-    public async get(id: number): Promise<TUserWithPermission> {
+    public async getUsingFireaseUid(id: string): Promise<TUserWithPermission> {
         const data = await UserModel.findOne({
-            where: {
-                [Op.or]: [
-                    { id: id },
-                    { firebaseUid: id }
-                ],
-            },
-            include: [{
-                model: UserAddressModel,
-                as: 'address',
-                order: [
-                    ['isActive', 'ASC']
-                ]
-            }]
+            where: { firebaseUid: id },
+
+            include: [
+                {
+                    model: UserAddressModel,
+                    as: "address",
+                    order: [["isActive", "ASC"]],
+                },
+            ],
         });
         if (data) {
             const role = await RolesModel.findOne({
                 raw: true,
                 where: {
-                    id: data?.dataValues.role
-                }
-            })
-            return { ...data.dataValues, permissions: role?.role_permissions ?? '' };
+                    id: data?.dataValues.role,
+                },
+            });
+            return {
+                ...data.dataValues,
+                permissions: role?.role_permissions ?? "",
+            };
         } else {
-            return { ...data.dataValues, permissions: '' };
+            return { ...data.dataValues, permissions: "" };
+        }
+    }
+
+    public async get(id: number): Promise<TUserWithPermission> {
+        const data = await UserModel.findOne({
+            where: {
+                [Op.or]: [{ id: id }, { firebaseUid: id }],
+            },
+            include: [
+                {
+                    model: UserAddressModel,
+                    as: "address",
+                    order: [["isActive", "ASC"]],
+                },
+            ],
+        });
+        if (data) {
+            const role = await RolesModel.findOne({
+                raw: true,
+                where: {
+                    id: data?.dataValues.role,
+                },
+            });
+            return {
+                ...data.dataValues,
+                permissions: role?.role_permissions ?? "",
+            };
+        } else {
+            return { ...data.dataValues, permissions: "" };
         }
     }
 
@@ -122,17 +163,20 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         const data = await UserModel.findOne({
             raw: true,
             where: {
-                id: id
+                id: id,
             },
         });
         return data;
     }
 
     public async create(data: TAddUser): Promise<TUser> {
-        return await UserModel.create({ ...data});
+        return await UserModel.create({ ...data });
     }
 
-    public async update(id: number, data: TEditUser): Promise<[affectedCount: number]> {
+    public async update(
+        id: number,
+        data: TEditUser
+    ): Promise<[affectedCount: number]> {
         return await UserModel.update(data, {
             where: {
                 id,
@@ -147,11 +191,14 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
             },
         });
 
-        await UserModel.update({ status: USER_STATUS.DELETED, deletedBy: deletedBy }, {
-            where: {
-                id: ids,
-            },
-        });
+        await UserModel.update(
+            { status: USER_STATUS.DELETED, deletedBy: deletedBy },
+            {
+                where: {
+                    id: ids,
+                },
+            }
+        );
         return response;
     }
 
@@ -201,7 +248,10 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         return response;
     }
 
-    public async updateProfile(id: number, data: TEditUserProfile): Promise<[affectedCount: number]> {
+    public async updateProfile(
+        id: number,
+        data: TEditUserProfile
+    ): Promise<[affectedCount: number]> {
         return await UserModel.update(data, {
             where: {
                 id,

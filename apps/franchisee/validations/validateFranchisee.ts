@@ -9,7 +9,7 @@ const franchiseeSchema = Joi.object({
         "string.empty": "Franchisee name cannot be empty.",
         "string.min": "Franchisee name must be at least 3 characters long.",
     }),
-    userid: Joi.string().optional(),
+    userid: Joi.number().optional(),
     referBy: Joi.string().optional().allow(null),
     parentFranchise: Joi.string().optional().allow(null),
     ownerName: Joi.string().trim().required().messages({

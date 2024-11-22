@@ -13,7 +13,7 @@ const {
   validateEditMultipleIdsBody,
 } = AdminValidation;
 
-const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminController;
+const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAdminFirebaseUid } = AdminController;
 
 // ====== Admins Routes Start ======
 /**
@@ -234,6 +234,7 @@ router.post("/create", hasPermission('admin', 'create'), validateCreateAdminBody
 router.get("/list", hasPermission('admin', 'read'), validateListAdminQuery, getAdmins);
 router.get("/list-all", hasPermission('admin', 'read'), validateListAdminQuery, getAllUsers);
 router.get("/get/:id", hasPermission('admin', 'read'), validateEditAdminParams, getAdmin);
+router.get("/get-firebase/:id", hasPermission('admin', 'read'), validateEditAdminParams, getAdminFirebaseUid);
 router.put("/update/:id", hasPermission('admin', 'update'), validateEditAdminParams, validateEditAdminBody, editAdmin);
 router.delete("/delete", hasPermission('admin', 'delete'), validateEditMultipleIdsBody, deleteAdmin); // Soft delete single or multiple
 // ====== Admins Routes Ends ======

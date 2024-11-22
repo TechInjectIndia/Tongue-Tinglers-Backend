@@ -24,7 +24,7 @@ class ProposalLeadModels
     implements ProposalModels
 {
     public id!: number;
-    public franchiseModel!: string;
+    public franchiseModel!: number;
     public title!: string;
     /* comma separated string */
     public prices!: string;

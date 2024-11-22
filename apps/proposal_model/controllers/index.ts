@@ -7,7 +7,10 @@ import { ProposalModelRepo } from '../models';
 export default class ProposalModelController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '');
+            const user_id = get(req, 'user_id', 0);
+
+            console.log(user_id);
+            
             const payload = { 
                 ...req.body, 
                 createdBy: user_id, 

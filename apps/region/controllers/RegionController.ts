@@ -8,7 +8,7 @@ import { AreaRepo } from "../../area/models/AreaRepo";
 export default class RegionController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '');
+            const user_id = get(req, 'user_id', 0);
             const payload = { ...req.body, createdBy: user_id };
             const { area = null } = { ...req.body };
 

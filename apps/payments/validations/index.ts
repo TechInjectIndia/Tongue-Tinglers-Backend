@@ -123,7 +123,7 @@ const editMultipleIdsBody = Joi.object().keys({
 
 // Validation for generating a link
 const generateLinkBody = Joi.object().keys({
-    contract_id: Joi.string().required()
+    contract_id: Joi.number().required()
         .messages({
             'any.required': 'Contract ID is required.'
         }),

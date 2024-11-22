@@ -9,8 +9,8 @@ import { UserModel } from '../user/user.model'
 interface OrdersCreationAttributes extends Optional<TOrder, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOrder {
-    public id!: string;
-    public userId!: string;
+    public id!: number;
+    public userId!: number;
     public trackingNumber!: string;
     public shippingAddress!: any;
     public paymentMethod!: string;
@@ -28,13 +28,13 @@ class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOr
 
 OrdersModel.init({
     id: {
-        type: STRING,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        defaultValue: UUIDV4
+        autoIncrement: true, 
     },
     userId: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true,
     },
     trackingNumber: {

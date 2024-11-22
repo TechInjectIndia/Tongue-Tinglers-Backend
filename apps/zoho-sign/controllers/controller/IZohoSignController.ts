@@ -15,7 +15,7 @@ interface IZohoSignController<T> {
      * @param templateId - The ID of the template to retrieve fields for.
      * @returns Promise resolving to the template fields.
      */
-    getTemplateFields(templateId: string): Promise<TemplateType>;
+    getTemplateFields(templateId: number): Promise<TemplateType>;
 
     /**
      * Send a document using a specified template.
@@ -23,7 +23,7 @@ interface IZohoSignController<T> {
      * @param data - The data to populate in the document.
      * @returns Promise resolving to the response after sending the document.
      */
-    sendDocumentUsingTemplate(templateId: string, data: DocumentData): Promise<SendResponse>;
+    sendDocumentUsingTemplate(templateId: number, data: DocumentData): Promise<SendResponse>;
 
     /**
      * Retrieve a list of available templates.
@@ -35,7 +35,7 @@ interface IZohoSignController<T> {
      * Retrieve a document.
      * @returns Promise resolving to document.
      */
-    getDocument(documentId: string): Promise<DocumentDetails>;
+    getDocument(documentId: number): Promise<DocumentDetails>;
 }
 
 export default IZohoSignController;

@@ -9,7 +9,7 @@ const USER_DETAILS_SCHEMA = Joi.object().keys({
         .messages({
             'any.required': 'User name is required.',
         }),
-    id: Joi.string().required()
+    id: Joi.number().required()
         .messages({
             'any.required': 'User ID is required.',
         }),
@@ -102,7 +102,7 @@ const ASSIGN_SCHEMA = Joi.object().keys({
 
 // Validation for creating a lead
 const createLeadBody = Joi.object().keys({
-    campaignId: Joi.optional().allow(null),
+    campaignId: Joi.number().optional().allow(null),
     firstName: Joi.string().required()
         .messages({
             'any.required': 'First name is required.',
@@ -139,11 +139,11 @@ const createLeadBody = Joi.object().keys({
     sourceInfo: Joi.optional().allow(null),
     notes: Joi.array().items(NOTE_SCHEMA).optional(),
     logs: Joi.array().items(LOGS_SCHEMA).optional(),
-    proposalModalId: Joi.string().optional().allow(null),
+    proposalModalId: Joi.number().optional().allow(null),
     amount: Joi.number().optional().allow(null),
-    franchiseModals: Joi.array().items(Joi.string()).optional().allow(null),
+    franchiseModals: Joi.array().items(Joi.number()).optional().allow(null),
     affiliate: Joi.array().items(Joi.object().keys({
-        id: Joi.string().required().messages({ 'any.required': 'Affiliate ID is required.' }),
+        id: Joi.number().required().messages({ 'any.required': 'Affiliate ID is required.' }),
         name: Joi.string().required().messages({ 'any.required': 'Affiliate name is required.' }),
     })).optional().allow(null),
     marketing: Joi.array().items(Joi.string()).optional().allow(null),
@@ -155,7 +155,7 @@ const createLeadBody = Joi.object().keys({
 
 // Validation for editing a lead body
 const editLeadBody = Joi.object().keys({
-    campaignId: Joi.string().optional().allow(""),
+    campaignId: Joi.number().optional(),
     firstName: Joi.string().required()
         .messages({
             'any.required': 'First name is required.',
@@ -192,9 +192,9 @@ const editLeadBody = Joi.object().keys({
     sourceInfo: Joi.optional().allow(null),
     notes: Joi.array().items(NOTE_SCHEMA).optional(),
     logs: Joi.array().items(LOGS_SCHEMA).optional(),
-    proposalModalId: Joi.string().optional().allow(null),
+    proposalModalId: Joi.number().optional().allow(null),
     amount: Joi.number().optional().allow(null),
-    franchiseModals: Joi.array().items(Joi.string()).optional().allow(null),
+    franchiseModals: Joi.array().items(Joi.number()).optional().allow(null),
     affiliate: Joi.array().items(Joi.object().keys({
         id: Joi.string().required().messages({ 'any.required': 'Affiliate ID is required.' }),
         name: Joi.string().required().messages({ 'any.required': 'Affiliate name is required.' }),
@@ -208,7 +208,7 @@ const editLeadBody = Joi.object().keys({
 
 // Validation for editing lead parameters
 const editLeadParams = Joi.object().keys({
-    id: Joi.string().required()
+    id: Joi.number().required()
         .messages({
             'any.required': 'Lead ID is required.',
         }),
@@ -241,7 +241,7 @@ const editMultipleIdsBody = Joi.object().keys({
 
 // Validation for converting lead parameters
 const convertLeadParams = Joi.object().keys({
-    id: Joi.string().required()
+    id: Joi.number().required()
         .messages({
             'any.required': 'Lead ID is required.',
         }),
@@ -249,7 +249,7 @@ const convertLeadParams = Joi.object().keys({
 
 // Validation for assigning lead
 const assignLeadBody = Joi.object().keys({
-    id: Joi.string().required()
+    id: Joi.number().required()
         .messages({
             'any.required': 'Lead ID is required.',
         }),
@@ -258,7 +258,7 @@ const assignLeadBody = Joi.object().keys({
             .messages({
                 'any.required': 'Assigned To username is required.',
             }),
-        id: Joi.string().required()
+        id: Joi.number().required()
             .messages({
                 'any.required': 'Assigned To ID is required.',
             }),
@@ -270,7 +270,7 @@ const assignLeadBody = Joi.object().keys({
 
 // Validation for lead status body
 const statusLeadBody = Joi.object().keys({
-    id: Joi.string().required()
+    id: Joi.number().required()
         .messages({
             'any.required': 'Lead ID is required.',
         }),

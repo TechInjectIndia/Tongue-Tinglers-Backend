@@ -13,7 +13,7 @@ import IBaseRepo from '../controllers/controller/IRegionController';
 export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
     constructor() { }
 
-    public async get(id: string): Promise<IRegion | null> {
+    public async get(id: number): Promise<IRegion | null> {
         const data = await RegionModel.findOne({
             where: {
                 id,
@@ -79,7 +79,7 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
         return response;
     }
 
-    public async update(id: string, data: TPayloadRegion): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TPayloadRegion): Promise<[affectedCount: number]> {
         return await RegionModel.update(data, {
             where: {
                 id,
@@ -87,7 +87,7 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
         });
     }
 
-    public async delete(ids: string[]): Promise<number> {
+    public async delete(ids: number[]): Promise<number> {
         const response = await RegionModel.destroy({
             where: {
                 id: ids,

@@ -10,10 +10,11 @@ const {
   validateCreateAdminBody,
   validateEditAdminParams,
   validateEditAdminBody,
+  validateUpdateType,
   validateEditMultipleIdsBody,
 } = AdminValidation;
 
-const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin, } = AdminController;
+const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAdminFirebaseUid, updateType } = AdminController;
 
 // ====== Admins Routes Start ======
 /**
@@ -229,12 +230,48 @@ const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin, } = 
  *         description: Unauthorized
  *       '404':
  *         description: User not found
+ * 
+ * /api/admin/users/update-type/{id}:
+ *   put:
+ *     summary: Update a Type
+ *     tags: [Admin > Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: number
+ *         description: ID of the User to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - type
+ *            properties:
+ *              type:
+ *                type: string
+ *     responses:
+ *       '200':
+ *         description: User updated successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: User not found
  */
 router.post("/create", hasPermission('admin', 'create'), validateCreateAdminBody, addAdmin);
 router.get("/list", hasPermission('admin', 'read'), validateListAdminQuery, getAdmins);
 router.get("/list-all", hasPermission('admin', 'read'), validateListAdminQuery, getAllUsers);
 router.get("/get/:id", hasPermission('admin', 'read'), validateEditAdminParams, getAdmin);
+router.get("/get-firebase/:id", hasPermission('admin', 'read'), validateEditAdminParams, getAdminFirebaseUid);
 router.put("/update/:id", hasPermission('admin', 'update'), validateEditAdminParams, validateEditAdminBody, editAdmin);
+router.put("/update-type/:id", hasPermission('admin', 'update'), validateEditAdminParams, validateUpdateType, updateType);
 router.delete("/delete", hasPermission('admin', 'delete'), validateEditMultipleIdsBody, deleteAdmin); // Soft delete single or multiple
 // ====== Admins Routes Ends ======
 

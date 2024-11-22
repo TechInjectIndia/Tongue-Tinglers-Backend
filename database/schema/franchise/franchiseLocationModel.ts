@@ -8,8 +8,8 @@ interface FranchiseLocationCreationAttributes extends Optional<FranchiseLocation
 
 // FranchiseLocation model definition
 class FranchiseLocationModel extends Model<FranchiseLocationAttributes, FranchiseLocationCreationAttributes> implements FranchiseLocationAttributes {
-    public id!: string;
-    public franchiseeId!: string;
+    public id!: number;
+    public franchiseeId!: number;
     public contactPhone!: string;
     public location!: string;
     public city!: string;
@@ -24,12 +24,13 @@ class FranchiseLocationModel extends Model<FranchiseLocationAttributes, Franchis
 FranchiseLocationModel.init(
     {
         id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+            type: DataTypes.INTEGER,
             primaryKey: true,
+            allowNull: false,
+            autoIncrement: true, 
         },
         franchiseeId: {
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             allowNull: false,
             references: {
                 model: FranchiseeModel,

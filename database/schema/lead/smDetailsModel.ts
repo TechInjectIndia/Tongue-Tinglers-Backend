@@ -9,8 +9,8 @@ interface SocialMediaDetailsCreationAttributes extends Optional<SocialMediaDetai
 // Define SocialMediaDetailsModel
 class SocialMediaDetailsModel extends Model<SocialMediaDetailsAttributes, SocialMediaDetailsCreationAttributes>
     implements SocialMediaDetailsAttributes {
-    public id!: string;
-    public affiliateId!: string;
+    public id!: number;
+    public affiliateId!: number;
     public platform: socialMediaEnumsPlatform;
     public handle!: string;
     public followers!: number;
@@ -25,12 +25,13 @@ class SocialMediaDetailsModel extends Model<SocialMediaDetailsAttributes, Social
 SocialMediaDetailsModel.init(
     {
         id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+            type: DataTypes.INTEGER,
             primaryKey: true,
+            allowNull: false,
+            autoIncrement: true, 
         },
         affiliateId: {
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             allowNull: false,
             references: {
                 model: AffiliateModel,

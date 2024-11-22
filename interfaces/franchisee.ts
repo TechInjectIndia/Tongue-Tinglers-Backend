@@ -1,6 +1,6 @@
 interface FranchiseLocationAttributes {
-    id: string;
-    franchiseeId: string;
+    id: number;
+    franchiseeId: number;
     contactPhone: string;
     location: string;
     city: string;
@@ -18,20 +18,20 @@ interface AddFranchiseLocationPayload {
     state: string;
     country: string;
     zipCode: string;
-    franchiseeId: string;
+    franchiseeId: number;
 }
 
 export default AddFranchiseLocationPayload;
 
 interface SocialMediaDetailsAttributesFranchisee {
-    id: string;
-    franchiseeId: string;
+    id: number;
+    franchiseeId: number;
     url: string;
     type: SM_PLATFORM_FRANCHISE
 }
 
 interface AddSocialMediaDetailsAttributesFranchisee {
-    franchiseeId: string;
+    franchiseeId: number;
     url: string;
     type: SM_PLATFORM_FRANCHISE
 }
@@ -59,9 +59,9 @@ interface TrainingHistory {
 }
 
 interface FranchiseeAttributes {
-    id: string;
-    userid: string | null;
-    referBy?: string | null;
+    id: number;
+    userid: number | null;
+    referBy?: number | null;
     parentFranchise?: string | null;
     name: string;
     ownerName: string;
@@ -70,19 +70,19 @@ interface FranchiseeAttributes {
     establishedDate: Date | null;
     franchiseAgreementSignedDate: Date | null;
     franchiseType: FranchiseType;
-    regionId: string | null;
-    contractIds: string[];
+    regionId: number | null;
+    contractIds: number[];
     activeContract: string;
     isActive: boolean | null;
     ratings?: number | null;
     franchiseRenewalInfo?: FranchiseeRenewalInfo | null;
     franchiseLocation?: FranchiseLocationAttributes[];
-    organizationId: string;
+    organizationId: number;
 }
 
 interface AddFranchiseePayload {
-    userid: string | null;
-    referBy?: string | null;
+    userid: number | null;
+    referBy?: number | null;
     parentFranchise?: string | null;
     name: string;
     ownerName: string;
@@ -91,9 +91,9 @@ interface AddFranchiseePayload {
     establishedDate: Date | null;
     franchiseAgreementSignedDate: Date | null;
     franchiseType: FranchiseType;
-    regionId: string | null;
+    regionId: number | null;
     socialMediaLinks?: { url: string, type: SM_PLATFORM_FRANCHISE }[];
-    contractIds: string[];
+    contractIds: number[];
     activeContract: string;
     isActive: boolean | null;
     ratings?: number | null;

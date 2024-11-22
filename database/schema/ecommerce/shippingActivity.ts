@@ -2,14 +2,15 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { IShippingHistory, IShippingActivity } from "../../../interfaces";
 import { OrdersModel } from '../ecommerce/order.model';
+import { INTEGER } from "sequelize";
 
 const { STRING, JSONB, UUIDV4, DATE } = DataTypes;
 
 interface ShippingHistoryCreationAttributes extends Optional<IShippingHistory, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class ShippingHistoryModel extends Model<IShippingHistory, ShippingHistoryCreationAttributes> implements IShippingHistory {
-    public id!: string;
-    public orderId!: string;
+    public id!: number;
+    public orderId!: number;
     public date?: string;
     public activities!: IShippingActivity[];
     public trackingNumber!: string | null;
@@ -20,13 +21,13 @@ class ShippingHistoryModel extends Model<IShippingHistory, ShippingHistoryCreati
 
 ShippingHistoryModel.init({
     id: {
-        type: STRING,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        defaultValue: UUIDV4,
+        autoIncrement: true, 
     },
     orderId: {
-        type: STRING,
+        type: INTEGER,
         allowNull: false,
     },
     date: {

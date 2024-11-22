@@ -4,7 +4,8 @@ export enum USER_TYPE {
     SUPER_FRANCHISE = "super_franchise", // Super-admin
     MASTER_FRANCHISE = "master_franchise", // Admin
     FRANCHISE = "franchise", // Normal-franchise
-    CUSTOMER = "customer", // customer
+    ADMIN = "admin", // admin
+    GUEST_USER = "guest_user",
     PROSPECT = "prospect",
 }
 
@@ -29,8 +30,8 @@ export interface Address {
 }
 
 export interface UserInformation {
-    id: string;
-    createdBy: string;
+    id: number;
+    createdBy: number;
     createdAt: Date;
     firstName: string;
     lastName: string;
@@ -41,9 +42,9 @@ export interface UserInformation {
     type: USER_TYPE;
     status: USER_STATUS;
     cart: cart[];
-    updatedBy: string | null;
+    updatedBy: number | null;
     updatedAt: Date | null;
-    deletedBy: string | null;
+    deletedBy: number | null;
     deletedAt: Date | null;
     role: number | null;
     address: Array<Address>;

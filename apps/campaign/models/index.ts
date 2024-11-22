@@ -15,7 +15,7 @@ export class CampaignAdRepo
 {
     constructor() {}
 
-    public async getCampaignsByFranchiseId(franchiseId: string): Promise<any> {
+    public async getCampaignsByFranchiseId(franchiseId: number): Promise<any> {
         let whereOptions: any = { franchiseId: franchiseId };
         return await CampaignAdModel.findAll({
             where: whereOptions,

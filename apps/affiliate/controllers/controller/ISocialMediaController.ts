@@ -9,7 +9,7 @@ interface ISocialMediaDetailsRepo<T> {
      * @param id - The ID of the social media detail.
      * @returns A promise resolving to the social media detail or null if not found.
      */
-    get(id: string): Promise<T | null>;
+    get(id: number): Promise<T | null>;
 
     /**
      * Updates an existing social media detail by ID.
@@ -17,7 +17,7 @@ interface ISocialMediaDetailsRepo<T> {
      * @param data - The new data for the social media detail.
      * @returns A promise resolving to the updated social media detail or null if not found.
      */
-    update(id: string, data: Partial<T>): Promise<T | null>;
+    update(id: number, data: Partial<T>): Promise<T | null>;
 
     /**
      * Creates a new social media detail.
@@ -32,7 +32,7 @@ interface ISocialMediaDetailsRepo<T> {
      * @param platform - The platform identifier.
      * @returns A promise resolving to the social media detail or null if not found.
      */
-    getByAffiliateAndPlatform(affiliateId: string, platform: string): Promise<T | null>;
+    getByAffiliateAndPlatform(affiliateId: number, platform: string): Promise<T | null>;
 }
 
 export default ISocialMediaDetailsRepo;

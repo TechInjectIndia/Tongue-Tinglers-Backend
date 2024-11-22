@@ -121,7 +121,7 @@ export default class AffiliateController {
             delete updateAffiliate.sm; // Remove social media details from the update payload
 
             // Update the affiliate record
-            const affiliate = await new AffiliateRepo().update(id as number, updateAffiliate);
+            const affiliate = await new AffiliateRepo().update(id, updateAffiliate);
 
             // Check if social media details are provided
             if (sm && typeof sm === 'object') {
@@ -147,7 +147,7 @@ export default class AffiliateController {
                     };
 
                     // Check if social media entry exists for the platform
-                    const existingSocialMedia = await new SocialMediaDetailsRepo().getByAffiliateAndPlatform(id as string, platform);
+                    const existingSocialMedia = await new SocialMediaDetailsRepo().getByAffiliateAndPlatform(id, platform);
                     if (existingSocialMedia) {
                         // Update existing social media details
                         await new SocialMediaDetailsRepo().update(existingSocialMedia.id, socialMediaData);

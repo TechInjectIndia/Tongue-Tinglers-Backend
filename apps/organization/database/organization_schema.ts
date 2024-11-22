@@ -17,7 +17,7 @@ class OrganizationTableModel
 {
     public rootUserId: string | null;
     public id!: number;
-    public prospectId: string;
+    public prospectId: number;
     public name: string;
     public contactPersonName: string;
     public contactNumber: string;
@@ -31,9 +31,9 @@ class OrganizationTableModel
     public bankIFSCCode: string;
     public masterFranchiseId: number | null;
 
-    public createdBy!: string;
-    public updatedBy!: string | null;
-    public deletedBy!: string | null;
+    public createdBy!: number;
+    public updatedBy!: number | null;
+    public deletedBy!: number | null;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
@@ -46,38 +46,39 @@ class OrganizationTableModel
     }
 }
 
-OrganizationTableModel.init(
-    {
-        id: {
-            type: INTEGER,
-            autoIncrement: true,
-            primaryKey: true,
-            allowNull: false,
-        },
-        rootUserId: {
-            type: STRING,
-            allowNull: true,
-            defaultValue: null,
-        },
-        prospectId: {
-            type: STRING,
-            allowNull: false,
-        },
-        name: {
-            type: STRING,
-            allowNull: false,
-        },
-        contactPersonName: {
-            type: STRING,
-            allowNull: false,
-        },
-        contactNumber: {
-            type: STRING,
-            allowNull: false,
-        },
-        contactEmail: {
-            type: STRING,
-            allowNull: false,
+OrganizationTableModel.init({
+    id: {
+        type: INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false,
+    },
+    prospectId: {
+        type: INTEGER,
+        allowNull: false,
+    },
+    name: {
+        type: STRING,
+        allowNull: false,
+    },
+    contactPersonName: {
+        type: STRING,
+        allowNull: false,
+    },
+    contactNumber: {
+        type: STRING,
+        allowNull: false,
+    },
+    contactEmail: {
+        type: STRING,
+        allowNull: false,
+    },
+
+    addressId: {
+        type: INTEGER,
+        references: {
+            model: AddressModel,
+            key: 'id',
         },
 
         addressId: {
@@ -89,73 +90,45 @@ OrganizationTableModel.init(
             allowNull: false,
         },
 
-        pan: {
-            type: STRING,
-            allowNull: true,
-        },
-        gst: {
-            type: STRING,
-            allowNull: true,
-        },
-        bankName: {
-            type: STRING,
-            allowNull: false,
-        },
-        bankAccountNumber: {
-            type: STRING,
-            allowNull: false,
-        },
-        bankIFSCCode: {
-            type: STRING,
-            allowNull: false,
-        },
-        masterFranchiseId: {
-            type: STRING,
-            allowNull: true,
-        },
-
-        createdBy: {
-            type: STRING,
-            allowNull: false,
-            comment: "User who created the campaign",
-        },
-        updatedBy: {
-            type: STRING,
-            allowNull: true,
-            comment: "User who last updated the campaign",
-        },
-        deletedBy: {
-            type: STRING,
-            allowNull: true,
-            comment: "User who deleted the campaign (if soft deleted)",
-        },
-        createdAt: {
-            type: DATE,
-            allowNull: false,
-            defaultValue: NOW,
-            comment: "Timestamp when the campaign was created",
-        },
-        updatedAt: {
-            type: DATE,
-            allowNull: false,
-            defaultValue: NOW,
-            comment: "Timestamp when the campaign was last updated",
-        },
-        deletedAt: {
-            type: DATE,
-            allowNull: true,
-            comment:
-                "Timestamp when the campaign was deleted (if soft deleted)",
-        },
+    createdBy: {
+        type: INTEGER,
+        allowNull: false,
+        comment: 'User who created the campaign',
     },
-    {
-        sequelize,
-        tableName: "organizations",
-        timestamps: true,
-        paranoid: true,
-        comment: "Table to store organizations",
-    }
-);
+    updatedBy: {
+        type: INTEGER,
+        allowNull: true,
+        comment: 'User who last updated the campaign',
+    },
+    deletedBy: {
+        type: INTEGER,
+        allowNull: true,
+        comment: 'User who deleted the campaign (if soft deleted)',
+    },
+    createdAt: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: NOW,
+        comment: 'Timestamp when the campaign was created',
+    },
+    updatedAt: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: NOW,
+        comment: 'Timestamp when the campaign was last updated',
+    },
+    deletedAt: {
+        type: DATE,
+        allowNull: true,
+        comment: 'Timestamp when the campaign was deleted (if soft deleted)',
+    },
+}, {
+    sequelize,
+    tableName: 'organizations',
+    timestamps: true,
+    paranoid: true,
+    comment: 'Table to store organizations',
+});
 
 OrganizationTableModel.associate();
 

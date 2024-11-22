@@ -64,6 +64,11 @@ const createAdminBody = Joi.object().keys({
             'number.base': 'Role must be a number.',
             'any.required': 'Role is required.'
         }),
+    type: Joi.string().required()
+    .messages({
+        'number.base': 'Type must be a string.',
+        'any.required': 'Type is required.'
+    }),
 });
 
 // Validation for editing admin params
@@ -103,7 +108,20 @@ const editAdminBody = Joi.object().keys({
             'number.base': 'Role must be a number.',
             'any.required': 'Role is required.'
         }),
+    type: Joi.string().required()
+    .messages({
+        'number.base': 'Type must be a string.',
+        'any.required': 'Type is required.'
+    }),
 });
+
+const updateType = Joi.object().keys({
+    type: Joi.string().required()
+    .messages({
+        'number.base': 'Type must be a string.',
+        'any.required': 'Type is required.'
+    })
+})
 
 // Validation for editing admin profile
 const editAdminProfileBody = Joi.object().keys({
@@ -158,6 +176,12 @@ export const validateEditAdminBody = async (
     res: Response,
     next: NextFunction
 ) => validateReq(req, res, next, editAdminBody, "body");
+
+export const validateUpdateType = async (
+    req:Request,
+    res:Response,
+    next: NextFunction
+) => validateReq(req, res, next, updateType, "body")
 
 export const validateEditAdminProfileBody = async (
     req: Request,

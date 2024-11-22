@@ -8,7 +8,7 @@ interface ReviewsCreationAttributes extends Optional<TReviews, 'id' | 'createdAt
 
 class ReviewsModel extends Model<TReviews, ReviewsCreationAttributes> implements TReviews {
     public id!: number;
-    public user_id!: string;
+    public user_id!: number;
     public review_text!: string;
     public rating!: number;
     public review_date!: Date;
@@ -26,7 +26,7 @@ ReviewsModel.init({
         primaryKey: true,
     },
     user_id: { // Refers to the Users table.
-        type: STRING,
+        type: INTEGER,
         allowNull: false,
     },
     review_text: { // The content of the review

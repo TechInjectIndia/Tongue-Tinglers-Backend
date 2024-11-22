@@ -72,7 +72,7 @@ const createFranchiseBody = Joi.object().keys({
 
 // Validation for editing Franchise params
 const editFranchiseParams = Joi.object().keys({
-    id: Joi.string().required()
+    id: Joi.number().required()
         .messages({
             'any.required': 'Franchise ID is required.'
         }),

@@ -19,7 +19,7 @@ export class VendorRepo implements IBaseRepo<IVendorAttributes, TListFilters> {
      * @param id - The ID of the vendor
      * @returns Promise<IVendorAttributes | null>
      */
-    public async get(id: string): Promise<IVendorAttributes | null> {
+    public async get(id: number): Promise<IVendorAttributes | null> {
         try {
             const vendor = await VendorModel.findOne({ where: { id } });
             return vendor ? (vendor.get() as IVendorAttributes) : null; // Use IVendorAttributes type for return
@@ -68,7 +68,7 @@ export class VendorRepo implements IBaseRepo<IVendorAttributes, TListFilters> {
         return response.get() as IVendorAttributes; // Return the created vendor as TVendor type
     }
 
-    public async update(id: string, data: TPayloadVendor): Promise<number> {
+    public async update(id: number, data: TPayloadVendor): Promise<number> {
         const [affectedCount] = await VendorModel.update(data, {
             where: {
                 id,
@@ -77,7 +77,7 @@ export class VendorRepo implements IBaseRepo<IVendorAttributes, TListFilters> {
         return affectedCount; // Return affected count directly
     }
 
-    public async delete(ids: string[]): Promise<number> {
+    public async delete(ids: number[]): Promise<number> {
         const response = await VendorModel.destroy({
             where: {
                 id: ids,

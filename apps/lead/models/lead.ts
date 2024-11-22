@@ -19,7 +19,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
 
     // Update the status of a lead
     public async updateStatus(
-        id: string,
+        id: number,
         data: TLeadStatus
     ): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
@@ -77,7 +77,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
     }
 
     // Get lead by ID
-    public async get(id: string): Promise<ILead | null> {
+    public async get(id: number): Promise<ILead | null> {
         const data = await LeadsModel.findOne({
             raw: true,
             where: { id },
@@ -86,7 +86,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
     }
 
     // Get lead by ID and status
-    public async getLeadByStatus(id: string): Promise<ILead | null> {
+    public async getLeadByStatus(id: number): Promise<ILead | null> {
         const data = await LeadsModel.findOne({
             raw: true,
             where: {
@@ -99,7 +99,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
     // Check if lead exists with a specific email and exclude a specific ID
     public async checkLeadExist(
         email: string,
-        excludeId: string
+        excludeId: number
     ): Promise<ILead | null> {
         const data = await LeadsModel.findOne({
             where: {
@@ -148,7 +148,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
 
     // Update lead information
     public async update(
-        id: string,
+        id: number,
         data: TLeadPayload
     ): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
@@ -159,7 +159,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
 
     // Assign a lead to a user
     public async assignLeadToUser(
-        id: string,
+        id: number,
         data: any
     ): Promise<[affectedCount: number]> {
         try {
@@ -175,7 +175,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
     }
 
     // Delete leads by an array of IDs
-    public async delete(ids: string[]): Promise<number> {
+    public async delete(ids: number[]): Promise<number> {
         try {
             const deletedCount = await LeadsModel.destroy({
                 where: {
@@ -194,7 +194,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
         const total = await LeadsModel.count({
             where: {
                 [Op.or]: [
-                    { id: { [Op.like]: `%${filters.search}%` } },
+                    // { id: { [Op.like]: `%${filters.search}%` } },
                     { firstName: { [Op.like]: `%${filters.search}%` } },
                     { lastName: { [Op.like]: `%${filters.search}%` } },
                     { email: { [Op.like]: `%${filters.search}%` } },
@@ -208,7 +208,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
             limit: filters.limit,
             where: {
                 [Op.or]: [
-                    { id: { [Op.like]: `%${filters.search}%` } },
+                    // { id: { [Op.like]: Number(`%${filters.search}%`) } },
                     { firstName: { [Op.like]: `%${filters.search}%` } },
                     { lastName: { [Op.like]: `%${filters.search}%` } },
                     { email: { [Op.like]: `%${filters.search}%` } },

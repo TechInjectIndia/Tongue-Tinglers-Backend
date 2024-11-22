@@ -12,7 +12,7 @@ interface LeadCreationAttributes extends Optional<FranchiseModels, 'id'> { }
 
 // Define the model class for FranchiseModels
 class FranchiseLeadModel extends Model<FranchiseModels, LeadCreationAttributes> implements FranchiseModels {
-    public id!: string;
+    public id!: number;
     public description!: string;
     public title!: string;
     public reqArea!: number;
@@ -27,10 +27,10 @@ class FranchiseLeadModel extends Model<FranchiseModels, LeadCreationAttributes> 
 // Initialize the franchise model
 FranchiseLeadModel.init({
     id: {
-        type: STRING,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        defaultValue: UUIDV4,
+        autoIncrement: true, 
     },
     description: {
         type: TEXT,

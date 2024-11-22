@@ -6,8 +6,8 @@ import { IPdiChecklist, PdiChecklistItem, IPdiChecklistStatus } from '../../../i
 interface PdiChecklistCreationAttributes extends Optional<IPdiChecklist, 'id'> { }
 
 class PdiChecklistModel extends Model<IPdiChecklist, PdiChecklistCreationAttributes> implements IPdiChecklist {
-    public id!: string;
-    public franchiseeId!: string;
+    public id!: number;
+    public franchiseeId!: number;
     public checklistName!: string;
     public pdiDate!: Date;
     public status!: IPdiChecklistStatus;
@@ -18,12 +18,13 @@ class PdiChecklistModel extends Model<IPdiChecklist, PdiChecklistCreationAttribu
 PdiChecklistModel.init(
     {
         id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+            type: DataTypes.INTEGER,
             primaryKey: true,
+            allowNull: false,
+            autoIncrement: true, 
         },
         franchiseeId: {
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         checklistName: {

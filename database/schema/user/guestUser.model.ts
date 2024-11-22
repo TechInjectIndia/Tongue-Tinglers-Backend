@@ -7,9 +7,9 @@ const { INTEGER, STRING, ENUM, UUIDV4, JSONB } = DataTypes;
 interface UserCreationAttributes extends Optional<TUser, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class GuestUserModel extends Model<TUser, UserCreationAttributes> implements TUser {
-    public id!: string;
+    public id!: number;
     public firebaseUid!: string;
-    public createdBy!: string;
+    public createdBy!: number;
     public password: string;
     public firstName!: string;
     public profilePhoto!: string;
@@ -27,8 +27,8 @@ class GuestUserModel extends Model<TUser, UserCreationAttributes> implements TUs
     public referralCode: string;
     public referBy: UserInformation;
     public lastLoginAt: Date;
-    public updatedBy!: string;
-    public deletedBy!: string;
+    public updatedBy!: number;
+    public deletedBy!: number;
     public role: number | null;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -37,16 +37,16 @@ class GuestUserModel extends Model<TUser, UserCreationAttributes> implements TUs
 
 GuestUserModel.init({
     id: {
-        type: STRING,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        defaultValue: UUIDV4
+        autoIncrement: true, 
     },
     firebaseUid: {
         type: STRING
     },
     createdBy: {
-        type: STRING
+        type: INTEGER
     },
     password: {
         type: STRING,
@@ -106,10 +106,10 @@ GuestUserModel.init({
         allowNull: true,
     },
     updatedBy: {
-        type: STRING
+        type: INTEGER
     },
     deletedBy: {
-        type: STRING
+        type: INTEGER
     },
     role: {
         type: INTEGER,

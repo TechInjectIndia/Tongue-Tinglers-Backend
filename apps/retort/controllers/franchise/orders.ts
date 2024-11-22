@@ -56,7 +56,7 @@ export default class OrderController {
                 search: search as string,
                 sorting: sorting,
                 trashOnly: trashOnly as string,
-                user_id: user_id as string
+                user_id: user_id as number
             });
 
             return res

@@ -8,7 +8,7 @@ interface ItemStockCreationAttributes extends Optional<IItemStockAttributes, 're
 
 // Create the ItemStock model class
 class ItemStockModel extends Model<IItemStockAttributes, ItemStockCreationAttributes> implements IItemStockAttributes {
-    public user_id!: string;
+    public user_id!: number;
     public startStock!: number;
     public endStock!: number;
     public readonly recorded_at!: Date;
@@ -20,8 +20,10 @@ class ItemStockModel extends Model<IItemStockAttributes, ItemStockCreationAttrib
 
 ItemStockModel.init({
     user_id: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
+        primaryKey: true,
         allowNull: false,
+        autoIncrement: true, 
     },
     startStock: {
         type: DataTypes.INTEGER,

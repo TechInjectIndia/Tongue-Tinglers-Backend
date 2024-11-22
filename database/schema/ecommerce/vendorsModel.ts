@@ -6,7 +6,7 @@ import { IVendorAttributes } from "../../../interfaces";
 interface IVendorCreationAttributes extends Optional<IVendorAttributes, 'id'> { }
 
 class VendorModel extends Model<IVendorAttributes, IVendorCreationAttributes> implements IVendorAttributes {
-    public id!: string;
+    public id!: number;
     public company_name!: string;
     public gst_number!: string;
     public company_address!: string;
@@ -28,10 +28,10 @@ class VendorModel extends Model<IVendorAttributes, IVendorCreationAttributes> im
 VendorModel.init(
     {
         id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
-            defaultValue: DataTypes.UUIDV4
+            autoIncrement: true, 
         },
         company_name: {
             type: DataTypes.STRING,

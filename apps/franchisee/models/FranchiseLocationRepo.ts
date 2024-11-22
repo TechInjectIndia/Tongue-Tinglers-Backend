@@ -15,7 +15,7 @@ export class FranchiseLocationRepo implements IFranchiseLocationController<Franc
     }
 
     // Retrieve a franchise location by ID
-    public async getFranchiseLocationById(franchiseLocationId: string): Promise<FranchiseLocationAttributes | null> {
+    public async getFranchiseLocationById(franchiseLocationId: number): Promise<FranchiseLocationAttributes | null> {
         try {
             const franchiseLocation = await FranchiseLocationModel.findByPk(franchiseLocationId);
             return franchiseLocation;
@@ -26,7 +26,7 @@ export class FranchiseLocationRepo implements IFranchiseLocationController<Franc
     }
 
     // Update a franchise location by ID
-    public async updateFranchiseLocationByFranchiseId(franchiseeId: string, franchiseLocationData: Partial<FranchiseLocationAttributes>): Promise<FranchiseLocationAttributes | null> {
+    public async updateFranchiseLocationByFranchiseId(franchiseeId: number, franchiseLocationData: Partial<FranchiseLocationAttributes>): Promise<FranchiseLocationAttributes | null> {
         try {
             await FranchiseLocationModel.update(franchiseLocationData, { where: { franchiseeId: franchiseeId } });
             return await this.getFranchiseLocationById(franchiseeId); // Return the updated franchise location

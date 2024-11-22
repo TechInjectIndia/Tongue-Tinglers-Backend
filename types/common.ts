@@ -15,7 +15,7 @@ export type TListFiltersCampaigns = {
     sorting?: any;
     trashOnly?: string;
     filters?: {
-        franchiseId?: string;
+        franchiseId?: number;
         region?: string;
         [key: string]: any;
     };
@@ -31,7 +31,7 @@ export type TListFiltersRegions = {
         id?: number;
         title?: string;
         area?: string;
-        createdBy?: string;
+        createdBy?: number;
         [key: string]: any;
     };
 };
@@ -45,7 +45,7 @@ export type TListFiltersAreas = {
     filters?: {
         id?: number;
         title?: string;
-        createdBy?: string;
+        createdBy?: number;
         [key: string]: any;
     };
 };

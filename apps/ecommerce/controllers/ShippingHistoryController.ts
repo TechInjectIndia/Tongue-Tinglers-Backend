@@ -10,7 +10,7 @@ export default class ShippingHistoryController {
 
     // Create a new shipping history record
     public async addShippingHistory(req: Request, res: Response): Promise<Response> {
-        const { orderId, shippingData }: { orderId: string, shippingData: IShippingHistory } = req.body;
+        const { orderId, shippingData }: { orderId: number, shippingData: IShippingHistory } = req.body;
 
         try {
             const createdShippingHistory = await shippingHistoryRepo.addShippingHistory(orderId, shippingData);

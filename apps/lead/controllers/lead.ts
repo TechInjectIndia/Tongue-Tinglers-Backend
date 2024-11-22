@@ -35,7 +35,7 @@ export default class LeadController {
             const id = get(req.body, "id", "");
 
             // get contract
-            const existingContract = await new ContractRepo().get(id as string);
+            const existingContract = await new ContractRepo().get(id as number);
             if (existingContract) {
                 return res
                     .status(400)
@@ -47,7 +47,7 @@ export default class LeadController {
                     );
             }
 
-            const existingLead = await new LeadRepo().get(id as string);
+            const existingLead = await new LeadRepo().get(id as number);
             if (!existingLead) {
                 return res
                     .status(400)
@@ -98,7 +98,7 @@ export default class LeadController {
                 terminationDetails: null,
                 payment: null,
                 leadId: id,
-                templateId: templateId,
+                templateId: 0,
                 amount: existingLead.amount,
                 signedDate: null,
                 dueDate: new Date(),
@@ -108,9 +108,9 @@ export default class LeadController {
                 },
                 notes: null,
                 additionalInfo: "",
-                logs: [],
-                signedDocs: [],
-                createdBy: `${user_id}`,
+                logs: null,
+                signedDocs: null,
+                createdBy: Number(`${user_id}`),
             };
 
             const prospect = await new ContractRepo().create(prospectData);
@@ -428,7 +428,7 @@ export default class LeadController {
                     assignedTo: assign.assignedTo.id,
                     assignedBy: assign.assignedBy.id,
                     assignedDate: assign.assignedDate,
-                    leadId: newLead.id, // Reference the new lead's ID
+                    leadId: newLead.id as number, // Reference the new lead's ID
                 };
 
                 // Create assignment in AssignRepo
@@ -580,7 +580,7 @@ export default class LeadController {
                 // Create assignment in AssignRepo
                 await new AssignRepo().createOrUpdate(id, assignPayload);
             } else {
-                await new AssignRepo().delete(id as string);
+                await new AssignRepo().delete(id as number);
             }
 
             return res

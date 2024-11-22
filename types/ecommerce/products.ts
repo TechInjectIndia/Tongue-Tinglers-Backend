@@ -5,7 +5,7 @@ import { PRODUCTS_TYPE } from '../../interfaces'
 export type TProduct = {
   id: number;
   name: string;
-  vendorId?: string | null;
+  vendorId?: number | null;
   slug: string;
   description: string;
   price: number;
@@ -23,7 +23,7 @@ export type TProduct = {
 export type TEditProduct = {
   name: string;
   slug: string;
-  vendorId?: string | null;
+  vendorId?: number | null;
   description: string;
   price: number;
   total_ratings: number;
@@ -38,7 +38,7 @@ export type TEditProduct = {
 export type TAddProduct = {
   name: string;
   type: PRODUCTS_TYPE;
-  vendorId?: string | null;
+  vendorId?: number | null;
   description: string;
   price: number;
   active: boolean;

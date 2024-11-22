@@ -68,7 +68,7 @@ export default class PaymentsController {
                         contractStatus = CONTRACT_STATUS.PAYMENT_RECEIVED;
                     }
                     await new ContractRepo().updatePaymentStatus(
-                        contractDetails.id,
+                        contractDetails.id as number,
                         contractDetails.payment as unknown as ContractPaymentDetails[],
                         contractStatus
                     );
@@ -175,7 +175,7 @@ export default class PaymentsController {
             }
 
             const leadDetails = await new LeadRepo().get(
-                contractDetails.leadId
+                contractDetails.leadId as number
             );
             if (!leadDetails) {
                 return res

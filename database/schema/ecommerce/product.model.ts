@@ -16,7 +16,7 @@ interface ProductsCreationAttributes extends Optional<TProduct, 'id' | 'createdA
 class ProductsModel extends Model<TProduct, ProductsCreationAttributes> implements TProduct {
     public id!: number;
     public name!: string;
-    public vendorId?: string | null;
+    public vendorId?: number | null;
     public slug!: string;
     public description!: string;
     public price!: number;
@@ -42,7 +42,7 @@ ProductsModel.init({
         primaryKey: true,
     },
     vendorId: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: true,
         references: {
             model: VendorModel,

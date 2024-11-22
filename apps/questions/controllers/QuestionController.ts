@@ -68,7 +68,7 @@ export default class QuestionController {
             delete updateQuestion.id;
 
             const user_id = get(req, 'user_id', '');
-            const updatedQuestion = await new QuestionRepo().update(id as string, { ...updateQuestion, updatedBy: user_id });
+            const updatedQuestion = await new QuestionRepo().update(id as number, { ...updateQuestion, updatedBy: user_id });
             return res
                 .status(200)
                 .send(
@@ -90,7 +90,7 @@ export default class QuestionController {
         try {
             const id = get(req?.params, "id", "");
 
-            const existingQuestion = await new QuestionRepo().get(id as string);
+            const existingQuestion = await new QuestionRepo().get(id as number);
 
             if (isEmpty(existingQuestion)) {
                 return res

@@ -49,7 +49,7 @@ export default class ZohoSignController {
                     docId: id,
                     sentBy: {
                         userName: "webhook",
-                        id: "webhook",
+                        id: 0, // 0 is used for webhook string
                     },
                     createdAt: new Date(),
                     status: payload.requests.actions[0].action_status,
@@ -190,14 +190,14 @@ export default class ZohoSignController {
             let prefilledValues = get(req.body, "prefilledValues", "");
 
             const contractDetails = await new ContractRepo().get(
-                contractId as string
+                contractId as number
             );
             if (!contractDetails) {
                 return res.status(401).send("No contract found");
             }
 
             const getTemplate = await new ZohoSignRepo().getTemplateFields(
-                templateId as string
+                templateId as number
             );
             if (!getTemplate) {
                 return res.status(401).send("No template found");
@@ -315,7 +315,7 @@ export default class ZohoSignController {
             const documentId = get(req.body, "documentId", "");
 
             const getTemplate = await new ZohoSignRepo().getDocument(
-                documentId as string
+                documentId as number
             );
             if (getTemplate) {
                 return res.status(200).send(getTemplate);
@@ -341,7 +341,7 @@ export default class ZohoSignController {
         try {
             const getTemplateFields =
                 await new ZohoSignRepo().getTemplateFields(
-                    templateId as string
+                    templateId as number
                 );
             if (!getTemplateFields) {
                 res.status(403).send("No template found");

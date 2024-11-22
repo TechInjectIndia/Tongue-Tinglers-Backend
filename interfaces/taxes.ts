@@ -1,12 +1,12 @@
 interface TaxAttributes {
-    id: string;
+    id: number;
     name: string;
     rate: number;
     isActive: boolean;
 }
 
 interface Tax {
-    id: string;
+    id: number;
     name: string;
     rate: number;
     isActive: boolean;

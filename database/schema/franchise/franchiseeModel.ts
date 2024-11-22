@@ -10,9 +10,9 @@ interface FranchiseeCreationAttributes extends Optional<FranchiseeAttributes, 'i
 
 // Franchisee class model for the Sequelize ORM
 class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttributes> implements FranchiseeAttributes {
-  public id!: string;
-  public userid: string | null;
-  public referBy?: string | null;
+  public id!: number;
+  public userid: number | null;
+  public referBy?: number | null;
   public parentFranchise?: string | null;
   public name!: string;
   public ownerName!: string;
@@ -21,14 +21,14 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
   public establishedDate!: Date | null;
   public franchiseAgreementSignedDate!: Date | null;
   public franchiseType!: FranchiseType;
-  public regionId!: string | null;
-  public contractIds!: string[];
+  public regionId!: number | null;
+  public contractIds!: number[];
   public activeContract!: string;
   public isActive!: boolean | null;
   public ratings?: number | null;
   public franchiseRenewalInfo?: { renewalDate: Date; conditions: string } | null;
   public readonly franchiseLocation: FranchiseLocationAttributes[];
-  public organizationId!: string;
+  public organizationId!: number;
 
   public static associate() {
     this.belongsTo(UserModel, { foreignKey: 'userid', as: 'user', constraints: false });
@@ -45,16 +45,17 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
 FranchiseeModel.init(
   {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
       primaryKey: true,
+      allowNull: false,
+      autoIncrement: true, 
     },
     userid: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     referBy: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     parentFranchise: {
@@ -104,7 +105,7 @@ FranchiseeModel.init(
       allowNull: false,
     },
     regionId: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       references: {
         model: RegionModel,
         key: 'id',
@@ -112,7 +113,7 @@ FranchiseeModel.init(
       allowNull: true,
     },
     contractIds: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: true,
       comment: "Array of contract IDs associated with the franchisee",
     },
@@ -137,7 +138,7 @@ FranchiseeModel.init(
       comment: "Information regarding franchise renewal terms and conditions",
     },
     organizationId: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: true,// Once the organization table is created, update allowNull: true to allowNull: false
     },
   },

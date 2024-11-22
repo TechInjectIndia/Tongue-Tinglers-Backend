@@ -9,8 +9,8 @@ interface SocialMediaDetailsCreationAttributes extends Optional<SocialMediaDetai
 // Define SocialMediaDetailsFranchiseModel
 class SocialMediaDetailsFranchiseModel extends Model<SocialMediaDetailsAttributesFranchisee, SocialMediaDetailsCreationAttributes>
     implements SocialMediaDetailsAttributesFranchisee {
-    public id!: string;
-    public franchiseeId!: string;
+    public id!: number;
+    public franchiseeId!: number;
     public url: string;
     public type: SM_PLATFORM_FRANCHISE;
 
@@ -23,12 +23,13 @@ class SocialMediaDetailsFranchiseModel extends Model<SocialMediaDetailsAttribute
 SocialMediaDetailsFranchiseModel.init(
     {
         id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+            type: DataTypes.INTEGER,
             primaryKey: true,
+            allowNull: false,
+            autoIncrement: true
         },
         franchiseeId: {
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             allowNull: false,
             references: {
                 model: FranchiseeModel,

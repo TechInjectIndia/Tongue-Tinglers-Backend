@@ -20,7 +20,7 @@ interface IFranchiseModelsController<T, F extends TQueryFilters> {
      * @param user_id - The ID of the user.
      * @returns Promise resolving to the FranchiseModels object.
      */
-    get(id: string, user_id: number): Promise<T | null>;
+    get(id: number, user_id: number): Promise<T | null>;
 
     /**
      * Create a new FranchiseModels.
@@ -36,7 +36,7 @@ interface IFranchiseModelsController<T, F extends TQueryFilters> {
      * @param payload - The data to update the FranchiseModels.
      * @returns Promise resolving to the affected count.
      */
-    update(id: string, payload: TPayloadFranchiseModel): Promise<[affectedCount: number]>;
+    update(id: number, payload: TPayloadFranchiseModel): Promise<[affectedCount: number]>;
 
     /**
      * Delete FranchiseModelses by IDs for a user.
@@ -45,7 +45,7 @@ interface IFranchiseModelsController<T, F extends TQueryFilters> {
      * @param deletedBy - The ID of the user who deleted the FranchiseModelses.
      * @returns Promise resolving to the count of deleted FranchiseModelses.
      */
-    delete(ids: string[], deletedBy: number): Promise<number>;
+    delete(ids: number[], deletedBy: number): Promise<number>;
 }
 
 export default IFranchiseModelsController;

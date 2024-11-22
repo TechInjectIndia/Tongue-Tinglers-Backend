@@ -31,7 +31,7 @@ export class FranchiseOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
         return data;
     }
 
-    public async list(filters: TOrderFilters & { user_id: string }): Promise<TOrdersList> {
+    public async list(filters: TOrderFilters & { user_id: number }): Promise<TOrdersList> {
         const total = await OrdersModel.count({
             where: {
                 trackingNumber: {

@@ -1,7 +1,7 @@
 export type TOrderItem = {
   id: number;
-  orderId: string,
-  userId: string,
+  orderId: number,
+  userId: number,
   productId: number,
   productType: string,
   quantity: number,
@@ -13,8 +13,8 @@ export type TOrderItem = {
 };
 
 export type TAddOrderItem = {
-  orderId: string,
-  userId: string,
+  orderId: number,
+  userId: number,
   productId: number,
   productType: string,
   quantity: number,

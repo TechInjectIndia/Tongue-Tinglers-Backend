@@ -9,7 +9,7 @@ import {
 } from "../interfaces";
 
 export interface TContract {
-    id: string;
+    id: number;
     status: CONTRACT_STATUS;
     terminationDetails: null | {
         UserDetails: UserDetails;
@@ -17,8 +17,8 @@ export interface TContract {
         date: Date;
     };
     payment: ContractPaymentDetails[] | null;
-    leadId: string;
-    templateId: string;
+    leadId: number;
+    templateId: number;
     amount: number;
     signedDate: Date | null;
     dueDate: Date;
@@ -30,7 +30,7 @@ export interface TContract {
     additionalInfo: string;
     logs: ITrackable[] | null;
     signedDocs: SignDoc[] | null;
-    createdBy:string;
+    createdBy:number;
 }
 
 export interface TContractsList {
@@ -40,15 +40,15 @@ export interface TContractsList {
 
 export interface TContractPayload {
     status: CONTRACT_STATUS;
-    createdBy: string;
+    createdBy: number;
     terminationDetails: null | {
         UserDetails: UserDetails;
         reason: string;
         date: Date;
     };
     payment: ContractPaymentDetails[] | null;
-    leadId: string;
-    templateId: string | null;
+    leadId: number;
+    templateId: number | null;
     amount: number;
     signedDate: Date | null;
     dueDate: Date;

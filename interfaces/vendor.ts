@@ -2,7 +2,7 @@
 const { OrderItem } = require("sequelize");
 
 interface IVendorAttributes {
-    id: string;
+    id: number;
     company_name: string;
     gst_number: string;
     company_address: string;

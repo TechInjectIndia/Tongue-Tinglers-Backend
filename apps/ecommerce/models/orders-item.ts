@@ -14,7 +14,7 @@ export class OrderItemRepo implements IBaseRepo<TAddOrderItem, TOrderFilters> {
         return await OrderItemsModel.bulkCreate(orderItems);
     }
 
-    public async checkRepeatedOrder(userId: string, productId: number): Promise<TOrderItem> {
+    public async checkRepeatedOrder(userId: number, productId: number): Promise<TOrderItem> {
         const data = await OrderItemsModel.findOne({
             where: {
                 userId: userId,

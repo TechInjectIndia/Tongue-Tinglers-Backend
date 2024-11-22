@@ -38,7 +38,7 @@ export class GuestUserRepo
         return { total, data };
     }
 
-    public async get(id: string): Promise<TUserWithPermission> {
+    public async get(id: number): Promise<TUserWithPermission> {
         const data = await GuestUserModel.findOne({
             where: {
                 [Op.or]: [{ id: id }, { firebaseUid: id }],
@@ -71,7 +71,7 @@ export class GuestUserRepo
         return await GuestUserModel.create({ ...data, type: USER_TYPE.CUSTOMER });
     }
 
-    public async update(id: string, data: TEditUser): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TEditUser): Promise<[affectedCount: number]> {
         return await GuestUserModel.update(data, {
             where: {
                 id,
@@ -79,14 +79,14 @@ export class GuestUserRepo
         });
     }
 
-    public async delete(ids: string[], deletedBy: number): Promise<number> {
+    public async delete(ids: number[], deletedBy: number): Promise<number> {
         const response = await GuestUserModel.destroy({
             where: {
                 id: ids,
             },
         });
 
-        await GuestUserModel.update({ status: USER_STATUS.DELETED, deletedBy: deletedBy?.toString() }, {
+        await GuestUserModel.update({ status: USER_STATUS.DELETED, deletedBy: deletedBy }, {
             where: {
                 id: ids,
             },

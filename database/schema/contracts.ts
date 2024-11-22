@@ -7,7 +7,7 @@ import { UserModel } from './user/user.model';
 interface ContractCreationAttributes extends Optional<IContract, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class ContractModel extends Model<IContract, ContractCreationAttributes> implements IContract {
-    public id!: string;
+    public id!: number;
     public status!: CONTRACT_STATUS;
     public proposalData: ProposalModels | null;
     public terminationDetails: null | {
@@ -22,8 +22,8 @@ class ContractModel extends Model<IContract, ContractCreationAttributes> impleme
         status: CONTRACT_PAYMENT_STATUS;
         additionalInfo: string;
     }[];
-    public leadId!: string | null;
-    public templateId!: string;
+    public leadId!: number | null;
+    public templateId!: number;
     public amount!: number;
     public signedDate!: Date | null;
     public dueDate!: Date;
@@ -35,9 +35,9 @@ class ContractModel extends Model<IContract, ContractCreationAttributes> impleme
     public additionalInfo!: string | null;
     public logs: ITrackable[] | null;
     public signedDocs: SignDoc[] | null;
-    public createdBy!: string;
-    public updatedBy!: string | null;
-    public deletedBy!: string | null;
+    public createdBy!: number;
+    public updatedBy!: number | null;
+    public deletedBy!: number | null;
     public deletedAt!: Date | null;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -50,10 +50,10 @@ class ContractModel extends Model<IContract, ContractCreationAttributes> impleme
 
 ContractModel.init({
     id: {
-        type: STRING,
-        allowNull: false,
+        type: DataTypes.INTEGER,
         primaryKey: true,
-        defaultValue: UUIDV4
+        allowNull: false,
+        autoIncrement: true, 
     },
     status: {
         type: ENUM,
@@ -77,7 +77,7 @@ ContractModel.init({
         allowNull: true,
     },
     templateId: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true,
     },
     amount: {
@@ -114,7 +114,7 @@ ContractModel.init({
         defaultValue: '',
     },
     createdBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: false,
     },
     deletedAt: {
@@ -122,11 +122,11 @@ ContractModel.init({
         allowNull: true,
     },
     updatedBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true,
     },
     deletedBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true,
     },
     createdAt: {

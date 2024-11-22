@@ -9,7 +9,7 @@ interface AffiliateCreationAttributes extends Optional<Affiliate, 'id'> { }
 
 // Define the model class for AffiliateModel
 class AffiliateModel extends Model<Affiliate, AffiliateCreationAttributes> implements Affiliate {
-    public id!: string;
+    public id!: number;
     public type!: string;
     public codes!: Record<string, string>;
 
@@ -18,10 +18,10 @@ class AffiliateModel extends Model<Affiliate, AffiliateCreationAttributes> imple
 // Initialize the AffiliateModel
 AffiliateModel.init({
     id: {
-        type: UUID, // Use UUID for consistency with UUIDV4 default
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        defaultValue: UUIDV4,
+        autoIncrement: true, 
     },
     type: {
         type: STRING,

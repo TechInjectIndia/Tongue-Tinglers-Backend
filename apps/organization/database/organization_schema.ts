@@ -9,7 +9,7 @@ interface OrganizationCreationAttributes extends Optional<IOrganization, 'id' | 
 
 class OrganizationTableModel extends Model<IOrganization, OrganizationCreationAttributes> implements IOrganization {
     public id!: number;
-    public prospectId: string;
+    public prospectId: number;
     public name: string;
     public contactPersonName: string;
     public contactNumber: string;
@@ -23,9 +23,9 @@ class OrganizationTableModel extends Model<IOrganization, OrganizationCreationAt
     public bankIFSCCode: string;
     public masterFranchiseId: number | null;
 
-    public createdBy!: string;
-    public updatedBy!: string | null;
-    public deletedBy!: string | null;
+    public createdBy!: number;
+    public updatedBy!: number | null;
+    public deletedBy!: number | null;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
@@ -43,7 +43,7 @@ OrganizationTableModel.init({
         allowNull: false,
     },
     prospectId: {
-        type: STRING,
+        type: INTEGER,
         allowNull: false,
     },
     name: {
@@ -98,17 +98,17 @@ OrganizationTableModel.init({
     },
 
     createdBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: false,
         comment: 'User who created the campaign',
     },
     updatedBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true,
         comment: 'User who last updated the campaign',
     },
     deletedBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true,
         comment: 'User who deleted the campaign (if soft deleted)',
     },

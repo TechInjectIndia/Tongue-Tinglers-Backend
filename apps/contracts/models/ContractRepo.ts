@@ -37,7 +37,7 @@ export class ContractRepo
         return contracts;
     }
 
-    public async getAssociatedContractsByLeadId(leadId: string): Promise<string[]> {
+    public async getAssociatedContractsByLeadId(leadId: number): Promise<number[]> {
         const contracts = await ContractModel.findAll({
             where: { leadId: leadId },
             attributes: ['id'], // Select only the 'id' attribute
@@ -47,7 +47,7 @@ export class ContractRepo
         return contracts ? contracts.map(contract => contract.id) : null;
     }
 
-    public async getContractByDocId(docId: string): Promise<TContract | null> {
+    public async getContractByDocId(docId: number): Promise<TContract | null> {
         try {
             const contract = await ContractModel.findOne({
                 where: {
@@ -65,7 +65,7 @@ export class ContractRepo
     }
 
     public async updatePaymentStatus(
-        contractId: string,
+        contractId: number,
         payment: ContractPaymentDetails[],
         status: CONTRACT_STATUS
     ): Promise<any> {
@@ -106,7 +106,7 @@ export class ContractRepo
     }
 
     public async updateContractDoc(
-        contractId: string,
+        contractId: number,
         docData: any
     ): Promise<TContract> {
         const [affectedCount, updatedContracts] = await ContractModel.update(
@@ -138,7 +138,7 @@ export class ContractRepo
         return data ? data.get() : null;
     }
 
-    public async get(id: string): Promise<TContract | null> {
+    public async get(id: number): Promise<TContract | null> {
         const data = await ContractModel.findOne({
             where: { id },
         });
@@ -147,27 +147,27 @@ export class ContractRepo
 
     public async list(filters: TQueryFilters): Promise<TContractsList> {
         const total = await ContractModel.count({
-            where: {
-                templateId: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
+            // where: {
+            //     templateId: {
+            //         [Op.like]: `%${filters.search}%`,
+            //     },
+            // },
         });
         const data = await ContractModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
-            where: {
-                templateId: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
+            // where: {
+            //     templateId: {
+            //         [Op.like]: `%${filters.search}%`,
+            //     },
+            // },
         });
         return { total, data };
     }
 
     public async update(
-        id: string,
+        id: number,
         data: Partial<TContract>
     ): Promise<[affectedCount: number]> {
         const response = await ContractModel.update(data, {
@@ -177,7 +177,7 @@ export class ContractRepo
     }
 
     public async updatePayment(
-        contractId: string,
+        contractId: number,
         paymentData: ContractPaymentDetails[],
         logs: ITrackable[],
         status: CONTRACT_STATUS
@@ -190,7 +190,7 @@ export class ContractRepo
         return affectedCount > 0;
     }
 
-    public async delete(ids: string[]): Promise<number> {
+    public async delete(ids: number[]): Promise<number> {
         const response = await ContractModel.destroy({
             where: { id: ids },
         });

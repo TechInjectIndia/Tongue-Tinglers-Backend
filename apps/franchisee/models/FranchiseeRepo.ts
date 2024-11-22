@@ -51,7 +51,7 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
     }
 
     // Retrieve a franchisee by ID
-    public async getFranchiseeById(franchiseeId: string): Promise<FranchiseeAttributes & { contracts?: ContractModel[] } | null> {
+    public async getFranchiseeById(franchiseeId: number): Promise<FranchiseeAttributes & { contracts?: ContractModel[] } | null> {
         try {
             const franchisee = await FranchiseeModel.findOne({
                 where: { id: franchiseeId },
@@ -85,7 +85,7 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
     }
 
     // Retrieve a franchisee by ID
-    public async getFranchiseeByUserId(userId: string): Promise<FranchiseeAttributes | null> {
+    public async getFranchiseeByUserId(userId: number): Promise<FranchiseeAttributes | null> {
         try {
             const franchisee = await FranchiseeModel.findOne({
                 raw: true,
@@ -102,7 +102,7 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
     }
 
     // Update a franchisee by ID
-    public async updateFranchisee(franchiseeId: string, franchiseeData: Partial<FranchiseeAttributes>): Promise<FranchiseeAttributes | null> {
+    public async updateFranchisee(franchiseeId: number, franchiseeData: Partial<FranchiseeAttributes>): Promise<FranchiseeAttributes | null> {
         try {
             await FranchiseeModel.update(franchiseeData, { where: { id: franchiseeId } });
             return await this.getFranchiseeById(franchiseeId); // Return the updated franchisee
@@ -113,7 +113,7 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
     }
 
     // Delete a franchisee by ID
-    public async deleteFranchisee(franchiseeId: string): Promise<boolean> {
+    public async deleteFranchisee(franchiseeId: number): Promise<boolean> {
         try {
             const result = await FranchiseeModel.destroy({ where: { id: franchiseeId } });
             return result > 0; // Return true if a franchisee was deleted

@@ -11,7 +11,7 @@ interface IAddressController<T, F extends TQueryFilters> {
      * @param filters - Filtering options for the addresses.
      * @returns Promise resolving to a list of addresses.
      */
-    list(user_id: string, filters: F): Promise<TAddresssList>;
+    list(user_id: number, filters: F): Promise<TAddresssList>;
 
     /**
      * Get a specific address by ID for a user.
@@ -19,7 +19,7 @@ interface IAddressController<T, F extends TQueryFilters> {
      * @param user_id - The ID of the user.
      * @returns Promise resolving to the address object.
      */
-    get(id: number, user_id: string): Promise<T>;
+    get(id: number, user_id: number): Promise<T>;
 
     /**
      * Create a new address.
@@ -35,7 +35,7 @@ interface IAddressController<T, F extends TQueryFilters> {
      * @param payload - The data to update the address.
      * @returns Promise resolving to the affected count.
      */
-    update(user_id: string, id: number, payload: TPayloadAddress): Promise<[affectedCount: number]>; 
+    update(user_id: number, id: number, payload: TPayloadAddress): Promise<[affectedCount: number]>; 
 
     /**
      * Delete addresses by IDs for a user.
@@ -44,7 +44,7 @@ interface IAddressController<T, F extends TQueryFilters> {
      * @param deletedBy - The ID of the user who deleted the addresses.
      * @returns Promise resolving to the count of deleted addresses.
      */
-    delete(user_id: string, ids: number[], deletedBy: number): Promise<number>;
+    delete(user_id: number, ids: number[], deletedBy: number): Promise<number>;
 }
 
 export default IAddressController;

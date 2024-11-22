@@ -8,7 +8,7 @@ const { TEXT, DATE, INTEGER, NOW, UUIDV4 } = DataTypes;
 interface AnswerCreationAttributes extends Optional<ICampaignSubmisisons, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class CampaignSubmissions extends Model<ICampaignSubmisisons, AnswerCreationAttributes> implements ICampaignSubmisisons {
-    public id!: string;
+    public id!: number;
     public campaignId!: number;
     public response!: string;
 
@@ -25,11 +25,10 @@ class CampaignSubmissions extends Model<ICampaignSubmisisons, AnswerCreationAttr
 
 CampaignSubmissions.init({
     id: {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        defaultValue: UUIDV4,
-        comment: 'Unique identifier for the answer',
+        autoIncrement: true, 
     },
     campaignId: {
         type: INTEGER,

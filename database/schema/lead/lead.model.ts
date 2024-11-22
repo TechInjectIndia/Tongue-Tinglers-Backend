@@ -9,8 +9,8 @@ const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
 interface LeadCreationAttributes extends Optional<ILead, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
 class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
-    public id!: string;
-    public campaignId?: string;
+    public id!: number;
+    public campaignId?: number;
     public firstName!: string;
     public status!: LeadStatus;
     public lastName!: string;
@@ -30,9 +30,9 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public affiliate: Array<Affiliate> | null;
     public marketing: Array<string> | null;
     public other: Array<ExtraFields> | null;
-    public createdBy!: string;
-    public updatedBy!: string | null;
-    public deletedBy!: string | null;
+    public createdBy!: number;
+    public updatedBy!: number | null;
+    public deletedBy!: number | null;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
@@ -46,13 +46,12 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
 
 LeadsModel.init({
     id: {
-        type: STRING,
+        type: INTEGER,
+        autoIncrement: true,
         primaryKey: true,
-        allowNull: false,
-        defaultValue: UUIDV4
     },
     campaignId: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true
     },
     firstName: {
@@ -132,15 +131,15 @@ LeadsModel.init({
         allowNull: true
     },
     createdBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: false
     },
     updatedBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true
     },
     deletedBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true
     },
     createdAt: {

@@ -8,8 +8,8 @@ interface UserAddressCreationAttributes extends Optional<UserAddressAttributes, 
 
 // Define the UserAddress model class
 class UserAddressModel extends Model<UserAddressAttributes, UserAddressCreationAttributes> implements UserAddressAttributes {
-    public id!: string;
-    public userId!: string;
+    public id!: number;
+    public userId!: number;
 
     // Billing address properties
     public title!: string;
@@ -34,14 +34,18 @@ class UserAddressModel extends Model<UserAddressAttributes, UserAddressCreationA
 UserAddressModel.init(
     {
         id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
-            defaultValue: DataTypes.UUIDV4,
+            autoIncrement: true, 
         },
         userId: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
+            references: {
+                model: 'users',  // Ensure this matches the name of your User table
+                key: 'id'  // Ensure this matches the primary key field in the User table
+            },
         },
 
         // Billing address fields
@@ -109,7 +113,7 @@ UserAddressModel.init(
     }
 );
 
-UserAddressModel.belongsTo(UserModel, { foreignKey: 'userId', as: 'addressData', });
+// UserAddressModel.belongsTo(UserModel, { foreignKey: 'userId', as: 'addressData', });
 
 // Export the model for use in other parts of the project
 export { UserAddressModel };

@@ -9,8 +9,8 @@ interface IRegion extends UpdatedMetaData, BaseModel, DeletionMetaData {
 interface TPayloadRegion {
     title: string;
     area: number[] | null;
-    createdBy?: string;
-    updatedBy?: string;
+    createdBy?: number;
+    updatedBy?: number;
 }
 
 interface TRegionList {

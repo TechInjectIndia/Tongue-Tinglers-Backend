@@ -33,7 +33,7 @@ export class UserAddressRepo implements IUserAddressController<UserAddressAttrib
         }
     }
 
-    public async list(userId: string): Promise<UserAddressAttributes[]> {
+    public async list(userId: number): Promise<UserAddressAttributes[]> {
         const data = await UserAddressModel.findAll({
             where: {
                 userId
@@ -42,7 +42,7 @@ export class UserAddressRepo implements IUserAddressController<UserAddressAttrib
         return data;
     }
 
-    public async getActiveAddress(userId: string): Promise<UserAddressAttributes | null> {
+    public async getActiveAddress(userId: number): Promise<UserAddressAttributes | null> {
         try {
             const userAddress = await UserAddressModel.findOne({
                 where: {
@@ -61,7 +61,7 @@ export class UserAddressRepo implements IUserAddressController<UserAddressAttrib
      * @param id - The ID of the user address
      * @returns The user address or null if not found
      */
-    public async findById(id: string, userId: string): Promise<UserAddressAttributes | null> {
+    public async findById(id: number, userId: number): Promise<UserAddressAttributes | null> {
         try {
             const userAddress = await UserAddressModel.findOne({
                 where: {
@@ -81,7 +81,7 @@ export class UserAddressRepo implements IUserAddressController<UserAddressAttrib
      * @param payload - The data to update
      * @returns The updated user address or null if not found
      */
-    public async updateById(id: string, payload: Partial<IUserAddressPayload>): Promise<UserAddressAttributes | null> {
+    public async updateById(id: number, payload: Partial<IUserAddressPayload>): Promise<UserAddressAttributes | null> {
         try {
             const userAddress = await UserAddressModel.findByPk(id);
             if (!userAddress) {
@@ -114,7 +114,7 @@ export class UserAddressRepo implements IUserAddressController<UserAddressAttrib
      * @param id - The ID of the user address
      * @returns True if deletion was successful, false if not found
      */
-    public async deleteById(id: string): Promise<boolean> {
+    public async deleteById(id: number): Promise<boolean> {
         try {
             const userAddress = await UserAddressModel.findByPk(id);
             if (!userAddress) {

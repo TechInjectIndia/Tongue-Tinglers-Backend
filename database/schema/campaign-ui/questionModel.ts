@@ -3,21 +3,22 @@ import { QuestionType, IQuestion, IOptions } from '../../../interfaces';
 import { sequelize } from "../../../config";
 import { UserModel } from '../user/user.model';
 import { CampaignAdModel } from './campaignAdModel';
+import { INTEGER } from "sequelize";
 const { STRING, UUID, DATE, JSONB, ENUM, NOW, UUIDV4, BOOLEAN } = DataTypes;
 
 // Define the creation attributes by making certain fields optional
 interface FormQuestionCreationAttributes extends Optional<IQuestion, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
 class questionModel extends Model<IQuestion, FormQuestionCreationAttributes> implements IQuestion {
-    public id!: string;
+    public id!: number;
     public question!: string;
     public type!: QuestionType;
     public required!: boolean;
     public options!: IOptions[];
 
-    public createdBy!: string;
-    public updatedBy!: string | null;
-    public deletedBy!: string | null;
+    public createdBy!: number;
+    public updatedBy!: number | null;
+    public deletedBy!: number | null;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
@@ -26,11 +27,10 @@ class questionModel extends Model<IQuestion, FormQuestionCreationAttributes> imp
 // Initialize the questionModel
 questionModel.init({
     id: {
-        type: UUID,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        defaultValue: UUIDV4,
-        comment: 'Unique identifier for the form question',
+        autoIncrement: true, 
     },
     question: {
         type: STRING,
@@ -53,15 +53,15 @@ questionModel.init({
         comment: 'Options for multi_choice or single_choice questions (stored as JSON)',
     },
     createdBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: false
     },
     updatedBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true
     },
     deletedBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true
     },
     createdAt: {

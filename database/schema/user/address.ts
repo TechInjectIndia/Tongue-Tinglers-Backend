@@ -8,7 +8,7 @@ interface AddressCreationAttributes extends Optional<TAddress, 'id' | 'createdAt
 
 class AddressModel extends Model<TAddress, AddressCreationAttributes> implements TAddress {
   public id!: number;
-  public user_id!: string;
+  public user_id!: number;
   public street!: string;
   public city!: string;
   public state!: string;
@@ -25,8 +25,12 @@ AddressModel.init({
     primaryKey: true,
   },
   user_id: {
-    type: STRING,
-    allowNull: false
+    type: INTEGER,
+    allowNull: false,
+    references: {
+      model: 'users',  // Ensure this matches the name of your User table
+      key: 'id'  // Ensure this matches the primary key field in the User table
+    },
   },
   street: {
     type: STRING,
@@ -69,8 +73,10 @@ AddressModel.init({
 UserModel.hasMany(AddressModel, {
   foreignKey: "user_id",
 });
+
 AddressModel.belongsTo(UserModel, {
   foreignKey: "user_id",
+  as: 'user_address'
 });
 
 export { AddressModel };

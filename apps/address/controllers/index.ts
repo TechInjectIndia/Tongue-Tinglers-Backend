@@ -65,10 +65,10 @@ export default class AddressController {
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const user_id = get(req, 'user_id', "");
+            const user_id = get(req, 'user_id', 0);
             const updateAddress = req?.body;
             delete updateAddress.id
-            const Address = await new AddressRepo().update(user_id as string, id as number, updateAddress);
+            const Address = await new AddressRepo().update(user_id as number, id as number, updateAddress);
             return res
                 .status(200)
                 .send(
@@ -89,9 +89,9 @@ export default class AddressController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const user_id = get(req, 'user_id', "");
+            const user_id = get(req, 'user_id', 0);
 
-            const existingAddress = await new AddressRepo().get(id as number, user_id as string);
+            const existingAddress = await new AddressRepo().get(id as number, user_id as number);
 
             if (isEmpty(existingAddress)) {
                 return res

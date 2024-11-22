@@ -10,8 +10,8 @@ interface OrderItemsCreationAttributes extends Optional<TOrderItem, 'id' | 'crea
 
 class OrderItemsModel extends Model<TOrderItem, OrderItemsCreationAttributes> implements TOrderItem {
     public id!: number;
-    public orderId: string;
-    public userId: string;
+    public orderId: number;
+    public userId: number;
     public productId: number;
     public productType: string;
     public quantity: number;
@@ -29,11 +29,11 @@ OrderItemsModel.init({
         primaryKey: true,
     },
     orderId: {
-        type: STRING,
+        type: INTEGER,
         allowNull: false,
     },
     userId: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true,
     },
     isRepeated: {

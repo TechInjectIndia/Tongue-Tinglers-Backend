@@ -13,7 +13,7 @@ import IBaseRepo from '../controllers/controller/IController';
 export class QuestionRepo implements IBaseRepo<IQuestion, TListFilters> {
     constructor() { }
 
-    public async get(id: string): Promise<IQuestion | null> {
+    public async get(id: number): Promise<IQuestion | null> {
         const data = await questionModel.findOne({
             where: {
                 id,
@@ -48,7 +48,7 @@ export class QuestionRepo implements IBaseRepo<IQuestion, TListFilters> {
         return response;
     }
 
-    public async update(id: string, data: TPayloadQuestion): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TPayloadQuestion): Promise<[affectedCount: number]> {
         return await questionModel.update(data, {
             where: {
                 id,
@@ -56,7 +56,7 @@ export class QuestionRepo implements IBaseRepo<IQuestion, TListFilters> {
         });
     }
 
-    public async delete(ids: string[]): Promise<number> {
+    public async delete(ids: number[]): Promise<number> {
         const response = await questionModel.destroy({
             where: {
                 id: ids,

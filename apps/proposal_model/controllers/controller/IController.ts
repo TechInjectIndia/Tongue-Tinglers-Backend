@@ -20,7 +20,7 @@ interface IProposalModelsController<T, F extends TQueryFilters> {
      * @param user_id - The ID of the user.
      * @returns Promise resolving to the ProposalModels object.
      */
-    get(id: string): Promise<T | null>;
+    get(id: number): Promise<T | null>;
 
     /**
      * Create a new ProposalModels.
@@ -36,7 +36,7 @@ interface IProposalModelsController<T, F extends TQueryFilters> {
      * @param payload - The data to update the ProposalModels.
      * @returns Promise resolving to the affected count.
      */
-    update(id: string, payload: TPayloadProposalModel): Promise<[affectedCount: number]>;
+    update(id: number, payload: TPayloadProposalModel): Promise<[affectedCount: number]>;
 
     /**
      * Delete ProposalModelses by IDs for a user.

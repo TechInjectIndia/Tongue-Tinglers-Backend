@@ -29,8 +29,8 @@ export interface Address {
 }
 
 export interface UserInformation {
-    id: string;
-    createdBy: string;
+    id: number;
+    createdBy: number;
     createdAt: Date;
     firstName: string;
     lastName: string;
@@ -41,9 +41,9 @@ export interface UserInformation {
     type: USER_TYPE;
     status: USER_STATUS;
     cart: cart[];
-    updatedBy: string | null;
+    updatedBy: number | null;
     updatedAt: Date | null;
-    deletedBy: string | null;
+    deletedBy: number | null;
     deletedAt: Date | null;
     role: number | null;
     address: Array<Address>;

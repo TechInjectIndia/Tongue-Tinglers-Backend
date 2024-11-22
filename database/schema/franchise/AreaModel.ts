@@ -10,9 +10,9 @@ class AreaModel extends Model<IArea, AreaCreationAttributes> implements IArea {
     public id: number;
     public title: string;
 
-    public createdBy!: string;
-    public updatedBy!: string | null;
-    public deletedBy!: string | null;
+    public createdBy!: number;
+    public updatedBy!: number | null;
+    public deletedBy!: number | null;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
@@ -36,15 +36,15 @@ AreaModel.init(
             allowNull: false,
         },
         createdBy: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         updatedBy: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: true
         },
         deletedBy: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: true
         },
         createdAt: {

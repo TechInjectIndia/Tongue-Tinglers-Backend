@@ -25,7 +25,7 @@ export default class LeadAnalyticsController {
             const dateRange = getDateRange(filter, startDate, endDate);
             let analyticsData: any[] = [];
 
-            const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
+            const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as number);
             if (!franchiseData) {
                 return res.status(404).send({ message: 'Franchise data not found.' });
             }
@@ -93,7 +93,7 @@ export default class LeadAnalyticsController {
                 dateInterval = eachDayOfInterval({ start: startDate, end: endDate });
             }
 
-            const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
+            const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as number);
             if (!franchiseData) {
                 return res.status(404).send({ message: 'Franchise data not found.' });
             }
@@ -163,7 +163,7 @@ export default class LeadAnalyticsController {
             const franchiseRepo = new FranchiseeRepo();
             const franchiseId = get(req, 'franchise_id', '');
 
-            const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
+            const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as number);
             if (!franchiseData) {
                 return res.status(404).send({ message: 'Franchise data not found.' });
             }
@@ -211,13 +211,13 @@ export default class LeadAnalyticsController {
 
     static async leadStatusByFranchiseId(req: Request, res: Response, next: NextFunction) {
         try {
-            const franchiseid = get(req.query, "franchiseId", "") as string;
+            const franchiseid = get(req.query, "franchiseId", "") as number;
             const filter = get(req.query, "filter", "") as string;
             const startDate = get(req.query, "startDate", "") as string;
             const endDate = get(req.query, "endDate", "") as string;
             const dateRange = getDateRange(filter, startDate, endDate);
 
-            const campaigns = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseid as string);
+            const campaigns = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseid as number);
             // get leads where campaign id is campaigns.id using map
             const campaignIds = campaigns.map(campaign => campaign.id);
             const analyticsData = await new AnalyticsModel().getLeadStatusByCampaignIdsAndDateRange(campaignIds, dateRange.start, dateRange.end);

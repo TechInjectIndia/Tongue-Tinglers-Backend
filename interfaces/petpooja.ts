@@ -1,5 +1,5 @@
 export interface IItemStockAttributes {
-    user_id: string;
+    user_id: number;
     startStock: number;
     endStock: number;
     recorded_at?: Date;

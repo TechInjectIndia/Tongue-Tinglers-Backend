@@ -7,11 +7,11 @@ import { FranchiseLeadModel } from "./franchiseModels";
 interface SeoImageCreationAttributes extends Optional<SeoImage, 'id'> { }
 
 class SeoImageModel extends Model<SeoImage, SeoImageCreationAttributes> implements SeoImage {
-    public id!: string;
+    public id!: number;
     public localFile: File | null;
     public url!: string;
     public alt!: string;
-    public franchiseModelId!: string;
+    public franchiseModelId!: number;
 
     // Define any associations if needed
     public static associate() {
@@ -23,10 +23,10 @@ class SeoImageModel extends Model<SeoImage, SeoImageCreationAttributes> implemen
 // Initialize the SeoImageModel
 SeoImageModel.init({
     id: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        defaultValue: DataTypes.UUIDV4
+        autoIncrement: true, 
     },
     localFile: {
         type: DataTypes.STRING,
@@ -41,7 +41,7 @@ SeoImageModel.init({
         allowNull: false,
     },
     franchiseModelId: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: FranchiseLeadModel,

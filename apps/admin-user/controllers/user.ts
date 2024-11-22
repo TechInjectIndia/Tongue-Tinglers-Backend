@@ -90,7 +90,7 @@ export default class AdminController {
 
     static async addAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, "user_id", "");
+            const user_id = get(req, "user_id", 0);
             const payload = { ...req?.body, createdBy: user_id };
 
             const existingAdmin = await new Auth().getUserByEmail(
@@ -244,7 +244,7 @@ export default class AdminController {
             //     payload = { ...payload, password: hashedPassword };
             // }
 
-            await new AdminRepo().update(id as string, payload);
+            await new AdminRepo().update(id as number, payload);
             return res
                 .status(200)
                 .send(
@@ -287,7 +287,7 @@ export default class AdminController {
     static async getAdmin(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id");
-            const existingAdmin = await new AdminRepo().get(id as string);
+            const existingAdmin = await new AdminRepo().get(id as number);
             if (!existingAdmin?.id) {
                 return res
                     .status(400)

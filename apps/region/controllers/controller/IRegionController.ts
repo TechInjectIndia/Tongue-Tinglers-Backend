@@ -15,7 +15,7 @@ interface IRegionController<T, F extends TQueryFilters> {
      * @param id - The ID of the region.
      * @returns Promise resolving to the region object.
      */
-    get(id: string): Promise<T | null>;
+    get(id: number): Promise<T | null>;
 
     /**
      * Create a new region.
@@ -30,7 +30,7 @@ interface IRegionController<T, F extends TQueryFilters> {
      * @param payload - The data to update the region.
      * @returns Promise resolving to the affected count.
      */
-    update(id: string, payload: TPayloadRegion): Promise<[affectedCount: number]>; 
+    update(id: number, payload: TPayloadRegion): Promise<[affectedCount: number]>; 
 
     /**
      * Delete regions by IDs.
@@ -38,7 +38,7 @@ interface IRegionController<T, F extends TQueryFilters> {
      * @param deletedBy - The ID of the user who deleted the regions.
      * @returns Promise resolving to the count of deleted regions.
      */
-    delete(ids: string[], deletedBy: string): Promise<number>;
+    delete(ids: number[], deletedBy: number): Promise<number>;
 }
 
 export default IRegionController;

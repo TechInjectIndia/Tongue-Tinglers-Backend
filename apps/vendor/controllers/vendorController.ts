@@ -59,7 +59,7 @@ export default class VendorController {
             const updateVendorData = req.body;
             delete updateVendorData.id;
 
-            const vendor = await new VendorRepo().update(id as string, updateVendorData);
+            const vendor = await new VendorRepo().update(id as number, updateVendorData);
 
             return res
                 .status(200)
@@ -81,7 +81,7 @@ export default class VendorController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req.params, "id", 0);
-            const vendor = await new VendorRepo().get(id as string);
+            const vendor = await new VendorRepo().get(id as number);
 
             if (isEmpty(vendor)) {
                 return res

@@ -11,14 +11,14 @@ interface ILeadController<T, F extends TQueryFilters> {
      * @param id - The ID of the lead.
      * @returns Promise resolving to the lead data.
      */
-    getLeadByStatus(id: string): Promise<ILead | null>;
+    getLeadByStatus(id: number): Promise<ILead | null>;
 
     /**
      * Get lead by ID.
      * @param id - The ID of the lead.
      * @returns Promise resolving to the lead data.
      */
-    get(id: string): Promise<ILead | null>;
+    get(id: number): Promise<ILead | null>;
 
     /**
      * Update the status of a lead.
@@ -26,7 +26,7 @@ interface ILeadController<T, F extends TQueryFilters> {
      * @param data - The new status data.
      * @returns Promise resolving to the affected count.
      */
-    updateStatus(id: string, data: TLeadStatus): Promise<[affectedCount: number]>;
+    updateStatus(id: number, data: TLeadStatus): Promise<[affectedCount: number]>;
 
     /**
      * List leads with filters.
@@ -57,14 +57,14 @@ interface ILeadController<T, F extends TQueryFilters> {
      * @param payload - The data to update the lead.
      * @returns Promise resolving to the affected count.
      */
-    update(id: string, payload: TLeadPayload): Promise<[affectedCount: number]>;
+    update(id: number, payload: TLeadPayload): Promise<[affectedCount: number]>;
 
     /**
      * Delete leads by IDs.
      * @param ids - Array of lead IDs to delete.
      * @returns Promise resolving to the count of deleted leads.
      */
-    delete(ids: string[]): Promise<number>; // Assuming IDs are strings
+    delete(ids: number[]): Promise<number>; // Assuming IDs are strings
 
     /**
      * Get lead status by a specific attribute.

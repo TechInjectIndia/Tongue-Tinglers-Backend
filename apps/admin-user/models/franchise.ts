@@ -71,7 +71,7 @@ export class FranchiseRepo implements IBaseRepo<TUser, TListFilters> {
 
         await UserModel.update({
             status: USER_STATUS.DELETED,
-            deletedBy: deletedBy?.toString()
+            deletedBy: deletedBy
         }, {
             where: {
                 id: ids,

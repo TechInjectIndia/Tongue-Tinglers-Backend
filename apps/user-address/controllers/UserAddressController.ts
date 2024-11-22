@@ -46,7 +46,7 @@ export default class UserAddressController {
     static async list(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = get(req, 'user_id', '');
-            const vendors = await new UserAddressRepo().list(userId as string);
+            const vendors = await new UserAddressRepo().list(userId as number);
 
             return res
                 .status(200)
@@ -73,7 +73,7 @@ export default class UserAddressController {
             const userId = get(req, 'user_id', '');
             const id = get(req.params, 'id', '');
             console.log('userId', userId, 'id', id);
-            const userAddress = await new UserAddressRepo().findById(id as string, userId as string);
+            const userAddress = await new UserAddressRepo().findById(id as number, userId as number);
 
             if (!userAddress) {
                 return res.status(404)
@@ -107,7 +107,7 @@ export default class UserAddressController {
             const { id } = req.params;
             const payload = { ...req?.body, userId: userId };
 
-            const updatedUserAddress = await new UserAddressRepo().updateById(id as string, payload);
+            const updatedUserAddress = await new UserAddressRepo().updateById(id as number, payload);
             if (!updatedUserAddress) {
                 return res.status(404)
                     .send(
@@ -135,7 +135,7 @@ export default class UserAddressController {
     static async deleteUserAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = req.params;
-            const deleted = await new UserAddressRepo().deleteById(id as string);
+            const deleted = await new UserAddressRepo().deleteById(id as number);
 
             if (!deleted) {
                 return res.status(404)

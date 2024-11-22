@@ -28,7 +28,7 @@ export default class GalleryController {
             const id = get(req?.params, "id", '');
             const user_id = get(req, 'user_id', '');
 
-            const existingFranchiseModel = await new GalleryRepo().get(id as string);
+            const existingFranchiseModel = await new GalleryRepo().get(id as number);
 
             if (isEmpty(existingFranchiseModel)) {
                 return res
@@ -188,7 +188,7 @@ export default class GalleryController {
             const payload = req?.body;
             delete payload.id;
 
-            const payloadUpdated = await new GalleryRepo().update(id as string, { ...payload });
+            const payloadUpdated = await new GalleryRepo().update(id as number, { ...payload });
             return res
                 .status(200)
                 .send(

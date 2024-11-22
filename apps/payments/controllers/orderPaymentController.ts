@@ -68,7 +68,7 @@ export default class OrderPaymentController {
                     } else {
                         paymentStatus = PAYMENT_STATUS.UNPAID;
                     }
-                    await new OrderRepo().update(orderDetails.id as string, {
+                    await new OrderRepo().update(orderDetails.id as number, {
                         paymentStatus,
                     });
                 }
@@ -193,7 +193,7 @@ export default class OrderPaymentController {
 
             // Create the order and save order items
             const newOrder = await new OrderRepo().create({
-                userId: userId as string,
+                userId: userId as number,
                 trackingNumber: "" as string,
                 shippingAddress: "" as string,
                 paymentMethod: "Razorpay" as string,
@@ -207,7 +207,7 @@ export default class OrderPaymentController {
 
             // Save each cart item as an order item
             const orderItems = cart.items.map((item) => ({
-                orderId: newOrder.id as string,
+                orderId: newOrder.id as number,
                 userId: userId as string,
                 productId: item.productId as number,
                 productType: item.productType as string,
@@ -219,7 +219,7 @@ export default class OrderPaymentController {
             await new OrderItemRepo().bulkCreate(orderItems);
 
             const shippingPayload = {
-                orderId: newOrder.id as string,
+                orderId: newOrder.id as number,
                 activities: [
                     {
                         status: ShippingStatus.OrderReceived,
@@ -230,7 +230,7 @@ export default class OrderPaymentController {
                 date: new Date().toISOString(),
             };
             await new ShippingHistoryRepo().addShippingHistory(
-                newOrder.id as string,
+                newOrder.id as number,
                 shippingPayload,
             );
 
@@ -314,11 +314,11 @@ export default class OrderPaymentController {
             // }
 
             const getUserActiveAddress =
-                await new UserAddressRepo().getActiveAddress(userId as string);
+                await new UserAddressRepo().getActiveAddress(userId as number);
 
             // Create the order and save order items
             const newOrder = await new OrderRepo().create({
-                userId: userId as string,
+                userId: userId as number,
                 trackingNumber: "" as string,
                 shippingAddress: getUserActiveAddress,
                 paymentMethod: "Razorpay" as string,
@@ -332,7 +332,7 @@ export default class OrderPaymentController {
 
             // Save each cart item as an order item
             const orderItems = cart.items.map((item) => ({
-                orderId: newOrder.id as string,
+                orderId: newOrder.id as number,
                 userId: userId as string,
                 productId: item.productId as number,
                 productType: item.productType as string,
@@ -344,7 +344,7 @@ export default class OrderPaymentController {
             await new OrderItemRepo().bulkCreate(orderItems);
 
             const shippingPayload = {
-                orderId: newOrder.id as string,
+                orderId: newOrder.id as number,
                 activities: [
                     {
                         status: ShippingStatus.OrderReceived,
@@ -355,7 +355,7 @@ export default class OrderPaymentController {
                 date: null,
             };
             await new ShippingHistoryRepo().addShippingHistory(
-                newOrder.id as string,
+                newOrder.id as number,
                 shippingPayload,
             );
 

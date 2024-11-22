@@ -142,7 +142,7 @@ export default class RegionController {
                 }
             }
 
-            const updatedRegion = await new RegionRepo().update(id as string, { ...updateData, updatedBy: user_id });
+            const updatedRegion = await new RegionRepo().update(id as number, { ...updateData, updatedBy: user_id });
             return res
                 .status(200)
                 .send(
@@ -163,7 +163,7 @@ export default class RegionController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req.params, "id", 0);
-            const existingRegion = await new RegionRepo().get(id as string);
+            const existingRegion = await new RegionRepo().get(id as number);
 
             if (!existingRegion) {
                 return res

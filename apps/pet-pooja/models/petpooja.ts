@@ -24,7 +24,7 @@ function get24HoursLater(startTime: Date): Date {
 export class PetPoojaRepo implements IBaseRepo<TEditUser, TListFilters> {
     constructor() { }
 
-    public async updateStockData(user_id: string, data: any): Promise<[affectedCount: number]> {
+    public async updateStockData(user_id: number, data: any): Promise<[affectedCount: number]> {
         const todayStart = getTodayStartTime();
         const todayEnd = get24HoursLater(todayStart);
 
@@ -82,7 +82,7 @@ export class PetPoojaRepo implements IBaseRepo<TEditUser, TListFilters> {
         return itemStocks
     }
 
-    public async getInventory(franchiseId: string): Promise<any> {
+    public async getInventory(franchiseId: number): Promise<any> {
         const response = await axios.get(`${apiUrl}/inventory`, {
             headers: {
                 'Authorization': `Bearer ${apiKey}`
@@ -92,7 +92,7 @@ export class PetPoojaRepo implements IBaseRepo<TEditUser, TListFilters> {
         // Save inventory to database, date wise, ( franchiseId )
     }
 
-    public async savePetPoojaOrder(franchiseId: string): Promise<any> {
+    public async savePetPoojaOrder(franchiseId: number): Promise<any> {
 
         // Save new Order        
     }

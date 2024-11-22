@@ -37,7 +37,7 @@ enum SIGN_STATUS {
 }
 
 interface IContract extends UpdatedMetaData, BaseModel, DeletionMetaData {
-    id: string;
+    id: number;
     status: CONTRACT_STATUS;
     proposalData: ProposalModels | null;
     terminationDetails: null | {
@@ -46,8 +46,8 @@ interface IContract extends UpdatedMetaData, BaseModel, DeletionMetaData {
         date: Date;
     };
     payment: ContractPaymentDetails[] | null;
-    leadId: string;
-    templateId: string;
+    leadId: number;
+    templateId: number;
     amount: number;
     signedDate: Date | null;
     dueDate: Date;
@@ -62,7 +62,7 @@ interface IContract extends UpdatedMetaData, BaseModel, DeletionMetaData {
 }
 
 interface SignDoc {
-    docId: string | null;
+    docId: number | null;
     sentBy: UserDetails;
     createdAt: Date;
     status: SIGN_STATUS;

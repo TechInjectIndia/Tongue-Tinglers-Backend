@@ -7,13 +7,13 @@ import { UserModel } from '../user/user.model';
 interface RegionCreationAttributes extends Optional<IRegion, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
 class RegionModel extends Model<IRegion, RegionCreationAttributes> implements IRegion {
-    public id: string;
+    public id: number;
     public title: string;
     public area: number[] | null;
 
-    public createdBy!: string;
-    public updatedBy!: string | null;
-    public deletedBy!: string | null;
+    public createdBy!: number;
+    public updatedBy!: number | null;
+    public deletedBy!: number | null;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
@@ -28,10 +28,10 @@ class RegionModel extends Model<IRegion, RegionCreationAttributes> implements IR
 RegionModel.init(
     {
         id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
-            defaultValue: DataTypes.UUIDV4
+            autoIncrement: true
         },
         title: {
             type: DataTypes.STRING(255),
@@ -43,15 +43,15 @@ RegionModel.init(
             defaultValue: null
         },
         createdBy: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         updatedBy: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: true
         },
         deletedBy: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: true
         },
         createdAt: {

@@ -38,28 +38,28 @@ interface Note {
 
 interface UserDetails {
     userName: string;
-    id: string;
+    id: number;
 }
 
 interface BaseModel {
-    id: string;
-    createdBy: string;
+    id: number;
+    createdBy: number;
     createdAt: Date;
 }
 
 interface BaseModelIdNumber {
     id: number;
-    createdBy: string;
+    createdBy: number;
     createdAt: Date;
 }
 
 interface UpdatedMetaData {
-    updatedBy: string | null;
+    updatedBy: number | null;
     updatedAt: Date | null;
 }
 
 interface DeletionMetaData {
-    deletedBy: string | null;
+    deletedBy: number | null;
     deletedAt: Date | null;
 }
 

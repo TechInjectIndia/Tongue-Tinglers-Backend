@@ -34,7 +34,7 @@ export default class WebLeadController {
 
                 let franchiseeId: any = '';
                 const franchiseRepo = new FranchiseeRepo();
-                const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
+                const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as number);
                 if(franchiseData){
                     franchiseeId = franchiseData.id;
                 }

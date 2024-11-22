@@ -1,13 +1,13 @@
 
 interface UserDetails {
   userName: string,
-  id: String
+  id: number
 }
 
 export type TUser = {
-  id: string;
+  id: number;
   firebaseUid: string;
-  createdBy: string;
+  createdBy: number;
   password: string;
   firstName: string;
   lastName: string;
@@ -24,8 +24,8 @@ export type TUser = {
   referralCode: string;
   referBy: UserDetails;
   refresh_token: string;
-  updatedBy: string;
-  deletedBy: string;
+  updatedBy: number;
+  deletedBy: number;
   role: number;
   lastLoginAt: Date;
   createdAt: Date;
@@ -76,14 +76,14 @@ export type TEditUserProfile = {
 };
 
 export type TUpdateUserToken = {
-  user_id: string;
+  user_id: number;
   refresh_token: string;
   lastLoginAt: Date;
   lastLoginIp: string;
 };
 
 export type TUpdateUserProfile = {
-  user_id: string;
+  user_id: number;
   firstName: string;
   lastName: string;
   nameForSearch: string;
@@ -92,7 +92,7 @@ export type TUpdateUserProfile = {
 };
 
 export type TUpdateUserPassword = {
-  user_id: string;
+  user_id: number;
   password: string;
 };
 

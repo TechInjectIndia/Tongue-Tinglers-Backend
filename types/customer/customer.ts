@@ -6,13 +6,13 @@ export type TCustomerLogin = {
 };
 
 export type TUpdateCustomerToken = {
-  user_id: string;
+  user_id: number;
   refresh_token: string;
   lastLoginAt: Date;
   lastLoginIp: string;
 };
 
 export type TUpdateCustomerPassword = {
-  user_id: string;
+  user_id: number;
   password: string;
 };

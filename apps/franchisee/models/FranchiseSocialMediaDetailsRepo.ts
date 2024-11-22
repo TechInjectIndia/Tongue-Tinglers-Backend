@@ -16,7 +16,7 @@ export class FranchiseSocialMediaDetailsRepo implements IFranchiseSocialMediaDet
     }
 
     // Retrieve a franchise location by ID
-    public async getById(franchiseSocialMediaId: string): Promise<SocialMediaDetailsAttributesFranchisee | null> {
+    public async getById(franchiseSocialMediaId: number): Promise<SocialMediaDetailsAttributesFranchisee | null> {
         try {
             const newFranchiseDocialMedia = await SocialMediaDetailsFranchiseModel.findByPk(franchiseSocialMediaId);
             return newFranchiseDocialMedia;
@@ -27,7 +27,7 @@ export class FranchiseSocialMediaDetailsRepo implements IFranchiseSocialMediaDet
     }
 
     // Update a franchise location by ID
-    public async update(franchiseSocialMediaId: string, newFranchiseDocialMediaData: Partial<SocialMediaDetailsAttributesFranchisee>): Promise<SocialMediaDetailsAttributesFranchisee | null> {
+    public async update(franchiseSocialMediaId: number, newFranchiseDocialMediaData: Partial<SocialMediaDetailsAttributesFranchisee>): Promise<SocialMediaDetailsAttributesFranchisee | null> {
         try {
             await SocialMediaDetailsFranchiseModel.update(newFranchiseDocialMediaData, { where: { id: franchiseSocialMediaId } });
             return await this.getById(franchiseSocialMediaId);

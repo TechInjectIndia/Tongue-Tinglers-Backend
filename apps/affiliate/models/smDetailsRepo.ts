@@ -7,14 +7,14 @@ export class SocialMediaDetailsRepo implements IBaseRepo<SocialMediaDetailsAttri
     constructor() { }
 
     // Method to get a single social media detail by ID
-    public async get(id: string): Promise<SocialMediaDetailsAttributes | null> {
+    public async get(id: number): Promise<SocialMediaDetailsAttributes | null> {
         const data = await SocialMediaDetailsModel.findOne({
             where: { id },
         });
         return data;
     }
 
-    public async update(id: string, data: Partial<SocialMediaDetailsModel>): Promise<SocialMediaDetailsModel | null> {
+    public async update(id: number, data: Partial<SocialMediaDetailsModel>): Promise<SocialMediaDetailsModel | null> {
         try {
             const socialMediaDetail = await SocialMediaDetailsModel.findByPk(id);
             if (!socialMediaDetail) {
@@ -30,7 +30,7 @@ export class SocialMediaDetailsRepo implements IBaseRepo<SocialMediaDetailsAttri
         }
     }
 
-    public async getByAffiliateAndPlatform(affiliateId: string, platform: string): Promise<SocialMediaDetailsModel | null> {
+    public async getByAffiliateAndPlatform(affiliateId: number, platform: string): Promise<SocialMediaDetailsModel | null> {
         try {
             const socialMediaDetail = await SocialMediaDetailsModel.findOne({
                 where: {

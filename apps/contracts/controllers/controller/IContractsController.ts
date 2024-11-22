@@ -10,7 +10,7 @@ interface IContractsController<T, F extends TQueryFilters> {
     * @param docData - The document data to update in the contract.
     * @returns Promise resolving to the updated contract.
     */
-    updateContractDoc(contractId: string, docData: any): Promise<T>;
+    updateContractDoc(contractId: number, docData: any): Promise<T>;
 
     /**
      * Create a new contract.
@@ -24,7 +24,7 @@ interface IContractsController<T, F extends TQueryFilters> {
      * @param id - The ID of the contract.
      * @returns Promise resolving to the contract or null if not found.
      */
-    get(id: string): Promise<T | null>;
+    get(id: number): Promise<T | null>;
 
     /**
      * List contracts with filters.
@@ -39,14 +39,14 @@ interface IContractsController<T, F extends TQueryFilters> {
      * @param data - The data to update the contract.
      * @returns Promise resolving to the affected count.
      */
-    update(id: string, data: Partial<T>): Promise<[affectedCount: number]>;
+    update(id: number, data: Partial<T>): Promise<[affectedCount: number]>;
 
     /**
      * Delete contracts by IDs.
      * @param ids - Array of contract IDs to delete.
      * @returns Promise resolving to the count of deleted contracts.
      */
-    delete(ids: string[]): Promise<number>;
+    delete(ids: number[]): Promise<number>;
 }
 
 export default IContractsController;

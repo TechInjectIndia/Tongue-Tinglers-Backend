@@ -8,8 +8,8 @@ import { TQueryFilters } from '../../../../types';
 interface IFranchiseModelsController<T, F extends TQueryFilters> {
     get(id: number, user_id: number): Promise<T | null>;
     create(payload: TPayloadFranchiseModel): Promise<T>;
-    deleteByFranchiseModelId(franchiseModelId: string): Promise<number>
-    update(id: string, data: SeoImage): Promise<[number, SeoImage[]]>
+    deleteByFranchiseModelId(franchiseModelId: number): Promise<number>
+    update(id: number, data: SeoImage): Promise<[number, SeoImage[]]>
 }
 
 export default IFranchiseModelsController;

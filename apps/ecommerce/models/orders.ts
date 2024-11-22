@@ -33,7 +33,7 @@ export class OrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
         return response;
     }
 
-    public async orderStatus(id: string): Promise<TOrder> {
+    public async orderStatus(id: number): Promise<TOrder> {
         const data = await OrdersModel.findOne({
             where: {
                 id,
@@ -43,7 +43,7 @@ export class OrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
         return data;
     }
 
-    public async get(id: string): Promise<TOrder> {
+    public async get(id: number): Promise<TOrder> {
         const data = await OrdersModel.findOne({
             where: {
                 id,
@@ -82,7 +82,7 @@ export class OrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
         return { total, data };
     }
 
-    public async update(id: string, data: TOrderPayload): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TOrderPayload): Promise<[affectedCount: number]> {
         const response = await OrdersModel.update(data, {
             where: {
                 id,

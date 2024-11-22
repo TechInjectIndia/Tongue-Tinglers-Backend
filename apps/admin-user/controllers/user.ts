@@ -125,7 +125,6 @@ export default class AdminController {
             await new AdminRepo().create({
                 ...payload,
                 password: hashedPassword,
-                type: USER_TYPE.MASTER_FRANCHISE,
                 firebaseUid: firebaseUser.uid,
             });
 
@@ -169,6 +168,27 @@ export default class AdminController {
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
+        }
+    }
+
+    static async updateType(req: Request, res: Response, next: NextFunction) {
+        try {
+            const id = get(req?.params, "id", 0);
+            const payload = { ...req?.body, updatedBy: id };
+            await new AdminRepo().update(id as number, payload);
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.ADMIN_TYPE_UPDATED
+                    )
+                );
+        }catch(err){
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            }); 
         }
     }
 

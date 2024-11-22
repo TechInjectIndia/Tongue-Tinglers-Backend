@@ -68,7 +68,7 @@ export class GuestUserRepo
     }
 
     public async create(data: TAddUser): Promise<TUser> {
-        return await GuestUserModel.create({ ...data, type: USER_TYPE.CUSTOMER });
+        return await GuestUserModel.create({ ...data, type: USER_TYPE.FRANCHISE });
     }
 
     public async update(id: number, data: TEditUser): Promise<[affectedCount: number]> {

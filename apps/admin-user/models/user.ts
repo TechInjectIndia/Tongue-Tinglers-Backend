@@ -85,7 +85,6 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.MASTER_FRANCHISE,
             },
         });
         const data = await UserModel.findAll({
@@ -96,7 +95,6 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.MASTER_FRANCHISE,
             },
         });
         return { total, data };

@@ -21,7 +21,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.CUSTOMER,
+                type: USER_TYPE.GUEST_USER,
             },
         });
         const data = await UserModel.findAll({
@@ -32,7 +32,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.CUSTOMER
+                type: USER_TYPE.GUEST_USER
             },
         });
         return { total, data };
@@ -53,7 +53,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
     }
 
     public async create(data: TAddUser): Promise<TUser> {
-        return await UserModel.create({ ...data, type: USER_TYPE.CUSTOMER });
+        return await UserModel.create({ ...data, type: USER_TYPE.GUEST_USER });
     }
 
     public async update(id: number, data: TEditUser): Promise<[affectedCount: number]> {
@@ -85,7 +85,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.CUSTOMER,
+                type: USER_TYPE.GUEST_USER,
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
@@ -98,7 +98,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.CUSTOMER,
+                type: USER_TYPE.GUEST_USER,
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,

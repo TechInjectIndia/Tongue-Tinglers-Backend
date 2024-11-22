@@ -81,7 +81,7 @@ export default class CustomerController {
             await new CustomerRepo().create({
                 ...payload,
                 password: hashedPassword,
-                type: USER_TYPE.CUSTOMER,
+                type: USER_TYPE.FRANCHISE,
                 firebaseUid: firebaseUser.uid
             });
 

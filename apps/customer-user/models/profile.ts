@@ -14,7 +14,7 @@ export class ProfileRepo implements IBaseRepo<TProfile> {
         return await UserModel.update(data, {
             where: {
                 id,
-                type: USER_TYPE.CUSTOMER
+                type: USER_TYPE.GUEST_USER
             },
         });
     }
@@ -25,7 +25,7 @@ export class ProfileRepo implements IBaseRepo<TProfile> {
             attributes: ['id', 'email', 'firstName', 'lastName', 'userName', 'phoneNumber', 'profilePhoto', 'status'],
             where: {
                 id,
-                type: USER_TYPE.CUSTOMER
+                type: USER_TYPE.GUEST_USER
             },
         });
         return data;

@@ -4,7 +4,8 @@ export enum USER_TYPE {
     SUPER_FRANCHISE = "super_franchise", // Super-admin
     MASTER_FRANCHISE = "master_franchise", // Admin
     FRANCHISE = "franchise", // Normal-franchise
-    CUSTOMER = "customer", // customer
+    ADMIN = "admin", // admin
+    GUEST_USER = "guest_user",
     PROSPECT = "prospect",
 }
 

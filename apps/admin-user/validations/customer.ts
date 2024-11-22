@@ -68,7 +68,7 @@ const createCustomerBody = Joi.object().keys({
 
 // Validation for editing Customer params
 const editCustomerParams = Joi.object().keys({
-    id: Joi.string().required()
+    id: Joi.number().required()
         .messages({
             'any.required': 'Customer ID is required.'
         }),

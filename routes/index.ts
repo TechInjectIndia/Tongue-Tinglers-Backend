@@ -7,7 +7,7 @@ import { sendEmail } from "../libraries";
 const router = Router();
 
 const ADMIN = "/admin";
-const FRANCHISE = "/franchise";
+const FRANCHISE = "/franchise";       
 const CUSTOMER = "/customer";
 const GUEST = "/guest";
 

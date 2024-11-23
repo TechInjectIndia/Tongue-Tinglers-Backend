@@ -18,7 +18,7 @@ interface IOrganization
     bankAccountNumber: string;
     bankIFSCCode: string;
     masterFranchiseId: number | null;
-    rootUserId: string | null;
+    rootUserId: number | null;
 }
 
 interface IOrganizationPayload {
@@ -38,7 +38,7 @@ interface IOrganizationPayload {
     bankAccountNumber: string;
     bankIFSCCode: string;
     masterFranchiseId: number | null;
-    rootUserId: string | null;
+    rootUserId: number | null;
 }
 
 interface TOrganization {
@@ -58,7 +58,8 @@ interface TOrganization {
     bankAccountNumber: string;
     bankIFSCCode: string;
     masterFranchiseId: number | null;
-    createdBy: number
+    createdBy: number;
+    rootUserId: number | null;
 }
 
 export { type IOrganization, type IOrganizationPayload, type TOrganization };

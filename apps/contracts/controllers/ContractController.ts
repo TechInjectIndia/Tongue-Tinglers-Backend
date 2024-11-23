@@ -188,7 +188,7 @@ export default class ContractController {
             const id = get(req.body, "id", "");
 
             // get contract
-            const existingContract = await new ContractRepo().get(id as string);
+            const existingContract = await new ContractRepo().get(id as number);
 
             console.log("contract");
             console.log(existingContract);
@@ -213,8 +213,8 @@ export default class ContractController {
             console.log("existing campaign");
             console.log(existingCampaign);
 
-            let AddFranchiseePayloa: AddFranchiseePayload = {
-                userid: "1",
+            let franchiseePayload: AddFranchiseePayload = {
+                userid: 1,
                 name: existingLead.firstName + " " + existingLead.lastName,
                 ownerName: existingLead.firstName + " " + existingLead.lastName,
                 contactEmail: existingLead.email,
@@ -231,7 +231,7 @@ export default class ContractController {
 
             const franchiseResponse =
                 await new FranchiseeRepo().createFranchisee(
-                    AddFranchiseePayloa
+                    franchiseePayload
                 );
 
             await new FranchiseLocationRepo().createFranchiseLocation({

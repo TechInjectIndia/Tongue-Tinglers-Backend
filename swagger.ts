@@ -58,6 +58,9 @@ const options = {
                 name: 'Admin > PDI Checklist'
             },
             {
+                name: 'Admin > PDI Checkpoint'
+            },
+            {
                 name: 'QuickActions'
             },
             {
@@ -234,6 +237,7 @@ const options = {
         './apps/vendor/api/*.ts',
         './apps/franchisee/api/*.ts',
         './apps/pdi-checklist/api/*.ts',
+        './apps/pdi-checkpoint/api/*.ts',
         './apps/quick-actions/api/*.ts',
         './apps/files/api/*.ts',
         './apps/gallery/api/*.ts',

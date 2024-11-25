@@ -4,6 +4,7 @@ import { FranchiseeAttributes, FranchiseLocationAttributes, FranchiseType } from
 import { UserModel } from '../user/user.model';
 import { RegionModel } from './RegionsModel';
 import { ContractModel } from '../contracts'; // Import the ContractModel
+import { IChecklistModel } from './iChecklist';
 
 // Franchisee creation attributes, making 'id' optional for creation
 interface FranchiseeCreationAttributes extends Optional<FranchiseeAttributes, 'id'> { }

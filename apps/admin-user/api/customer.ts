@@ -12,7 +12,6 @@ const {
   validateEditCustomerBody,
   validateEditMultipleIdsBody,
 } = CustomerValidation;
-
 const { list, create, update, deleteCustomer, get } = CustomerController;
 
 // ====== Customers Routes Start =====  =

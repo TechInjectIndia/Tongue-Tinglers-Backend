@@ -1,25 +1,27 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
-import { checkPointsValue, ICheckList } from '../../../interfaces/ichecklist';
+import { ICheckList } from '../../../interfaces/pdi';
 import { PdiCheckpointModel } from './pdiCheckPointModel';
 import { FranchiseModelRepo } from '../../../apps/franchise_model/models';
 import { FranchiseeModel } from './franchiseeModel';
+import { checkPointsValue } from '../../../interfaces/ichecklist';
 
 // Define the optional attributes for creation
-interface IChecklistCreationAttributes extends Optional<ICheckList, 'id'> { }
+interface PDICreationAttributes extends Optional<ICheckList, 'id'> { }
 
-class IChecklistModel extends Model<ICheckList, IChecklistCreationAttributes> implements ICheckList {
+class PdiModel extends Model<ICheckList,PDICreationAttributes> implements ICheckList {
     id: number;
-    title:string;
-    checkPoints: checkPointsValue[]
-    franchiseId: number;
+    checkpoints: checkPointsValue[]
+    franchiseModelId: number;
+    createdAt: Date | null;
+    updatedAt: Date |null
     createdBy:number;
     updatedBy:number|null;
     deletedAt:Date|null;
-    deletedBy:Date|null;
+    deletedBy:number|null;
 }
 
-IChecklistModel.init(
+PdiModel.init(
     {
         id: {
             type: DataTypes.INTEGER,
@@ -27,11 +29,7 @@ IChecklistModel.init(
             allowNull: false,
             autoIncrement: true, 
         },
-        title: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        checkPoints: {
+        checkpoints: {
             type: DataTypes.JSONB,
             // references: {
             //     model: PdiCheckpointModel,
@@ -39,7 +37,7 @@ IChecklistModel.init(
             // },
             allowNull: false,
         },
-        franchiseId: {
+        franchiseModelId: {
             type: DataTypes.INTEGER,
             references: {
                 model: FranchiseeModel,
@@ -55,6 +53,16 @@ IChecklistModel.init(
             type: DataTypes.INTEGER,
             allowNull: true,
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+        },
         deletedAt: {
             type: DataTypes.DATE,
             allowNull: true,
@@ -66,12 +74,12 @@ IChecklistModel.init(
     },
     {
         sequelize,
-        tableName: 'pdi_checklists',
+        tableName: 'pdi',
         timestamps: true,
     },
 );
 
 // IChecklistModel.belongsTo(PdiCheckpointModel, { foreignKey: 'id', as: 'checkpoint', constraints: true })
-IChecklistModel.hasMany(PdiCheckpointModel, { foreignKey: 'checkPoints', as: 'checkpoint'})
+// IChecklistModel.hasMany(PdiCheckpointModel, { foreignKey: 'checkPoints', as: 'checkpoint'})
 
-export { IChecklistModel };
+export { PdiModel };

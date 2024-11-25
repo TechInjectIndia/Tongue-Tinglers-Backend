@@ -46,7 +46,7 @@ PdiChecklistModel.init(
     },
     {
         sequelize,
-        tableName: 'pdi_checklists',
+        tableName: 'pdi_checklistsss',
         timestamps: true,
     },
 );

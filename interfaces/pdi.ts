@@ -1,12 +1,13 @@
 export interface ICheckList {
     id:number,
-    title:string,
-    checkPoints: checkPointsValue[]
-    franchiseId: number;
+    checkpoints: checkPointsValue[]
+    franchiseModelId: number;
     createdBy?:number;
+    createdAt:Date;
     updatedBy:number|null;
+    updatedAt:Date;
     deletedAt:Date|null;
-    deletedBy:Date|null;
+    deletedBy:number|null;
 }
 
 export interface checkPointsValue {
@@ -20,9 +21,8 @@ export type TICheckListList = {
 }
 
 export type TICheckListPayload = {
-    title:string,
-    checkPoints: checkPointsValue[],
-    franchiseId: number;
+    checkpoints: checkPointsValue[],
+    franchiseModelId: number;
 };
 
 export type TListFiltersICheckListt = {
@@ -33,7 +33,6 @@ export type TListFiltersICheckListt = {
     trashOnly?: string;
     filters?: {
         id?: number;
-        title?: string;
         createdBy?: number;
         [key: string]: any;
     };

@@ -1,6 +1,7 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
 import { ICheckPoint } from '../../../interfaces/pdiCheckPoint';
+import { IChecklistModel } from './iChecklist';
 
 // Define the optional attributes for creation
 interface PdiCheckpointCreationAttributes extends Optional<ICheckPoint, 'id'> { }
@@ -46,5 +47,6 @@ PdiCheckpointModel.init(
         timestamps: true,
     },
 );
+
 
 export { PdiCheckpointModel };

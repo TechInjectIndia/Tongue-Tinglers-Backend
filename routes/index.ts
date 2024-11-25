@@ -62,6 +62,7 @@ import galleryRouter from "../apps/gallery/api/gallery";
 import franchiseeRouter from "../apps/franchisee/api/franchisee";
 import pdiChecklistRouter from "../apps/pdi-checklist/api/pdiChecklist";
 import pdiCheckoutRouter from "../apps/pdi-checkpoint/api/pdiCheckpoint"
+import IChecklistRouter from "../apps/ichecklist/api/ichecklist";
 import quickActionEmailRouter from "../apps/quick-actions/api/email";
 import quickActionWhatsappRouter from "../apps/quick-actions/api/whatsapp";
 import regionRouter from "../apps/region/api/index";
@@ -108,6 +109,7 @@ router.use(`${ADMIN}/files`, auth, filesRouter);
 router.use(`${ADMIN}/gallery`, auth, galleryRouter);
 router.use(`${ADMIN}/pdi-checklist`, auth, pdiChecklistRouter);
 router.use(`${ADMIN}/checkpoint`, auth, pdiCheckoutRouter);
+router.use(`${ADMIN}/checklist`, auth, IChecklistRouter)
 router.use(`${ADMIN}/quick-actions/email`, auth, quickActionEmailRouter);
 router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
 router.use(`${ADMIN}/region`, auth, regionRouter);

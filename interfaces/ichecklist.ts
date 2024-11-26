@@ -1,7 +1,7 @@
 export interface ICheckList {
     id:number,
     title:string,
-    checkPoints: checkPointsValue[]
+    checkPoints: Array<number>,
     franchiseModelId: number;
     createdBy?:number;
     updatedBy:number|null;
@@ -21,7 +21,7 @@ export type TICheckListList = {
 
 export type TICheckListPayload = {
     title:string,
-    checkPoints: checkPointsValue[],
+    checkPoints: Array<number>,
     franchiseModelId: number;
 };
 

@@ -32,14 +32,9 @@ const router = express.Router();
  *               title:
  *                 type: string
  *               checkPoints:
- *                  type: object
- *                  properties:
- *                   key:
- *                     type: number,
- *                   value:
- *                     type: boolean
+ *                  type: array
  *                  items:
- *                   type: number
+ *                      type: number
  *               franchiseModelId:
  *                 type: number
  *     responses:
@@ -135,7 +130,9 @@ const router = express.Router();
  *               title:
  *                 type: string
  *               checkPoints:
- *                 type: integer
+ *                 type: array
+ *                 items:
+ *                   type: number
  *               franchiseModelId:
  *                 type: number
  *     responses:

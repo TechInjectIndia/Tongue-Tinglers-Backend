@@ -19,7 +19,7 @@ const createIChecklistBody = Joi.object().keys({
             'array.includes': 'Each item in CheckPoints must be a number.',
         }),
 
-    franchiseId: Joi.number().required()
+        franchiseModelId: Joi.number().required()
     .messages({
         'number.base': 'Franchise must be a number.',
         'any.required': 'Franchise is required.',
@@ -44,7 +44,7 @@ const editChecklistBody = Joi.object({
         'array.includes': 'Each item in CheckPoints must be a number.',
     }),
 
-    franchiseModel: Joi.number().required()
+    franchiseModelId: Joi.number().required()
     .messages({
         'number.base': 'Franchise must be a number.',
         'any.required': 'Franchise is required.',

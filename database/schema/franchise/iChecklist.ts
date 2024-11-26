@@ -4,6 +4,7 @@ import { checkPointsValue, ICheckList } from '../../../interfaces/ichecklist';
 import { PdiCheckpointModel } from './pdiCheckPointModel';
 import { FranchiseModelRepo } from '../../../apps/franchise_model/models';
 import { FranchiseeModel } from './franchiseeModel';
+import { FranchiseLeadModel } from '../lead/franchiseModels';
 
 // Define the optional attributes for creation
 interface IChecklistCreationAttributes extends Optional<ICheckList, 'id'> { }
@@ -11,7 +12,7 @@ interface IChecklistCreationAttributes extends Optional<ICheckList, 'id'> { }
 class IChecklistModel extends Model<ICheckList, IChecklistCreationAttributes> implements ICheckList {
     id: number;
     title:string;
-    checkPoints: checkPointsValue[]
+    checkPoints: Array<number>;
     franchiseModelId: number;
     createdBy:number;
     updatedBy:number|null;
@@ -42,7 +43,7 @@ IChecklistModel.init(
         franchiseModelId: {
             type: DataTypes.INTEGER,
             references: {
-                model: FranchiseeModel,
+                model: FranchiseLeadModel,
                 key: "id",
             },
             allowNull: true,
@@ -72,6 +73,7 @@ IChecklistModel.init(
 );
 
 // IChecklistModel.belongsTo(PdiCheckpointModel, { foreignKey: 'id', as: 'checkpoint', constraints: true })
-IChecklistModel.hasMany(PdiCheckpointModel, { foreignKey: 'checkPoints', as: 'checkpoint'})
+// IChecklistModel.hasMany(PdiCheckpointModel, { foreignKey: 'checkPoints', as: 'checkpoint'})
+
 
 export { IChecklistModel };

@@ -45,4 +45,6 @@ const commissionRouter = express.Router();
  */
 commissionRouter.post("/create", auth, validateCreateCommission, ControllerProvider.commissionController.create);
 
+commissionRouter.put("/update/:id", auth, validateCreateCommission, ControllerProvider.commissionController.update);
+
 export { commissionRouter };

@@ -236,5 +236,4 @@ router.use(`/health`, (_, res) => {
         message: "CICD Done Once AGAIN !",
     });
 });
-
 export default router;

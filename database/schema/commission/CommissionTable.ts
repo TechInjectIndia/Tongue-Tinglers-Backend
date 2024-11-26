@@ -31,7 +31,7 @@ CommissionTable.init({
         allowNull: false,
     },
     value: {
-        type: STRING,
+        type: INTEGER,
         allowNull: false,
     },
     eventType: {

@@ -15,4 +15,21 @@ export class PostgresCommisionRepo implements ICommisionRepo {
             return HelperMethods.getErrorResponse();
         }
     }
+
+    async update(id: number, commission: CommissionTable): Promise<APIResponse<boolean>> {
+        try {
+
+            await CommissionTable.update(commission, {
+                where: {
+                    id: id
+                }
+            });
+
+            return HelperMethods.getSuccessResponse<boolean>(true);
+
+        } catch (error) {
+            HelperMethods.handleError(error);
+            return HelperMethods.getErrorResponse();
+        }
+    }
 }

@@ -62,7 +62,7 @@ import galleryRouter from "../apps/gallery/api/gallery";
 import franchiseeRouter from "../apps/franchisee/api/franchisee";
 import pdiChecklistRouter from "../apps/pdi-checklist/api/pdiChecklist";
 import pdiCheckoutRouter from "../apps/pdi-checkpoint/api/pdiCheckpoint"
-import IChecklistRouter from "../apps/ichecklist/api/ichecklist";
+import IChecklistRouter from "../apps/ichecklist/api/iChecklist";
 import quickActionEmailRouter from "../apps/quick-actions/api/email";
 import quickActionWhatsappRouter from "../apps/quick-actions/api/whatsapp";
 import regionRouter from "../apps/region/api/index";
@@ -71,6 +71,7 @@ import cartRouter from "../apps/cart/api/cartApi";
 import shippingHistory from "../apps/ecommerce/api/shippingHistoryApi";
 import userAddressRouter from "../apps/user-address/api/userAddressApi";
 import vendorRouter from "../apps/vendor/api/vendorApi";
+import { commissionRouter } from "../apps/commission/api/CommissionApi";
 
 /* organization router */
 import organizationRouter from "../apps/organization/api/index";
@@ -116,9 +117,10 @@ router.use(`${ADMIN}/region`, auth, regionRouter);
 router.use(`${ADMIN}/area`, auth, areaRouter);
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);
 router.use(`${ADMIN}/franchisee`, auth, franchiseeRouter);
-router.use(`${ADMIN}/lead`,auth, leadRouter); // dont add auth to this url
+router.use(`${ADMIN}/lead`, auth, leadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
+router.use(`${ADMIN}/commission`, auth, commissionRouter);
 router.use(`/cart`, auth, cartRouter);
 router.use(`/user-address`, auth, userAddressRouter);
 

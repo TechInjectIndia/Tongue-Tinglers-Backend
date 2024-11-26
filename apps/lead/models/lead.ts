@@ -61,12 +61,12 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
                         {
                             model: UserModel,
                             as: "assignedUser", // Use the alias for assignedTo
-                            attributes: ["id", "userName"],
+                            attributes: ["id"],
                         },
                         {
                             model: UserModel,
                             as: "assignerUser", // Use the alias for assignedBy
-                            attributes: ["id", "userName"],
+                            attributes: ["id"],
                         },
                     ],
                 },
@@ -223,12 +223,12 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
                         {
                             model: UserModel,
                             as: "assignedUser", // Use the alias for assignedTo
-                            attributes: ["id", "userName"],
+                            attributes: ["id"],
                         },
                         {
                             model: UserModel,
                             as: "assignerUser", // Use the alias for assignedBy
-                            attributes: ["id", "userName"],
+                            attributes: ["id"],
                         },
                     ],
                 },

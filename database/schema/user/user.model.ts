@@ -17,7 +17,6 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
     public lastName!: string;
     public nameForSearch!: string;
     public email!: string;
-    public userName!: string;
     public phoneNumber!: string;
     public type!: USER_TYPE;
     public status!: string;
@@ -68,9 +67,6 @@ UserModel.init({
     },
     email: {
         type: STRING
-    },
-    userName: {
-        type: STRING,
     },
     phoneNumber: {
         type: STRING

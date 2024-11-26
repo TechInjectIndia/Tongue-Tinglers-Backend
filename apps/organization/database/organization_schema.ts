@@ -9,7 +9,6 @@ interface OrganizationCreationAttributes extends Optional<IOrganization, 'id' | 
 
 class OrganizationTableModel extends Model<IOrganization, OrganizationCreationAttributes> implements IOrganization {
     public id!: number;
-    public prospectId: number;
     public name: string;
     public contactPersonName: string;
     public contactNumber: string;
@@ -40,10 +39,6 @@ OrganizationTableModel.init({
         type: INTEGER,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false,
-    },
-    prospectId: {
-        type: INTEGER,
         allowNull: false,
     },
     name: {

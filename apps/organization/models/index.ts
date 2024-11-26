@@ -37,7 +37,6 @@ export class OrganizationRepo
         });
 
         const organization = {
-            prospectId: data.prospectId,
             name: data.name,
 
             contactPersonName: data.contactPersonName,

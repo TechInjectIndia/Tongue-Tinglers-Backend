@@ -169,7 +169,7 @@ const router = express.Router();
 router.post('/create', validateCreatePdiCheckpointBody,PdiCheckpointController.create);
 router.get('/list',validateListCheckpointQuery, PdiCheckpointController.list);
 router.get('/get/:id', PdiCheckpointController.get);
-router.put('/update/:id', validateEditCheckpointParams, validateEditCheckpointBody,PdiCheckpointController.update);
+router.put('/update/:id', validateEditCheckpointBody,PdiCheckpointController.update);
 router.delete('/delete', validateDeleteMultipleIdsBody, PdiCheckpointController.delete);
 
 export default router;

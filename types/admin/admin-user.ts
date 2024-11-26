@@ -1,6 +1,5 @@
 
 interface UserDetails {
-  userName: string,
   id: number
 }
 
@@ -14,7 +13,6 @@ export type TUser = {
   nameForSearch: string;
   profilePhoto: string;
   email: string;
-  userName: string;
   phoneNumber: string;
   type: string;
   status: string;
@@ -44,7 +42,6 @@ export type TAddUser = {
   lastName: string;
   nameForSearch: string;
   email: string;
-  userName: string;
   phoneNumber: string;
   type: string;
   role: number;
@@ -57,7 +54,6 @@ export type TEditUser = {
   lastName: string;
   nameForSearch: string;
   email: string;
-  userName: string;
   phoneNumber: string;
   role: number;
 };
@@ -71,7 +67,6 @@ export type TEditUserProfile = {
   firstName: string;
   lastName: string;
   nameForSearch: string;
-  userName: string;
   phoneNumber: string;
 };
 
@@ -87,7 +82,6 @@ export type TUpdateUserProfile = {
   firstName: string;
   lastName: string;
   nameForSearch: string;
-  userName: string;
   phoneNumber: string;
 };
 

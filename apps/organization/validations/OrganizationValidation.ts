@@ -3,9 +3,6 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 
 const createOrganizationBody = Joi.object().keys({
-  prospectId: Joi.string().required()
-    .messages({ 'any.required': 'Prospect id is required.' }),
-
   name: Joi.string().required()
     .messages({ 'any.required': 'Organization name is required.' }),
 

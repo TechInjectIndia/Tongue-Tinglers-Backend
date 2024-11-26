@@ -69,7 +69,6 @@ export default class LeadController {
                 lastName: existingLead.lastName,
                 nameForSearch: existingLead.firstName,
                 email: existingLead.email,
-                userName: existingLead.email,
                 phoneNumber: existingLead.phoneNumber,
                 password: "12345678",
                 createdBy: `${user_id}`,

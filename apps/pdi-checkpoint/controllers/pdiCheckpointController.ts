@@ -99,7 +99,7 @@ class PdiCheckpointController {
     static async get(req: Request, res: Response) {
         try {
             const { id } = req.params;
-
+            console.log("id", id)
             const checkpoint = await new PdiCheckpointRepo().findByPk(id);
             if (!checkpoint) {
                 return res.status(404).json({ message: "PDI Checkpoint not found" });

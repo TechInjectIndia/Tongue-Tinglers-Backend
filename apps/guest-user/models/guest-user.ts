@@ -18,7 +18,6 @@ export class GuestUserRepo
                     { firstName: { [Op.like]: `%${filters.search}%` } },
                     { lastName: { [Op.like]: `%${filters.search}%` } },
                     { email: { [Op.like]: `%${filters.search}%` } },
-                    { userName: { [Op.like]: `%${filters.search}%` } },
                 ],
             },
         });
@@ -31,7 +30,6 @@ export class GuestUserRepo
                     { firstName: { [Op.like]: `%${filters.search}%` } },
                     { lastName: { [Op.like]: `%${filters.search}%` } },
                     { email: { [Op.like]: `%${filters.search}%` } },
-                    { userName: { [Op.like]: `%${filters.search}%` } },
                 ],
             },
         });

@@ -40,7 +40,7 @@ const router = express.Router();
  *                     type: boolean
  *                  items:
  *                   type: number
- *               franchiseId:
+ *               franchiseModelId:
  *                 type: number
  *     responses:
  *       201:
@@ -136,7 +136,7 @@ const router = express.Router();
  *                 type: string
  *               checkPoints:
  *                 type: integer
- *               franchiseModel:
+ *               franchiseModelId:
  *                 type: number
  *     responses:
  *       200:

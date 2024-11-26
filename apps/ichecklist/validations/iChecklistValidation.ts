@@ -10,18 +10,23 @@ const createIChecklistBody = Joi.object().keys({
             'string.base': 'Title must be a string.',
             'any.required': 'Title is required.',
         }),
-    checkPoints: Joi.array().items(Joi.number()).optional().allow(null)
-    .messages({
-        'array.base': 'Checkpoint must be an array of numbers.',
-        'array.items': 'Each checkpoint value must be a number.',
-        'any.allowOnly': 'Checkpoint cannot be an object or a non-array value.',
-    }),
-    franchiseModel: Joi.number().required()
+        checkPoints: Joi.array()
+        .items(Joi.number().required())
+        .required()
+        .messages({
+            'array.base': 'CheckPoints must be an array of numbers.',
+            'any.required': 'CheckPoints are required.',
+            'array.includes': 'Each item in CheckPoints must be a number.',
+        }),
+
+        franchiseModelId: Joi.number().required()
     .messages({
         'number.base': 'Franchise must be a number.',
         'any.required': 'Franchise is required.',
     }),
 });
+
+
 
 // Validation schema for editing a Area
 const editChecklistBody = Joi.object({
@@ -30,13 +35,16 @@ const editChecklistBody = Joi.object({
         'string.base': 'Title must be a string.',
         'any.required': 'Title is required.',
     }),
-    checkPoints: Joi.array().items(Joi.number()).optional().allow(null)
+    checkPoints: Joi.array()
+    .items(Joi.number().required())
+    .required()
     .messages({
-        'array.base': 'Checkpoint must be an array of numbers.',
-        'array.items': 'Each checkpoint value must be a number.',
-        'any.allowOnly': 'Checkpoint cannot be an object or a non-array value.',
+        'array.base': 'CheckPoints must be an array of numbers.',
+        'any.required': 'CheckPoints are required.',
+        'array.includes': 'Each item in CheckPoints must be a number.',
     }),
-    franchiseModel: Joi.number().required()
+
+    franchiseModelId: Joi.number().required()
     .messages({
         'number.base': 'Franchise must be a number.',
         'any.required': 'Franchise is required.',

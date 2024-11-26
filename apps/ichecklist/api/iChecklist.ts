@@ -1,8 +1,13 @@
 import * as express from "express";
 import PdiChecklistController from "../controllers/iChecklist";
-import { validateCreateIChecklistBody, validateDeleteMultipleIdsBody, validateEditChecklistBody, validateEditCheckpointParams, validateListChecklistQuery } from "../validations/iChecklistValidation";
+import {
+    validateCreateIChecklistBody,
+    validateDeleteMultipleIdsBody,
+    validateEditChecklistBody,
+    validateEditCheckpointParams,
+    validateListChecklistQuery,
+} from "../validations/iChecklistValidation";
 const router = express.Router();
-
 
 // ===== Swagger Documentation =====
 /**
@@ -34,8 +39,8 @@ const router = express.Router();
  *               checkPoints:
  *                  type: array
  *                  items:
- *                   type: number
- *               franchiseModel:
+ *                      type: number
+ *               franchiseModelId:
  *                 type: number
  *     responses:
  *       201:
@@ -89,7 +94,7 @@ const router = express.Router();
  * /api/admin/checklist/get/{id}:
  *   get:
  *     summary: Get a Checklist by ID
- *     tags: [checklist]
+ *     tags: [Checklist]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -130,8 +135,10 @@ const router = express.Router();
  *               title:
  *                 type: string
  *               checkPoints:
- *                 type: integer
- *               franchiseModel:
+ *                 type: array
+ *                 items:
+ *                   type: number
+ *               franchiseModelId:
  *                 type: number
  *     responses:
  *       200:
@@ -172,12 +179,27 @@ const router = express.Router();
  *         description: One or more Checklist not found
  */
 
-
-router.post('/create', validateCreateIChecklistBody,PdiChecklistController.create);
-router.get('/list',validateListChecklistQuery, PdiChecklistController.list);
-router.get('/get/:id', validateEditCheckpointParams, PdiChecklistController.get);
-router.put('/update/:id', validateEditChecklistBody, validateEditChecklistBody,PdiChecklistController.update);
-router.delete('/delete', validateDeleteMultipleIdsBody, PdiChecklistController.delete);
+router.post(
+    "/create",
+    validateCreateIChecklistBody,
+    PdiChecklistController.create
+);
+router.get("/list", validateListChecklistQuery, PdiChecklistController.list);
+router.get(
+    "/get/:id",
+    validateEditCheckpointParams,
+    PdiChecklistController.get
+);
+router.put(
+    "/update/:id",
+    validateEditChecklistBody,
+    validateEditChecklistBody,
+    PdiChecklistController.update
+);
+router.delete(
+    "/delete",
+    validateDeleteMultipleIdsBody,
+    PdiChecklistController.delete
+);
 
 export default router;
-

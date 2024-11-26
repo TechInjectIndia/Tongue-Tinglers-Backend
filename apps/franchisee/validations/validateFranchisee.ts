@@ -133,7 +133,7 @@ const validateEditFranchiseeBody = (req: Request, res: Response, next: NextFunct
 // Middleware for validating franchisee ID in the request parameters
 const validateEditFranchiseeParams = (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const idSchema = Joi.string().guid().required();
+    const idSchema = Joi.number().required();
     const { error } = idSchema.validate(id);
     if (error) {
         return res.status(400).json({ message: "Invalid franchisee ID." });

@@ -47,7 +47,7 @@ const editCampaignBody = Joi.object().keys({
         .optional()
         .messages({ "string.base": "Campaign name must be a string." }),
     franchiseId: Joi.string().optional().allow(null),
-    regionId: Joi.number()
+    regionId: Joi.any()
         .required()
         .messages({ "any.required": "Region Id are required." }),
     description: Joi.string()

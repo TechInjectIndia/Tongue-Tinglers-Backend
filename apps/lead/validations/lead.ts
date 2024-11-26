@@ -5,10 +5,6 @@ import { LeadSource, LeadStatus, followStatus } from '../../../interfaces/leads'
 
 // Schema for UserDetails
 const USER_DETAILS_SCHEMA = Joi.object().keys({
-    userName: Joi.string().required()
-        .messages({
-            'any.required': 'User name is required.',
-        }),
     id: Joi.number().required()
         .messages({
             'any.required': 'User ID is required.',
@@ -254,10 +250,6 @@ const assignLeadBody = Joi.object().keys({
             'any.required': 'Lead ID is required.',
         }),
     assignedTo: Joi.object().keys({
-        userName: Joi.string().required()
-            .messages({
-                'any.required': 'Assigned To username is required.',
-            }),
         id: Joi.number().required()
             .messages({
                 'any.required': 'Assigned To ID is required.',

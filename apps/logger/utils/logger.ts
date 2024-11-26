@@ -1,10 +1,36 @@
-import { createLogger, format, transports } from "winston";
+import { createLogger, format, transports, } from "winston";
 import path from "path";
 import fs from "fs";
 import { folderPath } from "../../../path";
+const winston = require('winston');
+require('winston-daily-rotate-file')
 
 // Ensure the log folder exists
 const filePath = folderPath + "/logs";
+
+// Configure daily rotating file transport
+const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
+    dirname: 'logs', // Directory to store logs
+    filename: '%DATE%.log', // Log file name pattern
+    datePattern: 'YYYY-MM-DD', // Date pattern for file rotation
+    zippedArchive: true, // Compress older logs into .gz files
+    maxSize: '20m', // Maximum size of a log file before rotation
+    maxFiles: '14d', // Retain logs for 14 days
+});
+
+const filelogger = winston.createLogger({
+    level: 'info', // Logging level
+    format: winston.format.combine(
+      winston.format.timestamp({
+        format: 'YYYY-MM-DD HH:mm:ss', // Timestamp format
+      }),
+      winston.format.printf((info) => `${info.timestamp} [${info.level}]: ${info.message}`) // Log format
+    ),
+    transports: [
+      dailyRotateFileTransport, // Daily rotating file transport
+      new winston.transports.Console(), // Optional: Log to console
+    ],
+});
 
 if (!fs.existsSync(filePath)) {
     try {
@@ -105,4 +131,4 @@ const deleteLogFiles = (fileName: string) => {
     }
 };
 
-export { logger, convertLogToJSON, LogEntry, deleteLogFiles };
+export { logger, convertLogToJSON, LogEntry, deleteLogFiles, filelogger };

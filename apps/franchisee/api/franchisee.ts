@@ -224,7 +224,7 @@ router.get('/', FranchiseeController.getAllFranchisees);
  *       '400':
  *         description: Bad request
  */
-router.get('/:id', validateEditFranchiseeParams, FranchiseeController.getFranchiseeById);
+router.get('/:id', FranchiseeController.getFranchiseeById);
 
 /**
  * @swagger

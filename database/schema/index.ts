@@ -87,11 +87,11 @@ import { AffiliateModel } from "./lead/affiliateModels";
 import { SocialMediaDetailsModel } from "./lead/smDetailsModel";
 import { SocialMediaDetailsFranchiseModel } from "./franchise/smDetailsModel";
 import { AssignModel } from "./lead/assigneeModels";
-import { LeadsModel } from './lead/lead.model';
-import { UserModel } from './user/user.model';
-import { UserAddressModel } from './user/userAddressModel';
-import { RegionModel } from './franchise/RegionsModel';
-import { ProposalLeadModels } from './lead/proposalModels';
+import { LeadsModel } from "./lead/lead.model";
+import { UserModel } from "./user/user.model";
+import { UserAddressModel } from "./user/userAddressModel";
+import { RegionModel } from "./franchise/RegionsModel";
+import { ProposalLeadModels } from "./lead/proposalModels";
 
 // Establish association with CampaignAdModel
 
@@ -110,110 +110,121 @@ import { ProposalLeadModels } from './lead/proposalModels';
 // });
 
 CampaignAdModel.hasOne(RegionModel, {
-    foreignKey: 'regionId',
-    as: 'region',
+    foreignKey: "regionId",
+    as: "region",
 });
 
 CampaignAdModel.hasOne(AffiliateModel, {
-    foreignKey: 'affiliateId',
-    as: 'affiliate',
+    foreignKey: "affiliateId",
+    as: "affiliate",
 });
 
 CampaignAdModel.hasMany(ProposalLeadModels, {
-    foreignKey: 'proposalIds',
-    as: 'proposals',
+    foreignKey: "proposalIds",
+    as: "proposals",
 });
 
 // Establish association with FranchiseLocationModel
 FranchiseeModel.hasOne(FranchiseLocationModel, {
-    foreignKey: 'franchiseeId',
-    as: 'franchiseLocation',
+    foreignKey: "franchiseeId",
+    as: "franchiseLocation",
 });
 
 FranchiseLocationModel.belongsTo(FranchiseeModel, {
-    foreignKey: 'franchiseeId',
-    as: 'franchisee',
+    foreignKey: "franchiseeId",
+    as: "franchisee",
 });
 // Establish association with FranchiseLocationModel
 
 // Establish association with SocialMediaDetailsFranchiseModel
 FranchiseeModel.hasMany(SocialMediaDetailsFranchiseModel, {
-    foreignKey: 'franchiseeId',
-    as: 'socialMediaDetails',
+    foreignKey: "franchiseeId",
+    as: "socialMediaDetails",
 });
 
 SocialMediaDetailsFranchiseModel.belongsTo(FranchiseeModel, {
-    foreignKey: 'franchiseeId',
-    as: 'franchisee',
+    foreignKey: "franchiseeId",
+    as: "franchisee",
 });
 // Establish association with SocialMediaDetailsFranchiseModel
 
-UserModel.hasMany(UserAddressModel, { foreignKey: 'userId', as: 'address' });
+UserModel.hasMany(UserAddressModel, { foreignKey: "userId", as: "address" });
 
-UserModel.hasMany(AssignModel, { foreignKey: 'assignedTo', as: 'assignmentsAsAssignedTo' });
-UserModel.hasMany(AssignModel, { foreignKey: 'assignedBy', as: 'assignmentsAsAssignedBy' });
+UserModel.hasMany(AssignModel, {
+    foreignKey: "assignedTo",
+    as: "assignmentsAsAssignedTo",
+});
+UserModel.hasMany(AssignModel, {
+    foreignKey: "assignedBy",
+    as: "assignmentsAsAssignedBy",
+});
 
-AssignModel.belongsTo(UserModel, { foreignKey: 'assignedTo', as: 'assignedUser' });
-AssignModel.belongsTo(UserModel, { foreignKey: 'assignedBy', as: 'assignerUser' });
+AssignModel.belongsTo(UserModel, {
+    foreignKey: "assignedTo",
+    as: "assignedUser",
+});
+AssignModel.belongsTo(UserModel, {
+    foreignKey: "assignedBy",
+    as: "assignerUser",
+});
 
 // Establish association with AssignModel
 LeadsModel.hasMany(AssignModel, {
-    foreignKey: 'leadId',
-    as: 'assign',
+    foreignKey: "leadId",
+    as: "assign",
 });
 
 AssignModel.belongsTo(LeadsModel, {
-    foreignKey: 'leadId',
-    as: 'lead',
+    foreignKey: "leadId",
+    as: "lead",
 });
 // Establish association with AssignModel
 
 // Establish association with AffiliateModel
 AffiliateModel.hasMany(SocialMediaDetailsModel, {
-    foreignKey: 'affiliateId',
-    as: 'sm',
+    foreignKey: "affiliateId",
+    as: "sm",
 });
 SocialMediaDetailsModel.belongsTo(AffiliateModel, {
-    foreignKey: 'affiliateId',
-    as: 'affiliate',
+    foreignKey: "affiliateId",
+    as: "affiliate",
 });
 // Establish association with AffiliateModel
 
-import { ProductsModel } from './ecommerce/product.model';
-import { ProductCategoryModel } from './ecommerce/category.model';
-import { ProductCategoryMapModel } from './ecommerce/product_category_map.model';
+import { ProductsModel } from "./ecommerce/product.model";
+import { ProductCategoryModel } from "./ecommerce/category.model";
+import { ProductCategoryMapModel } from "./ecommerce/product_category_map.model";
 
 ProductCategoryModel.belongsToMany(ProductsModel, {
     through: ProductCategoryMapModel,
-    foreignKey: 'categoryId',
-    otherKey: 'productId',
-    as: 'products', // Ensure this alias matches
+    foreignKey: "categoryId",
+    otherKey: "productId",
+    as: "products", // Ensure this alias matches
 });
 
 ProductsModel.belongsToMany(ProductCategoryModel, {
     through: ProductCategoryMapModel,
-    foreignKey: 'productId',
-    otherKey: 'categoryId',
-    as: 'categories', // Ensure this alias matches
+    foreignKey: "productId",
+    otherKey: "categoryId",
+    as: "categories", // Ensure this alias matches
 });
 
-import { RetortProductsModel } from './retort/retort-product';
-import { RetortProductCategoryModel } from './retort/retort-category';
-import { RetortProductCategoryMapModel } from './retort/retort-product_category_map';
+import { RetortProductsModel } from "./retort/retort-product";
+import { RetortProductCategoryModel } from "./retort/retort-category";
+import { RetortProductCategoryMapModel } from "./retort/retort-product_category_map";
 
 RetortProductCategoryModel.belongsToMany(RetortProductsModel, {
     through: RetortProductCategoryMapModel,
-    foreignKey: 'categoryId',
-    otherKey: 'productId',
-    as: 'products', // Ensure this alias matches
+    foreignKey: "categoryId",
+    otherKey: "productId",
+    as: "products", // Ensure this alias matches
 });
 
 RetortProductsModel.belongsToMany(RetortProductCategoryModel, {
     through: RetortProductCategoryMapModel,
-    foreignKey: 'productId',
-    otherKey: 'categoryId',
-    as: 'categories', // Ensure this alias matches
+    foreignKey: "productId",
+    otherKey: "categoryId",
+    as: "categories", // Ensure this alias matches
 });
 
 console.log("Associations initialized successfully.");
-

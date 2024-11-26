@@ -1,7 +1,11 @@
 import * as express from "express";
 import * as Validations from "../validations/OrganizationValidation";
 import OrganizationController from "../controllers/OrganizationController";
-import { validateEditOrganizationBody, validateEditOrgParams, validateListOrgQuery } from "../validations/OrganizationValidation";
+import {
+    validateEditOrganizationBody,
+    validateEditOrgParams,
+    validateListOrgQuery,
+} from "../validations/OrganizationValidation";
 
 const router = express.Router();
 
@@ -10,11 +14,11 @@ const { validateCreateOrganizationBody } = Validations;
 // SWAGGER IS PENDING
 /**
  * @swagger
- *
- * /api/admin/campaign-ad/create:
+ * todo fix me @nitesh
+ * /api/admin/organization/create:
  *   post:
- *     summary: Create a new campaign Ad
- *     tags: [Campaigns-Ad]
+ *     summary: Create a new Organization
+ *     tags: [Organization]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -224,9 +228,20 @@ router.post(
     OrganizationController.create
 );
 
+router.post(
+    "/createUsingDashboard",
+validateCreateOrganizationBody,
+    OrganizationController.create
+);
+
 router.get("/get/:id", validateEditOrgParams, OrganizationController.get);
- 
-router.put("/update/:id",validateEditOrgParams, validateEditOrganizationBody, OrganizationController.update);
+
+router.put(
+    "/update/:id",
+    validateEditOrgParams,
+    validateEditOrganizationBody,
+    OrganizationController.update
+);
 router.delete("/delete", validateEditOrgParams, OrganizationController.delete);
 
 router.get("/list", validateListOrgQuery, OrganizationController.list);

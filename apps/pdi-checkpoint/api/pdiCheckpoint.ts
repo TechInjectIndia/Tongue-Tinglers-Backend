@@ -1,16 +1,14 @@
 import * as express from "express";
 import PdiCheckpointController from "../controllers/pdiCheckpointController";
-import {validateCreatePdiCheckpointBody, validateEditCheckpointBody, validateEditCheckpointParams, validateListCheckpointQuery, validateDeleteMultipleIdsBody} from "../validations/pdiCheckpointValidation";
+import {
+    validateCreatePdiCheckpointBody,
+    validateEditCheckpointBody,
+    validateEditCheckpointParams,
+    validateListCheckpointQuery,
+    validateDeleteMultipleIdsBody,
+} from "../validations/pdiCheckpointValidation";
 
 const router = express.Router();
-
-// ===== Swagger Documentation =====
-/**
- * @swagger
- * tags:
- *   name: Checkpoints
- *   description: API for managing Checkpoints
- */
 
 /**
  * @swagger
@@ -93,7 +91,7 @@ const router = express.Router();
  *         required: true
  *         schema:
  *           type: number
- *         description: ID of the Area
+ *         description: ID of the Checkpoint
  *     responses:
  *       200:
  *         description: Checkpoint details retrieved successfully
@@ -164,13 +162,22 @@ const router = express.Router();
  *         description: One or more Checkpoint not found
  */
 
-
-
-router.post('/create', validateCreatePdiCheckpointBody,PdiCheckpointController.create);
-router.get('/list',validateListCheckpointQuery, PdiCheckpointController.list);
-router.get('/get/:id', validateEditCheckpointParams, PdiCheckpointController.get);
-router.put('/update/:id', validateEditCheckpointParams, validateEditCheckpointBody,PdiCheckpointController.update);
-router.delete('/delete', validateDeleteMultipleIdsBody, PdiCheckpointController.delete);
+router.post(
+    "/create",
+    validateCreatePdiCheckpointBody,
+    PdiCheckpointController.create
+);
+router.get("/list", validateListCheckpointQuery, PdiCheckpointController.list);
+router.get("/get/:id", PdiCheckpointController.get);
+router.put(
+    "/update/:id",
+    validateEditCheckpointBody,
+    PdiCheckpointController.update
+);
+router.delete(
+    "/delete",
+    validateDeleteMultipleIdsBody,
+    PdiCheckpointController.delete
+);
 
 export default router;
-

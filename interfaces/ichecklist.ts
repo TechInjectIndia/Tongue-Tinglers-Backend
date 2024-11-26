@@ -1,12 +1,17 @@
 export interface ICheckList {
     id:number,
     title:string,
-    checkPoints: number[];
-    franchiseId: number;
+    checkPoints: Array<number>,
+    franchiseModelId: number;
     createdBy?:number;
     updatedBy:number|null;
     deletedAt:Date|null;
     deletedBy:Date|null;
+}
+
+export interface checkPointsValue {
+    key: number,
+    value: boolean
 }
 
 export type TICheckListList = {
@@ -16,8 +21,8 @@ export type TICheckListList = {
 
 export type TICheckListPayload = {
     title:string,
-    checkPoints: number[];
-    franchiseId: number;
+    checkPoints: Array<number>,
+    franchiseModelId: number;
 };
 
 export type TListFiltersICheckListt = {

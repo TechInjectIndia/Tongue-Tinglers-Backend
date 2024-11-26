@@ -8,7 +8,6 @@ export type TFranchise = {
   lastName: string;
   nameForSearch: string;
   email: string;
-  userName: string;
   phoneNumber: string;
   type: string;
   status: string;
@@ -34,7 +33,6 @@ export type TAddFranchise = {
   lastName: string;
   nameForSearch: string;
   email: string;
-  userName: string;
   phoneNumber: string;
   firebaseUid: string;
   createdBy: number;
@@ -46,7 +44,6 @@ export type TConvertLeadToFranchise = {
   lastName: string;
   nameForSearch: string;
   email: string;
-  userName: string;
   phoneNumber: string;
 };
 
@@ -55,7 +52,6 @@ export type TEditFranchise = {
   lastName: string;
   nameForSearch: string;
   email: string;
-  userName: string;
   phoneNumber: string;
   role: number;
 };
@@ -70,7 +66,6 @@ export type TEditFranchiseProfile = {
   firstName: string;
   lastName: string;
   nameForSearch: string;
-  userName: string;
   phoneNumber: string;
 };
 
@@ -86,7 +81,6 @@ export type TUpdateFranchiseProfile = {
   firstName: string;
   lastName: string;
   nameForSearch: string;
-  userName: string;
   phoneNumber: string;
 };
 

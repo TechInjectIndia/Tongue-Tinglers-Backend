@@ -37,7 +37,6 @@ interface Note {
 }
 
 interface UserDetails {
-    userName: string;
     id: number;
 }
 

@@ -37,7 +37,6 @@ export interface UserInformation {
     lastName: string;
     nameForSearch: string;
     email: string;
-    userName: string;
     phoneNumber: string;
     type: USER_TYPE;
     status: USER_STATUS;

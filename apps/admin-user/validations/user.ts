@@ -45,10 +45,6 @@ const createAdminBody = Joi.object().keys({
             'string.min': 'Password must be at least 8 characters long.',
             'any.required': 'Password is required.'
         }),
-    userName: Joi.string().required()
-        .messages({
-            'any.required': 'Username is required.'
-        }),
     phoneNumber: Joi.string().pattern(/^\+\d{1,3}\d{9,}$/).required()
         .messages({
             'string.pattern.base': 'Phone number must be in international format (e.g., +1234567890).',
@@ -88,10 +84,6 @@ const editAdminBody = Joi.object().keys({
     lastName: Joi.string().required()
         .messages({
             'any.required': 'Last name is required.'
-        }),
-    userName: Joi.string().required()
-        .messages({
-            'any.required': 'Username is required.'
         }),
     phoneNumber: Joi.string().pattern(/^\+\d{1,3}\d{9,}$/).required()
         .messages({

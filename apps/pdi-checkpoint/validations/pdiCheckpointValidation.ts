@@ -21,10 +21,18 @@ const editCheckpointBody = Joi.object({
 }).strict();
 
 const editCheckpointParams = Joi.object({
-    id: Joi.number().required().messages({
+    id: Joi.number().integer().required().messages({
       'any.required': 'Checkpoint ID is required.',
       'number.base': 'Checkpoint ID must be a number.',
     }),
+}).strict();
+
+const getCheckpointParams = Joi.object({
+  id: Joi.number().integer().required().messages({
+    'any.required': 'Checkpoint ID is required.',
+    'number.base': 'Checkpoint ID must be a number.',
+    'number.integer': 'Checkpoint ID must be an integer.',
+  }),
 }).strict();
 
 const listCheckpointQuery = Joi.object({
@@ -65,7 +73,9 @@ export const validateEditCheckpointBody = (req: Request, res: Response, next: Ne
   export const validateEditCheckpointParams = (req: Request, res: Response, next: NextFunction) => {
     validateReq(req, res, next, editCheckpointParams, 'params');
   };
-  
+  export const validateGetCheckpointParams = (req: Request, res: Response, next: NextFunction) => {
+    validateReq(req, res, next, getCheckpointParams, 'params');
+  };
   // Middleware for validating Area listing query parameters
   export const validateListCheckpointQuery = (req: Request, res: Response, next: NextFunction) => {
     validateReq(req, res, next, listCheckpointQuery, 'query');

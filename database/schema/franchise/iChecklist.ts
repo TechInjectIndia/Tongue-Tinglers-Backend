@@ -1,9 +1,10 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
-import { ICheckList } from '../../../interfaces/ichecklist';
+import { checkPointsValue, ICheckList } from '../../../interfaces/ichecklist';
 import { PdiCheckpointModel } from './pdiCheckPointModel';
 import { FranchiseModelRepo } from '../../../apps/franchise_model/models';
 import { FranchiseeModel } from './franchiseeModel';
+import { FranchiseLeadModel } from '../lead/franchiseModels';
 
 // Define the optional attributes for creation
 interface IChecklistCreationAttributes extends Optional<ICheckList, 'id'> { }
@@ -11,8 +12,8 @@ interface IChecklistCreationAttributes extends Optional<ICheckList, 'id'> { }
 class IChecklistModel extends Model<ICheckList, IChecklistCreationAttributes> implements ICheckList {
     id: number;
     title:string;
-    checkPoints: number[];
-    franchiseId: number;
+    checkPoints: Array<number>;
+    franchiseModelId: number;
     createdBy:number;
     updatedBy:number|null;
     deletedAt:Date|null;
@@ -32,19 +33,19 @@ IChecklistModel.init(
             allowNull: false,
         },
         checkPoints: {
-            type: DataTypes.ARRAY(DataTypes.INTEGER),
+            type: DataTypes.JSONB,
             // references: {
             //     model: PdiCheckpointModel,
             //     key: "id",
             // },
             allowNull: false,
         },
-        franchiseId: {
+        franchiseModelId: {
             type: DataTypes.INTEGER,
-            // references: {
-            //     model: FranchiseeModel,
-            //     key: "id",
-            // },
+            references: {
+                model: FranchiseLeadModel,
+                key: "id",
+            },
             allowNull: true,
         },
         createdBy: {
@@ -72,5 +73,7 @@ IChecklistModel.init(
 );
 
 // IChecklistModel.belongsTo(PdiCheckpointModel, { foreignKey: 'id', as: 'checkpoint', constraints: true })
+// IChecklistModel.hasMany(PdiCheckpointModel, { foreignKey: 'checkPoints', as: 'checkpoint'})
+
 
 export { IChecklistModel };

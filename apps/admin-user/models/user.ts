@@ -59,7 +59,6 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                     { firstName: { [Op.like]: `%${filters.search}%` } },
                     { lastName: { [Op.like]: `%${filters.search}%` } },
                     { email: { [Op.like]: `%${filters.search}%` } },
-                    { userName: { [Op.like]: `%${filters.search}%` } },
                 ],
             },
         });
@@ -72,7 +71,6 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                     { firstName: { [Op.like]: `%${filters.search}%` } },
                     { lastName: { [Op.like]: `%${filters.search}%` } },
                     { email: { [Op.like]: `%${filters.search}%` } },
-                    { userName: { [Op.like]: `%${filters.search}%` } },
                 ],
             },
         });

@@ -121,6 +121,9 @@ export default class FranchiseeController {
     static async getFranchiseeById(req: Request, res: Response) {
         try {
             const franchiseeId = req.params.id;
+
+            console.log("franchise id ",franchiseeId);
+            
             const franchisee = await new FranchiseeRepo().getFranchiseeById(franchiseeId);
 
             if (!franchisee) {

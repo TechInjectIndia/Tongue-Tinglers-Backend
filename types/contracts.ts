@@ -1,4 +1,3 @@
-import internal from "stream";
 import {
     CONTRACT_STATUS,
     ContractPaymentDetails,
@@ -18,7 +17,7 @@ export interface TContract {
     };
     payment: ContractPaymentDetails[] | null;
     leadId: number;
-    templateId: number;
+    templateId: string | null;
     amount: number;
     signedDate: Date | null;
     dueDate: Date;
@@ -30,7 +29,7 @@ export interface TContract {
     additionalInfo: string;
     logs: ITrackable[] | null;
     signedDocs: SignDoc[] | null;
-    createdBy:number;
+    createdBy: number;
 }
 
 export interface TContractsList {
@@ -48,7 +47,7 @@ export interface TContractPayload {
     };
     payment: ContractPaymentDetails[] | null;
     leadId: number;
-    templateId: number | null;
+    templateId: string | null;
     amount: number;
     signedDate: Date | null;
     dueDate: Date;

@@ -4,6 +4,7 @@ import { sequelize } from "../../../config";
 import { FranchiseModels } from "../../../interfaces";
 import { SeoImageModel } from "./SeoImageModel";
 import { ExtraFieldsModel } from "./extraFieldsModel";
+import { IChecklistModel } from "../franchise/iChecklist";
 
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
 
@@ -87,5 +88,7 @@ SeoImageModel.belongsTo(FranchiseLeadModel, {
     as: 'franchiseModel',
 });
 
+FranchiseLeadModel.hasMany(IChecklistModel, { foreignKey: 'franchiseModelId' });
+IChecklistModel.belongsTo(FranchiseLeadModel, { foreignKey: 'franchiseModelId' });
 // Export the model
 export { FranchiseLeadModel };

@@ -9,7 +9,7 @@ class PdiChecklistController {
     // Create a new PDI Checkpoint
     static async create(req: Request, res: Response) {
         try {
-            const user_id = get(req, 'user_id', '');
+            const user_id = get(req, "user_id", 0);
             const payload = { ...req.body, createdBy: user_id };
             const newChecklist = await new PdiChecklistRepo().create(payload);
 
@@ -73,7 +73,7 @@ class PdiChecklistController {
             const id = get(req.params, "id", 0);
             const updateData = req.body;
             delete updateData.id;
-            const user_id = get(req, "user_id", "");
+            const user_id = get(req, "user_id", 0);
 
             // Use the repo to find the Checkpoint by ID
             const checkpoint = await new PdiChecklistRepo().findByPk(id);

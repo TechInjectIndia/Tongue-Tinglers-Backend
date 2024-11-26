@@ -150,7 +150,7 @@ FranchiseeModel.init(
   }
 );
 
-FranchiseeModel.associate();
+// FranchiseeModel.hasOne(IChecklistModel, { foreignKey: 'id', as: 'region', constraints: true });
 
 export { FranchiseeModel };
 

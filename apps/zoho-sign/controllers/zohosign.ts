@@ -48,7 +48,7 @@ export default class ZohoSignController {
                 const data: SignDoc = {
                     docId: id,
                     sentBy: {
-                        userName: "webhook",
+                        // userName: "webhook",
                         id: 0, // 0 is used for webhook string
                     },
                     createdAt: new Date(),

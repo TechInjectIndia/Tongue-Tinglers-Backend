@@ -22,7 +22,7 @@ export class ProfileRepo implements IBaseRepo<TProfile> {
     public async get(id: number): Promise<TProfile> {
         const data = await UserModel.findOne({
             raw: true,
-            attributes: ['id', 'email', 'firstName', 'lastName', 'userName', 'phoneNumber', 'profilePhoto', 'status'],
+            attributes: ['id', 'email', 'firstName', 'lastName', 'phoneNumber', 'profilePhoto', 'status'],
             where: {
                 id,
                 type: USER_TYPE.GUEST_USER

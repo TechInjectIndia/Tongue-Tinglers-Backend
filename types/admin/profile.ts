@@ -4,7 +4,6 @@ export type TProfile = {
   email: string;
   firstName: string;
   lastName: string;
-  userName: string;
   phoneNumber: string;
   profilePhoto: string;
   status: string;

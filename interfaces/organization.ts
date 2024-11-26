@@ -5,7 +5,6 @@ interface IOrganization
         BaseModelIdNumber,
         DeletionMetaData {
     id: number;
-    prospectId: number;
     name: string;
     contactPersonName: string;
     contactNumber: string;
@@ -22,7 +21,6 @@ interface IOrganization
 }
 
 interface IOrganizationPayload {
-    prospectId: number;
     name: string;
     contactPersonName: string;
     contactNumber: string;
@@ -42,7 +40,6 @@ interface IOrganizationPayload {
 }
 
 interface TOrganization {
-    prospectId: number;
     name: string;
     contactPersonName: string;
     contactNumber: string;

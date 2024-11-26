@@ -5,10 +5,6 @@ import { CONTRACT_STATUS, CONTRACT_DOCUMENT_STATUS, CONTRACT_PAYMENT_STATUS, SIG
 
 // Schema for UserDetails
 const USER_DETAILS_SCHEMA = Joi.object().keys({
-    userName: Joi.string().required()
-        .messages({
-            'any.required': 'User name is required.',
-        }),
     id: Joi.string().required()
         .messages({
             'any.required': 'User ID is required.',

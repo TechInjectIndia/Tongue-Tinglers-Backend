@@ -17,7 +17,6 @@ class OrganizationTableModel
 {
     public rootUserId: number | null;
     public id!: number;
-    public prospectId: number;
     public name: string;
     public contactPersonName: string;
     public contactNumber: string;
@@ -47,39 +46,33 @@ class OrganizationTableModel
     }
 }
 
-OrganizationTableModel.init(
-    {
-        id: {
-            type: INTEGER,
-            autoIncrement: true,
-            primaryKey: true,
-            allowNull: false,
-        },
-        rootUserId: {
-            type: INTEGER,
-            allowNull: false,
-            defaultValue: 0,
-        },
-        prospectId: {
-            type: INTEGER,
-            allowNull: false,
-        },
-        name: {
-            type: STRING,
-            allowNull: false,
-        },
-        contactPersonName: {
-            type: STRING,
-            allowNull: false,
-        },
-        contactNumber: {
-            type: STRING,
-            allowNull: false,
-        },
-        contactEmail: {
-            type: STRING,
-            allowNull: false,
-        },
+OrganizationTableModel.init({
+    id: {
+        type: INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false,
+    },
+    prospectId: {
+        type: INTEGER,
+        allowNull: false,
+    },
+    name: {
+        type: STRING,
+        allowNull: false,
+    },
+    contactPersonName: {
+        type: STRING,
+        allowNull: false,
+    },
+    contactNumber: {
+        type: STRING,
+        allowNull: false,
+    },
+    contactEmail: {
+        type: STRING,
+        allowNull: false,
+    },
 
         addressId: {
             type: INTEGER,

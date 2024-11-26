@@ -3,11 +3,6 @@ import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 import { IPdiChecklistStatus } from '../../../interfaces';
 
-
-const checkPointsData = Joi.object().keys({
-  key: Joi.number().required(),
-  value: Joi.boolean().required(),
-});
 // Schema for PDI Checklist creation
 const createIChecklistBody = Joi.object().keys({
     title: Joi.string().required()
@@ -15,7 +10,15 @@ const createIChecklistBody = Joi.object().keys({
             'string.base': 'Title must be a string.',
             'any.required': 'Title is required.',
         }),
-    checkPoints: Joi.array().items(checkPointsData).required(),
+        checkPoints: Joi.array()
+        .items(Joi.number().required())
+        .required()
+        .messages({
+            'array.base': 'CheckPoints must be an array of numbers.',
+            'any.required': 'CheckPoints are required.',
+            'array.includes': 'Each item in CheckPoints must be a number.',
+        }),
+
     franchiseId: Joi.number().required()
     .messages({
         'number.base': 'Franchise must be a number.',
@@ -32,7 +35,15 @@ const editChecklistBody = Joi.object({
         'string.base': 'Title must be a string.',
         'any.required': 'Title is required.',
     }),
-    checkPoints: checkPointsData.allow(null).optional(),
+    checkPoints: Joi.array()
+    .items(Joi.number().required())
+    .required()
+    .messages({
+        'array.base': 'CheckPoints must be an array of numbers.',
+        'any.required': 'CheckPoints are required.',
+        'array.includes': 'Each item in CheckPoints must be a number.',
+    }),
+
     franchiseModel: Joi.number().required()
     .messages({
         'number.base': 'Franchise must be a number.',

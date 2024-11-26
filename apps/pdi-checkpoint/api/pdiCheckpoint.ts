@@ -93,7 +93,7 @@ const router = express.Router();
  *         required: true
  *         schema:
  *           type: number
- *         description: ID of the Area
+ *         description: ID of the Checkpoint
  *     responses:
  *       200:
  *         description: Checkpoint details retrieved successfully
@@ -168,7 +168,7 @@ const router = express.Router();
 
 router.post('/create', validateCreatePdiCheckpointBody,PdiCheckpointController.create);
 router.get('/list',validateListCheckpointQuery, PdiCheckpointController.list);
-router.get('/get/:id', validateEditCheckpointParams, PdiCheckpointController.get);
+router.get('/get/:id', PdiCheckpointController.get);
 router.put('/update/:id', validateEditCheckpointParams, validateEditCheckpointBody,PdiCheckpointController.update);
 router.delete('/delete', validateDeleteMultipleIdsBody, PdiCheckpointController.delete);
 

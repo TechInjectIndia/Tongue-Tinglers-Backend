@@ -2,7 +2,7 @@ export interface ICheckList {
     id:number,
     title:string,
     checkPoints: checkPointsValue[]
-    franchiseId: number;
+    franchiseModelId: number;
     createdBy?:number;
     updatedBy:number|null;
     deletedAt:Date|null;
@@ -22,7 +22,7 @@ export type TICheckListList = {
 export type TICheckListPayload = {
     title:string,
     checkPoints: checkPointsValue[],
-    franchiseId: number;
+    franchiseModelId: number;
 };
 
 export type TListFiltersICheckListt = {

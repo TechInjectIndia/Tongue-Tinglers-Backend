@@ -12,7 +12,7 @@ class IChecklistModel extends Model<ICheckList, IChecklistCreationAttributes> im
     id: number;
     title:string;
     checkPoints: checkPointsValue[]
-    franchiseId: number;
+    franchiseModelId: number;
     createdBy:number;
     updatedBy:number|null;
     deletedAt:Date|null;
@@ -39,7 +39,7 @@ IChecklistModel.init(
             // },
             allowNull: false,
         },
-        franchiseId: {
+        franchiseModelId: {
             type: DataTypes.INTEGER,
             references: {
                 model: FranchiseeModel,

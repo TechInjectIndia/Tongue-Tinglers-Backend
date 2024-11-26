@@ -78,26 +78,6 @@ export class OrganizationRepo
         });
         return data;
     }
-    public async getByProspectId(id: any): Promise<IOrganization | null> {
-        const data = await OrganizationTableModel.findOne({
-            where: { prospectId: id },
-            include: [
-                {
-                    model: AddressModel,
-                    as: "address",
-                    attributes: [
-                        "user_id",
-                        "street",
-                        "city",
-                        "state",
-                        "postalCode",
-                        "country",
-                    ],
-                },
-            ],
-        });
-        return data;
-    }
 
     public async update(
         id: number,

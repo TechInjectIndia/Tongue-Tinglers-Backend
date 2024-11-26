@@ -18,6 +18,7 @@ const rateLimiter = new RateLimiterMemory({
     duration: 1, // Per second
 });
 import expressSanitizer from "express-sanitizer";
+require("dotenv").config();
 
 dotenv.config();
 // const env = dotenv.config({ path: `${__dirname}/.env` });

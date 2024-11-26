@@ -156,7 +156,6 @@ export default class LeadController {
                 lastName: payload.lastName,
                 nameForSearch: payload.nameForSearch,
                 email: payload.email,
-                userName: payload.userName,
                 phoneNumber: payload.phoneNumber,
                 type: USER_TYPE.PROSPECT,
                 role: 0,

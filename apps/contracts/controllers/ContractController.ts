@@ -193,8 +193,8 @@ export default class ContractController {
             console.log("contract");
             console.log(existingContract);
 
-            const organization = await new OrganizationRepo().getByProspectId(id);
-
+            // @todo nitesh fix this according to new
+            let organization;
             console.log("lead");
             console.log(organization);
 
@@ -226,13 +226,11 @@ export default class ContractController {
                 contractIds: [],
                 activeContract: "",
                 isActive: false,
-                organizationId: organization.id
+                organizationId: organization.id,
             };
 
             const franchiseResponse =
-                await new FranchiseeRepo().createFranchisee(
-                    franchiseePayload
-                );
+                await new FranchiseeRepo().createFranchisee(franchiseePayload);
 
             await new FranchiseLocationRepo().createFranchiseLocation({
                 contactPhone: null,

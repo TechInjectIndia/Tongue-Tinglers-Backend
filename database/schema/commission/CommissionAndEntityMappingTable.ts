@@ -1,16 +1,19 @@
 import { Model, Optional, DataTypes } from "sequelize";
 import { sequelize } from "../../../config";
-import { ICommission, CommissionType, CommissionEventType } from "../../../interfaces/commission";
+
+import { BaseModel, DeletionMetaData, UpdatedMetaData } from "../../../interfaces";
 const { STRING, DATE, INTEGER, NOW, } = DataTypes;
 
-// Define the creation attributes by making certain fields optional
-interface CommissionCreationAttributes extends Optional<ICommission, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
-class CommissionTable extends Model<ICommission, CommissionCreationAttributes> implements ICommission {
+// Define the creation attributes by making certain fields optional
+interface CommissionEntityMappingCreationAttributes extends Optional<ICommissionEntityMapping, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
+
+class CommissionEntityMapTable extends Model<ICommissionEntityMapping, CommissionEntityMappingCreationAttributes> implements ICommissionEntityMapping {
     public id: number;
-    public type: CommissionType;
-    public value: number;
-    public eventType: CommissionEventType;
+    public commissionId: number;
+    public campaignId: number;
+    public entityType: COMMISSION_ENTITIES;
+    public entityId: number;
     public createdBy: number;
     public updatedBy: number | null;
     public deletedBy: number | null;
@@ -19,23 +22,27 @@ class CommissionTable extends Model<ICommission, CommissionCreationAttributes> i
     public readonly deletedAt: Date | null;
 }
 
-CommissionTable.init({
+CommissionEntityMapTable.init({
     id: {
         type: INTEGER,
         primaryKey: true,
         allowNull: false,
         autoIncrement: true,
     },
-    type: {
-        type: STRING,
-        allowNull: false,
-    },
-    value: {
+    commissionId: {
         type: INTEGER,
         allowNull: false,
     },
-    eventType: {
+    campaignId: {
+        type: INTEGER,
+        allowNull: false,
+    },
+    entityType: {
         type: STRING,
+        allowNull: false,
+    },
+    entityId: {
+        type: INTEGER,
         allowNull: false,
     },
     createdBy: {
@@ -76,7 +83,18 @@ CommissionTable.init({
 });
 
 
-/* associations */
+
+enum COMMISSION_ENTITIES {
+    AFFILIATE = 'affiliate',
+    MASTER_FRANCHISE = 'master-franchise',
+}
 
 
-export { CommissionTable };
+interface ICommissionEntityMapping extends BaseModel, UpdatedMetaData, DeletionMetaData {
+    commissionId: number,
+    campaignId: number,
+    entityType: COMMISSION_ENTITIES,
+    entityId: number,
+}
+
+export { CommissionEntityMapTable, COMMISSION_ENTITIES, };

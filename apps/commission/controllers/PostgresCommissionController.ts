@@ -1,19 +1,20 @@
 import { CommissionTable } from "../../../database/schema/commission/CommissionTable";
 import { APIResponse } from "../../common/models/ApiResponse";
 import { ICommissionController } from "./ICommissionController";
-import { PostgresCommisionRepo } from "../repositories/PostgresCommisionRepo";
+import { PostgresCommissionRepo } from "../repositories/PostgresCommissionRepo";
 import { NextFunction, Request, Response } from "express";
 import { get } from "lodash";
 import { HelperMethods } from "../../common/utils/HelperMethods";
+import { RepoProvider } from "../../common/utils/RepoProvider";
 
-export class PostgresCommisionController implements ICommissionController {
+export class PostgresCommissionController implements ICommissionController {
     async create(req: Request, res: Response, next: NextFunction): Promise<APIResponse<CommissionTable>> {
         /* prepare the input */
         const user_id = get(req, 'user_id', '');
 
         const input = { ...req.body, createdBy: user_id };
 
-        const result = await new PostgresCommisionRepo().create(input);
+        const result = await RepoProvider.commissionRepo.create(input);
         if (!result.success) {
             return res.status(500).send(result);
         }
@@ -34,7 +35,7 @@ export class PostgresCommisionController implements ICommissionController {
 
         const input = { ...req.body, updatedBy: user_id };
 
-        const result = await new PostgresCommisionRepo().update(id, input);
+        const result = await RepoProvider.commissionRepo.update(id, input);
         if (!result.success) {
             return res.status(500).send(result);
         }

@@ -1,5 +1,5 @@
 import { ICommissionController } from "../../commission/controllers/ICommissionController";
-import { PostgresCommisionController } from "../../commission/controllers/PostgresCommissionController";
+import { PostgresCommissionController } from "../../commission/controllers/PostgresCommissionController";
 
 export class ControllerProvider {
 
@@ -10,7 +10,7 @@ export class ControllerProvider {
     /* properties */
     static get commissionController(): ICommissionController {
         if (!this._commissionController) {
-            this._commissionController = new PostgresCommisionController();
+            this._commissionController = new PostgresCommissionController();
         }
         return this._commissionController;
     }

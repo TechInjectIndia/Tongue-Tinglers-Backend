@@ -1,9 +1,9 @@
 import { APIResponse } from "../../common/models/ApiResponse";
-import { ICommisionRepo } from "./ICommisionRepo";
+import { ICommissionRepo } from "./ICommissionRepo";
 import { HelperMethods } from "../../common/utils/HelperMethods";
 import { CommissionTable } from "../../../database/schema/commission/CommissionTable";
 
-export class PostgresCommisionRepo implements ICommisionRepo {
+export class PostgresCommissionRepo implements ICommissionRepo {
     async create(commission: CommissionTable): Promise<APIResponse<CommissionTable>> {
         try {
 

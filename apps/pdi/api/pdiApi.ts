@@ -1,6 +1,6 @@
 import * as express from "express";
-import PdiChecklistController from "../controllers/iChecklist";
-import { validateCreateIChecklistBody, validateDeleteMultipleIdsBody, validateEditChecklistBody, validateEditCheckpointParams, validateListChecklistQuery } from "../validations/iChecklistValidation";
+import PdiChecklistController from "../controllers/pdiController";
+import { validateCreateIChecklistBody, validateDeleteMultipleIdsBody, validateEditChecklistBody, validateEditCheckpointParams, validateListChecklistQuery } from "../validations/pdiValidations";
 const router = express.Router();
 
 
@@ -8,16 +8,16 @@ const router = express.Router();
 /**
  * @swagger
  * tags:
- *   name: Checklist
- *   description: API for managing Checklist
+ *   name: pdi
+ *   description: API for managing PDI
  */
 
 /**
  * @swagger
- * /api/admin/checklist/create:
+ * /api/admin/pdi/create:
  *   post:
- *     summary: Create a new checklist
- *     tags: [Checklist]
+ *     summary: Create a new PDI
+ *     tags: [PDI]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -27,11 +27,10 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             required:
- *               - title
+ *               - checkpoints
+ *               - franchiseId
  *             properties:
- *               title:
- *                 type: string
- *               checkPoints:
+ *               checkpoints:
  *                  type: object
  *                  properties:
  *                   key:
@@ -44,16 +43,16 @@ const router = express.Router();
  *                 type: number
  *     responses:
  *       201:
- *         description: Checklist created successfully
+ *         description: PDI created successfully
  *       400:
  *         description: Bad request
  *       401:
  *         description: Unauthorized
  *
- * /api/admin/checklist/list:
+ * /api/admin/pdi/list:
  *   get:
- *     summary: Retrieve a list of checklist
- *     tags: [Checklist]
+ *     summary: Retrieve a list of PDI
+ *     tags: [PDI]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -61,12 +60,12 @@ const router = express.Router();
  *         name: size
  *         schema:
  *           type: integer
- *         description: Number of Checkpoint to retrieve
+ *         description: Number of PDI to retrieve
  *       - in: query
  *         name: skip
  *         schema:
  *           type: integer
- *         description: Number of Checkpoint to skip
+ *         description: Number of PDI to skip
  *       - in: query
  *         name: id
  *         schema:
@@ -85,15 +84,15 @@ const router = express.Router();
  *           type: string
  *     responses:
  *       200:
- *         description: List of Checkpoints retrieved successfully
+ *         description: List of PDI retrieved successfully
  *       400:
  *         description: Bad request
  *       401:
  *         description: Unauthorized
  *
- * /api/admin/checklist/get/{id}:
+ * /api/admin/pdi/get/{id}:
  *   get:
- *     summary: Get a Checklist by ID
+ *     summary: Get a PDI by ID
  *     tags: [checklist]
  *     security:
  *       - bearerAuth: []
@@ -106,16 +105,16 @@ const router = express.Router();
  *         description: ID of the Area
  *     responses:
  *       200:
- *         description: Checklist details retrieved successfully
+ *         description: PDI details retrieved successfully
  *       401:
  *         description: Unauthorized
  *       404:
- *         description: Checklist not found
+ *         description: PDI not found
  *
  * /api/admin/checklist/update/{id}:
  *   put:
- *     summary: Update a Checklist by ID
- *     tags: [Checklist]
+ *     summary: Update a PDI by ID
+ *     tags: [PDI]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -124,7 +123,7 @@ const router = express.Router();
  *         required: true
  *         schema:
  *           type: number
- *         description: ID of the Checklist to update
+ *         description: ID of the PDI to update
  *     requestBody:
  *       required: true
  *       content:
@@ -134,24 +133,24 @@ const router = express.Router();
  *             properties:
  *               title:
  *                 type: string
- *               checkPoints:
+ *               checkpoints:
  *                 type: integer
  *               franchiseModel:
  *                 type: number
  *     responses:
  *       200:
- *         description: Checklist updated successfully
+ *         description: PDI updated successfully
  *       400:
  *         description: Bad request
  *       401:
  *         description: Unauthorized
  *       404:
- *         description: Checklist not found
+ *         description: PDI not found
  *
- * /api/admin/checklist/delete:
+ * /api/admin/pdi/delete:
  *   delete:
- *     summary: Delete one or more Checklist
- *     tags: [Checklist]
+ *     summary: Delete one or more PDI
+ *     tags: [PDI]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -170,11 +169,11 @@ const router = express.Router();
  *                 example: [1, 2]
  *     responses:
  *       200:
- *         description: Checklist deleted successfully
+ *         description: PDI deleted successfully
  *       401:
  *         description: Unauthorized
  *       404:
- *         description: One or more Checklist not found
+ *         description: One or more PDI not found
  */
 
 

@@ -1,5 +1,5 @@
 import { Request, Response, Next } from "express";
-import { PdiChecklistRepo } from "../model/iChecklistRepo"; // Adjust the import path based on your project structure
+import { PdiChecklistRepo } from "../model/pdiRepo"; // Adjust the import path based on your project structure
 import { get } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";

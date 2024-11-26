@@ -42,11 +42,9 @@ export class OrganizationRepo
         const organization = {
             prospectId: data.prospectId,
             name: data.name,
-
             contactPersonName: data.contactPersonName,
             contactNumber: data.contactNumber,
             contactEmail: data.contactEmail,
-
             addressId: address.id,
             pan: data.pan,
             gst: data.gst,
@@ -55,6 +53,7 @@ export class OrganizationRepo
             bankIFSCCode: data.bankIFSCCode,
             masterFranchiseId: data.masterFranchiseId,
             createdBy: data.createdBy,
+            rootUserId: data.rootUserId,
         };
 
         return await OrganizationTableModel.create(organization);

@@ -98,7 +98,7 @@ export default class LeadController {
                 terminationDetails: null,
                 payment: null,
                 leadId: id,
-                templateId: 0,
+                templateId: templateId,
                 amount: existingLead.amount,
                 signedDate: null,
                 dueDate: new Date(),

@@ -44,7 +44,6 @@ class OrganizationTableModel
             as: "address",
         });
         // OrganizationTableModel.belongsTo(UserModel, { foreignKey: 'rootUserId', as: 'user' });
-
     }
 }
 
@@ -59,7 +58,7 @@ OrganizationTableModel.init(
         rootUserId: {
             type: INTEGER,
             allowNull: false,
-            defaultValue: null,
+            defaultValue: 0,
         },
         prospectId: {
             type: INTEGER,

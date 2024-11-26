@@ -47,7 +47,7 @@ interface IContract extends UpdatedMetaData, BaseModel, DeletionMetaData {
     };
     payment: ContractPaymentDetails[] | null;
     leadId: number;
-    templateId: number;
+    templateId: string | null;
     amount: number;
     signedDate: Date | null;
     dueDate: Date;

@@ -18,6 +18,10 @@ const options = {
                 url: "http://localhost:3001/",
                 description: "Local server",
             },
+            {
+                url: "https://api.tonguetingler.com/",
+                description: "Live server",
+            },
         ],
         components: {
             securitySchemes: {

@@ -1,6 +1,7 @@
 import type { UpdatedMetaData, BaseModel, DeletionMetaData } from ".";
 
 interface ICommission extends BaseModel, UpdatedMetaData, DeletionMetaData {
+    title: string,
     type: CommissionType,
     value: number,
     eventType: CommissionEventType,

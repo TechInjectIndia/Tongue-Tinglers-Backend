@@ -9,6 +9,7 @@ interface CommissionCreationAttributes extends Optional<ICommission, 'id' | 'cre
 
 class CommissionTable extends Model<ICommission, CommissionCreationAttributes> implements ICommission {
     public id: number;
+    public title: string;
     public type: CommissionType;
     public value: number;
     public eventType: CommissionEventType;
@@ -23,6 +24,12 @@ class CommissionTable extends Model<ICommission, CommissionCreationAttributes> i
 CommissionTable.init({
     id: {
         type: INTEGER,
+        primaryKey: true,
+        allowNull: false,
+        autoIncrement: true,
+    },
+    title: {
+        type: STRING,
         primaryKey: true,
         allowNull: false,
         autoIncrement: true,
@@ -79,8 +86,8 @@ CommissionTable.init({
 
 /* associations */
 
-CommissionTable.hasMany(CommissionEntityMapTable,{
-    foreignKey:{
+CommissionTable.hasMany(CommissionEntityMapTable, {
+    foreignKey: {
         allowNull: false,
         name: 'commissionId',
     }

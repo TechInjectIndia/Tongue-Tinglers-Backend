@@ -1,7 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
+import { title } from "process";
 
 const createCommissionSchema = Joi.object({
+
+    title: Joi.string()
+        .required()
+        .messages({
+            'any.required': 'Commission title is required.',
+        }),
 
     type: Joi.string()
         .valid('absolute', 'percentage')
@@ -36,7 +43,11 @@ const validateCreateCommission = (req: Request, res: Response, next: NextFunctio
 
 
 const updateCommissionSchema = Joi.object({
-
+    title: Joi.string()
+        .required()
+        .messages({
+            'any.required': 'Commission title is required.',
+        }),
     type: Joi.string()
         .valid('absolute', 'percentage')
         .required()

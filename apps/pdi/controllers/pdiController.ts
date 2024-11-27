@@ -11,6 +11,7 @@ class PdiChecklistController {
         try {
             const user_id = get(req, 'user_id', '');
             const payload = { ...req.body, createdBy: user_id };
+            console.log("payload: ",payload);
             const newChecklist = await new PdiChecklistRepo().create(payload);
 
             return res.status(200).json({

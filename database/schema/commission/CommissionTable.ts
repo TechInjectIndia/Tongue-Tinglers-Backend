@@ -1,6 +1,7 @@
 import { Model, Optional, DataTypes } from "sequelize";
 import { sequelize } from "../../../config";
 import { ICommission, CommissionType, CommissionEventType } from "../../../interfaces/commission";
+import { CommissionEntityMapTable } from "./CommissionAndEntityMappingTable";
 const { STRING, DATE, INTEGER, NOW, } = DataTypes;
 
 // Define the creation attributes by making certain fields optional
@@ -78,5 +79,11 @@ CommissionTable.init({
 
 /* associations */
 
+CommissionTable.hasMany(CommissionEntityMapTable,{
+    foreignKey:{
+        allowNull: false,
+        name: 'commissionId',
+    }
+});
 
 export { CommissionTable };

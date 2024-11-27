@@ -77,7 +77,7 @@ CommissionEntityMapTable.init({
     },
 }, {
     sequelize,
-    tableName: 'commissions',
+    tableName: 'commissions_entity_mapping',
     timestamps: true,
     paranoid: true,
 });

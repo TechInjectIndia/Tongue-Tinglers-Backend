@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import sgMail from "@sendgrid/mail";
 import { CONFIG } from "./config";
 import swaggerDocs from "./swagger";
 import express from "express";
@@ -20,7 +19,7 @@ const rateLimiter = new RateLimiterMemory({
     duration: 1, // Per second
 });
 import expressSanitizer from "express-sanitizer";
-import path from "path";
+
 
 require("dotenv").config();
 
@@ -39,7 +38,6 @@ BigInt.prototype.toJSON = function() {
 };
 
 // Set sendgrid api key
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Database connection
 connectToDatabase();
@@ -104,7 +102,6 @@ server.use("/api", router);
 
 
 const PORT = (__dirname).includes("/dev/") ? 3002 : CONFIG.PORT;
-console.log(__dirname);
 
 try {
     server.listen(PORT, () =>

@@ -38,7 +38,7 @@ class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttr
     this.belongsTo(FranchiseeModel, { foreignKey: 'parentFranchise', as: 'parentFranchiseAssociation', constraints: false });
 
     // Association with RegionModel
-    this.belongsTo(RegionModel, { foreignKey: 'regionId', as: 'region', constraints: false });
+    // this.belongsTo(RegionModel, { foreignKey: 'regionId', as: 'region', constraints: false });
   }
 }
 

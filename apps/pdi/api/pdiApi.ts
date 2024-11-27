@@ -115,6 +115,27 @@ const router = express.Router();
  *       404:
  *         description: Pdi not found
  *
+ * /api/admin/pdi/getPdiByProspect/{prospectId}:
+ *   get:
+ *     summary: Get a Pdi by prospectId
+ *     tags: [Pdi]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: prospectId
+ *         required: true
+ *         schema:
+ *           type: number
+ *         description: prospectId of the Pdi
+ *     responses:
+ *       200:
+ *         description: Pdi details retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Pdi not found
+ * 
  * /api/admin/pdi/update/{id}:
  *   put:
  *     summary: Update a Pdi by ID
@@ -196,6 +217,8 @@ router.get(
     "/get/:id",
     PdiChecklistController.get
 );
+
+router.get("/getPdiByProspect/:prospectId", PdiChecklistController.getPdiByProspectId)
 router.put(
     "/update/:id",
     validateEditChecklistBody,

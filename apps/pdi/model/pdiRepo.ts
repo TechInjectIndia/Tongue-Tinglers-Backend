@@ -71,6 +71,13 @@ export class PdiChecklistRepo implements IBaseRepo<IPdiList, TListFiltersIPdiLis
         });
         return deletedCount;
     }
+
+    public async getPdiByProspectId(prospectId: number): Promise<IPdiList[]> {
+        const data = await PdiModel.findAll({
+            where: { prospectId }
+        });
+        return data as IPdiList[] | null;
+    }
 }
 
 export default PdiChecklistRepo;

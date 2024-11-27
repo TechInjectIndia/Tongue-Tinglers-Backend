@@ -137,6 +137,25 @@ class PdiChecklistController {
             return res.status(400).json({ message: "Invalid request body" });
         }
     }
+
+    static async getPdiByProspectId(req: Request, res: Response) {
+        try {
+            const { prospectId } = req.params;
+
+            const checklist = await new PdiChecklistRepo().getPdiByProspectId(prospectId);
+            if (!checklist) {
+                return res.status(404).json({ message: "PDI Checklist not found" });
+            }
+
+            return res.status(200).json({
+                message: "PDI Checklist retrieved successfully",
+                data: checklist,
+            });
+        } catch (error) {
+            console.error(error);
+            return res.status(400).json({ message: "Invalid request" });
+        }
+    }
 }
 
 export default PdiChecklistController;

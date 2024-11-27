@@ -112,6 +112,27 @@ const router = express.Router();
  *       404:
  *         description: Checklist not found
  *
+ * /api/admin/checklist/getChecklistByFranchiseModalId/{franchiseModalId}:
+ *   get:
+ *     summary: Get a Checklist by franchiseModalId
+ *     tags: [Checklist]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: franchiseModalId
+ *         required: true
+ *         schema:
+ *           type: number
+ *         description: franchiseModalId of the Area
+ *     responses:
+ *       200:
+ *         description: Checklist details retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Checklist not found
+ * 
  * /api/admin/checklist/update/{id}:
  *   put:
  *     summary: Update a Checklist by ID
@@ -189,6 +210,9 @@ router.get(
     "/get/:id",
     PdiChecklistController.get
 );
+
+router.get("/getChecklistByFranchiseModalId/:franchiseModalId",PdiChecklistController.getChecklistByFranchiseModalId)
+
 router.put(
     "/update/:id",
     validateEditChecklistBody,

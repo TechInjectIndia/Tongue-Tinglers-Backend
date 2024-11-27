@@ -55,7 +55,7 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
             const franchisee = await FranchiseeModel.findOne({
                 where: { id: franchiseeId },
                 include: [
-                    { model: RegionModel, as: 'region' },
+                    // { model: RegionModel, as: 'region' },
                     { model: FranchiseLocationModel, as: 'franchiseLocation'},
                     { model: SocialMediaDetailsFranchiseModel, as: 'socialMediaDetails' }
                 ]

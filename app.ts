@@ -7,17 +7,21 @@ import ejs from "ejs";
 import cors from "cors";
 import router from "./routes";
 import { connectToDatabase } from "./config";
+
 require("./database/schema");
 import helmet from "helmet";
 import helmetCsp from "helmet-csp";
 import xss from "xss-clean";
 
 import { RateLimiterMemory } from "rate-limiter-flexible";
+
 const rateLimiter = new RateLimiterMemory({
     points: 50, // Number of points
     duration: 1, // Per second
 });
 import expressSanitizer from "express-sanitizer";
+import path from "path";
+
 require("dotenv").config();
 
 dotenv.config();
@@ -30,7 +34,7 @@ declare global {
         toJSON: () => string;
     }
 }
-BigInt.prototype.toJSON = function () {
+BigInt.prototype.toJSON = function() {
     return this.toString();
 };
 
@@ -85,7 +89,7 @@ server.use(
             scriptSrc: ["'self'", "trusted-cdn.com"],
             // Additional directives
         },
-    })
+    }),
 );
 server.use(xss()); // Purpose: Middleware for Express to sanitize user input for XSS attacks.
 server.use(expressSanitizer());
@@ -98,10 +102,13 @@ server.get("/", (_, res) => {
 });
 server.use("/api", router);
 
-const PORT = CONFIG.PORT;
+
+const PORT = (__dirname).includes("/dev/") ? 3002 : CONFIG.PORT;
+console.log(__dirname);
+
 try {
     server.listen(PORT, () =>
-        console.log(`Server is live at localhost:${PORT}`)
+        console.log(`Server is live at localhost:${PORT}`),
     );
     swaggerDocs(server, PORT);
 } catch (error) {

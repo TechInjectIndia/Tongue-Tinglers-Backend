@@ -187,7 +187,6 @@ router.post(
 router.get("/list", validateListChecklistQuery, PdiChecklistController.list);
 router.get(
     "/get/:id",
-    validateEditCheckpointParams,
     PdiChecklistController.get
 );
 router.put(

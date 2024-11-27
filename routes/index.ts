@@ -73,6 +73,9 @@ import shippingHistory from "../apps/ecommerce/api/shippingHistoryApi";
 import userAddressRouter from "../apps/user-address/api/userAddressApi";
 import vendorRouter from "../apps/vendor/api/vendorApi";
 
+/* Migration Router */
+import migrationRouter from "../migrations/routes/migrateRoute";
+
 /* organization router */
 import organizationRouter from "../apps/organization/api/index";
 
@@ -123,6 +126,8 @@ router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`/cart`, auth, cartRouter);
 router.use(`/user-address`, auth, userAddressRouter);
+
+router.use('/migration', migrationRouter)
 
 // ====== Admin ======
 // Guest users

@@ -1,34 +1,32 @@
-const { Op } = require("sequelize");
 import {
-    TAddress,
-    TAddresssList,
-    TPayloadAddress,
+    IAddress,
+    IAddressList,
+    IPayloadAddress,
     TListFilters,
-    TPayloadAddressUser,
-} from "../../../types/";
+} from "../../../types";
 import { AddressModel } from "../../../database/schema";
-import IBaseRepo from '../controllers/controller/IController';
+import IBaseRepo from "../controllers/controller/IController";
 
-export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
-    constructor() { }
+const { Op } = require("sequelize");
 
-    public async get(id: number, user_id: number): Promise<TAddress> {
-        const data = await AddressModel.findOne({
-            where: {
-                id,
-                user_id: user_id
-            },
-        });
-        return data;
+export class AddressRepo implements IBaseRepo<IAddress, TListFilters> {
+    constructor() {
     }
 
-    public async list(user_id: number, filters: TListFilters): Promise<TAddresssList> {
+    public async get(id: number, user_id: number): Promise<IAddress> {
+        return await AddressModel.findOne({
+            where: {
+                id,
+            },
+        });
+    }
+
+    public async list(user_id: number, filters: TListFilters): Promise<IAddressList> {
         const total = await AddressModel.count({
             where: {
                 street: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_id: user_id
             },
         });
         const data = await AddressModel.findAll({
@@ -39,38 +37,32 @@ export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
                 street: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                user_id: user_id
+
             },
         });
         return { total, data };
     }
 
-    public async create(data: TPayloadAddress): Promise<TAddress> {
-        const response = await AddressModel.create(data);
-        return response;
-    }
-   
-    public async createForUser(data: TPayloadAddressUser): Promise<TAddress> {
-        const response = await AddressModel.create(data);
-        return response;
+    public async create(data: IPayloadAddress): Promise<IAddress> {
+        return await AddressModel.create(data);
     }
 
-    public async update(user_id: number, id: number, data: TPayloadAddress): Promise<[affectedCount: number]> {
+
+    public async update(user_id: number, id: number, data: IPayloadAddress): Promise<[affectedCount: number]> {
         return await AddressModel.update(data, {
             where: {
                 id: id,
-                user_id: user_id
+
             },
         });
     }
 
     public async delete(user_id: number, ids: number[]): Promise<number> {
-        const response = await AddressModel.destroy({
+        return await AddressModel.destroy({
             where: {
                 id: ids,
-                user_id: user_id
+
             },
         });
-        return response;
     }
 }

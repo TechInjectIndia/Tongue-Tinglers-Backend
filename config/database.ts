@@ -2,7 +2,7 @@ import { Sequelize } from "sequelize";
 import { CONFIG } from "./environment";
 
 export const sequelize = new Sequelize(
-  CONFIG.DB_NAME,
+  (__dirname).includes("/dev/") ? "dev" : CONFIG.DB_NAME,
   CONFIG.DB_USERNAME,
   CONFIG.DB_PASSWORD,
   {

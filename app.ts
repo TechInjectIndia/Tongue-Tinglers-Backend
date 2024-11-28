@@ -100,8 +100,7 @@ server.get("/", (_, res) => {
     res.send("Hello from ci cd aws Tongue tingler server");
 });
 server.use("/api", router);
-
-const PORT = CONFIG.PORT;
+const PORT = (__dirname).includes("/dev/") ? 3002 : CONFIG.PORT;
 try {
     server.listen(PORT, () =>
         console.log(`Server is live at localhost:${PORT}`)

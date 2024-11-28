@@ -1,6 +1,6 @@
 const {OrderItem} = require("sequelize");
 
-interface Address{
+interface Address {
     id: number;
     street: string;
     city: string;

@@ -71,7 +71,6 @@ export * from "./files/emailModel";
 export * from "./files/galleryModel";
 
 export * from "./franchise/franchiseeModel";
-export * from "./franchise/franchiseLocationModel";
 export * from "./franchise/pdiModel";
 export * from "./franchise/RegionsModel";
 export * from "./franchise/AreaModel";
@@ -81,7 +80,6 @@ export * from "./franchise/smDetailsModel";
 
 import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
 // import { questionModel } from "./campaign-ui/questionModel";
-import { FranchiseLocationModel } from "./franchise/franchiseLocationModel";
 import { FranchiseeModel } from "./franchise/franchiseeModel";
 import { AffiliateModel } from "./lead/affiliateModels";
 import { SocialMediaDetailsModel } from "./lead/smDetailsModel";
@@ -125,7 +123,7 @@ CampaignAdModel.hasMany(ProposalLeadModels, {
 });
 
 // Establish association with FranchiseLocationModel
-FranchiseeModel.hasOne(FranchiseLocationModel, {
+FranchiseeModel.hasOne(addressmodel, {
     foreignKey: "franchiseeId",
     as: "franchiseLocation",
 });

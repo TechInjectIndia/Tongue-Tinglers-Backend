@@ -1,4 +1,4 @@
-const {OrderItem} = require("sequelize");
+const { OrderItem } = require("sequelize");
 
 interface Address {
     id: number;
@@ -7,6 +7,9 @@ interface Address {
     state: string;
     postalCode: string;
     country: string;
+    phoneNumber: string;
+    firstName: string;
+    lastName: string;
 }
 
 export type TAddress = {
@@ -38,7 +41,7 @@ export type TPayloadAddressUser = {
     user_id: number;
 };
 
-export type TAddresssList = {
+export type TAddressList = {
     total: number;
     data: TAddress[];
 };
@@ -50,3 +53,6 @@ export type TAddressFilters = {
     sorting?: typeof OrderItem;
     trashOnly?: string;
 };
+
+
+export { Address };

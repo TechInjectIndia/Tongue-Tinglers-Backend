@@ -158,9 +158,8 @@ enum socialMediaEnumsPlatform {
     TUMBLR = "tumblr",
 }
 
-interface SocialMediaDetailsAttributes {
+interface SocialMediaDetails {
     id: number;
-    affiliateId: number;
     platform: socialMediaEnumsPlatform;  // e.g., 'FB', 'INSTAGRAM', 'YOUTUBE'
     handle: string;
     followers: number;
@@ -223,7 +222,7 @@ export {
     Affiliate,
     FranchiseModels,
     SeoImage,
-    SocialMediaDetailsAttributes,
+    SocialMediaDetails,
     AffiliatesList,
     TPayloadAffiliate,
     FranchiseModelsList,

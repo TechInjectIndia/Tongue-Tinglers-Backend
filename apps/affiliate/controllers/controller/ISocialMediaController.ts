@@ -1,4 +1,4 @@
-import { SocialMediaDetailsAttributes, SocialMediaDetailsAttributesPayload } from "../../../../interfaces";
+import { SocialMediaDetails, SocialMediaDetailsAttributesPayload } from "../../../../interfaces";
 
 /**
  * Interface for Social Media Details Repository.

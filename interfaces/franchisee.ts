@@ -1,116 +1,82 @@
-interface FranchiseLocationAttributes {
-    id: number;
-    franchiseeId: number;
-    contactPhone: string;
-    location: string;
+import {Address} from "./user";
+
+interface Franchisee {
+    pocName: string;
+    pocEmail: string;
+    pocPhoneNumber: string;
+    users: Array<number>;
+    regionId: number;
+    area: string;
+    agreementIds: Array<number>;
+    paymentIds: Array<number>;
+    status: FRANCHISE_STATUS;
+    establishedDate: Date;
+}
+
+ interface  franchiseDetails{
+     location: Address;
+     sm: Array<SocialMediaDetails>;
+ }
+
+interface FranchiseeWithLocation extends Franchisee {
+    pocName: string;
+    pocEmail: string;
+    pocPhoneNumber: string;
+    users: Array<number>;
+    regionId: number;
+    area: string;
+    agreementIds: Array<number>;
+    paymentIds: Array<number>;
+    status: FRANCHISE_STATUS;
+    establishedDate: Date;
+    location: number;
+    sm: Array<SocialMediaDetails>;
+}
+
+enum FRANCHISE_STATUS {
+    Active = "Active",
+    Inactive = "Inactive",
+    Pending = "Pending",
+    Suspended = "Suspended",
+    Terminated = "Terminated"
+}
+
+interface FranchiseLocation {
+    street: string;
     city: string;
     state: string;
+    postalCode: string;
     country: string;
-    zipCode: string;
-    createdAt: Date;
-    updatedAt: Date | null;
 }
 
-interface AddFranchiseLocationPayload {
-    contactPhone: string;
-    location: string;
-    city: string;
-    state: string;
-    country: string;
-    zipCode: string;
-    franchiseeId: number;
-}
-
-export default AddFranchiseLocationPayload;
-
-interface SocialMediaDetailsAttributesFranchisee {
+interface SocialMediaDetails {
     id: number;
-    franchiseeId: number;
-    url: string;
-    type: SM_PLATFORM_FRANCHISE
+    affiliateId: number;
+    platform: socialMediaEnumsPlatform;  // e.g., 'FB', 'INSTAGRAM', 'YOUTUBE'
+    handle: string;
+    followers: number;
+    tags: string[];
 }
 
-interface AddSocialMediaDetailsAttributesFranchisee {
-    franchiseeId: number;
-    url: string;
-    type: SM_PLATFORM_FRANCHISE
-}
-
-enum SM_PLATFORM_FRANCHISE {
+enum socialMediaEnumsPlatform {
     FB = "fb",
     INSTAGRAM = "instagram",
-    YOUTUBE = "youtube"
-}
-
-enum FranchiseType {
-    MASTER_FRANCHISE = "master_franchise",
-    SUPER_FRANCHISE = "super_franchise",
-    FRANCHISE = "franchise",
-}
-
-interface FranchiseeRenewalInfo {
-    renewalDate: Date;
-    conditions: string;
-}
-
-interface TrainingHistory {
-    date: Date;
-    topic: string;
-}
-
-interface FranchiseeAttributes {
-    id: number;
-    userid: number | null;
-    referBy?: number | null;
-    parentFranchise?: string | null;
-    name: string;
-    ownerName: string;
-    contactEmail: string;
-    contactNumber: string | null;
-    establishedDate: Date | null;
-    franchiseAgreementSignedDate: Date | null;
-    franchiseType: FranchiseType;
-    regionId: number | null;
-    contractIds: number[];
-    activeContract: string;
-    isActive: boolean | null;
-    ratings?: number | null;
-    franchiseRenewalInfo?: FranchiseeRenewalInfo | null;
-    franchiseLocation?: FranchiseLocationAttributes[];
-    organizationId: number;
-}
-
-interface AddFranchiseePayload {
-    userid: number | null;
-    referBy?: number | null;
-    parentFranchise?: string | null;
-    name: string;
-    ownerName: string;
-    contactEmail: string;
-    contactNumber: string | null;
-    establishedDate: Date | null;
-    franchiseAgreementSignedDate: Date | null;
-    franchiseType: FranchiseType;
-    regionId: number | null;
-    socialMediaLinks?: { url: string, type: SM_PLATFORM_FRANCHISE }[];
-    contractIds: number[];
-    activeContract: string;
-    isActive: boolean | null;
-    ratings?: number | null;
-    franchiseRenewalInfo?: FranchiseeRenewalInfo | null;
-    franchiseLocation?: FranchiseLocationAttributes[];
-    organizationId: any;
+    YOUTUBE = "youtube",
+    TWITTER = "twitter",
+    LINKEDIN = "linkedin",
+    TIKTOK = "tiktok",
+    SNAPCHAT = "snapchat",
+    PINTEREST = "pinterest",
+    REDDIT = "reddit",
+    TUMBLR = "tumblr",
 }
 
 export {
-    FranchiseeAttributes,
-    AddFranchiseePayload,
-    FranchiseLocationAttributes,
-    FranchiseeRenewalInfo,
-    TrainingHistory,
-    FranchiseType,
-    SM_PLATFORM_FRANCHISE,
-    SocialMediaDetailsAttributesFranchisee,
-    AddFranchiseLocationPayload,
-    AddSocialMediaDetailsAttributesFranchisee
-};
+    Franchisee,
+    FRANCHISE_STATUS,
+    FranchiseLocation,
+    SocialMediaDetails,
+    socialMediaEnumsPlatform
+}
+
+

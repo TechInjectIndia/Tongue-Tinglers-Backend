@@ -1,43 +1,52 @@
-const { OrderItem } = require("sequelize");
+const {OrderItem} = require("sequelize");
+
+interface Address{
+    id: number;
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+}
 
 export type TAddress = {
-  id: number;
-  user_id: number;
-  street: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
-  createdAt: Date;
-  updatedAt: Date;
+    id: number;
+    user_id: number;
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    createdAt: Date;
+    updatedAt: Date;
 };
 
 export type TPayloadAddress = {
-  street: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
 };
 
 export type TPayloadAddressUser = {
-  street: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
-  user_id: number;
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    user_id: number;
 };
 
 export type TAddresssList = {
-  total: number;
-  data: TAddress[];
+    total: number;
+    data: TAddress[];
 };
 
 export type TAddressFilters = {
-  offset: number;
-  limit: number;
-  search?: string;
-  sorting?: typeof OrderItem;
-  trashOnly?: string;
+    offset: number;
+    limit: number;
+    search?: string;
+    sorting?: typeof OrderItem;
+    trashOnly?: string;
 };

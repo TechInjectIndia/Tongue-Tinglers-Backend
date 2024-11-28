@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
-import { FranchiseeAttributes, FranchiseLocationAttributes, FranchiseType } from '../../../interfaces';
+
 import { UserModel } from '../user/user.model';
 import { RegionModel } from './RegionsModel';
 import { ContractModel } from '../contracts'; // Import the ContractModel
@@ -49,7 +49,7 @@ FranchiseeModel.init(
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
-      autoIncrement: true, 
+      autoIncrement: true,
     },
     userid: {
       type: DataTypes.INTEGER,

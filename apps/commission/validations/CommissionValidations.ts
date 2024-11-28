@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
-import { title } from "process";
+import { get } from "lodash";
+import { HelperMethods } from "../../common/utils/HelperMethods";
+
 
 const createCommissionSchema = Joi.object({
 
@@ -72,11 +74,40 @@ const updateCommissionSchema = Joi.object({
 
 
 const validateUpdateCommission = (req: Request, res: Response, next: NextFunction) => {
+
+    /* get params */
+    const id = get(req.params, "id", 0);
+
+    if (!id || typeof id !== 'number' || id <= 0) {
+        return res.status(400).send(HelperMethods.getErrorResponse('Id of the commission to be updated is required.'));
+    }
+
+
     const { error } = updateCommissionSchema.validate(req.body);
     if (error) {
-        return res.status(400).json({ message: error.details[0].message });
+        return res.status(400).json(HelperMethods.getErrorResponse(error.details[0].message));
     }
     next();
 };
 
-export { validateCreateCommission, validateUpdateCommission };
+
+
+
+const deleteCommissionSchema = Joi.object({
+    ids: Joi.array()
+        .items(Joi.number())
+        .required()
+        .messages({
+            'any.required': 'Positive Ids to delete commissions are required.',
+        }),
+});
+
+const validateDeleteCommission = (req: Request, res: Response, next: NextFunction) => {
+    const { error } = deleteCommissionSchema.validate(req.body);
+    if (error) {
+        return res.status(400).json(HelperMethods.getErrorResponse(error.details[0].message));
+    }
+    next();
+};
+
+export { validateCreateCommission, validateUpdateCommission, validateDeleteCommission, };

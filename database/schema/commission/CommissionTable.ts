@@ -30,9 +30,7 @@ CommissionTable.init({
     },
     title: {
         type: STRING,
-        primaryKey: true,
         allowNull: false,
-        autoIncrement: true,
     },
     type: {
         type: STRING,
@@ -90,7 +88,8 @@ CommissionTable.hasMany(CommissionEntityMapTable, {
     foreignKey: {
         allowNull: false,
         name: 'commissionId',
-    }
+    },
+    onDelete: 'CASCADE',
 });
 
 export { CommissionTable };

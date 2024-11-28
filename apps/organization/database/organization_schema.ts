@@ -1,28 +1,31 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { IOrganization } from "../../../interfaces/organization";
+import {
+    BUSINESS_TYPE,
+    IOrganization,
+    ORGANIZATION_TYPE,
+} from "../../../interfaces/organization";
 import { AddressModel, UserModel } from "../../../database/schema";
 
-const { STRING, INTEGER, DATE, NOW } = DataTypes;
+const { STRING, INTEGER, DATE, NOW, ARRAY, ENUM } = DataTypes;
 
 interface OrganizationCreationAttributes
     extends Optional<
         IOrganization,
         "id" | "createdAt" | "updatedAt" | "deletedAt"
-    > {}
+    > {
+}
 
 class OrganizationTableModel
     extends Model<IOrganization, OrganizationCreationAttributes>
-    implements IOrganization
-{
+    implements IOrganization {
     public rootUserId: number | null;
     public id!: number;
     public name: string;
     public contactPersonName: string;
     public contactNumber: string;
     public contactEmail: string;
-    /* Address is separate a table  */
-    public addressId: number;
+
     public pan: string | null;
     public gst: string | null;
     public bankName: string;
@@ -33,29 +36,71 @@ class OrganizationTableModel
     public createdBy!: number;
     public updatedBy!: number | null;
     public deletedBy!: number | null;
+
+    public billingAddressId: number;
+    public businessType: BUSINESS_TYPE;
+    public shippingAddressId: Array<number>;
+    public type: ORGANIZATION_TYPE;
+
     public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
+    public readonly updatedAt!: Date | null;
     public readonly deletedAt!: Date | null;
 
     public static associate() {
+        // Belongs to a billing address
         this.belongsTo(AddressModel, {
-            foreignKey: "addressId",
-            as: "address",
+            foreignKey: "billingAddressId",
+            as: "billingAddress",
         });
-        // OrganizationTableModel.belongsTo(UserModel, { foreignKey: 'rootUserId', as: 'user' });
+
+        // Belongs to a root user
+        this.belongsTo(UserModel, {
+            foreignKey: "rootUserId",
+            as: "rootUser",
+        });
+
+        // Has many shipping addresses (if stored separately)
+        this.hasMany(AddressModel, {
+            foreignKey: "organizationId",
+            as: "shippingAddresses",
+        });
+
+        // Belongs to a master franchise (if applicable)
+        this.belongsTo(OrganizationTableModel, {
+            foreignKey: "masterFranchiseId",
+            as: "masterFranchise",
+        });
+
+        // Created by a user
+        this.belongsTo(UserModel, {
+            foreignKey: "createdBy",
+            as: "createdByUser",
+        });
+
+        // Updated by a user
+        this.belongsTo(UserModel, {
+            foreignKey: "updatedBy",
+            as: "updatedByUser",
+        });
+
+        // Deleted by a user (soft delete)
+        this.belongsTo(UserModel, {
+            foreignKey: "deletedBy",
+            as: "deletedByUser",
+        });
+
     }
 }
 
-OrganizationTableModel.init(
-    {
+OrganizationTableModel.init({
         id: {
             type: INTEGER,
             autoIncrement: true,
-            primaryKey: true
+            primaryKey: true,
         },
         rootUserId: {
             type: INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
         name: {
             type: STRING,
@@ -73,16 +118,6 @@ OrganizationTableModel.init(
             type: STRING,
             allowNull: false,
         },
-
-        addressId: {
-            type: INTEGER,
-            references: {
-                model: AddressModel,
-                key: "id",
-            },
-            allowNull: false,
-        },
-
         pan: {
             type: STRING,
             allowNull: true,
@@ -107,39 +142,46 @@ OrganizationTableModel.init(
             type: INTEGER,
             allowNull: true,
         },
-
         createdBy: {
             type: INTEGER,
             allowNull: false,
-            comment: "User who created the campaign",
         },
         updatedBy: {
             type: INTEGER,
             allowNull: true,
-            comment: "User who last updated the campaign",
         },
         deletedBy: {
             type: INTEGER,
             allowNull: true,
-            comment: "User who deleted the campaign (if soft deleted)",
+        },
+        billingAddressId: {
+            type: INTEGER,
+            allowNull: false,
+        },
+        businessType: {
+            type: ENUM(...Object.values(BUSINESS_TYPE)),
+            allowNull: false,
+        },
+        shippingAddressId: {
+            type: ARRAY(INTEGER),
+            allowNull: false,
+        },
+        type: {
+            type: ENUM(...Object.values(ORGANIZATION_TYPE)),
+            allowNull: false,
         },
         createdAt: {
             type: DATE,
             allowNull: false,
             defaultValue: NOW,
-            comment: "Timestamp when the campaign was created",
         },
         updatedAt: {
             type: DATE,
-            allowNull: false,
-            defaultValue: NOW,
-            comment: "Timestamp when the campaign was last updated",
+            allowNull: true,
         },
         deletedAt: {
             type: DATE,
             allowNull: true,
-            comment:
-                "Timestamp when the campaign was deleted (if soft deleted)",
         },
     },
     {
@@ -148,7 +190,7 @@ OrganizationTableModel.init(
         timestamps: true,
         paranoid: true,
         comment: "Table to store organizations",
-    }
+    },
 );
 
 OrganizationTableModel.associate();

@@ -1,61 +1,50 @@
 import { Op } from "sequelize";
-import {
-    TListFilters,
-    TListFiltersCampaigns,
-    TPayloadAddressUser,
-} from "../../../types";
-import {
-    TCampaignList,
-    TPayloadCampaign,
-    ICampaign,
-    IQuestion,
-} from "../../../interfaces";
-import {
-    AddressModel,
-    CampaignAdModel,
-    questionModel,
-} from "../../../database/schema";
+import { TListFilters } from "../../../types";
+import { AddressModel } from "../../../database/schema";
 import IBaseRepo from "../controllers/controller/IController";
 import {
-    IOrganization,
-    IOrganizationPayload,
-    TOrganization,
+    IOrganization, IOrganizationPayload, IOrganizationPayloadData,
 } from "../../../interfaces/organization";
 import { OrganizationTableModel } from "../database/organization_schema";
-import { AddressRepo } from "../../../apps/address/models";
+import { AddressRepo } from "../../address/models";
+
 
 export class OrganizationRepo
-    implements IBaseRepo<IOrganization, TListFilters>
-{
-    constructor() {}
+    implements IBaseRepo<IOrganizationPayloadData, TListFilters> {
+    constructor() {
+    }
 
-    public async create(data: TOrganization): Promise<any> {
-        const address = await new AddressRepo().createForUser({
-            city: data.city,
-            country: data.country,
-            postalCode: data.postalCode,
-            state: data.state,
-            street: data.street,
-            user_id: data.createdBy,
-        });
+    async create(payload: IOrganizationPayloadData): Promise<boolean> {
+
+        const billingAddressId = (await new AddressRepo().create(payload.billingAddress)).id;
+        const shippingAddressIds = await Promise.all(
+            payload.shippingAddress.map(async (addressId) => {
+                return (await new AddressRepo().create(addressId)).id; // You can also customize the address object if needed
+            }),
+        );
 
         const organization = {
-            name: data.name,
-            contactPersonName: data.contactPersonName,
-            contactNumber: data.contactNumber,
-            contactEmail: data.contactEmail,
-            addressId: address.id,
-            pan: data.pan,
-            gst: data.gst,
-            bankName: data.bankName,
-            bankAccountNumber: data.bankAccountNumber,
-            bankIFSCCode: data.bankIFSCCode,
-            masterFranchiseId: data.masterFranchiseId,
-            createdBy: data.createdBy,
-            rootUserId: data.rootUserId,
+            billingAddressId: billingAddressId,
+            businessType: payload.businessType,
+            deletedBy: null,
+            shippingAddressId: shippingAddressIds,
+            type: payload.type,
+            updatedBy: null,
+            name: payload.name,
+            contactPersonName: payload.contactPersonName,
+            contactNumber: payload.contactNumber,
+            contactEmail: payload.contactEmail,
+            pan: payload.pan,
+            gst: payload.gst,
+            bankName: payload.bankName,
+            bankAccountNumber: payload.bankAccountNumber,
+            bankIFSCCode: payload.bankIFSCCode,
+            masterFranchiseId: payload.masterFranchiseId,
+            rootUserId: payload.rootUserId,
         };
 
         return await OrganizationTableModel.create(organization);
+
     }
 
     public async get(id: number): Promise<IOrganization | null> {
@@ -81,7 +70,7 @@ export class OrganizationRepo
 
     public async update(
         id: number,
-        data: any
+        data: any,
     ): Promise<[affectedCount: number]> {
         const response = await OrganizationTableModel.update(data, {
             where: { id },

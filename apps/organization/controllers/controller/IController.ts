@@ -1,7 +1,5 @@
-import { NextFunction, Response } from "express";
 import { TQueryFilters } from "../../../../types";
 import { TCampaignList, TPayloadCampaign } from "../../../../interfaces";
-import { IOrganizationPayload } from "../../../../interfaces/organization";
 
 interface IDynamicFormController<T, F extends TQueryFilters> {
     /**
@@ -23,7 +21,7 @@ interface IDynamicFormController<T, F extends TQueryFilters> {
      * @param payload - The data to create the dynamic form question.
      * @returns Promise resolving to the created dynamic form question.
      */
-    create(payload: IOrganizationPayload): Promise<boolean>;
+    create(payload: T): Promise<boolean>;
 
     /**
      * Update an existing dynamic form question for a user.

@@ -1,3 +1,4 @@
+import { ICommissionEntityMapping } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
 import { ICommission } from "../../../interfaces/commission";
 import { APIResponse } from "../../common/models/ApiResponse";
 
@@ -7,7 +8,12 @@ export interface ICommissionRepo {
     delete(ids: number[], deletedById: number): Promise<APIResponse<boolean>>;
     getAll(): Promise<APIResponse<ICommission[]>>;
     getById(id: number): Promise<APIResponse<ICommission>>;
-    assignToCampaign(commissionId: number, campaignId: number): Promise<APIResponse<boolean>>;
-    unassignFromCampaign(commissionId: number, campaignId: number): Promise<APIResponse<boolean>>;
+
+
+    createMapEntities(mapEntities: ICommissionEntityMapping[]): Promise<APIResponse<boolean>>;
+    updateMapEntity(id: number, mapEntity: ICommissionEntityMapping): Promise<APIResponse<boolean>>;
+
+
+    isTitleAlreadyExists(title: string): Promise<APIResponse<boolean>>;
 }
 

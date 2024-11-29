@@ -49,3 +49,10 @@ export type TListFiltersAreas = {
         [key: string]: any;
     };
 };
+
+
+export enum PAYMENT_STATUS{
+    PAID = 'paid',
+    PENDING = 'pending',
+    FAILED = 'failed',
+}

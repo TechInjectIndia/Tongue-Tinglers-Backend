@@ -10,10 +10,10 @@ interface CommissionEntityMappingCreationAttributes extends Optional<ICommission
 
 class CommissionEntityMapTable extends Model<ICommissionEntityMapping, CommissionEntityMappingCreationAttributes> implements ICommissionEntityMapping {
     public id: number;
+    public franchiseId: number;
     public commissionId: number;
-    public campaignId: number;
-    public entityType: COMMISSION_ENTITIES;
-    public entityId: number;
+    public organizationId: number;
+    public status: COMMISSION_PAID_STATUS;
     public createdBy: number;
     public updatedBy: number | null;
     public deletedBy: number | null;
@@ -33,16 +33,17 @@ CommissionEntityMapTable.init({
         type: INTEGER,
         allowNull: false,
     },
-    campaignId: {
+    franchiseId: {
         type: INTEGER,
         allowNull: false,
     },
-    entityType: {
+
+    organizationId: {
+        type: INTEGER,
+        allowNull: false,
+    },
+    status: {
         type: STRING,
-        allowNull: false,
-    },
-    entityId: {
-        type: INTEGER,
         allowNull: false,
     },
     createdBy: {
@@ -89,12 +90,22 @@ enum COMMISSION_ENTITIES {
     MASTER_FRANCHISE = 'master-franchise',
 }
 
+enum COMMISSION_PAID_STATUS {
+    PENDING = 'pending',
+    PAID = 'paid',
+}
+
+type OrganizationCommissions = {
+    organizationId: number;
+    commissionId: number;
+}
+
 
 interface ICommissionEntityMapping extends BaseModel, UpdatedMetaData, DeletionMetaData {
     commissionId: number,
-    campaignId: number,
-    entityType: COMMISSION_ENTITIES,
-    entityId: number,
+    franchiseId: number,
+    organizationId: number,
+    status: COMMISSION_PAID_STATUS,
 }
 
-export { CommissionEntityMapTable, COMMISSION_ENTITIES, };
+export { CommissionEntityMapTable, COMMISSION_ENTITIES, ICommissionEntityMapping, COMMISSION_PAID_STATUS, OrganizationCommissions };

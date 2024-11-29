@@ -131,4 +131,23 @@ const validateGetCommissionById = (req: Request, res: Response, next: NextFuncti
     next();
 };
 
-export { validateCreateCommission, validateUpdateCommission, validateDeleteCommission, validateGetCommissionById, };
+
+
+const organizationCommissionSchema = Joi.object().keys({
+    organizationId: Joi.number().integer().required(),
+    commissionId: Joi.number().integer().required()
+});
+
+const commissionMapEntrySchema = Joi.array().items(organizationCommissionSchema).min(1).required();
+
+
+const validateCreateCommissionMapEntry = (req: Request, res: Response, next: NextFunction) => {
+    const { error } = commissionMapEntrySchema.validate(req.body);
+    if (error) {
+        return res.status(400).json(HelperMethods.getErrorResponse(error.details[0].message));
+    }
+    next();
+};
+
+
+export { validateCreateCommission, validateUpdateCommission, validateDeleteCommission, validateGetCommissionById, validateCreateCommissionMapEntry };

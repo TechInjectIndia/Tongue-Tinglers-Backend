@@ -3,10 +3,39 @@ import { ICommissionRepo } from "./ICommissionRepo";
 import { HelperMethods } from "../../common/utils/HelperMethods";
 import { CommissionTable } from "../../../database/schema/commission/CommissionTable";
 import { ICommission } from "../../../interfaces/commission";
-import { sequelize } from "../../../config";
-import { CommissionEntityMapTable } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
+import { CommissionEntityMapTable, ICommissionEntityMapping } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
+import { Op } from "sequelize";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
+
+    async createMapEntities(mapEntities: ICommissionEntityMapping[]): Promise<APIResponse<boolean>> {
+        try {
+
+            await CommissionEntityMapTable.bulkCreate(mapEntities);
+            return HelperMethods.getSuccessResponse<boolean>(true);
+
+        } catch (error) {
+            HelperMethods.handleError(error);
+            return HelperMethods.getErrorResponse();
+        }
+    }
+    async updateMapEntity(id: number, mapEntity: ICommissionEntityMapping): Promise<APIResponse<boolean>> {
+        try {
+
+            await CommissionEntityMapTable.update(mapEntity, {
+                where: {
+                    id: id
+                }
+            });
+
+            return HelperMethods.getSuccessResponse<boolean>(true);
+
+        } catch (error) {
+            HelperMethods.handleError(error);
+            return HelperMethods.getErrorResponse();
+        }
+    }
+
 
     async delete(ids: number[], deletedById: number): Promise<APIResponse<boolean>> {
         try {
@@ -45,7 +74,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         }
     }
 
-    async getById(id: number): Promise<APIResponse<ICommission>> {
+    async getById(id: number): Promise<APIResponse<CommissionTable>> {
         try {
 
             const result = await CommissionTable.findByPk(id);
@@ -58,24 +87,9 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         }
     }
 
-    async assignToCampaign(commissionId: number, campaignId: number): Promise<APIResponse<boolean>> {
-        try {
 
-            await CommissionEntityMapTable.create({
 
-            });
 
-            return HelperMethods.getSuccessResponse(true);
-
-        } catch (error) {
-            HelperMethods.handleError(error);
-            return HelperMethods.getErrorResponse(error.toString());
-        }
-    }
-
-    async unassignFromCampaign(commissionId: number, campaignId: number): Promise<APIResponse<boolean>> {
-        throw new Error("Method not implemented.");
-    }
 
     async create(commission: CommissionTable): Promise<APIResponse<CommissionTable>> {
         try {
@@ -99,6 +113,30 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             });
 
             return HelperMethods.getSuccessResponse<boolean>(true);
+
+        } catch (error) {
+            HelperMethods.handleError(error);
+            return HelperMethods.getErrorResponse();
+        }
+    }
+
+
+    async isTitleAlreadyExists(title: string): Promise<APIResponse<boolean>> {
+        try {
+
+            const result = await CommissionTable.count({
+                where: {
+                    title: {
+
+                        [Op.iLike]: title.toLowerCase()
+                    }
+                }
+            });
+            if (result === 0) {
+
+                return HelperMethods.getSuccessResponse<boolean>(false);
+            }
+            return HelperMethods.getSuccessResponse<boolean>(true, 'Title already exists');
 
         } catch (error) {
             HelperMethods.handleError(error);

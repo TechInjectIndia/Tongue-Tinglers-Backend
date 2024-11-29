@@ -29,6 +29,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         }
 
     }
+
     async getAll(): Promise<APIResponse<ICommission[]>> {
         try {
 
@@ -43,6 +44,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             return HelperMethods.getErrorResponse(error.toString());
         }
     }
+
     async getById(id: number): Promise<APIResponse<ICommission>> {
         try {
 
@@ -55,6 +57,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             return HelperMethods.getErrorResponse(error.toString());
         }
     }
+
     async assignToCampaign(commissionId: number, campaignId: number): Promise<APIResponse<boolean>> {
         try {
 
@@ -69,9 +72,11 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             return HelperMethods.getErrorResponse(error.toString());
         }
     }
+
     async unassignFromCampaign(commissionId: number, campaignId: number): Promise<APIResponse<boolean>> {
         throw new Error("Method not implemented.");
     }
+
     async create(commission: CommissionTable): Promise<APIResponse<CommissionTable>> {
         try {
 

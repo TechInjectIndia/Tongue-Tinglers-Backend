@@ -70,6 +70,7 @@ export class PostgresCommissionController implements ICommissionController {
 
         const input = { ...req.body, updatedBy: user_id };
 
+
         const result = await RepoProvider.commissionRepo.update(id, input);
         if (!result.success) {
             return res.status(500).send(result);

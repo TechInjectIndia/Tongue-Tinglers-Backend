@@ -1,5 +1,5 @@
 import * as express from "express";
-import { validateCreateCommission } from "../validations/CommissionValidations";
+import { validateCreateCommission, validateDeleteCommission, validateGetCommissionById, validateUpdateCommission } from "../validations/CommissionValidations";
 import { ControllerProvider } from "../../common/utils/ControllerProvider";
 import { auth } from '../../../middlewares/auth';
 
@@ -45,6 +45,12 @@ const commissionRouter = express.Router();
  */
 commissionRouter.post("/create", auth, validateCreateCommission, ControllerProvider.commissionController.create);
 
-commissionRouter.put("/update/:id", auth, validateCreateCommission, ControllerProvider.commissionController.update);
+commissionRouter.put("/update/:id", auth, validateUpdateCommission, ControllerProvider.commissionController.update);
+
+commissionRouter.delete("/delete", auth, validateDeleteCommission, ControllerProvider.commissionController.update);
+
+commissionRouter.get("/", auth, ControllerProvider.commissionController.getAll);
+
+commissionRouter.get("/:id", auth, validateGetCommissionById, ControllerProvider.commissionController.getById);
 
 export { commissionRouter };

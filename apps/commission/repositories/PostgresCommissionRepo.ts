@@ -33,7 +33,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         try {
 
             const result = await CommissionTable.findAll({
-
+                order: [["updated_at", "DESC"]]
             });
 
             return HelperMethods.getSuccessResponse(result);

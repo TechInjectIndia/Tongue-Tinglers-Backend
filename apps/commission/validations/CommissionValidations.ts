@@ -76,9 +76,15 @@ const updateCommissionSchema = Joi.object({
 const validateUpdateCommission = (req: Request, res: Response, next: NextFunction) => {
 
     /* get params */
-    const id = get(req.params, "id", 0);
+    let id = get(req.params, "id", 0);
+    try {
+        id = parseInt(id);
 
-    if (!id || typeof id !== 'number' || id <= 0) {
+    } catch (error) {
+        id = 0;
+    }
+
+    if (!id || id <= 0) {
         return res.status(400).send(HelperMethods.getErrorResponse('Id of the commission to be updated is required.'));
     }
 
@@ -110,4 +116,19 @@ const validateDeleteCommission = (req: Request, res: Response, next: NextFunctio
     next();
 };
 
-export { validateCreateCommission, validateUpdateCommission, validateDeleteCommission, };
+const validateGetCommissionById = (req: Request, res: Response, next: NextFunction) => {
+    /* get params */
+    let id = get(req.params, "id", 0);
+    try {
+        id = parseInt(id);
+
+    } catch (error) {
+        id = 0;
+    }
+    if (!id || id <= 0) {
+        return res.status(400).send(HelperMethods.getErrorResponse('Invalid request'));
+    }
+    next();
+};
+
+export { validateCreateCommission, validateUpdateCommission, validateDeleteCommission, validateGetCommissionById, };

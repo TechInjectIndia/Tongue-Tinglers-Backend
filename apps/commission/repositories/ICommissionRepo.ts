@@ -9,6 +9,5 @@ export interface ICommissionRepo {
     getById(id: number): Promise<APIResponse<ICommission>>;
     assignToCampaign(commissionId: number, campaignId: number): Promise<APIResponse<boolean>>;
     unassignFromCampaign(commissionId: number, campaignId: number): Promise<APIResponse<boolean>>;
-
 }
 

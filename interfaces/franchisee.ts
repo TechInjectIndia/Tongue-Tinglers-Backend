@@ -14,6 +14,7 @@ interface BaseFranchisee {
     paymentIds: Array<number>;
     status: FRANCHISE_STATUS;
     establishedDate: Date;
+    organizationId: number;
 }
 
 interface FranchiseDetails extends BaseMeta, BaseFranchisee {

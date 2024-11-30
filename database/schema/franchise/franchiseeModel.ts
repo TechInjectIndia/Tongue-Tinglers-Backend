@@ -5,6 +5,9 @@ import { UserModel } from "../user/user.model";
 import { FRANCHISE_STATUS, Franchisee } from "../../../interfaces";
 
 import { RegionModel } from "./RegionsModel";
+import {
+    OrganizationModel,
+} from "../../../apps/organization/database/organization_schema";
 
 const { STRING, INTEGER, DATE, NOW, ARRAY, ENUM } = DataTypes;
 
@@ -14,6 +17,7 @@ interface FranchiseeCreationAttributes extends Optional<Franchisee, "id" | "crea
 
 // Franchisee class model for the Sequelize ORM
 class FranchiseeModel extends Model<Franchisee, FranchiseeCreationAttributes> implements Franchisee {
+    public organizationId: number;
     public id: number;
     public location: number;
     public sm: number[];
@@ -38,15 +42,14 @@ class FranchiseeModel extends Model<Franchisee, FranchiseeCreationAttributes> im
 
 
     public static associate() {
-        this.belongsTo(UserModel, {
-            foreignKey: "userid",
-            as: "user",
-            constraints: false,
-        });
 
         this.belongsTo(RegionModel, {
             foreignKey: "regionId",
             as: "Region",
+        });
+        this.belongsTo(OrganizationModel, {
+            foreignKey: "organizationId",
+            as: "organization",
         });
 
         this.belongsTo(UserModel, {
@@ -114,6 +117,9 @@ FranchiseeModel.init(
         users: {
             type: ARRAY(INTEGER),
             allowNull: true,  // Array of user IDs (nullable)
+        },
+        organizationId: {
+            type: INTEGER, allowNull: false,
         },
         regionId: {
             type: INTEGER,

@@ -11,6 +11,7 @@ export class FranchiseeRepo implements IFranchiseeController<Franchisee, Franchi
         try {
 
             const franchise: Franchisee = {
+                organizationId: 0,
                 location: 0,
                 sm: [],
                 pocName: "",

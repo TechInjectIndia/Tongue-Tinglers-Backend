@@ -20,7 +20,11 @@ import { FranchiseeRepo } from "../../franchisee/models/FranchiseeRepo";
 
 import { CampaignAdRepo } from "../../campaign/models";
 import { CONFIG } from "../../../config/environment";
-import { FRANCHISE_STATUS, FranchiseDetails, Franchisee } from "../../../interfaces";
+import {
+    FRANCHISE_STATUS,
+    FranchiseDetails,
+    Franchisee,
+} from "../../../interfaces";
 
 export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -41,8 +45,8 @@ export default class ContractController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.CREATED,
-                        contract
-                    )
+                        contract,
+                    ),
                 );
         } catch (error) {
             console.log(error);
@@ -75,8 +79,8 @@ export default class ContractController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        Products
-                    )
+                        Products,
+                    ),
                 );
         } catch (err) {
             console.log(err);
@@ -94,7 +98,7 @@ export default class ContractController {
                 return res
                     .status(404)
                     .send(
-                        sendResponse(RESPONSE_TYPE.ERROR, "Contract not found")
+                        sendResponse(RESPONSE_TYPE.ERROR, "Contract not found"),
                     );
             }
             return res
@@ -103,8 +107,8 @@ export default class ContractController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        contract
-                    )
+                        contract,
+                    ),
                 );
         } catch (error) {
             return res.status(500).send({
@@ -121,13 +125,13 @@ export default class ContractController {
                 return res
                     .status(404)
                     .send(
-                        sendResponse(RESPONSE_TYPE.ERROR, "Contract not found")
+                        sendResponse(RESPONSE_TYPE.ERROR, "Contract not found"),
                     );
             }
 
             const updatedContract = await new ContractRepo().update(
                 id,
-                req.body
+                req.body,
             );
             return res
                 .status(200)
@@ -135,8 +139,8 @@ export default class ContractController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
-                        updatedContract
-                    )
+                        updatedContract,
+                    ),
                 );
         } catch (error) {
             return res.status(500).send({
@@ -154,8 +158,8 @@ export default class ContractController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            "Invalid ids provided"
-                        )
+                            "Invalid ids provided",
+                        ),
                     );
             }
 
@@ -164,13 +168,13 @@ export default class ContractController {
                 return res
                     .status(404)
                     .send(
-                        sendResponse(RESPONSE_TYPE.ERROR, "Contracts not found")
+                        sendResponse(RESPONSE_TYPE.ERROR, "Contracts not found"),
                     );
             }
             return res
                 .status(200)
                 .send(
-                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.DELETED)
+                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.DELETED),
                 );
         } catch (error) {
             return res.status(500).send({
@@ -196,14 +200,14 @@ export default class ContractController {
 
             const existingLead = await new LeadRepo().getLeadByAttr(
                 "id",
-                existingContract.leadId
+                existingContract.leadId,
             );
 
             console.log("lead");
             console.log(existingLead);
 
             const existingCampaign = await new CampaignAdRepo().get(
-                existingLead.campaignId
+                existingLead.campaignId,
             );
 
             let franchiseePayload: FranchiseDetails = {
@@ -224,8 +228,9 @@ export default class ContractController {
                 area: "",
                 agreementIds: [],
                 paymentIds: [],
+                organizationId: 0,
                 status: FRANCHISE_STATUS.Active,
-                establishedDate: undefined
+                establishedDate: undefined,
             };
 
             const franchiseResponse =
@@ -254,7 +259,7 @@ export default class ContractController {
                         leadEmail: existingLead.email,
                         leadPhone: existingLead.phoneNumber,
                         passwordCreateLink,
-                    }
+                    },
                 );
 
                 // const emailContent = `Hi Your Lead converted into Prospect Now Add Your Organisation using link: https://tonguetingler.vercel.app/organization-setup?prospectId=${prospect.id} using password:123456`;
@@ -271,7 +276,7 @@ export default class ContractController {
                 await sendEmail(
                     mailOptions.to,
                     mailOptions.subject,
-                    mailOptions.templateParams
+                    mailOptions.templateParams,
                 );
             } catch (emailError) {
                 console.error("Error sending email:", emailError);
@@ -282,8 +287,8 @@ export default class ContractController {
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.PROSPECT_CREATED
-                    )
+                        SUCCESS_MESSAGE.PROSPECT_CREATED,
+                    ),
                 );
         } catch (err) {
             console.error(err);

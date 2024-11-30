@@ -49,3 +49,25 @@ export type TListFiltersAreas = {
         [key: string]: any;
     };
 };
+
+export type TListFiltersLeads = {
+    offset: number;
+    limit: number;
+    search?: string;
+    sorting?: any;
+    trashOnly?: string;
+    filters?: {
+        status,
+        source,
+        campaign,
+        region,
+        state,
+        date,
+        assignee,
+        followUpDate,
+        affiliate,
+        amountRange,
+        quickActionFilter,
+        [key: string]: any;
+    };
+};

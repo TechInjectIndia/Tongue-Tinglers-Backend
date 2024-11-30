@@ -86,7 +86,7 @@ export class ProductRepo implements IBaseRepo<TProduct, TProductFilters> {
         const total = await ProductsModel.count({
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -96,7 +96,7 @@ export class ProductRepo implements IBaseRepo<TProduct, TProductFilters> {
             limit: filters.limit,
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

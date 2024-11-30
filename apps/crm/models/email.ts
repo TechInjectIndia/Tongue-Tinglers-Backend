@@ -26,7 +26,7 @@ export class EmailRepo implements IBaseRepo<TEmail, TQueryFilters> {
         const total = await EmailModel.count({
             where: {
                 status: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -36,7 +36,7 @@ export class EmailRepo implements IBaseRepo<TEmail, TQueryFilters> {
             limit: filters.limit,
             where: {
                 status: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

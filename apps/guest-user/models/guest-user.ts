@@ -15,9 +15,9 @@ export class GuestUserRepo
         const total = await GuestUserModel.count({
             where: {
                 [Op.or]: [
-                    { firstName: { [Op.like]: `%${filters.search}%` } },
-                    { lastName: { [Op.like]: `%${filters.search}%` } },
-                    { email: { [Op.like]: `%${filters.search}%` } },
+                    { firstName: { [Op.iLike]: `%${filters.search}%` } },
+                    { lastName: { [Op.iLike]: `%${filters.search}%` } },
+                    { email: { [Op.iLike]: `%${filters.search}%` } },
                 ],
             },
         });
@@ -27,9 +27,9 @@ export class GuestUserRepo
             limit: filters.limit,
             where: {
                 [Op.or]: [
-                    { firstName: { [Op.like]: `%${filters.search}%` } },
-                    { lastName: { [Op.like]: `%${filters.search}%` } },
-                    { email: { [Op.like]: `%${filters.search}%` } },
+                    { firstName: { [Op.iLike]: `%${filters.search}%` } },
+                    { lastName: { [Op.iLike]: `%${filters.search}%` } },
+                    { email: { [Op.iLike]: `%${filters.search}%` } },
                 ],
             },
         });

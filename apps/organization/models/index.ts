@@ -107,7 +107,7 @@ export class OrganizationRepo
         const total = await OrganizationTableModel.count({
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -118,7 +118,7 @@ export class OrganizationRepo
             limit: filters.limit,
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
             include: [

@@ -121,7 +121,7 @@ router.use(`${ADMIN}/region`, auth, regionRouter);
 router.use(`${ADMIN}/area`, auth, areaRouter);
 router.use(`${ADMIN}/contracts`, contractsRouter);
 router.use(`${ADMIN}/franchisee`, franchiseeRouter);
-router.use(`${ADMIN}/lead`, auth, leadRouter); // dont add auth to this url
+router.use(`${ADMIN}/lead`, leadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`/cart`, auth, cartRouter);

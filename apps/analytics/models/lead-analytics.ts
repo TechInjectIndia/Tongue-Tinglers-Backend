@@ -68,7 +68,7 @@ export class AnalyticsModel {
         // Search filter
         if (filters.search) {
             whereConditions.firstName = {
-                [Op.like]: `%${filters.search}%`,
+                [Op.iLike]: `%${filters.search}%`,
             };
         }
 

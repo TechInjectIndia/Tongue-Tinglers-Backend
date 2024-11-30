@@ -25,7 +25,7 @@ export class CustomerReviewsRepo implements IBaseRepo<TReviews, TReviewsFilters>
         const total = await ReviewsModel.count({
             where: {
                 review_text: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 user_id: user_id
             },
@@ -36,7 +36,7 @@ export class CustomerReviewsRepo implements IBaseRepo<TReviews, TReviewsFilters>
             limit: filters.limit,
             where: {
                 review_text: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 user_id: user_id
             },

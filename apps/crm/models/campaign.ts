@@ -45,7 +45,7 @@ export class CampaignRepo implements IBaseRepo<TCampaign, TQueryFilters> {
         const total = await CampaignModel.count({
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -55,7 +55,7 @@ export class CampaignRepo implements IBaseRepo<TCampaign, TQueryFilters> {
             limit: filters.limit,
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

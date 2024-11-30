@@ -46,7 +46,7 @@ export class PermissionsRepo implements IBaseRepo<TPermission, TListFilters> {
         const total = await PermissionModel.count({
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -57,7 +57,7 @@ export class PermissionsRepo implements IBaseRepo<TPermission, TListFilters> {
             raw:true,
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

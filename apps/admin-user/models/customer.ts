@@ -19,7 +19,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
         const total = await UserModel.count({
             where: {
                 email: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 type: USER_TYPE.GUEST_USER,
             },
@@ -30,7 +30,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
             limit: filters.limit,
             where: {
                 email: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 type: USER_TYPE.GUEST_USER
             },
@@ -83,7 +83,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
         const total = await UserModel.count({
             where: {
                 email: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 type: USER_TYPE.GUEST_USER,
                 deletedAt: { [Op.not]: null },
@@ -96,7 +96,7 @@ export class CustomerRepo implements IBaseRepo<TUser, TListFilters> {
             limit: filters.limit,
             where: {
                 email: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 type: USER_TYPE.GUEST_USER,
                 deletedAt: { [Op.not]: null },

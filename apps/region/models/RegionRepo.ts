@@ -29,8 +29,8 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
         // If the search term is provided, apply it to the relevant fields
         if (filters.search) {
             whereCondition[Op.or] = [
-                { title: { [Op.like]: `%${filters.search}%` } },
-                { createdBy: { [Op.like]: `%${filters.search}%` } },
+                { title: { [Op.iLike]: `%${filters.search}%` } },
+                { createdBy: { [Op.iLike]: `%${filters.search}%` } },
             ];
 
             // Only apply the search on numeric fields (id, area) if the search term is a number
@@ -49,7 +49,7 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
             whereCondition.id = { [Op.eq]: filters.filters.id };
         }
         if (filters.filters?.title) {
-            whereCondition.title = { [Op.like]: `%${filters.filters.title}%` };
+            whereCondition.title = { [Op.iLike]: `%${filters.filters.title}%` };
         }
         // if (filters.filters?.area) {
         //     whereCondition.area = { [Op.contains]: [filters.filters.area] };

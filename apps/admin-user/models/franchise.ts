@@ -17,7 +17,7 @@ export class FranchiseRepo implements IBaseRepo<TUser, TListFilters> {
         const total = await UserModel.count({
             where: {
                 email: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 type: USER_TYPE.FRANCHISE
             },
@@ -28,7 +28,7 @@ export class FranchiseRepo implements IBaseRepo<TUser, TListFilters> {
             limit: filters.limit,
             where: {
                 email: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 type: USER_TYPE.FRANCHISE
             },
@@ -94,7 +94,7 @@ export class FranchiseRepo implements IBaseRepo<TUser, TListFilters> {
         const total = await UserModel.count({
             where: {
                 email: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 type: USER_TYPE.FRANCHISE,
                 deletedAt: { [Op.not]: null },
@@ -107,7 +107,7 @@ export class FranchiseRepo implements IBaseRepo<TUser, TListFilters> {
             limit: filters.limit,
             where: {
                 email: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 type: USER_TYPE.FRANCHISE,
                 deletedAt: { [Op.not]: null },

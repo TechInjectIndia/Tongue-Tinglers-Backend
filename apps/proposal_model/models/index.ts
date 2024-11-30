@@ -26,7 +26,7 @@ export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters
         const total = await ProposalLeadModels.count({
             where: {
                 title: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -36,7 +36,7 @@ export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters
             limit: filters.limit,
             where: {
                 title: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

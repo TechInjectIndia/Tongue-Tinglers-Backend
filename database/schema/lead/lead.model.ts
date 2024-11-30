@@ -5,6 +5,8 @@ import { ILead } from "../../../interfaces";
 import { UserModel } from '../user/user.model';
 import { INTEGER } from "sequelize";
 import { NUMBER } from "sequelize";
+import { CampaignModel } from "../crm";
+import { CampaignAdModel } from "../campaign-ui/campaignAdModel";
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
 
 interface LeadCreationAttributes extends Optional<ILead, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
@@ -53,6 +55,10 @@ LeadsModel.init({
     },
     campaignId: {
         type: INTEGER,
+        references: {
+            model: 'campaigns',
+            key: 'id'
+        },
         allowNull: true
     },
     firstName: {
@@ -167,5 +173,9 @@ LeadsModel.init({
     timestamps: true,
     paranoid: true
 });
+
+LeadsModel.belongsTo(CampaignAdModel, { foreignKey: 'campaignId' , as: 'campaign' });
+CampaignAdModel.hasMany(LeadsModel, { foreignKey: 'campaignId', as: 'campaign' });
+
 
 export { LeadsModel };

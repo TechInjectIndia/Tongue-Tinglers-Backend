@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
+import { Op } from "sequelize";
 import {
     sendResponse,
     createPassword,
@@ -463,11 +464,42 @@ export default class LeadController {
                 .toString()
                 .split(" ");
 
+             // Additional filters
+             const status = get(req.query, "status");
+             const source = get(req.query, "source");
+             const campaign = get(req.query, "campaign");
+             const region = get(req.query, "region");
+             const state = get(req.query, "state");
+             const date = get(req.query, "date");
+             const assignee = get(req.query, "assignee");
+             const followUpDate = get(req.query, "followUpDate");
+             const affiliate = get(req.query, "affiliate");
+             const amountRange = get(req.query, "amountRange");
+             const quickActionFilter = get(req.query, "quickActionFilter");
+
+             // Prepare filter object
+            // Dynamic filter object
+            const filters: any = {};
+            if (status) filters.status = status;
+            if (source) filters.source = source;
+            if (region) filters.region = region;
+            if (campaign) filters.campaign = campaign;
+            if (date) filters.date = date;
+            if (assignee) filters.assignee = assignee;
+            if (affiliate) filters.affiliate = affiliate;
+
+            // Handle range filter (e.g., amount range)
+            if (amountRange) {
+                const [min, max] = amountRange.toString().split("-");
+                filters.amount = { [Op.between]: [parseFloat(min), parseFloat(max)] };
+            }
+            
             const leadsList = await new LeadRepo().list({
                 offset: skip as number,
                 limit: size as number,
                 search: search as string,
                 sorting: sorting,
+                filters: filters,
             });
 
             return res

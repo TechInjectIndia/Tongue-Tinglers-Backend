@@ -26,7 +26,7 @@ export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
         const total = await AddressModel.count({
             where: {
                 street: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 user_id: user_id
             },
@@ -37,7 +37,7 @@ export class AddressRepo implements IBaseRepo<TAddress, TListFilters> {
             limit: filters.limit,
             where: {
                 street: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 user_id: user_id
             },

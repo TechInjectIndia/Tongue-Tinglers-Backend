@@ -26,7 +26,7 @@ export class QuestionRepo implements IBaseRepo<IQuestion, TListFilters> {
         const total = await questionModel.count({
             where: {
                 question: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -36,7 +36,7 @@ export class QuestionRepo implements IBaseRepo<IQuestion, TListFilters> {
             limit: filters.limit,
             where: {
                 question: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

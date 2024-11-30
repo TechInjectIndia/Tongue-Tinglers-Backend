@@ -7,6 +7,7 @@ import { CommissionEntityMapTable, ICommissionEntityMapping } from "../../../dat
 import { Op, UniqueConstraintError } from "sequelize";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
+
     async search(searchText: string, type?: string): Promise<APIResponse<ICommission[]>> {
 
         try {
@@ -46,6 +47,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             return HelperMethods.getErrorResponse();
         }
     }
+
     async updateMapEntity(id: number, mapEntity: ICommissionEntityMapping): Promise<APIResponse<boolean>> {
         try {
 
@@ -62,7 +64,6 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             return HelperMethods.getErrorResponse();
         }
     }
-
 
     async delete(ids: number[], deletedById: number): Promise<APIResponse<boolean>> {
         try {
@@ -114,10 +115,6 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         }
     }
 
-
-
-
-
     async create(commission: CommissionTable): Promise<APIResponse<CommissionTable>> {
         try {
 
@@ -152,8 +149,6 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             return HelperMethods.getErrorResponse();
         }
     }
-
-
 
     async isTitleAlreadyExists(title: string): Promise<APIResponse<boolean>> {
         try {

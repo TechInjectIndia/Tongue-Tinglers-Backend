@@ -1,5 +1,4 @@
 import { CommissionTable } from "../../../database/schema/commission/CommissionTable";
-import { ICommission } from "../../../interfaces/commission";
 import { APIResponse } from "../../common/models/ApiResponse";
 import { NextFunction, Request, Response } from "express";
 
@@ -16,9 +15,8 @@ export interface ICommissionController {
     getAll(req: Request, res: Response, next: NextFunction): Promise<APIResponse<CommissionTable[]>>;
 
     createMapEntry(req: Request, res: Response, next: NextFunction): Promise<APIResponse<null>>;
+
     updateMapEntry(req: Request, res: Response, next: NextFunction): Promise<APIResponse<null>>;
 
     searchCommission(req: Request, res: Response, next: NextFunction): Promise<APIResponse<CommissionTable[]>>;
-
-
 }

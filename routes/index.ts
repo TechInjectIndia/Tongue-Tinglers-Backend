@@ -17,13 +17,13 @@ import authRouter from "../apps/auth/api";
 router.use(`/auth`, authRouter);
 // ====== Auth ======
 
-import addressRouter from "../apps/address/api";
-router.use("/user/address", auth, addressRouter);
+
+
 
 import referralRouter from "../apps/referral/api";
 router.use("/referral", referralRouter);
 
-// ====== Admin ======
+
 // ====== Admin imports ======
 import franchiseRouter from "../apps/admin-user/api/franchise";
 import rolesRouter from "../apps/admin-user/api/roles";
@@ -73,6 +73,9 @@ import shippingHistory from "../apps/ecommerce/api/shippingHistoryApi";
 import userAddressRouter from "../apps/user-address/api/userAddressApi";
 import vendorRouter from "../apps/vendor/api/vendorApi";
 import { commissionRouter } from "../apps/commission/api/CommissionApi";
+
+/* Migration Router */
+import migrationRouter from "../migrations/routes/migrateRoute";
 
 /* organization router */
 import organizationRouter from "../apps/organization/api/index";
@@ -125,6 +128,8 @@ router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`${ADMIN}/commission`, auth, commissionRouter);
 router.use(`/cart`, auth, cartRouter);
 router.use(`/user-address`, auth, userAddressRouter);
+
+router.use('/migration', migrationRouter)
 
 // ====== Admin ======
 // Guest users

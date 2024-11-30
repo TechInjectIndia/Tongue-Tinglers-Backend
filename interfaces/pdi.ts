@@ -1,7 +1,7 @@
-export interface ICheckList {
+export interface IPdiList {
     id:number,
     checkpoints: checkPointsValue[]
-    franchiseModelId: number;
+    prospectId: number;
     createdBy?:number;
     createdAt:Date;
     updatedBy:number|null;
@@ -15,17 +15,17 @@ export interface checkPointsValue {
     value: boolean
 }
 
-export type TICheckListList = {
+export type TIPdiListList = {
     total: number,
-    data: ICheckList[]
+    data: IPdiList[]
 }
 
-export type TICheckListPayload = {
+export type TIPdiListPayload = {
     checkpoints: checkPointsValue[],
-    franchiseModelId: number;
+    prospectId: number;
 };
 
-export type TListFiltersICheckListt = {
+export type TListFiltersIPdiList = {
     offset: number;
     limit: number;
     search?: string;

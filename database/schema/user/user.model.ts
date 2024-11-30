@@ -1,11 +1,12 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { USER_STATUS, USER_TYPE, UserInformation } from '../../../interfaces';
+import { USER_STATUS, USER_TYPE, UserInformation } from "../../../interfaces";
 import { TUser } from "../../../types";
-import { AddressModel } from "./address";
-const { INTEGER, STRING, ENUM, UUIDV4, JSONB } = DataTypes;
 
-interface UserCreationAttributes extends Optional<TUser, 'id' | 'createdAt' | 'updatedAt'> { }
+const { INTEGER, STRING, ENUM, JSONB } = DataTypes;
+
+interface UserCreationAttributes extends Optional<TUser, "id" | "createdAt" | "updatedAt"> {
+}
 
 class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
     public id!: number;
@@ -40,10 +41,10 @@ UserModel.init({
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        autoIncrement: true, 
+        autoIncrement: true,
     },
     firebaseUid: {
-        type: STRING
+        type: STRING,
     },
     createdBy: {
         type: INTEGER,
@@ -54,30 +55,30 @@ UserModel.init({
         allowNull: true,
     },
     profilePhoto: {
-        type: STRING
+        type: STRING,
     },
     firstName: {
-        type: STRING
+        type: STRING,
     },
     lastName: {
-        type: STRING
+        type: STRING,
     },
     nameForSearch: {
-        type: STRING
+        type: STRING,
     },
     email: {
-        type: STRING
+        type: STRING,
     },
     phoneNumber: {
-        type: STRING
+        type: STRING,
     },
     type: {
         type: ENUM,
-        values: [...Object.values(USER_TYPE)]
+        values: [...Object.values(USER_TYPE)],
     },
     status: {
         type: ENUM,
-        values: [...Object.values(USER_STATUS)]
+        values: [...Object.values(USER_STATUS)],
     },
     cart: {
         type: STRING,
@@ -104,10 +105,10 @@ UserModel.init({
         allowNull: true,
     },
     updatedBy: {
-        type: INTEGER
+        type: INTEGER,
     },
     deletedBy: {
-        type: INTEGER
+        type: INTEGER,
     },
     role: {
         type: INTEGER,
@@ -139,11 +140,10 @@ UserModel.init({
     },
 }, {
     sequelize,
-    tableName: 'users',
+    tableName: "users",
     timestamps: true,
-    paranoid: true
+    paranoid: true,
 });
-
 
 
 export { UserModel };

@@ -10,16 +10,11 @@ const checkPointsData = Joi.object().keys({
 });
 // Schema for PDI Checklist creation
 const createIChecklistBody = Joi.object().keys({
-    title: Joi.string().required()
-        .messages({
-            'string.base': 'Title must be a string.',
-            'any.required': 'Title is required.',
-        }),
-    checkPoints: Joi.array().items(checkPointsData).required(),
-    franchiseId: Joi.number().required()
+    checkpoints: Joi.array().items(checkPointsData).required(),
+    prospectId: Joi.number().required()
     .messages({
-        'number.base': 'Franchise must be a number.',
-        'any.required': 'Franchise is required.',
+        'number.base': 'Prospect must be a number.',
+        'any.required': 'Prospect is required.',
     }),
 });
 
@@ -27,16 +22,11 @@ const createIChecklistBody = Joi.object().keys({
 
 // Validation schema for editing a Area
 const editChecklistBody = Joi.object({
-    title: Joi.string().required()
+    checkpoints: Joi.array().items(checkPointsData).required(),
+    prospectId: Joi.number().required()
     .messages({
-        'string.base': 'Title must be a string.',
-        'any.required': 'Title is required.',
-    }),
-    checkPoints: checkPointsData.allow(null).optional(),
-    franchiseModel: Joi.number().required()
-    .messages({
-        'number.base': 'Franchise must be a number.',
-        'any.required': 'Franchise is required.',
+        'number.base': 'Prospect must be a number.',
+        'any.required': 'Prospect is required.',
     }),
 }).strict();
 

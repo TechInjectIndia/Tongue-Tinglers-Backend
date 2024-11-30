@@ -1,5 +1,5 @@
 import express from 'express';
-import UserAddressController from '../controllers/UserAddressController';
+import UserAddressController from '../controllers/AddressController';
 import * as UserAddressValidation from '../validations/UserAddressValidations';
 
 const router = express.Router();

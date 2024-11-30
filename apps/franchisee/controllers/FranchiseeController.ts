@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
 import { FranchiseeRepo } from '../models/FranchiseeRepo';
-import { FranchiseSocialMediaDetailsRepo } from '../models/FranchiseSocialMediaDetailsRepo';
-import { FranchiseLocationRepo } from '../models/FranchiseLocationRepo';
 import { RegionRepo } from '../../region/models/RegionRepo';
 import { ContractRepo } from '../../contracts/models/ContractRepo';
 import { sendResponse, sendEmail, getEmailTemplate, EMAIL_TEMPLATE, EMAIL_HEADING } from '../../../libraries';
@@ -54,7 +52,7 @@ export default class FranchiseeController {
 
             franchiseLocation.franchiseeId = newFranchisee.id
             // Create the franchise location first
-            const newFranchiseLocation = await new FranchiseLocationRepo().createFranchiseLocation(franchiseLocation);
+
 
             // If socialMediaDetails exists, set franchiseeId and create social media details
             if (socialMediaDetails && Array.isArray(socialMediaDetails)) {
@@ -62,7 +60,7 @@ export default class FranchiseeController {
                     socialMediaDetails.map(socialMediaDetail => {
                         // Assign the franchiseeId to each socialMediaDetail
                         socialMediaDetail.franchiseeId = newFranchisee.id;
-                        return new FranchiseSocialMediaDetailsRepo().createSocialMediaDetails(socialMediaDetail);
+
                     })
                 );
             }
@@ -122,8 +120,8 @@ export default class FranchiseeController {
         try {
             const franchiseeId = req.params.id;
 
-            console.log("franchise id ",franchiseeId);
-            
+            console.log("franchise id ", franchiseeId);
+
             const franchisee = await new FranchiseeRepo().getFranchiseeById(franchiseeId);
 
             if (!franchisee) {
@@ -167,23 +165,23 @@ export default class FranchiseeController {
             }
 
             // Update franchise location if provided
-            if (franchiseeData.franchiseLocation) {
-                const franchiseLocationRepo = new FranchiseLocationRepo();
-                await franchiseLocationRepo.updateFranchiseLocationByFranchiseId(franchiseeId, franchiseeData.franchiseLocation);
-            }
+            // if (franchiseeData.franchiseLocation) {
+
+            //     await franchiseLocationRepo.updateFranchiseLocationByFranchiseId(franchiseeId, franchiseeData.franchiseLocation);
+            // }
 
             // Update social media details if provided
             if (franchiseeData.socialMediaDetails) {
-                const socialMediaRepo = new FranchiseSocialMediaDetailsRepo();
+
                 await Promise.all(
                     franchiseeData.socialMediaDetails.map(async (socialMediaDetail: any) => {
                         if (socialMediaDetail.id) {
                             // Update existing social media detail
-                            await socialMediaRepo.update(socialMediaDetail.id, socialMediaDetail);
+                            // await socialMediaRepo.update(socialMediaDetail.id, socialMediaDetail);
                         } else {
                             // Create new social media detail if no id is provided
                             socialMediaDetail.franchiseeId = franchiseeId;
-                            await socialMediaRepo.createSocialMediaDetails(socialMediaDetail);
+                            // await socialMediaRepo.createSocialMediaDetails(socialMediaDetail);
                         }
                     })
                 );

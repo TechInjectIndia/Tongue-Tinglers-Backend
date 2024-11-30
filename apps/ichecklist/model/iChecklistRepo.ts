@@ -71,6 +71,13 @@ export class PdiChecklistRepo implements IBaseRepo<ICheckList, TListFiltersIChec
         });
         return deletedCount;
     }
+
+    public async getChecklistByFranchiseId(franchiseModelId: number): Promise<ICheckList[]> {
+        const data = await IChecklistModel.findAll({
+            where: { franchiseModelId }
+        });
+        return data as ICheckList[] | null;
+    }
 }
 
 export default PdiChecklistRepo;

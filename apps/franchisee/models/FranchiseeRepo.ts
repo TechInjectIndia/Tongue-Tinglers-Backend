@@ -1,18 +1,38 @@
 import { FranchiseeModel } from "../../../database/schema";
 import { RegionModel } from "../../../database/schema";
-import { ContractModel } from "../../../database/schema";
-import { FranchiseLocationModel } from "../../../database/schema";
-import { SocialMediaDetailsFranchiseModel } from "../../../database/schema";
-import { Op } from "sequelize";
-import { FranchiseeAttributes, AddFranchiseePayload } from "../../../interfaces";
+import { FRANCHISE_STATUS, FranchiseDetails, Franchisee } from "../../../interfaces";
+
+
 import IFranchiseeController from '../controllers/controller/IFranchiseeController';
 
-export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttributes> {
+export class FranchiseeRepo implements IFranchiseeController<Franchisee, FranchiseDetails> {
     // Create a new franchisee
-    public async createFranchisee(franchiseeData: AddFranchiseePayload): Promise<FranchiseeAttributes> {
+    public async createFranchisee(franchiseeData: FranchiseDetails): Promise<Franchisee> {
         try {
-            const newFranchisee = await FranchiseeModel.create(franchiseeData);
-            return newFranchisee;
+
+            const franchise: Franchisee = {
+                location: 0,
+                sm: [],
+                pocName: "",
+                pocEmail: "",
+                pocPhoneNumber: "",
+                users: [],
+                regionId: 0,
+                area: "",
+                agreementIds: [],
+                paymentIds: [],
+                status: FRANCHISE_STATUS.Active,
+                establishedDate: undefined,
+                id: 0,
+                createdAt: undefined,
+                createdBy: 0,
+                updatedBy: 0,
+                deletedBy: 0,
+                updatedAt: undefined,
+                deletedAt: undefined
+            }
+            const newFranchisee = await FranchiseeModel.create(franchise);
+            return newFranchisee.toJSON();
         } catch (error) {
             console.error('Error creating franchisee:', error);
             throw new Error('Failed to create franchisee.');
@@ -20,7 +40,7 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
     }
 
     // Retrieve all franchisees
-    public async getAllFranchisees(franchiseType: string): Promise<FranchiseeAttributes[]> {
+    public async getAllFranchisees(franchiseType: string): Promise<Franchisee[]> {
         try {
             const whereClause = franchiseType ? { franchiseType } : {};
             let franchisees: any;
@@ -28,8 +48,7 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
                 franchisees = await FranchiseeModel.findAll({
                     include: [
                         { model: RegionModel, as: 'region' },
-                        { model: FranchiseLocationModel, as: 'franchiseLocation'},
-                        { model: SocialMediaDetailsFranchiseModel, as: 'socialMediaDetails' }
+
                     ]
                 });
             } else {
@@ -37,8 +56,7 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
                     where: whereClause,
                     include: [
                         { model: RegionModel, as: 'region' },
-                        { model: FranchiseLocationModel, as: 'franchiseLocation'},
-                        { model: SocialMediaDetailsFranchiseModel, as: 'socialMediaDetails' }
+
                     ]
                 });
             }
@@ -51,31 +69,23 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
     }
 
     // Retrieve a franchisee by ID
-    public async getFranchiseeById(franchiseeId: number): Promise<FranchiseeAttributes & { contracts?: ContractModel[] } | null> {
+    public async getFranchiseeById(franchiseeId: number): Promise<Franchisee> {
         try {
             const franchisee = await FranchiseeModel.findOne({
                 where: { id: franchiseeId },
                 include: [
                     { model: RegionModel, as: 'region' },
-                    { model: FranchiseLocationModel, as: 'franchiseLocation'},
-                    { model: SocialMediaDetailsFranchiseModel, as: 'socialMediaDetails' }
+
                 ]
             });
 
-            if (franchisee) {
-                // Get contracts based on the contractIds
-                const contracts = await ContractModel.findAll({
-                    where: {
-                        id: franchisee.contractIds
-                    }
-                });
 
-                // Include contracts in the result
-                return {
-                    ...franchisee.toJSON(),
-                    contracts
-                };
-            }
+
+            // Include contracts in the result
+            return {
+                ...franchisee.toJSON(),
+            };
+
 
             return null;
         } catch (error) {
@@ -85,14 +95,11 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
     }
 
     // Retrieve a franchisee by ID
-    public async getFranchiseeByUserId(userId: number): Promise<FranchiseeAttributes | null> {
+    public async getFranchiseeByUserId(userId: number): Promise<Franchisee | null> {
         try {
             const franchisee = await FranchiseeModel.findOne({
                 raw: true,
-                where: { userid: userId },
-                include: [
-                    { model: FranchiseLocationModel, as: 'franchiseLocation'}
-                ]
+
             });
             return franchisee;
         } catch (error) {
@@ -102,7 +109,7 @@ export class FranchiseeRepo implements IFranchiseeController<FranchiseeAttribute
     }
 
     // Update a franchisee by ID
-    public async updateFranchisee(franchiseeId: number, franchiseeData: Partial<FranchiseeAttributes>): Promise<FranchiseeAttributes | null> {
+    public async updateFranchisee(franchiseeId: number, franchiseeData: Partial<Franchisee>): Promise<Franchisee | null> {
         try {
             await FranchiseeModel.update(franchiseeData, { where: { id: franchiseeId } });
             return await this.getFranchiseeById(franchiseeId); // Return the updated franchisee

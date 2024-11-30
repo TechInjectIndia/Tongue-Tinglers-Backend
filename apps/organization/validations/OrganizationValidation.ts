@@ -1,62 +1,36 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
+import { BUSINESS_TYPE, ORGANIZATION_TYPE } from "../../../interfaces/organization";
 
-const createOrganizationBody = Joi.object().keys({
-    prospectId: Joi.number()
-        .required()
-        .messages({ "any.required": "Prospect id is required." }),
+const addressSchema = Joi.object({
+    street: Joi.string().required(),
+    city: Joi.string().required(),
+    state: Joi.string().required(),
+    postalCode: Joi.string().required(),
+    country: Joi.string().required(),
+    phoneNumber: Joi.string().required(),
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required()
+});
 
-    name: Joi.string()
-        .required()
-        .messages({ "any.required": "Organization name is required." }),
-
-    contactPersonName: Joi.string()
-        .required()
-        .messages({ "any.required": "Contact person name is required." }),
-
-    contactNumber: Joi.string()
-        .required()
-        .messages({ "any.required": "Contact number is required." }),
-
-    contactEmail: Joi.string()
-        .required()
-        .messages({ "any.required": "Contact email is required." }),
-
-    street: Joi.string()
-        .required()
-        .messages({ "any.required": "Street id is required." }),
-
-    city: Joi.string()
-        .required()
-        .messages({ "any.required": "City id is required." }),
-
-    state: Joi.string()
-        .required()
-        .messages({ "any.required": "State id is required." }),
-
-    country: Joi.string()
-        .required()
-        .messages({ "any.required": "Country id is required." }),
-
-    postalCode: Joi.string()
-        .required()
-        .messages({ "any.required": "Postal code id is required." }),
-
-    pan: Joi.string().optional().allow(null),
-    gst: Joi.string().optional().allow(null),
-    bankName: Joi.string()
-        .required()
-        .messages({ "any.required": "Bank name is required." }),
-    bankAccountNumber: Joi.string()
-        .required()
-        .messages({ "any.required": "Bank account number is required." }),
-
-    bankIFSCCode: Joi.string()
-        .required()
-        .messages({ "any.required": "Bank ifsc code is required." }),
-
-    masterFranchiseId: Joi.number().optional().allow(null),
+// Base Organization schema
+const createOrganizationBody = Joi.object({
+    name: Joi.string().required(),
+    contactPersonName: Joi.string().required(),
+    contactNumber: Joi.string().required(),
+    contactEmail: Joi.string().email().required(),
+    pan: Joi.string().allow(null),
+    gst: Joi.string().allow(null),
+    bankName: Joi.string().required(),
+    bankAccountNumber: Joi.string().required(),
+    bankIFSCCode: Joi.string().required(),
+    masterFranchiseId: Joi.number().allow(null),
+    rootUser: Joi.number().required(),
+    type: Joi.string().valid(...Object.values(ORGANIZATION_TYPE)).required(),  // Use `valid()` with `Object.values()`
+    businessType: Joi.string().valid(...Object.values(BUSINESS_TYPE)).required(),  // Use `valid()` with `Object.values()`
+    billingAddress: addressSchema.required(),
+    shippingAddresses: Joi.array().items(addressSchema).required()
 });
 
 const editOrgParams = Joi.object().keys({

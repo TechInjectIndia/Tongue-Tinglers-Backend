@@ -1,18 +1,19 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
-import { ICheckList } from '../../../interfaces/pdi';
+import { IPdiList } from '../../../interfaces/pdi';
 import { PdiCheckpointModel } from './pdiCheckPointModel';
 import { FranchiseModelRepo } from '../../../apps/franchise_model/models';
 import { FranchiseeModel } from './franchiseeModel';
 import { checkPointsValue } from '../../../interfaces/ichecklist';
+import { ContractModel } from '../contracts';
 
 // Define the optional attributes for creation
-interface PDICreationAttributes extends Optional<ICheckList, 'id'> { }
+interface PDICreationAttributes extends Optional<IPdiList, 'id'> { }
 
-class PdiModel extends Model<ICheckList,PDICreationAttributes> implements ICheckList {
+class PdiModel extends Model<IPdiList,PDICreationAttributes> implements IPdiList {
     id: number;
     checkpoints: checkPointsValue[]
-    franchiseModelId: number;
+    prospectId: number;
     createdAt: Date | null;
     updatedAt: Date |null
     createdBy:number;
@@ -37,10 +38,10 @@ PdiModel.init(
             // },
             allowNull: false,
         },
-        franchiseModelId: {
+        prospectId: {
             type: DataTypes.INTEGER,
             references: {
-                model: FranchiseeModel,
+                model: ContractModel,
                 key: "id",
             },
             allowNull: true,

@@ -11,6 +11,7 @@ class PdiChecklistController {
         try {
             const user_id = get(req, 'user_id', '');
             const payload = { ...req.body, createdBy: user_id };
+            console.log("payload: ",payload);
             const newChecklist = await new PdiChecklistRepo().create(payload);
 
             return res.status(200).json({
@@ -134,6 +135,25 @@ class PdiChecklistController {
         } catch (error) {
             console.error(error);
             return res.status(400).json({ message: "Invalid request body" });
+        }
+    }
+
+    static async getPdiByProspectId(req: Request, res: Response) {
+        try {
+            const { prospectId } = req.params;
+
+            const checklist = await new PdiChecklistRepo().getPdiByProspectId(prospectId);
+            if (!checklist) {
+                return res.status(404).json({ message: "PDI Checklist not found" });
+            }
+
+            return res.status(200).json({
+                message: "PDI Checklist retrieved successfully",
+                data: checklist,
+            });
+        } catch (error) {
+            console.error(error);
+            return res.status(400).json({ message: "Invalid request" });
         }
     }
 }

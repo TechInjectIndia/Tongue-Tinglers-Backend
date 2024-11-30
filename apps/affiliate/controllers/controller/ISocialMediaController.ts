@@ -1,4 +1,4 @@
-import { SocialMediaDetailsAttributes, SocialMediaDetailsAttributesPayload } from "../../../../interfaces";
+import { SocialMediaDetails, SocialMediaDetailsAttributesPayload } from "../../../../interfaces";
 
 /**
  * Interface for Social Media Details Repository.
@@ -32,7 +32,7 @@ interface ISocialMediaDetailsRepo<T> {
      * @param platform - The platform identifier.
      * @returns A promise resolving to the social media detail or null if not found.
      */
-    getByAffiliateAndPlatform(affiliateId: number, platform: string): Promise<T | null>;
+    getByAffiliateAndPlatform(Id: number, platform: string): Promise<T | null>;
 }
 
 export default ISocialMediaDetailsRepo;

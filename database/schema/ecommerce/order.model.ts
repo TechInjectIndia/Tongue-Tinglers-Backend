@@ -12,7 +12,7 @@ class OrdersModel extends Model<TOrder, OrdersCreationAttributes> implements TOr
     public id!: number;
     public userId!: number;
     public trackingNumber!: string;
-    public shippingAddress!: any;
+    public shippingAddresses!: any;
     public paymentMethod!: string;
     public paymentStatus!: string;
     public paymentId!: string;
@@ -40,7 +40,7 @@ OrdersModel.init({
     trackingNumber: {
         type: STRING,
     },
-    shippingAddress: {
+    shippingAddresses: {
         type: JSONB,
     },
     paymentMethod: {

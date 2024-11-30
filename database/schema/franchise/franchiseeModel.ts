@@ -1,156 +1,166 @@
-import { DataTypes, Model, Optional } from 'sequelize';
+import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { FranchiseeAttributes, FranchiseLocationAttributes, FranchiseType } from '../../../interfaces';
-import { UserModel } from '../user/user.model';
-import { RegionModel } from './RegionsModel';
-import { ContractModel } from '../contracts'; // Import the ContractModel
-import { IChecklistModel } from './iChecklist';
+
+import { UserModel } from "../user/user.model";
+import { FRANCHISE_STATUS, Franchisee } from "../../../interfaces";
+
+import { RegionModel } from "./RegionsModel";
+
+const { STRING, INTEGER, DATE, NOW, ARRAY, ENUM } = DataTypes;
 
 // Franchisee creation attributes, making 'id' optional for creation
-interface FranchiseeCreationAttributes extends Optional<FranchiseeAttributes, 'id'> { }
-
-// Franchisee class model for the Sequelize ORM
-class FranchiseeModel extends Model<FranchiseeAttributes, FranchiseeCreationAttributes> implements FranchiseeAttributes {
-  public id!: number;
-  public userid: number | null;
-  public referBy?: number | null;
-  public parentFranchise?: string | null;
-  public name!: string;
-  public ownerName!: string;
-  public contactEmail!: string;
-  public contactNumber!: string | null;
-  public establishedDate!: Date | null;
-  public franchiseAgreementSignedDate!: Date | null;
-  public franchiseType!: FranchiseType;
-  public regionId!: number | null;
-  public contractIds!: number[];
-  public activeContract!: string;
-  public isActive!: boolean | null;
-  public ratings?: number | null;
-  public franchiseRenewalInfo?: { renewalDate: Date; conditions: string } | null;
-  public readonly franchiseLocation: FranchiseLocationAttributes[];
-  public organizationId!: number;
-
-  public static associate() {
-    this.belongsTo(UserModel, { foreignKey: 'userid', as: 'user', constraints: false });
-
-    // Change the association alias to avoid collision
-    this.belongsTo(FranchiseeModel, { foreignKey: 'parentFranchise', as: 'parentFranchiseAssociation', constraints: false });
-
-    // Association with RegionModel
-    this.belongsTo(RegionModel, { foreignKey: 'regionId', as: 'region', constraints: true });
-  }
+interface FranchiseeCreationAttributes extends Optional<Franchisee, "id" | "createdAt" | "updatedAt" | "deletedAt"> {
 }
 
-// Initializing the model and its schema
+// Franchisee class model for the Sequelize ORM
+class FranchiseeModel extends Model<Franchisee, FranchiseeCreationAttributes> implements Franchisee {
+    public id: number;
+    public location: number;
+    public sm: number[];
+    public pocName: string;
+    public pocEmail: string;
+    public pocPhoneNumber: string;
+    public users: number[];
+    public regionId: number;
+    public area: string;
+    public agreementIds: number[];
+    public paymentIds: number[];
+    public status: FRANCHISE_STATUS;
+    public establishedDate: Date;
+
+    public createdBy: number;
+    public updatedBy: number | null;
+    public deletedBy: number | null;
+
+    public createdAt: Date;
+    public deletedAt: Date | null;
+    public updatedAt: Date | null;
+
+
+    public static associate() {
+        this.belongsTo(UserModel, {
+            foreignKey: "userid",
+            as: "user",
+            constraints: false,
+        });
+
+        this.belongsTo(RegionModel, {
+            foreignKey: "regionId",
+            as: "Region",
+        });
+
+        this.belongsTo(UserModel, {
+            foreignKey: "createdBy",
+            as: "createdByUser",
+        });
+
+        // Updated by a user
+        this.belongsTo(UserModel, {
+            foreignKey: "updatedBy",
+            as: "updatedByUser",
+        });
+
+        // Deleted by a user (soft delete)
+        this.belongsTo(UserModel, {
+            foreignKey: "deletedBy",
+            as: "deletedByUser",
+        });
+
+    }
+}
+
 FranchiseeModel.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      allowNull: false,
-      autoIncrement: true, 
+    {
+        id: {
+            type: INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        createdAt: {
+            type: DATE,
+            allowNull: false,
+            defaultValue: NOW,
+        },
+        updatedAt: {
+            type: DATE,
+            allowNull: true,
+            defaultValue: null,
+        },
+        deletedAt: {
+            type: DATE,
+            allowNull: true,
+            defaultValue: null,
+        },
+        location: {
+            type: INTEGER,
+            allowNull: false,
+        },
+        sm: {
+            type: ARRAY(INTEGER),
+            allowNull: true,  // Array of numbers for 'sm' field
+        },
+        pocName: {
+            type: STRING,
+            allowNull: false,
+        },
+        pocEmail: {
+            type: STRING,
+            allowNull: false,
+        },
+        pocPhoneNumber: {
+            type: STRING,
+            allowNull: false,
+        },
+        users: {
+            type: ARRAY(INTEGER),
+            allowNull: true,  // Array of user IDs (nullable)
+        },
+        regionId: {
+            type: INTEGER,
+            allowNull: false,
+        },
+        area: {
+            type: STRING,
+            allowNull: false,
+        },
+        agreementIds: {
+            type: ARRAY(INTEGER),
+            allowNull: true,  // Array of agreement IDs
+        },
+        paymentIds: {
+            type: ARRAY(INTEGER),
+            allowNull: true,  // Array of payment IDs
+        },
+        status: {
+            type: ENUM(...Object.values(FRANCHISE_STATUS)), // Use values from FRANCHISE_STATUS enum
+            allowNull: false,
+        },
+        establishedDate: {
+            type: DATE,
+            allowNull: false,  // Franchisee's establishment date
+        },
+        createdBy: {
+            type: INTEGER,
+            allowNull: false,  // User ID of the creator
+        },
+        updatedBy: {
+            type: INTEGER,
+            allowNull: true,  // Nullable if not updated
+        },
+        deletedBy: {
+            type: INTEGER,
+            allowNull: true,  // Nullable for soft delete
+        },
     },
-    userid: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
+    {
+        sequelize,
+        tableName: "franchisees",  // Use a table name that makes sense
+        timestamps: true,  // Enable automatic timestamps
+        paranoid: true,  // Enable soft deletes
+        comment: "Table to store franchisee organizations",  // Comment for the table
     },
-    referBy: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    parentFranchise: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    name: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-      comment: "Name of the franchisee",
-    },
-    ownerName: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-      comment: "Name of the owner or primary contact",
-    },
-    contactEmail: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-    },
-    contactNumber: {
-      type: DataTypes.STRING(20),
-      allowNull: true,
-      comment: "Primary contact number for the franchisee",
-      validate: {
-        isPhoneNumber(value: string) {
-          if (value === null) return;
-          const isValid = /^\+?[1-9]\d{1,14}$/.test(value);
-          if (!isValid) {
-            throw new Error('Invalid phone number format.');
-          }
-        }
-      }
-    },
-    establishedDate: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      comment: "Date when the franchise was established",
-    },
-    franchiseAgreementSignedDate: {
-      type: DataTypes.DATE,
-      allowNull: true,
-      comment: "Date when the franchise agreement was signed",
-    },
-    franchiseType: {
-      type: DataTypes.ENUM(...Object.values(FranchiseType)),
-      allowNull: false,
-    },
-    regionId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: RegionModel,
-        key: 'id',
-      },
-      allowNull: true,
-    },
-    contractIds: {
-      type: DataTypes.ARRAY(DataTypes.INTEGER),
-      allowNull: true,
-      comment: "Array of contract IDs associated with the franchisee",
-    },
-    activeContract: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    isActive: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-      allowNull: true,
-      comment: "Indicates if the franchisee is currently active",
-    },
-    ratings: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-      comment: "Average rating for the franchisee",
-    },
-    franchiseRenewalInfo: {
-      type: DataTypes.JSONB,
-      allowNull: true,
-      comment: "Information regarding franchise renewal terms and conditions",
-    },
-    organizationId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,// Once the organization table is created, update allowNull: true to allowNull: false
-    },
-  },
-  {
-    sequelize,
-    tableName: 'franchisees',
-    timestamps: true,
-  }
 );
 
-// FranchiseeModel.hasOne(IChecklistModel, { foreignKey: 'id', as: 'region', constraints: true });
 
 export { FranchiseeModel };
 

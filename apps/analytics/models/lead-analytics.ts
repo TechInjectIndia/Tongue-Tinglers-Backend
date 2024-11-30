@@ -2,7 +2,6 @@ import { Op, Sequelize } from "sequelize";
 import { LeadsModel } from "../../../database/schema";
 import { CampaignAdRepo } from "../../campaign/models";
 import { FranchiseeRepo } from '../../franchisee/models/FranchiseeRepo';
-import { FranchiseType } from "../../../interfaces";
 import { TLeadFilters, } from "../../../types";
 import { TLeadsList } from "../../../types";
 import { CampaignAdModel } from "../../../database/schema";
@@ -23,14 +22,14 @@ export class AnalyticsModel {
                 throw new Error('Franchise data not found.');
             }
 
-            switch (franchiseData.franchiseType) {
-                case FranchiseType.SUPER_FRANCHISE:
-                    const campaignDataSuper = await new CampaignAdRepo().getCampaignsByFranchiseId(Number(filters.franchiseId));
-                    campaignIds = campaignDataSuper.map(campaign => campaign.id);
-                case FranchiseType.FRANCHISE:
-                    const campaignDataFranchise = await new CampaignAdRepo().getCampaignsByFranchiseId(Number(filters.franchiseId));
-                    campaignIds = campaignDataFranchise.map(campaign => campaign.id);
-                    break;
+            switch (franchiseData) {
+                // case FranchiseType.SUPER_FRANCHISE:
+                //     const campaignDataSuper = await new CampaignAdRepo().getCampaignsByFranchiseId(Number(filters.franchiseId));
+                //     campaignIds = campaignDataSuper.map(campaign => campaign.id);
+                // case FranchiseType.FRANCHISE:
+                //     const campaignDataFranchise = await new CampaignAdRepo().getCampaignsByFranchiseId(Number(filters.franchiseId));
+                //     campaignIds = campaignDataFranchise.map(campaign => campaign.id);
+                //     break;
                 default:
                     throw new Error('Invalid franchise type.');
             }
@@ -43,16 +42,16 @@ export class AnalyticsModel {
             whereConditions.campaignId = { [Op.in]: campaignIds };
         } else {
             switch (filters.franchiseData.franchiseType) {
-                case FranchiseType.MASTER_FRANCHISE:
-                    const campaignDataMaster = await CampaignAdModel.findAll();
-                    campaignIds = campaignDataMaster.map(campaign => campaign.id);
-                case FranchiseType.SUPER_FRANCHISE:
-                    const campaignDataSuper = await new CampaignAdRepo().getCampaignsByFranchiseId(filters.franchiseData.id);
-                    campaignIds = campaignDataSuper.map(campaign => campaign.id);
-                case FranchiseType.FRANCHISE:
-                    const campaignDataFranchise = await new CampaignAdRepo().getCampaignsByFranchiseId(filters.franchiseData.id);
-                    campaignIds = campaignDataFranchise.map(campaign => campaign.id);
-                    break;
+                // case FranchiseType.MASTER_FRANCHISE:
+                //     const campaignDataMaster = await CampaignAdModel.findAll();
+                //     campaignIds = campaignDataMaster.map(campaign => campaign.id);
+                // case FranchiseType.SUPER_FRANCHISE:
+                //     const campaignDataSuper = await new CampaignAdRepo().getCampaignsByFranchiseId(filters.franchiseData.id);
+                //     campaignIds = campaignDataSuper.map(campaign => campaign.id);
+                // case FranchiseType.FRANCHISE:
+                //     const campaignDataFranchise = await new CampaignAdRepo().getCampaignsByFranchiseId(filters.franchiseData.id);
+                //     campaignIds = campaignDataFranchise.map(campaign => campaign.id);
+                //     break;
                 default:
                     throw new Error('Invalid franchise type.');
             }
@@ -171,14 +170,14 @@ export class AnalyticsModel {
             }
             let campaignIds: string[] = [];
 
-            switch (franchiseData.franchiseType) {
-                case FranchiseType.SUPER_FRANCHISE:
-                    const campaignDataSuper = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseId);
-                    campaignIds = campaignDataSuper.map(campaign => campaign.id);
-                case FranchiseType.FRANCHISE:
-                    const campaignDataFranchise = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseId);
-                    campaignIds = campaignDataFranchise.map(campaign => campaign.id);
-                    break;
+            switch (franchiseData) {
+                // case FranchiseType.SUPER_FRANCHISE:
+                //     const campaignDataSuper = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseId);
+                //     campaignIds = campaignDataSuper.map(campaign => campaign.id);
+                // case FranchiseType.FRANCHISE:
+                //     const campaignDataFranchise = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseId);
+                //     campaignIds = campaignDataFranchise.map(campaign => campaign.id);
+                //     break;
                 default:
                     throw new Error('Invalid franchise type.');
             }
@@ -294,14 +293,14 @@ export class AnalyticsModel {
             }
             let campaignIds: string[] = [];
 
-            switch (franchiseData.franchiseType) {
-                case FranchiseType.SUPER_FRANCHISE:
-                    const campaignDataSuper = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseId);
-                    campaignIds = campaignDataSuper.map(campaign => campaign.id);
-                case FranchiseType.FRANCHISE:
-                    const campaignDataFranchise = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseId);
-                    campaignIds = campaignDataFranchise.map(campaign => campaign.id);
-                    break;
+            switch (franchiseData) {
+                // case FranchiseType.SUPER_FRANCHISE:
+                //     const campaignDataSuper = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseId);
+                //     campaignIds = campaignDataSuper.map(campaign => campaign.id);
+                // case FranchiseType.FRANCHISE:
+                //     const campaignDataFranchise = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseId);
+                //     campaignIds = campaignDataFranchise.map(campaign => campaign.id);
+                //     break;
                 default:
                     throw new Error('Invalid franchise type.');
             }

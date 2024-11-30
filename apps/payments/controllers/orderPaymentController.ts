@@ -16,7 +16,6 @@ import {
 } from "../../../libraries";
 import { OrderRepo } from "../../ecommerce/models/orders";
 import { OrderItemRepo } from "../../ecommerce/models/orders-item";
-import { UserAddressRepo } from "../../user-address/models/UserAddressRepo";
 import { ShippingHistoryRepo } from "../../ecommerce/models/shippingHistoryRepo";
 import { CONFIG } from "../../../config";
 import { get } from "lodash";
@@ -162,7 +161,7 @@ export default class OrderPaymentController {
             }
 
             let franchiseData = await FranchiseeModel.findOne({
-                where: { userid: userId },
+
             });
             if (!franchiseData) {
                 return res
@@ -195,7 +194,7 @@ export default class OrderPaymentController {
             const newOrder = await new OrderRepo().create({
                 userId: userId as number,
                 trackingNumber: "" as string,
-                shippingAddress: "" as string,
+                shippingAddresses: "" as string,
                 paymentMethod: "Razorpay" as string,
                 paymentId: link.id,
                 totalPrice: cart.totalAmount as number,
@@ -247,13 +246,13 @@ export default class OrderPaymentController {
                 const emailContent = await getEmailTemplate(
                     EMAIL_TEMPLATE.PAYMENT_REQUEST,
                     {
-                        email: franchiseData.contactEmail,
+                        email: franchiseData.pocEmail,
                         link: link.short_url,
                     },
                 );
 
                 const mailOptions = {
-                    to: franchiseData.contactEmail,
+                    to: franchiseData.pocEmail,
                     subject: EMAIL_HEADING.PAYMENT_REQUEST,
                     templateParams: {
                         heading: EMAIL_HEADING.PAYMENT_REQUEST,
@@ -313,53 +312,54 @@ export default class OrderPaymentController {
             //         .send(sendResponse(RESPONSE_TYPE.ERROR, "Franchise is missing"));
             // }
 
-            const getUserActiveAddress =
-                await new UserAddressRepo().getActiveAddress(userId as number);
+            // const getUserActiveAddress =
+            //     await new UserAddressRepo().getActiveAddress(userId as number);
 
             // Create the order and save order items
-            const newOrder = await new OrderRepo().create({
-                userId: userId as number,
-                trackingNumber: "" as string,
-                shippingAddress: getUserActiveAddress,
-                paymentMethod: "Razorpay" as string,
-                paymentId: paymentId,
-                totalPrice: cart.totalAmount as number,
-                isRepeated: 0 as number,
-                orderStatus: OrderStatus.PROCESSED,
-                paymentStatus: PAYMENT_STATUS.PROCESSED,
-                orderType: ORDER_TYPE.SAMPLE_ORDER,
-            });
+            // const newOrder = await new OrderRepo().create({
+            //     userId: userId as number,
+            //     trackingNumber: "" as string,
+            //     shippingAddresses: getUserActiveAddress,
+            //     paymentMethod: "Razorpay" as string,
+            //     paymentId: paymentId,
+            //     totalPrice: cart.totalAmount as number,
+            //     isRepeated: 0 as number,
+            //     orderStatus: OrderStatus.PROCESSED,
+            //     paymentStatus: PAYMENT_STATUS.PROCESSED,
+            //     orderType: ORDER_TYPE.SAMPLE_ORDER,
+            // });
 
             // Save each cart item as an order item
-            const orderItems = cart.items.map((item) => ({
-                orderId: newOrder.id as number,
-                userId: userId as string,
-                productId: item.productId as number,
-                productType: item.productType as string,
-                quantity: item.quantity as number,
-                price: item.price as number,
-                subtotal: item.subtotal as number,
-            }));
+            // const orderItems = cart.items.map((item) => ({
+            //     orderId: newOrder.id as number,
+            //     userId: userId as string,
+            //     productId: item.productId as number,
+            //     productType: item.productType as string,
+            //     quantity: item.quantity as number,
+            //     price: item.price as number,
+            //     subtotal: item.subtotal as number,
+            // }));
 
-            await new OrderItemRepo().bulkCreate(orderItems);
+            // await new OrderItemRepo().bulkCreate(orderItems);
 
-            const shippingPayload = {
-                orderId: newOrder.id as number,
-                activities: [
-                    {
-                        status: ShippingStatus.OrderReceived,
-                        time: new Date().toISOString(),
-                    },
-                ],
-                trackingNumber: null,
-                date: null,
-            };
-            await new ShippingHistoryRepo().addShippingHistory(
-                newOrder.id as number,
-                shippingPayload,
-            );
+            // const shippingPayload = {
+            //     orderId: newOrder.id as number,
+            //     activities: [
+            //         {
+            //             status: ShippingStatus.OrderReceived,
+            //             time: new Date().toISOString(),
+            //         },
+            //     ],
+            //     trackingNumber: null,
+            //     date: null,
+            // };
+            // await new ShippingHistoryRepo().addShippingHistory(
+            //     newOrder.id as number,
+            //     shippingPayload,
+            // );
 
             // Remove all products related to the cart
+            let newOrder = {}
             await CartItemModel.destroy({
                 where: { cart_id: cart.id },
             });

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
-import { SM_PLATFORM_FRANCHISE } from "../../../interfaces";
+import { socialMediaEnumsPlatform } from "../../../interfaces";
 
 // Validation schema for creating and editing a franchisee
 const franchiseeSchema = Joi.object({
@@ -99,7 +99,7 @@ const franchiseeSchema = Joi.object({
             "string.uri": "Each URL must be a valid URI.",
         }),
         type: Joi.string()
-            .valid(...Object.values(SM_PLATFORM_FRANCHISE)) // Ensure the type is one of the enum values
+            .valid(...Object.values(socialMediaEnumsPlatform)) // Ensure the type is one of the enum values
             .required()
             .messages({
                 "any.required": "Social media type is required.",

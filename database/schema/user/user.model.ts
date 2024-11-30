@@ -2,7 +2,6 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { USER_STATUS, USER_TYPE, UserInformation } from "../../../interfaces";
 import { TUser } from "../../../types";
-import { AddressModel } from "./address";
 
 const { INTEGER, STRING, ENUM, JSONB } = DataTypes;
 

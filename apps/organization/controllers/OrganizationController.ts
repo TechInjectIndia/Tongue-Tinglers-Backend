@@ -8,18 +8,18 @@ import {
     ERROR_MESSAGE,
 } from "../../../constants"; // Adjust this import path as necessary
 import { OrganizationRepo } from "../models";
+import { IOrganizationPayloadDataWithMeta } from "../../../interfaces/organization";
 
 export default class OrganizationController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, "user_id", 0);
-            const payload = {
+            const payload: IOrganizationPayloadDataWithMeta = {
                 ...req.body,
                 createdBy: user_id,
-                rootUserId: user_id,
+                rootUser: user_id,
             };
-
-            const data = await new OrganizationRepo().create(payload);
+            const data = await new OrganizationRepo().create(payload, user_id);
             return res
                 .status(201)
                 .send(

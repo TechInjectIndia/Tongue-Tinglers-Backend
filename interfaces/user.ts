@@ -1,4 +1,4 @@
-import { Address } from "../types";
+import { BaseAddress } from "../types";
 
 export interface cart {
 }
@@ -36,5 +36,5 @@ export interface UserInformation {
     deletedBy: number | null;
     deletedAt: Date | null;
     role: number | null;
-    address: Array<Address>;
+    address: Array<BaseAddress>;
 }

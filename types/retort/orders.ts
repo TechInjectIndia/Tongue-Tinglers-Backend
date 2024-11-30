@@ -4,7 +4,7 @@ export type TRetortOrder = {
   id: number;
   userId: number;
   trackingNumber: string;
-  shippingAddress: string;
+  shippingAddresses: string;
   paymentMethod: string;
   totalPrice: number;
   orderStatus: string;
@@ -19,7 +19,7 @@ export type TEditRetortOrder = {
 export type TAddRetortOrder = {
   userId: number;
   trackingNumber: string;
-  shippingAddress: string;
+  shippingAddresses: string;
   paymentMethod: string;
   totalPrice: number;
   orderStatus: string;

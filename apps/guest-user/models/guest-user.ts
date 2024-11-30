@@ -1,15 +1,14 @@
 import { TAddUser, TEditUser, TListFilters, TUser, TUsersList, TUserWithPermission } from "../../../types";
 import IGuestUserController from "../controllers/IGuestUserController";
-import { RolesModel, UserAddressModel } from "../../../database/schema";
+import { RolesModel } from "../../../database/schema";
 import { GuestUserModel } from "../../../database/schema/user/guestUser.model";
 import { USER_STATUS, USER_TYPE } from "../../../interfaces";
 
 const { Op } = require("sequelize");
 
 export class GuestUserRepo
-    implements IGuestUserController<TUser, TListFilters>
-{
-    constructor() {}
+    implements IGuestUserController<TUser, TListFilters> {
+    constructor() { }
 
     public async getAllUsers(filters: TListFilters): Promise<TUsersList> {
         const total = await GuestUserModel.count({
@@ -41,13 +40,13 @@ export class GuestUserRepo
             where: {
                 [Op.or]: [{ id: id }, { firebaseUid: id }],
             },
-            include: [
-                {
-                    model: UserAddressModel,
-                    as: "address",
-                    order: [["isActive", "ASC"]],
-                },
-            ],
+            // include: [
+            //     {
+            //         model: UserAddressModel,
+            //         as: "address",
+            //         order: [["isActive", "ASC"]],
+            //     },
+            // ],
         });
         if (data) {
             const role = await RolesModel.findOne({

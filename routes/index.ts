@@ -17,13 +17,13 @@ import authRouter from "../apps/auth/api";
 router.use(`/auth`, authRouter);
 // ====== Auth ======
 
-import addressRouter from "../apps/address/api";
-router.use("/user/address", auth, addressRouter);
+
+
 
 import referralRouter from "../apps/referral/api";
 router.use("/referral", referralRouter);
 
-// ====== Admin ======
+
 // ====== Admin imports ======
 import franchiseRouter from "../apps/admin-user/api/franchise";
 import rolesRouter from "../apps/admin-user/api/roles";

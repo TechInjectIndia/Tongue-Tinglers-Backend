@@ -1,7 +1,6 @@
 // Admin model starts
 export * from "./user/user.model";
 export * from "./user/address";
-export * from "./user/userAddressModel";
 export * from "./admin-roles";
 export * from "./admin-permissions";
 // Admin model ends
@@ -22,7 +21,7 @@ export * from "./ecommerce/stockModel";
 export * from "./ecommerce/vendorsModel";
 export * from "./ecommerce/cartModel";
 export * from "./ecommerce/CartItemModel";
-export * from "./user/userAddressModel";
+
 // ecommerce model ends
 
 // retort model starts
@@ -74,7 +73,6 @@ export * from "./franchise/franchiseeModel";
 export * from "./franchise/pdiModel";
 export * from "./franchise/RegionsModel";
 export * from "./franchise/AreaModel";
-export * from "./franchise/smDetailsModel";
 
 // --- Sequelize Associations Setup --- //
 
@@ -83,11 +81,10 @@ import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
 import { FranchiseeModel } from "./franchise/franchiseeModel";
 import { AffiliateModel } from "./lead/affiliateModels";
 import { SocialMediaDetailsModel } from "./lead/smDetailsModel";
-import { SocialMediaDetailsFranchiseModel } from "./franchise/smDetailsModel";
 import { AssignModel } from "./lead/assigneeModels";
 import { LeadsModel } from "./lead/lead.model";
 import { UserModel } from "./user/user.model";
-import { UserAddressModel } from "./user/userAddressModel";
+
 import { RegionModel } from "./franchise/RegionsModel";
 import { ProposalLeadModels } from "./lead/proposalModels";
 
@@ -123,30 +120,30 @@ CampaignAdModel.hasMany(ProposalLeadModels, {
 });
 
 // Establish association with FranchiseLocationModel
-FranchiseeModel.hasOne(addressmodel, {
-    foreignKey: "franchiseeId",
-    as: "franchiseLocation",
-});
+// FranchiseeModel.hasOne(addressmodel, {
+//     foreignKey: "franchiseeId",
+//     as: "franchiseLocation",
+// });
 
-FranchiseLocationModel.belongsTo(FranchiseeModel, {
-    foreignKey: "franchiseeId",
-    as: "franchisee",
-});
+// FranchiseLocationModel.belongsTo(FranchiseeModel, {
+//     foreignKey: "franchiseeId",
+//     as: "franchisee",
+// });
 // Establish association with FranchiseLocationModel
 
 // Establish association with SocialMediaDetailsFranchiseModel
-FranchiseeModel.hasMany(SocialMediaDetailsFranchiseModel, {
-    foreignKey: "franchiseeId",
-    as: "socialMediaDetails",
-});
+// FranchiseeModel.hasMany(SocialMediaDetailsFranchiseModel, {
+//     foreignKey: "franchiseeId",
+//     as: "socialMediaDetails",
+// });
 
-SocialMediaDetailsFranchiseModel.belongsTo(FranchiseeModel, {
-    foreignKey: "franchiseeId",
-    as: "franchisee",
-});
+// SocialMediaDetailsFranchiseModel.belongsTo(FranchiseeModel, {
+//     foreignKey: "franchiseeId",
+//     as: "franchisee",
+// });
 // Establish association with SocialMediaDetailsFranchiseModel
 
-UserModel.hasMany(UserAddressModel, { foreignKey: "userId", as: "address" });
+// UserModel.hasMany(UserAddressModel, { foreignKey: "userId", as: "address" });
 
 UserModel.hasMany(AssignModel, {
     foreignKey: "assignedTo",
@@ -179,15 +176,15 @@ AssignModel.belongsTo(LeadsModel, {
 // Establish association with AssignModel
 
 // Establish association with AffiliateModel
-AffiliateModel.hasMany(SocialMediaDetailsModel, {
-    foreignKey: "affiliateId",
-    as: "sm",
-});
-SocialMediaDetailsModel.belongsTo(AffiliateModel, {
-    foreignKey: "affiliateId",
-    as: "affiliate",
-});
-// Establish association with AffiliateModel
+// AffiliateModel.hasMany(SocialMediaDetailsModel, {
+//     foreignKey: "affiliateId",
+//     as: "sm",
+// });
+// SocialMediaDetailsModel.belongsTo(AffiliateModel, {
+//     foreignKey: "affiliateId",
+//     as: "affiliate",
+// });
+// // Establish association with AffiliateModel
 
 import { ProductsModel } from "./ecommerce/product.model";
 import { ProductCategoryModel } from "./ecommerce/category.model";

@@ -16,15 +16,11 @@ import { ContractRepo } from "../models/ContractRepo";
 import { LeadRepo } from "../../lead/models/lead";
 import { TContractPayload } from "../../../types";
 import { FranchiseeRepo } from "../../franchisee/models/FranchiseeRepo";
-import { FranchiseLocationRepo } from "../../franchisee/models/FranchiseLocationRepo";
-import {
-    AddFranchiseePayload,
-    FranchiseType,
-} from "../../../interfaces/franchisee";
+
+
 import { CampaignAdRepo } from "../../campaign/models";
-import { AdminRepo } from "../../admin-user/models/user";
 import { CONFIG } from "../../../config/environment";
-import { OrganizationRepo } from "../../organization/models";
+import { FRANCHISE_STATUS, FranchiseDetails, Franchisee } from "../../../interfaces";
 
 export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -210,37 +206,40 @@ export default class ContractController {
                 existingLead.campaignId
             );
 
-            console.log("existing campaign");
-            console.log(existingCampaign);
-
-            let franchiseePayload: AddFranchiseePayload = {
-                userid: 1,
-                name: existingLead.firstName + " " + existingLead.lastName,
-                ownerName: existingLead.firstName + " " + existingLead.lastName,
-                contactEmail: existingLead.email,
-                contactNumber: existingLead.phoneNumber,
-                establishedDate: new Date(),
-                franchiseAgreementSignedDate: new Date(),
-                franchiseType: FranchiseType.FRANCHISE,
-                regionId: existingCampaign.regionId,
-                contractIds: [],
-                activeContract: "",
-                isActive: false,
-                organizationId: organization.id,
+            let franchiseePayload: FranchiseDetails = {
+                location: undefined,
+                sm: [],
+                id: 0,
+                createdAt: undefined,
+                createdBy: 0,
+                updatedBy: 0,
+                deletedBy: 0,
+                updatedAt: undefined,
+                deletedAt: undefined,
+                pocName: "",
+                pocEmail: "",
+                pocPhoneNumber: "",
+                users: [],
+                regionId: 0,
+                area: "",
+                agreementIds: [],
+                paymentIds: [],
+                status: FRANCHISE_STATUS.Active,
+                establishedDate: undefined
             };
 
             const franchiseResponse =
                 await new FranchiseeRepo().createFranchisee(franchiseePayload);
 
-            await new FranchiseLocationRepo().createFranchiseLocation({
-                contactPhone: null,
-                location: null,
-                city: null,
-                state: null,
-                country: null,
-                zipCode: null,
-                franchiseeId: franchiseResponse.id,
-            });
+            // await new FranchiseLocationRepo().createFranchiseLocation({
+            //     contactPhone: null,
+            //     location: null,
+            //     city: null,
+            //     state: null,
+            //     country: null,
+            //     zipCode: null,
+            //     franchiseeId: franchiseResponse.id,
+            // });
 
             // await new LeadRepo().updateStatus(id, { status: LeadStatus.CONVERTED });
 

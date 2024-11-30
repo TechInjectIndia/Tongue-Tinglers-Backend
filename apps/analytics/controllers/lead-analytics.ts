@@ -6,8 +6,6 @@ import { AnalyticsModel } from '../models/lead-analytics';
 import { CampaignAdRepo } from '../../campaign/models/index';
 import { subDays, eachDayOfInterval, eachMonthOfInterval, format } from 'date-fns';
 import { FranchiseeRepo } from '../../franchisee/models/FranchiseeRepo';
-import { RolesRepo } from '../../admin-user/models/roles';
-import { FranchiseType } from "../../../interfaces";
 import { TLeadFilters, } from "../../../types";
 
 export default class LeadAnalyticsController {
@@ -42,7 +40,7 @@ export default class LeadAnalyticsController {
             //         return res.status(400).send({ message: 'Invalid franchise type.' });
             // }
 
-             // const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
+            // const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
             // if (!franchiseData) {
             //     return res.status(404).send({ message: 'Franchise data not found.' });
             // }
@@ -116,17 +114,17 @@ export default class LeadAnalyticsController {
             if (!franchiseData) {
                 return res.status(404).send({ message: 'Franchise data not found.' });
             }
-            console.log('franchiseData.franchiseType', franchiseData.franchiseType);
-            switch (franchiseData.franchiseType) {
-                case FranchiseType.MASTER_FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadTimelineForMasterFranchisee(startDate, endDate, groupBy, franchiseId);
-                    break;
-                case FranchiseType.SUPER_FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadTimelineForSuperFranchisee(startDate, endDate, groupBy, franchiseData, franchiseId);
-                    break;
-                case FranchiseType.FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadTimelineForFranchisee(startDate, endDate, groupBy, franchiseData);
-                    break;
+            console.log('franchiseData.franchiseType', franchiseData);
+            switch (franchiseData) {
+                // case FranchiseType.MASTER_FRANCHISE:
+                //     analyticsData = await new AnalyticsModel().leadTimelineForMasterFranchisee(startDate, endDate, groupBy, franchiseId);
+                //     break;
+                // case FranchiseType.SUPER_FRANCHISE:
+                //     analyticsData = await new AnalyticsModel().leadTimelineForSuperFranchisee(startDate, endDate, groupBy, franchiseData, franchiseId);
+                //     break;
+                // case FranchiseType.FRANCHISE:
+                //     analyticsData = await new AnalyticsModel().leadTimelineForFranchisee(startDate, endDate, groupBy, franchiseData);
+                //     break;
                 default:
                     return res.status(400).send({ message: 'Invalid franchise type.' });
             }
@@ -186,7 +184,7 @@ export default class LeadAnalyticsController {
             if (!franchiseData) {
                 return res.status(404).send({ message: 'Franchise data not found.' });
             }
-            console.log('franchiseData.franchiseType', franchiseData.franchiseType);
+            console.log('franchiseData.franchiseType', franchiseData);
             leadsList = await new AnalyticsModel().list({
                 offset: skip,
                 limit: size,

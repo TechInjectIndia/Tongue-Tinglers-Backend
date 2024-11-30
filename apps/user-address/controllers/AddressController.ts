@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { UserAddressRepo } from '../models/UserAddressRepo';
+import { AddressRepo } from '../models/AddressRepo';
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { get } from "lodash";
@@ -12,7 +12,7 @@ export default class UserAddressController {
         try {
             const userId = get(req, 'user_id', '');
             const payload = { ...req?.body, userId: userId };
-            const newUserAddress = await new UserAddressRepo().create(payload);
+            const newUserAddress = await new AddressRepo().create(payload);
             return res.status(200)
                 .send(
                     sendResponse(
@@ -26,27 +26,12 @@ export default class UserAddressController {
         }
     }
 
-    static async getActiveAddress(req: Request, res: Response, next: NextFunction) {
-        try {
-            const userId = get(req, 'user_id', '');
-            const addressResponse = await new UserAddressRepo().getActiveAddress(userId);
-            return res.status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        `Address ${SUCCESS_MESSAGE.CREATED}`,
-                        addressResponse
-                    )
-                );
-        } catch (error) {
-            next(error);
-        }
-    }
+
 
     static async list(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = get(req, 'user_id', '');
-            const vendors = await new UserAddressRepo().list(userId as number);
+            const vendors = await new AddressRepo().list();
 
             return res
                 .status(200)
@@ -73,7 +58,7 @@ export default class UserAddressController {
             const userId = get(req, 'user_id', '');
             const id = get(req.params, 'id', '');
             console.log('userId', userId, 'id', id);
-            const userAddress = await new UserAddressRepo().findById(id as number, userId as number);
+            const userAddress = await new AddressRepo().findById(id as number);
 
             if (!userAddress) {
                 return res.status(404)
@@ -107,7 +92,7 @@ export default class UserAddressController {
             const { id } = req.params;
             const payload = { ...req?.body, userId: userId };
 
-            const updatedUserAddress = await new UserAddressRepo().updateById(id as number, payload);
+            const updatedUserAddress = await new AddressRepo().updateById(id as number, payload);
             if (!updatedUserAddress) {
                 return res.status(404)
                     .send(
@@ -135,7 +120,7 @@ export default class UserAddressController {
     static async deleteUserAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = req.params;
-            const deleted = await new UserAddressRepo().deleteById(id as number);
+            const deleted = await new AddressRepo().deleteById(id as number);
 
             if (!deleted) {
                 return res.status(404)

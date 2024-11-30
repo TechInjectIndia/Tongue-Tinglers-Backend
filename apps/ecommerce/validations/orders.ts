@@ -8,7 +8,7 @@ const createOrderBody = Joi.object().keys({
         .messages({
             'any.required': 'Tracking number is required.'
         }),
-    shippingAddress: Joi.string().required()
+    shippingAddresses: Joi.string().required()
         .messages({
             'any.required': 'Shipping address is required.'
         }),

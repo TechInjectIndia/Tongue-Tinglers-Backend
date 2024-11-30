@@ -1,4 +1,4 @@
-import { Address } from "../types";
+import { BaseAddress } from "../types";
 import { BaseMeta } from "../database/schema/base/Base";
 import { SocialMediaDetails } from "./leads";
 
@@ -16,8 +16,8 @@ interface BaseFranchisee {
     establishedDate: Date;
 }
 
-interface franchiseDetails extends BaseMeta, BaseFranchisee {
-    location: Address;
+interface FranchiseDetails extends BaseMeta, BaseFranchisee {
+    location: BaseAddress;
     sm: Array<SocialMediaDetails>;
 }
 
@@ -38,7 +38,7 @@ enum FRANCHISE_STATUS {
 export {
     BaseFranchisee,
     FRANCHISE_STATUS,
-    franchiseDetails,
+    FranchiseDetails,
     Franchisee,
 };
 

@@ -1,5 +1,6 @@
-import { IAddress } from "../types";
+
 import { BaseMeta } from "../database/schema/base/Base";
+import { Address, BaseAddress } from "../types";
 
 interface BaseOrganization {
     name: string;
@@ -12,7 +13,7 @@ interface BaseOrganization {
     bankAccountNumber: string;
     bankIFSCCode: string;
     masterFranchiseId: number | null;
-    rootUserId: number | null;
+    rootUser: number | null;
     type: ORGANIZATION_TYPE;
     businessType: BUSINESS_TYPE;
 }
@@ -20,10 +21,9 @@ interface BaseOrganization {
 
 export interface IOrganizationPayload extends BaseOrganization {
     billingAddressId: number;
-    shippingAddressId: Array<number>;
 }
 
-export interface  IOrganization extends IOrganizationPayload, BaseMeta {
+export interface IOrganization extends IOrganizationPayload, BaseMeta {
 }
 
 export enum BUSINESS_TYPE {
@@ -42,8 +42,16 @@ export enum ORGANIZATION_TYPE {
 
 
 export interface IOrganizationPayloadData extends BaseOrganization {
-    billingAddress: IAddress;
-    shippingAddress: Array<IAddress>;
+    billingAddress: BaseAddress;
+    shippingAddresses: Array<BaseAddress>;
+}
+
+export interface IOrganizationPayloadDataWithMeta extends IOrganizationPayloadData, BaseMeta {
+
+}
+
+export interface Organization {
+
 }
 
 
@@ -60,12 +68,12 @@ export interface TOrganization {
     bankAccountNumber: string;
     bankIFSCCode: string;
 
-    billingAddressId: IAddress;
-    shippingAddressId: Array<IAddress>;
+    billingAddressId: Address;
+    shippingAddressId: Array<Address>;
 
     masterFranchiseId: number | null;
     createdBy: number;
-    rootUserId: number | null;
+    rootUser: number | null;
 
     type: ORGANIZATION_TYPE;
     businessType: BUSINESS_TYPE;

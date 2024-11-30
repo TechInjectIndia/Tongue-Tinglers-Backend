@@ -1,35 +1,29 @@
 import { Op } from "sequelize";
 import { TListFilters } from "../../../types";
-import { AddressModel } from "../../../database/schema";
+import { AddressModel, UserModel } from "../../../database/schema";
 import IBaseRepo from "../controllers/controller/IController";
 import {
-    IOrganization, IOrganizationPayload, IOrganizationPayloadData,
+    IOrganization,
+    IOrganizationPayloadDataWithMeta,
 } from "../../../interfaces/organization";
-import { OrganizationTableModel } from "../database/organization_schema";
-import { AddressRepo } from "../../address/models";
+import { OrganizationModel } from "../database/organization_schema";
+import { AddressRepo } from "../../user-address/models/AddressRepo";
 
 
 export class OrganizationRepo
-    implements IBaseRepo<IOrganizationPayloadData, TListFilters> {
+    implements IBaseRepo<IOrganizationPayloadDataWithMeta, IOrganization, TListFilters> {
     constructor() {
     }
 
-    async create(payload: IOrganizationPayloadData): Promise<boolean> {
+    async create(payload: IOrganizationPayloadDataWithMeta, userId: number): Promise<IOrganization> {
 
-        const billingAddressId = (await new AddressRepo().create(payload.billingAddress)).id;
-        const shippingAddressIds = await Promise.all(
-            payload.shippingAddress.map(async (addressId) => {
-                return (await new AddressRepo().create(addressId)).id; // You can also customize the address object if needed
-            }),
-        );
+        const billingAddress = (await new AddressRepo().create(payload.billingAddress)).id;
 
-        const organization = {
-            billingAddressId: billingAddressId,
-            businessType: payload.businessType,
-            deletedBy: null,
-            shippingAddressId: shippingAddressIds,
-            type: payload.type,
-            updatedBy: null,
+
+        const shippingAddresses = ((await AddressModel.bulkCreate(payload.shippingAddresses)).map((add) => add.id))
+
+
+        const organization = await OrganizationModel.create({
             name: payload.name,
             contactPersonName: payload.contactPersonName,
             contactNumber: payload.contactNumber,
@@ -39,29 +33,89 @@ export class OrganizationRepo
             bankName: payload.bankName,
             bankAccountNumber: payload.bankAccountNumber,
             bankIFSCCode: payload.bankIFSCCode,
+            billingAddressId: billingAddress,
             masterFranchiseId: payload.masterFranchiseId,
-            rootUserId: payload.rootUserId,
-        };
+            rootUser: payload.rootUser,
+            createdBy: userId,
+            businessType: payload.businessType,
+            type: payload.type,
+        });
 
-        return await OrganizationTableModel.create(organization);
+
+        await organization.addShippingAddresses(shippingAddresses);
+
+
+        return (await OrganizationModel.findByPk(organization.id, {
+            include: [
+                {
+                    model: AddressModel,
+                    as: 'billingAddress',  // Include billing address
+                },
+                {
+                    model: UserModel,
+                    as: 'user',  // Include root user
+                },
+                {
+                    model: AddressModel,
+                    as: 'shippingAddresses', // The alias defined above
+                    through: { attributes: [] },
+                },
+                {
+                    model: OrganizationModel,
+                    as: 'masterFranchise',
+                    attributes: ['id', 'name'], // Include master franchise (if applicable)
+                },
+                {
+                    model: UserModel,
+                    as: 'createdByUser',  // Include createdByUser
+                },
+                {
+                    model: UserModel,
+                    as: 'updatedByUser',  // Include updatedByUser
+                },
+                {
+                    model: UserModel,
+                    as: 'deletedByUser',  // Include deletedByUser
+                },
+            ],
+        })).toJSON()
+
 
     }
 
     public async get(id: number): Promise<IOrganization | null> {
-        const data = await OrganizationTableModel.findOne({
+        const data = await OrganizationModel.findOne({
             where: { id },
             include: [
                 {
                     model: AddressModel,
-                    as: "address",
-                    attributes: [
-                        "user_id",
-                        "street",
-                        "city",
-                        "state",
-                        "postalCode",
-                        "country",
-                    ],
+                    as: 'billingAddress',  // Include billing address
+                },
+                {
+                    model: UserModel,
+                    as: 'user',  // Include root user
+                },
+                {
+                    model: AddressModel,
+                    as: 'shippingAddresses', // The alias defined above
+                    through: { attributes: [] },
+                },
+                {
+                    model: OrganizationModel,
+                    as: 'masterFranchise',
+                    attributes: ['id', 'name'],  // Include master franchise (if applicable)
+                },
+                {
+                    model: UserModel,
+                    as: 'createdByUser',  // Include createdByUser
+                },
+                {
+                    model: UserModel,
+                    as: 'updatedByUser',  // Include updatedByUser
+                },
+                {
+                    model: UserModel,
+                    as: 'deletedByUser',  // Include deletedByUser
                 },
             ],
         });
@@ -72,7 +126,7 @@ export class OrganizationRepo
         id: number,
         data: any,
     ): Promise<[affectedCount: number]> {
-        const response = await OrganizationTableModel.update(data, {
+        const response = await OrganizationModel.update(data, {
             where: { id },
         });
         return response;
@@ -80,7 +134,7 @@ export class OrganizationRepo
 
     public async delete(id: any): Promise<number> {
         try {
-            const deletedCount = await OrganizationTableModel.destroy({
+            const deletedCount = await OrganizationModel.destroy({
                 where: {
                     id: id,
                 },
@@ -92,40 +146,62 @@ export class OrganizationRepo
         }
     }
 
+
+
     public async list(filters: any): Promise<any> {
-        const total = await OrganizationTableModel.count({
+        const data = await OrganizationModel.findAll({
             where: {
                 name: {
                     [Op.like]: `%${filters.search}%`,
                 },
             },
-        });
-
-        const data = await OrganizationTableModel.findAll({
-            order: [filters?.sorting],
+            order: filters?.sorting ? [filters.sorting] : [], // Ensure sorting is optional
             offset: filters.offset,
             limit: filters.limit,
-            where: {
-                name: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
             include: [
                 {
                     model: AddressModel,
-                    as: "address",
-                    attributes: [
-                        "user_id",
-                        "street",
-                        "city",
-                        "state",
-                        "postalCode",
-                        "country",
-                    ],
+                    as: 'billingAddress', // Billing address (one-to-one association)
+                    attributes: { exclude: [] }, // Include all fields of the address
+                },
+                {
+                    model: AddressModel,
+                    as: 'shippingAddresses', // Shipping addresses (many-to-many association)
+                    through: {
+                        attributes: [], // Exclude join table data
+                    },
+                    attributes: { exclude: [] }, // Include all fields of the address
+                },
+                {
+                    model: UserModel,
+                    as: 'user', // Root user
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                },
+                {
+                    model: OrganizationModel,
+                    as: 'masterFranchise', // Master franchise
+                    attributes: ['id', 'name'],
+                },
+                {
+                    model: UserModel,
+                    as: 'createdByUser', // Created by
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                },
+                {
+                    model: UserModel,
+                    as: 'updatedByUser', // Updated by
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                },
+                {
+                    model: UserModel,
+                    as: 'deletedByUser', // Deleted by
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
                 },
             ],
+            logging: console.log, // Debugging SQL queries
         });
 
-        return { total, data };
+        return { total: data.length, data };
+
     }
 }

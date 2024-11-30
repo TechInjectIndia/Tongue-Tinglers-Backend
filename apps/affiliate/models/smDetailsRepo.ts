@@ -30,11 +30,11 @@ export class SocialMediaDetailsRepo implements IBaseRepo<SocialMediaDetails> {
         }
     }
 
-    public async getByAffiliateAndPlatform(affiliateId: number, platform: string): Promise<SocialMediaDetailsModel | null> {
+    public async getByAffiliateAndPlatform(id: number, platform: string): Promise<SocialMediaDetailsModel | null> {
         try {
             const socialMediaDetail = await SocialMediaDetailsModel.findOne({
                 where: {
-                    affiliateId,
+                    id,
                     platform,
                 },
             });

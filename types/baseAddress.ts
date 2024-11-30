@@ -1,7 +1,7 @@
 const { OrderItem } = require("sequelize");
 
-interface Address {
-    id: number;
+
+interface BaseAddress {
     street: string;
     city: string;
     state: string;
@@ -12,9 +12,12 @@ interface Address {
     lastName: string;
 }
 
+interface Address extends BaseAddress {
+    id: number;
+}
+
 export type TAddress = {
     id: number;
-    user_id: number;
     street: string;
     city: string;
     state: string;
@@ -55,4 +58,4 @@ export type TAddressFilters = {
 };
 
 
-export { Address };
+export { BaseAddress, Address };

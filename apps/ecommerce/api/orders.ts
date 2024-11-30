@@ -28,14 +28,14 @@ const {
  *            type: object
  *            required:
  *              - trackingNumber
- *              - shippingAddress
+ *              - shippingAddresses
  *              - totalPrice
  *              - cart_items
  *            properties:
  *              trackingNumber:
  *                type: string
  *                default: product12 
- *              shippingAddress:
+ *              shippingAddresses:
  *                type: text
  *                default: desc
  *              totalPrice:

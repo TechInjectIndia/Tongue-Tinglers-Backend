@@ -16,7 +16,7 @@ interface FranchiseeCreationAttributes extends Optional<Franchise, "id" | "creat
 }
 
 // Franchisee class model for the Sequelize ORM
-class FranchiseeModel extends Model<Franchise, FranchiseeCreationAttributes> implements Franchise {
+class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> implements Franchise {
     public organizationId: number;
     public id: number;
     public location: number;
@@ -72,7 +72,7 @@ class FranchiseeModel extends Model<Franchise, FranchiseeCreationAttributes> imp
     }
 }
 
-FranchiseeModel.init(
+FranchiseModel.init(
     {
         id: {
             type: INTEGER,
@@ -168,5 +168,5 @@ FranchiseeModel.init(
 );
 
 
-export { FranchiseeModel };
+export { FranchiseModel };
 

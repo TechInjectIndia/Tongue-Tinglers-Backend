@@ -1,4 +1,11 @@
-import type { UpdatedMetaData, BaseModel, DeletionMetaData, ITrackable, Note, UserDetails } from "../interfaces";
+import type {
+    UpdatedMetaData,
+    BaseModel,
+    DeletionMetaData,
+    ITrackable,
+    Note,
+    UserDetails,
+} from "../interfaces";
 
 enum followStatus {
     FOLLOWED_UP = "followed-up",
@@ -158,21 +165,17 @@ enum socialMediaEnumsPlatform {
     TUMBLR = "tumblr",
 }
 
-interface SocialMediaDetails {
-    id: number;
+interface BaseSocialMedia {
     platform: socialMediaEnumsPlatform;  // e.g., 'FB', 'INSTAGRAM', 'YOUTUBE'
     handle: string;
     followers: number;
     tags: string[];
 }
 
-interface SocialMediaDetailsAttributesPayload {
-    affiliateId: number;
-    platform: socialMediaEnumsPlatform;  // e.g., 'FB', 'INSTAGRAM', 'YOUTUBE'
-    handle: string;
-    followers: number;
-    tags: string[];
+interface SocialMediaDetails extends BaseSocialMedia {
+    id: number;
 }
+
 
 interface Affiliate {
     id: number,
@@ -230,9 +233,9 @@ export {
     ProposalModels,
     TPayloadProposalModel,
     ProposalModelsList,
-    SocialMediaDetailsAttributesPayload,
+    BaseSocialMedia,
     socialMediaEnumsPlatform,
     extraFieldTypes,
     SeoImagePayload,
-    AssignAttributes
+    AssignAttributes,
 };

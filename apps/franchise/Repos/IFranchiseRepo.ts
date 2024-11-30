@@ -1,7 +1,7 @@
 import { Franchise, FranchiseDetails } from "../../../interfaces";
 
 export interface IFranchiseRepo {
-    create(franchise: FranchiseDetails): Promise<Franchise>;
+    create(franchise: FranchiseDetails): Promise<Franchise | null>;
 
     update(franchise: Franchise): Promise<Franchise>;
 

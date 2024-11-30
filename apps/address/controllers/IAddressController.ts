@@ -1,8 +1,8 @@
 import { TListFilters } from "../../../types";
 
 // Generic interface for User Address repository operations
-export default interface IUserAddressController<T,P, F> {
-    list(filters: TListFilters): Promise<T[]>
+export default interface IAddress<T, P, F> {
+    list(filters: TListFilters): Promise<T[]>;
 
     /**
      * Create a new entry
@@ -29,7 +29,8 @@ export default interface IUserAddressController<T,P, F> {
     /**
      * Delete an entry by ID
      * @param id - The ID of the entry to delete
-     * @returns A promise resolving to true if deletion was successful, false if not found
+     * @returns A promise
+     * resolving to true if deletion was successful, false if not found
      */
     deleteById(id: number): Promise<boolean>;
 }

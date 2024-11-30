@@ -72,8 +72,9 @@ import regionRouter from "../apps/region/api/index";
 import areaRouter from "../apps/area/api/index";
 import cartRouter from "../apps/cart/api/cartApi";
 import shippingHistory from "../apps/ecommerce/api/shippingHistoryApi";
-import userAddressRouter from "../apps/user-address/api/userAddressApi";
+
 import vendorRouter from "../apps/vendor/api/vendorApi";
+import frachiseRouter from "../apps/franchise/api/franchise";
 
 /* Migration Router */
 import migrationRouter from "../migrations/routes/migrateRoute";
@@ -124,16 +125,15 @@ router.use(`${ADMIN}/contracts`, contractsRouter);
 router.use(`${ADMIN}/lead`, auth, leadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
+router.use(`${ADMIN}/franchise`, frachiseRouter);
 router.use(`/cart`, auth, cartRouter);
-router.use(`/user-address`, auth, userAddressRouter);
+
 
 router.use("/migration", migrationRouter);
 
-// ====== Admin ======
-// Guest users
+
 router.use(`${GUEST}/users`, auth, guestUsersRouter);
 
-// ====== Franchise ======
 // ====== Franchise imports ======
 import franchiseOrderAnalyticsRouter
     from "../apps/analytics/api/franchise/orders-analytics"; // pending

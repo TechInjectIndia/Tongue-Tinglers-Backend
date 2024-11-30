@@ -209,31 +209,9 @@ export default class ContractController {
                 existingLead.campaignId,
             );
 
-            let franchiseePayload: FranchiseDetails = {
-                location: undefined,
-                sm: [],
-                id: 0,
-                createdAt: undefined,
-                createdBy: 0,
-                updatedBy: 0,
-                deletedBy: 0,
-                updatedAt: undefined,
-                deletedAt: undefined,
-                pocName: "",
-                pocEmail: "",
-                pocPhoneNumber: "",
-                users: [],
-                regionId: 0,
-                area: "",
-                agreementIds: [],
-                paymentIds: [],
-                organizationId: 0,
-                status: FRANCHISE_STATUS.Active,
-                establishedDate: undefined,
-            };
 
-            const franchiseResponse =
-                await RepoProvider.franchise.create(franchiseePayload);
+            // const franchiseResponse =
+            //     await RepoProvider.franchise.create(franchiseePayload);
 
             // await new FranchiseLocationRepo().createFranchiseLocation({
             //     contactPhone: null,

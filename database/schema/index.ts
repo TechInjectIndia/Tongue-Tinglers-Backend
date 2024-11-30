@@ -69,7 +69,7 @@ export * from "./files/fileModel";
 export * from "./files/emailModel";
 export * from "./files/galleryModel";
 
-export * from "./franchise/franchiseeModel";
+export * from "./franchise/franchiseModel";
 export * from "./franchise/pdiModel";
 export * from "./franchise/RegionsModel";
 export * from "./franchise/AreaModel";
@@ -78,7 +78,7 @@ export * from "./franchise/AreaModel";
 
 import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
 // import { questionModel } from "./campaign-ui/questionModel";
-import { FranchiseeModel } from "./franchise/franchiseeModel";
+import { FranchiseModel } from "./franchise/franchiseModel";
 import { AffiliateModel } from "./lead/affiliateModels";
 import { SocialMediaDetailsModel } from "./lead/smDetailsModel";
 import { AssignModel } from "./lead/assigneeModels";

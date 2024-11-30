@@ -1,6 +1,6 @@
 import { BaseAddress } from "../types";
-import { BaseMeta } from "../database/schema/base/Base";
-import { SocialMediaDetails } from "./leads";
+import { BaseMeta, BaseMetaUsers } from "../database/schema/base/Base";
+import { BaseSocialMedia, SocialMediaDetails } from "./leads";
 
 
 interface BaseFranchise {
@@ -17,9 +17,9 @@ interface BaseFranchise {
     organizationId: number;
 }
 
-interface FranchiseDetails extends BaseMeta, BaseFranchise {
+interface FranchiseDetails extends BaseMetaUsers, BaseFranchise {
     location: BaseAddress;
-    sm: Array<SocialMediaDetails>;
+    sm: Array<BaseSocialMedia>;
 }
 
 interface Franchise extends BaseFranchise, BaseMeta {

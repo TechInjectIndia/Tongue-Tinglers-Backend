@@ -24,13 +24,13 @@ export class PostgresCommissionController implements ICommissionController {
         /* prepare the input */
         const user_id = get(req, 'user_id',);
         const franchiseId = get(req.body, 'franchiseId',);
-        const commissionsData = get(req.body, 'commissionData',) as OrganizationCommissions[];
+        const mappings = get(req.body, 'mappings',) as OrganizationCommissions[];
 
 
 
         const entries: any[] = [];
 
-        for (const commission of commissionsData) {
+        for (const commission of mappings) {
             entries.push({
                 createdBy: user_id,
                 franchiseId: franchiseId,
@@ -39,9 +39,6 @@ export class PostgresCommissionController implements ICommissionController {
                 status: COMMISSION_PAID_STATUS.PENDING,
             });
         }
-
-
-
 
         const result = await RepoProvider.commissionRepo.createMapEntities(entries);
         if (!result.success) {

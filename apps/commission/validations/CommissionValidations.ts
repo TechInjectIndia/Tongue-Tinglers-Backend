@@ -139,7 +139,10 @@ const organizationCommissionSchema = Joi.object().keys({
     commissionId: Joi.number().integer().required()
 });
 
-const commissionMapEntrySchema = Joi.array().items(organizationCommissionSchema).min(1).required();
+const commissionMapEntrySchema = Joi.object({
+    franchiseId: Joi.number().required(),
+    mappings: Joi.array().items(organizationCommissionSchema).required(),
+});
 
 
 const validateCreateCommissionMapEntry = (req: Request, res: Response, next: NextFunction) => {

@@ -7,6 +7,26 @@ import { CommissionEntityMapTable, ICommissionEntityMapping } from "../../../dat
 import { Op } from "sequelize";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
+    async search(searchText: string): Promise<APIResponse<ICommission[]>> {
+
+        try {
+
+            const result = await CommissionTable.findAll({
+                where: {
+                    title: {
+
+                        [Op.iLike]: "%" + searchText.toLowerCase() + "%"
+                    }
+                }
+            });
+
+            return HelperMethods.getSuccessResponse(result);
+
+        } catch (error) {
+            HelperMethods.handleError(error);
+            return HelperMethods.getErrorResponse();
+        }
+    }
 
     async createMapEntities(mapEntities: ICommissionEntityMapping[]): Promise<APIResponse<boolean>> {
         try {

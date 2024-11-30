@@ -4,9 +4,21 @@ import { ICommissionController } from "./ICommissionController";
 import { NextFunction, Request, Response } from "express";
 import { get } from "lodash";
 import { RepoProvider } from "../../common/utils/RepoProvider";
-import { COMMISSION_PAID_STATUS, CommissionEntityMapTable, OrganizationCommissions } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
+import { COMMISSION_PAID_STATUS, OrganizationCommissions } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
 
 export class PostgresCommissionController implements ICommissionController {
+    async searchCommission(req: Request, res: Response, next: NextFunction): Promise<APIResponse<CommissionTable[]>> {
+
+        const title = get(req.query, "title");
+
+        const result = await RepoProvider.commissionRepo.search(title);
+
+        if (!result.success) {
+            return res.status(500).send(result);
+        }
+        return res.status(200).send(result);
+
+    }
 
     async createMapEntry(req: Request, res: Response, next: NextFunction): Promise<APIResponse<null>> {
         /* prepare the input */
@@ -14,7 +26,7 @@ export class PostgresCommissionController implements ICommissionController {
         const franchiseId = get(req.body, 'franchiseId',);
         const commissionsData = get(req.body, 'commissionData',) as OrganizationCommissions[];
 
-        
+
 
         const entries: any[] = [];
 

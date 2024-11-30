@@ -15,5 +15,7 @@ export interface ICommissionRepo {
 
 
     isTitleAlreadyExists(title: string): Promise<APIResponse<boolean>>;
+
+    search(searchText: string): Promise<APIResponse<ICommission[]>>;
 }
 

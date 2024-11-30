@@ -117,6 +117,7 @@ const validateDeleteCommission = (req: Request, res: Response, next: NextFunctio
 };
 
 const validateGetCommissionById = (req: Request, res: Response, next: NextFunction) => {
+
     /* get params */
     let id = get(req.params, "id", 0);
     try {
@@ -149,5 +150,15 @@ const validateCreateCommissionMapEntry = (req: Request, res: Response, next: Nex
     next();
 };
 
+const validateSearchCommission = (req: Request, res: Response, next: NextFunction) => {
+    const title = get(req.query, "title");
 
-export { validateCreateCommission, validateUpdateCommission, validateDeleteCommission, validateGetCommissionById, validateCreateCommissionMapEntry };
+
+    if (!title || title.length === 0) {
+        return res.status(400).json(HelperMethods.getErrorResponse("Invalid request"));
+    }
+    next();
+};
+
+
+export { validateCreateCommission, validateUpdateCommission, validateDeleteCommission, validateGetCommissionById, validateCreateCommissionMapEntry, validateSearchCommission };

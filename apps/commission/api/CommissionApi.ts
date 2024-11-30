@@ -1,5 +1,5 @@
 import * as express from "express";
-import { validateCreateCommission, validateDeleteCommission, validateGetCommissionById, validateUpdateCommission } from "../validations/CommissionValidations";
+import { validateCreateCommission, validateDeleteCommission, validateGetCommissionById, validateSearchCommission, validateUpdateCommission } from "../validations/CommissionValidations";
 import { ControllerProvider } from "../../common/utils/ControllerProvider";
 import { auth } from '../../../middlewares/auth';
 
@@ -50,6 +50,9 @@ commissionRouter.put("/update/:id", auth, validateUpdateCommission, ControllerPr
 commissionRouter.delete("/delete", auth, validateDeleteCommission, ControllerProvider.commissionController.update);
 
 commissionRouter.get("/", auth, ControllerProvider.commissionController.getAll);
+
+
+commissionRouter.get("/search", auth, validateSearchCommission, ControllerProvider.commissionController.searchCommission);
 
 commissionRouter.get("/:id", auth, validateGetCommissionById, ControllerProvider.commissionController.getById);
 

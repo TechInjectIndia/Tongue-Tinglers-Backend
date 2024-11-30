@@ -18,5 +18,7 @@ export interface ICommissionController {
     createMapEntry(req: Request, res: Response, next: NextFunction): Promise<APIResponse<null>>;
     updateMapEntry(req: Request, res: Response, next: NextFunction): Promise<APIResponse<null>>;
 
+    searchCommission(req: Request, res: Response, next: NextFunction): Promise<APIResponse<CommissionTable[]>>;
+
 
 }

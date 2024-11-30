@@ -7,11 +7,13 @@ import { RepoProvider } from "../../common/utils/RepoProvider";
 import { COMMISSION_PAID_STATUS, OrganizationCommissions } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
 
 export class PostgresCommissionController implements ICommissionController {
+
     async searchCommission(req: Request, res: Response, next: NextFunction): Promise<APIResponse<CommissionTable[]>> {
 
         const title = get(req.query, "title");
+        const type = get(req.query, "type");
 
-        const result = await RepoProvider.commissionRepo.search(title);
+        const result = await RepoProvider.commissionRepo.search(title, type);
 
         if (!result.success) {
             return res.status(500).send(result);
@@ -94,20 +96,20 @@ export class PostgresCommissionController implements ICommissionController {
 
         input.title = input.title.trim().toLowerCase();
 
-        const isTitleAlreadyExists = await RepoProvider.commissionRepo.isTitleAlreadyExists(input.title.trim());
+        // const isTitleAlreadyExists = await RepoProvider.commissionRepo.isTitleAlreadyExists(input.title.trim());
 
 
-        if (!isTitleAlreadyExists.success) {
-            return res.status(500).send(isTitleAlreadyExists);
-        }
-        else if (isTitleAlreadyExists.data) {
-            return res.status(400).send({
-                success: false,
-                message: isTitleAlreadyExists.message,
-                data: null,
+        // if (!isTitleAlreadyExists.success) {
+        //     return res.status(500).send(isTitleAlreadyExists);
+        // }
+        // else if (isTitleAlreadyExists.data) {
+        //     return res.status(400).send({
+        //         success: false,
+        //         message: isTitleAlreadyExists.message,
+        //         data: null,
 
-            });
-        }
+        //     });
+        // }
 
 
         const result = await RepoProvider.commissionRepo.create(input);
@@ -130,20 +132,20 @@ export class PostgresCommissionController implements ICommissionController {
         const input = { ...req.body, updatedBy: user_id };
         input.title = input.title.trim().toLowerCase();
 
-        const isTitleAlreadyExists = await RepoProvider.commissionRepo.isTitleAlreadyExists(input.title.trim());
+        // const isTitleAlreadyExists = await RepoProvider.commissionRepo.isTitleAlreadyExists(input.title.trim());
 
 
-        if (!isTitleAlreadyExists.success) {
-            return res.status(500).send(isTitleAlreadyExists);
-        }
-        else if (isTitleAlreadyExists.data) {
-            return res.status(400).send({
-                success: false,
-                message: isTitleAlreadyExists.message,
-                data: null,
+        // if (!isTitleAlreadyExists.success) {
+        //     return res.status(500).send(isTitleAlreadyExists);
+        // }
+        // else if (isTitleAlreadyExists.data) {
+        //     return res.status(400).send({
+        //         success: false,
+        //         message: isTitleAlreadyExists.message,
+        //         data: null,
 
-            });
-        }
+        //     });
+        // }
 
 
         const result = await RepoProvider.commissionRepo.update(id, input);

@@ -4,20 +4,27 @@ import { HelperMethods } from "../../common/utils/HelperMethods";
 import { CommissionTable } from "../../../database/schema/commission/CommissionTable";
 import { ICommission } from "../../../interfaces/commission";
 import { CommissionEntityMapTable, ICommissionEntityMapping } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
-import { Op } from "sequelize";
+import { Op, UniqueConstraintError } from "sequelize";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
-    async search(searchText: string): Promise<APIResponse<ICommission[]>> {
+    async search(searchText: string, type?: string): Promise<APIResponse<ICommission[]>> {
 
         try {
 
-            const result = await CommissionTable.findAll({
-                where: {
-                    title: {
+            const whereConditions: any = {};
 
-                        [Op.iLike]: "%" + searchText.toLowerCase() + "%"
-                    }
-                }
+            whereConditions.title = {
+                [Op.iLike]: "%" + searchText.toLowerCase() + "%"
+            };
+
+
+            if (type) {
+                whereConditions.eventType = type;
+            }
+
+
+            const result = await CommissionTable.findAll({
+                where: whereConditions
             });
 
             return HelperMethods.getSuccessResponse(result);
@@ -119,6 +126,9 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
         } catch (error) {
             HelperMethods.handleError(error);
+            if (error instanceof UniqueConstraintError) {
+                return HelperMethods.getErrorResponse('Title already exists');
+            }
             return HelperMethods.getErrorResponse();
         }
     }
@@ -136,9 +146,13 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
         } catch (error) {
             HelperMethods.handleError(error);
+            if (error instanceof UniqueConstraintError) {
+                return HelperMethods.getErrorResponse('Title already exists');
+            }
             return HelperMethods.getErrorResponse();
         }
     }
+
 
 
     async isTitleAlreadyExists(title: string): Promise<APIResponse<boolean>> {

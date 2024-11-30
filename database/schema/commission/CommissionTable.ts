@@ -31,6 +31,7 @@ CommissionTable.init({
     title: {
         type: STRING,
         allowNull: false,
+        unique: true,
     },
     type: {
         type: STRING,

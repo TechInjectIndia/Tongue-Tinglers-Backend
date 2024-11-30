@@ -1,5 +1,4 @@
-import { NextFunction, Response } from "express";
-import { TQueryFilters, TEditUserProfile } from '../../../../types';
+import { TQueryFilters, TEditUserProfile } from '../../../types';
 
 /**
  * Interface for Profile Controller.

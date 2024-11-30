@@ -15,16 +15,15 @@ import {
 import { ContractRepo } from "../models/ContractRepo";
 import { LeadRepo } from "../../lead/models/lead";
 import { TContractPayload } from "../../../types";
-import { FranchiseeRepo } from "../../franchisee/models/FranchiseeRepo";
-
 
 import { CampaignAdRepo } from "../../campaign/models";
 import { CONFIG } from "../../../config/environment";
 import {
     FRANCHISE_STATUS,
     FranchiseDetails,
-    Franchisee,
+    Franchise,
 } from "../../../interfaces";
+import RepoProvider from "../../RepoProvider";
 
 export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -234,7 +233,7 @@ export default class ContractController {
             };
 
             const franchiseResponse =
-                await new FranchiseeRepo().createFranchisee(franchiseePayload);
+                await RepoProvider.franchise.create(franchiseePayload);
 
             // await new FranchiseLocationRepo().createFranchiseLocation({
             //     contactPhone: null,

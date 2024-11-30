@@ -1,10 +1,3 @@
-import { NextFunction, Request, Response } from "express";
-import { get, isEmpty } from "lodash";
-import { TPayloadSettings } from "../../../types";
-import { sendResponse, createPassword } from "../../../libraries";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { Admin } from '../models/settings';
-
 export default class SettingsController {
 //     static async getSettings(req: Request, res: Response, next: NextFunction) {
 //         try {

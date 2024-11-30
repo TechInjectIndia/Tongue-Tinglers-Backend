@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 
 import { UserModel } from "../user/user.model";
-import { FRANCHISE_STATUS, Franchisee } from "../../../interfaces";
+import { FRANCHISE_STATUS, Franchise } from "../../../interfaces";
 
 import { RegionModel } from "./RegionsModel";
 import {
@@ -12,11 +12,11 @@ import {
 const { STRING, INTEGER, DATE, NOW, ARRAY, ENUM } = DataTypes;
 
 // Franchisee creation attributes, making 'id' optional for creation
-interface FranchiseeCreationAttributes extends Optional<Franchisee, "id" | "createdAt" | "updatedAt" | "deletedAt"> {
+interface FranchiseeCreationAttributes extends Optional<Franchise, "id" | "createdAt" | "updatedAt" | "deletedAt"> {
 }
 
 // Franchisee class model for the Sequelize ORM
-class FranchiseeModel extends Model<Franchisee, FranchiseeCreationAttributes> implements Franchisee {
+class FranchiseeModel extends Model<Franchise, FranchiseeCreationAttributes> implements Franchise {
     public organizationId: number;
     public id: number;
     public location: number;

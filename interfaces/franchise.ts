@@ -3,7 +3,7 @@ import { BaseMeta } from "../database/schema/base/Base";
 import { SocialMediaDetails } from "./leads";
 
 
-interface BaseFranchisee {
+interface BaseFranchise {
     pocName: string;
     pocEmail: string;
     pocPhoneNumber: string;
@@ -17,12 +17,12 @@ interface BaseFranchisee {
     organizationId: number;
 }
 
-interface FranchiseDetails extends BaseMeta, BaseFranchisee {
+interface FranchiseDetails extends BaseMeta, BaseFranchise {
     location: BaseAddress;
     sm: Array<SocialMediaDetails>;
 }
 
-interface Franchisee extends BaseFranchisee, BaseMeta {
+interface Franchise extends BaseFranchise, BaseMeta {
     location: number;
     sm: Array<number>;
 }
@@ -37,10 +37,10 @@ enum FRANCHISE_STATUS {
 
 
 export {
-    BaseFranchisee,
+    BaseFranchise,
     FRANCHISE_STATUS,
     FranchiseDetails,
-    Franchisee,
+    Franchise,
 };
 
 

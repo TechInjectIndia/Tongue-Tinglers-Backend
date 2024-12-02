@@ -2,6 +2,8 @@ import { Model, Optional, DataTypes } from "sequelize";
 import { sequelize } from "../../../config";
 
 import { BaseModel, DeletionMetaData, UpdatedMetaData } from "../../../interfaces";
+import { FranchiseModel } from "../franchise/franchiseModel";
+import { OrganizationModel } from "../../../apps/organization/database/organization_schema";
 const { STRING, DATE, INTEGER, NOW, } = DataTypes;
 
 
@@ -83,6 +85,36 @@ CommissionEntityMapTable.init({
     paranoid: true,
 });
 
+
+/* associations */
+
+CommissionEntityMapTable.belongsTo(FranchiseModel, {
+    foreignKey: {
+        allowNull: false,
+        name: 'franchiseId',
+    },
+});
+
+FranchiseModel.hasMany(CommissionEntityMapTable, {
+    foreignKey: {
+        allowNull: false,
+        name: 'franchiseId',
+    },
+});
+
+OrganizationModel.hasMany(CommissionEntityMapTable, {
+    foreignKey: {
+        allowNull: false,
+        name: 'organizationId',
+    },
+});
+
+CommissionEntityMapTable.belongsTo(OrganizationModel, {
+    foreignKey: {
+        allowNull: false,
+        name: 'organizationId',
+    },
+});
 
 
 enum COMMISSION_ENTITIES {

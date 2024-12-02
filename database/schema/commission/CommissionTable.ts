@@ -90,7 +90,12 @@ CommissionTable.hasMany(CommissionEntityMapTable, {
         allowNull: false,
         name: 'commissionId',
     },
-    onDelete: 'CASCADE',
+});
+CommissionEntityMapTable.belongsTo(CommissionTable, {
+    foreignKey: {
+        allowNull: false,
+        name: 'commissionId',
+    },
 });
 
 export { CommissionTable };

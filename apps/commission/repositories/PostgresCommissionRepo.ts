@@ -8,6 +8,30 @@ import { Op, UniqueConstraintError } from "sequelize";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
 
+    async getMappingsData(): Promise<APIResponse<CommissionEntityMapTable[]>> {
+
+        try {
+
+
+
+            const result = await CommissionEntityMapTable.findAll(
+                {
+                    include: [{
+                        model: CommissionTable,
+                        attributes: ["id", "title"],
+
+                    }]
+                }
+            );
+
+            return HelperMethods.getSuccessResponse(result);
+
+        } catch (error) {
+            HelperMethods.handleError(error);
+            return HelperMethods.getErrorResponse();
+        }
+    }
+
     async search(searchText: string, type?: string): Promise<APIResponse<ICommission[]>> {
 
         try {

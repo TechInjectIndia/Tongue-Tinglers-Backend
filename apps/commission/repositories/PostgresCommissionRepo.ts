@@ -5,6 +5,8 @@ import { CommissionTable } from "../../../database/schema/commission/CommissionT
 import { ICommission } from "../../../interfaces/commission";
 import { CommissionEntityMapTable, ICommissionEntityMapping } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
 import { Op, UniqueConstraintError } from "sequelize";
+import { FranchiseModel } from "../../../database/schema";
+import { OrganizationModel } from "../../organization/database/organization_schema";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
 
@@ -16,11 +18,27 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
             const result = await CommissionEntityMapTable.findAll(
                 {
-                    include: [{
-                        model: CommissionTable,
-                        attributes: ["id", "title"],
+                    include: [
+                        {
+                            model: CommissionTable,
+                            attributes: ["id", "title"],
 
-                    }]
+                        },
+                        {
+                            model: FranchiseModel,
+                            attributes: ["id", "pocName"],
+                            include: [{
+                                model: OrganizationModel,
+                                attributes: ["id", "name"],
+                            }]
+
+                        },
+                        {
+                            model: OrganizationModel,
+                            attributes: ["id", "name"],
+
+                        },
+                    ]
                 }
             );
 

@@ -70,6 +70,8 @@ class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> impl
         });
 
     }
+
+    affiliateId: number;
 }
 
 FranchiseModel.init(
@@ -78,6 +80,10 @@ FranchiseModel.init(
             type: INTEGER,
             autoIncrement: true,
             primaryKey: true,
+        },
+        affiliateId: {
+            type: INTEGER,
+            allowNull: false,
         },
         createdAt: {
             type: DATE,

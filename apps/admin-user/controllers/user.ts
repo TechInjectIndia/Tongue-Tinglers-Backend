@@ -17,7 +17,6 @@ import {
 import { AdminRepo } from "../models/user";
 import { Auth } from "../../auth/models";
 import { USER_TYPE } from "../../../interfaces";
-import { CONFIG } from "../../../config";
 
 export default class AdminController {
     static async getAllUsers(req: Request, res: Response, next: NextFunction) {
@@ -188,7 +187,7 @@ export default class AdminController {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            }); 
+            });
         }
     }
 

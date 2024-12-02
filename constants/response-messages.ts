@@ -34,7 +34,8 @@ export const ERROR_MESSAGE = {
     UPDATED: "updated successfully",
     REFERRAL_CODE_REQUIRED: 'Referral code is required',
     REFERRAL_CODE_NOT_EXISTS: 'Referral code does not exist',
-    REFERRAL_CODE_USED: 'Referral code has already been used'
+    REFERRAL_CODE_USED: 'Referral code has already been used',
+    FRANCHISE_NOT_CREATED: "Franchise not created",
 };
 
 export const SUCCESS_MESSAGE = {

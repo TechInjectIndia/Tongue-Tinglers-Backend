@@ -7,7 +7,7 @@ import {
     IOrganizationPayloadDataWithMeta,
 } from "../../../interfaces/organization";
 import { OrganizationModel } from "../database/organization_schema";
-import { AddressRepo } from "../../user-address/models/AddressRepo";
+import RepoProvider from "../../RepoProvider";
 
 
 export class OrganizationRepo
@@ -17,10 +17,10 @@ export class OrganizationRepo
 
     async create(payload: IOrganizationPayloadDataWithMeta, userId: number): Promise<IOrganization> {
 
-        const billingAddress = (await new AddressRepo().create(payload.billingAddress)).id;
+        const billingAddress = (await RepoProvider.address.create(payload.billingAddress)).id;
 
 
-        const shippingAddresses = ((await AddressModel.bulkCreate(payload.shippingAddresses)).map((add) => add.id))
+        const shippingAddresses = ((await AddressModel.bulkCreate(payload.shippingAddresses)).map((add) => add.id));
 
 
         const organization = await OrganizationModel.create({
@@ -49,103 +49,99 @@ export class OrganizationRepo
             include: [
                 {
                     model: AddressModel,
-                    as: 'billingAddress',  // Include billing address
+                    as: "billingAddress",  // Include billing address
                 },
                 {
                     model: UserModel,
-                    as: 'user',  // Include root user
+                    as: "user",  // Include root user
                 },
                 {
                     model: AddressModel,
-                    as: 'shippingAddresses', // The alias defined above
+                    as: "shippingAddresses", // The alias defined above
                     through: { attributes: [] },
                 },
                 {
                     model: OrganizationModel,
-                    as: 'masterFranchise',
-                    attributes: ['id', 'name'], // Include master franchise (if applicable)
+                    as: "masterFranchise",
+                    attributes: ["id", "name"], // Include master franchise (if applicable)
                 },
                 {
                     model: UserModel,
-                    as: 'createdByUser',  // Include createdByUser
+                    as: "createdByUser",  // Include createdByUser
                 },
                 {
                     model: UserModel,
-                    as: 'updatedByUser',  // Include updatedByUser
+                    as: "updatedByUser",  // Include updatedByUser
                 },
                 {
                     model: UserModel,
-                    as: 'deletedByUser',  // Include deletedByUser
+                    as: "deletedByUser",  // Include deletedByUser
                 },
             ],
-        })).toJSON()
+        })).toJSON();
 
 
     }
 
     public async get(id: number): Promise<IOrganization | null> {
-        const data = await OrganizationModel.findOne({
+        return await OrganizationModel.findOne({
             where: { id },
             include: [
                 {
                     model: AddressModel,
-                    as: 'billingAddress',  // Include billing address
+                    as: "billingAddress",  // Include billing address
                 },
                 {
                     model: UserModel,
-                    as: 'user',  // Include root user
+                    as: "user",  // Include root user
                 },
                 {
                     model: AddressModel,
-                    as: 'shippingAddresses', // The alias defined above
+                    as: "shippingAddresses", // The alias defined above
                     through: { attributes: [] },
                 },
                 {
                     model: OrganizationModel,
-                    as: 'masterFranchise',
-                    attributes: ['id', 'name'],  // Include master franchise (if applicable)
+                    as: "masterFranchise",
+                    attributes: ["id", "name"],  // Include master franchise (if applicable)
                 },
                 {
                     model: UserModel,
-                    as: 'createdByUser',  // Include createdByUser
+                    as: "createdByUser",  // Include createdByUser
                 },
                 {
                     model: UserModel,
-                    as: 'updatedByUser',  // Include updatedByUser
+                    as: "updatedByUser",  // Include updatedByUser
                 },
                 {
                     model: UserModel,
-                    as: 'deletedByUser',  // Include deletedByUser
+                    as: "deletedByUser",  // Include deletedByUser
                 },
             ],
         });
-        return data;
     }
 
     public async update(
         id: number,
         data: any,
     ): Promise<[affectedCount: number]> {
-        const response = await OrganizationModel.update(data, {
+        return await OrganizationModel.update(data, {
             where: { id },
         });
-        return response;
     }
 
     public async delete(id: any): Promise<number> {
         try {
-            const deletedCount = await OrganizationModel.destroy({
+            return await OrganizationModel.destroy({
                 where: {
                     id: id,
                 },
             });
-            return deletedCount;
         } catch (error) {
             console.error("Error deleting Organization:", error);
             throw new Error("Failed to delete Organization"); // Rethrow or handle as needed
         }
     }
-
 
 
     public async list(filters: any): Promise<any> {
@@ -161,12 +157,12 @@ export class OrganizationRepo
             include: [
                 {
                     model: AddressModel,
-                    as: 'billingAddress', // Billing address (one-to-one association)
+                    as: "billingAddress", // Billing address (one-to-one association)
                     attributes: { exclude: [] }, // Include all fields of the address
                 },
                 {
                     model: AddressModel,
-                    as: 'shippingAddresses', // Shipping addresses (many-to-many association)
+                    as: "shippingAddresses", // Shipping addresses (many-to-many association)
                     through: {
                         attributes: [], // Exclude join table data
                     },
@@ -174,28 +170,28 @@ export class OrganizationRepo
                 },
                 {
                     model: UserModel,
-                    as: 'user', // Root user
-                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                    as: "user", // Root user
+                    attributes: ["id", "firstName", "lastName", "email"],
                 },
                 {
                     model: OrganizationModel,
-                    as: 'masterFranchise', // Master franchise
-                    attributes: ['id', 'name'],
+                    as: "masterFranchise", // Master franchise
+                    attributes: ["id", "name"],
                 },
                 {
                     model: UserModel,
-                    as: 'createdByUser', // Created by
-                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                    as: "createdByUser", // Created by
+                    attributes: ["id", "firstName", "lastName", "email"],
                 },
                 {
                     model: UserModel,
-                    as: 'updatedByUser', // Updated by
-                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                    as: "updatedByUser", // Updated by
+                    attributes: ["id", "firstName", "lastName", "email"],
                 },
                 {
                     model: UserModel,
-                    as: 'deletedByUser', // Deleted by
-                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                    as: "deletedByUser", // Deleted by
+                    attributes: ["id", "firstName", "lastName", "email"],
                 },
             ],
             logging: console.log, // Debugging SQL queries

@@ -1,10 +1,13 @@
-import { Op } from "sequelize";
 import { SocialMediaDetailsModel } from "../../../database/schema"; // Adjust import based on your structure
-import { SocialMediaDetails, SocialMediaDetailsAttributesPayload } from "../../../interfaces";
-import IBaseRepo from '../controllers/controller/ISocialMediaController';
+import {
+    BaseSocialMedia,
+    SocialMediaDetails,
+} from "../../../interfaces";
+import IBaseRepo from "../controllers/controller/ISocialMediaController";
 
 export class SocialMediaDetailsRepo implements IBaseRepo<SocialMediaDetails> {
-    constructor() { }
+    constructor() {
+    }
 
     // Method to get a single social media detail by ID
     public async get(id: number): Promise<SocialMediaDetails | null> {
@@ -46,8 +49,20 @@ export class SocialMediaDetailsRepo implements IBaseRepo<SocialMediaDetails> {
     }
 
     // Method to create a new social media detail
-    public async create(data: SocialMediaDetailsAttributesPayload): Promise<SocialMediaDetails> {
+    public async create(data: BaseSocialMedia): Promise<SocialMediaDetails> {
         const response = await SocialMediaDetailsModel.create(data);
         return response;
+    }
+
+    public async saveBulk(data: BaseSocialMedia[]): Promise<SocialMediaDetails[]> {
+        try {
+            // Use bulkCreate to insert multiple records
+            const response = await SocialMediaDetailsModel.bulkCreate(data);
+
+            // Map over the response array to convert each instance to JSON
+            return response.map(item => item.toJSON());
+        } catch (error) {
+            return [];
+        }
     }
 }

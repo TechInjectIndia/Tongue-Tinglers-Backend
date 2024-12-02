@@ -1,15 +1,11 @@
-
-import IUserAddressController from '../controllers/IUserAddressController'; // Ensure this interface is correctly defined
+import IUserAddressController from "../controllers/IAddressController"; // Ensure this interface is correctly defined
 import { Address, BaseAddress, TListFilters } from "../../../types";
 import { AddressModel } from "../../../database/schema";
 
 export class AddressRepo implements IUserAddressController<BaseAddress, Address, TListFilters> {
-    /**
-     * List addresses - Method not yet implemented
-     */
     public async list(filters: TListFilters = {
         offset: 0,
-        limit: 0
+        limit: 0,
     }): Promise<Address[]> {
         try {
             const {
@@ -37,9 +33,8 @@ export class AddressRepo implements IUserAddressController<BaseAddress, Address,
      */
     public async create(payload: BaseAddress): Promise<Address> {
         try {
-            // Ensure address doesn't already exist or perform any necessary checks
             const newUserAddress = await AddressModel.create(payload);
-            return newUserAddress.get() as Address;
+            return newUserAddress.toJSON();
         } catch (error) {
             throw new Error(`Error creating user address: ${(error as Error).message}`);
         }

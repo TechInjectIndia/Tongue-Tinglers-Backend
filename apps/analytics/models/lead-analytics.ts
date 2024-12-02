@@ -1,13 +1,13 @@
 import { Op, Sequelize } from "sequelize";
 import { LeadsModel } from "../../../database/schema";
 import { CampaignAdRepo } from "../../campaign/models";
-import { FranchiseeRepo } from '../../franchisee/models/FranchiseeRepo';
-import { TLeadFilters, } from "../../../types";
+import { TLeadFilters } from "../../../types";
 import { TLeadsList } from "../../../types";
-import { CampaignAdModel } from "../../../database/schema";
+import RepoProvider from "../../RepoProvider";
 
 export class AnalyticsModel {
-    constructor() { }
+    constructor() {
+    }
 
     public async list(filters: TLeadFilters): Promise<TLeadsList> {
         const whereConditions: any = {};
@@ -15,11 +15,11 @@ export class AnalyticsModel {
         let campaignIds: number[] = [];
 
         if (filters.franchiseId) {
-            const franchiseRepo = new FranchiseeRepo();
-            const franchiseData = await franchiseRepo.getFranchiseeById(Number(filters.franchiseId));
+
+            const franchiseData = await RepoProvider.franchise.getById(Number(filters.franchiseId));
 
             if (!franchiseData) {
-                throw new Error('Franchise data not found.');
+                throw new Error("Franchise data not found.");
             }
 
             switch (franchiseData) {
@@ -31,11 +31,11 @@ export class AnalyticsModel {
                 //     campaignIds = campaignDataFranchise.map(campaign => campaign.id);
                 //     break;
                 default:
-                    throw new Error('Invalid franchise type.');
+                    throw new Error("Invalid franchise type.");
             }
 
             if (campaignIds.length === 0) {
-                throw new Error('No campaigns found for this franchise.');
+                throw new Error("No campaigns found for this franchise.");
             }
 
             // Add campaign ID filtering to where options
@@ -53,11 +53,11 @@ export class AnalyticsModel {
                 //     campaignIds = campaignDataFranchise.map(campaign => campaign.id);
                 //     break;
                 default:
-                    throw new Error('Invalid franchise type.');
+                    throw new Error("Invalid franchise type.");
             }
 
             if (campaignIds.length === 0) {
-                throw new Error('No campaigns found for this franchise.');
+                throw new Error("No campaigns found for this franchise.");
             }
 
             // Add campaign ID filtering to where options
@@ -97,18 +97,18 @@ export class AnalyticsModel {
     public async getLeadStatusByCampaignIdsAndDateRange(campaignIds: string[], startDate: Date, endDate: Date): Promise<any> {
         return await LeadsModel.findAll({
             attributes: [
-                'status',
-                [Sequelize.fn('COUNT', Sequelize.col('status')), 'count']
+                "status",
+                [Sequelize.fn("COUNT", Sequelize.col("status")), "count"],
             ],
             where: {
                 campaignId: {
-                    [Op.in]: campaignIds
+                    [Op.in]: campaignIds,
                 },
                 createdAt: {
-                    [Op.between]: [startDate, endDate]
-                }
+                    [Op.between]: [startDate, endDate],
+                },
             },
-            group: 'status'
+            group: "status",
         });
     }
 
@@ -116,15 +116,15 @@ export class AnalyticsModel {
     public async leadSources(startDate: Date, endDate: Date): Promise<any> {
         const data = await LeadsModel.findAll({
             attributes: [
-                'source',
-                [Sequelize.fn('COUNT', Sequelize.col('source')), 'count']
+                "source",
+                [Sequelize.fn("COUNT", Sequelize.col("source")), "count"],
             ],
             where: {
                 createdAt: {
-                    [Op.between]: [startDate, endDate]
+                    [Op.between]: [startDate, endDate],
                 },
             },
-            group: 'source'
+            group: "source",
         });
         return data;
     }
@@ -132,41 +132,41 @@ export class AnalyticsModel {
     public async leadStatus(startDate: Date, endDate: Date): Promise<any> {
         const data = await LeadsModel.findAll({
             attributes: [
-                'status',
-                [Sequelize.fn('COUNT', Sequelize.col('status')), 'count']
+                "status",
+                [Sequelize.fn("COUNT", Sequelize.col("status")), "count"],
             ],
             where: {
                 createdAt: {
-                    [Op.between]: [startDate, endDate]
+                    [Op.between]: [startDate, endDate],
                 },
             },
-            group: 'status'
+            group: "status",
         });
         return data;
     }
 
     public async leadTimelineForMasterFranchisee(startDate: Date, endDate: Date, groupBy: any, franchiseId: number): Promise<any> {
         if (!(startDate instanceof Date) || !(endDate instanceof Date) || startDate > endDate) {
-            throw new Error('Invalid date range provided.');
+            throw new Error("Invalid date range provided.");
         }
 
         // Use PostgreSQL's date functions to format dates for grouping
         const dateAttribute = groupBy === "day"
-            ? Sequelize.fn('DATE', Sequelize.col('created_at'))
-            : Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('created_at'));
+            ? Sequelize.fn("DATE", Sequelize.col("created_at"))
+            : Sequelize.fn("DATE_TRUNC", "month", Sequelize.col("created_at"));
 
         const whereOptions: any = {
             createdAt: {
-                [Op.between]: [startDate.toISOString(), endDate.toISOString()]
-            }
+                [Op.between]: [startDate.toISOString(), endDate.toISOString()],
+            },
         };
 
         if (franchiseId) {
-            const franchiseRepo = new FranchiseeRepo();
-            const franchiseData = await franchiseRepo.getFranchiseeById(franchiseId);
+
+            const franchiseData = await RepoProvider.franchise.getById(franchiseId);
 
             if (!franchiseData) {
-                throw new Error('Franchise data not found.');
+                throw new Error("Franchise data not found.");
             }
             let campaignIds: string[] = [];
 
@@ -179,11 +179,11 @@ export class AnalyticsModel {
                 //     campaignIds = campaignDataFranchise.map(campaign => campaign.id);
                 //     break;
                 default:
-                    throw new Error('Invalid franchise type.');
+                    throw new Error("Invalid franchise type.");
             }
 
             if (campaignIds.length === 0) {
-                throw new Error('No campaigns found for this franchise.');
+                throw new Error("No campaigns found for this franchise.");
             }
 
             // Add campaign ID filtering to where options
@@ -192,12 +192,12 @@ export class AnalyticsModel {
 
         const data = await LeadsModel.findAll({
             attributes: [
-                [dateAttribute, 'date'],
-                [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
+                [dateAttribute, "date"],
+                [Sequelize.fn("COUNT", Sequelize.col("id")), "count"],
             ],
             where: whereOptions,
-            group: ['date'],
-            order: [[dateAttribute, 'ASC']]
+            group: ["date"],
+            order: [[dateAttribute, "ASC"]],
         });
 
         console.log(data);
@@ -209,32 +209,32 @@ export class AnalyticsModel {
         endDate: Date,
         groupBy: any,
         franchiseData: any,
-        franchiseId: number
+        franchiseId: number,
     ): Promise<any> {
         if (!(startDate instanceof Date) || !(endDate instanceof Date) || startDate > endDate) {
-            throw new Error('Invalid date range provided.');
+            throw new Error("Invalid date range provided.");
         }
 
         // Use PostgreSQL's date functions to format dates for grouping
         const dateAttribute = groupBy === "day"
-            ? Sequelize.fn('DATE', Sequelize.col('created_at'))
-            : Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('created_at'));
+            ? Sequelize.fn("DATE", Sequelize.col("created_at"))
+            : Sequelize.fn("DATE_TRUNC", "month", Sequelize.col("created_at"));
 
         const whereOptions: any = {
             createdAt: {
-                [Op.between]: [startDate.toISOString(), endDate.toISOString()]
-            }
+                [Op.between]: [startDate.toISOString(), endDate.toISOString()],
+            },
         };
 
         // Fetch leads where campaign IDs are present
         const data = await LeadsModel.findAll({
             attributes: [
-                [dateAttribute, 'date'],
-                [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
+                [dateAttribute, "date"],
+                [Sequelize.fn("COUNT", Sequelize.col("id")), "count"],
             ],
             where: whereOptions,
-            group: ['date'],
-            order: [[dateAttribute, 'ASC']]
+            group: ["date"],
+            order: [[dateAttribute, "ASC"]],
         });
 
         console.log(data);
@@ -243,13 +243,13 @@ export class AnalyticsModel {
 
     public async leadTimelineForFranchisee(startDate: Date, endDate: Date, groupBy: any, franchiseData: any): Promise<any> {
         if (!(startDate instanceof Date) || !(endDate instanceof Date) || startDate > endDate) {
-            throw new Error('Invalid date range provided.');
+            throw new Error("Invalid date range provided.");
         }
 
         // Use PostgreSQL's date functions to format dates for grouping
         const dateAttribute = groupBy === "day"
-            ? Sequelize.fn('DATE', Sequelize.col('created_at'))
-            : Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('created_at'));
+            ? Sequelize.fn("DATE", Sequelize.col("created_at"))
+            : Sequelize.fn("DATE_TRUNC", "month", Sequelize.col("created_at"));
 
         // get all campaigns where franchiseId
         const campaignData = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseData.id);
@@ -257,19 +257,19 @@ export class AnalyticsModel {
 
         const data = await LeadsModel.findAll({
             attributes: [
-                [dateAttribute, 'date'],
-                [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
+                [dateAttribute, "date"],
+                [Sequelize.fn("COUNT", Sequelize.col("id")), "count"],
             ],
             where: {
                 createdAt: {
-                    [Op.between]: [startDate.toISOString(), endDate.toISOString()]
+                    [Op.between]: [startDate.toISOString(), endDate.toISOString()],
                 },
                 campaignId: {
-                    [Op.in]: campaignIds
-                }
+                    [Op.in]: campaignIds,
+                },
             },
-            group: ['date'],
-            order: [[dateAttribute, 'ASC']]
+            group: ["date"],
+            order: [[dateAttribute, "ASC"]],
         });
 
         console.log(data);
@@ -279,17 +279,17 @@ export class AnalyticsModel {
     public async leadStatusByTypeForMasterFranchisee(statusType: any, startDate: Date, endDate: Date, franchiseId: number): Promise<any> {
         const whereOptions: any = {
             createdAt: {
-                [Op.between]: [startDate, endDate]
+                [Op.between]: [startDate, endDate],
             },
-            status: statusType
+            status: statusType,
         };
 
         if (franchiseId) {
-            const franchiseRepo = new FranchiseeRepo();
-            const franchiseData = await franchiseRepo.getFranchiseeById(franchiseId);
+
+            const franchiseData = await RepoProvider.franchise.getById(franchiseId);
 
             if (!franchiseData) {
-                throw new Error('Franchise data not found.');
+                throw new Error("Franchise data not found.");
             }
             let campaignIds: string[] = [];
 
@@ -302,11 +302,11 @@ export class AnalyticsModel {
                 //     campaignIds = campaignDataFranchise.map(campaign => campaign.id);
                 //     break;
                 default:
-                    throw new Error('Invalid franchise type.');
+                    throw new Error("Invalid franchise type.");
             }
 
             if (campaignIds.length === 0) {
-                throw new Error('No campaigns found for this franchise.');
+                throw new Error("No campaigns found for this franchise.");
             }
 
             // Add campaign ID filtering to where options
@@ -323,9 +323,9 @@ export class AnalyticsModel {
     public async leadStatusByTypeForSuperFranchisee(statusType: any, startDate: Date, endDate: Date): Promise<any> {
         const whereOptions: any = {
             createdAt: {
-                [Op.between]: [startDate, endDate]
+                [Op.between]: [startDate, endDate],
             },
-            status: statusType
+            status: statusType,
         };
 
         let campaignIds: string[] = [];
@@ -378,9 +378,9 @@ export class AnalyticsModel {
         const campaignIds = campaignData.map(campaign => campaign.id);
         const whereOptions: any = {
             createdAt: {
-                [Op.between]: [startDate, endDate]
+                [Op.between]: [startDate, endDate],
             },
-            status: statusType
+            status: statusType,
         };
 
         whereOptions.campaignId = { [Op.in]: campaignIds };
@@ -395,15 +395,15 @@ export class AnalyticsModel {
     public async conversionRate(startDate: Date, endDate: Date): Promise<any> {
         const data = await LeadsModel.findAll({
             attributes: [
-                'status',
-                [Sequelize.fn('COUNT', Sequelize.col('status')), 'count']
+                "status",
+                [Sequelize.fn("COUNT", Sequelize.col("status")), "count"],
             ],
             where: {
                 createdAt: {
-                    [Op.between]: [startDate, endDate]
+                    [Op.between]: [startDate, endDate],
                 },
             },
-            group: 'status'
+            group: "status",
         });
         return data;
     }
@@ -412,16 +412,16 @@ export class AnalyticsModel {
 
         const data = await LeadsModel.findAll({
             attributes: [
-                'status',
-                [Sequelize.fn('COUNT', Sequelize.col('status')), 'count']
+                "status",
+                [Sequelize.fn("COUNT", Sequelize.col("status")), "count"],
             ],
             where: {
                 createdAt: {
-                    [Op.between]: [startDate, endDate]
-                }
+                    [Op.between]: [startDate, endDate],
+                },
             },
-            group: 'status',
-            order: Sequelize.literal('count DESC')
+            group: "status",
+            order: Sequelize.literal("count DESC"),
         });
 
         return data;

@@ -22,7 +22,7 @@ import { get } from "lodash";
 import { CartModel } from "../../../database/schema";
 import { CartRepo } from "../../cart/models/CartRepo";
 import { CartItemModel } from "../../../database/schema";
-import { FranchiseeModel } from "../../../database/schema";
+import { FranchiseModel } from "../../../database/schema";
 import {
     ORDER_TYPE,
     PAYMENT_STATUS,
@@ -160,7 +160,7 @@ export default class OrderPaymentController {
                     .send(sendResponse(RESPONSE_TYPE.ERROR, "Cart is empty"));
             }
 
-            let franchiseData = await FranchiseeModel.findOne({
+            let franchiseData = await FranchiseModel.findOne({
 
             });
             if (!franchiseData) {

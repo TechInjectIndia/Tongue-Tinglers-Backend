@@ -2,18 +2,22 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 
 import { UserModel } from "../user/user.model";
-import { FRANCHISE_STATUS, Franchisee } from "../../../interfaces";
+import { FRANCHISE_STATUS, Franchise } from "../../../interfaces";
 
 import { RegionModel } from "./RegionsModel";
+import {
+    OrganizationModel,
+} from "../../../apps/organization/database/organization_schema";
 
 const { STRING, INTEGER, DATE, NOW, ARRAY, ENUM } = DataTypes;
 
 // Franchisee creation attributes, making 'id' optional for creation
-interface FranchiseeCreationAttributes extends Optional<Franchisee, "id" | "createdAt" | "updatedAt" | "deletedAt"> {
+interface FranchiseeCreationAttributes extends Optional<Franchise, "id" | "createdAt" | "updatedAt" | "deletedAt"> {
 }
 
 // Franchisee class model for the Sequelize ORM
-class FranchiseeModel extends Model<Franchisee, FranchiseeCreationAttributes> implements Franchisee {
+class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> implements Franchise {
+    public organizationId: number;
     public id: number;
     public location: number;
     public sm: number[];
@@ -38,15 +42,14 @@ class FranchiseeModel extends Model<Franchisee, FranchiseeCreationAttributes> im
 
 
     public static associate() {
-        this.belongsTo(UserModel, {
-            foreignKey: "userid",
-            as: "user",
-            constraints: false,
-        });
 
         this.belongsTo(RegionModel, {
             foreignKey: "regionId",
             as: "Region",
+        });
+        this.belongsTo(OrganizationModel, {
+            foreignKey: "organizationId",
+            as: "organization",
         });
 
         this.belongsTo(UserModel, {
@@ -69,7 +72,7 @@ class FranchiseeModel extends Model<Franchisee, FranchiseeCreationAttributes> im
     }
 }
 
-FranchiseeModel.init(
+FranchiseModel.init(
     {
         id: {
             type: INTEGER,
@@ -114,6 +117,9 @@ FranchiseeModel.init(
         users: {
             type: ARRAY(INTEGER),
             allowNull: true,  // Array of user IDs (nullable)
+        },
+        organizationId: {
+            type: INTEGER, allowNull: false,
         },
         regionId: {
             type: INTEGER,
@@ -162,5 +168,5 @@ FranchiseeModel.init(
 );
 
 
-export { FranchiseeModel };
+export { FranchiseModel };
 

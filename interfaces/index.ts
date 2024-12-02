@@ -3,7 +3,7 @@ export * from "./leads";
 export * from "./menu";
 export * from "./testimonials";
 export * from "./reviews";
-export * from "./franchisee";
+export * from "./franchise";
 export * from "./products";
 export * from "./product_category";
 export * from "./orders";

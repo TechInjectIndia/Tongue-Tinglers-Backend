@@ -1,30 +1,29 @@
-import { NextFunction, Response } from "express";
-import { TQueryFilters, TAddUser, TEditUser } from '../../../../types';
+import { TQueryFilters, TEditUser } from "../../../../types";
 
 /**
  * Interface for Franchise Controller.
  */
-interface IFranchiseController<T, F extends TQueryFilters> {
+interface IFranchiseController<T, P, F extends TQueryFilters> {
     /**
      * List franchises with filtering options.
      * @param filters - Filtering options.
      * @returns Promise resolving to an array of franchises.
      */
-    list(filters: F): Promise<Response<T[]>>;
+    list(filters: F): Promise<P[]>;
 
     /**
      * Get a franchise by ID.
      * @param id - The ID of the franchise.
      * @returns Promise resolving to the franchise object.
      */
-    get(id: number): Promise<T>;
+    get(id: number): Promise<P>;
 
     /**
      * Create a new franchise.
      * @param payload - The data to create the franchise.
      * @returns Promise resolving to the created franchise.
      */
-    create(payload: TAddUser): Promise<T>;
+    create(payload: T): Promise<P>;
 
     /**
      * Update an existing franchise by ID.
@@ -32,7 +31,7 @@ interface IFranchiseController<T, F extends TQueryFilters> {
      * @param payload - The data to update the franchise.
      * @returns Promise resolving to the affected count.
      */
-    update(id: number, payload: TEditUser): Promise<[affectedCount: number]>; 
+    update(id: number, payload: T): Promise<[affectedCount: number]>;
 
     /**
      * Delete franchises by IDs.
@@ -47,14 +46,14 @@ interface IFranchiseController<T, F extends TQueryFilters> {
      * @param email - The email of the franchise.
      * @returns Promise resolving to the franchise object.
      */
-    getFranchiseByEmail(email: string): Promise<T>;
+    getFranchiseByEmail(email: string): Promise<P>;
 
     /**
      * Retrieve a list of deleted franchises.
      * @param filters - Filtering options for deleted franchises.
      * @returns Promise resolving to an array of deleted franchises.
      */
-    deletedList(filters: F): Promise<Response<T[]>>;
+    deletedList(filters: F): Promise<P[]>;
 }
 
 export default IFranchiseController;

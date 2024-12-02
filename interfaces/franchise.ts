@@ -1,9 +1,9 @@
 import { BaseAddress } from "../types";
-import { BaseMeta } from "../database/schema/base/Base";
-import { SocialMediaDetails } from "./leads";
+import { BaseMeta, BaseMetaUsers } from "../database/schema/base/Base";
+import { BaseSocialMedia, SocialMediaDetails } from "./leads";
 
 
-interface BaseFranchisee {
+interface BaseFranchise {
     pocName: string;
     pocEmail: string;
     pocPhoneNumber: string;
@@ -14,14 +14,15 @@ interface BaseFranchisee {
     paymentIds: Array<number>;
     status: FRANCHISE_STATUS;
     establishedDate: Date;
+    organizationId: number;
 }
 
-interface FranchiseDetails extends BaseMeta, BaseFranchisee {
+interface FranchiseDetails extends BaseMetaUsers, BaseFranchise {
     location: BaseAddress;
-    sm: Array<SocialMediaDetails>;
+    sm: Array<BaseSocialMedia>;
 }
 
-interface Franchisee extends BaseFranchisee, BaseMeta {
+interface Franchise extends BaseFranchise, BaseMeta {
     location: number;
     sm: Array<number>;
 }
@@ -36,10 +37,10 @@ enum FRANCHISE_STATUS {
 
 
 export {
-    BaseFranchisee,
+    BaseFranchise,
     FRANCHISE_STATUS,
     FranchiseDetails,
-    Franchisee,
+    Franchise,
 };
 
 

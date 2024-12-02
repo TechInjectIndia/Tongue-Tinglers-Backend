@@ -1,4 +1,7 @@
-export interface cart {}
+import { BaseAddress } from "../types";
+
+export interface cart {
+}
 
 export enum USER_TYPE {
     SUPER_FRANCHISE = "super_franchise", // Super-admin
@@ -15,19 +18,6 @@ export enum USER_STATUS {
     DELETED = "deleted",
 }
 
-export interface Address {
-    title: string;
-    address: string;
-    state: string;
-    city: string;
-    country: string;
-    zipCode: string;
-    firstName: string;
-    lastName: string | null;
-    email: string;
-    phone: string | null;
-    PAN: string | null;
-}
 
 export interface UserInformation {
     id: number;
@@ -46,5 +36,5 @@ export interface UserInformation {
     deletedBy: number | null;
     deletedAt: Date | null;
     role: number | null;
-    address: Array<Address>;
+    address: Array<BaseAddress>;
 }

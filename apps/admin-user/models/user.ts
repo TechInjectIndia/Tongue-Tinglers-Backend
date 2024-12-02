@@ -12,13 +12,13 @@ import {
 import {
     UserModel,
     RolesModel,
-    UserAddressModel,
+
 } from "../../../database/schema";
 import { USER_TYPE, USER_STATUS } from "../../../interfaces";
 import IBaseRepo from "../controllers/controller/IUserController";
 
 export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
-    constructor() {}
+    constructor() { }
 
     public async getByReferralCode(referralCode: string) {
         const data = await UserModel.findOne({
@@ -115,13 +115,13 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
         const data = await UserModel.findOne({
             where: { firebaseUid: id },
 
-            include: [
-                {
-                    model: UserAddressModel,
-                    as: "address",
-                    order: [["isActive", "ASC"]],
-                },
-            ],
+            // include: [
+            //     {
+            //         model: UserAddressModel,
+            //         as: "address",
+            //         order: [["isActive", "ASC"]],
+            //     },
+            // ],
         });
         if (data) {
             const role = await RolesModel.findOne({
@@ -144,13 +144,13 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
             where: {
                 [Op.or]: [{ id: id }, { firebaseUid: id }],
             },
-            include: [
-                {
-                    model: UserAddressModel,
-                    as: "address",
-                    order: [["isActive", "ASC"]],
-                },
-            ],
+            // include: [
+            //     {
+            //         model: UserAddressModel,
+            //         as: "address",
+            //         order: [["isActive", "ASC"]],
+            //     },
+            // ],
         });
         if (data) {
             const role = await RolesModel.findOne({

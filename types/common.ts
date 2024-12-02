@@ -1,5 +1,6 @@
 const { OrderItem } = require("sequelize");
 
+
 export type TListFilters = {
     offset: number;
     limit: number;
@@ -46,28 +47,6 @@ export type TListFiltersAreas = {
         id?: number;
         title?: string;
         createdBy?: number;
-        [key: string]: any;
-    };
-};
-
-export type TListFiltersLeads = {
-    offset: number;
-    limit: number;
-    search?: string;
-    sorting?: any;
-    trashOnly?: string;
-    filters?: {
-        status,
-        source,
-        campaign,
-        region,
-        state,
-        date,
-        assignee,
-        followUpDate,
-        affiliate,
-        amountRange,
-        quickActionFilter,
         [key: string]: any;
     };
 };

@@ -1,82 +1,43 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
+import { Address } from "../../../types";
+
 const { STRING, INTEGER } = DataTypes;
-import { UserModel } from './user.model'
-import { TAddress } from "../../../types";
 
-interface AddressCreationAttributes extends Optional<TAddress, 'id' | 'createdAt' | 'updatedAt'> { }
+interface AddressCreationAttributes extends Optional<Address, "id"> {}
 
-class AddressModel extends Model<TAddress, AddressCreationAttributes> implements TAddress {
-  public id!: number;
-  public user_id!: number;
-  public street!: string;
-  public city!: string;
-  public state!: string;
-  public postalCode!: string;
-  public country!: string;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+class AddressModel extends Model<Address, AddressCreationAttributes> implements Address {
+  id: number;
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  phoneNumber: string;
+  firstName: string;
+  lastName: string;
+
+   
 }
 
-AddressModel.init({
-  id: {
-    type: INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
+AddressModel.init(
+  {
+    id: { type: INTEGER, autoIncrement: true, primaryKey: true },
+    street: { type: STRING, allowNull: false },
+    city: { type: STRING, allowNull: false },
+    state: { type: STRING, allowNull: false },
+    postalCode: { type: STRING, allowNull: false },
+    country: { type: STRING, allowNull: false },
+    phoneNumber: { type: STRING, allowNull: false },
+    firstName: { type: STRING, allowNull: false },
+    lastName: { type: STRING, allowNull: false },
   },
-  user_id: {
-    type: INTEGER,
-    allowNull: false,
-    references: {
-      model: 'users',  // Ensure this matches the name of your User table
-      key: 'id'  // Ensure this matches the primary key field in the User table
-    },
-  },
-  street: {
-    type: STRING,
-    allowNull: false
-  },
-  city: {
-    type: STRING,
-    allowNull: false
-  },
-  state: {
-    type: STRING,
-    allowNull: false
-  },
-  postalCode: {
-    type: STRING,
-    allowNull: false
-  },
-  country: {
-    type: STRING,
-    allowNull: false
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: DataTypes.NOW,
-    field: "created_at",
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: DataTypes.NOW,
-    field: "updated_at",
-  },
-}, {
-  sequelize,
-  tableName: 'address',
-  timestamps: true,
-});
-
-UserModel.hasMany(AddressModel, {
-  foreignKey: "user_id",
-});
-
-AddressModel.belongsTo(UserModel, {
-  foreignKey: "user_id",
-  as: 'user_address'
-});
+  {
+    sequelize,
+    tableName: "addresses",
+    timestamps: true,
+    paranoid: true,
+  }
+);
 
 export { AddressModel };

@@ -3,7 +3,7 @@ import { sequelize } from "../../../config";
 import { checkPointsValue, ICheckList } from '../../../interfaces/ichecklist';
 import { PdiCheckpointModel } from './pdiCheckPointModel';
 import { FranchiseModelRepo } from '../../../apps/franchise_model/models';
-import { FranchiseeModel } from './franchiseeModel';
+import { FranchiseModel } from './franchiseModel';
 import { FranchiseLeadModel } from '../lead/franchiseModels';
 
 // Define the optional attributes for creation
@@ -26,7 +26,7 @@ IChecklistModel.init(
             type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
-            autoIncrement: true, 
+            autoIncrement: true,
         },
         title: {
             type: DataTypes.STRING,

@@ -1,13 +1,16 @@
-import { Op } from "sequelize";
 import { SocialMediaDetailsModel } from "../../../database/schema"; // Adjust import based on your structure
-import { SocialMediaDetailsAttributes, SocialMediaDetailsAttributesPayload } from "../../../interfaces";
-import IBaseRepo from '../controllers/controller/ISocialMediaController';
+import {
+    BaseSocialMedia,
+    SocialMediaDetails,
+} from "../../../interfaces";
+import IBaseRepo from "../controllers/controller/ISocialMediaController";
 
-export class SocialMediaDetailsRepo implements IBaseRepo<SocialMediaDetailsAttributes> {
-    constructor() { }
+export class SocialMediaDetailsRepo implements IBaseRepo<SocialMediaDetails> {
+    constructor() {
+    }
 
     // Method to get a single social media detail by ID
-    public async get(id: number): Promise<SocialMediaDetailsAttributes | null> {
+    public async get(id: number): Promise<SocialMediaDetails | null> {
         const data = await SocialMediaDetailsModel.findOne({
             where: { id },
         });
@@ -30,11 +33,11 @@ export class SocialMediaDetailsRepo implements IBaseRepo<SocialMediaDetailsAttri
         }
     }
 
-    public async getByAffiliateAndPlatform(affiliateId: number, platform: string): Promise<SocialMediaDetailsModel | null> {
+    public async getByAffiliateAndPlatform(id: number, platform: string): Promise<SocialMediaDetailsModel | null> {
         try {
             const socialMediaDetail = await SocialMediaDetailsModel.findOne({
                 where: {
-                    affiliateId,
+                    id,
                     platform,
                 },
             });
@@ -46,8 +49,20 @@ export class SocialMediaDetailsRepo implements IBaseRepo<SocialMediaDetailsAttri
     }
 
     // Method to create a new social media detail
-    public async create(data: SocialMediaDetailsAttributesPayload): Promise<SocialMediaDetailsAttributes> {
+    public async create(data: BaseSocialMedia): Promise<SocialMediaDetails> {
         const response = await SocialMediaDetailsModel.create(data);
         return response;
+    }
+
+    public async saveBulk(data: BaseSocialMedia[]): Promise<SocialMediaDetails[]> {
+        try {
+            // Use bulkCreate to insert multiple records
+            const response = await SocialMediaDetailsModel.bulkCreate(data);
+
+            // Map over the response array to convert each instance to JSON
+            return response.map(item => item.toJSON());
+        } catch (error) {
+            return [];
+        }
     }
 }

@@ -3,7 +3,7 @@ import { sequelize } from "../../../config";
 import { IPdiList } from '../../../interfaces/pdi';
 import { PdiCheckpointModel } from './pdiCheckPointModel';
 import { FranchiseModelRepo } from '../../../apps/franchise_model/models';
-import { FranchiseeModel } from './franchiseeModel';
+import { FranchiseModel } from './franchiseModel';
 import { checkPointsValue } from '../../../interfaces/ichecklist';
 import { ContractModel } from '../contracts';
 
@@ -28,7 +28,7 @@ PdiModel.init(
             type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
-            autoIncrement: true, 
+            autoIncrement: true,
         },
         checkpoints: {
             type: DataTypes.JSONB,

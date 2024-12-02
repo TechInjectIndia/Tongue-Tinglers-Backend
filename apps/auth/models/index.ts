@@ -4,7 +4,6 @@ import {
     TUpdateUserPassword
 } from "../../../types";
 import { UserModel } from "../../../database/schema";
-import { USER_TYPE } from '../../../interfaces';
 
 export class Auth {
     constructor() { }

@@ -15,7 +15,7 @@ interface BaseFranchise {
     status: FRANCHISE_STATUS;
     establishedDate: Date;
     organizationId: number;
-    affiliateId: number;
+    affiliateId: number|null;
 }
 
 interface FranchiseDetails extends BaseMetaUsers, BaseFranchise {

@@ -7,7 +7,6 @@ import {
 } from "../../../constants";
 import {
     sendResponse,
-    createStandardPaymentLink,
     sendEmail,
     EMAIL_HEADING,
     getEmailTemplate,
@@ -22,6 +21,7 @@ import {
 } from "../../../interfaces";
 import { ContractPaymentDetails } from "../../../interfaces";
 import { CONFIG } from "../../../config";
+
 const {
     validateWebhookSignature,
 } = require("razorpay/dist/utils/razorpay-utils");
@@ -38,7 +38,7 @@ export default class PaymentsController {
         const isVerified = validateWebhookSignature(
             JSON.stringify(body),
             webhookSignature,
-            CONFIG.RP_WEBHOOK_SECRET
+            CONFIG.RP_WEBHOOK_SECRET,
         );
         if (isVerified) {
             if (
@@ -50,7 +50,7 @@ export default class PaymentsController {
                 const status = body.payload.payment_link.entity.status;
                 const contractDetails =
                     await new ContractRepo().getContractByPaymentId(
-                        paymentId as string
+                        paymentId as string,
                     );
                 if (contractDetails) {
                     const paymentDetails: ContractPaymentDetails = {
@@ -70,7 +70,7 @@ export default class PaymentsController {
                     await new ContractRepo().updatePaymentStatus(
                         contractDetails.id as number,
                         contractDetails.payment as unknown as ContractPaymentDetails[],
-                        contractStatus
+                        contractStatus,
                     );
                 }
             }
@@ -91,8 +91,8 @@ export default class PaymentsController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            "Payment ID is required."
-                        )
+                            "Payment ID is required.",
+                        ),
                     );
             }
 
@@ -104,13 +104,13 @@ export default class PaymentsController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            "Payment not found in Razorpay."
-                        )
+                            "Payment not found in Razorpay.",
+                        ),
                     );
             }
             console.log(
                 "Payment Details from Razorpay:",
-                paymentDetailsFromRazorpay
+                paymentDetailsFromRazorpay,
             );
 
             const paymentDetailsFromRepo =
@@ -121,13 +121,13 @@ export default class PaymentsController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            "Payment not found in local repository."
-                        )
+                            "Payment not found in local repository.",
+                        ),
                     );
             }
             console.log(
                 "Payment Details from Repository:",
-                paymentDetailsFromRepo
+                paymentDetailsFromRepo,
             );
 
             return res.status(200).send(
@@ -137,8 +137,8 @@ export default class PaymentsController {
                     {
                         paymentDetailsFromRazorpay: paymentDetailsFromRazorpay,
                         paymentDetailsFromRepo: paymentDetailsFromRepo,
-                    }
-                )
+                    },
+                ),
             );
         } catch (err) {
             console.error("Error fetching payment details:", err);
@@ -149,7 +149,7 @@ export default class PaymentsController {
     static async generatePaymentLink(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ) {
         try {
             const { contract_id } = req.body;
@@ -160,8 +160,8 @@ export default class PaymentsController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            "Contract ID is required."
-                        )
+                            "Contract ID is required.",
+                        ),
                     );
             }
 
@@ -170,12 +170,12 @@ export default class PaymentsController {
                 return res
                     .status(404)
                     .send(
-                        sendResponse(RESPONSE_TYPE.ERROR, "Contract not found.")
+                        sendResponse(RESPONSE_TYPE.ERROR, "Contract not found."),
                     );
             }
 
             const leadDetails = await new LeadRepo().get(
-                contractDetails.leadId as number
+                contractDetails.leadId as number,
             );
             if (!leadDetails) {
                 return res
@@ -183,18 +183,19 @@ export default class PaymentsController {
                     .send(sendResponse(RESPONSE_TYPE.ERROR, "Lead not found."));
             }
 
-            const link = await createStandardPaymentLink({
-                contract: contractDetails,
-                lead: leadDetails,
-            });
+            // const link = await createStandardPaymentLink({
+            //     contract: contractDetails,
+            //     lead: leadDetails,
+            // });
+            const link: any = {};
             if (!link) {
                 return res
                     .status(500)
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            "Failed to create payment link."
-                        )
+                            "Failed to create payment link.",
+                        ),
                     );
             }
 
@@ -215,7 +216,7 @@ export default class PaymentsController {
                 contract_id,
                 [paymentPayload],
                 logs,
-                status
+                status,
             );
 
             try {
@@ -224,7 +225,7 @@ export default class PaymentsController {
                     {
                         email: leadDetails.email,
                         link: link.short_url,
-                    }
+                    },
                 );
 
                 const mailOptions = {
@@ -239,7 +240,7 @@ export default class PaymentsController {
                 await sendEmail(
                     mailOptions.to,
                     mailOptions.subject,
-                    mailOptions.templateParams
+                    mailOptions.templateParams,
                 );
             } catch (emailError) {
                 console.error("Error sending email:", emailError);
@@ -251,8 +252,8 @@ export default class PaymentsController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.CREATED,
-                        link
-                    )
+                        link,
+                    ),
                 );
         } catch (err) {
             console.error("Error generating payment link:", err);

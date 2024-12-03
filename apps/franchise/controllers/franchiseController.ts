@@ -43,4 +43,27 @@ export default class FranchiseController {
             });
         }
     }
+
+    static async getById(req: Request, res: Response, next: NextFunction) {
+
+        try {
+            const id = get(req.params, "id", 0);
+            console.log(id);
+            const franchiseDetails = await RepoProvider.franchise.getById(id);
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        franchiseDetails,
+                    ),
+                );
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
 }

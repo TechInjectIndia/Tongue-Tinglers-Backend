@@ -27,7 +27,7 @@ class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> impl
     public pocPhoneNumber: string;
     public users: number[];
     public regionId: number;
-    public area: string;
+    public area: string | null;
     public agreementIds: number[];
     public paymentIds: number[];
     public status: FRANCHISE_STATUS;
@@ -135,7 +135,7 @@ FranchiseModel.init(
         },
         area: {
             type: STRING,
-            allowNull: false,
+            allowNull: true,
         },
         agreementIds: {
             type: ARRAY(INTEGER),

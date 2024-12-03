@@ -25,7 +25,7 @@ export class FranchiseRepo implements IFranchiseRepo {
                     const smDetails = await RepoProvider.smRepo.saveBulk(franchise.sm);
                     smIds = smDetails.map((sm) => sm.id);
                 }
-                return (await FranchiseModel.create({
+                const res = await FranchiseModel.create({
                     pocName: franchise.pocName,
                     pocEmail: franchise.pocEmail,
                     pocPhoneNumber: franchise.pocPhoneNumber,
@@ -42,8 +42,17 @@ export class FranchiseRepo implements IFranchiseRepo {
                     createdBy: franchise.createdBy,
                     updatedBy: franchise.updatedBy,
                     deletedBy: franchise.deletedBy,
-                })).toJSON();
+                });
+                console.log(res);
+                if (res) {
+                    return res.toJSON();
+                } else {
+                    return null;
+                }
 
+
+            } else {
+                //    return getSuccess
             }
         } catch (e) {
             console.log(e);
@@ -61,21 +70,35 @@ export class FranchiseRepo implements IFranchiseRepo {
         throw new Error("Method not implemented.");
     }
 
-    getAll(): Promise<Franchise[]> {
-        throw new Error("Method not implemented.");
+    async getAll(): Promise<Franchise[]> {
+        try {
+            const res = await FranchiseModel.findAll();
+            return res.map((fr) => fr.toJSON())
+        } catch (err: any) {
+            console.log(err);
+            return [];
+        }
     }
 
 
-    exists(email: string): Promise<boolean> {
-        return Promise.resolve(false);
+    async exists(email: string): Promise<boolean> {
+        try {
+            const res = await FranchiseModel.findOne({
+                where: { pocEmail: email },
+            });
+            return !!res;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+
     }
 
     async getById(id: number): Promise<Franchise> {
         try {
-            const id2 = Number(id);
-            console.log("id", typeof id2);
+
             const res = (await FranchiseModel.findOne({
-                where: { id: Number(id2) },
+                where: { id: id },
                 include: [
                     {
                         model: RegionModel,
@@ -98,7 +121,10 @@ export class FranchiseRepo implements IFranchiseRepo {
                         as: "deletedByUser", // For the 'deletedBy' user
                     },
                 ],
-            })).toJSON();
+            }));
+            if (res) {
+                return res.toJSON();
+            }
             return res;
         } catch (e) {
             console.log(e);
@@ -106,8 +132,42 @@ export class FranchiseRepo implements IFranchiseRepo {
         }
     }
 
-    getByOrganizationId(organizationId: number): Promise<Franchise[]> {
-        return Promise.resolve([]);
+    async getByOrganizationId(organizationId: number): Promise<Franchise[]> {
+        try {
+            const res = await FranchiseModel.findAll({
+                where: { organizationId: organizationId },
+                include: [
+                    {
+                        model: RegionModel,
+                        as: "Region", // Matches the alias defined in the association
+                    },
+                    {
+                        model: OrganizationModel,
+                        as: "organization", // Matches the alias defined in the association
+                    },
+                    {
+                        model: UserModel,
+                        as: "createdByUser", // For the 'createdBy' user
+                    },
+                    {
+                        model: UserModel,
+                        as: "updatedByUser", // For the 'updatedBy' user
+                    },
+                    {
+                        model: UserModel,
+                        as: "deletedByUser", // For the 'deletedBy' user
+                    },
+                ],
+            });
+            if (res) {
+                return res.map((franchise) => franchise.toJSON());
+            } else {
+                return [];
+            }
+        } catch (e) {
+            console.log(e);
+            return [];
+        }
     }
 
     getByRegionId(regionId: number): Promise<Franchise[]> {

@@ -86,6 +86,7 @@ import { UserModel } from "./user/user.model";
 
 import { RegionModel } from "./franchise/RegionsModel";
 import { ProposalLeadModels } from "./lead/proposalModels";
+import {OptionsModel} from "./options/optionModel"
 
 // Establish association with CampaignAdModel
 

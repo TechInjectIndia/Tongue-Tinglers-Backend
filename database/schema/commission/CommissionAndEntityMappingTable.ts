@@ -4,6 +4,7 @@ import { sequelize } from "../../../config";
 import { BaseModel, DeletionMetaData, UpdatedMetaData } from "../../../interfaces";
 import { FranchiseModel } from "../franchise/franchiseModel";
 import { OrganizationModel } from "../../../apps/organization/database/organization_schema";
+import { CommissionEventType, CommissionType } from "../../../interfaces/commission";
 const { STRING, DATE, INTEGER, NOW, } = DataTypes;
 
 
@@ -152,7 +153,14 @@ interface ICommissionEntityMappingResponse {
     commission: {
         id: number;
         title: string;
+        type: CommissionType;
+        eventType: CommissionEventType;
+        value: number;
     };
+    appliedCommission: {
+        franchiseAmount: number;
+        commissionAmount: number;
+    }
     /* it may be affiliate or master franchise organization */
     organization: {
         id: number;

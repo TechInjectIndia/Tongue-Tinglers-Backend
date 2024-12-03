@@ -44,6 +44,11 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             );
 
             const response: ICommissionEntityMappingResponse[] = [];
+
+            /* TODO: Mandeep Singh(self), change this after the dependency is done */
+            let franchiseAmount = 2000;
+            let commissionAmount = 0;
+            let appliedCommission = 10;
             for (const mapping of result) {
                 response.push({
                     id: mapping.id,
@@ -55,6 +60,13 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                     commission: {
                         id: mapping.commissionId,
                         title: mapping["CommissionTable"].title,
+                        type: mapping["CommissionTable"].type,
+                        eventType: mapping["CommissionTable"].eventType,
+                        value: mapping["CommissionTable"].value,
+                    },
+                    appliedCommission: {
+                        franchiseAmount: franchiseAmount,
+                        commissionAmount: appliedCommission,
                     },
                     organization: {
                         id: mapping.organizationId,

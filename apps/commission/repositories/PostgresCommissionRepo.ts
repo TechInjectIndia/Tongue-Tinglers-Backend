@@ -3,14 +3,14 @@ import { ICommissionRepo } from "./ICommissionRepo";
 import { HelperMethods } from "../../common/utils/HelperMethods";
 import { CommissionTable } from "../../../database/schema/commission/CommissionTable";
 import { ICommission } from "../../../interfaces/commission";
-import { CommissionEntityMapTable, ICommissionEntityMapping } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
+import { CommissionEntityMapTable, ICommissionEntityMapping, ICommissionEntityMappingResponse } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
 import { Op, UniqueConstraintError } from "sequelize";
 import { FranchiseModel } from "../../../database/schema";
 import { OrganizationModel } from "../../organization/database/organization_schema";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
 
-    async getMappingsData(): Promise<APIResponse<CommissionEntityMapTable[]>> {
+    async getMappingsData(): Promise<APIResponse<ICommissionEntityMappingResponse[]>> {
 
         try {
 
@@ -42,7 +42,33 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                 }
             );
 
-            return HelperMethods.getSuccessResponse(result);
+            const response: ICommissionEntityMappingResponse[] = [];
+            for (const mapping of result) {
+                response.push({
+                    id: mapping.id,
+                    franchise: {
+                        id: 1,
+                        name: "mapping.franchise.name",
+                    },
+                    commission: {
+                        id: mapping.commissionId,
+                        title: "mapping.commission.title",
+                    },
+                    organization: {
+                        id: mapping.organizationId,
+                        name: "mapping.organization.name",
+                    },
+                    status: mapping.status,
+                    createdBy: mapping.createdBy,
+                    updatedBy: mapping.updatedBy,
+                    deletedBy: mapping.deletedBy,
+                    createdAt: mapping.createdAt,
+                    updatedAt: mapping.updatedAt,
+                    deletedAt: mapping.deletedAt,
+                });
+            }
+
+            return HelperMethods.getSuccessResponse(response);
 
         } catch (error) {
             HelperMethods.handleError(error);

@@ -83,6 +83,8 @@ import migrationRouter from "../migrations/routes/migrateRoute";
 import organizationRouter from "../apps/organization/api/index";
 
 import productRouter from "../apps/product/api/productApi"
+import optionsRouter from "../apps/options/api/optionsApi"
+import optionsValuesRouter from "../apps/optionsValue/api/optionsValueApi"
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -129,6 +131,9 @@ router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`${ADMIN}/franchise`, frachiseRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
+router.use(`${ADMIN}/options`, optionsRouter);
+router.use(`${ADMIN}/options-values`, optionsValuesRouter);
+
 
 router.use(`/cart`, auth, cartRouter);
 

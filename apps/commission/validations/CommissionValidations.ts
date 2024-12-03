@@ -63,7 +63,7 @@ const updateCommissionSchema = Joi.object({
     }),
 
     eventType: Joi.string()
-        .valid('franchise-sold', 'raw-material-sold')
+        .valid('master-franchise-franchise-sold', 'master-franchise-raw-material-sold', 'affiliate-franchise-sold', 'affiliate-raw-material-sold')
         .required()
         .messages({
             'any.required': 'Commission event type is required.',

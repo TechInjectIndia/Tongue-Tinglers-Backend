@@ -75,6 +75,7 @@ import shippingHistory from "../apps/ecommerce/api/shippingHistoryApi";
 
 import vendorRouter from "../apps/vendor/api/vendorApi";
 import frachiseRouter from "../apps/franchise/api/franchise";
+import { commissionRouter } from "../apps/commission/api/CommissionApi";
 
 /* Migration Router */
 import migrationRouter from "../migrations/routes/migrateRoute";
@@ -126,6 +127,7 @@ router.use(`${ADMIN}/lead`, auth, leadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`${ADMIN}/franchise`, frachiseRouter);
+router.use(`${ADMIN}/commission`, auth, commissionRouter);
 router.use(`/cart`, auth, cartRouter);
 
 
@@ -229,5 +231,4 @@ router.use(`/health`, (_, res) => {
         message: "CICD Done Once AGAIN !",
     });
 });
-
 export default router;

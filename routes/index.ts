@@ -31,7 +31,7 @@ import permissionsRouter from "../apps/admin-user/api/permissions";
 import adminUsersRouter from "../apps/admin-user/api/user";
 import guestUsersRouter from "../apps/guest-user/api/guest-user";
 import customerUsersRouter from "../apps/admin-user/api/customer";
-import productRouter from "../apps/ecommerce/api/products";
+// import productRouter from "../apps/ecommerce/api/products";
 import taxesRouter from "../apps/ecommerce/api/taxes";
 import productCategoryRouter from "../apps/ecommerce/api/category";
 import orderRouter from "../apps/ecommerce/api/orders";
@@ -82,6 +82,8 @@ import migrationRouter from "../migrations/routes/migrateRoute";
 /* organization router */
 import organizationRouter from "../apps/organization/api/index";
 
+import productRouter from "../apps/product/api/productApi"
+
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
 router.use(`${ADMIN}/customer`, auth, customerUsersRouter);
@@ -97,7 +99,7 @@ router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter);
 router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter);
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter);
 router.use(`${ADMIN}/menu`, auth, menuRouter);
-router.use(`${ADMIN}/product`, auth, productRouter);
+// router.use(`${ADMIN}/ecommerce/product`, auth, productRouter);
 router.use(`${ADMIN}/tax`, auth, taxesRouter);
 router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
 router.use(`${ADMIN}/order`, auth, orderRouter);
@@ -126,6 +128,8 @@ router.use(`${ADMIN}/lead`, auth, leadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`${ADMIN}/franchise`, frachiseRouter);
+router.use(`${ADMIN}/product`, auth, productRouter);
+
 router.use(`/cart`, auth, cartRouter);
 
 

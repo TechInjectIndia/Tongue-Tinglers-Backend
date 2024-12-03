@@ -14,14 +14,15 @@ import { RegionRepo } from "./region/models/RegionRepo";
 import ISocialMediaDetailsRepo
     from "./affiliate/controllers/controller/ISocialMediaController";
 import { SocialMediaDetailsRepo } from "./affiliate/models/smDetailsRepo";
-
+import { IProductRepo } from "./product/repos/IProductRepo";
+import { ProductRepo } from "./product/repos/productRepo";
 
 export default class RepoProvider {
     private static _franchiseRepo: IFranchiseRepo;
     private static _addressRepo: IAddress<BaseAddress, Address, TListFilters>;
     private static _regionRepo: IRegionRepo<IRegion, TListFiltersRegions>;
     private static _smRepo: ISocialMediaDetailsRepo<SocialMediaDetails>;
-
+    private static _productRepo: IProductRepo;
 
     static get franchise() {
         if (!this._franchiseRepo) {
@@ -49,6 +50,13 @@ export default class RepoProvider {
             this._smRepo = new SocialMediaDetailsRepo();
         }
         return this._smRepo;
+    }
+
+    static get ProductRepo() {
+        if (!this._productRepo) {
+            this._productRepo = new ProductRepo();
+        }
+        return this._productRepo;
     }
 
 

@@ -3,7 +3,7 @@ import { get } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { CartRepo } from "../models/CartRepo";
-import { ProductRepo } from "../../ecommerce/models/products";
+// import { ProductRepo } from "../../ecommerce/models/products";
 import { RetortProductRepo } from "../../retort/models/products";
 
 export default class CartController {
@@ -39,21 +39,21 @@ export default class CartController {
                 }
             }
 
-            if (productType == 'packaging') {
-                const existingProduct = await new ProductRepo().get(product_id as number);
-                if (!existingProduct) {
-                    return res
-                        .status(400)
-                        .send(
-                            sendResponse(
-                                RESPONSE_TYPE.ERROR,
-                                `Product ${ERROR_MESSAGE.NOT_EXISTS}`
-                            )
-                        );
-                }
-                qty = existingProduct.min_qty_order
-                name = existingProduct.name
-            }
+            // if (productType == 'packaging') {
+            //     // const existingProduct = await new ProductRepo().get(product_id as number);
+            //     if (!existingProduct) {
+            //         return res
+            //             .status(400)
+            //             .send(
+            //                 sendResponse(
+            //                     RESPONSE_TYPE.ERROR,
+            //                     `Product ${ERROR_MESSAGE.NOT_EXISTS}`
+            //                 )
+            //             );
+            //     }
+            //     qty = existingProduct.min_qty_order
+            //     name = existingProduct.name
+            // }
 
             if (qty != null && name != null && quantity != null) {
                 if (quantity < qty) {
@@ -105,19 +105,19 @@ export default class CartController {
                 }
             }
 
-            if (productType == 'packaging') {
-                const existingProduct = await new ProductRepo().get(product_id as number);
-                if (!existingProduct) {
-                    return res
-                        .status(400)
-                        .send(
-                            sendResponse(
-                                RESPONSE_TYPE.ERROR,
-                                `Product ${ERROR_MESSAGE.NOT_EXISTS}`
-                            )
-                        );
-                }
-            }
+            // if (productType == 'packaging') {
+            //     const existingProduct = await new ProductRepo().get(product_id as number);
+            //     if (!existingProduct) {
+            //         return res
+            //             .status(400)
+            //             .send(
+            //                 sendResponse(
+            //                     RESPONSE_TYPE.ERROR,
+            //                     `Product ${ERROR_MESSAGE.NOT_EXISTS}`
+            //                 )
+            //             );
+            //     }
+            // }
 
             // Remove product from the cart
             const cart = await new CartRepo().removeProduct(user_id, product_id, productType);
@@ -156,19 +156,19 @@ export default class CartController {
                 }
             }
 
-            if (productType == 'packaging') {
-                const existingProduct = await new ProductRepo().get(product_id as number);
-                if (!existingProduct) {
-                    return res
-                        .status(400)
-                        .send(
-                            sendResponse(
-                                RESPONSE_TYPE.ERROR,
-                                `Product ${ERROR_MESSAGE.NOT_EXISTS}`
-                            )
-                        );
-                }
-            }
+            // if (productType == 'packaging') {
+            //     const existingProduct = await new ProductRepo().get(product_id as number);
+            //     if (!existingProduct) {
+            //         return res
+            //             .status(400)
+            //             .send(
+            //                 sendResponse(
+            //                     RESPONSE_TYPE.ERROR,
+            //                     `Product ${ERROR_MESSAGE.NOT_EXISTS}`
+            //                 )
+            //             );
+            //     }
+            // }
 
             // Update product details in the cart
             const updatedCart = await new CartRepo().updateProduct(user_id, product_id, quantity, productType);

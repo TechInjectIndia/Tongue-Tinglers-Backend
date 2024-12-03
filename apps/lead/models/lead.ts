@@ -5,7 +5,7 @@ import {
     TLeadPayload,
     TListFilters,
     TLeadsList,
-    TListFiltersLeads,
+    TListFiltersAreas,
 } from "../../../types";
 import { ITrackable } from "../../../interfaces";
 import { CampaignAdModel, CampaignModel, LeadsModel } from "../../../database/schema";
@@ -15,7 +15,7 @@ import { LeadStatus, ILead } from "../../../interfaces"; // Use the LeadStatus e
 import IBaseRepo from "../controllers/controller/ILeadController";
 import { createLeadsResponse } from "../../../libraries";
 
-export class LeadRepo implements IBaseRepo<ILead, TListFiltersLeads> {
+export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
     constructor() {}
 
     // Update the status of a lead
@@ -112,7 +112,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersLeads> {
     }
 
     // List leads with filters
-    public async list(filters: TListFiltersLeads): Promise<TLeadsList> {
+    public async list(filters: TListFiltersAreas): Promise<TLeadsList> {
         const where: any = {};
 
         const validStatuses = [

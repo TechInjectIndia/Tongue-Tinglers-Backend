@@ -11,7 +11,6 @@ export * from "./ecommerce/category_image.model";
 export * from "./ecommerce/order.model";
 export * from "./ecommerce/order_item.model";
 export * from "./ecommerce/shippingActivity";
-export * from "./ecommerce/product.model";
 export * from "./ecommerce/product_category_map.model";
 export * from "./ecommerce/product_image.model";
 export * from "./ecommerce/tag.model";
@@ -186,23 +185,9 @@ AssignModel.belongsTo(LeadsModel, {
 // });
 // // Establish association with AffiliateModel
 
-import { ProductsModel } from "./ecommerce/product.model";
 import { ProductCategoryModel } from "./ecommerce/category.model";
 import { ProductCategoryMapModel } from "./ecommerce/product_category_map.model";
 
-ProductCategoryModel.belongsToMany(ProductsModel, {
-    through: ProductCategoryMapModel,
-    foreignKey: "categoryId",
-    otherKey: "productId",
-    as: "products", // Ensure this alias matches
-});
-
-ProductsModel.belongsToMany(ProductCategoryModel, {
-    through: ProductCategoryMapModel,
-    foreignKey: "productId",
-    otherKey: "categoryId",
-    as: "categories", // Ensure this alias matches
-});
 
 import { RetortProductsModel } from "./retort/retort-product";
 import { RetortProductCategoryModel } from "./retort/retort-category";

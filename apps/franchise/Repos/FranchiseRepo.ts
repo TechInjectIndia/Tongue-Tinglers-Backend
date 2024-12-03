@@ -25,7 +25,7 @@ export class FranchiseRepo implements IFranchiseRepo {
                     const smDetails = await RepoProvider.smRepo.saveBulk(franchise.sm);
                     smIds = smDetails.map((sm) => sm.id);
                 }
-                return (await FranchiseModel.create({
+                const res = await FranchiseModel.create({
                     pocName: franchise.pocName,
                     pocEmail: franchise.pocEmail,
                     pocPhoneNumber: franchise.pocPhoneNumber,
@@ -42,8 +42,17 @@ export class FranchiseRepo implements IFranchiseRepo {
                     createdBy: franchise.createdBy,
                     updatedBy: franchise.updatedBy,
                     deletedBy: franchise.deletedBy,
-                })).toJSON();
+                });
+                console.log(res);
+                if (res) {
+                    return res.toJSON();
+                } else {
+                    return null;
+                }
 
+
+            } else {
+                //    return getSuccess
             }
         } catch (e) {
             console.log(e);
@@ -61,8 +70,14 @@ export class FranchiseRepo implements IFranchiseRepo {
         throw new Error("Method not implemented.");
     }
 
-    getAll(): Promise<Franchise[]> {
-        throw new Error("Method not implemented.");
+    async getAll(): Promise<Franchise[]> {
+        try {
+            const res = await FranchiseModel.findAll();
+            return res.map((fr) => fr.toJSON())
+        } catch (err: any) {
+            console.log(err);
+            return [];
+        }
     }
 
 

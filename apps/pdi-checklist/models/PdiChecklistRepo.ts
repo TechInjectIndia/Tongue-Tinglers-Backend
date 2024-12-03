@@ -8,7 +8,7 @@ export class PdiChecklistRepo implements IBaseRepo<IPdiChecklist, TListFilters> 
     constructor() { }
 
     // Find a PDI Checklist by primary key
-    public async findByPk(id: string): Promise<IPdiChecklist | null> {
+    public async findByPk(id: number): Promise<IPdiChecklist | null> {
         const data = await PdiChecklistModel.findByPk(id); // Assuming your model is called PdiChecklistModel
         return data as IPdiChecklist | null;
     }
@@ -20,7 +20,7 @@ export class PdiChecklistRepo implements IBaseRepo<IPdiChecklist, TListFilters> 
     }
 
     // Get PDI Checklist by ID
-    public async get(id: string): Promise<IPdiChecklist | null> {
+    public async get(id: number): Promise<IPdiChecklist | null> {
         const data = await PdiChecklistModel.findOne({
             where: { id }
         });
@@ -52,7 +52,7 @@ export class PdiChecklistRepo implements IBaseRepo<IPdiChecklist, TListFilters> 
     }
 
     // Update PDI Checklist information
-    public async update(id: string, data: TPdiChecklistPayload): Promise<[number, IPdiChecklist[]]> {
+    public async update(id: number, data: TPdiChecklistPayload): Promise<[number, IPdiChecklist[]]> {
         const [affectedCount] = await PdiChecklistModel.update(data, {
             where: { id },
         });
@@ -63,7 +63,7 @@ export class PdiChecklistRepo implements IBaseRepo<IPdiChecklist, TListFilters> 
     }
 
     // Delete PDI Checklists by an array of IDs
-    public async delete(ids: string[]): Promise<number> {
+    public async delete(ids: number[]): Promise<number> {
         const deletedCount = await PdiChecklistModel.destroy({
             where: {
                 id: ids,

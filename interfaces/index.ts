@@ -1,28 +1,28 @@
-export * from './user';
-export * from './leads';
-export * from './menu';
-export * from './testimonials';
-export * from './reviews';
-export * from './products';
-export * from './product_category';
-export * from './orders';
-export * from './crm';
-export * from './petpooja';
-export * from './contracts';
-export * from './form-question';
-export * from './campaign';
-export * from './file';
-export * from './gallery';
-export * from './franchisee';
-export * from './pdiChecklist';
-export * from './taxes';
-export * from './stocks';
-export * from './regions';
-export * from './area';
-export * from './vendor';
-export * from './cart';
-export * from './userAddress';
-export * from './shippingActivity';
+export * from "./user";
+export * from "./leads";
+export * from "./menu";
+export * from "./testimonials";
+export * from "./reviews";
+export * from "./franchise";
+export * from "./products";
+export * from "./product_category";
+export * from "./orders";
+export * from "./crm";
+export * from "./petpooja";
+export * from "./contracts";
+export * from "./form-question";
+export * from "./campaign";
+export * from "./file";
+export * from "./gallery";
+export * from "./pdiChecklist";
+export * from "./taxes";
+export * from "./stocks";
+export * from "./regions";
+export * from "./area";
+export * from "./vendor";
+export * from "./cart";
+export * from "./userAddress";
+export * from "./shippingActivity";
 
 interface ITrackable {
     userDetails: UserDetails;
@@ -37,29 +37,28 @@ interface Note {
 }
 
 interface UserDetails {
-    userName: string;
-    id: string;
+    id: number;
 }
 
 interface BaseModel {
-    id: string;
-    createdBy: string;
+    id: number;
+    createdBy: number;
     createdAt: Date;
 }
 
 interface BaseModelIdNumber {
     id: number;
-    createdBy: string;
+    createdBy: number;
     createdAt: Date;
 }
 
 interface UpdatedMetaData {
-    updatedBy: string | null;
+    updatedBy: number | null;
     updatedAt: Date | null;
 }
 
 interface DeletionMetaData {
-    deletedBy: string | null;
+    deletedBy: number | null;
     deletedAt: Date | null;
 }
 
@@ -70,5 +69,5 @@ export {
     BaseModel,
     UpdatedMetaData,
     DeletionMetaData,
-    BaseModelIdNumber
+    BaseModelIdNumber,
 };

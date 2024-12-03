@@ -14,7 +14,7 @@ export class AssignRepo implements IBaseRepo<AssignAttributes, any> {
     }
 
     // Get assignment by ID
-    public async get(id: string): Promise<AssignAttributes | null> {
+    public async get(id: number): Promise<AssignAttributes | null> {
         const data = await AssignModel.findOne({
             raw: true,
             where: { id },
@@ -23,7 +23,7 @@ export class AssignRepo implements IBaseRepo<AssignAttributes, any> {
     }
 
     // Get assignments by lead ID
-    public async getByLeadId(leadId: string): Promise<AssignAttributes[]> {
+    public async getByLeadId(leadId: number): Promise<AssignAttributes[]> {
         const data = await AssignModel.findAll({
             raw: true,
             where: { leadId },
@@ -32,7 +32,7 @@ export class AssignRepo implements IBaseRepo<AssignAttributes, any> {
     }
 
     // Update an assignment
-    public async createOrUpdate(leadId: string, data: Partial<TAssignLead>): Promise<[instance: AssignModel, created: boolean]> {
+    public async createOrUpdate(leadId, data: Partial<TAssignLead>): Promise<[instance: AssignModel, created: boolean]> {
         // Add leadId to data to ensure it's included in the upsert check
         const response = await AssignModel.upsert({ leadId, ...data });
 
@@ -40,7 +40,7 @@ export class AssignRepo implements IBaseRepo<AssignAttributes, any> {
     }
 
     // Delete assignments by an array of IDs
-    public async delete(id: string): Promise<number> {
+    public async delete(id: number): Promise<number> {
         try {
             const deletedCount = await AssignModel.destroy({
                 where: {
@@ -55,7 +55,7 @@ export class AssignRepo implements IBaseRepo<AssignAttributes, any> {
     }
 
     // Check if an assignment exists for a specific lead
-    public async checkAssignmentExist(leadId: string, userId: string): Promise<AssignAttributes | null> {
+    public async checkAssignmentExist(leadId: number, userId: number): Promise<AssignAttributes | null> {
         const data = await AssignModel.findOne({
             where: {
                 leadId,

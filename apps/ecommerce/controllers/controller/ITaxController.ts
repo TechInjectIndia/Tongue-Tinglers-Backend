@@ -4,10 +4,10 @@ import { TaxAttributes, Tax } from "../../../../interfaces";
 
  interface ITaxRepo {
     createTax(data: Partial<TaxAttributes>): Promise<Tax>;
-    getTaxById(id: string): Promise<Tax | null>;
+    getTaxById(id: number): Promise<Tax | null>;
     getAllTaxes(): Promise<Tax[]>;
-    updateTax(id: string, data: Partial<TaxAttributes>): Promise<[number, Tax[]]>;
-    deleteTax(id: string): Promise<number>;
+    updateTax(id: number, data: Partial<TaxAttributes>): Promise<[number, Tax[]]>;
+    deleteTax(id: number): Promise<number>;
 }
 
 export default ITaxRepo;

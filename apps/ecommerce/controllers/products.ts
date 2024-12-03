@@ -155,7 +155,7 @@ export default class ProductsController {
             }
 
             if (vendorId != null && vendorId != '') {
-                const existingVendor = await new VendorRepo().get(vendorId as string);
+                const existingVendor = await new VendorRepo().get(vendorId as number);
                 if (!existingVendor) {
                     return res
                         .status(400)
@@ -293,7 +293,7 @@ export default class ProductsController {
             }
 
             if (vendorId != null && vendorId != '') {
-                const existingVendor = await new VendorRepo().get(vendorId as string);
+                const existingVendor = await new VendorRepo().get(vendorId as number);
                 if (!existingVendor) {
                     return res
                         .status(400)

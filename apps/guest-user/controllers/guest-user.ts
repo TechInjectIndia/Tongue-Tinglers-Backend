@@ -11,7 +11,7 @@ export default class GuestController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id");
-            const existingGuest = await new GuestUserRepo().get(id as string);
+            const existingGuest = await new GuestUserRepo().get(id as number);
             if (!existingGuest?.id) {
                 return res
                     .status(400)
@@ -165,7 +165,7 @@ export default class GuestController {
             //     payload = { ...payload, password: hashedPassword };
             // }
 
-            await new GuestUserRepo().update(id as string, payload);
+            await new GuestUserRepo().update(id as number, payload);
             return res
                 .status(200)
                 .send(

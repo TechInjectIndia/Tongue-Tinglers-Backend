@@ -7,8 +7,8 @@ import { CartItemModel } from './CartItemModel';
 interface ICartCreationAttributes extends Optional<ICartAttributes, 'id'> { }
 
 class CartModel extends Model<ICartAttributes, ICartCreationAttributes> implements ICartAttributes {
-    public id!: string;
-    public userId!: string;
+    public id!: number;
+    public userId!: number;
     public totalAmount!: number;
 
     public readonly createdAt!: Date;
@@ -20,13 +20,13 @@ class CartModel extends Model<ICartAttributes, ICartCreationAttributes> implemen
 CartModel.init(
     {
         id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
-            defaultValue: DataTypes.UUIDV4,
+            autoIncrement: true, 
         },
         userId: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         totalAmount: {

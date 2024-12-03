@@ -5,12 +5,12 @@ import { TPayloadCart, TCartList, ICartAttributes } from "../../../../interfaces
  * Interface for Cart Controller.
  */
 interface ICartItemController<T, F extends TQueryFilters> {
-    get(id: string): Promise<ICartAttributes | null>;
+    get(id: number): Promise<ICartAttributes | null>;
     list(filters: TListFilters): Promise<TCartList>;
     create(data: TPayloadCart): Promise<ICartAttributes>;
-    update(id: string, data: TPayloadCart): Promise<number>;
-    delete(ids: string[]): Promise<number>;
-    empty(id: string): Promise<void>;
+    update(id: number, data: TPayloadCart): Promise<number>;
+    delete(ids: number[]): Promise<number>;
+    empty(id: number): Promise<void>;
 }
 
 export default ICartItemController;

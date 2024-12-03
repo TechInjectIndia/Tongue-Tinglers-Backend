@@ -7,8 +7,6 @@ import {
 } from "../../../constants";
 import {
     sendResponse,
-    createStandardPaymentLinkForOrders,
-    CreatePaymentIntentWithRazorpay,
     sendEmail,
     EMAIL_HEADING,
     getEmailTemplate,
@@ -16,14 +14,15 @@ import {
 } from "../../../libraries";
 import { OrderRepo } from "../../ecommerce/models/orders";
 import { OrderItemRepo } from "../../ecommerce/models/orders-item";
-import { UserAddressRepo } from "../../user-address/models/UserAddressRepo";
-import { ShippingHistoryRepo } from "../../ecommerce/models/shippingHistoryRepo";
+import {
+    ShippingHistoryRepo,
+} from "../../ecommerce/models/shippingHistoryRepo";
 import { CONFIG } from "../../../config";
 import { get } from "lodash";
 import { CartModel } from "../../../database/schema";
 import { CartRepo } from "../../cart/models/CartRepo";
 import { CartItemModel } from "../../../database/schema";
-import { FranchiseeModel } from "../../../database/schema";
+import { FranchiseModel } from "../../../database/schema";
 import {
     ORDER_TYPE,
     PAYMENT_STATUS,
@@ -31,6 +30,7 @@ import {
 } from "../../../interfaces";
 import { OrderStatus } from "../../../types";
 import { AnyCnameRecord } from "dns";
+
 const {
     validateWebhookSignature,
 } = require("razorpay/dist/utils/razorpay-utils");
@@ -68,7 +68,7 @@ export default class OrderPaymentController {
                     } else {
                         paymentStatus = PAYMENT_STATUS.UNPAID;
                     }
-                    await new OrderRepo().update(orderDetails.id as string, {
+                    await new OrderRepo().update(orderDetails.id as number, {
                         paymentStatus,
                     });
                 }
@@ -161,9 +161,7 @@ export default class OrderPaymentController {
                     .send(sendResponse(RESPONSE_TYPE.ERROR, "Cart is empty"));
             }
 
-            let franchiseData = await FranchiseeModel.findOne({
-                where: { userid: userId },
-            });
+            let franchiseData = await FranchiseModel.findOne({});
             if (!franchiseData) {
                 return res
                     .status(404)
@@ -175,10 +173,11 @@ export default class OrderPaymentController {
                     );
             }
 
-            const link = await createStandardPaymentLinkForOrders({
-                cart: cart,
-                franchise: franchiseData,
-            });
+            // const link = await createStandardPaymentLinkForOrders({
+            //     cart: cart,
+            //     franchise: franchiseData,
+            // });
+            const link: any = {};
 
             if (!link) {
                 return res
@@ -193,9 +192,9 @@ export default class OrderPaymentController {
 
             // Create the order and save order items
             const newOrder = await new OrderRepo().create({
-                userId: userId as string,
+                userId: userId as number,
                 trackingNumber: "" as string,
-                shippingAddress: "" as string,
+                shippingAddresses: "" as string,
                 paymentMethod: "Razorpay" as string,
                 paymentId: link.id,
                 totalPrice: cart.totalAmount as number,
@@ -207,7 +206,7 @@ export default class OrderPaymentController {
 
             // Save each cart item as an order item
             const orderItems = cart.items.map((item) => ({
-                orderId: newOrder.id as string,
+                orderId: newOrder.id as number,
                 userId: userId as string,
                 productId: item.productId as number,
                 productType: item.productType as string,
@@ -219,7 +218,7 @@ export default class OrderPaymentController {
             await new OrderItemRepo().bulkCreate(orderItems);
 
             const shippingPayload = {
-                orderId: newOrder.id as string,
+                orderId: newOrder.id as number,
                 activities: [
                     {
                         status: ShippingStatus.OrderReceived,
@@ -230,7 +229,7 @@ export default class OrderPaymentController {
                 date: new Date().toISOString(),
             };
             await new ShippingHistoryRepo().addShippingHistory(
-                newOrder.id as string,
+                newOrder.id as number,
                 shippingPayload,
             );
 
@@ -247,13 +246,13 @@ export default class OrderPaymentController {
                 const emailContent = await getEmailTemplate(
                     EMAIL_TEMPLATE.PAYMENT_REQUEST,
                     {
-                        email: franchiseData.contactEmail,
+                        email: franchiseData.pocEmail,
                         link: link.short_url,
                     },
                 );
 
                 const mailOptions = {
-                    to: franchiseData.contactEmail,
+                    to: franchiseData.pocEmail,
                     subject: EMAIL_HEADING.PAYMENT_REQUEST,
                     templateParams: {
                         heading: EMAIL_HEADING.PAYMENT_REQUEST,
@@ -313,53 +312,54 @@ export default class OrderPaymentController {
             //         .send(sendResponse(RESPONSE_TYPE.ERROR, "Franchise is missing"));
             // }
 
-            const getUserActiveAddress =
-                await new UserAddressRepo().getActiveAddress(userId as string);
+            // const getUserActiveAddress =
+            //     await new UserAddressRepo().getActiveAddress(userId as number);
 
             // Create the order and save order items
-            const newOrder = await new OrderRepo().create({
-                userId: userId as string,
-                trackingNumber: "" as string,
-                shippingAddress: getUserActiveAddress,
-                paymentMethod: "Razorpay" as string,
-                paymentId: paymentId,
-                totalPrice: cart.totalAmount as number,
-                isRepeated: 0 as number,
-                orderStatus: OrderStatus.PROCESSED,
-                paymentStatus: PAYMENT_STATUS.PROCESSED,
-                orderType: ORDER_TYPE.SAMPLE_ORDER,
-            });
+            // const newOrder = await new OrderRepo().create({
+            //     userId: userId as number,
+            //     trackingNumber: "" as string,
+            //     shippingAddresses: getUserActiveAddress,
+            //     paymentMethod: "Razorpay" as string,
+            //     paymentId: paymentId,
+            //     totalPrice: cart.totalAmount as number,
+            //     isRepeated: 0 as number,
+            //     orderStatus: OrderStatus.PROCESSED,
+            //     paymentStatus: PAYMENT_STATUS.PROCESSED,
+            //     orderType: ORDER_TYPE.SAMPLE_ORDER,
+            // });
 
             // Save each cart item as an order item
-            const orderItems = cart.items.map((item) => ({
-                orderId: newOrder.id as string,
-                userId: userId as string,
-                productId: item.productId as number,
-                productType: item.productType as string,
-                quantity: item.quantity as number,
-                price: item.price as number,
-                subtotal: item.subtotal as number,
-            }));
+            // const orderItems = cart.items.map((item) => ({
+            //     orderId: newOrder.id as number,
+            //     userId: userId as string,
+            //     productId: item.productId as number,
+            //     productType: item.productType as string,
+            //     quantity: item.quantity as number,
+            //     price: item.price as number,
+            //     subtotal: item.subtotal as number,
+            // }));
 
-            await new OrderItemRepo().bulkCreate(orderItems);
+            // await new OrderItemRepo().bulkCreate(orderItems);
 
-            const shippingPayload = {
-                orderId: newOrder.id as string,
-                activities: [
-                    {
-                        status: ShippingStatus.OrderReceived,
-                        time: new Date().toISOString(),
-                    },
-                ],
-                trackingNumber: null,
-                date: null,
-            };
-            await new ShippingHistoryRepo().addShippingHistory(
-                newOrder.id as string,
-                shippingPayload,
-            );
+            // const shippingPayload = {
+            //     orderId: newOrder.id as number,
+            //     activities: [
+            //         {
+            //             status: ShippingStatus.OrderReceived,
+            //             time: new Date().toISOString(),
+            //         },
+            //     ],
+            //     trackingNumber: null,
+            //     date: null,
+            // };
+            // await new ShippingHistoryRepo().addShippingHistory(
+            //     newOrder.id as number,
+            //     shippingPayload,
+            // );
 
             // Remove all products related to the cart
+            let newOrder = {};
             await CartItemModel.destroy({
                 where: { cart_id: cart.id },
             });
@@ -429,8 +429,8 @@ export default class OrderPaymentController {
             };
 
             // Call the utility function to create payment intent
-            const paymentIntentResponse =
-                await CreatePaymentIntentWithRazorpay(data);
+            const paymentIntentResponse: any = {};
+            // await CreatePaymentIntentWithRazorpay(data);
 
             if (paymentIntentResponse.status === 500) {
                 return res
@@ -450,7 +450,7 @@ export default class OrderPaymentController {
                     "Payment intent created successfully.",
                     {
                         paymentIntentId:
-                            paymentIntentResponse.data.paymentIntentId,
+                        paymentIntentResponse.data.paymentIntentId,
                     },
                 ),
             );
@@ -483,8 +483,8 @@ export default class OrderPaymentController {
             };
 
             // Call the utility function to create payment intent
-            const paymentIntentResponse =
-                await CreatePaymentIntentWithRazorpay(data);
+            const paymentIntentResponse: any = {};
+            // await CreatePaymentIntentWithRazorpay(data);
 
             if (paymentIntentResponse.status === 500) {
                 return res
@@ -504,7 +504,7 @@ export default class OrderPaymentController {
                     "Payment intent created successfully.",
                     {
                         paymentIntentId:
-                            paymentIntentResponse.data.paymentIntentId,
+                        paymentIntentResponse.data.paymentIntentId,
                     },
                 ),
             );

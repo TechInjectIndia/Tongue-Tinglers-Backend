@@ -4,6 +4,7 @@ import { sequelize } from "../../../config";
 import { FranchiseModels } from "../../../interfaces";
 import { SeoImageModel } from "./SeoImageModel";
 import { ExtraFieldsModel } from "./extraFieldsModel";
+import { IChecklistModel } from "../franchise/iChecklist";
 
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
 
@@ -12,7 +13,7 @@ interface LeadCreationAttributes extends Optional<FranchiseModels, 'id'> { }
 
 // Define the model class for FranchiseModels
 class FranchiseLeadModel extends Model<FranchiseModels, LeadCreationAttributes> implements FranchiseModels {
-    public id!: string;
+    public id!: number;
     public description!: string;
     public title!: string;
     public reqArea!: number;
@@ -27,10 +28,10 @@ class FranchiseLeadModel extends Model<FranchiseModels, LeadCreationAttributes> 
 // Initialize the franchise model
 FranchiseLeadModel.init({
     id: {
-        type: STRING,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        defaultValue: UUIDV4,
+        autoIncrement: true, 
     },
     description: {
         type: TEXT,
@@ -87,5 +88,7 @@ SeoImageModel.belongsTo(FranchiseLeadModel, {
     as: 'franchiseModel',
 });
 
+FranchiseLeadModel.hasMany(IChecklistModel, { foreignKey: 'franchiseModelId' });
+IChecklistModel.belongsTo(FranchiseLeadModel, { foreignKey: 'franchiseModelId' });
 // Export the model
 export { FranchiseLeadModel };

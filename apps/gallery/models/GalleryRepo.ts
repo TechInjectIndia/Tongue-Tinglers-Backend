@@ -27,7 +27,7 @@ export class GalleryRepo implements IGalleryController<GalleryAttributes> {
         }
     }
 
-    public async get(id: string): Promise<any> {
+    public async get(id: number): Promise<any> {
         const data = await GalleryModel.findOne({
             where: {
                 id,
@@ -51,7 +51,7 @@ export class GalleryRepo implements IGalleryController<GalleryAttributes> {
         return newImage.url;
     }
 
-    public async update(id: string, data: any): Promise<any> {
+    public async update(id: number, data: any): Promise<any> {
         const existingFile = await GalleryModel.findByPk(id);
 
         if (!existingFile) {
@@ -70,7 +70,7 @@ export class GalleryRepo implements IGalleryController<GalleryAttributes> {
     }
 
     public async updateFile(
-        id: string,
+        id: number,
         file: any,
         fileInfo: any,
         destinationPath: string

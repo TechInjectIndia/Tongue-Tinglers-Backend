@@ -9,7 +9,7 @@ export class TaxRepo implements ITaxController {
         return await Tax.create(data);
     }
 
-    async getTaxById(id: string): Promise<Tax | null> {
+    async getTaxById(id: number): Promise<Tax | null> {
         return await Tax.findByPk(id);
     }
 
@@ -17,11 +17,11 @@ export class TaxRepo implements ITaxController {
         return await Tax.findAll();
     }
 
-    async updateTax(id: string, data: Partial<TaxAttributes>): Promise<[number, Tax[]]> {
+    async updateTax(id: number, data: Partial<TaxAttributes>): Promise<[number, Tax[]]> {
         return await Tax.update(data, { where: { id }, returning: true });
     }
 
-    async deleteTax(id: string): Promise<number> {
+    async deleteTax(id: number): Promise<number> {
         return await Tax.destroy({ where: { id } });
     }
 }

@@ -1,7 +1,7 @@
 // Define an interface for the required and optional attributes of the User Address
 interface UserAddressAttributes {
-    id: string;
-    userId: string;
+    id: number;
+    userId: number;
 
     // Billing address fields
     title: string;
@@ -24,7 +24,7 @@ interface UserAddressAttributes {
 
 // Define an interface for the payload when creating or updating a User Address
 interface IUserAddressPayload {
-    userId: string;
+    userId: number;
 
     // Billing address fields
     title: string;

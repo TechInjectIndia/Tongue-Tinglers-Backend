@@ -5,8 +5,6 @@ import {
     createPassword,
     createFirebaseUser,
     sendEmail,
-    getEmailTemplate,
-    EMAIL_TEMPLATE,
     EMAIL_HEADING,
 } from "../../../libraries";
 import {
@@ -24,6 +22,8 @@ import jwt from "jsonwebtoken";
 import { CONFIG } from "../../../config";
 import { createLeadResponse } from "../../../libraries";
 import { TContractPayload } from "../../../types/contracts";
+import { ZohoSignRepo } from "../../zoho-sign/models/zohosign";
+import { TAddUser } from "../../../types/admin/admin-user";
 
 export default class LeadController {
     static async convertLeadToProspect(
@@ -35,7 +35,7 @@ export default class LeadController {
             const id = get(req.body, "id", "");
 
             // get contract
-            const existingContract = await new ContractRepo().get(id as string);
+            const existingContract = await new ContractRepo().get(id as number);
             if (existingContract) {
                 return res
                     .status(400)
@@ -47,7 +47,7 @@ export default class LeadController {
                     );
             }
 
-            const existingLead = await new LeadRepo().get(id as string);
+            const existingLead = await new LeadRepo().get(id as number);
             if (!existingLead) {
                 return res
                     .status(400)
@@ -69,7 +69,6 @@ export default class LeadController {
                 lastName: existingLead.lastName,
                 nameForSearch: existingLead.firstName,
                 email: existingLead.email,
-                userName: existingLead.email,
                 phoneNumber: existingLead.phoneNumber,
                 password: "12345678",
                 createdBy: `${user_id}`,
@@ -79,12 +78,26 @@ export default class LeadController {
                 referBy: existingLead.referBy,
             };
 
+            let templateId: "";
+            const templates: any[] = await new ZohoSignRepo().getTemplates();
+
+            console.log(templates);
+
+            if (
+                templates &&
+                Array.isArray(templates) &&
+                templates.length > 0 &&
+                templates[0].templateId
+            ) {
+                templateId = templates[0].templateId;
+            }
+
             const prospectData: TContractPayload = {
                 status: CONTRACT_STATUS.ACTIVE,
                 terminationDetails: null,
                 payment: null,
                 leadId: id,
-                templateId: "",
+                templateId: templateId,
                 amount: existingLead.amount,
                 signedDate: null,
                 dueDate: new Date(),
@@ -96,7 +109,7 @@ export default class LeadController {
                 additionalInfo: "",
                 logs: null,
                 signedDocs: null,
-                createdBy: `${user_id}`,
+                createdBy: Number(`${user_id}`),
             };
 
             const prospect = await new ContractRepo().create(prospectData);
@@ -135,13 +148,19 @@ export default class LeadController {
             );
 
             const hashedPassword = await createPassword(payload.password);
-            const normalUser = await new FranchiseRepo().create({
-                ...payload,
-                password: hashedPassword,
-                firebaseUid: firebaseUser.uid,
-                password_token: token,
-            });
 
+            let normalUser: TAddUser = {
+                firebaseUid: firebaseUser.uid,
+                password: hashedPassword,
+                firstName: payload.firstName,
+                lastName: payload.lastName,
+                nameForSearch: payload.nameForSearch,
+                email: payload.email,
+                phoneNumber: payload.phoneNumber,
+                type: USER_TYPE.PROSPECT,
+                role: 0,
+                referBy: undefined,
+            };
             await new AdminRepo().create(normalUser);
 
             // const existingAllContract = await new ContractRepo().getAssociatedContractsByLeadId(existingContract.leadId as string);
@@ -407,7 +426,7 @@ export default class LeadController {
                     assignedTo: assign.assignedTo.id,
                     assignedBy: assign.assignedBy.id,
                     assignedDate: assign.assignedDate,
-                    leadId: newLead.id, // Reference the new lead's ID
+                    leadId: newLead.id as number, // Reference the new lead's ID
                 };
 
                 // Create assignment in AssignRepo
@@ -559,7 +578,7 @@ export default class LeadController {
                 // Create assignment in AssignRepo
                 await new AssignRepo().createOrUpdate(id, assignPayload);
             } else {
-                await new AssignRepo().delete(id as string);
+                await new AssignRepo().delete(id as number);
             }
 
             return res

@@ -1,20 +1,18 @@
 
 interface UserDetails {
-  userName: string,
-  id: String
+  id: number
 }
 
 export type TUser = {
-  id: string;
+  id: number;
   firebaseUid: string;
-  createdBy: string;
+  createdBy: number;
   password: string;
   firstName: string;
   lastName: string;
   nameForSearch: string;
   profilePhoto: string;
   email: string;
-  userName: string;
   phoneNumber: string;
   type: string;
   status: string;
@@ -24,8 +22,8 @@ export type TUser = {
   referralCode: string;
   referBy: UserDetails;
   refresh_token: string;
-  updatedBy: string;
-  deletedBy: string;
+  updatedBy: number;
+  deletedBy: number;
   role: number;
   lastLoginAt: Date;
   createdAt: Date;
@@ -44,7 +42,6 @@ export type TAddUser = {
   lastName: string;
   nameForSearch: string;
   email: string;
-  userName: string;
   phoneNumber: string;
   type: string;
   role: number;
@@ -57,7 +54,6 @@ export type TEditUser = {
   lastName: string;
   nameForSearch: string;
   email: string;
-  userName: string;
   phoneNumber: string;
   role: number;
 };
@@ -71,28 +67,26 @@ export type TEditUserProfile = {
   firstName: string;
   lastName: string;
   nameForSearch: string;
-  userName: string;
   phoneNumber: string;
 };
 
 export type TUpdateUserToken = {
-  user_id: string;
+  user_id: number;
   refresh_token: string;
   lastLoginAt: Date;
   lastLoginIp: string;
 };
 
 export type TUpdateUserProfile = {
-  user_id: string;
+  user_id: number;
   firstName: string;
   lastName: string;
   nameForSearch: string;
-  userName: string;
   phoneNumber: string;
 };
 
 export type TUpdateUserPassword = {
-  user_id: string;
+  user_id: number;
   password: string;
 };
 

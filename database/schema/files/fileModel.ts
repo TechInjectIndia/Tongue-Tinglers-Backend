@@ -5,7 +5,7 @@ import { FileAttributes } from "../../../interfaces";
 interface FileCreationAttributes extends Optional<FileAttributes, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class FileModel extends Model<FileAttributes, FileCreationAttributes> implements FileAttributes {
-    public id!: string;
+    public id!: number;
     public name!: string;
     public message!: string;
     public url!: string;
@@ -16,10 +16,10 @@ class FileModel extends Model<FileAttributes, FileCreationAttributes> implements
 
 FileModel.init({
     id: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        defaultValue: DataTypes.UUIDV4
+        autoIncrement: true, 
     },
     name: {
         type: DataTypes.STRING,

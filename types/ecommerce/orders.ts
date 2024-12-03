@@ -2,10 +2,10 @@ const { OrderItem } = require("sequelize");
 import { ORDER_TYPE } from '../../interfaces';
 
 export type TOrder = {
-  id: string;
-  userId?: string;
+  id: number;
+  userId?: number;
   trackingNumber?: string;
-  shippingAddress?: any;
+  shippingAddresses?: any;
   paymentMethod?: string;
   paymentId?: string;
   totalPrice?: number;
@@ -17,9 +17,9 @@ export type TOrder = {
 };
 
 export type TOrderPayload = {
-  userId?: string;
+  userId?: number;
   trackingNumber?: string;
-  shippingAddress?: any;
+  shippingAddresses?: any;
   paymentMethod?: string;
   paymentId?: string;
   totalPrice?: number;

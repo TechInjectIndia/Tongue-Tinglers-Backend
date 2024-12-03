@@ -46,7 +46,7 @@ export default class CustomerRegisterController {
             await new CustomerRegisterRepo().create({
                 ...payload,
                 password: hashedPassword,
-                type: USER_TYPE.CUSTOMER,
+                type: USER_TYPE.GUEST_USER,
                 status: USER_STATUS.INACTIVE,
                 role: 2,
                 firebaseUid: firebaseUser.uid

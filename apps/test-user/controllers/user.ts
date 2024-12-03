@@ -46,7 +46,7 @@ export default class AdminController {
             await new AdminRepo().create({
                 ...payload,
                 password: hashedPassword,
-                type: USER_TYPE.MASTER_FRANCHISE,
+                type: payload.type,
                 firebaseUid: firebaseUser.uid
             });
 

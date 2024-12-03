@@ -36,7 +36,7 @@ export interface Action {
 
 export interface FieldType {
     docs: {
-        documentId: string;
+        documentId: number;
         fields: Field[];
     }[],
     actions: Action[];

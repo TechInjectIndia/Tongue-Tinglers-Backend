@@ -7,12 +7,12 @@ import { FranchiseLeadModel } from "./franchiseModels";
 interface ExtraFieldsCreationAttributes extends Optional<ExtraFields, 'id'> { }
 
 class ExtraFieldsModel extends Model<ExtraFields, ExtraFieldsCreationAttributes> implements ExtraFields {
-    public id!: string;
+    public id!: number;
     public key!: string;
     public value!: string;
     public title!: string;
     public type!: extraFieldTypes;
-    public franchiseModelId!: string;
+    public franchiseModelId!: number;
 
     // Define any associations if needed
     public static associate() {
@@ -24,13 +24,13 @@ class ExtraFieldsModel extends Model<ExtraFields, ExtraFieldsCreationAttributes>
 // Initialize the ExtraFieldsModel
 ExtraFieldsModel.init({
     id: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        defaultValue: DataTypes.UUIDV4
+        autoIncrement: true, 
     },
     franchiseModelId: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: FranchiseLeadModel,

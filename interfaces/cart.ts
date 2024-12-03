@@ -1,8 +1,8 @@
 // interfaces/ICartItemAttributes.ts
 
 export interface ICartItemAttributes {
-    id?: string; // Unique identifier for the cart item
-    cart_id: string; // ID of the cart to which this item belongs
+    id?: number; // Unique identifier for the cart item
+    cart_id: number; // ID of the cart to which this item belongs
     productId: number; // ID of the product associated with this cart item
     productType: string;
     quantity: number; // Quantity of the product
@@ -14,8 +14,8 @@ export interface ICartItemAttributes {
 
 // Interface for cart attributes
 export interface ICartAttributes {
-    id: string; // Unique identifier for the cart
-    userId: string; // ID of the user associated with the cart
+    id: number; // Unique identifier for the cart
+    userId: number; // ID of the user associated with the cart
     items?: TCartItem[]; // Array of items in the cart
     totalAmount: number; // Total amount for the cart
     createdAt: Date; // Date the cart was created
@@ -39,7 +39,7 @@ export type TCartItem = {
 
 // Payload structure for creating or updating a cart
 export type TPayloadCart = {
-    userId: string; // ID of the user associated with the cart
+    userId: number; // ID of the user associated with the cart
     items: TCartItem[]; // Array of items in the cart
     totalAmount: number; // Total cost of the cart
 };

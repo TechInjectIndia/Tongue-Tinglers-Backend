@@ -17,7 +17,7 @@ export class CartRepo {
         }
     }
 
-    async updateTotalAmount(cartId: string) {
+    async updateTotalAmount(cartId: number) {
         try {
             // Get all cart items for the specific cart
             const cartItems = await CartItemModel.findAll({ where: { cart_id: cartId } });
@@ -47,7 +47,7 @@ export class CartRepo {
     }
 
     // Add product to the cart
-    async addProduct(userId: string, productId: number, quantity: number, productType: string) {
+    async addProduct(userId: number, productId: number, quantity: number, productType: string) {
         try {
             // Find if the cart already exists for the user
             let cart = await CartModel.findOne({ where: { userId } });
@@ -72,9 +72,9 @@ export class CartRepo {
                     quantity: quantity,
                 };
                 if (quantity == 0) {
-                    const cartItem = await new CartItemRepo().remove(cart.id as string, productId as number, productType);
+                    const cartItem = await new CartItemRepo().remove(cart.id as number, productId as number, productType);
                 } else {
-                    cartItemReponse = await new CartItemRepo().update(cart.id as string, productId as number, productType, updateCartItemData);
+                    cartItemReponse = await new CartItemRepo().update(cart.id as number, productId as number, productType, updateCartItemData);
                 }
             } else {
                 // If product doesn't exist, add the new product to the cart
@@ -94,7 +94,7 @@ export class CartRepo {
     }
 
     // Remove product from the cart
-    async removeProduct(userId: string, productId: number, productType: string) {
+    async removeProduct(userId: number, productId: number, productType: string) {
         try {
             // Find the cart associated with the user
             const cart = await CartModel.findOne({ where: { userId } });
@@ -116,7 +116,7 @@ export class CartRepo {
     }
 
     // Update product in the cart (quantity or price)
-    async updateProduct(userId: string, productId: number, quantity: number, productType: string) {
+    async updateProduct(userId: number, productId: number, quantity: number, productType: string) {
         try {
             const cart = await CartModel.findOne({ where: { userId } });
             if (!cart) {
@@ -136,9 +136,9 @@ export class CartRepo {
                     quantity: existingProduct[0].quantity - quantity,
                 };
                 if (updateCartItemData.quantity < 0) {
-                    const cartItem = await new CartItemRepo().remove(cart.id as string, productId as number, productType);
+                    const cartItem = await new CartItemRepo().remove(cart.id as number, productId as number, productType);
                 } else {
-                    const cartItem = await new CartItemRepo().update(cart.id as string, productId as number, productType, updateCartItemData);
+                    const cartItem = await new CartItemRepo().update(cart.id as number, productId as number, productType, updateCartItemData);
                 }
             }
 
@@ -150,7 +150,7 @@ export class CartRepo {
     }
 
     // Get a cart by user ID
-    async findById(userId: string) {
+    async findById(userId: number) {
         try {
             const cart = await CartModel.findOne({
                 where: { userId },
@@ -183,7 +183,7 @@ export class CartRepo {
     }
 
     // Empty a cart (remove all products)
-    async empty(cartId: string) {
+    async empty(cartId: number) {
         try {
             const cart = await CartModel.findByPk(cartId);
             if (!cart) {
@@ -206,7 +206,7 @@ export class CartRepo {
     }
 
     // Empty a cart (remove all products)
-    async update(cartId: string, updateCartData: any) {
+    async update(cartId: number, updateCartData: any) {
         try {
             const cart = await CartModel.findByPk(cartId);
             if (cart) {
@@ -219,7 +219,7 @@ export class CartRepo {
     }
 
     // Delete a cart by ID
-    async delete(cartId: string) {
+    async delete(cartId: number) {
         try {
             const cart = await CartModel.findByPk(cartId);
             if (cart) {

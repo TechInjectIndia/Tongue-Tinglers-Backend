@@ -5,11 +5,11 @@ import { LeadsModel } from './lead.model';
 
 // Define the attributes for Assign creation (Optional `id` if auto-generated)
 interface AssignAttributes {
-    id?: string;
-    assignedTo: string; // Foreign key referencing UserDetails
-    assignedBy: string; // Foreign key referencing UserDetails
+    id?: number;
+    assignedTo: number; // Foreign key referencing UserDetails
+    assignedBy: number; // Foreign key referencing UserDetails
     assignedDate: Date;
-    leadId: string; // Foreign key referencing LeadsModel
+    leadId: number; // Foreign key referencing LeadsModel
 }
 
 // Define the interface for Assign model creation
@@ -17,11 +17,11 @@ interface AssignCreationAttributes extends Optional<AssignAttributes, "id"> { }
 
 // Model class
 class AssignModel extends Model<AssignAttributes, AssignCreationAttributes> implements AssignAttributes {
-    public id!: string;
-    public assignedTo!: string;
-    public assignedBy!: string;
+    public id!: number;
+    public assignedTo!: number;
+    public assignedBy!: number;
     public assignedDate!: Date;
-    public leadId!: string;
+    public leadId!: number;
 
     // Timestamps
     public readonly createdAt!: Date;
@@ -38,12 +38,13 @@ class AssignModel extends Model<AssignAttributes, AssignCreationAttributes> impl
 AssignModel.init(
     {
         id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+            type: DataTypes.INTEGER,
             primaryKey: true,
+            allowNull: false,
+            autoIncrement: true, 
         },
         assignedTo: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
             references: {
                 model: UserModel,
@@ -51,7 +52,7 @@ AssignModel.init(
             },
         },
         assignedBy: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
             references: {
                 model: UserModel,
@@ -63,7 +64,7 @@ AssignModel.init(
             allowNull: false,
         },
         leadId: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
             references: {
                 model: LeadsModel,

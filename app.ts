@@ -1,3 +1,4 @@
+require('newrelic');
 import dotenv from "dotenv";
 import sgMail from "@sendgrid/mail";
 import { CONFIG } from "./config";
@@ -10,9 +11,7 @@ import { connectToDatabase } from "./config";
 require("./database/schema");
 import helmet from "helmet";
 import helmetCsp from "helmet-csp";
-import rateLimit from "express-rate-limit";
 import xss from "xss-clean";
-import { loggerMiddleware } from "./apps/logger/middlewares/loggerMiddleware";
 
 import { RateLimiterMemory } from "rate-limiter-flexible";
 const rateLimiter = new RateLimiterMemory({
@@ -20,8 +19,7 @@ const rateLimiter = new RateLimiterMemory({
     duration: 1, // Per second
 });
 import expressSanitizer from "express-sanitizer";
-import { folderPath } from "./path";
-import { ContractRepo } from "./apps/contracts/models/ContractRepo";
+require("dotenv").config();
 
 dotenv.config();
 // const env = dotenv.config({ path: `${__dirname}/.env` });
@@ -65,7 +63,7 @@ const corsOptions = {
 
 export const server = express();
 
-server.use(loggerMiddleware);
+// server.use(loggerMiddleware);
 
 server.use(async (req, res, next) => {
     // Purpose: A more flexible rate limiter than express-rate-limit, suitable for different types of stores (e.g., Redis).

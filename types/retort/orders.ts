@@ -2,9 +2,9 @@ const { OrderItem } = require("sequelize");
 
 export type TRetortOrder = {
   id: number;
-  userId: string;
+  userId: number;
   trackingNumber: string;
-  shippingAddress: string;
+  shippingAddresses: string;
   paymentMethod: string;
   totalPrice: number;
   orderStatus: string;
@@ -17,9 +17,9 @@ export type TEditRetortOrder = {
 };
 
 export type TAddRetortOrder = {
-  userId: string;
+  userId: number;
   trackingNumber: string;
-  shippingAddress: string;
+  shippingAddresses: string;
   paymentMethod: string;
   totalPrice: number;
   orderStatus: string;

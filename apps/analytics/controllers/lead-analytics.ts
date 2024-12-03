@@ -1,54 +1,80 @@
 import { NextFunction, Request, Response } from "express";
-import { get, isEmpty } from "lodash";
+import { get } from "lodash";
 import { sendResponse, getDateRange } from "../../../libraries";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { AnalyticsModel } from '../models/lead-analytics';
-import { CampaignAdRepo } from '../../campaign/models/index';
-import { subDays, eachDayOfInterval, eachMonthOfInterval, format } from 'date-fns';
-import { FranchiseeRepo } from '../../franchisee/models/FranchiseeRepo';
-import { RolesRepo } from '../../admin-user/models/roles';
-import { FranchiseType } from "../../../interfaces";
-import { TLeadFilters, } from "../../../types";
+import {
+    RESPONSE_TYPE,
+    SUCCESS_MESSAGE,
+    ERROR_MESSAGE,
+} from "../../../constants";
+import { AnalyticsModel } from "../models/lead-analytics";
+import { CampaignAdRepo } from "../../campaign/models/index";
+import {
+    subDays,
+    eachDayOfInterval,
+    eachMonthOfInterval,
+    format,
+} from "date-fns";
+import { TLeadFilters } from "../../../types";
+import RepoProvider from "../../RepoProvider";
 
 export default class LeadAnalyticsController {
 
     static async leadStatusByStatusType(req: Request, res: Response, next: NextFunction) {
         try {
-            const franchiseRepo = new FranchiseeRepo();
-            const user_id = get(req, 'user_id', '');
 
-            const franchiseId = get(req, 'franchise_id', '');
+            const user_id = get(req, "user_id", "");
+
+            const franchiseId = get(req, "franchise_id", "");
             const statusType = get(req.query, "statusType", "") as string;
             const filter = get(req.query, "filter", "") as string;
             const startDate = get(req.query, "startDate", "") as string;
             const endDate = get(req.query, "endDate", "") as string;
             const dateRange = getDateRange(filter, startDate, endDate);
-            let analyticsData: any[] = [];
 
-            const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
-            if (!franchiseData) {
-                return res.status(404).send({ message: 'Franchise data not found.' });
-            }
-            switch (franchiseData.franchiseType) {
-                case FranchiseType.MASTER_FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadStatusByTypeForMasterFranchisee(statusType, dateRange.start, dateRange.end, franchiseId);
-                    break;
-                case FranchiseType.SUPER_FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadStatusByTypeForSuperFranchisee(statusType, dateRange.start, dateRange.end, franchiseId, franchiseData);
-                    break;
-                case FranchiseType.FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadStatusByTypeForFranchisee(statusType, dateRange.start, dateRange.end, franchiseData);
-                    break;
-                default:
-                    return res.status(400).send({ message: 'Invalid franchise type.' });
-            }
+            // const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as number);
+            // if (!franchiseData) {
+            //     return res.status(404).send({ message: 'Franchise data not found.' });
+            // }
+            // switch (franchiseData.franchiseType) {
+            //     case FranchiseType.MASTER_FRANCHISE:
+            //         analyticsData = await new AnalyticsModel().leadStatusByTypeForMasterFranchisee(statusType, dateRange.start, dateRange.end, franchiseId);
+            //         break;
+            //     case FranchiseType.SUPER_FRANCHISE:
+            //         analyticsData = await new AnalyticsModel().leadStatusByTypeForSuperFranchisee(statusType, dateRange.start, dateRange.end, franchiseId, franchiseData);
+            //         break;
+            //     case FranchiseType.FRANCHISE:
+            //         analyticsData = await new AnalyticsModel().leadStatusByTypeForFranchisee(statusType, dateRange.start, dateRange.end, franchiseData);
+            //         break;
+            //     default:
+            //         return res.status(400).send({ message: 'Invalid franchise type.' });
+            // }
+
+            // const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
+            // if (!franchiseData) {
+            //     return res.status(404).send({ message: 'Franchise data not found.' });
+            // }
+            // switch (franchiseData.franchiseType) {
+            //     case FranchiseType.MASTER_FRANCHISE:
+            //         analyticsData = await new AnalyticsModel().leadStatusByTypeForMasterFranchisee(statusType, dateRange.start, dateRange.end, franchiseId);
+            //         break;
+            //     case FranchiseType.SUPER_FRANCHISE:
+            //         analyticsData = await new AnalyticsModel().leadStatusByTypeForSuperFranchisee(statusType, dateRange.start, dateRange.end, franchiseId, franchiseData);
+            //         break;
+            //     case FranchiseType.FRANCHISE:
+            //         analyticsData = await new AnalyticsModel().leadStatusByTypeForFranchisee(statusType, dateRange.start, dateRange.end, franchiseData);
+            //         break;
+            //     default:
+            //         return res.status(400).send({ message: 'Invalid franchise type.' });
+            // }
+
+            const analyticsData = await new AnalyticsModel().leadStatusByTypeForSuperFranchisee(statusType, dateRange.start, dateRange.end);
 
             return res.status(200).send(
                 sendResponse(
                     RESPONSE_TYPE.SUCCESS,
                     SUCCESS_MESSAGE.FETCHED,
-                    analyticsData
-                )
+                    analyticsData,
+                ),
             );
         } catch (err) {
             console.error("Error:", err);
@@ -60,10 +86,9 @@ export default class LeadAnalyticsController {
 
     static async leadTimeline(req: Request, res: Response, next: NextFunction) {
         try {
-            const franchiseRepo = new FranchiseeRepo();
 
-            const franchiseId = get(req, 'franchise_id', '');
-            const user_id = get(req, 'user_id', '');
+            const franchiseId = get(req, "franchise_id", "");
+            const user_id = get(req, "user_id", "");
             let analyticsData: any[] = [];
 
             const filter = get(req.query, "filter", "this_year") as string;
@@ -76,7 +101,7 @@ export default class LeadAnalyticsController {
             const endDate = new Date(dateRange.end);
 
             if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || startDate > endDate) {
-                throw new Error('Invalid date range provided.');
+                throw new Error("Invalid date range provided.");
             }
 
             let groupBy: string;
@@ -84,38 +109,47 @@ export default class LeadAnalyticsController {
 
             if (filter === "this_week" || filter === "last_week" || filter === "this_month" || filter === "last_month") {
                 groupBy = "day";
-                dateInterval = eachDayOfInterval({ start: startDate, end: endDate });
+                dateInterval = eachDayOfInterval({
+                    start: startDate,
+                    end: endDate,
+                });
             } else if (filter === "this_year" || filter === "last_year") {
                 groupBy = "month";
-                dateInterval = eachMonthOfInterval({ start: startDate, end: endDate });
+                dateInterval = eachMonthOfInterval({
+                    start: startDate,
+                    end: endDate,
+                });
             } else {
                 groupBy = "day";
-                dateInterval = eachDayOfInterval({ start: startDate, end: endDate });
+                dateInterval = eachDayOfInterval({
+                    start: startDate,
+                    end: endDate,
+                });
             }
 
-            const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
+            const franchiseData = await RepoProvider.franchise.getById(user_id as number);
             if (!franchiseData) {
-                return res.status(404).send({ message: 'Franchise data not found.' });
+                return res.status(404).send({ message: "Franchise data not found." });
             }
-            console.log('franchiseData.franchiseType', franchiseData.franchiseType);
-            switch (franchiseData.franchiseType) {
-                case FranchiseType.MASTER_FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadTimelineForMasterFranchisee(startDate, endDate, groupBy, franchiseId);
-                    break;
-                case FranchiseType.SUPER_FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadTimelineForSuperFranchisee(startDate, endDate, groupBy, franchiseData, franchiseId);
-                    break;
-                case FranchiseType.FRANCHISE:
-                    analyticsData = await new AnalyticsModel().leadTimelineForFranchisee(startDate, endDate, groupBy, franchiseData);
-                    break;
+            console.log("franchiseData.franchiseType", franchiseData);
+            switch (franchiseData) {
+                // case FranchiseType.MASTER_FRANCHISE:
+                //     analyticsData = await new AnalyticsModel().leadTimelineForMasterFranchisee(startDate, endDate, groupBy, franchiseId);
+                //     break;
+                // case FranchiseType.SUPER_FRANCHISE:
+                //     analyticsData = await new AnalyticsModel().leadTimelineForSuperFranchisee(startDate, endDate, groupBy, franchiseData, franchiseId);
+                //     break;
+                // case FranchiseType.FRANCHISE:
+                //     analyticsData = await new AnalyticsModel().leadTimelineForFranchisee(startDate, endDate, groupBy, franchiseData);
+                //     break;
                 default:
-                    return res.status(400).send({ message: 'Invalid franchise type.' });
+                    return res.status(400).send({ message: "Invalid franchise type." });
             }
 
             // Format dates in analyticsData to match dateInterval formatting
             const formattedAnalyticsData = analyticsData.map(item => ({
-                date: format(new Date(item.get('date')), groupBy === 'day' ? 'yyyy-MM-dd' : 'yyyy-MM'),
-                count: parseInt(item.get('count'), 10),
+                date: format(new Date(item.get("date")), groupBy === "day" ? "yyyy-MM-dd" : "yyyy-MM"),
+                count: parseInt(item.get("count"), 10),
             }));
 
             // Map the data into a Map object with formatted dates
@@ -123,9 +157,9 @@ export default class LeadAnalyticsController {
 
             // Prepare the chart data with missing dates filled as 0
             const chartData = {
-                label: dateInterval.map(date => format(date, groupBy === 'day' ? 'yyyy-MM-dd' : 'yyyy-MM')),
+                label: dateInterval.map(date => format(date, groupBy === "day" ? "yyyy-MM-dd" : "yyyy-MM")),
                 data: dateInterval.map(date => {
-                    const formattedDate = format(date, groupBy === 'day' ? 'yyyy-MM-dd' : 'yyyy-MM');
+                    const formattedDate = format(date, groupBy === "day" ? "yyyy-MM-dd" : "yyyy-MM");
                     return dataMap.get(formattedDate) || 0;
                 }),
             };
@@ -134,8 +168,8 @@ export default class LeadAnalyticsController {
                 sendResponse(
                     RESPONSE_TYPE.SUCCESS,
                     SUCCESS_MESSAGE.FETCHED,
-                    chartData
-                )
+                    chartData,
+                ),
             );
         } catch (err) {
             console.error("Error:", err);
@@ -147,7 +181,7 @@ export default class LeadAnalyticsController {
 
     static async leadList(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {
-            const user_id = get(req, 'user_id', '');
+            const user_id = get(req, "user_id", "");
             const size = get(req.query, "size", 100);
             const skip = get(req.query, "skip", 0);
             const search = get(req.query, "search", "") as string;
@@ -160,14 +194,14 @@ export default class LeadAnalyticsController {
             // Calculate date range based on the filter type using the library function
             const dateRange = getDateRange(filter, startDate, endDate);
 
-            const franchiseRepo = new FranchiseeRepo();
-            const franchiseId = get(req, 'franchise_id', '');
 
-            const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
+            const franchiseId = get(req, "franchise_id", "");
+
+            const franchiseData = await RepoProvider.franchise.getById(user_id as number);
             if (!franchiseData) {
-                return res.status(404).send({ message: 'Franchise data not found.' });
+                return res.status(404).send({ message: "Franchise data not found." });
             }
-            console.log('franchiseData.franchiseType', franchiseData.franchiseType);
+            console.log("franchiseData.franchiseType", franchiseData);
             leadsList = await new AnalyticsModel().list({
                 offset: skip,
                 limit: size,
@@ -175,13 +209,16 @@ export default class LeadAnalyticsController {
                 sorting,
                 dateRange,
                 franchiseData,
-                franchiseId
+                franchiseId,
             } as TLeadFilters);
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, leadsList));
 
         } catch (err) {
             console.error(err);
-            return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR, error: err.message });
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                error: err.message,
+            });
         }
     }
 
@@ -198,8 +235,8 @@ export default class LeadAnalyticsController {
                 sendResponse(
                     RESPONSE_TYPE.SUCCESS,
                     SUCCESS_MESSAGE.FETCHED,
-                    analyticsData
-                )
+                    analyticsData,
+                ),
             );
         } catch (err) {
             console.error("Error:", err);
@@ -211,13 +248,13 @@ export default class LeadAnalyticsController {
 
     static async leadStatusByFranchiseId(req: Request, res: Response, next: NextFunction) {
         try {
-            const franchiseid = get(req.query, "franchiseId", "") as string;
+            const franchiseid = get(req.query, "franchiseId", "") as number;
             const filter = get(req.query, "filter", "") as string;
             const startDate = get(req.query, "startDate", "") as string;
             const endDate = get(req.query, "endDate", "") as string;
             const dateRange = getDateRange(filter, startDate, endDate);
 
-            const campaigns = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseid as string);
+            const campaigns = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseid as number);
             // get leads where campaign id is campaigns.id using map
             const campaignIds = campaigns.map(campaign => campaign.id);
             const analyticsData = await new AnalyticsModel().getLeadStatusByCampaignIdsAndDateRange(campaignIds, dateRange.start, dateRange.end);
@@ -231,8 +268,8 @@ export default class LeadAnalyticsController {
                 sendResponse(
                     RESPONSE_TYPE.SUCCESS,
                     SUCCESS_MESSAGE.FETCHED,
-                    chartData
-                )
+                    chartData,
+                ),
             );
         } catch (err) {
             console.error("Error:", err);
@@ -259,8 +296,8 @@ export default class LeadAnalyticsController {
                 sendResponse(
                     RESPONSE_TYPE.SUCCESS,
                     SUCCESS_MESSAGE.FETCHED,
-                    chartData
-                )
+                    chartData,
+                ),
             );
         } catch (err) {
             console.error("Error:", err);
@@ -287,8 +324,8 @@ export default class LeadAnalyticsController {
                 sendResponse(
                     RESPONSE_TYPE.SUCCESS,
                     SUCCESS_MESSAGE.FETCHED,
-                    chartData
-                )
+                    chartData,
+                ),
             );
         } catch (err) {
             console.error("Error:", err);
@@ -316,8 +353,8 @@ export default class LeadAnalyticsController {
                 sendResponse(
                     RESPONSE_TYPE.SUCCESS,
                     SUCCESS_MESSAGE.FETCHED,
-                    chartData
-                )
+                    chartData,
+                ),
             );
         } catch (err) {
             console.error("Error:", err);

@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { SeoImage, ProposalModels } from "../../../interfaces";
 import { sequelize } from "../../../config";
+import { INTEGER } from "sequelize";
 
 const { STRING, TEXT, DATE, JSONB, UUIDV4 } = DataTypes;
 
@@ -23,26 +24,26 @@ class ProposalLeadModels
     implements ProposalModels
 {
     public id!: number;
-    public franchiseModel!: string;
+    public franchiseModel!: number;
     public title!: string;
     /* comma separated string */
     public prices!: string;
     public createdAt!: Date;
-    public createdBy!: string;
+    public createdBy!: number;
     public updatedAt!: Date | null;
-    public updatedBy!: string | null;
+    public updatedBy!: number | null;
     public deletedAt!: Date | null;
-    public deletedBy!: string | null;
+    public deletedBy!: number | null;
 }
 
 // Initialize the Proposal model
 ProposalLeadModels.init(
     {
         id: {
-            type: STRING,
+            type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
-            defaultValue: UUIDV4,
+            autoIncrement: true, 
         },
         title: {
             type: STRING,
@@ -53,7 +54,7 @@ ProposalLeadModels.init(
             allowNull: false,
         },
         franchiseModel: {
-            type: STRING,
+            type: INTEGER,
             allowNull: false,
         },
         createdAt: {
@@ -62,7 +63,7 @@ ProposalLeadModels.init(
             defaultValue: DataTypes.NOW,
         },
         createdBy: {
-            type: STRING,
+            type: INTEGER,
             allowNull: false,
         },
         updatedAt: {
@@ -70,7 +71,7 @@ ProposalLeadModels.init(
             allowNull: true,
         },
         updatedBy: {
-            type: STRING,
+            type: INTEGER,
             allowNull: true,
         },
         deletedAt: {
@@ -78,7 +79,7 @@ ProposalLeadModels.init(
             allowNull: true,
         },
         deletedBy: {
-            type: STRING,
+            type: INTEGER,
             allowNull: true,
         },
     },

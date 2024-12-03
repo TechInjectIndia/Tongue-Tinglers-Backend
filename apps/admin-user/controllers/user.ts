@@ -17,7 +17,6 @@ import {
 import { AdminRepo } from "../models/user";
 import { Auth } from "../../auth/models";
 import { USER_TYPE } from "../../../interfaces";
-import { CONFIG } from "../../../config";
 
 export default class AdminController {
     static async getAllUsers(req: Request, res: Response, next: NextFunction) {
@@ -90,7 +89,7 @@ export default class AdminController {
 
     static async addAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, "user_id", "");
+            const user_id = get(req, "user_id", 0);
             const payload = { ...req?.body, createdBy: user_id };
 
             const existingAdmin = await new Auth().getUserByEmail(
@@ -125,7 +124,6 @@ export default class AdminController {
             await new AdminRepo().create({
                 ...payload,
                 password: hashedPassword,
-                type: USER_TYPE.MASTER_FRANCHISE,
                 firebaseUid: firebaseUser.uid,
             });
 
@@ -165,6 +163,27 @@ export default class AdminController {
                     )
                 );
         } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    static async updateType(req: Request, res: Response, next: NextFunction) {
+        try {
+            const id = get(req?.params, "id", 0);
+            const payload = { ...req?.body, updatedBy: id };
+            await new AdminRepo().update(id as number, payload);
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.ADMIN_TYPE_UPDATED
+                    )
+                );
+        }catch(err){
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -244,7 +263,7 @@ export default class AdminController {
             //     payload = { ...payload, password: hashedPassword };
             // }
 
-            await new AdminRepo().update(id as string, payload);
+            await new AdminRepo().update(id as number, payload);
             return res
                 .status(200)
                 .send(
@@ -287,7 +306,38 @@ export default class AdminController {
     static async getAdmin(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id");
-            const existingAdmin = await new AdminRepo().get(id as string);
+            const existingAdmin = await new AdminRepo().get(id as number);
+            if (!existingAdmin?.id) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.ADMIN_NOT_EXISTS
+                        )
+                    );
+            }
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.ADMIN_FETCHED,
+                        existingAdmin
+                    )
+                );
+        } catch (err) {
+            console.log(err);
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+    static async getAdminFirebaseUid(req: Request, res: Response, next: NextFunction) {
+        try {
+            const fireabseUid = get(req?.params, "id");
+            const existingAdmin = await new AdminRepo().getUsingFireaseUid(fireabseUid as string);
             if (!existingAdmin?.id) {
                 return res
                     .status(400)

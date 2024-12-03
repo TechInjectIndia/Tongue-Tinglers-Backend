@@ -1,4 +1,11 @@
-import type { UpdatedMetaData, BaseModel, DeletionMetaData, ITrackable, Note, UserDetails } from "../interfaces";
+import type {
+    UpdatedMetaData,
+    BaseModel,
+    DeletionMetaData,
+    ITrackable,
+    Note,
+    UserDetails,
+} from "../interfaces";
 
 enum followStatus {
     FOLLOWED_UP = "followed-up",
@@ -28,15 +35,15 @@ enum LeadStatus {
 }
 
 interface AssignAttributes {
-    id?: string;
-    assignedTo: string;
-    assignedBy: string;
+    id?: number;
+    assignedTo: number;
+    assignedBy: number;
     assignedDate: Date;
-    leadId: string;
+    leadId: number;
 }
 
 interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
-    campaignId?: string;
+    campaignId?: number;
     status: LeadStatus;
     firstName: string;
     lastName: string;
@@ -50,7 +57,7 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     referBy: UserDetails | null;
     logs: Record<string, ITrackable[]>;
     notes: Note[] | null;
-    proposalModalId?: string | null;
+    proposalModalId?: number | null;
     amount?: number | null;
     franchiseModals: Array<FranchiseModels> | null;
     affiliate: Array<Affiliate> | null;
@@ -63,26 +70,26 @@ interface ProposalModels {
     title: string,
     /* comma separated string */
     prices: string;
-    franchiseModel: string;
+    franchiseModel: number;
     createdAt: Date;
-    createdBy: string;
+    createdBy: number;
     updatedAt: Date | null;
-    updatedBy: string | null;
+    updatedBy: number | null;
     deletedAt: Date | null;
-    deletedBy: string | null;
+    deletedBy: number | null;
 }
 
 type TPayloadProposalModel = {
     title: string;
     /* comma separated string */
     prices: string;
-    franchiseModel: string;
+    franchiseModel: number;
     createdAt: Date;
-    createdBy: string;
+    createdBy: number;
     updatedAt: Date | null;
-    updatedBy: string | null;
+    updatedBy: number | null;
     deletedAt: Date | null;
-    deletedBy: string | null;
+    deletedBy: number | null;
 }
 
 type ProposalModelsList = {
@@ -91,7 +98,7 @@ type ProposalModelsList = {
 };
 
 interface FranchiseModels {
-    id: string,
+    id: number,
     description: string,
     title: string,
     reqArea: number,
@@ -117,11 +124,11 @@ type FranchiseModelsList = {
 };
 
 interface SeoImage {
-    id: string,
+    id: number,
     localFile: File | undefined;
     url: string;
     alt: string;
-    franchiseModelId: string,
+    franchiseModelId: number,
 }
 
 interface SeoImagePayload {
@@ -131,12 +138,12 @@ interface SeoImagePayload {
 }
 
 interface ExtraFields {
-    id: string,
+    id: number,
     key: string,
     value: string,
     title: string,
     type: extraFieldTypes,
-    franchiseModelId: string,
+    franchiseModelId: number,
 }
 
 enum extraFieldTypes {
@@ -158,25 +165,20 @@ enum socialMediaEnumsPlatform {
     TUMBLR = "tumblr",
 }
 
-interface SocialMediaDetailsAttributes {
-    id: string;
-    affiliateId: string;
+interface BaseSocialMedia {
     platform: socialMediaEnumsPlatform;  // e.g., 'FB', 'INSTAGRAM', 'YOUTUBE'
     handle: string;
     followers: number;
     tags: string[];
 }
 
-interface SocialMediaDetailsAttributesPayload {
-    affiliateId: string;
-    platform: socialMediaEnumsPlatform;  // e.g., 'FB', 'INSTAGRAM', 'YOUTUBE'
-    handle: string;
-    followers: number;
-    tags: string[];
+interface SocialMediaDetails extends BaseSocialMedia {
+    id: number;
 }
+
 
 interface Affiliate {
-    id: string,
+    id: number,
     type: string,
     codes: Record<string, string>
 }
@@ -223,7 +225,7 @@ export {
     Affiliate,
     FranchiseModels,
     SeoImage,
-    SocialMediaDetailsAttributes,
+    SocialMediaDetails,
     AffiliatesList,
     TPayloadAffiliate,
     FranchiseModelsList,
@@ -231,9 +233,9 @@ export {
     ProposalModels,
     TPayloadProposalModel,
     ProposalModelsList,
-    SocialMediaDetailsAttributesPayload,
+    BaseSocialMedia,
     socialMediaEnumsPlatform,
     extraFieldTypes,
     SeoImagePayload,
-    AssignAttributes
+    AssignAttributes,
 };

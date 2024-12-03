@@ -17,7 +17,7 @@ interface ICustomerController<T, F extends TQueryFilters> {
      * @param id - The ID of the user.
      * @returns Promise resolving to the user object with permissions.
      */
-    get(id: string): Promise<TUserWithPermission>;
+    get(id: number): Promise<TUserWithPermission>;
 
     /**
      * Create a new user.
@@ -32,7 +32,7 @@ interface ICustomerController<T, F extends TQueryFilters> {
      * @param payload - The data to update the user.
      * @returns Promise resolving to the affected count.
      */
-    update(id: string, payload: TEditUser): Promise<[affectedCount: number]>; 
+    update(id: number, payload: TEditUser): Promise<[affectedCount: number]>; 
 
     /**
      * Delete users by IDs.
@@ -40,7 +40,7 @@ interface ICustomerController<T, F extends TQueryFilters> {
      * @param deletedBy - The ID of the user who deleted the records.
      * @returns Promise resolving to the count of deleted users.
      */
-    delete(ids: string[], deletedBy: number): Promise<number>;
+    delete(ids: number[], deletedBy: number): Promise<number>;
 
     /**
      * Get a list of deleted users.
@@ -54,14 +54,14 @@ interface ICustomerController<T, F extends TQueryFilters> {
      * @param ids - Array of user IDs to restore.
      * @returns Promise resolving when the operation is complete.
      */
-    restore(ids: string[]): Promise<void>;
+    restore(ids: number[]): Promise<void>;
 
     /**
      * Permanently delete users by IDs.
      * @param ids - Array of user IDs to permanently delete.
      * @returns Promise resolving to the count of permanently deleted users.
      */
-    deletePermanant(ids: string[]): Promise<number>;
+    deletePermanant(ids: number[]): Promise<number>;
 
     /**
      * Update user profile.
@@ -69,7 +69,7 @@ interface ICustomerController<T, F extends TQueryFilters> {
      * @param payload - The data to update the user profile.
      * @returns Promise resolving to the affected count.
      */
-    updateProfile(id: string, payload: TEditUserProfile): Promise<[affectedCount: number]>;
+    updateProfile(id: number, payload: TEditUserProfile): Promise<[affectedCount: number]>;
 }
 
 export default ICustomerController;

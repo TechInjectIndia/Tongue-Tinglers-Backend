@@ -1,22 +1,23 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { USER_STATUS, USER_TYPE, UserInformation } from '../../../interfaces';
+import { USER_STATUS, USER_TYPE, UserInformation } from "../../../interfaces";
 import { TUser } from "../../../types";
-const { INTEGER, STRING, ENUM, UUIDV4, JSONB } = DataTypes;
 
-interface UserCreationAttributes extends Optional<TUser, 'id' | 'createdAt' | 'updatedAt'> { }
+const { INTEGER, STRING, ENUM, JSONB } = DataTypes;
+
+interface UserCreationAttributes extends Optional<TUser, "id" | "createdAt" | "updatedAt"> {
+}
 
 class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
-    public id!: string;
+    public id!: number;
     public firebaseUid!: string;
-    public createdBy!: string;
+    public createdBy!: number;
     public password: string;
     public firstName!: string;
     public profilePhoto!: string;
     public lastName!: string;
     public nameForSearch!: string;
     public email!: string;
-    public userName!: string;
     public phoneNumber!: string;
     public type!: USER_TYPE;
     public status!: string;
@@ -27,8 +28,8 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
     public referralCode: string;
     public referBy: UserInformation;
     public lastLoginAt: Date;
-    public updatedBy!: string;
-    public deletedBy!: string;
+    public updatedBy!: number;
+    public deletedBy!: number;
     public role: number | null;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -37,49 +38,47 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
 
 UserModel.init({
     id: {
-        type: STRING,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        defaultValue: UUIDV4
+        autoIncrement: true,
     },
     firebaseUid: {
-        type: STRING
+        type: STRING,
     },
     createdBy: {
-        type: STRING
+        type: INTEGER,
+        allowNull: true,
     },
     password: {
         type: STRING,
         allowNull: true,
     },
     profilePhoto: {
-        type: STRING
+        type: STRING,
     },
     firstName: {
-        type: STRING
+        type: STRING,
     },
     lastName: {
-        type: STRING
+        type: STRING,
     },
     nameForSearch: {
-        type: STRING
+        type: STRING,
     },
     email: {
-        type: STRING
-    },
-    userName: {
         type: STRING,
     },
     phoneNumber: {
-        type: STRING
+        type: STRING,
     },
     type: {
         type: ENUM,
-        values: [...Object.values(USER_TYPE)]
+        values: [...Object.values(USER_TYPE)],
     },
     status: {
         type: ENUM,
-        values: [...Object.values(USER_STATUS)]
+        values: [...Object.values(USER_STATUS)],
     },
     cart: {
         type: STRING,
@@ -106,10 +105,10 @@ UserModel.init({
         allowNull: true,
     },
     updatedBy: {
-        type: STRING
+        type: INTEGER,
     },
     deletedBy: {
-        type: STRING
+        type: INTEGER,
     },
     role: {
         type: INTEGER,
@@ -141,9 +140,10 @@ UserModel.init({
     },
 }, {
     sequelize,
-    tableName: 'users',
+    tableName: "users",
     timestamps: true,
-    paranoid: true
+    paranoid: true,
 });
+
 
 export { UserModel };

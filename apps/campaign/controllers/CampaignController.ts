@@ -8,8 +8,8 @@ import {
     ERROR_MESSAGE,
 } from "../../../constants"; // Adjust this import path as necessary
 import { CampaignAdRepo } from "../models";
-import { FranchiseeRepo } from "../../franchisee/models/FranchiseeRepo";
-import { RegionRepo } from "../../region/models/RegionRepo";
+import RepoProvider from "../../RepoProvider";
+
 
 export default class CampaignController {
     // Method to create a campaign
@@ -18,7 +18,7 @@ export default class CampaignController {
             const user_id = get(req, "user_id", "");
             const payload = { ...req.body, createdBy: user_id };
 
-            const franchiseExist = await new FranchiseeRepo().getFranchiseeById(
+            const franchiseExist = RepoProvider.franchise.getById(
                 payload.franchiseId
             );
             if (!franchiseExist) {

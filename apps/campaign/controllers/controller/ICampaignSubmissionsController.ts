@@ -15,7 +15,7 @@ interface IDynamicFormController<T, F extends TQueryFilters> {
      * @param id - The ID of the dynamic form question.
      * @returns Promise resolving to the dynamic form question object.
      */
-    get(id: string): Promise<T | null>;
+    get(id: number): Promise<T | null>;
 
     /**
      * Create a new dynamic form question.
@@ -30,7 +30,7 @@ interface IDynamicFormController<T, F extends TQueryFilters> {
      * @param payload - The data to update the dynamic form question.
      * @returns Promise resolving to the affected count.
      */
-    update(id: string, payload: TPayloadCampaignSubmisisons): Promise<[affectedCount: number]>;
+    update(id: number, payload: TPayloadCampaignSubmisisons): Promise<[affectedCount: number]>;
 
     /**
      * Delete dynamic form questions by IDs for a user.
@@ -38,7 +38,7 @@ interface IDynamicFormController<T, F extends TQueryFilters> {
      * @param deletedBy - The ID of the user who deleted the dynamic form questions.
      * @returns Promise resolving to the count of deleted dynamic form questions.
      */
-    delete(ids: string[], deletedBy: string): Promise<number>;
+    delete(ids: number[], deletedBy: number): Promise<number>;
 }
 
 export default IDynamicFormController;

@@ -19,7 +19,7 @@ const SeoImageSchema = Joi.object({
 const createProposalModelBody = Joi.object({
     title: Joi.string().required()
         .messages({ 'any.required': 'Title is required.' }),
-    franchiseModel: Joi.string().required()
+    franchiseModel: Joi.number().required()
         .messages({
             'any.required': 'Franchise Model is required.'
         }),
@@ -36,7 +36,7 @@ const editProposalModelBody = Joi.object({
         .messages({ 'string.base': 'Title must be a string.' }),
     prices: Joi.string().optional()
         .messages({ 'string.base': 'Prices must be a string.' }),
-    franchiseModel: Joi.string().optional()
+    franchiseModel: Joi.number().optional()
         .messages({ 'string.base': 'Franchise Model must be a string.' }),
 
 }).or('title', 'prices', 'franchiseModel',) // At least one field must be provided for update
@@ -46,7 +46,7 @@ const editProposalModelBody = Joi.object({
 
 // Validation schema for editing ProposalModel parameters
 const editProposalModelParams = Joi.object({
-    id: Joi.string().uuid().required()
+    id: Joi.number().required()
         .messages({
             'string.base': 'ProposalModel ID must be a string.',
             'string.guid': 'ProposalModel ID must be a valid UUID.',

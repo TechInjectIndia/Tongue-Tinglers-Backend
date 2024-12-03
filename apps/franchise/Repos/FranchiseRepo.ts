@@ -2,7 +2,13 @@ import { Franchise, FranchiseDetails } from "../../../interfaces";
 import { IFranchiseRepo } from "./IFranchiseRepo";
 
 import RepoProvider from "../../RepoProvider";
-import { FranchiseModel } from "../../../database/schema";
+import {
+    FranchiseModel, RegionModel,
+    UserModel,
+} from "../../../database/schema";
+import {
+    OrganizationModel,
+} from "../../organization/database/organization_schema";
 
 
 export class FranchiseRepo implements IFranchiseRepo {
@@ -33,6 +39,9 @@ export class FranchiseRepo implements IFranchiseRepo {
                     organizationId: franchise.organizationId,
                     location: addressId,
                     sm: smIds,
+                    createdBy: franchise.createdBy,
+                    updatedBy: franchise.updatedBy,
+                    deletedBy: franchise.deletedBy,
                 })).toJSON();
 
             }
@@ -61,8 +70,40 @@ export class FranchiseRepo implements IFranchiseRepo {
         return Promise.resolve(false);
     }
 
-    getById(id: number): Promise<Franchise> {
-        return Promise.resolve(undefined);
+    async getById(id: number): Promise<Franchise> {
+        try {
+            const id2 = Number(id);
+            console.log("id", typeof id2);
+            const res = (await FranchiseModel.findOne({
+                where: { id: Number(id2) },
+                include: [
+                    {
+                        model: RegionModel,
+                        as: "Region", // Matches the alias defined in the association
+                    },
+                    {
+                        model: OrganizationModel,
+                        as: "organization", // Matches the alias defined in the association
+                    },
+                    {
+                        model: UserModel,
+                        as: "createdByUser", // For the 'createdBy' user
+                    },
+                    {
+                        model: UserModel,
+                        as: "updatedByUser", // For the 'updatedBy' user
+                    },
+                    {
+                        model: UserModel,
+                        as: "deletedByUser", // For the 'deletedBy' user
+                    },
+                ],
+            })).toJSON();
+            return res;
+        } catch (e) {
+            console.log(e);
+            return null;
+        }
     }
 
     getByOrganizationId(organizationId: number): Promise<Franchise[]> {

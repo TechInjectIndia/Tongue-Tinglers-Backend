@@ -7,8 +7,6 @@ import {
 } from "../../../constants";
 import {
     sendResponse,
-    createStandardPaymentLinkForOrders,
-    CreatePaymentIntentWithRazorpay,
     sendEmail,
     EMAIL_HEADING,
     getEmailTemplate,
@@ -16,7 +14,9 @@ import {
 } from "../../../libraries";
 import { OrderRepo } from "../../ecommerce/models/orders";
 import { OrderItemRepo } from "../../ecommerce/models/orders-item";
-import { ShippingHistoryRepo } from "../../ecommerce/models/shippingHistoryRepo";
+import {
+    ShippingHistoryRepo,
+} from "../../ecommerce/models/shippingHistoryRepo";
 import { CONFIG } from "../../../config";
 import { get } from "lodash";
 import { CartModel } from "../../../database/schema";
@@ -30,6 +30,7 @@ import {
 } from "../../../interfaces";
 import { OrderStatus } from "../../../types";
 import { AnyCnameRecord } from "dns";
+
 const {
     validateWebhookSignature,
 } = require("razorpay/dist/utils/razorpay-utils");
@@ -160,9 +161,7 @@ export default class OrderPaymentController {
                     .send(sendResponse(RESPONSE_TYPE.ERROR, "Cart is empty"));
             }
 
-            let franchiseData = await FranchiseModel.findOne({
-
-            });
+            let franchiseData = await FranchiseModel.findOne({});
             if (!franchiseData) {
                 return res
                     .status(404)
@@ -174,10 +173,11 @@ export default class OrderPaymentController {
                     );
             }
 
-            const link = await createStandardPaymentLinkForOrders({
-                cart: cart,
-                franchise: franchiseData,
-            });
+            // const link = await createStandardPaymentLinkForOrders({
+            //     cart: cart,
+            //     franchise: franchiseData,
+            // });
+            const link: any = {};
 
             if (!link) {
                 return res
@@ -359,7 +359,7 @@ export default class OrderPaymentController {
             // );
 
             // Remove all products related to the cart
-            let newOrder = {}
+            let newOrder = {};
             await CartItemModel.destroy({
                 where: { cart_id: cart.id },
             });
@@ -429,8 +429,8 @@ export default class OrderPaymentController {
             };
 
             // Call the utility function to create payment intent
-            const paymentIntentResponse =
-                await CreatePaymentIntentWithRazorpay(data);
+            const paymentIntentResponse: any = {};
+            // await CreatePaymentIntentWithRazorpay(data);
 
             if (paymentIntentResponse.status === 500) {
                 return res
@@ -450,7 +450,7 @@ export default class OrderPaymentController {
                     "Payment intent created successfully.",
                     {
                         paymentIntentId:
-                            paymentIntentResponse.data.paymentIntentId,
+                        paymentIntentResponse.data.paymentIntentId,
                     },
                 ),
             );
@@ -483,8 +483,8 @@ export default class OrderPaymentController {
             };
 
             // Call the utility function to create payment intent
-            const paymentIntentResponse =
-                await CreatePaymentIntentWithRazorpay(data);
+            const paymentIntentResponse: any = {};
+            // await CreatePaymentIntentWithRazorpay(data);
 
             if (paymentIntentResponse.status === 500) {
                 return res
@@ -504,7 +504,7 @@ export default class OrderPaymentController {
                     "Payment intent created successfully.",
                     {
                         paymentIntentId:
-                            paymentIntentResponse.data.paymentIntentId,
+                        paymentIntentResponse.data.paymentIntentId,
                     },
                 ),
             );

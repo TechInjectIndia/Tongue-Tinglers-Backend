@@ -8,6 +8,7 @@ import { RegionModel } from "./RegionsModel";
 import {
     OrganizationModel,
 } from "../../../apps/organization/database/organization_schema";
+import franchise from "../../../apps/franchise/api/franchise";
 
 const { STRING, INTEGER, DATE, NOW, ARRAY, ENUM } = DataTypes;
 
@@ -39,6 +40,7 @@ class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> impl
     public createdAt: Date;
     public deletedAt: Date | null;
     public updatedAt: Date | null;
+    public affiliateId: number;
 
 
     public static associate() {
@@ -71,7 +73,7 @@ class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> impl
 
     }
 
-    affiliateId: number;
+
 }
 
 FranchiseModel.init(
@@ -83,7 +85,7 @@ FranchiseModel.init(
         },
         affiliateId: {
             type: INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
         createdAt: {
             type: DATE,
@@ -173,6 +175,7 @@ FranchiseModel.init(
     },
 );
 
+FranchiseModel.associate();
 
 export { FranchiseModel };
 

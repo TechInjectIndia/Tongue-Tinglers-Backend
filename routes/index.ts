@@ -119,8 +119,8 @@ router.use(`${ADMIN}/checklist`, auth, IChecklistRouter);
 router.use(`${ADMIN}/pdi`, auth, PdiRouter);
 router.use(`${ADMIN}/quick-actions/email`, auth, quickActionEmailRouter);
 router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
-router.use(`${ADMIN}/region`, auth, regionRouter);
-router.use(`${ADMIN}/area`, auth, areaRouter);
+router.use(`${ADMIN}/region`, regionRouter);
+router.use(`${ADMIN}/area`, areaRouter);
 router.use(`${ADMIN}/contracts`, contractsRouter);
 router.use(`${ADMIN}/lead`, auth, leadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);

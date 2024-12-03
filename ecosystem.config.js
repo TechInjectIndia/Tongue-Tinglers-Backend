@@ -9,3 +9,6 @@ module.exports = {
         },
     ],
 };
+
+const l = require('./newrelic.js')
+console.log(l)

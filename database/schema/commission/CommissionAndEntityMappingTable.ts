@@ -143,8 +143,9 @@ interface ICommissionEntityMapping extends BaseModel, UpdatedMetaData, DeletionM
 /* This table has relations with other tables, so we need to define an interface for it */
 interface ICommissionEntityMappingResponse {
     id: number;
+    franchiseId: number;
     /* it is organization of this franchise */
-    franchise: {
+    franchiseOrganization: {
         id: number;
         name: string;
     };
@@ -161,9 +162,9 @@ interface ICommissionEntityMappingResponse {
     createdBy: number;
     updatedBy: number | null;
     deletedBy: number | null;
-    readonly createdAt: Date;
-    readonly updatedAt: Date;
-    readonly deletedAt: Date | null;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date | null;
 }
 
 export { CommissionEntityMapTable, COMMISSION_ENTITIES, ICommissionEntityMapping, COMMISSION_PAID_STATUS, OrganizationCommissions, ICommissionEntityMappingResponse };

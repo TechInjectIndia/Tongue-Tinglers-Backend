@@ -29,6 +29,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                             attributes: ["id", "pocName"],
                             include: [{
                                 model: OrganizationModel,
+                                as: "organization",
                                 attributes: ["id", "name"],
                             }]
 
@@ -46,17 +47,18 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             for (const mapping of result) {
                 response.push({
                     id: mapping.id,
-                    franchise: {
-                        id: 1,
-                        name: "mapping.franchise.name",
+                    franchiseId: mapping.franchiseId,
+                    franchiseOrganization: {
+                        id: mapping["FranchiseModel"]["organization"].id,
+                        name: mapping["FranchiseModel"]["organization"].name,
                     },
                     commission: {
                         id: mapping.commissionId,
-                        title: "mapping.commission.title",
+                        title: mapping["CommissionTable"].title,
                     },
                     organization: {
                         id: mapping.organizationId,
-                        name: "mapping.organization.name",
+                        name: mapping["OrganizationModel"].name,
                     },
                     status: mapping.status,
                     createdBy: mapping.createdBy,

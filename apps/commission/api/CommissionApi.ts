@@ -57,7 +57,7 @@ commissionRouter.get("/search", auth, validateSearchCommission, ControllerProvid
 
 commissionRouter.post("/create-commission-mapping", auth, validateCreateCommissionMapEntry, ControllerProvider.commissionController.createMapEntry);
 
-commissionRouter.get("/commission-mappings", ControllerProvider.commissionController.getMappingsData);
+commissionRouter.get("/commission-mappings", auth, ControllerProvider.commissionController.getMappingsData);
 
 commissionRouter.get("/:id", auth, validateGetCommissionById, ControllerProvider.commissionController.getById);
 

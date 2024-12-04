@@ -305,8 +305,9 @@ export default class AdminController {
 
     static async getAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id");
-            const existingAdmin = await new AdminRepo().get(id as number);
+            const id = parseInt(get(req?.params, "id"));
+            if(isNaN(id)) throw Error // todo @nitesh @suneel handle gracefully;
+            const existingAdmin = await new AdminRepo().get(id);
             if (!existingAdmin?.id) {
                 return res
                     .status(400)

@@ -1,6 +1,6 @@
 import { CartModel } from "../../../database/schema";
 import { CartItemModel } from "../../../database/schema";
-import { ProductsModel } from "../../../database/schema";
+// import { ProductsModel } from "../../../database/schema";
 import { RetortProductsModel } from "../../../database/schema";
 import { ProductImagesModel } from "../../../database/schema";
 import { StockModel } from "../../../database/schema";
@@ -157,23 +157,23 @@ export class CartRepo {
                 include: [{
                     model: CartItemModel,
                     as: 'items',
-                    include: [{
-                        model: ProductsModel,
-                        as: 'product',
-                        include: [{
-                            model: ProductImagesModel,
-                            as: 'images',
-                        },
-                        {
-                            model: StockModel,
-                            as: 'stock',
-                        }
-                        ],
-                    },
-                    {
-                        model: RetortProductsModel,
-                        as: 'retortProduct',
-                    }],
+                    // include: [{
+                    //     model: ProductsModel,
+                    //     as: 'product',
+                    //     include: [{
+                    //         model: ProductImagesModel,
+                    //         as: 'images',
+                    //     },
+                    //     {
+                    //         model: StockModel,
+                    //         as: 'stock',
+                    //     }
+                    //     ],
+                    // },
+                    // {
+                    //     model: RetortProductsModel,
+                    //     as: 'retortProduct',
+                    // }],
                 }]
             });
             return cart;

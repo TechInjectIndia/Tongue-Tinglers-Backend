@@ -2,7 +2,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
 import { ICartItemAttributes } from "../../../interfaces";
-import { ProductsModel } from './product.model';
 import { RetortProductsModel } from '../retort/retort-product';
 
 interface ICartItemCreationAttributes extends Optional<ICartItemAttributes, 'id'> { }
@@ -19,7 +18,6 @@ class CartItemModel extends Model<ICartItemAttributes, ICartItemCreationAttribut
     public readonly updatedAt!: Date;
 
     public static associate() {
-        this.belongsTo(ProductsModel, { foreignKey: 'productId', as: 'product' });
         this.belongsTo(RetortProductsModel, { foreignKey: 'productId', as: 'retortProduct' });
     }
 }

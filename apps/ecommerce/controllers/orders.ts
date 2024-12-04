@@ -3,7 +3,7 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { OrderRepo } from '../models/orders';
-import { ProductRepo } from '../models/products';
+// import { ProductRepo } from '../models/products';
 import { OrderItemRepo } from '../models/orders-item';
 import { OrderStatus } from '../../../types';
 
@@ -19,7 +19,7 @@ export default class OrderController {
                 if (cartItems.length) {
                     cartItems.map(async (product: any, index: number) => {
                         let isRepeated = 0;
-                        const getProduct = await new ProductRepo().get(product.id as number);
+                        // const getProduct = await new ProductRepo().get(product.id as number);
                         const checkRepeatedOrder = await new OrderItemRepo().checkRepeatedOrder(user_id as number, product.id as number);
                         if (checkRepeatedOrder) {
                             isRepeated = 1;

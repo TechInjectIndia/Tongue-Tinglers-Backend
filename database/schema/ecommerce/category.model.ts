@@ -2,7 +2,6 @@ import { DataTypes, Model, Optional, } from "sequelize";
 import { sequelize } from "../../../config";
 import { IProductCategory } from "../../../interfaces";
 import { CategoryImageModel } from './category_image.model'
-import { ProductsModel } from './product.model'
 import { ProductCategoryMapModel } from './product_category_map.model'
 const { STRING, TEXT, DATE, INTEGER, NOW, BOOLEAN } = DataTypes;
 
@@ -18,7 +17,6 @@ class ProductCategoryModel extends Model<IProductCategory, ProductCategoryCreati
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date;
 
-    public readonly products?: ProductsModel[];
 }
 
 ProductCategoryModel.init({

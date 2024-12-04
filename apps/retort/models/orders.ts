@@ -48,7 +48,7 @@ export class RetortOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
         const total = await OrdersModel.count({
             where: {
                 trackingNumber: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 orderType: ORDER_TYPE.FRANCHISE
             },
@@ -59,7 +59,7 @@ export class RetortOrderRepo implements IBaseRepo<TOrder, TOrderFilters> {
             limit: filters.limit,
             where: {
                 trackingNumber: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 orderType: ORDER_TYPE.FRANCHISE
             },

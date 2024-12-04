@@ -4,6 +4,7 @@ import {
     TQueryFilters,
     TContractsList,
     TContractPayload,
+    TListFiltersContract,
 } from "../../../types";
 import {
     CONTRACT_PAYMENT_STATUS,
@@ -15,7 +16,7 @@ import { ContractModel } from "../../../database/schema";
 import IContractsController from "../controllers/controller/IContractsController";
 
 export class ContractRepo
-    implements IContractsController<TContract, TQueryFilters>
+    implements IContractsController<TContract, TListFiltersContract>
 {
     constructor() {}
 
@@ -148,23 +149,59 @@ export class ContractRepo
         return data ? data : null;
     }
 
-    public async list(filters: TQueryFilters): Promise<TContractsList> {
+    public async list(filters: TListFiltersContract): Promise<TContractsList> {
+        console.log("contract list ",filters);
+        const where: any = {};
+        const validStatuses = Object.values(CONTRACT_STATUS).filter(
+            (status) => status === filters.filters?.status
+        );
+        console.log(validStatuses);
+
+        if (
+            filters?.filters.status &&
+            validStatuses.includes(filters.filters.status)
+        ) {
+            where.status = filters.filters.status;
+        }
+
+        if (filters?.search && filters?.search !== '') {
+            where.templateId = {
+                [Op.like]: `%${filters.search}%`,
+            };
+        }
+
+        // Filter for min_price and max_price
+    if (filters?.filters.min_price !== undefined && filters?.filters.min_price !== null) {
+        where.amount = { [Op.gte]: filters.filters.min_price };
+    }
+    if (filters?.filters.max_price !== undefined && filters?.filters.max_price !== null) {
+        where.amount = { ...where.amount, [Op.lte]: filters.filters.max_price };
+    }
+
+    // Filter for due_date
+    if (filters?.filters.due_date) {
+        where.dueDate = filters.filters.due_date;  // Assuming it's a direct match, you can adjust the condition if needed (e.g., range).
+    }
+
+    // Filter for region
+    if (filters?.filters.region) {
+        where.region = filters.filters.region;
+    }
+
+    // Filter for assignee
+    if (filters?.filters.assignee) {
+        where.assigneeId = filters.filters.assignee;  // Assuming assignee is identified by an ID
+    }
+        
+        console.log(where);
         const total = await ContractModel.count({
-            // where: {
-            //     templateId: {
-            //         [Op.like]: `%${filters.search}%`,
-            //     },
-            // },
+            where: where
         });
         const data = await ContractModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
-            // where: {
-            //     templateId: {
-            //         [Op.like]: `%${filters.search}%`,
-            //     },
-            // },
+            where: where
         });
         return { total, data };
     }

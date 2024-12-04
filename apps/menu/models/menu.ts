@@ -50,7 +50,7 @@ export class MenuRepo implements IBaseRepo<TMenu, TMenuFilters> {
         const total = await MenuModel.count({
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -60,7 +60,7 @@ export class MenuRepo implements IBaseRepo<TMenu, TMenuFilters> {
             limit: filters.limit,
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

@@ -64,12 +64,18 @@ export default class ContractController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
 
+            const status = get(req.query, "status");
+
+            const filters: any = {};
+            if (status) filters.status = status;
+
             const Products = await new ContractRepo().list({
                 offset: skip as number,
                 limit: size as number,
                 search: search as string,
                 sorting: sorting,
                 trashOnly: trashOnly as string,
+                filters: filters
             });
 
             return res

@@ -227,6 +227,9 @@ const options = {
             {
                 name: "PetPooja",
             },
+            {
+                name: "Admin > Product"
+            }
         ],
     },
     // looks for configuration in specified directories
@@ -275,6 +278,7 @@ const options = {
                   "./apps/analytics/api/franchise/*.js",
                   "./apps/crm/api/*.js",
                   "./apps/contracts/api/*.js",
+                  "./apps/product/api/*.js"
               ]
             : [
                   "./routes/*.ts",
@@ -319,6 +323,7 @@ const options = {
                   "./apps/analytics/api/franchise/*.ts",
                   "./apps/crm/api/*.ts",
                   "./apps/contracts/api/*.ts",
+                  "./apps/product/api/*.ts"
               ],
     docExpansion: "none", // Can minimize the displayed logs in the Swagger UI.
 };

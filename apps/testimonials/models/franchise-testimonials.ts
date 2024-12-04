@@ -30,7 +30,7 @@ export class FranchiseTestimonialsRepo implements IBaseRepo<TTestimonials, TTest
         const total = await TestimonialsModel.count({
             where: {
                 testimonial_text: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 rating: {
                     [Op.gt]: filters.rating
@@ -43,7 +43,7 @@ export class FranchiseTestimonialsRepo implements IBaseRepo<TTestimonials, TTest
             limit: filters.limit,
             where: {
                 testimonial_text: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
                 rating: {
                     [Op.gt]: filters.rating

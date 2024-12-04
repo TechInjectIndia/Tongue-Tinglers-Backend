@@ -4,8 +4,8 @@ import * as AuthValidation from "../validations";
 import { auth } from '../../../middlewares/auth';
 
 const router = express.Router();
-const { validateLoginBody, validateChangePasswordBody, validateTokenBody, validateCreatePasswordBody } = AuthValidation;
-const { login, changePassword, verifyPasswordToken, createPassword } = AuthController;
+const { validateLoginBody, validateChangePasswordBody, validateTokenBody, validateCreatePasswordBody, validateChangeFirebasePasswordBody } = AuthValidation;
+const { login, changePassword, verifyPasswordToken, createPassword, changeFirebasePassword } = AuthController;
 
 // ====== Auth Start ======
 
@@ -138,5 +138,7 @@ router.post("/verify-password-token", validateTokenBody, verifyPasswordToken);
  *         description: Unauthorized
  */
 router.post("/create-password", validateCreatePasswordBody, createPassword);
+
+router.post("/change-firebase-password", validateChangeFirebasePasswordBody, changeFirebasePassword);
 
 export default router;

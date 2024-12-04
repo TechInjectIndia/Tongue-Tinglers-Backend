@@ -43,8 +43,8 @@ export class CampaignAdRepo
         // Initialize the whereCondition object
         const whereCondition: any = {
             [Op.or]: [
-                { name: { [Op.like]: `%${filters.search}%` } }, // Assuming `name` is a string
-                { description: { [Op.like]: `%${filters.search}%` } }, // Assuming `description` is a string
+                { name: { [Op.iLike]: `%${filters.search}%` } }, // Assuming `name` is a string
+                { description: { [Op.iLike]: `%${filters.search}%` } }, // Assuming `description` is a string
             ],
         };
 

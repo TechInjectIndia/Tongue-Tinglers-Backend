@@ -32,7 +32,7 @@ export class PdiChecklistRepo implements IBaseRepo<IPdiChecklist, TListFilters> 
         const total = await PdiChecklistModel.count({
             where: {
                 checklistName: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -43,7 +43,7 @@ export class PdiChecklistRepo implements IBaseRepo<IPdiChecklist, TListFilters> 
             limit: filters.limit,
             where: {
                 checklistName: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

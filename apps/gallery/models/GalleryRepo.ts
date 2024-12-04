@@ -10,10 +10,10 @@ export class GalleryRepo implements IGalleryController<GalleryAttributes> {
         const searchConditions: any = {};
 
         if (name) {
-            searchConditions.name = { [Op.like]: `%${name}%` };
+            searchConditions.name = { [Op.iLike]: `%${name}%` };
         }
         if (message) {
-            searchConditions.message = { [Op.like]: `%${message}%` };
+            searchConditions.message = { [Op.iLike]: `%${message}%` };
         }
 
         try {

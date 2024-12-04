@@ -32,7 +32,7 @@ export class PdiChecklistRepo implements IBaseRepo<ICheckList, TListFiltersIChec
         const total = await IChecklistModel.count({
             where: {
                 title: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -43,7 +43,7 @@ export class PdiChecklistRepo implements IBaseRepo<ICheckList, TListFiltersIChec
             limit: filters.limit,
             where: {
                 title: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

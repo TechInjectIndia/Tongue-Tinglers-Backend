@@ -224,6 +224,17 @@ const listLeadQuery = Joi.object().keys({
         }),
     search: Joi.string().optional().allow(""),
     sorting: Joi.string().optional().allow(""),
+    status: Joi.string().optional().allow(""),
+    source: Joi.string().optional().allow(""),
+    campaign: Joi.string().optional().allow(""),
+    region: Joi.string().optional().allow(""),
+    state: Joi.string().optional().allow(""),
+    date: Joi.string().optional().allow(""),    
+    assignee: Joi.string().optional().allow(""),
+    followUpDate: Joi.string().optional().allow(""),
+    affiliate: Joi.string().optional().allow(""),
+    amountRange: Joi.string().optional().allow(""),
+    quickActionFilter: Joi.string().optional().allow("")
 });
 
 // Validation for editing multiple IDs

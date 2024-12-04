@@ -30,7 +30,7 @@ export class AreaRepo implements IBaseRepo<IArea, TListFiltersAreas> {
         if (filters.search) {
             whereCondition[Op.or] = [
                 { id: { [Op.like]: `%${filters.search}%` } },
-                { title: { [Op.like]: `%${filters.search}%` } },
+                { title: { [Op.iLike]: `%${filters.search}%` } },
                 { createdBy: { [Op.like]: `%${filters.search}%` } },
             ];
         }

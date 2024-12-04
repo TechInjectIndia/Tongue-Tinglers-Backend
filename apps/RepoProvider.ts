@@ -14,14 +14,20 @@ import { RegionRepo } from "./region/models/RegionRepo";
 import ISocialMediaDetailsRepo
     from "./affiliate/controllers/controller/ISocialMediaController";
 import { SocialMediaDetailsRepo } from "./affiliate/models/smDetailsRepo";
-
-
+import { IProductRepo } from "./product/repos/IProductRepo";
+import { ProductRepo } from "./product/repos/productRepo";
+import { IOptionsRepo } from "./options/repos/IOptionsRepo";
+import { OptionsRepo } from "./options/repos/optionsRepo";
+import { IOptionsValueRepo } from "./optionsValue/repos/IOptionsValueRepo";
+import { OptionsValueRepo } from "./optionsValue/repos/optionsValueRepo";   
 export default class RepoProvider {
     private static _franchiseRepo: IFranchiseRepo;
     private static _addressRepo: IAddress<BaseAddress, Address, TListFilters>;
     private static _regionRepo: IRegionRepo<IRegion, TListFiltersRegions>;
     private static _smRepo: ISocialMediaDetailsRepo<SocialMediaDetails>;
-
+    private static _productRepo: IProductRepo;
+    private static _optionsRepo: IOptionsRepo
+    private static _optionsValueRepo: IOptionsValueRepo
 
     static get franchise() {
         if (!this._franchiseRepo) {
@@ -49,6 +55,27 @@ export default class RepoProvider {
             this._smRepo = new SocialMediaDetailsRepo();
         }
         return this._smRepo;
+    }
+
+    static get ProductRepo() {
+        if (!this._productRepo) {
+            this._productRepo = new ProductRepo();
+        }
+        return this._productRepo;
+    }
+
+    static get optionsRepo() {
+        if (!this._optionsRepo) {
+            this._optionsRepo = new OptionsRepo();
+        }
+        return this._optionsRepo;
+    }
+
+    static get optionsValueRepo() {
+        if (!this._optionsValueRepo) {
+            this._optionsValueRepo = new OptionsValueRepo();
+        }
+        return this._optionsValueRepo;
     }
 
 

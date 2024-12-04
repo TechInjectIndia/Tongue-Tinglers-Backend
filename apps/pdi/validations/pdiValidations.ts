@@ -59,6 +59,38 @@ ids: Joi.array().items(Joi.number()).min(1).required().messages({
 }),
 }).strict();
 
+const idValidationSchema = Joi.object({
+  id: Joi.number().required().messages({
+    "number.base": "ID must be a number",
+    "any.required": "ID is required",
+  }),
+});
+
+const isValidateProspectId = Joi.object({
+  prospectId: Joi.number().required().messages({
+    "number.base": "Prospect ID must be a number",
+    "any.required": "Prospect ID is required",
+  }),
+});
+
+export const validateProspectId = (req: Request, res: Response, next: NextFunction) => {
+  const { error } = isValidateProspectId.validate(req.params);
+
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  next();
+};
+
+export const validateId = (req: Request, res: Response, next: NextFunction) => {
+  const { error } = idValidationSchema.validate(req.params);
+
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  next();
+};
+
 
 
 // Middleware for validating Area creation
@@ -85,5 +117,4 @@ export const validateEditChecklistBody = (req: Request, res: Response, next: Nex
   export const validateDeleteMultipleIdsBody = (req: Request, res: Response, next: NextFunction) => {
     validateReq(req, res, next, editMultipleIdsBody, 'body');
   };
-
   

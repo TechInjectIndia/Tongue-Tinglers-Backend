@@ -19,15 +19,20 @@ import { ProductRepo } from "./product/repos/productRepo";
 import { IOptionsRepo } from "./options/repos/IOptionsRepo";
 import { OptionsRepo } from "./options/repos/optionsRepo";
 import { IOptionsValueRepo } from "./optionsValue/repos/IOptionsValueRepo";
-import { OptionsValueRepo } from "./optionsValue/repos/optionsValueRepo";   
+import { OptionsValueRepo } from "./optionsValue/repos/optionsValueRepo";
+import { RazorpayRepo } from "./razorpay/Repos/RazorapayRepo";
+import { IRazorpayRepo } from "./razorpay/Repos/IRazorpayRepo";
+
 export default class RepoProvider {
     private static _franchiseRepo: IFranchiseRepo;
     private static _addressRepo: IAddress<BaseAddress, Address, TListFilters>;
     private static _regionRepo: IRegionRepo<IRegion, TListFiltersRegions>;
     private static _smRepo: ISocialMediaDetailsRepo<SocialMediaDetails>;
     private static _productRepo: IProductRepo;
-    private static _optionsRepo: IOptionsRepo
-    private static _optionsValueRepo: IOptionsValueRepo
+    private static _optionsRepo: IOptionsRepo;
+    private static _optionsValueRepo: IOptionsValueRepo;
+    private static _razorpayRepo: IRazorpayRepo;
+
 
     static get franchise() {
         if (!this._franchiseRepo) {
@@ -76,6 +81,13 @@ export default class RepoProvider {
             this._optionsValueRepo = new OptionsValueRepo();
         }
         return this._optionsValueRepo;
+    }
+
+    static get razorpayRepo() {
+        if (!this._razorpayRepo) {
+            this._razorpayRepo = new RazorpayRepo();
+        }
+        return this._razorpayRepo;
     }
 
 

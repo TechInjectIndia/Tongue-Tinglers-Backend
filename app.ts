@@ -105,29 +105,8 @@ server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");
 server.get("/", async (_, res) => {
 
-    const customer: PaymentLinkCustomer = {
-        contact: "9997016578", email: "niteshrghv@gmail.com", name: "Nitesh",
 
-    };
-    const paymentLink: PaymentLinkPayload = {
-        accept_partial: false,
-        amount: 1000,
-        callback_method: "get",
-        callback_url: "",
-        currency: "INR",
-        customer: customer,
-        description: "",
-        expire_by: 0,
-        first_min_partial_amount: 0,
-        reference_id: "",
-        reminder_enable: false,
-
-    };
-    const data = await RepoProvider.razorpayRepo.createPaymentLink(paymentLink);
-    // const data1 = await RepoProvider.razorpayRepo.
-
-
-    res.send(JSON.stringify(data));
+    res.send("Hello from tongue tingler");
 });
 server.use("/api", router);
 

@@ -1,32 +1,28 @@
-import {
-    PaymentLinkCustomer,
-    PaymentLinkPayload,
-} from "./apps/razorpay/models/Razorpay";
-
-require("newrelic");
 import dotenv from "dotenv";
 import sgMail from "@sendgrid/mail";
-import { CONFIG } from "./config";
+import {CONFIG, connectToDatabase} from "./config";
 import swaggerDocs from "./swagger";
 import express from "express";
 import ejs from "ejs";
 import cors from "cors";
 import router from "./routes";
-import { connectToDatabase } from "./config";
-
-require("./database/schema");
 import helmet from "helmet";
 import helmetCsp from "helmet-csp";
 import xss from "xss-clean";
 
-import { RateLimiterMemory } from "rate-limiter-flexible";
+import {RateLimiterMemory} from "rate-limiter-flexible";
+import expressSanitizer from "express-sanitizer";
+
+if (process.env.NEW_RELIC_ENABLED === 'true') {
+    require("newrelic");
+}
+
+require("./database/schema");
 
 const rateLimiter = new RateLimiterMemory({
     points: 50, // Number of points
     duration: 1, // Per second
 });
-import expressSanitizer from "express-sanitizer";
-import RepoProvider from "./apps/RepoProvider";
 
 require("dotenv").config();
 
@@ -40,7 +36,7 @@ declare global {
         toJSON: () => string;
     }
 }
-BigInt.prototype.toJSON = function() {
+BigInt.prototype.toJSON = function () {
     return this.toString();
 };
 
@@ -75,21 +71,25 @@ export const server = express();
 // server.use(loggerMiddleware);
 
 server.use(async (req, res, next) => {
-    // Purpose: A more flexible rate limiter than express-rate-limit, suitable for different types of stores (e.g., Redis).
+    // Purpose: A more flexible rate limiter than express-rate-limit, suitable
+    // for different types of stores (e.g., Redis).
     try {
         await rateLimiter.consume(req.ip);
         next();
-    } catch (rejRes) {
+    }
+    catch (rejRes) {
         res.status(429).send("Too Many Requests");
     }
 });
 
-server.use(express.urlencoded({ limit: "10mb", extended: true }));
-server.use(express.json({ limit: "10mb" }));
-server.use(helmet()); // Purpose: Adds various HTTP headers to help protect your app from common web
+server.use(express.urlencoded({limit: "10mb", extended: true}));
+server.use(express.json({limit: "10mb"}));
+server.use(helmet()); // Purpose: Adds various HTTP headers to help protect
+                      // your app from common web
 server.use(
     helmetCsp({
-        // Purpose: Provides a Content Security Policy (CSP) middleware for Helmet to help prevent XSS attacks.
+        // Purpose: Provides a Content Security Policy (CSP) middleware for
+        // Helmet to help prevent XSS attacks.
         directives: {
             defaultSrc: ["'self'"],
             scriptSrc: ["'self'", "trusted-cdn.com"],
@@ -97,10 +97,14 @@ server.use(
         },
     }),
 );
-server.use(xss()); // Purpose: Middleware for Express to sanitize user input for XSS attacks.
+server.use(xss()); // Purpose: Middleware for Express to sanitize user input
+                   // for XSS attacks.
 server.use(expressSanitizer());
-// server.use(limiter); // Purpose: Limits repeated requests to public APIs and/or endpoints, which helps to prevent
-server.use(cors(corsOptions)); // Purpose: Provides a middleware for enabling Cross-Origin Resource Sharing (CORS) with various
+// server.use(limiter); // Purpose: Limits repeated requests to public APIs
+// and/or endpoints, which helps to prevent
+server.use(cors(corsOptions)); // Purpose: Provides a middleware for enabling
+                               // Cross-Origin Resource Sharing (CORS) with
+                               // various
 server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");
 server.get("/", async (_, res) => {
@@ -116,6 +120,7 @@ try {
         console.log(`Server is live at localhost:${PORT}`),
     );
     swaggerDocs(server, PORT);
-} catch (error) {
+}
+catch (error) {
     console.log("Cannot connect to the server");
 }

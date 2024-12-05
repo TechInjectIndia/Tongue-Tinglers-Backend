@@ -106,9 +106,23 @@ server.set("view engine", "ejs");
 server.get("/", async (_, res) => {
 
 
-    const resp = await RepoProvider.razorpayRepo.createRazorpayOrder('21', 100);
+    const resp: PaymentLinkPayload = {
+        amount: 1000,
+        description: "test",
+        customer: {
+            name: "Nitesh",
+            email: "niteshrghv@gmail.com",
+            contact: "9997016578"
+        },
+        notify: {
+            sms: false,
+            email: false
+        }
+    };
 
-    res.send(resp);
+    const ss = await RepoProvider.razorpayRepo.createPaymentLink(resp);
+
+    res.send(ss);
 });
 server.use("/api", router);
 

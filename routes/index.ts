@@ -88,6 +88,7 @@ import optionsValuesRouter from "../apps/optionsValue/api/optionsValueApi"
 import productOptionsRouter from "../apps/product-options/api/productOptionsApi"
 import cartProductRouter from "../apps/cart-products/api/cartProductApi";
 import cartDetailRouter from "../apps/cart-details/api/cartDetailApi"
+import orderItemRouter from "../apps/order-items/api/orderItemApi";
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
 router.use(`${ADMIN}/customer`, auth, customerUsersRouter);
@@ -136,8 +137,9 @@ router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/options`, auth, optionsRouter);
 router.use(`${ADMIN}/options-values`, auth, optionsValuesRouter);
 router.use(`${ADMIN}/product-options`, auth, productOptionsRouter);
-router.use('/cart-product', cartProductRouter)
-router.use('/cart-detail', cartDetailRouter)
+router.use('/cart-product', auth, cartProductRouter)
+router.use('/cart-detail', auth, cartDetailRouter)
+router.use('/order-items', auth, orderItemRouter)
 
 router.use(`/cart`, auth, cartRouter);
 

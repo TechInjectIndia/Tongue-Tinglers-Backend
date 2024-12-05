@@ -26,6 +26,9 @@ import {ICartProductRepo} from "./cart-products/repos/ICartProductRepo";
 import {CartProductRepo} from "./cart-products/repos/cartProductRepo";
 import { ICartDetailRepo } from "./cart-details/repos/ICartDetailRepo";
 import {CartDetailRepo} from "./cart-details/repos/cartDetailRepo";
+import { IOrderItemRepo } from "./order-items/repos/IOrderItemRepo";
+import { OrderItemRepo } from "./order-items/repos/orderItemRepo";
+
 export default class RepoProvider {
     private static _franchiseRepo: IFranchiseRepo;
     private static _addressRepo: IAddress<BaseAddress, Address, TListFilters>;
@@ -37,6 +40,7 @@ export default class RepoProvider {
     private static _productOptionsRepo: IProductOptionsRepo
     private static _cartProductRepo: ICartProductRepo
     private static _cartDetailRepo: ICartDetailRepo
+    private static _orderItemRepo: IOrderItemRepo
 
     static get franchise() {
         if (!this._franchiseRepo) {
@@ -106,6 +110,13 @@ export default class RepoProvider {
             this._cartDetailRepo = new CartDetailRepo();
         }
         return this._cartDetailRepo;
+    }
+
+    static get orderItemRepo() {
+        if (!this._orderItemRepo) {
+            this._orderItemRepo = new OrderItemRepo();
+        }
+        return this._orderItemRepo;
     }
 
 

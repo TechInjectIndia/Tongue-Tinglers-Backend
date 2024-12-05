@@ -77,7 +77,7 @@ OrderItemsModel.init({
     },
 }, {
     sequelize,
-    tableName: 'order_items',
+    tableName: 'order_items_demo',
     timestamps: true,
 });
 

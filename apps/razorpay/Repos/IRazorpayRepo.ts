@@ -16,6 +16,8 @@ export interface IRazorpayRepo {
         paymentLinkRequest: PaymentLinkPayload
     ): Promise<PaymentLinks.RazorpayPaymentLink>;
 
-    callback(req: Request, res: Response): Promise<Response>
+    callback(req: Request, res: Response): Promise<Response>;
+
+    // saveWebhookEvent(event: any, id: string): Promise<null>;
 
 }

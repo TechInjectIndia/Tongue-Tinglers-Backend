@@ -79,7 +79,33 @@ export class RazorpayRepo implements IRazorpayRepo {
                 return res.status(200).send({ message: "Webhook not verified" });
             }
 
-            console.log(body);
+            const event = req.body.event;
+            const payload = req.body.payload;
+
+            switch (event) {
+                case 'payment.captured':
+                    console.log('Payment captured:', payload);
+                    // Add logic to process successful payment
+                    break;
+
+                case 'payment.failed':
+                    console.log('Payment failed:', payload);
+                    // Add logic to handle failed payment
+                    break;
+
+                case 'payment_link.paid':
+                    console.log('Payment link paid:', payload);
+                    // Handle payment link success
+                    break;
+
+                case 'order.paid':
+                    console.log('Order paid:', payload);
+                    // Handle order paid event
+                    break;
+
+                default:
+                    console.log('Unhandled event:', event);
+            }
 
 
 

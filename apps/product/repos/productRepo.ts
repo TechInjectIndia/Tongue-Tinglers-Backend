@@ -2,22 +2,60 @@ import { BaseProduct, CHANGE_STATUS, Pagination, Product, PRODUCT_STATUS, PRODUC
 import { IProductRepo } from "./IProductRepo";
 import {ProductModel} from "../../../database/schema/product/productModel";
 import { Op } from "sequelize";
+import { ProductOptionsModel } from "../../../database/schema/product-options/productOptionsModel";
 export class ProductRepo implements IProductRepo {
     async create(product: BaseProduct): Promise<Product | null> {
+        const transaction = await ProductModel.sequelize.transaction();
         try {
-            return (await ProductModel.create({
-                name: product.name,
-                slug: product.slug,
-                description: product.description,
-                MOQ: product.MOQ,
-                category: product.category,
-                type: product.type,
-                status: product.status,
-                images: product.images,
-                variationIds: product.variationIds
-            })).toJSON();
+            const createdProduct = await ProductModel.create(
+                {
+                    name: product.name,
+                    slug: product.slug,
+                    description: product.description,
+                    MOQ: product.MOQ,
+                    category: product.category,
+                    type: product.type,
+                    status: product.status,
+                    images: product.images,
+                    variationIds: product.variationIds,
+                },
+                { transaction } // Pass the transaction
+            )
+
+            let productOptionsIds: number[] = []; // Array to store option IDs
+
+            if (product.options && Array.isArray(product.options)) {
+                const productOptions = product.options.map((option) => ({
+                    product_id: createdProduct.id, // Link the option to the created product
+                    option_value_id: option.option_value_id,
+                    price: option.price,
+                    stock: option.stock,
+                    status: option.status,
+                    images: option.images,
+                }));
+    
+                // Bulk create the product options
+                const createdOptions = await ProductOptionsModel.bulkCreate(productOptions, {
+                    transaction,
+                    returning: true, // Returns the created rows
+                });
+
+                productOptionsIds = createdOptions.map((option) => option.id);
+            }
+
+            await createdProduct.update(
+                {
+                    productOptionsIds,
+                },
+                { transaction }
+            )
+
+            await transaction.commit();
+            return createdProduct.toJSON();
+            
         } catch (error) {
             console.log(error);
+            await transaction.rollback();
             return null;  
         }
     }
@@ -25,7 +63,9 @@ export class ProductRepo implements IProductRepo {
     async update(product: Product): Promise<Product> {
         try {
             // Find the product by its primary key (ID)
-            const existingProduct = await ProductModel.findByPk(product.id)
+            const existingProduct = await ProductModel.findByPk(product.id, {
+                include: [{ model: ProductOptionsModel, as: 'productOptions' }],
+            });
             if (!existingProduct) {
                 throw new Error(`Product with ID ${product.id} not found`);
             }
@@ -61,6 +101,13 @@ export class ProductRepo implements IProductRepo {
                 offset,
                 limit,
                 order: [['createdAt', 'DESC']],
+                include: [
+                    {
+                        model: ProductOptionsModel, // Include the ProductOptions model
+                        as: 'options', // Alias used in the ProductModel association
+                        attributes: ['id', 'option_value_id', 'price', 'stock', 'status', 'images'], // Only fetch these fields
+                    },
+                ],
             }).then((res)=>{
                 return {
                     rows: res.rows.map((product) => product.toJSON()),

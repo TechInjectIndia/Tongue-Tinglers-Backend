@@ -19,7 +19,13 @@ import { ProductRepo } from "./product/repos/productRepo";
 import { IOptionsRepo } from "./options/repos/IOptionsRepo";
 import { OptionsRepo } from "./options/repos/optionsRepo";
 import { IOptionsValueRepo } from "./optionsValue/repos/IOptionsValueRepo";
-import { OptionsValueRepo } from "./optionsValue/repos/optionsValueRepo";   
+import { OptionsValueRepo } from "./optionsValue/repos/optionsValueRepo";
+import { IProductOptionsRepo } from "./product-options/repos/IProductOptionsRepo";  
+import { ProductOptionRepo } from "./product-options/repos/productOptionsRepo"; 
+import {ICartProductRepo} from "./cart-products/repos/ICartProductRepo";
+import {CartProductRepo} from "./cart-products/repos/cartProductRepo";
+import { ICartDetailRepo } from "./cart-details/repos/ICartDetailRepo";
+import {CartDetailRepo} from "./cart-details/repos/cartDetailRepo";
 export default class RepoProvider {
     private static _franchiseRepo: IFranchiseRepo;
     private static _addressRepo: IAddress<BaseAddress, Address, TListFilters>;
@@ -28,6 +34,9 @@ export default class RepoProvider {
     private static _productRepo: IProductRepo;
     private static _optionsRepo: IOptionsRepo
     private static _optionsValueRepo: IOptionsValueRepo
+    private static _productOptionsRepo: IProductOptionsRepo
+    private static _cartProductRepo: ICartProductRepo
+    private static _cartDetailRepo: ICartDetailRepo
 
     static get franchise() {
         if (!this._franchiseRepo) {
@@ -76,6 +85,27 @@ export default class RepoProvider {
             this._optionsValueRepo = new OptionsValueRepo();
         }
         return this._optionsValueRepo;
+    }
+
+    static get productOptionsRepo() {
+        if (!this._productOptionsRepo) {
+            this._productOptionsRepo = new ProductOptionRepo();
+        }
+        return this._productOptionsRepo;
+    }
+
+    static get cartProductRepo() {
+        if (!this._cartProductRepo) {
+            this._cartProductRepo = new CartProductRepo();
+        }
+        return this._cartProductRepo;
+    }
+
+    static get cartDetailRepo() {
+        if (!this._cartDetailRepo) {
+            this._cartDetailRepo = new CartDetailRepo();
+        }
+        return this._cartDetailRepo;
     }
 
 

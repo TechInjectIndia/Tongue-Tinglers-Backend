@@ -1,4 +1,6 @@
 import { BaseMeta } from "../database/schema/base/Base"
+import { BaseProductOptions } from "./product-options";
+
 
 interface BaseProduct {
     name: string,
@@ -9,7 +11,10 @@ interface BaseProduct {
     type: PRODUCTS_TYPE,
     status: PRODUCT_STATUS,
     images: Array<string>,
-    variationIds: Array<number>
+    variationIds: Array<number>,
+    productOptionsIds: Array<number>,
+    tax_rate_id: number,
+    options?: Array<BaseProductOptions>,
     createdBy: number,
     updatedBy: number,
     deletedBy: number

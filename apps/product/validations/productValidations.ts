@@ -30,7 +30,37 @@ const productValidationSchema = Joi.object({
     }),
     variationIds: Joi.array().items(Joi.number().integer()).required().messages({
         'array.base': 'Variation IDs must be an array of integers',
-    })
+    }),
+    productOptionsIds: Joi.array().items(Joi.number().integer()).optional(),
+    options: Joi.array()
+        .items(
+            Joi.object({
+                option_value_id: Joi.number().integer().positive().required().messages({
+                    'number.base': 'Option Value ID must be a number',
+                    'number.positive': 'Option Value ID must be greater than 0',
+                    'any.required': 'Option Value ID is required',
+                }),
+                price: Joi.number().positive().required().messages({
+                    'number.base': 'Price must be a number',
+                    'number.positive': 'Price must be greater than 0',
+                    'any.required': 'Price is required',
+                }),
+                stock: Joi.number().integer().min(0).required().messages({
+                    'number.base': 'Stock must be a number',
+                    'number.min': 'Stock must be at least 0',
+                    'any.required': 'Stock is required',
+                }),
+                images: Joi.array().items(Joi.string()).messages({
+                    'array.base': 'Images must be an array of URLs',
+                    // 'string.uri': 'Each image must be a valid URL',
+                }),
+            })
+        )
+        .required()
+        .messages({
+            'array.base': 'Options must be an array of objects',
+            'any.required': 'Options are required',
+        }),
 
 });
 
@@ -87,7 +117,36 @@ const productUpdateValidationSchema = Joi.object({
     }),
     variationIds: Joi.array().items(Joi.number().integer()).required().messages({
         'array.base': 'Variation IDs must be an array of integers',
-    })
+    }),
+    options: Joi.array()
+        .items(
+            Joi.object({
+                option_value_id: Joi.number().integer().positive().required().messages({
+                    'number.base': 'Option Value ID must be a number',
+                    'number.positive': 'Option Value ID must be greater than 0',
+                    'any.required': 'Option Value ID is required',
+                }),
+                price: Joi.number().positive().required().messages({
+                    'number.base': 'Price must be a number',
+                    'number.positive': 'Price must be greater than 0',
+                    'any.required': 'Price is required',
+                }),
+                stock: Joi.number().integer().min(0).required().messages({
+                    'number.base': 'Stock must be a number',
+                    'number.min': 'Stock must be at least 0',
+                    'any.required': 'Stock is required',
+                }),
+                images: Joi.string().required().messages({
+                    'string.base': 'Images must be a string',
+                    // 'string.uri': 'Each image must be a valid URL',
+                }),
+            })
+        )
+        .required()
+        .messages({
+            'array.base': 'Options must be an array of objects',
+            'any.required': 'Options are required',
+        }),
 
 });
 

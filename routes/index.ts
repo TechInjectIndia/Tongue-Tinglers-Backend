@@ -240,8 +240,9 @@ router.use(`/health`, (_, res) => {
 });
 
 
-router.use(`/petpoojaLogin`, async (_, res) => {
-    const result = await fetch(" https://developerapi.petpooja.com")
+
+router.use(`/petpoojaLogin`, async  (_, res) => {
+   const result = await fetch(" https://developerapi.petpooja.com").then(r=>r.text());
     res.setHeader('Content-Type', 'text/html');
     res.send(result);
 });

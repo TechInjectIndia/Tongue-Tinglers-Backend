@@ -1,72 +1,126 @@
+
+import { Request, Response } from "express";
 import {
     PaymentLinkPayload,
-    RazorpayPaymentLinkResponse,
 } from "../models/Razorpay";
 import { CONFIG } from "../../../config";
 import { IRazorpayRepo } from "./IRazorpayRepo";
-import { btoa } from "node:buffer";
-
+import { PaymentLinks } from "razorpay/dist/types/paymentLink";
+import Razorpay from "razorpay";
+import { validateWebhookSignature } from "razorpay/dist/utils/razorpay-utils";
 
 export class RazorpayRepo implements IRazorpayRepo {
-    private readonly apiKey: string = CONFIG.RP_ID_PROD;
-    private readonly apiSecret: string = CONFIG.RP_SECRET_PROD;
 
+    private readonly razorpay: Razorpay;
 
-    private async makeRequest(endpoint: string, method: string, body?: any) {
-        const url = `https://api.razorpay.com/v1${endpoint}`;
-        const options: RequestInit = {
-            method,
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Basic ${btoa(`${this.apiKey}:${this.apiSecret}`)}`,
-            },
-            body: body ? JSON.stringify(body) : null,
-        };
+    constructor() {
+        this.razorpay = new Razorpay({
+            key_id: CONFIG.RP_ID_PROD,
+            key_secret: CONFIG.RP_SECRET_PROD,
+        });
+    }
 
-        const response = await fetch(url, options);
-
-        if (!response.ok) {
-            throw new Error(`Razorpay API error: ${response.statusText}`);
+    async createRazorpayOrder(orderId: string, amount: number): Promise<any> {
+        try {
+            const order = await this.razorpay.orders.create({
+                amount: amount * 100, // Amount in paisa
+                currency: "INR",
+                receipt: orderId,
+            });
+            return order;
+        } catch (error) {
+            throw new Error(`Error creating Razorpay order: ${error.message}`);
         }
-
-        return await response.json();
     }
 
-    // Method to create a payment link
-    public async createPaymentLink(paymentLinkRequest: PaymentLinkPayload): Promise<RazorpayPaymentLinkResponse> {
-        return this.makeRequest("/payment_links", "POST", paymentLinkRequest);
+    async getPaymentDetails(paymentId: string): Promise<any> {
+        try {
+            const paymentDetails = await this.razorpay.payments.fetch(paymentId);
+            return paymentDetails;
+        } catch (error) {
+            throw new Error(`Error fetching payment details: ${error.message}`);
+        }
     }
 
-    // Method to fetch a payment link by ID
-    public async getPaymentLink(id: string): Promise<RazorpayPaymentLinkResponse> {
-        return this.makeRequest(`/payment_links/${id}`, "GET");
+    async cancelPaymentLink(id: string): Promise<any> {
+        try {
+            const response = await this.razorpay.paymentLink.cancel(id);
+            return response;
+        } catch (error) {
+            throw new Error(`Error canceling payment link: ${error.message}`);
+        }
     }
 
-    // Method to fetch all payment links
-    public async getAllPaymentLinks(): Promise<RazorpayPaymentLinkResponse[]> {
-        return this.makeRequest("/payment_links", "GET");
+    async generateRefund(paymentId: string, amount: number): Promise<any> {
+        try {
+            const refund = await this.razorpay.payments.refund(paymentId, {
+                amount: amount * 100, // Amount in paisa
+            });
+            return refund;
+        } catch (error) {
+            throw new Error(`Error generating refund: ${error.message}`);
+        }
     }
 
-    // Method to fetch payment details
-    public async getPaymentDetails(paymentId: string): Promise<any> {
-        return this.makeRequest(`/payments/${paymentId}`, "GET");
+    async callback(req: Request, res: Response): Promise<Response> {
+        try {
+            const webhookSignature = req.headers["x-razorpay-signature"] as string;
+            const body = req.body;
+
+            // Validate webhook signature
+            const isVerified = validateWebhookSignature(
+                JSON.stringify(body),
+                webhookSignature,
+                CONFIG.RP_WEBHOOK_SECRET
+            );
+
+            if (!isVerified) {
+                console.error("Webhook verification failed.");
+                return res.status(200).send({ message: "Webhook not verified" });
+            }
+
+            console.log(body);
+
+
+
+            // const paymentLinkEntity = body.payload?.payment_link?.entity;
+            // if (paymentLinkEntity) {
+            //     const paymentId = paymentLinkEntity.id;
+            //     const status = paymentLinkEntity.status;
+
+            //     // Save or update payment details as needed
+            //     console.log(`Payment Link ID: ${paymentId}, Status: ${status}`);
+            // }
+
+            return res.status(200).send({ message: "Webhook processed successfully" });
+        } catch (error: any) {
+            console.error("Error processing webhook:", error);
+            return res.status(200).send({ message: "Internal server error" });
+        }
     }
-
-    // Method to cancel a payment link
-    public async cancelPaymentLink(id: string): Promise<any> {
-        return this.makeRequest(`/payment_links/${id}/cancel`, "POST");
+    async createPaymentLink(
+        paymentLinkRequest: PaymentLinkPayload
+    ): Promise<PaymentLinks.RazorpayPaymentLink> {
+        try {
+            const paymentLink = await this.razorpay.paymentLink.create({
+                amount: paymentLinkRequest.amount * 100, // Amount in paisa
+                currency: "INR",
+                description: paymentLinkRequest.description,
+                customer: {
+                    name: paymentLinkRequest.customer.name,
+                    email: paymentLinkRequest.customer.email,
+                    contact: paymentLinkRequest.customer.contact,
+                },
+                notify: {
+                    sms: paymentLinkRequest.notify.sms,
+                    email: paymentLinkRequest.notify.email,
+                },
+                callback_url: CONFIG.RP_CALLBACK,
+                callback_method: "get",
+            });
+            return paymentLink;
+        } catch (error) {
+            throw new Error(`Error creating payment link: ${error.message}`);
+        }
     }
-
-    // Method to generate a refund
-    public async generateRefund(paymentId: string, amount: number): Promise<any> {
-        const refundRequest = { amount };
-        return this.makeRequest(`/payments/${paymentId}/refund`, "POST", refundRequest);
-    }
-
-    createRazorpayOrder(orderId: string, amount: number): Promise<any> {
-        return Promise.resolve(undefined);
-    }
-
-
 }
-

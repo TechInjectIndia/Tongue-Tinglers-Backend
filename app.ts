@@ -40,7 +40,7 @@ declare global {
         toJSON: () => string;
     }
 }
-BigInt.prototype.toJSON = function() {
+BigInt.prototype.toJSON = function () {
     return this.toString();
 };
 
@@ -106,7 +106,9 @@ server.set("view engine", "ejs");
 server.get("/", async (_, res) => {
 
 
-    res.send("Hello from tongue tingler");
+    const resp = await RepoProvider.razorpayRepo.createRazorpayOrder('21', 100);
+
+    res.send(resp);
 });
 server.use("/api", router);
 

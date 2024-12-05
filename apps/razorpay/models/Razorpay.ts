@@ -70,19 +70,17 @@ interface PaymentLinkNotes {
 
 
 interface PaymentLinkPayload {
-    amount: number; // Amount in the smallest currency sub-unit (e.g., paise for INR)
-    currency: string; // ISO currency code (e.g., INR)
-    accept_partial: boolean; // Whether partial payment is allowed
-    first_min_partial_amount: number; // Minimum amount for the first partial payment (in smallest currency sub-unit)
-    expire_by: number; // Expiry timestamp (Unix timestamp)
-    reference_id: string; // Unique reference ID for the payment link
-    description: string; // Description of the payment (e.g., policy number)
-    customer: PaymentLinkCustomer; // Customer details (name, contact, email)
-    notify?: PaymentLinkNotify; // Notification preferences (SMS, Email)
-    reminder_enable: boolean; // Whether to enable payment reminders
-    notes?: PaymentLinkNotes; // Optional metadata
-    callback_url: string; // URL to which Razorpay will send payment notifications
-    callback_method: "get"; // Method to use for the callback (GET or POST)
+    amount: number; // Amount in rupees (will be converted to paisa)
+    description: string; // Description of the payment
+    customer: {
+        name: string; // Customer's name
+        email: string; // Customer's email address
+        contact: string; // Customer's phone number
+    };
+    notify: {
+        sms: boolean; // Whether to notify via SMS
+        email: boolean; // Whether to notify via email
+    };
 }
 
 interface PaymentLinkReminder {

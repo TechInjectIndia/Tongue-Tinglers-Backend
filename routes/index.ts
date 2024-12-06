@@ -129,7 +129,7 @@ router.use(`${ADMIN}/contracts`, contractsRouter);
 router.use(`${ADMIN}/lead`, auth, leadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
-router.use(`${ADMIN}/franchise`, frachiseRouter);
+router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/options`, optionsRouter);
 router.use(`${ADMIN}/options-values`, optionsValuesRouter);
@@ -241,8 +241,8 @@ router.use(`/health`, (_, res) => {
 
 
 
-router.use(`/petpoojaLogin`, async  (_, res) => {
-   const result = await fetch(" https://developerapi.petpooja.com").then(r=>r.text());
+router.use(`/petpoojaLogin`, async (_, res) => {
+    const result = await fetch(" https://developerapi.petpooja.com").then(r => r.text());
     res.setHeader('Content-Type', 'text/html');
     res.send(result);
 });

@@ -25,8 +25,6 @@ export default class FranchiseController {
 
             const franchiseDetails = await RepoProvider.franchise.create(franchise);
 
-            console.log("franchise", franchiseDetails);
-
             return res
                 .status(200)
                 .send(

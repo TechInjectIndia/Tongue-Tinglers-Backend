@@ -115,7 +115,7 @@ server.get("/", async (_, res) => {
             contact: "9997016578"
         },
         notify: {
-            sms: false,
+            sms: true,
             email: false
         }
     };

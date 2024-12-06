@@ -1,5 +1,8 @@
  async function parseAndSaveEvent(eventPayload: any) {
     const { event, payload } = eventPayload;
+
+    console.log(event);
+    
     let transactionData: any = {};
   
     // For "order" events, e.g., order.paid, order.created

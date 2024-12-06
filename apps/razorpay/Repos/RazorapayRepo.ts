@@ -86,7 +86,7 @@ export class RazorpayRepo implements IRazorpayRepo {
            
             const event = req.body.event;
 
-            if (event.startsWith("order.") || event.startsWith("payment_link.")) {
+            if (event.startsWith("order.") || event.startsWith("payment_link.")||event.startsWith("payment.")) {
               await parseAndSaveEvent(req.body);
             }
 

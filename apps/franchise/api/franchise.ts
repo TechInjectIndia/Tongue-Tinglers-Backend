@@ -10,6 +10,6 @@ const { createFranchise, getById, getAll } = FranchiseController;
 
 router.post("/create", hasPermission("admin", "get"), createFranchise);
 router.get("/get/:id", hasPermission("admin", "get"), getById);
-router.get('/', validateFranchiseList, getAll)
+router.get('/list', validateFranchiseList, getAll)
 
 export default router;

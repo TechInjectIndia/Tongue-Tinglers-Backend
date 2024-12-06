@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { BaseOptions, Options } from "../../../interfaces/options";
+import { OptionsValueModel } from "../optionsValue/optionsValueModel";
 
 interface OptionsCreationAttributes extends Optional<Options, | "id"> {
 }
@@ -30,5 +31,8 @@ OptionsModel.init(
         paranoid: true,  // Enable soft deletes
     },
 );
+
+OptionsModel.hasMany(OptionsValueModel, { as: 'options', foreignKey: 'options_id' })
+OptionsValueModel.belongsTo(OptionsModel, { as: 'options', foreignKey: 'product_id' });
 
 export { OptionsModel };

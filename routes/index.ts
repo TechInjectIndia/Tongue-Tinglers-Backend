@@ -137,7 +137,7 @@ router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`${ADMIN}/franchise`, auth,frachiseRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/options`, auth, optionsRouter);
-router.use(`${ADMIN}/options-values`, auth, optionsValuesRouter);
+router.use(`${ADMIN}/options-values`, optionsValuesRouter);
 router.use(`${ADMIN}/product-options`, auth, productOptionsRouter);
 router.use(`${ADMIN}/products-category`, auth, productsCategoryRouter)
 router.use('/cart-product', auth, cartProductRouter)

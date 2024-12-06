@@ -1,13 +1,11 @@
-async function parseAndSaveEvent(eventPayload: any) {
+ async function parseAndSaveEvent(eventPayload: any) {
     const { event, payload } = eventPayload;
     let transactionData: any = {};
   
-    // Check if the event is of type 'order.' or 'payment_link.'
+    // For "order" events, e.g., order.paid, order.created
     if (event.startsWith("order.")) {
-      // Order event, e.g., order.paid
-      const order = payload?.order?.entity; // Access the 'entity' object
+      const order = payload?.order?.entity; // Access the 'entity' object of the order
   
-      // Ensure that the 'order' entity exists before extracting its properties
       if (order) {
         transactionData = {
           transactionId: order?.id || null,
@@ -18,11 +16,11 @@ async function parseAndSaveEvent(eventPayload: any) {
           createdAt: order?.created_at ? new Date(order.created_at * 1000) : null, // Convert UNIX timestamp
         };
       }
-    } else if (event.startsWith("payment_link.")) {
-      // Payment link event, e.g., payment_link.paid
-      const paymentLink = payload?.payment_link?.entity; // Access the 'entity' object
+    } 
+    // For "payment_link" events, e.g., payment_link.paid
+    else if (event.startsWith("payment_link.")) {
+      const paymentLink = payload?.payment_link?.entity;
   
-      // Ensure that the 'payment_link' entity exists before extracting its properties
       if (paymentLink) {
         transactionData = {
           transactionId: paymentLink?.id || null,
@@ -30,31 +28,44 @@ async function parseAndSaveEvent(eventPayload: any) {
           status: paymentLink?.status || null,
           amount: paymentLink?.amount || null,
           currency: paymentLink?.currency || null,
-          createdAt: paymentLink?.created_at ? new Date(paymentLink.created_at * 1000) : null, // Convert UNIX timestamp
+          createdAt: paymentLink?.created_at ? new Date(paymentLink.created_at * 1000) : null,
         };
       }
-    } else if (event.startsWith("payment.")) {
-      // Payment event, e.g., payment.authorized, payment.captured
-      const payment = payload?.payment?.entity; // Access the 'entity' object
+    } 
+    // For "payment" events, including "payment.failed"
+    else if (event.startsWith("payment.")) {
+      const payment = payload?.payment?.entity;
   
-      // Ensure that the 'payment' entity exists before extracting its properties
       if (payment) {
-        transactionData = {
-          transactionId: payment?.id || null,
-          entity: "payment",
-          status: payment?.status || null,
-          amount: payment?.amount || null,
-          currency: payment?.currency || null,
-          createdAt: payment?.created_at ? new Date(payment.created_at * 1000) : null, // Convert UNIX timestamp
-        };
+        // Special handling for failed payments
+        if (event === "payment.failed") {
+          transactionData = {
+            transactionId: payment?.id || null,
+            entity: "payment",
+            status: "failed", // Explicitly mark the status as "failed"
+            amount: payment?.amount || null,
+            currency: payment?.currency || null,
+            failureReason: payment?.failure_reason || null, // Extract failure reason if available
+            createdAt: payment?.created_at ? new Date(payment.created_at * 1000) : null,
+          };
+        } else {
+          // Handle other payment events (e.g., payment.authorized, payment.captured)
+          transactionData = {
+            transactionId: payment?.id || null,
+            entity: "payment",
+            status: payment?.status || null,
+            amount: payment?.amount || null,
+            currency: payment?.currency || null,
+            createdAt: payment?.created_at ? new Date(payment.created_at * 1000) : null,
+          };
+        }
       }
     }
   
     console.log("Parsed Transaction Data:", transactionData);
   
     // Save the transaction data to your transactionTable
-    
-  }  
-
-
+    await saveTransaction(transactionData);
+  }
+  
 export {parseAndSaveEvent}

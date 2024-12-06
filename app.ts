@@ -115,10 +115,13 @@ server.get("/", async (_, res) => {
             contact: "9997016578"
         },
         notify: {
-            sms: true,
+            sms: false,
             email: false
         }
     };
+
+
+
 
     const ss = await RepoProvider.razorpayRepo.createPaymentLink(resp);
 

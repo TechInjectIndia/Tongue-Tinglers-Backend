@@ -31,6 +31,7 @@ interface Franchise extends BaseFranchise, BaseMeta {
 }
 
 interface parsedFranchise {
+    id: number;
     pocName: string;
     pocEmail: string;
     pocPhoneNumber: string;

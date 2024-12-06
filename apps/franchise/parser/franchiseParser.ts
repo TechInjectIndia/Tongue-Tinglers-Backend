@@ -16,7 +16,8 @@ const parseFranchise = (franchise: any) => {
         location: franchise.address,
         sm: franchise.sm,
         organization: franchise.organization,
-        affiliate: franchise.affiliate
+        affiliate: franchise.affiliate,
+        id: franchise.id
     }
     return data;
 }

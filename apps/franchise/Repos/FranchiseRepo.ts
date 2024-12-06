@@ -103,6 +103,10 @@ export class FranchiseRepo implements IFranchiseRepo {
                         as: "address",
                     },
                     {
+                        model: RegionModel,
+                        as: "region",
+                    },
+                    {
                         model: OrganizationModel,
                         as: "organization",
                     },

@@ -6,6 +6,7 @@ import {
     OrganizationModel
 } from "../../../apps/organization/database/organization_schema";
 import { UserModel } from "../user/user.model";
+import { AddressModel } from "../user/address";
 
 
 const { STRING, INTEGER, DATE, NOW, ARRAY, ENUM } = DataTypes;
@@ -45,7 +46,11 @@ class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> impl
 
         this.belongsTo(RegionModel, {
             foreignKey: "regionId",
-            as: "Region",
+            as: "region",
+        });
+        this.belongsTo(AddressModel, {
+            foreignKey: "location",
+            as: "address",
         });
         this.belongsTo(OrganizationModel, {
             foreignKey: "organizationId",

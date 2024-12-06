@@ -91,7 +91,7 @@ export class FranchiseRepo implements IFranchiseRepo {
                 Object.assign(query, filters);
             }
 
-            const { rows: products, count: total } = await FranchiseModel.findAndCountAll({
+            const { rows: franchise, count: total } = await FranchiseModel.findAndCountAll({
                 where: query,
                 offset,
                 limit,
@@ -105,7 +105,7 @@ export class FranchiseRepo implements IFranchiseRepo {
 
             const totalPages = Math.ceil(total / limit);
 
-            return { products, total, totalPages };
+            return { data: franchise, total, totalPages };
         } catch (error) {
             console.log(error);
             return null;

@@ -44,7 +44,7 @@ interface Product extends BaseMeta, BaseProduct {
 // };
 
 interface Pagination<T> {
-    products: T[];
+    data: T[];
     total: number;
     totalPages: number;
 }

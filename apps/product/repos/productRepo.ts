@@ -1,6 +1,6 @@
 import { BaseProduct, CHANGE_STATUS, Pagination, Product, PRODUCT_STATUS, PRODUCTS_TYPE } from "../../../interfaces/products";
 import { IProductRepo } from "./IProductRepo";
-import {ProductModel} from "../../../database/schema/product/productModel";
+import { ProductModel } from "../../../database/schema/product/productModel";
 import { Op } from "sequelize";
 export class ProductRepo implements IProductRepo {
     async create(product: BaseProduct): Promise<Product | null> {
@@ -18,7 +18,7 @@ export class ProductRepo implements IProductRepo {
             })).toJSON();
         } catch (error) {
             console.log(error);
-            return null;  
+            return null;
         }
     }
 
@@ -55,13 +55,13 @@ export class ProductRepo implements IProductRepo {
             if (filters) {
                 Object.assign(query, filters);
             }
-            
+
             const { rows: products, count: total } = await ProductModel.findAndCountAll({
                 where: query,
                 offset,
                 limit,
                 order: [['createdAt', 'DESC']],
-            }).then((res)=>{
+            }).then((res) => {
                 return {
                     rows: res.rows.map((product) => product.toJSON()),
                     count: res.count
@@ -70,9 +70,9 @@ export class ProductRepo implements IProductRepo {
 
             const totalPages = Math.ceil(total / limit);
 
-            return { products, total, totalPages };
+            return { data: products, total, totalPages };
 
-            
+
         } catch (error) {
             console.log(error);
             return null;
@@ -81,7 +81,7 @@ export class ProductRepo implements IProductRepo {
 
     async getById(id: number): Promise<Product | null> {
         try {
-             // Fetch product by primary key (ID)
+            // Fetch product by primary key (ID)
             const product = (await ProductModel.findByPk(id)).toJSON();
 
             if (!product) {
@@ -98,7 +98,7 @@ export class ProductRepo implements IProductRepo {
     async delete(id: number): Promise<Product> {
         try {
             const existingProduct = await ProductModel.findByPk(id);
-            if(!existingProduct){
+            if (!existingProduct) {
                 throw new Error(`Product with ID ${id} not found`);
             }
 
@@ -107,14 +107,14 @@ export class ProductRepo implements IProductRepo {
             return existingProduct.toJSON();
         } catch (error) {
             console.log(error);
-            return null;  
+            return null;
         }
     }
 
     async changeStatus(payload: CHANGE_STATUS): Promise<Product> {
         try {
             // Find the product by its primary key
-            const {id, status} = payload
+            const { id, status } = payload
 
             // Check if the status is one of the allowed ENUM values
             const validStatuses = ['active', 'inactive'];
@@ -129,11 +129,11 @@ export class ProductRepo implements IProductRepo {
                 throw new Error(`Product with ID ${id} not found.`);
             }
 
-             // Update the status field
+            // Update the status field
             await product.update({ status });
 
             return product.toJSON();
-            
+
         } catch (error) {
             console.log(error);
             return null;

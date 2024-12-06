@@ -3,6 +3,7 @@ import { IFranchiseRepo } from "./IFranchiseRepo";
 
 import RepoProvider from "../../RepoProvider";
 import {
+    AddressModel,
     FranchiseModel, RegionModel,
     UserModel,
 } from "../../../database/schema";
@@ -96,6 +97,16 @@ export class FranchiseRepo implements IFranchiseRepo {
                 offset,
                 limit,
                 order: [['createdAt', 'DESC']],
+                include: [
+                    {
+                        model: AddressModel,
+                        as: "address",
+                    },
+                    {
+                        model: OrganizationModel,
+                        as: "organization",
+                    },
+                ]
             }).then((res) => {
                 return {
                     rows: res.rows.map((product) => product.toJSON()),

@@ -12,7 +12,7 @@ import RepoProvider from "../../RepoProvider";
 import { Franchise, FranchiseDetails, Pagination } from "../../../interfaces";
 
 export default class FranchiseController {
-    static async createFranchise(req: Request, res: Response, next: NextFunction) {
+    static async createFranchise(req: Request, res: Response) {
         try {
             const payload = req?.body;
             const user_id = get(req, "user_id", 0);
@@ -42,11 +42,11 @@ export default class FranchiseController {
         }
     }
 
-    static async getById(req: Request, res: Response, next: NextFunction) {
+    static async getById(req: Request, res: Response) {
 
         try {
             const id = get(req.params, "id", 0);
-            console.log(id);
+    
             const franchiseDetails = await RepoProvider.franchise.getById(id);
             return res
                 .status(200)

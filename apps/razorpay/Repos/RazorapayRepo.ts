@@ -8,6 +8,7 @@ import { IRazorpayRepo } from "./IRazorpayRepo";
 import { PaymentLinks } from "razorpay/dist/types/paymentLink";
 import Razorpay from "razorpay";
 import { validateWebhookSignature } from "razorpay/dist/utils/razorpay-utils";
+import {parseAndSaveEvent} from '../utils/razorpay-utils'
 
 export class RazorpayRepo implements IRazorpayRepo {
 
@@ -79,32 +80,11 @@ export class RazorpayRepo implements IRazorpayRepo {
                 return res.status(200).send({ message: "Webhook not verified" });
             }
 
+           
             const event = req.body.event;
-            const payload = req.body.payload;
 
-            switch (event) {
-                case 'payment.captured':
-                    console.log('Payment captured:', payload);
-                    // Add logic to process successful payment
-                    break;
-
-                case 'payment.failed':
-                    console.log('Payment failed:', payload);
-                    // Add logic to handle failed payment
-                    break;
-
-                case 'payment_link.paid':
-                    console.log('Payment link paid:', payload);
-                    // Handle payment link success
-                    break;
-
-                case 'order.paid':
-                    console.log('Order paid:', payload);
-                    // Handle order paid event
-                    break;
-
-                default:
-                    console.log('Unhandled event:', event);
+            if (event.startsWith("order.") || event.startsWith("payment_link.")) {
+              await parseAndSaveEvent(req.body);
             }
 
 

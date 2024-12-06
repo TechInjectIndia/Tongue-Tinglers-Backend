@@ -47,7 +47,6 @@ export class FranchiseRepo implements IFranchiseRepo {
                     updatedBy: franchise.updatedBy,
                     deletedBy: franchise.deletedBy,
                 });
-                console.log(res);
                 if (res) {
                     return res.toJSON();
                 } else {
@@ -142,7 +141,7 @@ export class FranchiseRepo implements IFranchiseRepo {
 
     }
 
-    async getById(id: number): Promise<Franchise> {
+    async getById(id: number): Promise<parsedFranchise> {
         try {
 
             const res = (await FranchiseModel.findOne({
@@ -171,9 +170,10 @@ export class FranchiseRepo implements IFranchiseRepo {
                 ],
             }));
             if (res) {
-                return res.toJSON();
+                return parseFranchise(res.toJSON());
+            }else{
+                return null;
             }
-            return res;
         } catch (e) {
             console.log(e);
             return null;

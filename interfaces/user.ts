@@ -4,12 +4,13 @@ export interface cart {
 }
 
 export enum USER_TYPE {
-    SUPER_FRANCHISE = "super_franchise", // Super-admin
-    MASTER_FRANCHISE = "master_franchise", // Admin
-    FRANCHISE = "franchise", // Normal-franchise
-    ADMIN = "admin", // admin
-    GUEST_USER = "guest_user",
+    ADMIN = "admin",
+    FRANSHISE = "franchise",
+    SUPER_FRANSHISE = "super_franchise",
+    GUEST = "guest",
+    AFFILIATE = "affiliate",
     PROSPECT = "prospect",
+    GUEST_USER = "guest_user",
 }
 
 export enum USER_STATUS {
@@ -17,7 +18,6 @@ export enum USER_STATUS {
     INACTIVE = "inactive",
     DELETED = "deleted",
 }
-
 
 export interface UserInformation {
     id: number;

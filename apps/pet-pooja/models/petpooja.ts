@@ -48,7 +48,7 @@ export class PetPoojaRepo implements IBaseRepo<TEditUser, TListFilters> {
     public async getAllFranchise(): Promise<any> {
         const data = await UserModel.findAll({
             where: {
-                type: USER_TYPE.MASTER_FRANCHISE
+                type: USER_TYPE.SUPER_FRANSHISE
             },
         });
         return data;

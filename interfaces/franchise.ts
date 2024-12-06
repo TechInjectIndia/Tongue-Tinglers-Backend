@@ -1,6 +1,6 @@
 import { BaseAddress } from "../types";
 import { BaseMeta, BaseMetaUsers } from "../database/schema/base/Base";
-import { BaseSocialMedia, SocialMediaDetails } from "./leads";
+import { BaseSocialMedia } from "./leads";
 
 
 interface BaseFranchise {

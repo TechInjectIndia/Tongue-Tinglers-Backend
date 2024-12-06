@@ -29,8 +29,8 @@ router.use("/referral", referralRouter);
 import rolesRouter from "../apps/admin-user/api/roles";
 import permissionsRouter from "../apps/admin-user/api/permissions";
 import adminUsersRouter from "../apps/admin-user/api/user";
-import guestUsersRouter from "../apps/guest-user/api/guest-user";
-import customerUsersRouter from "../apps/admin-user/api/customer";
+// import guestUsersRouter from "../apps/guest-user/api/guest-user";
+// import customerUsersRouter from "../apps/admin-user/api/customer";
 // import productRouter from "../apps/ecommerce/api/products";
 import taxesRouter from "../apps/ecommerce/api/taxes";
 import productCategoryRouter from "../apps/ecommerce/api/category";
@@ -88,7 +88,7 @@ import optionsValuesRouter from "../apps/optionsValue/api/optionsValueApi"
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
-router.use(`${ADMIN}/customer`, auth, customerUsersRouter);
+// router.use(`${ADMIN}/customer`, auth, customerUsersRouter);
 router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
 router.use(`${ADMIN}/roles`, auth, rolesRouter);
 router.use(`${ADMIN}/testimonials`, auth, testimonialsRouter);
@@ -141,7 +141,7 @@ router.use(`/cart`, auth, cartRouter);
 router.use("/migration", migrationRouter);
 
 
-router.use(`${GUEST}/users`, auth, guestUsersRouter);
+// router.use(`${GUEST}/users`, auth, guestUsersRouter);
 
 // ====== Franchise imports ======
 import franchiseOrderAnalyticsRouter

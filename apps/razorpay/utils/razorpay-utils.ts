@@ -65,7 +65,7 @@
     console.log("Parsed Transaction Data:", transactionData);
   
     // Save the transaction data to your transactionTable
-    await saveTransaction(transactionData);
+    // await saveTransaction(transactionData);
   }
   
 export {parseAndSaveEvent}

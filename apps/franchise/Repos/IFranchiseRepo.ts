@@ -1,4 +1,5 @@
-import { Franchise, FranchiseDetails } from "../../../interfaces";
+import { Franchise, FranchiseDetails, Pagination } from "../../../interfaces";
+import { TListFilters } from "../../../types";
 
 export interface IFranchiseRepo {
     create(franchise: FranchiseDetails): Promise<Franchise | null>;
@@ -9,8 +10,8 @@ export interface IFranchiseRepo {
 
     getById(id: number): Promise<Franchise>;
 
-    getAll(): Promise<Franchise[]>;
 
+    getAll(page: number, limit: number, search: string, filters: object);
     getByOrganizationId(organizationId: number): Promise<Franchise[]>;
 
     getByRegionId(regionId: number): Promise<Franchise[]>;

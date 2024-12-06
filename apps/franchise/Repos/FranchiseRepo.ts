@@ -1,4 +1,4 @@
-import { Franchise, FranchiseDetails } from "../../../interfaces";
+import { Franchise, FranchiseDetails, Pagination } from "../../../interfaces";
 import { IFranchiseRepo } from "./IFranchiseRepo";
 
 import RepoProvider from "../../RepoProvider";
@@ -9,6 +9,8 @@ import {
 import {
     OrganizationModel,
 } from "../../organization/database/organization_schema";
+import { TListFilters } from "../../../types/common";
+import { Op } from "sequelize";
 
 
 export class FranchiseRepo implements IFranchiseRepo {
@@ -70,13 +72,43 @@ export class FranchiseRepo implements IFranchiseRepo {
         throw new Error("Method not implemented.");
     }
 
-    async getAll(): Promise<Franchise[]> {
+    async getAll(page: number, limit: number, search: string, filters: TListFilters): Promise<Pagination<Franchise>> {
         try {
-            const res = await FranchiseModel.findAll();
-            return res.map((fr) => fr.toJSON())
-        } catch (err: any) {
-            console.log(err);
-            return [];
+            const offset = (page - 1) * limit;
+
+            const query: any = {};
+
+            // Add search functionality
+            if (search) {
+                query[Op.or] = [
+                    { pocName: { [Op.iLike]: `%${search}%` } },
+                    { pocEmail: { [Op.iLike]: `%${search}%` } },
+                    { pocPhoneNumber: { [Op.iLike]: `%${search}%` } },
+                ];
+            }
+            // Add filters
+            if (filters) {
+                Object.assign(query, filters);
+            }
+
+            const { rows: products, count: total } = await FranchiseModel.findAndCountAll({
+                where: query,
+                offset,
+                limit,
+                order: [['createdAt', 'DESC']],
+            }).then((res) => {
+                return {
+                    rows: res.rows.map((product) => product.toJSON()),
+                    count: res.count
+                }
+            })
+
+            const totalPages = Math.ceil(total / limit);
+
+            return { products, total, totalPages };
+        } catch (error) {
+            console.log(error);
+            return null;
         }
     }
 

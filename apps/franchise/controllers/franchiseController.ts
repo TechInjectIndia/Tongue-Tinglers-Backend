@@ -9,7 +9,7 @@ import {
     ERROR_MESSAGE,
 } from "../../../constants";
 import RepoProvider from "../../RepoProvider";
-import { FranchiseDetails } from "../../../interfaces";
+import { Franchise, FranchiseDetails, Pagination } from "../../../interfaces";
 
 export default class FranchiseController {
     static async createFranchise(req: Request, res: Response, next: NextFunction) {
@@ -67,25 +67,46 @@ export default class FranchiseController {
         }
     }
 
-    static async getAll(req: Request, res: Response, next: NextFunction) {
+    static async getAll(req: Request, res: Response) {
         try {
-            const id = get(req.params, "id", 0);
-            console.log(id);
-            const franchise = await RepoProvider.franchise.getAll();
-            return res
-                .status(200)
+            const page = parseInt(req.query.page, 0) || 1;
+            const limit = parseInt(req.query.limit, 10) || 10;
+            const search = (req.query.search as string) || ''; // For text search
+            const filters = (req.query.filters as string) || '';
+
+            // Parse filters into an object
+            let filterObj = {};
+            if (filters) {
+                try {
+                    filterObj = JSON.parse(filters);
+                } catch (error) {
+                    return res.status(400).send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            'Invalid filter format. It should be a valid JSON string.',
+                        ),
+                    );
+                }
+            }
+            const Franchise: Pagination<Franchise> = await RepoProvider.franchise.getAll(page, limit, search, filterObj);
+            return res.status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        franchise,
+                        {
+                            ...Franchise,
+                            currentPage: page,
+                        }
                     ),
                 );
-        } catch (err) {
-            console.error("Error:", err);
-            return res.status(500).send({
-                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-            });
+
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send(
+                sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while fetching products.'),
+            );
         }
     }
+
 }

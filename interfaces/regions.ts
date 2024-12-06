@@ -18,8 +18,14 @@ interface TRegionList {
     data: IRegion[];
 }
 
+
+interface parsedRegion {
+
+}
+
 export {
     IRegion,
     TPayloadRegion,
     TRegionList,
+    parsedRegion
 }

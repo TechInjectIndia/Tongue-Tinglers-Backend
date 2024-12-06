@@ -11,7 +11,7 @@ export default class OptionsController {
         const optionsDetail: BaseOptionsValue = {
             ...payload,
         };
-        const optionsValueDetail = await RepoProvider.optionsRepo.create(optionsDetail);
+        const optionsValueDetail = await RepoProvider.optionsValueRepo.create(optionsDetail);
         return res.status(200)
                 .send(
                     sendResponse(

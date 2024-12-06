@@ -1,4 +1,4 @@
-import { Franchise, FranchiseDetails, Pagination } from "../../../interfaces";
+import { Franchise, FranchiseDetails, Pagination, parsedFranchise } from "../../../interfaces";
 import { IFranchiseRepo } from "./IFranchiseRepo";
 
 import RepoProvider from "../../RepoProvider";
@@ -12,6 +12,7 @@ import {
 } from "../../organization/database/organization_schema";
 import { TListFilters } from "../../../types/common";
 import { Op } from "sequelize";
+import { parseFranchise } from '../parser/franchiseParser';
 
 
 export class FranchiseRepo implements IFranchiseRepo {
@@ -73,7 +74,7 @@ export class FranchiseRepo implements IFranchiseRepo {
         throw new Error("Method not implemented.");
     }
 
-    async getAll(page: number, limit: number, search: string, filters: TListFilters): Promise<Pagination<Franchise>> {
+    async getAll(page: number, limit: number, search: string, filters: TListFilters): Promise<Pagination<parsedFranchise>> {
         try {
             const offset = (page - 1) * limit;
 
@@ -113,7 +114,7 @@ export class FranchiseRepo implements IFranchiseRepo {
                 ]
             }).then((res) => {
                 return {
-                    rows: res.rows.map((product) => product.toJSON()),
+                    rows: res.rows.map((product) => parseFranchise(product.toJSON())),
                     count: res.count
                 }
             })

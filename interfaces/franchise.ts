@@ -1,6 +1,8 @@
-import { BaseAddress } from "../types";
+import { Address, BaseAddress } from "../types";
 import { BaseMeta, BaseMetaUsers } from "../database/schema/base/Base";
-import { BaseSocialMedia } from "./leads";
+import { BaseSocialMedia, parsedAffiliate, SocialMediaDetails } from "./leads";
+import { parsedRegion, parsedUser } from ".";
+import { parsedOrganization } from "./organization";
 
 
 interface BaseFranchise {
@@ -15,7 +17,7 @@ interface BaseFranchise {
     status: FRANCHISE_STATUS;
     establishedDate: Date;
     organizationId: number;
-    affiliateId: number|null;
+    affiliateId: number | null;
 }
 
 interface FranchiseDetails extends BaseMetaUsers, BaseFranchise {
@@ -26,6 +28,23 @@ interface FranchiseDetails extends BaseMetaUsers, BaseFranchise {
 interface Franchise extends BaseFranchise, BaseMeta {
     location: number;
     sm: Array<number>;
+}
+
+interface parsedFranchise {
+    pocName: string;
+    pocEmail: string;
+    pocPhoneNumber: string;
+    users: Array<parsedUser>;
+    region: parsedRegion;
+    area: string;
+    agreementIds: Array<number>;
+    paymentIds: Array<number>;
+    organization: parsedOrganization;
+    status: FRANCHISE_STATUS;
+    establishedDate: Date;
+    affiliate: parsedAffiliate,
+    location: Address;
+    sm: Array<SocialMediaDetails>;
 }
 
 enum FRANCHISE_STATUS {
@@ -42,6 +61,7 @@ export {
     FRANCHISE_STATUS,
     FranchiseDetails,
     Franchise,
+    parsedFranchise
 };
 
 

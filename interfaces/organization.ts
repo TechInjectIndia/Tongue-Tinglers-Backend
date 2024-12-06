@@ -80,3 +80,7 @@ export interface TOrganization {
 }
 
 
+
+export interface parsedOrganization {
+
+}

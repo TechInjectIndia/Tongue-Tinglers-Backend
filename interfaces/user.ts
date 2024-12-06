@@ -1,3 +1,4 @@
+
 import { BaseAddress } from "../types";
 
 export interface cart {
@@ -37,4 +38,12 @@ export interface UserInformation {
     deletedAt: Date | null;
     role: number | null;
     address: Array<BaseAddress>;
+}
+
+interface parsedUser {
+
+}
+
+export {
+    parsedUser
 }

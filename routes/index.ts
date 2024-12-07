@@ -85,6 +85,11 @@ import organizationRouter from "../apps/organization/api/index";
 import productRouter from "../apps/product/api/productApi"
 import optionsRouter from "../apps/options/api/optionsApi"
 import optionsValuesRouter from "../apps/optionsValue/api/optionsValueApi"
+import productOptionsRouter from "../apps/product-options/api/productOptionsApi"
+import cartProductRouter from "../apps/cart-products/api/cartProductApi";
+import cartDetailRouter from "../apps/cart-details/api/cartDetailApi"
+import orderItemRouter from "../apps/order-items/api/orderItemApi";
+import productsCategoryRouter from "../apps/products-category/api/productsCategoryApi"
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -129,11 +134,16 @@ router.use(`${ADMIN}/contracts`, contractsRouter);
 router.use(`${ADMIN}/lead`, auth, leadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
+router.use(`${ADMIN}/franchise`, auth,frachiseRouter);
 router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
-router.use(`${ADMIN}/options`, optionsRouter);
+router.use(`${ADMIN}/options`, auth, optionsRouter);
 router.use(`${ADMIN}/options-values`, optionsValuesRouter);
-
+router.use(`${ADMIN}/product-options`, auth, productOptionsRouter);
+router.use(`${ADMIN}/products-category`, auth, productsCategoryRouter)
+router.use('/cart-product', auth, cartProductRouter)
+router.use('/cart-detail', auth, cartDetailRouter)
+router.use('/order-items', auth, orderItemRouter)
 
 router.use(`/cart`, auth, cartRouter);
 

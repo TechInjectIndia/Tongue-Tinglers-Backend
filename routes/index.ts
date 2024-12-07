@@ -29,8 +29,8 @@ router.use("/referral", referralRouter);
 import rolesRouter from "../apps/admin-user/api/roles";
 import permissionsRouter from "../apps/admin-user/api/permissions";
 import adminUsersRouter from "../apps/admin-user/api/user";
-import guestUsersRouter from "../apps/guest-user/api/guest-user";
-import customerUsersRouter from "../apps/admin-user/api/customer";
+// import guestUsersRouter from "../apps/guest-user/api/guest-user";
+// import customerUsersRouter from "../apps/admin-user/api/customer";
 // import productRouter from "../apps/ecommerce/api/products";
 import taxesRouter from "../apps/ecommerce/api/taxes";
 import productCategoryRouter from "../apps/ecommerce/api/category";
@@ -93,7 +93,7 @@ import productsCategoryRouter from "../apps/products-category/api/productsCatego
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
-router.use(`${ADMIN}/customer`, auth, customerUsersRouter);
+// router.use(`${ADMIN}/customer`, auth, customerUsersRouter);
 router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
 router.use(`${ADMIN}/roles`, auth, rolesRouter);
 router.use(`${ADMIN}/testimonials`, auth, testimonialsRouter);
@@ -128,13 +128,14 @@ router.use(`${ADMIN}/checklist`, auth, IChecklistRouter);
 router.use(`${ADMIN}/pdi`, auth, PdiRouter);
 router.use(`${ADMIN}/quick-actions/email`, auth, quickActionEmailRouter);
 router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
-router.use(`${ADMIN}/region`, auth, regionRouter);
-router.use(`${ADMIN}/area`, auth, areaRouter);
+router.use(`${ADMIN}/region`, regionRouter);
+router.use(`${ADMIN}/area`, areaRouter);
 router.use(`${ADMIN}/contracts`, contractsRouter);
 router.use(`${ADMIN}/lead`, auth, leadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`${ADMIN}/franchise`, auth,frachiseRouter);
+router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/options`, auth, optionsRouter);
 router.use(`${ADMIN}/options-values`, optionsValuesRouter);
@@ -150,7 +151,7 @@ router.use(`/cart`, auth, cartRouter);
 router.use("/migration", migrationRouter);
 
 
-router.use(`${GUEST}/users`, auth, guestUsersRouter);
+// router.use(`${GUEST}/users`, auth, guestUsersRouter);
 
 // ====== Franchise imports ======
 import franchiseOrderAnalyticsRouter
@@ -246,6 +247,14 @@ router.use(`/health`, (_, res) => {
         success: true,
         message: "CICD Done Once AGAIN !",
     });
+});
+
+
+
+router.use(`/petpoojaLogin`, async (_, res) => {
+    const result = await fetch(" https://developerapi.petpooja.com").then(r => r.text());
+    res.setHeader('Content-Type', 'text/html');
+    res.send(result);
 });
 
 export default router;

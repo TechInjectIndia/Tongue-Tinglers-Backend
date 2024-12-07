@@ -213,6 +213,10 @@ interface FollowDetails {
     reminder: Date | null;
 }
 
+interface parsedAffiliate{
+
+}
+
 // Export types
 export {
     ILead,
@@ -238,4 +242,5 @@ export {
     extraFieldTypes,
     SeoImagePayload,
     AssignAttributes,
+    parsedAffiliate
 };

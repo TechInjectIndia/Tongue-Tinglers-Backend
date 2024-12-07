@@ -1,13 +1,13 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-
-import { UserModel } from "../user/user.model";
-import { FRANCHISE_STATUS, Franchise } from "../../../interfaces";
-
+import { Franchise, FRANCHISE_STATUS } from "../../../interfaces";
 import { RegionModel } from "./RegionsModel";
 import {
-    OrganizationModel,
+    OrganizationModel
 } from "../../../apps/organization/database/organization_schema";
+import { UserModel } from "../user/user.model";
+import { AddressModel } from "../user/address";
+
 
 const { STRING, INTEGER, DATE, NOW, ARRAY, ENUM } = DataTypes;
 
@@ -26,7 +26,7 @@ class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> impl
     public pocPhoneNumber: string;
     public users: number[];
     public regionId: number;
-    public area: string;
+    public area: string | null;
     public agreementIds: number[];
     public paymentIds: number[];
     public status: FRANCHISE_STATUS;
@@ -39,13 +39,18 @@ class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> impl
     public createdAt: Date;
     public deletedAt: Date | null;
     public updatedAt: Date | null;
+    public affiliateId: number;
 
 
     public static associate() {
 
         this.belongsTo(RegionModel, {
             foreignKey: "regionId",
-            as: "Region",
+            as: "region",
+        });
+        this.belongsTo(AddressModel, {
+            foreignKey: "location",
+            as: "address",
         });
         this.belongsTo(OrganizationModel, {
             foreignKey: "organizationId",
@@ -70,6 +75,8 @@ class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> impl
         });
 
     }
+
+
 }
 
 FranchiseModel.init(
@@ -78,6 +85,10 @@ FranchiseModel.init(
             type: INTEGER,
             autoIncrement: true,
             primaryKey: true,
+        },
+        affiliateId: {
+            type: INTEGER,
+            allowNull: true,
         },
         createdAt: {
             type: DATE,
@@ -127,7 +138,7 @@ FranchiseModel.init(
         },
         area: {
             type: STRING,
-            allowNull: false,
+            allowNull: true,
         },
         agreementIds: {
             type: ARRAY(INTEGER),
@@ -167,6 +178,7 @@ FranchiseModel.init(
     },
 );
 
+FranchiseModel.associate();
 
 export { FranchiseModel };
 

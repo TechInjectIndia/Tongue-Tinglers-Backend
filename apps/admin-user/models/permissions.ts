@@ -54,7 +54,7 @@ export class PermissionsRepo implements IBaseRepo<TPermission, TListFilters> {
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
-            raw:true,
+            raw: true,
             where: {
                 name: {
                     [Op.iLike]: `%${filters.search}%`,
@@ -82,7 +82,7 @@ export class PermissionsRepo implements IBaseRepo<TPermission, TListFilters> {
         const data = await UserModel.findAll({
             where: {
                 role: ids,
-                type: USER_TYPE.MASTER_FRANCHISE
+                type: USER_TYPE.SUPER_FRANSHISE
             },
         });
         return data;

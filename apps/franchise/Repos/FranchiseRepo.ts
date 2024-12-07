@@ -1,8 +1,18 @@
-import { Franchise, FranchiseDetails } from "../../../interfaces";
+import { Franchise, FranchiseDetails, Pagination, parsedFranchise } from "../../../interfaces";
 import { IFranchiseRepo } from "./IFranchiseRepo";
 
 import RepoProvider from "../../RepoProvider";
-import { FranchiseModel } from "../../../database/schema";
+import {
+    AddressModel,
+    FranchiseModel, RegionModel,
+    UserModel,
+} from "../../../database/schema";
+import {
+    OrganizationModel,
+} from "../../organization/database/organization_schema";
+import { TListFilters } from "../../../types/common";
+import { Op } from "sequelize";
+import { parseFranchise } from '../parser/franchiseParser';
 
 
 export class FranchiseRepo implements IFranchiseRepo {
@@ -19,7 +29,7 @@ export class FranchiseRepo implements IFranchiseRepo {
                     const smDetails = await RepoProvider.smRepo.saveBulk(franchise.sm);
                     smIds = smDetails.map((sm) => sm.id);
                 }
-                return (await FranchiseModel.create({
+                const res = await FranchiseModel.create({
                     pocName: franchise.pocName,
                     pocEmail: franchise.pocEmail,
                     pocPhoneNumber: franchise.pocPhoneNumber,
@@ -33,8 +43,19 @@ export class FranchiseRepo implements IFranchiseRepo {
                     organizationId: franchise.organizationId,
                     location: addressId,
                     sm: smIds,
-                })).toJSON();
+                    createdBy: franchise.createdBy,
+                    updatedBy: franchise.updatedBy,
+                    deletedBy: franchise.deletedBy,
+                });
+                if (res) {
+                    return res.toJSON();
+                } else {
+                    return null;
+                }
 
+
+            } else {
+                //    return getSuccess
             }
         } catch (e) {
             console.log(e);
@@ -52,21 +73,149 @@ export class FranchiseRepo implements IFranchiseRepo {
         throw new Error("Method not implemented.");
     }
 
-    getAll(): Promise<Franchise[]> {
-        throw new Error("Method not implemented.");
+    async getAll(page: number, limit: number, search: string, filters: TListFilters): Promise<Pagination<parsedFranchise>> {
+        try {
+            const offset = (page - 1) * limit;
+
+            const query: any = {};
+
+            // Add search functionality
+            if (search) {
+                query[Op.or] = [
+                    { pocName: { [Op.iLike]: `%${search}%` } },
+                    { pocEmail: { [Op.iLike]: `%${search}%` } },
+                    { pocPhoneNumber: { [Op.iLike]: `%${search}%` } },
+                ];
+            }
+            // Add filters
+            if (filters) {
+                Object.assign(query, filters);
+            }
+
+            const { rows: franchise, count: total } = await FranchiseModel.findAndCountAll({
+                where: query,
+                offset,
+                limit,
+                order: [['createdAt', 'DESC']],
+                include: [
+                    {
+                        model: AddressModel,
+                        as: "address",
+                    },
+                    {
+                        model: RegionModel,
+                        as: "region",
+                    },
+                    {
+                        model: OrganizationModel,
+                        as: "organization",
+                    },
+                ]
+            }).then((res) => {
+                return {
+                    rows: res.rows.map((product) => parseFranchise(product.toJSON())),
+                    count: res.count
+                }
+            })
+
+            const totalPages = Math.ceil(total / limit);
+
+            return { data: franchise, total, totalPages };
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
     }
 
 
-    exists(email: string): Promise<boolean> {
-        return Promise.resolve(false);
+    async exists(email: string): Promise<boolean> {
+        try {
+            const res = await FranchiseModel.findOne({
+                where: { pocEmail: email },
+            });
+            return !!res;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+
     }
 
-    getById(id: number): Promise<Franchise> {
-        return Promise.resolve(undefined);
+    async getById(id: number): Promise<parsedFranchise> {
+        try {
+
+            const res = (await FranchiseModel.findOne({
+                where: { id: id },
+                include: [
+                    {
+                        model: RegionModel,
+                        as: "Region", // Matches the alias defined in the association
+                    },
+                    {
+                        model: OrganizationModel,
+                        as: "organization", // Matches the alias defined in the association
+                    },
+                    {
+                        model: UserModel,
+                        as: "createdByUser", // For the 'createdBy' user
+                    },
+                    {
+                        model: UserModel,
+                        as: "updatedByUser", // For the 'updatedBy' user
+                    },
+                    {
+                        model: UserModel,
+                        as: "deletedByUser", // For the 'deletedBy' user
+                    },
+                ],
+            }));
+            if (res) {
+                return parseFranchise(res.toJSON());
+            }else{
+                return null;
+            }
+        } catch (e) {
+            console.log(e);
+            return null;
+        }
     }
 
-    getByOrganizationId(organizationId: number): Promise<Franchise[]> {
-        return Promise.resolve([]);
+    async getByOrganizationId(organizationId: number): Promise<Franchise[]> {
+        try {
+            const res = await FranchiseModel.findAll({
+                where: { organizationId: organizationId },
+                include: [
+                    {
+                        model: RegionModel,
+                        as: "Region", // Matches the alias defined in the association
+                    },
+                    {
+                        model: OrganizationModel,
+                        as: "organization", // Matches the alias defined in the association
+                    },
+                    {
+                        model: UserModel,
+                        as: "createdByUser", // For the 'createdBy' user
+                    },
+                    {
+                        model: UserModel,
+                        as: "updatedByUser", // For the 'updatedBy' user
+                    },
+                    {
+                        model: UserModel,
+                        as: "deletedByUser", // For the 'deletedBy' user
+                    },
+                ],
+            });
+            if (res) {
+                return res.map((franchise) => franchise.toJSON());
+            } else {
+                return [];
+            }
+        } catch (e) {
+            console.log(e);
+            return [];
+        }
     }
 
     getByRegionId(regionId: number): Promise<Franchise[]> {

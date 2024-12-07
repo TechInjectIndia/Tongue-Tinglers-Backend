@@ -14,10 +14,13 @@ export default class OrganizationController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, "user_id", 0);
+
+            console.log(user_id);
+            
             const payload: IOrganizationPayloadDataWithMeta = {
                 ...req.body,
-                createdBy: user_id,
-                rootUser: user_id,
+                createdBy: 1,
+                rootUser: 1,
             };
             const data = await new OrganizationRepo().create(payload, user_id);
             return res

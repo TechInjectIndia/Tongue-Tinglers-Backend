@@ -26,30 +26,30 @@ enum PRODUCT_STATUS {
 }
 
 enum PRODUCTS_TYPE {
-   RETORT = 'retort',
-   PACKAGING = 'packaging'
+    RETORT = 'retort',
+    PACKAGING = 'packaging'
 }
 
-interface Product extends BaseMeta,BaseProduct {
+interface Product extends BaseMeta, BaseProduct {
     id: number
 }
 
-interface TListFiltersIProduct {
-    offset: number;
-    limit: number;
-    search?: string;
-    sorting?: any;
-    trashOnly?: string;
-    filters?: {
-        id?: number;
-        title?: string;
-        createdBy?: number;
-        [key: string]: any;
-    };
-};
+// interface TListFilters {
+//     offset: number;
+//     limit: number;
+//     search?: string;
+//     sorting?: any;
+//     trashOnly?: string;
+//     filters?: {
+//         id?: number;
+//         title?: string;
+//         createdBy?: number;
+//         [key: string]: any;
+//     };
+// };
 
 interface Pagination<T> {
-    products: T[];
+    data: T[];
     total: number;
     totalPages: number;
 }

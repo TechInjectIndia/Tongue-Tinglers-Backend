@@ -7,6 +7,7 @@ import {
     createAccessToken,
     createRefreshToken,
     createUserResponse,
+    getUserByFirebaseUid,
 } from "../../../libraries";
 import { RESPONSE_TYPE, ERROR_MESSAGE, SUCCESS_MESSAGE } from "../../../constants";
 import { Auth } from '../models';
@@ -31,6 +32,8 @@ export default class AuthController {
                     );
             }
 
+
+
             const jwtPayload = verifyJwtToken(token);
             if (!jwtPayload) {
                 return res.status(401).send(
@@ -51,12 +54,12 @@ export default class AuthController {
                 );
             }
 
+
             const firebaseUserId = firebaseUser.firebaseUid;
             const result = await verifyAndUpdatePassword(firebaseUserId, newPassword);
 
             if (result.success) {
                 const payloadUser = await new Auth().removePasswordToken(token);
-                console.log('payloadUser', payloadUser)
                 return res.status(200).send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
@@ -233,9 +236,92 @@ export default class AuthController {
                     )
                 );
         } catch (err) {
-            console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    static async changeFirebasePassword(req: Request, res: Response, next: NextFunction) {
+        try {
+
+            const token = req.headers.authorization?.split('Bearer ')[1];
+            if (!token) {
+
+                return res.status(401).send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.UNAUTHORIZED_REQUEST
+                    )
+                );
+            }
+
+
+            if (!token) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.TOKEN_NOT_PROVIDED
+                        )
+                    );
+            }
+            const newPassword = get(req.body, "new_password");
+
+            const decodedToken = await verifyFirebaseToken(token);
+
+            if (!decodedToken && !decodedToken?.user_id) {
+                return res
+                    .status(401)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.TOKEN_NOT_PROVIDED
+                        )
+                    );
+            }
+
+            const firebaseUser = await getUserByFirebaseUid(decodedToken?.user_id);
+
+            if (!firebaseUser) {
+                return res
+                    .status(401)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.TOKEN_NOT_PROVIDED
+                        )
+                    );
+            }
+
+
+
+
+            const firebaseUserId = firebaseUser.firebaseUid;
+
+            const result = await verifyAndUpdatePassword(firebaseUserId, newPassword);
+
+
+            if (result.success) {
+                return res.status(200).send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.PASSWORD_CREATED
+                    )
+                );
+            } else {
+                return res.status(400).send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        result.message
+                    )
+                );
+            }
+        } catch (err) {
+            console.error(err);
+            return res.status(500).send({
+                message: "Error creating password: " + err.message,
             });
         }
     }

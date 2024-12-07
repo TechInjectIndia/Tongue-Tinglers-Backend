@@ -78,7 +78,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     }
 
     public async list(filters: TListFilters): Promise<TUsersList> {
-    console.log("filters: ",filters);
+        console.log("filters: ", filters);
         const total = await UserModel.count({
             where: {
                 email: {
@@ -217,7 +217,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.MASTER_FRANCHISE,
+                type: USER_TYPE.SUPER_FRANSHISE,
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
@@ -230,7 +230,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.MASTER_FRANCHISE,
+                type: USER_TYPE.SUPER_FRANSHISE,
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,

@@ -53,3 +53,16 @@ export const validateCreatePasswordBody = async (
     res: Response,
     next: NextFunction
 ) => validateReq(req, res, next, createPasswordBody, "body");
+
+
+
+
+const changeFirebasePasswordBody = Joi.object().keys({
+    new_password: Joi.string().required(),
+});
+
+export const validateChangeFirebasePasswordBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, changeFirebasePasswordBody, "body");

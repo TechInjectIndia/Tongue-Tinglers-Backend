@@ -2,8 +2,7 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
 import { IRegion } from '../../../interfaces';
-import { UserModel } from '../user/user.model';
-import { FranchiseModel } from './franchiseModel';
+import { UserModel } from '../user/user.model';;
 
 interface RegionCreationAttributes extends Optional<IRegion, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
@@ -79,10 +78,5 @@ RegionModel.init(
         tableName: 'regions',
     }
 );
-
-RegionModel.hasMany(FranchiseModel, {
-    foreignKey: 'regionId',  // The field in FranchiseeModel that references RegionModel
-    sourceKey: 'id',         // The primary key in RegionModel
-});
 
 export { RegionModel };

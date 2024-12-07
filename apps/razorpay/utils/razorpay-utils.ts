@@ -1,7 +1,8 @@
  async function parseAndSaveEvent(eventPayload: any) {
     const { event, payload } = eventPayload;
 
-    console.log(event);
+    console.log(payload);
+    
     
     let transactionData: any = {};
   
@@ -16,6 +17,7 @@
           status: order?.status || null,
           amount: order?.amount || null,
           currency: order?.currency || null,
+          failureReason: order?.failure_reason || null, // Extract failure reason if available
           createdAt: order?.created_at ? new Date(order.created_at * 1000) : null, // Convert UNIX timestamp
         };
       }
@@ -23,7 +25,7 @@
     // For "payment_link" events, e.g., payment_link.paid
     else if (event.startsWith("payment_link.")) {
       const paymentLink = payload?.payment_link?.entity;
-  
+
       if (paymentLink) {
         transactionData = {
           transactionId: paymentLink?.id || null,
@@ -31,6 +33,7 @@
           status: paymentLink?.status || null,
           amount: paymentLink?.amount || null,
           currency: paymentLink?.currency || null,
+          failureReason: paymentLink?.failure_reason || null, // Extract failure reason if available
           createdAt: paymentLink?.created_at ? new Date(paymentLink.created_at * 1000) : null,
         };
       }
@@ -59,6 +62,7 @@
             status: payment?.status || null,
             amount: payment?.amount || null,
             currency: payment?.currency || null,
+            failureReason: payment?.failure_reason || null, // Extract failure reason if available
             createdAt: payment?.created_at ? new Date(payment.created_at * 1000) : null,
           };
         }

@@ -26,7 +26,16 @@ const productsCategoryValidationSchema = Joi.object({
         .messages({
             "string.base": "Slug must be a string.",
             "any.required": "Slug is required.",
-        })
+        }),
+
+        status: Joi.string()
+        .valid(...Object.values(PRODUCT_CATEGORY_STATUS))
+        .required()
+        .messages({
+            "string.base": "Status must be a string.",
+            "any.only": `Status must be one of [${Object.values(PRODUCT_CATEGORY_STATUS).join(", ")}].`,
+            "any.required": "Status is required.",
+        }), 
 });
 
 const getAllProductsCategoryValidationSchema = Joi.object({

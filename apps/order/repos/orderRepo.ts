@@ -3,12 +3,14 @@ import {
     BaseOrder,
     Notes,
     Order,
+    OrderPagination,
     OrderPayload,
 } from "../../../interfaces/orders";
 import { IOrderRepo } from "./IOrderRepo";
 import { OrderModel } from "../../../database/schema/order/orderModel";
 import { NotesModel } from "../../../database/schema/order/notesModel";
 import { Pagination } from "../../../interfaces";
+import { Op } from "sequelize";
 
 export class OrderRepo implements IOrderRepo {
     async createOrder(order: OrderPayload): Promise<Order | null> {
@@ -59,15 +61,57 @@ export class OrderRepo implements IOrderRepo {
             return null;
         }
     }
-    getAllOrders(page: number,limit: number,search: string,filters: object): Promise<Pagination<Order>> {
+    async getAllOrders(
+        page: number,
+        limit: number,
+        search: string,
+        filters: Record<string, any>
+    ): Promise<OrderPagination<OrderModel>> {
         try {
             const offset = (page - 1) * limit;
 
-            const query: any = {};
+        // Building the query
+        const query: any = {
+            where: {},
+            limit,
+            offset,
+            include: [{ model: NotesModel, as: "noteses", through: { attributes: [] }, }],
+        };
 
+        // Adding search functionality
+        if (search) {
+            query.where = {
+                ...query.where,
+                [Op.or]: [
+                    { status: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for status
+                    { delivery_status: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for delivery_status
+                    { payment_type: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for payment_type
+                ],
+            };
+        }
+
+        // Applying filters (if provided)
+        if (filters) {
+            Object.entries(filters).forEach(([key, value]) => {
+                query.where[key] = value;
+            });
+        }
+
+        // Fetch data with total count
+        const { rows, count: total } = await OrderModel.findAndCountAll(query);
+
+        // Returning paginated result
+        return {
+            data: rows, // Corrected from "order" to "rows"
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        };
         } catch (error) {
-            console.log(error);
-            return null;
+            console.error("Error fetching orders with pagination:", error);
+            throw new Error("Failed to fetch orders.");
         }
     }
+    
 }

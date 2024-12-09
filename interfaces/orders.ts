@@ -51,11 +51,12 @@ interface Order extends BaseMeta, BaseOrder {
     id: number;
 }
 
-interface Pagination<T> {
+interface OrderPagination<T> {
+    data: T[];
+    total: number;
     page: number;
     limit: number;
-    total: number;
-    data: T[];
+    totalPages: number;
 }
 
 export {
@@ -64,5 +65,5 @@ export {
     BaseNotes,
     Notes,
     OrderPayload,
-    Pagination
+    OrderPagination
 }

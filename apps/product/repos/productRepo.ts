@@ -24,7 +24,7 @@ export class ProductRepo implements IProductRepo {
           type: product.type,
           status: product.status,
           images: product.images,
-          variationIds: product.variationIds,
+          variations: product.variations,
         },
         { transaction } // Pass the transaction
       );

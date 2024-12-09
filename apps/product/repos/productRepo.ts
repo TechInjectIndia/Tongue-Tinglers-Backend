@@ -31,8 +31,8 @@ export class ProductRepo implements IProductRepo {
 
       let productOptionsIds: number[] = []; // Array to store option IDs
 
-      if (product.options && Array.isArray(product.options)) {
-        const productOptions = product.options.map((option) => ({
+      if (product.variations && Array.isArray(product.variations)) {
+        const productOptions = product.variations.map((option) => ({
           product_id: createdProduct.id, // Link the option to the created product
           option_value_id: option.option_value_id,
           price: option.price,

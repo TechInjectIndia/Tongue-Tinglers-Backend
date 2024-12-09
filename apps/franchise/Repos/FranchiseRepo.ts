@@ -113,7 +113,7 @@ export class FranchiseRepo implements IFranchiseRepo {
                 ]
             }).then((res) => {
                 return {
-                    rows: res.rows.map((product) => parseFranchise(product.toJSON())),
+                    rows: res.rows.map((franchise) => parseFranchise(franchise.toJSON())),
                     count: res.count
                 }
             })

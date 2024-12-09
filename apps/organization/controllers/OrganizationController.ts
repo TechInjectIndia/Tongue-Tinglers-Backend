@@ -18,9 +18,7 @@ import RepoProvider from "../../RepoProvider";
 export default class OrganizationController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, "user_id", 0);
-
-            console.log(user_id);
+            const user_id = get(req, "user_id", 1);
 
             const payload: IOrganizationPayloadDataWithMeta = {
                 ...req.body,
@@ -51,11 +49,11 @@ export default class OrganizationController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const id = get(req.params, "id", "");
+            const id = get(req.params, "id", 0);
             // todo remove type casting
             const existingOrganization = await new OrganizationRepo().get(
                 id as unknown as number,
-            );
+            )
             if (isEmpty(existingOrganization)) {
                 return res
                     .status(400)

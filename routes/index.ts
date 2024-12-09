@@ -214,7 +214,7 @@ router.use(`/product`, webProductsRouter);
 router.use(`/register`, webRegisterRouter);
 router.use(`/campaign-ad`, webCampaignRouter);
 /* organization router */
-router.use(`/organization`, auth, organizationRouter);
+router.use(`/organization`, organizationRouter);
 
 // ====== Frontend ======
 

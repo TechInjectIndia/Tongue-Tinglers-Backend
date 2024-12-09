@@ -1,0 +1,206 @@
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16192,"time":"2024-12-09T07:11:40.933Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16192,"time":"2024-12-09T07:11:41.107Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16192,"time":"2024-12-09T07:11:41.190Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16192,"time":"2024-12-09T07:11:41.201Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16192,"time":"2024-12-09T07:11:41.201Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16192,"time":"2024-12-09T07:12:08.712Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16192,"time":"2024-12-09T07:12:08.713Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BVRmCpjP3YcHAF8SMEEim5xnVpi4AAgBAAAnIQEAAD9AAgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16192,"time":"2024-12-09T07:12:08.713Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16192,"time":"2024-12-09T07:12:08.719Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16192,"time":"2024-12-09T07:12:08.731Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16192,"time":"2024-12-09T07:12:09.739Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13340,"time":"2024-12-09T07:14:37.986Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13340,"time":"2024-12-09T07:14:38.468Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13340,"time":"2024-12-09T07:14:38.625Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13340,"time":"2024-12-09T07:14:38.637Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13340,"time":"2024-12-09T07:14:38.637Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13340,"time":"2024-12-09T07:14:53.012Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13340,"time":"2024-12-09T07:14:53.014Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BaHO-ceUHxuSAF8SMEEim5xnVpkwAAgBAAAnIQEAADQcAgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13340,"time":"2024-12-09T07:14:53.014Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13340,"time":"2024-12-09T07:14:53.018Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13340,"time":"2024-12-09T07:14:53.026Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13340,"time":"2024-12-09T07:14:54.025Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":11724,"time":"2024-12-09T07:16:50.137Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":11724,"time":"2024-12-09T07:16:50.375Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":11724,"time":"2024-12-09T07:16:50.464Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":11724,"time":"2024-12-09T07:16:50.475Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":11724,"time":"2024-12-09T07:16:50.475Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":11724,"time":"2024-12-09T07:16:59.243Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":11724,"time":"2024-12-09T07:16:59.243Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BSIJ0nSFNLqJAF8SMEEim5xnVpmoAAgBAAAnIQEAAC3MAgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":11724,"time":"2024-12-09T07:16:59.243Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":11724,"time":"2024-12-09T07:16:59.245Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":11724,"time":"2024-12-09T07:16:59.250Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":11724,"time":"2024-12-09T07:17:00.252Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6784,"time":"2024-12-09T07:27:42.937Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6784,"time":"2024-12-09T07:27:43.201Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6784,"time":"2024-12-09T07:27:43.290Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6784,"time":"2024-12-09T07:27:43.302Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6784,"time":"2024-12-09T07:27:43.302Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6784,"time":"2024-12-09T07:27:54.407Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6784,"time":"2024-12-09T07:27:54.409Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BTRr2X7ZTdNtAF8SMEEim5xnVpw8AAgBAAAnIQEAABqAAgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6784,"time":"2024-12-09T07:27:54.409Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6784,"time":"2024-12-09T07:27:54.415Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6784,"time":"2024-12-09T07:27:54.425Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6784,"time":"2024-12-09T07:27:55.426Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":14524,"time":"2024-12-09T07:51:13.870Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":14524,"time":"2024-12-09T07:51:14.119Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":14524,"time":"2024-12-09T07:51:14.232Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":14524,"time":"2024-12-09T07:51:14.247Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":14524,"time":"2024-12-09T07:51:14.248Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":14524,"time":"2024-12-09T07:51:25.844Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":14524,"time":"2024-12-09T07:51:25.845Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BRuVWF7H-b81AF8SMEEim5xnVqHcAAgBAAAnIQEAADi8AgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":14524,"time":"2024-12-09T07:51:25.845Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":14524,"time":"2024-12-09T07:51:25.847Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":14524,"time":"2024-12-09T07:51:25.853Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":14524,"time":"2024-12-09T07:51:26.859Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":4144,"time":"2024-12-09T07:56:06.339Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":4144,"time":"2024-12-09T07:56:06.511Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":4144,"time":"2024-12-09T07:56:06.592Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":4144,"time":"2024-12-09T07:56:06.603Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":4144,"time":"2024-12-09T07:56:06.603Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":4144,"time":"2024-12-09T07:56:18.424Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":4144,"time":"2024-12-09T07:56:18.425Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BY8W6cXsAbUGAF8SMEEim5xnVqMIAAgBAAAnIQEAABAwAgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":4144,"time":"2024-12-09T07:56:18.425Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":4144,"time":"2024-12-09T07:56:18.427Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":4144,"time":"2024-12-09T07:56:18.431Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":4144,"time":"2024-12-09T07:56:19.438Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16772,"time":"2024-12-09T09:27:51.884Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16772,"time":"2024-12-09T09:27:52.400Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16772,"time":"2024-12-09T09:27:52.587Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16772,"time":"2024-12-09T09:27:52.604Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16772,"time":"2024-12-09T09:27:52.604Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16772,"time":"2024-12-09T09:28:14.339Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16772,"time":"2024-12-09T09:28:14.339Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BZBsnPzA3IQeAF8SMEEim5xnVriYAAgBAAAnIQEAAEGEAgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16772,"time":"2024-12-09T09:28:14.339Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16772,"time":"2024-12-09T09:28:14.342Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16772,"time":"2024-12-09T09:28:14.351Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":16772,"time":"2024-12-09T09:28:15.351Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12892,"time":"2024-12-09T09:28:17.354Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12892,"time":"2024-12-09T09:28:17.621Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12892,"time":"2024-12-09T09:28:17.786Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12892,"time":"2024-12-09T09:28:17.804Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12892,"time":"2024-12-09T09:28:17.804Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12892,"time":"2024-12-09T09:28:36.443Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12892,"time":"2024-12-09T09:28:36.443Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BbNVMhGJ7E4hAF8SMEEim5xnVriYAAgBAAAnIQEAADJcAgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12892,"time":"2024-12-09T09:28:36.443Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12892,"time":"2024-12-09T09:28:36.446Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12892,"time":"2024-12-09T09:28:36.455Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12892,"time":"2024-12-09T09:28:37.456Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7528,"time":"2024-12-09T09:28:40.900Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7528,"time":"2024-12-09T09:28:41.076Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7528,"time":"2024-12-09T09:28:41.252Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7528,"time":"2024-12-09T09:28:41.275Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7528,"time":"2024-12-09T09:28:41.275Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7528,"time":"2024-12-09T09:29:06.141Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7528,"time":"2024-12-09T09:29:06.142Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BSzpY5zZbaaHAF8SMEEim5xnVrjUAAgBAAAnIQEAAB1oAgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7528,"time":"2024-12-09T09:29:06.142Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7528,"time":"2024-12-09T09:29:06.147Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7528,"time":"2024-12-09T09:29:06.163Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7528,"time":"2024-12-09T09:29:07.178Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12872,"time":"2024-12-09T09:31:01.632Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12872,"time":"2024-12-09T09:31:02.146Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12872,"time":"2024-12-09T09:31:02.265Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12872,"time":"2024-12-09T09:31:02.277Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":12872,"time":"2024-12-09T09:31:02.277Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13648,"time":"2024-12-09T09:35:25.004Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13648,"time":"2024-12-09T09:35:25.612Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13648,"time":"2024-12-09T09:35:25.976Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13648,"time":"2024-12-09T09:35:26.002Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13648,"time":"2024-12-09T09:35:26.002Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17440,"time":"2024-12-09T09:36:01.514Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17440,"time":"2024-12-09T09:36:02.111Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17440,"time":"2024-12-09T09:36:02.295Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17440,"time":"2024-12-09T09:36:02.345Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17440,"time":"2024-12-09T09:36:02.345Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17440,"time":"2024-12-09T09:36:16.274Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17440,"time":"2024-12-09T09:36:16.274Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BZwvvkSJwErbAF8SMEEim5xnVrp4AAgBAAAnIQEAAEQgAgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17440,"time":"2024-12-09T09:36:16.274Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17440,"time":"2024-12-09T09:36:16.277Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17440,"time":"2024-12-09T09:36:16.285Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17440,"time":"2024-12-09T09:36:17.285Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17308,"time":"2024-12-09T09:39:42.577Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17308,"time":"2024-12-09T09:39:42.948Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17308,"time":"2024-12-09T09:39:43.124Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17308,"time":"2024-12-09T09:39:43.143Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17308,"time":"2024-12-09T09:39:43.144Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17308,"time":"2024-12-09T09:39:57.317Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17308,"time":"2024-12-09T09:39:57.317Z","msg":"Connected to collector.newrelic.com:443 with agent run ID Bc9ymJXBJt1tAF8SMEEim5xnVrssAAgBAAAnIQEAAEOcAgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17308,"time":"2024-12-09T09:39:57.317Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17308,"time":"2024-12-09T09:39:57.319Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17308,"time":"2024-12-09T09:39:57.326Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":17308,"time":"2024-12-09T09:39:58.336Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7924,"time":"2024-12-09T09:40:54.835Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7924,"time":"2024-12-09T09:40:55.167Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7924,"time":"2024-12-09T09:40:55.324Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7924,"time":"2024-12-09T09:40:55.342Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":7924,"time":"2024-12-09T09:40:55.343Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8056,"time":"2024-12-09T09:41:22.717Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8056,"time":"2024-12-09T09:41:23.300Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8056,"time":"2024-12-09T09:41:23.463Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8056,"time":"2024-12-09T09:41:23.479Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8056,"time":"2024-12-09T09:41:23.479Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8056,"time":"2024-12-09T09:41:38.161Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8056,"time":"2024-12-09T09:41:38.162Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BfB5wdn0n0lJAF8SMEEim5xnVrukAAgBAAAnIQEAAB94AgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8056,"time":"2024-12-09T09:41:38.162Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8056,"time":"2024-12-09T09:41:38.168Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8056,"time":"2024-12-09T09:41:38.188Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8056,"time":"2024-12-09T09:41:39.192Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6164,"time":"2024-12-09T09:43:12.618Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6164,"time":"2024-12-09T09:43:13.080Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6164,"time":"2024-12-09T09:43:13.219Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6164,"time":"2024-12-09T09:43:13.266Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6164,"time":"2024-12-09T09:43:13.266Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6164,"time":"2024-12-09T09:43:25.711Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6164,"time":"2024-12-09T09:43:25.712Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BfTpdHff8nhNAF8SMEEim5xnVrwcAAgBAAAnIQEAABgUAgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6164,"time":"2024-12-09T09:43:25.712Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6164,"time":"2024-12-09T09:43:25.714Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6164,"time":"2024-12-09T09:43:25.723Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":6164,"time":"2024-12-09T09:43:26.739Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13644,"time":"2024-12-09T09:44:16.558Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13644,"time":"2024-12-09T09:44:17.313Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13644,"time":"2024-12-09T09:44:17.522Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13644,"time":"2024-12-09T09:44:17.542Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13644,"time":"2024-12-09T09:44:17.543Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13644,"time":"2024-12-09T09:44:29.999Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13644,"time":"2024-12-09T09:44:30.000Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BfUy5XD-EV_oAF8SMEEim5xnVrxYAAgBAAAnIQEAADVMAgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13644,"time":"2024-12-09T09:44:30.000Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13644,"time":"2024-12-09T09:44:30.002Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13644,"time":"2024-12-09T09:44:30.009Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":13644,"time":"2024-12-09T09:44:31.025Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8396,"time":"2024-12-09T09:46:47.983Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8396,"time":"2024-12-09T09:46:48.852Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8396,"time":"2024-12-09T09:46:49.123Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8396,"time":"2024-12-09T09:46:49.172Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8396,"time":"2024-12-09T09:46:49.172Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8396,"time":"2024-12-09T09:47:03.028Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8396,"time":"2024-12-09T09:47:03.028Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BbgSsUDjhiseAF8SMEEim5xnVr0MAAgBAAAnIQEAACDMAgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8396,"time":"2024-12-09T09:47:03.029Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8396,"time":"2024-12-09T09:47:03.031Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8396,"time":"2024-12-09T09:47:03.041Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8396,"time":"2024-12-09T09:47:04.049Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":3356,"time":"2024-12-09T09:49:21.063Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":3356,"time":"2024-12-09T09:49:21.754Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":3356,"time":"2024-12-09T09:49:22.153Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":3356,"time":"2024-12-09T09:49:22.195Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":3356,"time":"2024-12-09T09:49:22.195Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8916,"time":"2024-12-09T09:49:34.465Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8916,"time":"2024-12-09T09:49:35.135Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8916,"time":"2024-12-09T09:49:35.283Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8916,"time":"2024-12-09T09:49:35.294Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":8916,"time":"2024-12-09T09:49:35.294Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9724,"time":"2024-12-09T09:50:43.931Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9724,"time":"2024-12-09T09:50:44.661Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9724,"time":"2024-12-09T09:50:44.922Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9724,"time":"2024-12-09T09:50:44.958Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9724,"time":"2024-12-09T09:50:44.958Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9724,"time":"2024-12-09T09:50:57.659Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9724,"time":"2024-12-09T09:50:57.660Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BXduRfbTKFQ8AF8SMEEim5xnVr3AAAgBAAAnIQEAACX8AgQ8dz-TAwAGMTIuOC4xAAtIYXJzaC1EYWxhbAAOVG9uZ3VlIFRpbmdsZXI.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9724,"time":"2024-12-09T09:50:57.660Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9724,"time":"2024-12-09T09:50:57.669Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9724,"time":"2024-12-09T09:50:57.689Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9724,"time":"2024-12-09T09:50:58.698Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9332,"time":"2024-12-09T09:51:15.716Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v20.18.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9332,"time":"2024-12-09T09:51:15.901Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9332,"time":"2024-12-09T09:51:15.989Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9332,"time":"2024-12-09T09:51:16.001Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Harsh-Dalal","pid":9332,"time":"2024-12-09T09:51:16.001Z","msg":"Agent state changed from starting to connecting."}

@@ -1,8 +1,8 @@
 import { Address, BaseAddress } from "../types";
 import { BaseMeta, BaseMetaUsers } from "../database/schema/base/Base";
 import { BaseSocialMedia, parsedAffiliate, SocialMediaDetails } from "./leads";
-import { parsedRegion, parsedUser } from ".";
-import { parsedOrganization } from "./organization";
+import { parsedRegion, ParsedUser } from ".";
+import { ParsedOrganization } from "./organization";
 
 
 interface BaseFranchise {
@@ -35,12 +35,12 @@ interface parsedFranchise {
     pocName: string;
     pocEmail: string;
     pocPhoneNumber: string;
-    users: Array<parsedUser>;
+    users: Array<ParsedUser>;
     region: parsedRegion;
     area: string;
     agreementIds: Array<number>;
     paymentIds: Array<number>;
-    organization: parsedOrganization;
+    organization: ParsedOrganization;
     status: FRANCHISE_STATUS;
     establishedDate: Date;
     affiliate: parsedAffiliate,

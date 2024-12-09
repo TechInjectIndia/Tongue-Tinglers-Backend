@@ -40,10 +40,16 @@ export interface UserInformation {
     address: Array<BaseAddress>;
 }
 
-interface parsedUser {
-
+interface ParsedUser {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    type: USER_TYPE;
+    status: USER_STATUS;
 }
 
 export {
-    parsedUser
+    ParsedUser
 }

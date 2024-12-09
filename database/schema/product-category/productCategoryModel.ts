@@ -35,7 +35,6 @@ ProductsCategoryModel.init({
     },
     status: {
         type: DataTypes.ENUM(PRODUCT_STATUS.ACTIVE, PRODUCT_STATUS.INACTIVE),
-        defaultValue: PRODUCT_STATUS.ACTIVE,
     },
     createdBy: {
         type: DataTypes.INTEGER,

@@ -196,7 +196,7 @@ export default class OrganizationController {
                     );
                 }
             }
-            const Franchise: Pagination<Organization> = await RepoProvider.getAll(page, limit, search, filterObj);
+            const Franchise: Pagination<Organization> = await new OrganizationRepo().list(filterObj);
             return res.status(200)
                 .send(
                     sendResponse(

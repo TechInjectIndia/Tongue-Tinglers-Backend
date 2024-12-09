@@ -31,6 +31,8 @@ import { IProductsCategoryRepo } from "./products-category/repos/IProductsCatego
 import { ProductsCategoryRepo } from "./products-category/repos/productsCategoryRepo";
 import { RazorpayRepo } from "./razorpay/Repos/RazorapayRepo";
 import { IRazorpayRepo } from "./razorpay/Repos/IRazorpayRepo";
+import { IOrderRepo } from "./order/repos/IOrderRepo";
+import { OrderRepo } from "./order/repos/orderRepo";
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -46,6 +48,7 @@ export default class RepoProvider {
   private static _orderItemRepo: IOrderItemRepo;
   private static _productsCategoryRepo: IProductsCategoryRepo;
   private static _razorpayRepo: IRazorpayRepo;
+  private static _orderRepo: IOrderRepo;
 
   static get franchise() {
     if (!this._franchiseRepo) {
@@ -135,5 +138,11 @@ export default class RepoProvider {
       this._razorpayRepo = new RazorpayRepo();
     }
     return this._razorpayRepo;
+  }
+  static get orderRepo() {
+    if (!this._orderRepo) {
+      this._orderRepo = new OrderRepo();
+    }
+    return this._orderRepo;
   }
 }

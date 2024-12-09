@@ -90,8 +90,8 @@ importers:
         specifier: ^1.4.5-lts.1
         version: 1.4.5-lts.1
       newrelic:
-        specifier: ^12.8.0
-        version: 12.8.0
+        specifier: ^12.8.1
+        version: 12.8.1
       otp-generator:
         specifier: ^4.0.1
         version: 4.0.1
@@ -418,10 +418,6 @@ packages:
   '@google-cloud/storage@7.12.1':
     resolution: {integrity: sha512-Z3ZzOnF3YKLuvpkvF+TjQ6lztxcAyTILp+FjKonmVpEwPa9vFvxpZjubLR4sB6bf19i/8HL2AXRjA0YFgHFRmQ==}
     engines: {node: '>=14'}
-
-  '@grpc/grpc-js@1.11.2':
-    resolution: {integrity: sha512-DWp92gDD7/Qkj7r8kus6/HCINeo3yPZWZ3paKgDgsbKbSpoxKg1yvN8xe2Q8uE3zOsPe3bX8FQX2+XValq2yTw==}
-    engines: {node: '>=12.10.0'}
 
   '@grpc/grpc-js@1.12.3':
     resolution: {integrity: sha512-iaxAZnANdCwMNpJlyhkI1W1jQZIDZKFNtU2OpQDdgd+pBcU3t7G+PT7svobkW4WSZTdis+CVV6y8KIwu83HDYQ==}
@@ -2123,8 +2119,8 @@ packages:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
 
-  newrelic@12.8.0:
-    resolution: {integrity: sha512-1REYljpk3I1TUI/+EjO4G274ZvXiJVLTHiYh5xnTfnQs79UF51UOp1+AUI+G+gFASo2U5Oi/L3rakGJdtqJeHQ==}
+  newrelic@12.8.1:
+    resolution: {integrity: sha512-5iBQLuMxdkQyjy7rA7sn2KH4SRC18lW7ecfUKhxfBpyvof7y9BT+Z8z9l77xq8Jwh3B80j/hJ4YWaBXMf+izEA==}
     engines: {node: '>=18', npm: '>=6.0.0'}
     hasBin: true
 
@@ -3643,12 +3639,6 @@ snapshots:
       - supports-color
     optional: true
 
-  '@grpc/grpc-js@1.11.2':
-    dependencies:
-      '@grpc/proto-loader': 0.7.13
-      '@js-sdsl/ordered-map': 4.4.2
-    optional: true
-
   '@grpc/grpc-js@1.12.3':
     dependencies:
       '@grpc/proto-loader': 0.7.13
@@ -5028,7 +5018,7 @@ snapshots:
 
   google-gax@4.4.1:
     dependencies:
-      '@grpc/grpc-js': 1.11.2
+      '@grpc/grpc-js': 1.12.3
       '@grpc/proto-loader': 0.7.13
       '@types/long': 4.0.2
       abort-controller: 3.0.0
@@ -5662,7 +5652,7 @@ snapshots:
 
   negotiator@0.6.3: {}
 
-  newrelic@12.8.0:
+  newrelic@12.8.1:
     dependencies:
       '@grpc/grpc-js': 1.12.3
       '@grpc/proto-loader': 0.7.13

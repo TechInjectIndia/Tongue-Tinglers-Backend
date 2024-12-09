@@ -10,7 +10,7 @@ export class ProductsCategoryRepo implements IProductsCategoryRepo {
                 name: category.name,
                 slug: category.slug,
                 description: category.description,
-                status: PRODUCT_CATEGORY_STATUS.ACTIVE,
+                status: category.status,
                 createdBy: category.createdBy,
                 createdAt: new Date(),
                 updatedAt: new Date(),

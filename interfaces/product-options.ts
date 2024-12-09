@@ -1,8 +1,7 @@
-import { BaseMeta } from "../database/schema/base/Base"
+import { BaseMeta } from "../database/schema/base/Base";
 
 interface BaseProductOptions {
     id: any
-    product_id: number
     option_value_id: number
     price: number
     stock: number
@@ -14,12 +13,13 @@ interface BaseProductOptions {
 }
 
 interface ProductOptions extends BaseMeta, BaseProductOptions {
-    id: number
+    product_id: number;
+    id: number;
 }
 
 enum PRODUCT_OPTIONS_STATUS {
-    ACTIVE = 'active',
-    INACTIVE = 'inactive'
+    ACTIVE = "active",
+    INACTIVE = "inactive"
 }
 
 interface Pagination<T> {
@@ -28,7 +28,7 @@ interface Pagination<T> {
     totalPages: number;
 }
 
-interface ProductOptionsList<T>{
+interface ProductOptionsList<T> {
     productOptions: T[];
 }
 
@@ -37,5 +37,5 @@ export {
     ProductOptions,
     PRODUCT_OPTIONS_STATUS,
     Pagination,
-    ProductOptionsList
-}
+    ProductOptionsList,
+};

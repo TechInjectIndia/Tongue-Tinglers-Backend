@@ -68,9 +68,9 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
             limit: filters.limit,
             where: {
                 [Op.or]: [
-                    { firstName: { [Op.like]: `%${filters.search}%` } },
-                    { lastName: { [Op.like]: `%${filters.search}%` } },
-                    { email: { [Op.like]: `%${filters.search}%` } },
+                    { firstName: { [Op.iLike]: `%${filters.search}%` } },
+                    { lastName: { [Op.iLike]: `%${filters.search}%` } },
+                    { email: { [Op.iLike]: `%${filters.search}%` } },
                 ],
             },
         });
@@ -78,11 +78,18 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     }
 
     public async list(filters: TListFilters): Promise<TUsersList> {
+        console.log("filters: ", filters);
         const total = await UserModel.count({
             where: {
                 email: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
+                firstName: {
+                    [Op.iLike]: `%${filters.search}%`,
+                },
+                lastName: {
+                    [Op.iLike]: `%${filters.search}%`,
+                }
             },
         });
         const data = await UserModel.findAll({
@@ -91,8 +98,14 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
             limit: filters.limit,
             where: {
                 email: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
+                firstName: {
+                    [Op.iLike]: `%${filters.search}%`,
+                },
+                lastName: {
+                    [Op.iLike]: `%${filters.search}%`,
+                }
             },
         });
         return { total, data };
@@ -204,7 +217,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.MASTER_FRANCHISE,
+                type: USER_TYPE.SUPER_FRANSHISE,
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,
@@ -217,7 +230,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
                 email: {
                     [Op.like]: `%${filters.search}%`,
                 },
-                type: USER_TYPE.MASTER_FRANCHISE,
+                type: USER_TYPE.SUPER_FRANSHISE,
                 deletedAt: { [Op.not]: null },
             },
             paranoid: false,

@@ -2,7 +2,7 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
 import { IRegion } from '../../../interfaces';
-import { UserModel } from '../user/user.model';
+import { UserModel } from '../user/user.model';;
 
 interface RegionCreationAttributes extends Optional<IRegion, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 

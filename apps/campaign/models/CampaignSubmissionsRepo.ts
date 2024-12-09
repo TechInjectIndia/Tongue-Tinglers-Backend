@@ -28,7 +28,7 @@ export class CampaignSubmissionsRepo implements IBaseRepo<ICampaignSubmisisons, 
         const total = await CampaignSubmissions.count({
             where: {
                 response: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -40,7 +40,7 @@ export class CampaignSubmissionsRepo implements IBaseRepo<ICampaignSubmisisons, 
             limit: filters.limit,
             where: {
                 response: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

@@ -8,16 +8,24 @@ import {
     ERROR_MESSAGE,
 } from "../../../constants"; // Adjust this import path as necessary
 import { OrganizationRepo } from "../models";
-import { IOrganizationPayloadDataWithMeta } from "../../../interfaces/organization";
+import {
+    IOrganizationPayloadDataWithMeta,
+    Organization,
+} from "../../../interfaces/organization";
+import { Pagination } from "../../../interfaces";
+import RepoProvider from "../../RepoProvider";
 
 export default class OrganizationController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = get(req, "user_id", 0);
+
+            console.log(user_id);
+
             const payload: IOrganizationPayloadDataWithMeta = {
                 ...req.body,
-                createdBy: user_id,
-                rootUser: user_id,
+                createdBy: 1,
+                rootUser: 1,
             };
             const data = await new OrganizationRepo().create(payload, user_id);
             return res
@@ -26,8 +34,8 @@ export default class OrganizationController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.CREATED,
-                        data
-                    )
+                        data,
+                    ),
                 );
         } catch (err) {
             console.error("Error:", err);
@@ -40,13 +48,13 @@ export default class OrganizationController {
     static async get(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<Response> {
         try {
             const id = get(req.params, "id", "");
             // todo remove type casting
             const existingOrganization = await new OrganizationRepo().get(
-                id as unknown as number
+                id as unknown as number,
             );
             if (isEmpty(existingOrganization)) {
                 return res
@@ -54,8 +62,8 @@ export default class OrganizationController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS
-                        )
+                            ERROR_MESSAGE.NOT_EXISTS,
+                        ),
                     );
             }
 
@@ -65,8 +73,8 @@ export default class OrganizationController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        existingOrganization
-                    )
+                        existingOrganization,
+                    ),
                 );
         } catch (err) {
             console.error(err);
@@ -79,7 +87,7 @@ export default class OrganizationController {
     static async update(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<Response> {
         try {
             const user_id = get(req, "user_id", "");
@@ -87,7 +95,7 @@ export default class OrganizationController {
             const payload = { ...req.body, createdBy: user_id };
 
             const existingOrganization = await new OrganizationRepo().get(
-                id as unknown as number
+                id as unknown as number,
             );
             if (isEmpty(existingOrganization)) {
                 return res
@@ -95,14 +103,14 @@ export default class OrganizationController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS
-                        )
+                            ERROR_MESSAGE.NOT_EXISTS,
+                        ),
                     );
             }
 
             const updatedOrganization = await new OrganizationRepo().update(
                 id as unknown as number,
-                payload
+                payload,
             );
 
             return res
@@ -111,8 +119,8 @@ export default class OrganizationController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
-                        updatedOrganization
-                    )
+                        updatedOrganization,
+                    ),
                 );
         } catch (err) {
             console.error(err);
@@ -125,13 +133,13 @@ export default class OrganizationController {
     static async delete(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<Response> {
         try {
             const id = get(req.params, "id", "");
 
             const existingOrganization = await new OrganizationRepo().get(
-                id as unknown as number
+                id as unknown as number,
             );
             if (isEmpty(existingOrganization)) {
                 return res
@@ -139,8 +147,8 @@ export default class OrganizationController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS
-                        )
+                            ERROR_MESSAGE.NOT_EXISTS,
+                        ),
                     );
             }
 
@@ -152,8 +160,8 @@ export default class OrganizationController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.DELETED,
-                        { deletedCount }
-                    )
+                        { deletedCount },
+                    ),
                 );
         } catch (err) {
             console.error(err);
@@ -166,37 +174,46 @@ export default class OrganizationController {
     static async list(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<Response> {
         try {
-            const size = get(req.query, "size", 10);
-            const skip = get(req.query, "skip", 1);
-            const search = get(req.query, "search", "");
-            const sorting = get(req.query, "sorting", "id DESC")
-                .toString()
-                .split(" ");
+            const page = parseInt(req.query.page, 0) || 1;
+            const limit = parseInt(req.query.limit, 10) || 10;
+            const search = (req.query.search as string) || ""; // For text search
+            const filters = (req.query.filters as string) || "";
 
-            const leadsList = await new OrganizationRepo().list({
-                offset: skip as number,
-                limit: size as number,
-                search: search as string,
-                sorting: sorting,
-            });
-
-            return res
-                .status(200)
+            // Parse filters into an object
+            let filterObj = {};
+            if (filters) {
+                try {
+                    filterObj = JSON.parse(filters);
+                } catch (error) {
+                    return res.status(400).send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            "Invalid filter format. It should be a valid JSON string.",
+                        ),
+                    );
+                }
+            }
+            const Franchise: Pagination<Organization> = await RepoProvider.getAll(page, limit, search, filterObj);
+            return res.status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        leadsList
-                    )
+                        {
+                            ...Franchise,
+                            currentPage: page,
+                        },
+                    ),
                 );
-        } catch (err) {
-            console.error(err);
-            return res
-                .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send(
+                sendResponse(RESPONSE_TYPE.ERROR, "An error occurred while fetching products."),
+            );
         }
     }
 }

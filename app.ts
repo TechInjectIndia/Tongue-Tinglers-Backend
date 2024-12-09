@@ -1,4 +1,9 @@
-require('newrelic');
+import {
+    PaymentLinkCustomer,
+    PaymentLinkPayload,
+} from "./apps/razorpay/models/Razorpay";
+
+require("newrelic");
 import dotenv from "dotenv";
 import sgMail from "@sendgrid/mail";
 import { CONFIG } from "./config";
@@ -8,17 +13,21 @@ import ejs from "ejs";
 import cors from "cors";
 import router from "./routes";
 import { connectToDatabase } from "./config";
+
 require("./database/schema");
 import helmet from "helmet";
 import helmetCsp from "helmet-csp";
 import xss from "xss-clean";
 
 import { RateLimiterMemory } from "rate-limiter-flexible";
+
 const rateLimiter = new RateLimiterMemory({
     points: 50, // Number of points
     duration: 1, // Per second
 });
 import expressSanitizer from "express-sanitizer";
+import RepoProvider from "./apps/RepoProvider";
+
 require("dotenv").config();
 
 dotenv.config();
@@ -86,7 +95,7 @@ server.use(
             scriptSrc: ["'self'", "trusted-cdn.com"],
             // Additional directives
         },
-    })
+    }),
 );
 server.use(xss()); // Purpose: Middleware for Express to sanitize user input for XSS attacks.
 server.use(expressSanitizer());
@@ -94,15 +103,36 @@ server.use(expressSanitizer());
 server.use(cors(corsOptions)); // Purpose: Provides a middleware for enabling Cross-Origin Resource Sharing (CORS) with various
 server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");
-server.get("/", (_, res) => {
-    res.send("Hello from ci cd aws Tongue tingler server");
+server.get("/", async (_, res) => {
+
+
+    const resp: PaymentLinkPayload = {
+        amount: 1000,
+        description: "test",
+        customer: {
+            name: "Nitesh",
+            email: "niteshrghv@gmail.com",
+            contact: "9997016578"
+        },
+        notify: {
+            sms: false,
+            email: false
+        }
+    };
+
+
+
+
+    const ss = await RepoProvider.razorpayRepo.createPaymentLink(resp);
+
+    res.send(ss);
 });
 server.use("/api", router);
 
 const PORT = CONFIG.PORT;
 try {
     server.listen(PORT, () =>
-        console.log(`Server is live at localhost:${PORT}`)
+        console.log(`Server is live at localhost:${PORT}`),
     );
     swaggerDocs(server, PORT);
 } catch (error) {

@@ -16,7 +16,7 @@ export class MenuCategoryRepo implements IBaseRepo<TMenuCategory, TMenuCategoryF
         const total = await MenuCategoryModel.count({
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -26,7 +26,7 @@ export class MenuCategoryRepo implements IBaseRepo<TMenuCategory, TMenuCategoryF
             limit: filters.limit,
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

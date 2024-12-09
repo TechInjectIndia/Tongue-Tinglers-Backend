@@ -26,7 +26,6 @@ const createOrganizationBody = Joi.object({
     bankAccountNumber: Joi.string().required(),
     bankIFSCCode: Joi.string().required(),
     masterFranchiseId: Joi.number().allow(null),
-    rootUser: Joi.number().required(),
     type: Joi.string().valid(...Object.values(ORGANIZATION_TYPE)).required(),  // Use `valid()` with `Object.values()`
     businessType: Joi.string().valid(...Object.values(BUSINESS_TYPE)).required(),  // Use `valid()` with `Object.values()`
     billingAddress: addressSchema.required(),

@@ -14,3 +14,19 @@ export type TQueryFilters = {
     sorting?: typeof OrderItem;
     trashOnly?: string;
 };
+
+export type TListFiltersContract = {
+    offset: number;
+    limit: number;
+    search?: string;
+    sorting?: any;
+    trashOnly?: string;
+    filters?: {
+        status,
+        min_price,
+        max_price,
+        region,
+        due_date,
+        assignee
+    };
+};

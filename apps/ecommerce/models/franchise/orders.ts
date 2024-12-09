@@ -33,7 +33,7 @@ export class OrderModel {
         const total = await OrdersModel.count({
             where: {
                 trackingNumber: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -43,7 +43,7 @@ export class OrderModel {
             limit: filters.limit,
             where: {
                 trackingNumber: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

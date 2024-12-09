@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TOrderItem } from "../../../types";
-import { ProductsModel } from './product.model';
+
 import { RetortProductsModel } from '../retort/retort-product';
 
 const { INTEGER, STRING, DATE, NOW } = DataTypes;
@@ -77,7 +77,7 @@ OrderItemsModel.init({
     },
 }, {
     sequelize,
-    tableName: 'order_items',
+    tableName: 'order_items_demo',
     timestamps: true,
 });
 

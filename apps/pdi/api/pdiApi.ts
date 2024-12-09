@@ -5,7 +5,9 @@ import {
     validateDeleteMultipleIdsBody,
     validateEditChecklistBody,
     validateEditCheckpointParams,
+    validateId,
     validateListChecklistQuery,
+    validateProspectId,
 } from "../validations/pdiValidations";
 const router = express.Router();
 
@@ -209,16 +211,16 @@ const router = express.Router();
 
 
 router.post(
-    "/create",
+    "/create",validateCreateIChecklistBody,
     PdiChecklistController.create
 );
 router.get("/list", validateListChecklistQuery, PdiChecklistController.list);
 router.get(
-    "/get/:id",
+    "/get/:id", validateId,
     PdiChecklistController.get
 );
 
-router.get("/getPdiByProspect/:prospectId", PdiChecklistController.getPdiByProspectId)
+router.get("/getPdiByProspect/:prospectId", validateProspectId,PdiChecklistController.getPdiByProspectId)
 router.put(
     "/update/:id",
     validateEditChecklistBody,

@@ -48,7 +48,7 @@ export class FranchiseModelRepo implements IBaseRepo<FranchiseModels, TListFilte
             limit: filters.limit,
             where: {
                 title: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

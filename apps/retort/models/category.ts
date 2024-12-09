@@ -49,7 +49,7 @@ export class RetortProductCategoryRepo implements IBaseRepo<TRetortProductCatego
         const total = await RetortProductCategoryModel.count({
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -59,7 +59,7 @@ export class RetortProductCategoryRepo implements IBaseRepo<TRetortProductCatego
             limit: filters.limit,
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

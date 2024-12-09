@@ -18,7 +18,7 @@ export class RolesRepo implements IBaseRepo<TRole, TListFilters> {
         const data = await UserModel.findAll({
             where: {
                 role: ids,
-                type: USER_TYPE.MASTER_FRANCHISE,
+                type: USER_TYPE.SUPER_FRANSHISE,
             },
         });
         return data;
@@ -46,7 +46,7 @@ export class RolesRepo implements IBaseRepo<TRole, TListFilters> {
         const total = await RolesModel.count({
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -56,7 +56,7 @@ export class RolesRepo implements IBaseRepo<TRole, TListFilters> {
             limit: filters.limit,
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

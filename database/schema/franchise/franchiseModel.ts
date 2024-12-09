@@ -1,14 +1,13 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-
-import { UserModel } from "../user/user.model";
-import { FRANCHISE_STATUS, Franchise } from "../../../interfaces";
-
+import { Franchise, FRANCHISE_STATUS } from "../../../interfaces";
 import { RegionModel } from "./RegionsModel";
 import {
-    OrganizationModel,
+    OrganizationModel
 } from "../../../apps/organization/database/organization_schema";
-import franchise from "../../../apps/franchise/api/franchise";
+import { UserModel } from "../user/user.model";
+import { AddressModel } from "../user/address";
+
 
 const { STRING, INTEGER, DATE, NOW, ARRAY, ENUM } = DataTypes;
 
@@ -47,7 +46,11 @@ class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> impl
 
         this.belongsTo(RegionModel, {
             foreignKey: "regionId",
-            as: "Region",
+            as: "region",
+        });
+        this.belongsTo(AddressModel, {
+            foreignKey: "location",
+            as: "address",
         });
         this.belongsTo(OrganizationModel, {
             foreignKey: "organizationId",

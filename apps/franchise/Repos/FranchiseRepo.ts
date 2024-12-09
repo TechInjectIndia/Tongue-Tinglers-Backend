@@ -1,14 +1,18 @@
-import { Franchise, FranchiseDetails } from "../../../interfaces";
+import { Franchise, FranchiseDetails, Pagination, parsedFranchise } from "../../../interfaces";
 import { IFranchiseRepo } from "./IFranchiseRepo";
 
 import RepoProvider from "../../RepoProvider";
 import {
+    AddressModel,
     FranchiseModel, RegionModel,
     UserModel,
 } from "../../../database/schema";
 import {
     OrganizationModel,
 } from "../../organization/database/organization_schema";
+import { TListFilters } from "../../../types/common";
+import { Op } from "sequelize";
+import { parseFranchise } from '../parser/franchiseParser';
 
 
 export class FranchiseRepo implements IFranchiseRepo {
@@ -43,7 +47,6 @@ export class FranchiseRepo implements IFranchiseRepo {
                     updatedBy: franchise.updatedBy,
                     deletedBy: franchise.deletedBy,
                 });
-                console.log(res);
                 if (res) {
                     return res.toJSON();
                 } else {
@@ -70,13 +73,57 @@ export class FranchiseRepo implements IFranchiseRepo {
         throw new Error("Method not implemented.");
     }
 
-    async getAll(): Promise<Franchise[]> {
+    async getAll(page: number, limit: number, search: string, filters: TListFilters): Promise<Pagination<parsedFranchise>> {
         try {
-            const res = await FranchiseModel.findAll();
-            return res.map((fr) => fr.toJSON())
-        } catch (err: any) {
-            console.log(err);
-            return [];
+            const offset = (page - 1) * limit;
+
+            const query: any = {};
+
+            // Add search functionality
+            if (search) {
+                query[Op.or] = [
+                    { pocName: { [Op.iLike]: `%${search}%` } },
+                    { pocEmail: { [Op.iLike]: `%${search}%` } },
+                    { pocPhoneNumber: { [Op.iLike]: `%${search}%` } },
+                ];
+            }
+            // Add filters
+            if (filters) {
+                Object.assign(query, filters);
+            }
+
+            const { rows: franchise, count: total } = await FranchiseModel.findAndCountAll({
+                where: query,
+                offset,
+                limit,
+                order: [['createdAt', 'DESC']],
+                include: [
+                    {
+                        model: AddressModel,
+                        as: "address",
+                    },
+                    {
+                        model: RegionModel,
+                        as: "region",
+                    },
+                    {
+                        model: OrganizationModel,
+                        as: "organization",
+                    },
+                ]
+            }).then((res) => {
+                return {
+                    rows: res.rows.map((product) => parseFranchise(product.toJSON())),
+                    count: res.count
+                }
+            })
+
+            const totalPages = Math.ceil(total / limit);
+
+            return { data: franchise, total, totalPages };
+        } catch (error) {
+            console.log(error);
+            return null;
         }
     }
 
@@ -94,7 +141,7 @@ export class FranchiseRepo implements IFranchiseRepo {
 
     }
 
-    async getById(id: number): Promise<Franchise> {
+    async getById(id: number): Promise<parsedFranchise> {
         try {
 
             const res = (await FranchiseModel.findOne({
@@ -123,9 +170,10 @@ export class FranchiseRepo implements IFranchiseRepo {
                 ],
             }));
             if (res) {
-                return res.toJSON();
+                return parseFranchise(res.toJSON());
+            }else{
+                return null;
             }
-            return res;
         } catch (e) {
             console.log(e);
             return null;

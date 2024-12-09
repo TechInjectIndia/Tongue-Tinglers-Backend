@@ -19,7 +19,7 @@ export class LeadRepo implements IBaseRepo<ILead> {
         // Search filter
         if (filters.search) {
             whereConditions.firstName = {
-                [Op.like]: `%${filters.search}%`,
+                [Op.iLike]: `%${filters.search}%`,
             };
         }
 

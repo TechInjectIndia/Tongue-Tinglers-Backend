@@ -43,7 +43,7 @@ export class VendorRepo implements IBaseRepo<IVendorAttributes, TListFilters> {
         const total = await VendorModel.count({
             where: {
                 first_name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -55,7 +55,7 @@ export class VendorRepo implements IBaseRepo<IVendorAttributes, TListFilters> {
             order: order,
             where: {
                 first_name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

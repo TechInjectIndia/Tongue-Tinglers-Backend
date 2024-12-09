@@ -5,16 +5,17 @@ import {
     TLeadPayload,
     TListFilters,
     TLeadsList,
+    TListFiltersAreas,
 } from "../../../types";
 import { ITrackable } from "../../../interfaces";
-import { LeadsModel } from "../../../database/schema";
+import { CampaignAdModel, CampaignModel, LeadsModel } from "../../../database/schema";
 import { AssignModel } from "../../../database/schema";
 import { UserModel } from "../../../database/schema";
 import { LeadStatus, ILead } from "../../../interfaces"; // Use the LeadStatus enum from interfaces
 import IBaseRepo from "../controllers/controller/ILeadController";
 import { createLeadsResponse } from "../../../libraries";
 
-export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
+export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
     constructor() {}
 
     // Update the status of a lead
@@ -111,24 +112,94 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
     }
 
     // List leads with filters
-    public async list(filters: TListFilters): Promise<TLeadsList> {
-        const total = await LeadsModel.count({
-            where: {
-                firstName: {
-                    [Op.like]: `%${filters.search}%`,
+    public async list(filters: TListFiltersAreas): Promise<TLeadsList> {
+        const where: any = {};
+
+        const validStatuses = [
+            "new",
+            "contacted",
+            "qualified",
+            "proposal-sent",
+            "negotiation",
+            "converted",
+            "followed-up",
+            "lost",
+        ]; // Replace with your actual enum values
+        const validSources = [
+            "admin",
+            "search",
+            "content",
+            "email-marketing",
+            "paid",
+            "social-media",
+            "event",
+            "referral",
+        ];
+        if (
+            filters?.filters.status &&
+            validStatuses.includes(filters.filters.status)
+        ) {
+            where.status = filters.filters.status;
+        }
+        if (
+            filters?.filters.source &&
+            validSources.includes(filters.filters.source)
+        ) {
+            where.source = filters.filters.source;
+        }
+
+        // Add dynamic filters
+        if (filters?.filters.region) {
+            where.region = {
+                [Op.iLike]: `%${filters.filters.region}%`,
+            };
+        }
+        const include: any[] = [];
+        if (filters?.filters.campaign) {
+            include.push({
+                model: CampaignAdModel, // Replace with your actual Campaign model
+                as: "campaign", // Alias defined in the relationship
+                where: {
+                    name: {
+                        [Op.iLike]: `%${filters.filters.campaign}%`, // Search by campaign name
+                    },
                 },
-            },
+                required: true, // Ensures only matching leads are included
+            });
+        }
+        if (filters?.filters.assignee) {
+            where.assignee = {
+                [Op.iLike]: `%${filters.filters.assignee}%`,
+            };
+        }
+        if (filters?.filters.date) {
+            where.date = filters.filters.date; // Adjust for exact or range filtering.
+        }
+        if (filters?.filters.affiliate) {
+            where.affiliate = {
+                [Op.iLike]: `%${filters.filters.affiliate}%`,
+            };
+        }
+        if (filters?.filters.amountRange) {
+            const [min, max] = filters.filters.amountRange
+                .toString()
+                .split("-");
+            where.amount = {
+                [Op.between]: [parseFloat(min), parseFloat(max)],
+            };
+        }
+        console.log(where);
+        const total = await LeadsModel.count({
+            where: where,
+            include: include,
         });
 
         const data = await LeadsModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
-            where: {
-                firstName: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
+            where: where,
+            include: include
         });
 
         return { total, data } as TLeadsList;
@@ -195,9 +266,9 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
             where: {
                 [Op.or]: [
                     // { id: { [Op.like]: `%${filters.search}%` } },
-                    { firstName: { [Op.like]: `%${filters.search}%` } },
-                    { lastName: { [Op.like]: `%${filters.search}%` } },
-                    { email: { [Op.like]: `%${filters.search}%` } },
+                    { firstName: { [Op.iLike]: `%${filters.search}%` } },
+                    { lastName: { [Op.iLike]: `%${filters.search}%` } },
+                    { email: { [Op.iLike]: `%${filters.search}%` } },
                 ],
             },
         });
@@ -209,9 +280,9 @@ export class LeadRepo implements IBaseRepo<ILead, TListFilters> {
             where: {
                 [Op.or]: [
                     // { id: { [Op.like]: Number(`%${filters.search}%`) } },
-                    { firstName: { [Op.like]: `%${filters.search}%` } },
-                    { lastName: { [Op.like]: `%${filters.search}%` } },
-                    { email: { [Op.like]: `%${filters.search}%` } },
+                    { firstName: { [Op.iLike]: `%${filters.search}%` } },
+                    { lastName: { [Op.iLike]: `%${filters.search}%` } },
+                    { email: { [Op.iLike]: `%${filters.search}%` } },
                 ],
             },
             include: [

@@ -90,6 +90,7 @@ import cartProductRouter from "../apps/cart-products/api/cartProductApi";
 import cartDetailRouter from "../apps/cart-details/api/cartDetailApi"
 import orderItemRouter from "../apps/order-items/api/orderItemApi";
 import productsCategoryRouter from "../apps/products-category/api/productsCategoryApi"
+import OrderRouter from "../apps/order/api/orderApi";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -109,7 +110,7 @@ router.use(`${ADMIN}/menu`, auth, menuRouter);
 // router.use(`${ADMIN}/ecommerce/product`, auth, productRouter);
 router.use(`${ADMIN}/tax`, auth, taxesRouter);
 router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
-router.use(`${ADMIN}/order`, auth, orderRouter);
+// router.use(`${ADMIN}/order`, auth, orderRouter);
 router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 router.use(`${ADMIN}/retort/product`, auth, retortProductRouter);
@@ -144,7 +145,7 @@ router.use(`${ADMIN}/products-category`, auth, productsCategoryRouter)
 router.use('/cart-product', auth, cartProductRouter)
 router.use('/cart-detail', auth, cartDetailRouter)
 router.use('/order-items', auth, orderItemRouter)
-
+router.use('/order', OrderRouter)
 router.use(`/cart`, auth, cartRouter);
 
 

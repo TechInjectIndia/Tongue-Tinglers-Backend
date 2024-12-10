@@ -9,7 +9,7 @@ interface ProductOptionsCreationAttributes extends Optional<ProductOptions, | "i
 class ProductOptionsModel extends Model<ProductOptions, ProductOptionsCreationAttributes> implements BaseProductOptions{
     id: number;
     product_id: number;
-    option_value_id: number;
+    optionValueId: number;
     price: number;
     stock: number;
     status: PRODUCT_OPTIONS_STATUS;
@@ -29,7 +29,7 @@ ProductOptionsModel.init({
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    option_value_id: {
+    optionValueId: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },

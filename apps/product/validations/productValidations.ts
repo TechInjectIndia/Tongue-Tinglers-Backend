@@ -31,7 +31,7 @@ const productValidationSchema = Joi.object({
     variations: Joi.array()
         .items(
             Joi.object({
-                option_value_id: Joi.number().integer().positive().required().messages({
+                optionValueId: Joi.number().integer().positive().required().messages({
                     "number.base": "Option Value ID must be a number",
                     "number.positive": "Option Value ID must be greater than 0",
                     "any.required": "Option Value ID is required",
@@ -116,7 +116,7 @@ const productUpdateValidationSchema = Joi.object({
     options: Joi.array()
         .items(
             Joi.object({
-                option_value_id: Joi.number().integer().positive().required().messages({
+                optionValueId: Joi.number().integer().positive().required().messages({
                     "number.base": "Option Value ID must be a number",
                     "number.positive": "Option Value ID must be greater than 0",
                     "any.required": "Option Value ID is required",

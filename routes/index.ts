@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { Request, Response } from "express";
+import { logRouter } from '../apps/logs/api/logrouter'
 
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
@@ -43,8 +44,10 @@ import paymentsOrdersRouter from "../apps/payments/api/orderPayment";
 import reviewsRouter from "../apps/reviews/api/reviews";
 import testimonialsRouter from "../apps/testimonials/api/testimonials";
 import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics";
-import ordersAnalyticsRouter from "../apps/analytics/api/admin/orders-analytics";
-import retortAnalyticsRouter from "../apps/analytics/api/admin/retort-analytics";
+import ordersAnalyticsRouter
+    from "../apps/analytics/api/admin/orders-analytics";
+import retortAnalyticsRouter
+    from "../apps/analytics/api/admin/retort-analytics";
 import menuRouter from "../apps/menu/api/menu";
 import retortProductRouter from "../apps/retort/api/products";
 import retortProductCategoryRouter from "../apps/retort/api/category";
@@ -54,7 +57,8 @@ import testUsersRouter from "../apps/test-user/api/user"; // for testing only
 import contractsRouter from "../apps/contracts/api";
 import questionRouter from "../apps/questions/api";
 import campaignAdRouter from "../apps/campaign/api";
-import campaignSubmissionsRouter from "../apps/campaign/api/campaignSubmissionsApi";
+import campaignSubmissionsRouter
+    from "../apps/campaign/api/campaignSubmissionsApi";
 import filesRouter from "../apps/files/api/files";
 import galleryRouter from "../apps/gallery/api/gallery";
 import pdiChecklistRouter from "../apps/pdi-checklist/api/pdiChecklist";
@@ -81,11 +85,13 @@ import organizationRouter from "../apps/organization/api/index";
 import productRouter from "../apps/product/api/productApi";
 import optionsRouter from "../apps/options/api/optionsApi";
 import optionsValuesRouter from "../apps/optionsValue/api/optionsValueApi";
-import productOptionsRouter from "../apps/product-options/api/productOptionsApi";
+import productOptionsRouter
+    from "../apps/product-options/api/productOptionsApi";
 import cartProductRouter from "../apps/cart-products/api/cartProductApi";
 import cartDetailRouter from "../apps/cart-details/api/cartDetailApi";
 import orderItemRouter from "../apps/order-items/api/orderItemApi";
-import productsCategoryRouter from "../apps/products-category/api/productsCategoryApi";
+import productsCategoryRouter
+    from "../apps/products-category/api/productsCategoryApi";
 import OrderRouter from "../apps/order/api/orderApi";
 
 // ====== Admin routes ======
@@ -151,23 +157,26 @@ router.use("/migration", migrationRouter);
 // router.use(`${GUEST}/users`, auth, guestUsersRouter);
 
 // ====== Franchise imports ======
-import franchiseOrderAnalyticsRouter from "../apps/analytics/api/franchise/orders-analytics"; // pending
-import franchiseRetortAnalyticsRouter from "../apps/analytics/api/franchise/retort-analytics"; // pending
+import franchiseOrderAnalyticsRouter
+    from "../apps/analytics/api/franchise/orders-analytics"; // pending
+import franchiseRetortAnalyticsRouter
+    from "../apps/analytics/api/franchise/retort-analytics"; // pending
 import franchiseOrderRouter from "../apps/ecommerce/api/franchise/orders";
 import franchiseRetortOrderRouter from "../apps/retort/api/franchise/orders";
-import franchiseTestimonialsRouter from "../apps/testimonials/api/franchise-testimonials";
+import franchiseTestimonialsRouter
+    from "../apps/testimonials/api/franchise-testimonials";
 
 router.use(`${FRANCHISE}/order`, auth, franchiseOrderRouter);
 router.use(`/retort/order`, auth, franchiseRetortOrderRouter);
 router.use(
-  `${FRANCHISE}/analytics/orders`,
-  auth,
-  franchiseOrderAnalyticsRouter
+    `${FRANCHISE}/analytics/orders`,
+    auth,
+    franchiseOrderAnalyticsRouter,
 ); // pending
 router.use(
-  `${FRANCHISE}/analytics/retort`,
-  auth,
-  franchiseRetortAnalyticsRouter
+    `${FRANCHISE}/analytics/retort`,
+    auth,
+    franchiseRetortAnalyticsRouter,
 ); // pending
 router.use(`${FRANCHISE}/testimonials`, auth, franchiseTestimonialsRouter);
 
@@ -175,8 +184,10 @@ router.use(`${FRANCHISE}/testimonials`, auth, franchiseTestimonialsRouter);
 import customerReviewsRouter from "../apps/reviews/api/customer-reviews";
 import customerProfileRouter from "../apps/customer-user/api/profile";
 import customerSettingsRouter from "../apps/customer-user/api/settings"; // pending
-import orderCustomerAnalyticsRouter from "../apps/analytics/api/customer/orders-analytics";
-import customerTestimonialsRouter from "../apps/testimonials/api/customer-testimonials";
+import orderCustomerAnalyticsRouter
+    from "../apps/analytics/api/customer/orders-analytics";
+import customerTestimonialsRouter
+    from "../apps/testimonials/api/customer-testimonials";
 // ====== Customer routes ======
 // router.use(`${CUSTOMER}/order`, orderCustomerRouter);
 router.use(`${CUSTOMER}/reviews`, auth, customerReviewsRouter);
@@ -204,15 +215,16 @@ router.use(`/campaign-ad`, webCampaignRouter);
 /* organization router */
 router.use(`/organization`, auth, organizationRouter);
 
+
 // ====== Frontend ======
 
 router.post(
-  `/upload-file`,
-  upload.single("file"),
-  async (req: Request, res: Response) => {
-    // await uploadSingleFileToFirebase(req);
-    // res.send('done');
-  }
+    `/upload-file`,
+    upload.single("file"),
+    async (req: Request, res: Response) => {
+        // await uploadSingleFileToFirebase(req);
+        // res.send('done');
+    },
 );
 
 // ====== Pet Pooja ======
@@ -227,26 +239,29 @@ import zohoSignApiRouter from "../apps/zoho-sign/api/zohosign";
 router.use(`/zoho-sign`, zohoSignApiRouter);
 // ====== Zoho Sign ======
 
+
+router.use("/logs", logRouter);
+
 router.use(`/etest`, () => {
-  sendEmail("jasskaranofficial@gmail.com", "subject", {
-    heading: "asd",
-    description: "qwe",
-  });
+    sendEmail("jasskaranofficial@gmail.com", "subject", {
+        heading: "asd",
+        description: "qwe",
+    });
 });
 
 router.use(`/health`, (_, res) => {
-  return res.status(200).json({
-    success: true,
-    message: "CICD Done Once AGAIN !",
-  });
+    return res.status(200).json({
+        success: true,
+        message: "CICD Done Once AGAIN !",
+    });
 });
 
 router.use(`/petpoojaLogin`, async (_, res) => {
-  const result = await fetch(" https://developerapi.petpooja.com").then((r) =>
-    r.text()
-  );
-  res.setHeader("Content-Type", "text/html");
-  res.send(result);
+    const result = await fetch(" https://developerapi.petpooja.com").then((r) =>
+        r.text(),
+    );
+    res.setHeader("Content-Type", "text/html");
+    res.send(result);
 });
 
 export default router;

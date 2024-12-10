@@ -174,6 +174,8 @@ export default class AdminController {
         try {
             const id = get(req?.params, "id", 0);
             const payload = { ...req?.body, updatedBy: id };
+            console.log(payload);
+            
             await new AdminRepo().update(id as number, payload);
             return res
                 .status(200)
@@ -262,6 +264,8 @@ export default class AdminController {
             //     const hashedPassword = await createPassword(payload.password);
             //     payload = { ...payload, password: hashedPassword };
             // }
+            console.log(payload);
+            
 
             await new AdminRepo().update(id as number, payload);
             return res

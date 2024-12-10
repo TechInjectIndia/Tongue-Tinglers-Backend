@@ -1,5 +1,5 @@
 import { get } from "lodash";
-import { BaseProduct, Pagination, Product } from "../../../interfaces/products";
+import { BaseProduct, Pagination, ParsedProduct, Product } from "../../../interfaces/products";
 import RepoProvider from "../../RepoProvider";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
@@ -49,7 +49,7 @@ export default class ProductController {
             );
         }
       }
-      const products: Pagination<Product> =
+      const products: Pagination<ParsedProduct> =
         await RepoProvider.ProductRepo.getAll(page, limit, search, filterObj);
       return res.status(200).send(
         sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, {
@@ -73,7 +73,7 @@ export default class ProductController {
   static async getProductById(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id, 0);
-      const product: Product = await RepoProvider.ProductRepo.getById(id);
+      const product: ParsedProduct = await RepoProvider.ProductRepo.getById(id);
       return res
         .status(200)
         .send(

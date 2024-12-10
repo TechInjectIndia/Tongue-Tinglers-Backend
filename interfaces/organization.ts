@@ -96,7 +96,7 @@ export interface ParsedOrganization {
     bankIFSCCode: string;
     billingAddress: ParsedAddress;
     shippingAddress: Array<ParsedAddress>;
-    masterFranchiseId: ParsedOrganization | null;
+    masterFranchise: ParsedOrganization | null;
     type: ORGANIZATION_TYPE;
     businessType: BUSINESS_TYPE;
     createdBy: ParsedUser;

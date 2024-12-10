@@ -201,7 +201,7 @@ export default class OrderPaymentController {
                 isRepeated: 0 as number,
                 orderStatus: OrderStatus.PROCESSED,
                 paymentStatus: PAYMENT_STATUS.PROCESSED,
-                orderType: ORDER_TYPE.FRANCHISE,
+                orderType: ORDER_TYPE.RM_ORDER,
             });
 
             // Save each cart item as an order item

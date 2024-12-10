@@ -10,10 +10,21 @@ import { IProductRepo } from "./IProductRepo";
 import { ProductModel } from "../../../database/schema/product/productModel";
 import { Op } from "sequelize";
 import { ProductOptionsModel } from "../../../database/schema/product-options/productOptionsModel";
+import { ParsedProduct } from "../../../interfaces/products"
+import { UserModel } from "../../../database/schema";
+import {parseProduct} from "../parser/productParser" 
+import { OptionsModel } from "../../../database/schema/options/optionModel";
+import { OptionsValueModel } from "../../../database/schema/optionsValue/optionsValueModel";
+import { ProductsCategoryModel } from "../../../database/schema/product-category/productCategoryModel";
+
 export class ProductRepo implements IProductRepo {
   async create(product: BaseProduct): Promise<Product | null> {
     const transaction = await ProductModel.sequelize.transaction();
+  
     try {
+      let productOptionsIds: number[] = []; // Array to store created option IDs
+  
+      // Step 1: Create the product with a default empty array for `variationIds`
       const createdProduct = await ProductModel.create(
         {
           name: product.name,
@@ -24,13 +35,13 @@ export class ProductRepo implements IProductRepo {
           type: product.type,
           status: product.status,
           images: product.images,
-          variations: product.variations,
+          vendorId: product.vendorId,
+          variationIds: [], // Initialize with an empty array
         },
-        { transaction } // Pass the transaction
+        { transaction }
       );
-
-      let productOptionsIds: number[] = []; // Array to store option IDs
-
+  
+      // Step 2: Handle variations if provided
       if (product.variations && Array.isArray(product.variations)) {
         const productOptions = product.variations.map((option) => ({
           product_id: createdProduct.id, // Link the option to the created product
@@ -40,31 +51,35 @@ export class ProductRepo implements IProductRepo {
           status: option.status,
           images: option.images,
         }));
-
+  
         // Bulk create the product options
-        const createdOptions = await ProductOptionsModel.bulkCreate(
-          productOptions,
-          {
-            transaction,
-            returning: true, // Returns the created rows
-          }
-        );
-
+        const createdOptions = await ProductOptionsModel.bulkCreate(productOptions, {
+          transaction,
+          returning: true, // Ensure the created options are returned
+        });
+  
         productOptionsIds = createdOptions.map((option) => option.id);
+  
+        // Update the product with the created option IDs
+        await createdProduct.update(
+          {
+            variationIds: productOptionsIds, // Update variationIds field
+          },
+          { transaction }
+        );
       }
-
-      await createdProduct.update(
-        {
-          productOptionsIds,
-        },
-        { transaction }
-      );
-
+  
+      // Commit the transaction
       await transaction.commit();
+  
+      // Return the created product
       return createdProduct.toJSON();
     } catch (error) {
-      console.log(error);
+      console.error("Error creating product:", error);
+  
+      // Rollback the transaction in case of error
       await transaction.rollback();
+  
       return null;
     }
   }
@@ -91,7 +106,7 @@ export class ProductRepo implements IProductRepo {
     limit: number,
     search: string,
     filters: object
-  ): Promise<Pagination<Product>> {
+  ): Promise<Pagination<ParsedProduct>> {
     try {
       const offset = (page - 1) * limit;
 
@@ -128,11 +143,40 @@ export class ProductRepo implements IProductRepo {
                 "status",
                 "images",
               ], // Only fetch these fields
+              include: [
+                {
+                  model: OptionsValueModel,
+                  as: "optionsValue", // Include these fields from the User model
+                  attributes: ["id", "name", "option_id"],
+                  include:[
+                    {
+                      model: OptionsModel,
+                      as: 'options',
+                      attributes:['id', 'name']
+                    }
+                  ]
+                }
+              ],
             },
+            {
+              model: UserModel,
+              as: "createdByUser", // Include createdByUser
+              attributes: ["id", "firstName", "lastName", "email"], // Include these fields from the User model
+            },
+            {
+              model: UserModel,
+              as: "updatedByUser", // Include createdByUser
+              attributes: ["id", "firstName", "lastName", "email"], // Include these fields from the User model
+            },
+            {
+              model: UserModel,
+              as: "deletedByUser", // Include createdByUser
+              attributes: ["id", "firstName", "lastName", "email"], // Include these fields from the User model
+            }
           ],
         }).then((res) => {
           return {
-            rows: res.rows.map((product) => product.toJSON()),
+            rows: res.rows.map((product) => parseProduct(product.toJSON())),
             count: res.count,
           };
         });
@@ -146,10 +190,54 @@ export class ProductRepo implements IProductRepo {
     }
   }
 
-  async getById(id: number): Promise<Product | null> {
+  async getById(id: number): Promise<ParsedProduct | null> {
     try {
       // Fetch product by primary key (ID)
-      const product = (await ProductModel.findByPk(id)).toJSON();
+      const product = await ProductModel.findByPk(id,{
+        include: [
+          {
+            model: ProductOptionsModel, // Include the ProductOptions model
+            as: "options", // Alias used in the ProductModel association
+            attributes: [
+              "id",
+              "option_value_id",
+              "price",
+              "stock",
+              "status",
+              "images",
+            ], // Only fetch these fields
+            include: [
+              {
+                model: OptionsValueModel,
+                as: "optionsValue", // Include these fields from the User model
+                attributes: ["id", "name", "option_id"],
+                include:[
+                  {
+                    model: OptionsModel,
+                    as: 'options',
+                    attributes:['id', 'name']
+                  }
+                ]
+              }
+            ],
+          },{
+            model: UserModel,
+            as: "createdByUser", // Include createdByUser
+            attributes: ["id", "firstName", "lastName", "email"], // Include these fields from the User model
+          },{
+            model: UserModel,
+            as: "updatedByUser", // Include createdByUser
+            attributes: ["id", "firstName", "lastName", "email"], // Include these fields from the User model
+          },{
+            model: UserModel,
+            as: "deletedByUser", // Include createdByUser
+            attributes: ["id", "firstName", "lastName", "email"], // Include these fields from the User model
+          }
+        ]
+      
+      }).then((product) => {
+        return parseProduct(product?.toJSON());
+      })
 
       if (!product) {
         throw new Error(`Product with ID ${id} not found`);

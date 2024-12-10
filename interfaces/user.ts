@@ -1,8 +1,7 @@
-
+import { ParsedMeta } from "../database/schema/base/Base";
 import { BaseAddress } from "../types";
 
-export interface cart {
-}
+export interface cart {}
 
 export enum USER_TYPE {
     ADMIN = "admin",
@@ -40,7 +39,21 @@ export interface UserInformation {
     address: Array<BaseAddress>;
 }
 
-interface ParsedUser {
+interface MetaUser {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+}
+
+const parseUserToMetaUser = (data: ParsedUser): MetaUser => {
+    return { id: data.id,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email
+    };
+};
+interface ParsedUser extends ParsedMeta {
     id: number;
     firstName: string;
     lastName: string;
@@ -48,8 +61,8 @@ interface ParsedUser {
     phoneNumber: string;
     type: USER_TYPE;
     status: USER_STATUS;
+    role: number | null;
+    
 }
 
-export {
-    ParsedUser
-}
+export { ParsedUser, MetaUser };

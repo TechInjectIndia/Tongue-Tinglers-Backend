@@ -12,10 +12,10 @@ const parseOrganization = (organization: any) => {
         bankName: organization.bankName,
         bankAccountNumber: organization.bankAccountNumber,
         bankIFSCCode: organization.bankIFSCCode,
-        masterFranchiseId: organization.masterFranchiseId,
-        createdBy: organization.createdBy,
-        updatedBy: organization.updatedBy,
-        deletedBy: organization.deletedBy,
+        masterFranchise: organization.masterFranchise,
+        createdBy: organization.createdByUser,
+        updatedBy: organization.updatedByUser,
+        deletedBy: organization.deletedByUser,
         billingAddress: organization.billingAddress,
         shippingAddress: organization.shippingAddresses,
         businessType: organization.businessType,
@@ -23,7 +23,7 @@ const parseOrganization = (organization: any) => {
         createdAt: organization.createdAt,
         updatedAt: organization.updatedAt,
         deletedAt: organization.deletedAt,
-        user: organization.rootUser
+        user: organization.user
     }
     return data;
 }

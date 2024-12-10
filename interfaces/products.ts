@@ -1,5 +1,7 @@
 import { BaseMeta } from "../database/schema/base/Base";
-import { BaseProductOptions } from "./product-options";
+import { BaseProductOptions, ParsedProductOptions } from "./product-options";
+import { ParsedCategory } from "./products_category";
+import { ParsedUser } from "./user";
 
 interface BaseProduct {
     name: string;
@@ -13,6 +15,7 @@ interface BaseProduct {
     // variationIds: Array<number>,
     productOptionsIds: Array<number>;
     tax_rate_id: number;
+    vendorId: number;
     variations?: Array<BaseProductOptions>;
 }
 
@@ -62,6 +65,24 @@ interface CHANGE_STATUS {
     id: number;
 }
 
+interface ParsedProduct {
+    id: number;
+    name: string;
+    slug: string;
+    description: string;
+    MOQ: number;
+    category: ParsedCategory;
+    type: PRODUCTS_TYPE;
+    status: PRODUCT_STATUS;
+    images: Array<string>;
+    createdBy: ParsedUser;
+    updatedBy: ParsedUser;
+    deletedBy: ParsedUser;
+    tax_rate_id: number;
+    variations?: Array<ParsedProductOptions>;
+}
+
+
 export {
     Product,
     PRODUCTS_TYPE,
@@ -69,4 +90,5 @@ export {
     Pagination,
     PRODUCT_STATUS,
     CHANGE_STATUS,
+    ParsedProduct
 };

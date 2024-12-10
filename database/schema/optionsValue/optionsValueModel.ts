@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { BaseOptionsValue, OptionsValue } from "../../../interfaces/optionsValue";
+import { OptionsModel } from "../options/optionModel";
 
 interface OptionsValueCreationAttributes extends Optional<OptionsValue, | "id"> {
 }
@@ -35,5 +36,7 @@ OptionsValueModel.init(
         paranoid: true,  // Enable soft deletes
     },
 );
+
+
 
 export { OptionsValueModel };

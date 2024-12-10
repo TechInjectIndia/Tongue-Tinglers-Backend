@@ -1,17 +1,17 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { BaseNotes, BaseOrder, Order } from "../../../interfaces";
+import { BaseNotes, BaseOrder, Order, ORDER_TYPE } from "../../../interfaces";
 import { sequelize } from "../../../config";
 import { NotesModel } from "./notesModel";
+import { OrderItemsModel } from "../ecommerce/order_item.model";
 
 interface OrderCreationAttributes extends Optional<Order, "id"> {}
 
 class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOrder {
-    order_items!: number[];
     status!: string;
     item_count!: number;
     total!: number;
     anomalyArr!: number[];
-    cancelled_items!: number;
+    cancelled_items!: number[];
     customer_details!: number;
     delivery_details!: number;
     delivery_status!: string;
@@ -22,6 +22,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     total_tax!: number;
     prices!: string | null;
     discount_prices!: string | null;
+    order_type: ORDER_TYPE;
     createdBy!: number | null;
     updatedBy!: number | null;
     deletedBy!: number | null;
@@ -33,6 +34,14 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     public getNoteses!: () => Promise<NotesModel[]>;
     public removeNotes!: (note: NotesModel | number) => Promise<void>;
     public removeNoteses!: (notes: Array<NotesModel | number>) => Promise<void>;
+
+    // Mixin methods for managing notes
+    public addOrderItem!: (note: OrderItemsModel | number) => Promise<void>;
+    public addOrderItems!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
+    public setOrderItemses!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
+    public getOrderItemses!: () => Promise<OrderItemsModel[]>;
+    public removeOrderItems!: (note: OrderItemsModel | number) => Promise<void>;
+    public removeOrderItemses!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
 }
 
 OrderModel.init(
@@ -41,10 +50,6 @@ OrderModel.init(
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
-        },
-        order_items: {
-            type: DataTypes.ARRAY(DataTypes.INTEGER),
-            allowNull: false,
         },
         status: {
             type: DataTypes.STRING,
@@ -63,7 +68,7 @@ OrderModel.init(
             allowNull: false,
         },
         cancelled_items: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.ARRAY(DataTypes.INTEGER),
             allowNull: false,
         },
         customer_details: {
@@ -105,6 +110,11 @@ OrderModel.init(
         discount_prices: {
             type: DataTypes.JSONB,
             allowNull: true,
+        },
+        order_type: {
+            type: DataTypes.ENUM(ORDER_TYPE.RM_ORDER, ORDER_TYPE.SAMPLE_KIT),
+            allowNull: false,
+            defaultValue: ORDER_TYPE.RM_ORDER
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -154,6 +164,13 @@ OrderModel.belongsToMany(NotesModel, {
     foreignKey: "orderId", // Foreign key in the join table
     otherKey: "notes_id", // Other foreign key in the join table
     as: "noteses", // Alias for the relationship
+});
+
+OrderModel.belongsToMany(OrderItemsModel, {
+    through: "order_items_join", // Join table name
+    foreignKey: "orderId", // Foreign key in the join table
+    otherKey: "order_items_id", // Other foreign key in the join table
+    as: "orderItems", // Alias for the relationship
 });
 
 export { OrderModel };

@@ -28,6 +28,9 @@ const productValidationSchema = Joi.object({
     "any.only": 'Type must be either "retort" or "packaging"',
   }),
   productOptionsIds: Joi.array().items(Joi.number().integer()).optional(),
+  vendorId: Joi.number().integer().optional().messages({
+    "number.base": "Vendor ID must be a number"
+  }),
   variations: Joi.array()
     .items(
       Joi.object({

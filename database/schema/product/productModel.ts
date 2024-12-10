@@ -4,6 +4,9 @@ import { BaseModelIdNumber, PRODUCTS_TYPE, BaseProduct, Product, PRODUCT_STATUS 
 import { BaseProductOptions } from "../../../interfaces/product-options";
 import { ProductOptionsModel } from "../product-options/productOptionsModel";
 import { CartProductModel } from "../cart-product/cartProductModel";
+import { UserModel } from "../user/user.model";
+import ProductsCategoryController from "../../../apps/products-category/controllers/productsCategoryController";
+import { ProductsCategoryModel } from "../product-category/productCategoryModel";
 
 interface ProductCreationAttributes extends Optional<Product, | "id"> {
 }
@@ -21,6 +24,7 @@ class ProductModel extends Model<Product, ProductCreationAttributes> implements 
     variationIds: number[];
     productOptionsIds: number[];
     tax_rate_id: number;
+    vendorId: number;
     createdBy: number;
     updatedBy: number;
     deletedBy: number;
@@ -77,6 +81,10 @@ ProductModel.init({
         type: DataTypes.INTEGER,
         allowNull: true,
     },
+    vendorId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
     createdBy: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -116,6 +124,9 @@ ProductModel.init({
 
 ProductModel.hasMany(ProductOptionsModel, { as: 'options', foreignKey: 'product_id' });
 ProductOptionsModel.belongsTo(ProductModel, { as: 'product', foreignKey: 'product_id' });
+ProductModel.belongsTo(UserModel, {as: 'createdByUser', foreignKey: 'createdBy'})
+ProductModel.belongsTo(UserModel, {as: 'updatedByUser', foreignKey: 'updatedBy'})
+ProductModel.belongsTo(UserModel, {as: 'deletedByUser', foreignKey: 'deletedBy'})
 // ProductModel.hasMany(CartProductModel, {
 //     foreignKey: 'product_id',
 //     as: 'cartProducts'  // Alias to use if you want to reference CartProduct from Product

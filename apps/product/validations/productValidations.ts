@@ -27,6 +27,9 @@ const productValidationSchema = Joi.object({
   type: Joi.string().valid("retort", "packaging").required().messages({
     "any.only": 'Type must be either "retort" or "packaging"',
   }),
+  status:Joi.string().valid("active", "inactive").required().messages({
+    "any.only": 'Status must be either "active" or "inactive"',
+  }),
   productOptionsIds: Joi.array().items(Joi.number().integer()).optional(),
   variations: Joi.array()
     .items(
@@ -92,6 +95,9 @@ const productById = Joi.object({
 const productUpdateValidationSchema = Joi.object({
   name: Joi.string().required().messages({
     "string.empty": "Name is required",
+  }),
+  status:Joi.string().valid("active", "inactive").required().messages({
+    "any.only": 'Status must be either "active" or "inactive"',
   }),
   MOQ: Joi.number().integer().positive().required().messages({
     "number.base": "MOQ must be a number",

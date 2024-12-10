@@ -48,5 +48,6 @@ const router = express.Router();
 
 router.get("/place-order", PetPoojaController.newOrderPlaced);
 router.get("/inventory", PetPoojaController.processAndSaveStockData);
+router.post("/orders-webhook", PetPoojaController.callOrdersWebHook);
 
 export default router;

@@ -46,11 +46,14 @@ const productValidationSchema = Joi.object({
           "number.min": "Stock must be at least 0",
           "any.required": "Stock is required",
         }),
+        status:Joi.string().valid("active", "inactive").required().messages({
+          "any.only": 'Status must be either "active" or "inactive"',
+        }),
         images: Joi.array().items(Joi.string()).messages({
           "array.base": "Images must be an array of URLs",
           // 'string.uri': 'Each image must be a valid URL',
         }),
-        status: Joi.string(),
+        
       })
     )
     .required()
@@ -136,7 +139,9 @@ const productUpdateValidationSchema = Joi.object({
           "string.base": "Images must be a string",
           // 'string.uri': 'Each image must be a valid URL',
         }),
-        status: Joi.string(),
+        status:Joi.string().valid("active", "inactive").required().messages({
+            "any.only": 'Status must be either "active" or "inactive"',
+          }),
       })
     )
     .required()

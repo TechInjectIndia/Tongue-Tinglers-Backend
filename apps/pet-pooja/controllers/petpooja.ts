@@ -1,9 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { sendResponse } from "../../../libraries";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
+import { ERROR_MESSAGE } from "../../../constants";
 import { PetPoojaRepo } from '../models/petpooja';
-import { get } from "lodash";
-import crypto from 'crypto';
 
 
 export default class PetPoojaController {
@@ -1165,6 +1162,22 @@ export default class PetPoojaController {
                     });
                 }
             }
+        } catch (err) {
+            console.log(err)
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+
+    static async callOrdersWebHook(req: Request, res: Response): Promise<boolean> {
+        try {
+            const json = req.body;
+            const result = await new PetPoojaRepo().getOrdersWebHook(json);
+            return res.status(200).send({
+                message: result ? "Done" : ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
         } catch (err) {
             console.log(err)
             return res.status(500).send({

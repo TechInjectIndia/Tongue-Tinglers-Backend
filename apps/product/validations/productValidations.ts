@@ -30,6 +30,10 @@ const productValidationSchema = Joi.object({
   status:Joi.string().valid("active", "inactive").required().messages({
     "any.only": 'Status must be either "active" or "inactive"',
   }),
+  tax_rate_id:Joi.number().integer().positive().required().messages({
+    "number.base": "Tax Rate ID must be a number",
+    "number.positive": "Tax Rate ID must be greater than 0",
+  }),
   productOptionsIds: Joi.array().items(Joi.number().integer()).optional(),
   variations: Joi.array()
     .items(
@@ -95,6 +99,10 @@ const productById = Joi.object({
 const productUpdateValidationSchema = Joi.object({
   name: Joi.string().required().messages({
     "string.empty": "Name is required",
+  }),
+  tax_rate_id:Joi.number().integer().positive().required().messages({
+    "number.base": "Tax Rate ID must be a number",
+    "number.positive": "Tax Rate ID must be greater than 0",
   }),
   status:Joi.string().valid("active", "inactive").required().messages({
     "any.only": 'Status must be either "active" or "inactive"',

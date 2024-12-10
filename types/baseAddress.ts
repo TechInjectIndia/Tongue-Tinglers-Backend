@@ -59,10 +59,10 @@ export type TAddressFilters = {
     trashOnly?: string;
 };
 
-export interface ParsedAddress extends BaseAddress {
+interface ParsedAddress extends BaseAddress {
     id: number;
 }
 
 
 
-export { BaseAddress, Address };
+export { BaseAddress, Address, ParsedAddress };

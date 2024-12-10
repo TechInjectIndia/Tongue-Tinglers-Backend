@@ -135,14 +135,14 @@ router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
 router.use(`${ADMIN}/commission`, auth, commissionRouter);
 router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
 router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
-router.use(`${ADMIN}/product`, auth, productRouter);
+router.use(`${ADMIN}/product`, productRouter);
 router.use(`${ADMIN}/options`, auth, optionsRouter);
 router.use(`${ADMIN}/options-values`, optionsValuesRouter);
 router.use(`${ADMIN}/product-options`, auth, productOptionsRouter);
 router.use(`${ADMIN}/products-category`, auth, productsCategoryRouter);
 router.use("/cart-product", auth, cartProductRouter);
-router.use("/cart-detail", auth, cartDetailRouter);
-router.use("/order-items", auth, orderItemRouter);
+router.use("/cart-detail", cartDetailRouter);
+router.use("/order-items", orderItemRouter);
 router.use("/order", OrderRouter);
 router.use(`/cart`, auth, cartRouter);
 

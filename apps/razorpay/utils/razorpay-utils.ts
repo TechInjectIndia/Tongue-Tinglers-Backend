@@ -3,13 +3,12 @@ async function parseAndSaveEvent(eventPayload: any) {
 
   console.log(payload);
 
-  const failedPayload = {
-    error_description:
-      "Your payment didn't go through as it was declined by the bank. Try another payment method or contact your bank.",
-    error_source: "bank",
-    error_step: "payment_authorization",
-    error_reason: "payment_failed",
-  };
+  interface FailedPayload {
+    error_description: string | null;
+    error_source: string | null;
+    error_step: string | null;
+    error_reason: string | null;
+  }
 
   let transactionData: any = {};
 

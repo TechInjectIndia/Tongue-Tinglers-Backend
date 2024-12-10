@@ -9,6 +9,7 @@ const axios = require('axios');
 const apiUrl = 'https://api.petpooja.com'; // Base URL for PetPooja API
 const apiKey = process.env.API_KEY; // API key from PetPooja
 import IBaseRepo from '../controllers/controller/IPetPoojaController';
+import { firestore, } from "firebase-admin";
 
 // Function to get today's start time and the end time 24 hours later
 function getTodayStartTime(): Date {
@@ -95,5 +96,16 @@ export class PetPoojaRepo implements IBaseRepo<TEditUser, TListFilters> {
     public async savePetPoojaOrder(franchiseId: number): Promise<any> {
 
         // Save new Order        
+    }
+
+    public async getOrdersWebHook(json: any): Promise<boolean> {
+        try {
+            await firestore().collection('petpooja-webhook-test').doc().set(json);
+            return true;
+        } catch (error) {
+            console.log(error);
+
+            return false;
+        }
     }
 }

@@ -233,7 +233,7 @@ export default class ContractController {
         regionId: existingCampaign.regionId,
         area: "",
         agreementIds: [paymentId],
-        paymentIds: [signId],
+        paymentIds: [String(signId)],
         status: FRANCHISE_STATUS.Active,
         establishedDate: new Date(),
         organizationId: existingContract.organizationId,

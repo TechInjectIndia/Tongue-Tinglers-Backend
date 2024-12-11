@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { Request, Response } from "express";
-import { logRouter } from '../apps/logs/api/logrouter'
+import { logRouter } from "../apps/logs/api/logrouter";
 
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
@@ -151,7 +151,6 @@ router.use("/cart-detail", auth, cartDetailRouter);
 router.use("/order-items", auth, orderItemRouter);
 router.use("/order", OrderRouter);
 router.use(`/cart`, auth, cartRouter);
-
 router.use("/migration", migrationRouter);
 
 // router.use(`${GUEST}/users`, auth, guestUsersRouter);
@@ -235,12 +234,16 @@ router.use(`/pet-pooja`, petPoojaApiRouter);
 
 // ====== Zoho Sign ======
 import zohoSignApiRouter from "../apps/zoho-sign/api/zohosign";
+import {
+    transactionRouter,
+} from "../apps/payment-transaction/api/TransactionRouter";
 
 router.use(`/zoho-sign`, zohoSignApiRouter);
 // ====== Zoho Sign ======
 
 
 router.use("/logs", logRouter);
+router.use("/transaction", transactionRouter);
 
 router.use(`/etest`, () => {
     sendEmail("jasskaranofficial@gmail.com", "subject", {

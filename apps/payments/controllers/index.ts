@@ -147,7 +147,7 @@ export default class PaymentsController {
 
             const paymentPayload: ContractPaymentDetails = {
                 paymentId: link.id,
-                amount: Number(link.amount),
+                amount: Number(link.amount) / 100,
                 date: new Date(Number(link.created_at) * 1000),
                 status: CONTRACT_PAYMENT_STATUS.PENDING,
                 additionalInfo: link.description,

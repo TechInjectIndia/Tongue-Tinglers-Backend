@@ -7,6 +7,7 @@ import RepoProvider from "../../RepoProvider";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
 import { Log } from "../models/Log";
+import { TransactionRepo } from "../repos/TransactionRepo";
 //
 // export const logModelAction = async <T extends Model<any, any>>(
 //     action: string,
@@ -79,11 +80,11 @@ export default class transactionRouter {
                         );
                 }
             }
-            const logs: Pagination<Log> =
-                await RepoProvider.LogRepo.getAll(page, limit, search, filterObj);
+            const transactions: Pagination<any> =
+                await new TransactionRepo().getAll(page, limit, search, filterObj);
             return res.status(200).send(
                 sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, {
-                    ...logs,
+                    ...transactions,
                     currentPage: page,
                 }),
             );

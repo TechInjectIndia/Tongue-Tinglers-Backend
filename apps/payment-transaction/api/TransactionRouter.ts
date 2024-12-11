@@ -1,10 +1,10 @@
 import * as express from "express";
-import logsController from "../controllers/logsController";
+import transactionController from "../controllers/transactionController";
 import { validateListLogsParams } from "../validations/logsValidator";
 
 const transactionRouter = express.Router();
 
-transactionRouter.get("/list", validateListLogsParams, logsController.getAllLogs);
+transactionRouter.get("/list", validateListLogsParams, transactionController.getAllLogs);
 
 
 export { transactionRouter };

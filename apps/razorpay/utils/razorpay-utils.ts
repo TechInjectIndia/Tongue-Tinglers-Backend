@@ -103,9 +103,9 @@ async function parseAndSaveEvent(eventPayload: any) {
         if (res) {
             const paymentDetails: ContractPaymentDetails = {
                 paymentId: transactionData.description,
-                amount: res.amount,
+                amount: transactionData.amount,
                 date: new Date(),
-                status: res.status as unknown as CONTRACT_PAYMENT_STATUS,
+                status: transactionData.status as unknown as CONTRACT_PAYMENT_STATUS,
                 additionalInfo: "",
             };
             res.payment.push(paymentDetails);
@@ -121,7 +121,7 @@ async function parseAndSaveEvent(eventPayload: any) {
                 contractStatus,
             );
         }
-       
+
     }
     await TransactionModel.create(transactionData);
 

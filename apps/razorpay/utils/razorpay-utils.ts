@@ -94,7 +94,7 @@ async function parseAndSaveEvent(eventPayload: any) {
         }
     }
 
-    console.log("Parsed Transaction Data:", transactionData);
+
     if (transactionData.description && transactionData.description.includes("#")) {
         transactionData.description = transactionData.description.replace("#", "plink_");
         const res = await new ContractRepo().getContractByPaymentId(
@@ -109,6 +109,9 @@ async function parseAndSaveEvent(eventPayload: any) {
                 additionalInfo: "",
             };
             res.payment.push(paymentDetails);
+
+            console.log(paymentDetails);
+            console.log(transactionData);
 
             let contractStatus = res.status;
 

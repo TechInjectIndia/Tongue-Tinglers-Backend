@@ -2,6 +2,10 @@ import {
     TransactionModel,
 } from "../../../database/schema/payment-transaction/PaymentTransactionModel";
 import { ContractRepo } from "../../contracts/models/ContractRepo";
+import {
+    CONTRACT_PAYMENT_STATUS, CONTRACT_STATUS,
+    ContractPaymentDetails,
+} from "../../../interfaces";
 
 async function parseAndSaveEvent(eventPayload: any) {
     const { event, payload } = eventPayload;
@@ -96,7 +100,28 @@ async function parseAndSaveEvent(eventPayload: any) {
         const res = await new ContractRepo().getContractByPaymentId(
             transactionData.description,
         );
-        console.log(res);
+        if (res) {
+            const paymentDetails: ContractPaymentDetails = {
+                paymentId: transactionData.description,
+                amount: res.amount,
+                date: new Date(),
+                status: res.status as unknown as CONTRACT_PAYMENT_STATUS,
+                additionalInfo: "",
+            };
+            res.payment.push(paymentDetails);
+
+            let contractStatus = res.status;
+
+            if (res.status.toLowerCase() === "paid") {
+                contractStatus = CONTRACT_STATUS.PAYMENT_RECEIVED;
+            }
+            await new ContractRepo().updatePaymentStatus(
+                res.id as number,
+                res.payment as unknown as ContractPaymentDetails[],
+                contractStatus,
+            );
+        }
+       
     }
     await TransactionModel.create(transactionData);
 

@@ -12,8 +12,8 @@ interface BaseFranchise {
     users: Array<number>;
     regionId: number;
     area: string;
-    agreementIds: Array<number>;
-    paymentIds: Array<number>;
+    agreementIds: Array<number|string>;
+    paymentIds: Array<number|string>;
     status: FRANCHISE_STATUS;
     establishedDate: Date;
     organizationId: number;

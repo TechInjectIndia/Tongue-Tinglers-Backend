@@ -75,7 +75,7 @@ export default class ContractController {
                 search: search as string,
                 sorting: sorting,
                 trashOnly: trashOnly as string,
-                filters: filters
+                filters: filters,
             });
 
             return res
@@ -188,13 +188,48 @@ export default class ContractController {
         }
     }
 
+    static async updateOrganization(req: Request, res: Response) {
+        try {
+
+            const id = get(req.params, "id", 0);
+            const body = req.body;
+            const organizationId = body.organizationId;
+
+            const existingContract = await new ContractRepo().get(id);
+            if (!existingContract) {
+                return res
+                    .status(500)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            "An error occurred while fetching products.",
+                        ),
+                    );
+            } else {
+                existingContract.organizationId = organizationId;
+                await new ContractRepo().update(id, organizationId);
+            }
+
+
+        } catch (err) {
+            return res
+                .status(500)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        "An error occurred while fetching products.",
+                    ),
+                );
+        }
+    }
+
+
     static async convert(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req.body, "id", 0);
 
             // get contract
             const existingContract = await new ContractRepo().get(id as number);
-
 
 
             // @todo nitesh fix this according to new

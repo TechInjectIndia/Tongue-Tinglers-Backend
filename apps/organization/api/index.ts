@@ -35,4 +35,6 @@ router.delete("/delete", validateEditOrgParams, OrganizationController.delete);
 
 router.get("/list", validateListOrgQuery, OrganizationController.list);
 
+
+
 export default router;

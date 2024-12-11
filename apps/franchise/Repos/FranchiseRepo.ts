@@ -55,6 +55,8 @@ export class FranchiseRepo implements IFranchiseRepo {
 
 
             } else {
+                console.log("exist");
+                
                 //    return getSuccess
             }
         } catch (e) {

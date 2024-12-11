@@ -1,3 +1,8 @@
+import {
+    TransactionModel,
+} from "../../../database/schema/payment-transaction/PaymentTransactionModel";
+import { ContractRepo } from "../../contracts/models/ContractRepo";
+
 async function parseAndSaveEvent(eventPayload: any) {
     const { event, payload } = eventPayload;
 
@@ -86,6 +91,14 @@ async function parseAndSaveEvent(eventPayload: any) {
     }
 
     console.log("Parsed Transaction Data:", transactionData);
+    if (transactionData.description && transactionData.description.includes("#")) {
+        transactionData.description = transactionData.description.replace("#", "plink_");
+        const res = await new ContractRepo().getContractByPaymentId(
+            transactionData.description,
+        );
+        console.log(res);
+    }
+    await TransactionModel.create(transactionData);
 
     // Save the transaction data to your transactionTable
     // await saveTransaction(transactionData);

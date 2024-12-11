@@ -235,10 +235,17 @@ export default class ContractController {
         agreementIds: [paymentId],
         paymentIds: [signId],
         status: FRANCHISE_STATUS.Active,
-        establishedDate: undefined,
+        establishedDate: new Date(),
         organizationId: existingContract.organizationId,
         affiliateId: 0,
       };
+
+      console.log("franchise details");
+      console.log(franchiseDetailsData);
+      console.log("_____");
+      
+      
+      
       await RepoProvider.franchise.create(franchiseDetailsData);
       const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password`;
 

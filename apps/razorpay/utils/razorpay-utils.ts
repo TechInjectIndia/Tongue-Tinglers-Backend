@@ -115,7 +115,7 @@ async function parseAndSaveEvent(eventPayload: any) {
 
             let contractStatus = res.status;
 
-            if (res.status.toLowerCase() === "paid") {
+            if (res.status.toLowerCase() === "paid" || res.status.toLowerCase() === "captured") {
                 contractStatus = CONTRACT_STATUS.PAYMENT_RECEIVED;
             }
             await new ContractRepo().updatePaymentStatus(

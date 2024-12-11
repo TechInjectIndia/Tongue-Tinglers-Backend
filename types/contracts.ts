@@ -47,6 +47,7 @@ export interface TContractPayload {
     };
     payment: ContractPaymentDetails[] | null;
     leadId: number;
+    organizationId: number | null;
     templateId: string | null;
     amount: number;
     signedDate: Date | null;

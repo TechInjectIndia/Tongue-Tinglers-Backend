@@ -190,13 +190,12 @@ export default class ContractController {
 
     static async convert(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req.body, "id", "");
+            const id = get(req.body, "id", 0);
 
             // get contract
             const existingContract = await new ContractRepo().get(id as number);
 
-            console.log("contract");
-            console.log(existingContract);
+
 
             // @todo nitesh fix this according to new
             let organization;

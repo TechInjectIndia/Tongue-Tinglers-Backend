@@ -243,10 +243,10 @@ export default class ContractController {
       console.log("franchise details");
       console.log(franchiseDetailsData);
       console.log("_____");
-      
-      
-      
-      await RepoProvider.franchise.create(franchiseDetailsData);
+
+      const res = await RepoProvider.franchise.create(franchiseDetailsData);
+      console.log("res", res);
+
       const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password`;
 
       try {

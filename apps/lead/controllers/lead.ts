@@ -65,7 +65,7 @@ export default class LeadController {
             //     return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.ALREADY_CONVERTED));
             // }
 
-            const user_id = get(req, "user_id", "");
+            const user_id = get(req, "user_id", 1);
             const payload = {
                 firstName: existingLead.firstName,
                 lastName: existingLead.lastName,

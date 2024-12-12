@@ -452,7 +452,7 @@ export default class LeadController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const user_id = get(req, "user_id", "");
+            const user_id = get(req, "user_id", 1);
             // const user_name = get(req, 'user_name', '');
             const id = get(req.params, "id", "");
             const payload = req.body;

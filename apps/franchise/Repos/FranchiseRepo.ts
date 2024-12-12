@@ -176,6 +176,11 @@ export class FranchiseRepo implements IFranchiseRepo {
           },
         ],
       });
+
+      console.log("nitesh");
+      console.log(res);
+      
+      
       if (res) {
         return parseFranchise(res.toJSON());
       } else {

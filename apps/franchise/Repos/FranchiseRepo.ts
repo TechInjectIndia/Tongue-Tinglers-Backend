@@ -156,7 +156,7 @@ export class FranchiseRepo implements IFranchiseRepo {
         include: [
           {
             model: RegionModel,
-            as: "Region", // Matches the alias defined in the association
+            as: "region", // Matches the alias defined in the association
           },
           {
             model: OrganizationModel,

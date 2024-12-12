@@ -46,6 +46,11 @@ export default class FranchiseController {
 
         try {
             const id = get(req.params, "id", 0);
+
+            console.log("****");
+            console.log(id);
+            
+            
     
             const franchiseDetails = await RepoProvider.franchise.getById(id);
             return res

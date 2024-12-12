@@ -130,7 +130,7 @@ FranchiseModel.init(
             allowNull: true,  // Array of user IDs (nullable)
         },
         organizationId: {
-            type: INTEGER, allowNull: false,
+            type: INTEGER, allowNull: true,
         },
         regionId: {
             type: INTEGER,

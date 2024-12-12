@@ -228,7 +228,7 @@ export default class ContractController {
         createdBy: 1,
         updatedBy: null,
         deletedBy: null,
-        pocName: existingLead.firstName + "" + existingLead.lastName,
+        pocName: existingLead.firstName + " " + existingLead.lastName,
         pocEmail: existingLead.email,
         pocPhoneNumber: existingLead.phoneNumber,
         users: [],

@@ -153,28 +153,28 @@ export class FranchiseRepo implements IFranchiseRepo {
     try {
       const res = await FranchiseModel.findOne({
         where: { id: id },
-        include: [
-          {
-            model: RegionModel,
-            as: "region", // Matches the alias defined in the association
-          },
-          {
-            model: OrganizationModel,
-            as: "organization", // Matches the alias defined in the association
-          },
-          {
-            model: UserModel,
-            as: "createdByUser", // For the 'createdBy' user
-          },
-          {
-            model: UserModel,
-            as: "updatedByUser", // For the 'updatedBy' user
-          },
-          {
-            model: UserModel,
-            as: "deletedByUser", // For the 'deletedBy' user
-          },
-        ],
+        // include: [
+        //   {
+        //     model: RegionModel,
+        //     as: "region", // Matches the alias defined in the association
+        //   },
+        //   {
+        //     model: OrganizationModel,
+        //     as: "organization", // Matches the alias defined in the association
+        //   },
+        //   {
+        //     model: UserModel,
+        //     as: "createdByUser", // For the 'createdBy' user
+        //   },
+        //   {
+        //     model: UserModel,
+        //     as: "updatedByUser", // For the 'updatedBy' user
+        //   },
+        //   {
+        //     model: UserModel,
+        //     as: "deletedByUser", // For the 'deletedBy' user
+        //   },
+        // ],
       });
 
       console.log("nitesh");

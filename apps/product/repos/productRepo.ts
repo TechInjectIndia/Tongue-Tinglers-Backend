@@ -44,8 +44,8 @@ export class ProductRepo implements IProductRepo {
       // Step 2: Handle variations if provided
       if (product.variations && Array.isArray(product.variations)) {
         const productOptions = product.variations.map((option) => ({
-          product_id: createdProduct.id, // Link the option to the created product
-          option_value_id: option.option_value_id,
+          product_id: 0, // Link the option to the created product
+          optionValueId: option.optionValueId,
           price: option.price,
           stock: option.stock,
           status: option.status,
@@ -137,7 +137,7 @@ export class ProductRepo implements IProductRepo {
               as: "options", // Alias used in the ProductModel association
               attributes: [
                 "id",
-                "option_value_id",
+                "optionValueId",
                 "price",
                 "stock",
                 "status",

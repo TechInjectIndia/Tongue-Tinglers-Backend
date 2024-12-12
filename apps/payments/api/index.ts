@@ -5,7 +5,7 @@ import * as PaymentsValidation from "../validations";
 const router = express.Router();
 
 const {
-  validateGenerateLinkBody
+    validateGenerateLinkBody,
 } = PaymentsValidation;
 
 /**
@@ -38,7 +38,7 @@ const {
  *         description: Unauthorized
  *       '500':
  *         description: Internal server error
- * 
+ *
  * /api/payments/fetch-payment/{paymentId}:
  *   get:
  *     summary: Fetch payment details by payment ID
@@ -122,7 +122,7 @@ const {
  *                 message:
  *                   type: string
  *                   example: "Internal server error."
- * 
+ *
  * /api/payments/callback:
  *   get:
  *     summary: Razorpay webhook callback handler

@@ -7,7 +7,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
         try {
             return (await ProductOptionsModel.create({
                 product_id: productOptions.product_id,
-                option_value_id: productOptions.option_value_id,
+                optionValueId: productOptions.optionValueId,
                 price: productOptions.price,
                 stock: productOptions.stock,
                 images: productOptions.images,

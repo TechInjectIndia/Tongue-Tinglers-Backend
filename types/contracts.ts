@@ -15,6 +15,7 @@ export interface TContract {
         reason: string;
         date: Date;
     };
+    organizationId: number|null;
     payment: ContractPaymentDetails[] | null;
     leadId: number;
     templateId: string | null;
@@ -47,6 +48,7 @@ export interface TContractPayload {
     };
     payment: ContractPaymentDetails[] | null;
     leadId: number;
+    organizationId: number | null;
     templateId: string | null;
     amount: number;
     signedDate: Date | null;

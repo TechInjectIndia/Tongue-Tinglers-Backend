@@ -3,16 +3,16 @@ import { ParsedOptionsValue, parseOptionsValues } from "./optionsValue";
 import { ParsedUser } from "./user";
 
 interface BaseProductOptions {
-    id: any;
-    product_id: number;
-    option_value_id: number;
-    price: number;
-    stock: number;
-    status: PRODUCT_OPTIONS_STATUS;
-    images: string;
-    createdBy: number;
-    updatedBy: number;
-    deletedBy: number;
+    id: any
+    product_id: number
+    optionValueId: number
+    price: number
+    stock: number
+    status: PRODUCT_OPTIONS_STATUS
+    images: string,
+    createdBy: number,
+    updatedBy: number,
+    deletedBy: number
 }
 
 interface ProductOptions extends BaseMeta, BaseProductOptions {

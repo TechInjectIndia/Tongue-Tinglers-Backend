@@ -11,16 +11,18 @@ import {
     UserDetails,
     Note,
 } from "../../interfaces";
+
 const { INTEGER, STRING, FLOAT, DATE, JSONB, ENUM, UUIDV4 } = DataTypes;
 import { LeadsModel } from "./lead/lead.model";
 import { UserModel } from "./user/user.model";
+
 interface ContractCreationAttributes
-    extends Optional<IContract, "id" | "createdAt" | "updatedAt"> {}
+    extends Optional<IContract, "id" | "createdAt" | "updatedAt"> {
+}
 
 class ContractModel
     extends Model<IContract, ContractCreationAttributes>
-    implements IContract
-{
+    implements IContract {
     public id!: number;
     public status!: CONTRACT_STATUS;
     public proposalData: ProposalModels | null;
@@ -32,12 +34,12 @@ class ContractModel
     public payment!:
         | null
         | {
-              paymentId: string;
-              amount: number;
-              date: Date;
-              status: CONTRACT_PAYMENT_STATUS;
-              additionalInfo: string;
-          }[];
+        paymentId: string;
+        amount: number;
+        date: Date;
+        status: CONTRACT_PAYMENT_STATUS;
+        additionalInfo: string;
+    }[];
     public leadId!: number | null;
     public templateId!: string | null;
     public amount!: number;
@@ -70,6 +72,8 @@ class ContractModel
             constraints: false,
         });
     }
+
+    organizationId: number | null;
 }
 
 ContractModel.init(
@@ -87,6 +91,10 @@ ContractModel.init(
         },
         proposalData: {
             type: JSONB,
+            allowNull: true,
+        },
+        organizationId: {
+            type: DataTypes.INTEGER,
             allowNull: true,
         },
         terminationDetails: {
@@ -171,7 +179,7 @@ ContractModel.init(
         sequelize,
         tableName: "contracts",
         timestamps: true,
-    }
+    },
 );
 
 ContractModel.associate();

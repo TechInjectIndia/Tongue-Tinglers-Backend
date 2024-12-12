@@ -12,8 +12,8 @@ interface BaseFranchise {
     users: Array<number>;
     regionId: number;
     area: string;
-    agreementIds: Array<number>;
-    paymentIds: Array<number>;
+    agreementIds: Array<string>;
+    paymentIds: Array<string>;
     status: FRANCHISE_STATUS;
     establishedDate: Date;
     organizationId: number;
@@ -38,8 +38,8 @@ interface parsedFranchise {
     users: Array<ParsedUser>;
     region: parsedRegion;
     area: string;
-    agreementIds: Array<number>;
-    paymentIds: Array<number>;
+    agreementIds: Array<string>;
+    paymentIds: Array<string>;
     organization: ParsedOrganization;
     status: FRANCHISE_STATUS;
     establishedDate: Date;

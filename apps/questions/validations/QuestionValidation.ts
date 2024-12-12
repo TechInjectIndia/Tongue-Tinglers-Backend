@@ -42,7 +42,7 @@ const editQuestionBody = Joi.object().keys({
 
 // Validation schema for editing dynamic form question parameters
 const editQuestionParams = Joi.object().keys({
-  id: Joi.string().uuid().required()
+  id: Joi.number().required()
     .messages({ 'any.required': 'Dynamic Form Question ID is required.' }),
 });
 

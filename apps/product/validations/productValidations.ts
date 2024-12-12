@@ -27,11 +27,18 @@ const productValidationSchema = Joi.object({
   type: Joi.string().valid("retort", "packaging").required().messages({
     "any.only": 'Type must be either "retort" or "packaging"',
   }),
+  status:Joi.string().valid("active", "inactive").required().messages({
+    "any.only": 'Status must be either "active" or "inactive"',
+  }),
+  tax_rate_id:Joi.number().integer().positive().required().messages({
+    "number.base": "Tax Rate ID must be a number",
+    "number.positive": "Tax Rate ID must be greater than 0",
+  }),
   productOptionsIds: Joi.array().items(Joi.number().integer()).optional(),
   variations: Joi.array()
     .items(
       Joi.object({
-        option_value_id: Joi.number().integer().positive().required().messages({
+        optionValueId: Joi.number().integer().positive().required().messages({
           "number.base": "Option Value ID must be a number",
           "number.positive": "Option Value ID must be greater than 0",
           "any.required": "Option Value ID is required",
@@ -46,10 +53,14 @@ const productValidationSchema = Joi.object({
           "number.min": "Stock must be at least 0",
           "any.required": "Stock is required",
         }),
+        status:Joi.string().valid("active", "inactive").required().messages({
+          "any.only": 'Status must be either "active" or "inactive"',
+        }),
         images: Joi.array().items(Joi.string()).messages({
           "array.base": "Images must be an array of URLs",
           // 'string.uri': 'Each image must be a valid URL',
         }),
+        
       })
     )
     .required()
@@ -89,6 +100,13 @@ const productUpdateValidationSchema = Joi.object({
   name: Joi.string().required().messages({
     "string.empty": "Name is required",
   }),
+  tax_rate_id:Joi.number().integer().positive().required().messages({
+    "number.base": "Tax Rate ID must be a number",
+    "number.positive": "Tax Rate ID must be greater than 0",
+  }),
+  status:Joi.string().valid("active", "inactive").required().messages({
+    "any.only": 'Status must be either "active" or "inactive"',
+  }),
   MOQ: Joi.number().integer().positive().required().messages({
     "number.base": "MOQ must be a number",
     "number.positive": "MOQ must be greater than 0",
@@ -116,7 +134,7 @@ const productUpdateValidationSchema = Joi.object({
   options: Joi.array()
     .items(
       Joi.object({
-        option_value_id: Joi.number().integer().positive().required().messages({
+        optionValueId: Joi.number().integer().positive().required().messages({
           "number.base": "Option Value ID must be a number",
           "number.positive": "Option Value ID must be greater than 0",
           "any.required": "Option Value ID is required",
@@ -135,6 +153,9 @@ const productUpdateValidationSchema = Joi.object({
           "string.base": "Images must be a string",
           // 'string.uri': 'Each image must be a valid URL',
         }),
+        status:Joi.string().valid("active", "inactive").required().messages({
+            "any.only": 'Status must be either "active" or "inactive"',
+          }),
       })
     )
     .required()

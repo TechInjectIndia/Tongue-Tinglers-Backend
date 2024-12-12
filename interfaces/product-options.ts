@@ -3,7 +3,7 @@ import { BaseMeta } from "../database/schema/base/Base";
 interface BaseProductOptions {
     id: any
     product_id: number
-    option_value_id: number
+    optionValueId: number
     price: number
     stock: number
     status: PRODUCT_OPTIONS_STATUS

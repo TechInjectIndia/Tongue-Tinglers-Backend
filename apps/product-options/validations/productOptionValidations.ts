@@ -12,7 +12,7 @@ const createProductOptionsSchema = Joi.object({
             'number.positive': 'Product ID must be greater than 0.',
             'any.required': 'Product ID is required.',
         }),
-    option_value_id: Joi.number()
+    optionValueId: Joi.number()
         .integer()
         .positive()
         .required()
@@ -70,7 +70,7 @@ const updateProductOptionsSchema = Joi.object({
             'number.positive': 'Product ID must be greater than 0.',
             'any.required': 'Product ID is required.',
         }),
-    option_value_id: Joi.number()
+    optionValueId: Joi.number()
         .integer()
         .positive()
         .required()

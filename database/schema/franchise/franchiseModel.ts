@@ -27,8 +27,8 @@ class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> impl
     public users: number[];
     public regionId: number;
     public area: string | null;
-    public agreementIds: number[];
-    public paymentIds: number[];
+    public agreementIds: string[];
+    public paymentIds: string[];
     public status: FRANCHISE_STATUS;
     public establishedDate: Date;
 
@@ -130,7 +130,7 @@ FranchiseModel.init(
             allowNull: true,  // Array of user IDs (nullable)
         },
         organizationId: {
-            type: INTEGER, allowNull: false,
+            type: INTEGER, allowNull: true,
         },
         regionId: {
             type: INTEGER,
@@ -141,11 +141,11 @@ FranchiseModel.init(
             allowNull: true,
         },
         agreementIds: {
-            type: ARRAY(INTEGER),
+            type: ARRAY(STRING),
             allowNull: true,  // Array of agreement IDs
         },
         paymentIds: {
-            type: ARRAY(INTEGER),
+            type: ARRAY(STRING),
             allowNull: true,  // Array of payment IDs
         },
         status: {

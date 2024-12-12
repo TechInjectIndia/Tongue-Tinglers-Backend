@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { Request, Response } from "express";
+import { logRouter } from "../apps/logs/api/logrouter";
 
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
@@ -128,7 +129,7 @@ router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
 router.use(`${ADMIN}/region`, regionRouter);
 router.use(`${ADMIN}/area`, areaRouter);
 router.use(`${ADMIN}/contracts`, contractsRouter);
-router.use(`${ADMIN}/lead`, auth, leadRouter); // dont add auth to this url
+router.use(`${ADMIN}/lead`, leadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
@@ -145,7 +146,6 @@ router.use("/cart-detail", auth, cartDetailRouter);
 router.use("/order-items", auth, orderItemRouter);
 router.use("/order", OrderRouter);
 router.use(`/cart`, auth, cartRouter);
-
 router.use("/migration", migrationRouter);
 
 // router.use(`${GUEST}/users`, auth, guestUsersRouter);
@@ -223,9 +223,13 @@ router.use(`/pet-pooja`, petPoojaApiRouter);
 
 // ====== Zoho Sign ======
 import zohoSignApiRouter from "../apps/zoho-sign/api/zohosign";
+import { transactionRouter } from "../apps/payment-transaction/api/TransactionRouter";
 
 router.use(`/zoho-sign`, zohoSignApiRouter);
 // ====== Zoho Sign ======
+
+router.use("/logs", logRouter);
+router.use("/transaction", transactionRouter);
 
 router.use(`/etest`, () => {
   sendEmail("jasskaranofficial@gmail.com", "subject", {

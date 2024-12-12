@@ -6,7 +6,7 @@ const parseFranchise = (franchise: any) => {
         pocName: franchise.pocName,
         pocEmail: franchise.pocEmail,
         pocPhoneNumber: franchise.pocPhoneNumber,
-        users: [],
+        users: franchise.users,
         region: franchise.region,
         area: franchise.area,
         agreementIds: franchise.agreementIds,

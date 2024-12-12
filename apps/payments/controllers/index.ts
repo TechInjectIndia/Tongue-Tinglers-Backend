@@ -1,3 +1,5 @@
+import { PaymentLinkPayload } from "../../razorpay/models/Razorpay";
+
 const Razorpay = require("razorpay");
 import { NextFunction, Request, Response } from "express";
 import {
@@ -22,6 +24,7 @@ import {
 import { ContractPaymentDetails } from "../../../interfaces";
 import { CONFIG } from "../../../config";
 import RepoProvider from "../../RepoProvider";
+import lead from "../../lead/api/lead";
 
 const {
     validateWebhookSignature,
@@ -35,53 +38,6 @@ const razorpayInstance = new Razorpay({
 export default class PaymentsController {
     static async callback(req: Request, res: Response, next: NextFunction) {
         await RepoProvider.razorpayRepo.callback(req, res);
-
-        // const webhookSignature = req.headers["x-razorpay-signature"];
-        // const body = req.body;
-        // const isVerified = validateWebhookSignature(
-        //     JSON.stringify(body),
-        //     webhookSignature,
-        //     CONFIG.RP_WEBHOOK_SECRET,
-        // );
-        // if (isVerified) {
-        //     if (
-        //         body.payload &&
-        //         body.payload.payment_link &&
-        //         body.payload.payment_link.entity
-        //     ) {
-        //         const paymentId = body.payload.payment_link.entity.id;
-        //         const status = body.payload.payment_link.entity.status;
-        //         const contractDetails =
-        //             await new ContractRepo().getContractByPaymentId(
-        //                 paymentId as string,
-        //             );
-        //         if (contractDetails) {
-        //             const paymentDetails: ContractPaymentDetails = {
-        //                 paymentId: paymentId,
-        //                 amount: body.payload.payment_link.entity.amount,
-        //                 date: new Date(),
-        //                 status: status,
-        //                 additionalInfo: "",
-        //             };
-        //             contractDetails.payment.push(paymentDetails);
-
-        //             let contractStatus = contractDetails.status;
-
-        //             if (status.toLowerCase() === "paid") {
-        //                 contractStatus = CONTRACT_STATUS.PAYMENT_RECEIVED;
-        //             }
-        //             await new ContractRepo().updatePaymentStatus(
-        //                 contractDetails.id as number,
-        //                 contractDetails.payment as unknown as ContractPaymentDetails[],
-        //                 contractStatus,
-        //             );
-        //         }
-        //     }
-        //     return res.status(200).send({ message: "Webhook Done" });
-        // } else {
-        //     console.log("Webhook not verified");
-        //     return res.status(200).send({ message: "Webhook not verified" });
-        // }
     }
 
     static async fetchPayment(req: Request, res: Response, next: NextFunction) {
@@ -91,33 +47,24 @@ export default class PaymentsController {
             if (!paymentId) {
                 return res
                     .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            "Payment ID is required.",
-                        ),
-                    );
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Payment ID is required."));
             }
 
-            const paymentDetailsFromRazorpay =
-                await razorpayInstance.payments.fetch(paymentId);
+            const paymentDetailsFromRazorpay = await razorpayInstance.payments.fetch(
+                paymentId,
+            );
             if (!paymentDetailsFromRazorpay) {
                 return res
                     .status(404)
                     .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            "Payment not found in Razorpay.",
-                        ),
+                        sendResponse(RESPONSE_TYPE.ERROR, "Payment not found in Razorpay."),
                     );
             }
-            console.log(
-                "Payment Details from Razorpay:",
-                paymentDetailsFromRazorpay,
-            );
+            console.log("Payment Details from Razorpay:", paymentDetailsFromRazorpay);
 
-            const paymentDetailsFromRepo =
-                await new ContractRepo().getPaymentById(paymentId);
+            const paymentDetailsFromRepo = await new ContractRepo().getPaymentById(
+                paymentId,
+            );
             if (!paymentDetailsFromRepo) {
                 return res
                     .status(404)
@@ -128,10 +75,7 @@ export default class PaymentsController {
                         ),
                     );
             }
-            console.log(
-                "Payment Details from Repository:",
-                paymentDetailsFromRepo,
-            );
+            console.log("Payment Details from Repository:", paymentDetailsFromRepo);
 
             return res.status(200).send(
                 sendResponse(
@@ -149,32 +93,21 @@ export default class PaymentsController {
         }
     }
 
-    static async generatePaymentLink(
-        req: Request,
-        res: Response,
-        next: NextFunction,
-    ) {
+    static async generatePaymentLink(req: Request, res: Response) {
         try {
             const { contract_id } = req.body;
 
             if (!contract_id) {
                 return res
                     .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            "Contract ID is required.",
-                        ),
-                    );
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Contract ID is required."));
             }
 
             const contractDetails = await new ContractRepo().get(contract_id);
             if (!contractDetails) {
                 return res
                     .status(404)
-                    .send(
-                        sendResponse(RESPONSE_TYPE.ERROR, "Contract not found."),
-                    );
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Contract not found."));
             }
 
             const leadDetails = await new LeadRepo().get(
@@ -190,22 +123,32 @@ export default class PaymentsController {
             //     contract: contractDetails,
             //     lead: leadDetails,
             // });
-            const link: any = {};
+
+            const paymentLinkPayload: PaymentLinkPayload = {
+                amount: contractDetails.amount,
+                customer: {
+                    contact: leadDetails.phoneNumber,
+                    email: leadDetails.email,
+                    name: (leadDetails.firstName + " " + leadDetails.lastName),
+                },
+                description: `${contractDetails.leadId}`,
+                notify: { email: false, sms: false },
+            };
+
+            const link = await RepoProvider.razorpayRepo.createPaymentLink(paymentLinkPayload);
+
             if (!link) {
                 return res
                     .status(500)
                     .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            "Failed to create payment link.",
-                        ),
+                        sendResponse(RESPONSE_TYPE.ERROR, "Failed to create payment link."),
                     );
             }
 
             const paymentPayload: ContractPaymentDetails = {
                 paymentId: link.id,
-                amount: link.amount,
-                date: new Date(link.created_at * 1000),
+                amount: Number(link.amount) / 100,
+                date: new Date(Number(link.created_at) * 1000),
                 status: CONTRACT_PAYMENT_STATUS.PENDING,
                 additionalInfo: link.description,
             };
@@ -252,11 +195,7 @@ export default class PaymentsController {
             return res
                 .status(200)
                 .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CREATED,
-                        link,
-                    ),
+                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, link),
                 );
         } catch (err) {
             console.error("Error generating payment link:", err);

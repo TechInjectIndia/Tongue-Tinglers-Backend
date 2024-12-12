@@ -40,7 +40,7 @@ declare global {
         toJSON: () => string;
     }
 }
-BigInt.prototype.toJSON = function () {
+BigInt.prototype.toJSON = function() {
     return this.toString();
 };
 
@@ -112,16 +112,13 @@ server.get("/", async (_, res) => {
         customer: {
             name: "Nitesh",
             email: "niteshrghv@gmail.com",
-            contact: "9997016578"
+            contact: "9997016578",
         },
         notify: {
             sms: false,
-            email: false
-        }
+            email: false,
+        },
     };
-
-
-
 
     const ss = await RepoProvider.razorpayRepo.createPaymentLink(resp);
 

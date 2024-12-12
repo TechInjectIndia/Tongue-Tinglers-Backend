@@ -14,27 +14,14 @@ export class ProductRepo implements IProductRepo {
   async create(product: BaseProduct): Promise<Product | null> {
     const transaction = await ProductModel.sequelize.transaction();
     try {
-      const createdProduct = await ProductModel.create(
-        {
-          name: product.name,
-          slug: product.slug,
-          description: product.description,
-          MOQ: product.MOQ,
-          category: product.category,
-          type: product.type,
-          status: product.status,
-          images: product.images,
-          variations: product.variations,
-        },
-        { transaction } // Pass the transaction
-      );
+    
 
       let productOptionsIds: number[] = []; // Array to store option IDs
 
       if (product.variations && Array.isArray(product.variations)) {
         const productOptions = product.variations.map((option) => ({
-          product_id: createdProduct.id, // Link the option to the created product
-          option_value_id: option.option_value_id,
+          product_id: 0, // Link the option to the created product
+          optionValueId: option.optionValueId,
           price: option.price,
           stock: option.stock,
           status: option.status,
@@ -52,6 +39,21 @@ export class ProductRepo implements IProductRepo {
 
         productOptionsIds = createdOptions.map((option) => option.id);
       }
+
+      const createdProduct = await ProductModel.create(
+        {
+          name: product.name,
+          slug: product.slug,
+          description: product.description,
+          MOQ: product.MOQ,
+          category: product.category,
+          type: product.type,
+          status: product.status,
+          images: product.images,
+          variationIds: productOptionsIds,
+        },
+        { transaction } // Pass the transaction
+      );
 
       await createdProduct.update(
         {
@@ -122,7 +124,7 @@ export class ProductRepo implements IProductRepo {
               as: "options", // Alias used in the ProductModel association
               attributes: [
                 "id",
-                "option_value_id",
+                "optionValueId",
                 "price",
                 "stock",
                 "status",

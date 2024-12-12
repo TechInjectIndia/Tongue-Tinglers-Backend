@@ -1,4 +1,4 @@
-import { BaseMeta } from "../database/schema/base/Base"
+import { BaseMeta, ParsedMeta } from "../database/schema/base/Base"
 import { ParsedProductOptions } from "./product-options";
 import { ParsedProduct } from "./products";
 
@@ -14,7 +14,7 @@ interface BaseOrderItem {
     type: ORDER_ITEM_TYPE
 }
 
-interface ParsedOrderItem {
+interface ParsedOrderItem extends ParsedMeta {
     id: number;
     product: ParsedProduct,
     product_option_id: ParsedProductOptions,
@@ -25,6 +25,7 @@ interface ParsedOrderItem {
     points_discount: number,
     student_discount: number,
     type: ORDER_ITEM_TYPE
+    order_items?: ParsedOrderItem[]; 
 }
 
 enum ORDER_ITEM_TYPE {
@@ -32,7 +33,7 @@ enum ORDER_ITEM_TYPE {
     PACKAGING = 'packaging'
 }
 
-interface OrderItem extends BaseOrderItem {
+interface OrderItem extends BaseOrderItem, ParsedMeta {
     id: number
 }
 

@@ -3,6 +3,7 @@ import { BaseNotes, BaseOrder, Order, ORDER_TYPE } from "../../../interfaces";
 import { sequelize } from "../../../config";
 import { NotesModel } from "./notesModel";
 import { OrderItemsModel } from "../ecommerce/order_item.model";
+import { Address } from "../../../types";
 
 interface OrderCreationAttributes extends Optional<Order, "id"> {}
 
@@ -19,6 +20,9 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     payment_type!: string;
     total_discount!: number;
     total_shipping!: number;
+    franchise_id: number;
+    billingAddress: Address;
+    shippingAddress: Address;
     total_tax!: number;
     prices!: string | null;
     discount_prices!: string | null;
@@ -82,6 +86,18 @@ OrderModel.init(
         delivery_status: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        franchise_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        billingAddress:{
+            type: DataTypes.JSONB,
+            allowNull: true,
+        },
+        shippingAddress:{
+            type: DataTypes.JSONB,
+            allowNull: true,
         },
         payment_id: {
             type: DataTypes.INTEGER,

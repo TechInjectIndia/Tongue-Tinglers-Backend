@@ -276,8 +276,7 @@ export default class LeadController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const user_id = get(req, "user_id", "");
-            const user_name = get(req, "user_name", "");
+            const user_id = get(req, "user_id", 1);
             const whereVal = get(req.body, "email", "");
 
             const existingLead = await new LeadRepo().getLeadByAttr(

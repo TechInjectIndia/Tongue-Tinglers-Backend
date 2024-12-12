@@ -2,26 +2,32 @@ import { parsedProductOptions } from "../../../interfaces/product-options";
 import { ParsedProduct } from "../../../interfaces/products";
 
 const parseProduct = (product: any): ParsedProduct => {
-    const productVariations = product.options.map((product_option) =>
-        parsedProductOptions(product_option)
-    );
+    const variations = product.variations.map((productOption: any) => {
+        return parsedProductOptions(productOption);
+    });
     const data: ParsedProduct = {
         id: product.id,
         name: product.name,
-        slug: product.slug,
-        description: product.description,
         MOQ: product.MOQ,
         category: product.category,
-        type: product.type,
-        status: product.status,
+        description: product.description,
         images: product.images,
+        slug: product.slug,
+        status: product.status,
+        type: product.type,
+        tax_rate_id: product.tax_rate_id,
+        vendorId: product.vendorId,
         createdBy: product.createdByUser,
         updatedBy: product.updatedByUser,
         deletedBy: product.deletedByUser,
-        tax_rate_id: product.tax_rate_id,
-        variations: productVariations,
+        createdAt: product.createdAt,
+        updatedAt: product.updatedAt,
+        deletedAt: product.deletedAt,
+        variations: variations
+    
     };
+    
     return data;
-};
+}
 
 export { parseProduct };

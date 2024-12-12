@@ -19,7 +19,7 @@ export const parseOptionsValues = (data: ParsedOptionsValue) => {
     return {
         id: data.id,
         name: data.name,
-        options: (data.options),
+        options: parseOptions(data.options),
     };
 };
 

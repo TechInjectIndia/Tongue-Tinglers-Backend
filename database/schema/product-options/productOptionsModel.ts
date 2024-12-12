@@ -48,7 +48,7 @@ ProductOptionsModel.init({
         allowNull: false,
     },
     images: {
-        type: DataTypes.STRING,
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
     },
     createdBy: {
@@ -83,11 +83,11 @@ ProductOptionsModel.init({
     },
 }, {
     sequelize,
-    modelName: 'ProductOptions',
-    tableName: 'product_options',
+    modelName: 'Variations',
+    tableName: 'variations',
     timestamps: true
 })
 
-ProductOptionsModel.belongsTo(OptionsValueModel, {as: 'optionsValue', foreignKey: 'id'})
+ProductOptionsModel.belongsTo(OptionsValueModel, {as: 'optionsValue', foreignKey: 'optionValueId'})
 
 export { ProductOptionsModel }

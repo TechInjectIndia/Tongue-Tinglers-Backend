@@ -1,3 +1,4 @@
+import { ProductModel } from '../../../database/schema/product/productModel';
 import { BaseProduct, CHANGE_STATUS, Pagination, ParsedProduct, Product, PRODUCTS_TYPE} from '../../../interfaces/products';
 
 export interface IProductRepo {

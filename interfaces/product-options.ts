@@ -48,8 +48,7 @@ interface ParsedProductOptions {
 export const parsedProductOptions = (data: any) => {
     return {
         id: data.id,
-        product_id: data.product_id,
-        option_value: parseOptionsValues(data.optionsValue),
+        optionsValue: parseOptionsValues(data.optionsValue),
         price: data.price,
         stock: data.stock,
         status: data.status,

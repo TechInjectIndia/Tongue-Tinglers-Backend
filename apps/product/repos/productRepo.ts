@@ -22,7 +22,7 @@ export class ProductRepo implements IProductRepo {
     const transaction = await ProductModel.sequelize.transaction();
   
     try {
-      let productOptionsIds: number[] = []; // Array to store created option IDs
+      let variationIds: number[] = []; // Array to store created option IDs
   
       // Step 1: Create the product with a default empty array for `variationIds`
       const createdProduct = await ProductModel.create(
@@ -35,8 +35,9 @@ export class ProductRepo implements IProductRepo {
           type: product.type,
           status: product.status,
           images: product.images,
-          vendorId: product.vendorId,
-          variationIds: [], // Initialize with an empty array
+          vendorId: product.vendorId,// Initialize with an empty array
+          tax_rate_id: product.tax_rate_id,
+          createdBy: product.createdBy
         },
         { transaction }
       );
@@ -44,7 +45,7 @@ export class ProductRepo implements IProductRepo {
       // Step 2: Handle variations if provided
       if (product.variations && Array.isArray(product.variations)) {
         const productOptions = product.variations.map((option) => ({
-          product_id: 0, // Link the option to the created product
+          product_id: createdProduct.id, // Link the option to the created product
           optionValueId: option.optionValueId,
           price: option.price,
           stock: option.stock,
@@ -58,17 +59,13 @@ export class ProductRepo implements IProductRepo {
           returning: true, // Ensure the created options are returned
         });
   
-        productOptionsIds = createdOptions.map((option) => option.id);
+        variationIds = createdOptions.map((option) => option.id);
   
         // Update the product with the created option IDs
-        await createdProduct.update(
-          {
-            variationIds: productOptionsIds, // Update variationIds field
-          },
-          { transaction }
-        );
       }
-  
+      
+      createdProduct.addVariations(variationIds);
+
       // Commit the transaction
       await transaction.commit();
   
@@ -134,7 +131,7 @@ export class ProductRepo implements IProductRepo {
           include: [
             {
               model: ProductOptionsModel, // Include the ProductOptions model
-              as: "options", // Alias used in the ProductModel association
+              as: "variations", // Alias used in the ProductModel association
               attributes: [
                 "id",
                 "optionValueId",
@@ -181,9 +178,9 @@ export class ProductRepo implements IProductRepo {
           };
         });
 
-      const totalPages = Math.ceil(total / limit);
+      const totalPages = Math.ceil(products.length / limit);
 
-      return { data: products, total, totalPages };
+      return { data: products, total: products.length, totalPages };
     } catch (error) {
       console.log(error);
       return null;
@@ -197,10 +194,10 @@ export class ProductRepo implements IProductRepo {
         include: [
           {
             model: ProductOptionsModel, // Include the ProductOptions model
-            as: "options", // Alias used in the ProductModel association
+            as: "variations", // Alias used in the ProductModel association
             attributes: [
               "id",
-              "option_value_id",
+              "optionValueId",
               "price",
               "stock",
               "status",
@@ -235,13 +232,9 @@ export class ProductRepo implements IProductRepo {
           }
         ]
       
-      }).then((product) => {
-        return parseProduct(product?.toJSON());
+      }).then((productData)=> {
+        return productData ? parseProduct(productData.toJSON()): null
       })
-
-      if (!product) {
-        throw new Error(`Product with ID ${id} not found`);
-      }
 
       return product;
     } catch (error) {

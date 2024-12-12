@@ -151,6 +151,8 @@ export class FranchiseRepo implements IFranchiseRepo {
 
   async getById(id: number): Promise<parsedFranchise> {
     try {
+      console.log(id);
+      
       const res = await FranchiseModel.findOne({
         where: { id: id },
         // include: [

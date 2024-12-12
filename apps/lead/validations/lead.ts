@@ -214,7 +214,7 @@ const editLeadBody = Joi.object().keys({
     }),
   referBy: USER_DETAILS_SCHEMA.allow(null),
   assign: Joi.any().optional().allow(null),
-  followDetails: Joi.array().any().optional(),
+  followDetails: Joi.any().optional(),
   source: Joi.string()
     .valid(...Object.values(LeadSource))
     .required()

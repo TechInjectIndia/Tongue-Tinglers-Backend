@@ -2,9 +2,13 @@ import { get } from "lodash";
 import { BaseOptionsValue } from "../../../interfaces/optionsValue";
 import RepoProvider from "../../RepoProvider";
 import { sendResponse } from "../../../libraries";
-import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
+import {
+  ERROR_MESSAGE,
+  RESPONSE_TYPE,
+  SUCCESS_MESSAGE,
+} from "../../../constants";
 import { Request, Response } from "express";
-import { BaseDocument, Document } from '../../../interfaces/documents';
+import { Document } from "../../../interfaces/documents";
 import { DocumentModel } from "../../../database/schema/documents/documentModel";
 import { Op } from "sequelize";
 import { getDocumentTransformData, transformData } from "../utils/utils"
@@ -51,7 +55,7 @@ export class DocumentController {
             );
         }
     }
-
+    
     static async getDocument(req: Request, res: Response){
         try {
             const id = get(req, 'params.id', 0);
@@ -81,7 +85,8 @@ export class DocumentController {
             );
         }
     }
+  }
+
 
     
-}
 

@@ -2,6 +2,7 @@ import { DataTypes, Model, Optional, } from "sequelize";
 import { sequelize } from "../../../config";
 import { BaseProductsCategory, ProductsCategory, PRODUCT_CATEGORY_STATUS, CATEGORY_TYPE } from "../../../interfaces/products_category";
 import { P_CATEGORY_TYPE, PRODUCT_STATUS } from "../../../interfaces";
+import { ProductModel } from "../product/productModel";
 
 interface ProductsCategoryCreationAttributes extends Optional<ProductsCategory, 'id'> { }
 
@@ -73,5 +74,8 @@ ProductsCategoryModel.init({
     tableName: 'products_category',
     timestamps: true,
 });
+
+ProductsCategoryModel.hasMany(ProductModel, {as: "product_category", foreignKey: "category"})
+ProductModel.belongsTo(ProductsCategoryModel, {as: "productCategory", foreignKey: "category"})
 
 export { ProductsCategoryModel };

@@ -11,7 +11,7 @@ import { ProductModel } from "../../../database/schema/product/productModel";
 import { Op } from "sequelize";
 import { ProductOptionsModel } from "../../../database/schema/product-options/productOptionsModel";
 import { ParsedProduct } from "../../../interfaces/products"
-import { UserModel } from "../../../database/schema";
+import { ProductCategoryModel, UserModel } from "../../../database/schema";
 import {parseProduct} from "../parser/productParser" 
 import { OptionsModel } from "../../../database/schema/options/optionModel";
 import { OptionsValueModel } from "../../../database/schema/optionsValue/optionsValueModel";
@@ -169,6 +169,11 @@ export class ProductRepo implements IProductRepo {
               model: UserModel,
               as: "deletedByUser", // Include createdByUser
               attributes: ["id", "firstName", "lastName", "email"], // Include these fields from the User model
+            },
+            {
+              model: ProductsCategoryModel,
+              as: "productCategory", // Include createdByUser
+              attributes: ["id", "name", "description"], // Include these fields from the User model
             }
           ],
         }).then((res) => {
@@ -229,6 +234,11 @@ export class ProductRepo implements IProductRepo {
             model: UserModel,
             as: "deletedByUser", // Include createdByUser
             attributes: ["id", "firstName", "lastName", "email"], // Include these fields from the User model
+          },
+          {
+            model: ProductsCategoryModel,
+            as: "productCategory", // Include createdByUser
+            attributes: ["id", "name", "description", "slug", "type", "status"], // Include these fields from the User model"
           }
         ]
       
@@ -237,6 +247,8 @@ export class ProductRepo implements IProductRepo {
       })
 
       return product;
+
+      // return product.toJSON();
     } catch (error) {
       console.log(error);
       return null;

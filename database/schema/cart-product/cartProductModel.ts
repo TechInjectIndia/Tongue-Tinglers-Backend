@@ -45,7 +45,7 @@ CartProductModel.belongsTo(ProductModel, {
 
 CartProductModel.belongsTo(ProductOptionsModel, {
     foreignKey: 'product_option_id',  // Foreign key in CartProductModel
-    as: 'productOption'  // Alias to use in the include
+    as: 'variations'  // Alias to use in the include
 });
 
 // CartProductModel.belongsTo(ProductModel, {as: 'product', foreignKey: 'product_id'})

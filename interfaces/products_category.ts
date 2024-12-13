@@ -35,6 +35,7 @@ interface ParsedCategory {
     name: string;
     slug: string;
     description: string;
+    type: CATEGORY_TYPE;
     status: PRODUCT_STATUS;
 }
 

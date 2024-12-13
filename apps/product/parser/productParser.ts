@@ -1,6 +1,6 @@
 import { parsedProductOptions } from "../../../interfaces/product-options";
 import { ParsedProduct } from "../../../interfaces/products";
-
+import {parseCategory} from "../../products-category/parser/parseProductCategory"
 const parseProduct = (product: any): ParsedProduct => {
     const variations = product.variations.map((productOption: any) => {
         return parsedProductOptions(productOption);
@@ -9,7 +9,7 @@ const parseProduct = (product: any): ParsedProduct => {
         id: product.id,
         name: product.name,
         MOQ: product.MOQ,
-        category: product.category,
+        category: parseCategory(product.productCategory),
         description: product.description,
         images: product.images,
         slug: product.slug,

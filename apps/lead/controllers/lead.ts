@@ -65,7 +65,7 @@ export default class LeadController {
             //     return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.ALREADY_CONVERTED));
             // }
 
-            const user_id = get(req, "user_id", "");
+            const user_id = get(req, "user_id", 1);
             const payload = {
                 firstName: existingLead.firstName,
                 lastName: existingLead.lastName,
@@ -276,8 +276,7 @@ export default class LeadController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const user_id = get(req, "user_id", "");
-            const user_name = get(req, "user_name", "");
+            const user_id = get(req, "user_id", 1);
             const whereVal = get(req.body, "email", "");
 
             const existingLead = await new LeadRepo().getLeadByAttr(
@@ -453,7 +452,7 @@ export default class LeadController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const user_id = get(req, "user_id", "");
+            const user_id = get(req, "user_id", 1);
             // const user_name = get(req, 'user_name', '');
             const id = get(req.params, "id", "");
             const payload = req.body;

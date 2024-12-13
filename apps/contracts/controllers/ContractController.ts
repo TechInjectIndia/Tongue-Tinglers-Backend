@@ -24,6 +24,7 @@ import {
   Franchise,
 } from "../../../interfaces";
 import RepoProvider from "../../RepoProvider";
+import { COMMISSION_PAID_STATUS } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
 
 export default class ContractController {
   static async create(req: Request, res: Response, next: NextFunction) {
@@ -196,6 +197,7 @@ export default class ContractController {
     try {
       const id = get(req.body, "id", 0);
       const address = get(req.body, "address", null);
+      const mappings = get(req.body, "mappings", []);
 
       // get contract
       const existingContract = await new ContractRepo().get(id);
@@ -226,7 +228,7 @@ export default class ContractController {
         createdBy: 1,
         updatedBy: null,
         deletedBy: null,
-        pocName: existingLead.firstName + "" + existingLead.lastName,
+        pocName: existingLead.firstName + " " + existingLead.lastName,
         pocEmail: existingLead.email,
         pocPhoneNumber: existingLead.phoneNumber,
         users: [],
@@ -246,6 +248,22 @@ export default class ContractController {
 
       const resData = await RepoProvider.franchise.create(franchiseDetailsData);
       console.log("res", resData);
+
+      const entries: any[] = [];
+
+      for (const commission of mappings) {
+        entries.push({
+          createdBy: 1,
+          franchiseId: resData.id,
+          commissionId: commission.commissionId,
+          organizationId: commission.organizationId,
+          status: COMMISSION_PAID_STATUS.PENDING,
+        });
+      }
+
+      const result = await RepoProvider.commissionRepo.createMapEntities(
+        entries
+      );
 
       const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password`;
 
@@ -281,7 +299,7 @@ export default class ContractController {
       return res
         .status(200)
         .send(
-          sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.PROSPECT_CREATED)
+          sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FRANCHISE_CREATED)
         );
     } catch (err) {
       console.error(err);

@@ -152,7 +152,7 @@ export class FranchiseRepo implements IFranchiseRepo {
   async getById(id: number): Promise<parsedFranchise> {
     try {
       console.log(id);
-      
+
       const res = await FranchiseModel.findOne({
         where: { id: id },
         include: [
@@ -166,7 +166,39 @@ export class FranchiseRepo implements IFranchiseRepo {
           },
           {
             model: OrganizationModel,
-            as: "organization", // Matches the alias defined in the association
+            as: "organization",
+            include: [
+              {
+                model: AddressModel,
+                as: "billingAddress", // Include billing address
+              },
+              {
+                model: UserModel,
+                as: "user", // Include root user
+              },
+              {
+                model: AddressModel,
+                as: "shippingAddresses", // Include shipping addresses
+                through: { attributes: [] }, // For many-to-many relationships
+              },
+              {
+                model: OrganizationModel,
+                as: "masterFranchise",
+                attributes: ["id", "name"], // Include master franchise (if applicable)
+              },
+              {
+                model: UserModel,
+                as: "createdByUser", // Include createdByUser
+              },
+              {
+                model: UserModel,
+                as: "updatedByUser", // Include updatedByUser
+              },
+              {
+                model: UserModel,
+                as: "deletedByUser", // Include deletedByUser
+              },
+            ],
           },
           {
             model: UserModel,
@@ -185,8 +217,7 @@ export class FranchiseRepo implements IFranchiseRepo {
 
       console.log("nitesh");
       console.log(res);
-      
-      
+
       if (res) {
         return parseFranchise(res.toJSON());
       } else {

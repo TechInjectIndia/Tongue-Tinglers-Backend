@@ -1,18 +1,20 @@
 import { Model, Optional, DataTypes } from "sequelize";
-import { sequelize } from "../../../config";
-import { ICommission, CommissionType, CommissionEventType } from "../../../interfaces/commission";
-import { CommissionEntityMapTable } from "./CommissionAndEntityMappingTable";
+import { IStock } from "../../../../apps/ims/stock/interfaces/IStock";
+import { sequelize } from "../../../../config";
+import { AssignedStocksTable } from "./AssignedStocksTable";
 const { STRING, DATE, INTEGER, NOW, } = DataTypes;
 
-// Define the creation attributes by making certain fields optional
-interface CommissionCreationAttributes extends Optional<ICommission, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
-class CommissionTable extends Model<ICommission, CommissionCreationAttributes> implements ICommission {
+interface StockCreationAttributes extends Optional<IStock, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
+
+
+class StocksTable extends Model<IStock, StockCreationAttributes> implements IStock {
     public id: number;
-    public title: string;
-    public type: CommissionType;
-    public value: number;
-    public eventType: CommissionEventType;
+    public sku: string;
+    public supplierId: number;
+    public minimumStockQuantity: number;
+    public totalQuantity: number;
+    public assignedQuantity: number;
     public createdBy: number;
     public updatedBy: number | null;
     public deletedBy: number | null;
@@ -21,28 +23,32 @@ class CommissionTable extends Model<ICommission, CommissionCreationAttributes> i
     public readonly deletedAt: Date | null;
 }
 
-CommissionTable.init({
+StocksTable.init({
     id: {
         type: INTEGER,
         primaryKey: true,
         allowNull: false,
         autoIncrement: true,
     },
-    title: {
+    sku: {
         type: STRING,
         allowNull: false,
         unique: true,
     },
-    type: {
+    supplierId: {
         type: STRING,
         allowNull: false,
     },
-    value: {
+    minimumStockQuantity: {
         type: INTEGER,
         allowNull: false,
     },
-    eventType: {
-        type: STRING,
+    totalQuantity: {
+        type: INTEGER,
+        allowNull: false,
+    },
+    assignedQuantity: {
+        type: INTEGER,
         allowNull: false,
     },
     createdBy: {
@@ -77,7 +83,7 @@ CommissionTable.init({
     },
 }, {
     sequelize,
-    tableName: 'commissions',
+    tableName: 'Stocks',
     timestamps: true,
     paranoid: true,
 });
@@ -85,18 +91,23 @@ CommissionTable.init({
 
 /* associations */
 
-CommissionTable.hasMany(CommissionEntityMapTable, {
+StocksTable.hasMany(AssignedStocksTable, {
     foreignKey: {
         allowNull: false,
-        name: 'commissionId',
+        name: 'stockId',
     },
 });
-CommissionEntityMapTable.belongsTo(CommissionTable, {
+AssignedStocksTable.belongsTo(StocksTable, {
     foreignKey: {
         allowNull: false,
-        name: 'commissionId',
+        name: 'stockId',
     },
 });
 
 
-export { CommissionTable };
+console.log("MY CODE DONE");
+
+
+
+
+export { StocksTable };

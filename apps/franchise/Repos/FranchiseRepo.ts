@@ -151,12 +151,14 @@ export class FranchiseRepo implements IFranchiseRepo {
 
   async getById(id: number): Promise<parsedFranchise> {
     try {
+      console.log(id);
+      
       const res = await FranchiseModel.findOne({
         where: { id: id },
         include: [
           {
             model: RegionModel,
-            as: "Region", // Matches the alias defined in the association
+            as: "region", // Matches the alias defined in the association
           },
           {
             model: OrganizationModel,
@@ -176,6 +178,11 @@ export class FranchiseRepo implements IFranchiseRepo {
           },
         ],
       });
+
+      console.log("nitesh");
+      console.log(res);
+      
+      
       if (res) {
         return parseFranchise(res.toJSON());
       } else {

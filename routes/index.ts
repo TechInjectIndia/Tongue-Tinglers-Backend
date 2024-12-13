@@ -137,10 +137,8 @@ router.use(`${ADMIN}/contracts`, contractsRouter);
 router.use(`${ADMIN}/lead`, auth, leadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
-router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
+router.use(`${ADMIN}/franchise`, frachiseRouter);
 router.use(`${ADMIN}/commission`, auth, commissionRouter);
-router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
-router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/options`, auth, optionsRouter);
 router.use(`${ADMIN}/options-values`, optionsValuesRouter);

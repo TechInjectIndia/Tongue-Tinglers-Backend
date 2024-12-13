@@ -1,3 +1,5 @@
+import { DocumentRepo } from './documents/repos/documentRepo';
+import { IDocumentRepo } from './documents/repos/IDocumentRepo';
 import { FranchiseRepo } from "./franchise/Repos/FranchiseRepo";
 import { IFranchiseRepo } from "./franchise/Repos/IFranchiseRepo";
 import {
@@ -55,6 +57,7 @@ export default class RepoProvider {
   private static _orderRepo: IOrderRepo;
   private static _logsRepo: ILogsRepo;
   static _commissionRepo: ICommissionRepo;
+  private static _documentRepo: IDocumentRepo;
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -167,5 +170,12 @@ export default class RepoProvider {
       this._logsRepo = new LogsRepo();
     }
     return this._logsRepo;
+  }
+
+  static get documentRepo() {
+    if (!this._documentRepo) {
+      this._documentRepo = new DocumentRepo();
+    }
+    return this._documentRepo;
   }
 }

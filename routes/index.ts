@@ -88,6 +88,7 @@ import cartDetailRouter from "../apps/cart-details/api/cartDetailApi";
 import orderItemRouter from "../apps/order-items/api/orderItemApi";
 import productsCategoryRouter from "../apps/products-category/api/productsCategoryApi";
 import OrderRouter from "../apps/order/api/orderApi";
+import documentRouter from "../apps/documents/api/documentApi";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
@@ -136,15 +137,16 @@ router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
 router.use(`${ADMIN}/commission`, auth, commissionRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/options`, auth, optionsRouter);
-router.use(`${ADMIN}/options-values`, optionsValuesRouter);
+router.use(`${ADMIN}/options-values`, auth, optionsValuesRouter);
 router.use(`${ADMIN}/product-options`, auth, productOptionsRouter);
 router.use(`${ADMIN}/products-category`, auth, productsCategoryRouter);
 router.use("/cart-product", auth, cartProductRouter);
 router.use("/cart-detail", auth, cartDetailRouter);
 router.use("/order-items", auth, orderItemRouter);
-router.use("/order", OrderRouter);
+router.use("/order", auth, OrderRouter);
 router.use(`/cart`, auth, cartRouter);
 router.use("/migration", migrationRouter);
+router.use("/document", auth, documentRouter)
 
 // router.use(`${GUEST}/users`, auth, guestUsersRouter);
 

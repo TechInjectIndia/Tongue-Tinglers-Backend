@@ -161,6 +161,10 @@ export class FranchiseRepo implements IFranchiseRepo {
             as: "region", // Matches the alias defined in the association
           },
           {
+            model: AddressModel,
+            as: "address", // Matches the alias defined in the association
+          },
+          {
             model: OrganizationModel,
             as: "organization", // Matches the alias defined in the association
           },

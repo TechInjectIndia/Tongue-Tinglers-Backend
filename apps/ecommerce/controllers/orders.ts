@@ -3,7 +3,7 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { OrderRepo } from '../models/orders';
-import { ProductRepo } from '../models/products';
+// import { ProductRepo } from '../models/products';
 import { OrderItemRepo } from '../models/orders-item';
 import { OrderStatus } from '../../../types';
 
@@ -19,14 +19,14 @@ export default class OrderController {
                 if (cartItems.length) {
                     cartItems.map(async (product: any, index: number) => {
                         let isRepeated = 0;
-                        const getProduct = await new ProductRepo().get(product.id as number);
-                        const checkRepeatedOrder = await new OrderItemRepo().checkRepeatedOrder(user_id as string, product.id as number);
+                        // const getProduct = await new ProductRepo().get(product.id as number);
+                        const checkRepeatedOrder = await new OrderItemRepo().checkRepeatedOrder(user_id as number, product.id as number);
                         if (checkRepeatedOrder) {
                             isRepeated = 1;
                         }
                         const orderItemPayload = {
-                            orderId: createOrder.id as string,
-                            userId: user_id as string,
+                            orderId: createOrder.id as number,
+                            userId: user_id as number,
                             productId: product.id as number,
                             productType: product.productType,
                             quantity: product.quantity,
@@ -99,7 +99,7 @@ export default class OrderController {
                 orderStatus = OrderStatus.CANCELED;
             }
 
-            const existingOrder = await new OrderRepo().get(orderId as string);
+            const existingOrder = await new OrderRepo().get(orderId as number);
             if (isEmpty(existingOrder)) {
                 return res
                     .status(400)
@@ -111,7 +111,7 @@ export default class OrderController {
                     );
             }
 
-            const Order = await new OrderRepo().update(orderId as string, { orderStatus });
+            const Order = await new OrderRepo().update(orderId as number, { orderStatus });
             return res
                 .status(200)
                 .send(
@@ -131,7 +131,7 @@ export default class OrderController {
     static async orderStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const Order = await new OrderRepo().orderStatus(id as string);
+            const Order = await new OrderRepo().orderStatus(id as number);
 
             if (isEmpty(Order)) {
                 return res
@@ -163,7 +163,7 @@ export default class OrderController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const Order = await new OrderRepo().get(id as string);
+            const Order = await new OrderRepo().get(id as number);
 
             if (isEmpty(Order)) {
                 return res

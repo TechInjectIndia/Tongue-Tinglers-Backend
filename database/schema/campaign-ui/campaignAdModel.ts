@@ -20,18 +20,18 @@ class CampaignAdModel
 {
     public id!: number;
     public name!: string;
-    public franchiseId?: string;
-    public regionId: string;
+    public franchiseId?: number;
+    public regionId: number;
     public description?: string;
     public questionList!: string[];
-    public affiliateId?: string;
-    public proposalIds!: string[];
+    public affiliateId?: number;
+    public proposalIds!: number[];
     public start!: Date;
     public to!: Date;
 
-    public createdBy!: string;
-    public updatedBy!: string | null;
-    public deletedBy!: string | null;
+    public createdBy!: number;
+    public updatedBy!: number | null;
+    public deletedBy!: number | null;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
@@ -46,11 +46,11 @@ CampaignAdModel.init(
             allowNull: false,
         },
         franchiseId: {
-            type: STRING,
+            type: INTEGER,
             allowNull: true,
         },
         regionId: {
-            type: STRING,
+            type: INTEGER,
             references: {
                 model: RegionModel,
                 key: "id",
@@ -73,7 +73,7 @@ CampaignAdModel.init(
             comment: "List of questions associated with the campaign",
         },
         affiliateId: {
-            type: STRING,
+            type: INTEGER,
             allowNull: true,
         },
         proposalIds: {
@@ -92,17 +92,17 @@ CampaignAdModel.init(
             comment: "Timestamp when the campaign was start",
         },
         createdBy: {
-            type: STRING,
+            type: INTEGER,
             allowNull: false,
             comment: "User who created the campaign",
         },
         updatedBy: {
-            type: STRING,
+            type: INTEGER,
             allowNull: true,
             comment: "User who last updated the campaign",
         },
         deletedBy: {
-            type: STRING,
+            type: INTEGER,
             allowNull: true,
             comment: "User who deleted the campaign (if soft deleted)",
         },

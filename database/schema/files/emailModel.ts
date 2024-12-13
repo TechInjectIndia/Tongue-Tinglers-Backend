@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 
 interface EmailLogAttributes {
-    id: string;
+    id: number;
     to: string;
     subject: string;
     body: string;
@@ -12,7 +12,7 @@ interface EmailLogAttributes {
 interface EmailLogCreationAttributes extends Optional<EmailLogAttributes, 'id' | 'sentAt'> { }
 
 class EmailLogModel extends Model<EmailLogAttributes, EmailLogCreationAttributes> implements EmailLogAttributes {
-    public id!: string;
+    public id!: number;
     public to!: string;
     public subject!: string;
     public body!: string;
@@ -21,10 +21,10 @@ class EmailLogModel extends Model<EmailLogAttributes, EmailLogCreationAttributes
 
 EmailLogModel.init({
     id: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: DataTypes.INTEGER,
         primaryKey: true,
-        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+        autoIncrement: true, 
     },
     to: {
         type: DataTypes.STRING,

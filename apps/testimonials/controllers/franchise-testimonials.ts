@@ -4,7 +4,7 @@ import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { FranchiseTestimonialsRepo } from '../models/franchise-testimonials';
 import { TESTIMONIAL_ITEM_TYPE } from '../../../interfaces';
-import { ProductRepo } from '../../ecommerce/models/products';
+// import { ProductRepo } from '../../ecommerce/models/products';
 import { AdminRepo as FranchiseRepo } from '../../admin-user/models/user';
 
 export default class FranchiseTestimonialsController {
@@ -18,9 +18,9 @@ export default class FranchiseTestimonialsController {
             let checkIfExist: any;
             let franchiseOrProduct = TESTIMONIAL_ITEM_TYPE.PRODUCT
             if (item_type == TESTIMONIAL_ITEM_TYPE.PRODUCT) {
-                checkIfExist = await new ProductRepo().get(item_id as number);
+                // checkIfExist = await new ProductRepo().get(item_id as number);
             } else if (item_type == TESTIMONIAL_ITEM_TYPE.FRANCHISE) {
-                checkIfExist = await new FranchiseRepo().get(item_id as string);
+                checkIfExist = await new FranchiseRepo().get(item_id as number);
                 franchiseOrProduct = TESTIMONIAL_ITEM_TYPE.FRANCHISE
             }
             if (isEmpty(checkIfExist)) {

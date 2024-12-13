@@ -1,6 +1,6 @@
 import { CartItemModel } from "../../../database/schema";
 import { ICartItemAttributes } from "../../../interfaces";
-import { ProductRepo } from "../../ecommerce/models/products";
+// import { ProductRepo } from "../../ecommerce/models/products";
 import { RetortProductRepo } from "../../retort/models/products";
 
 export class CartItemRepo {
@@ -13,7 +13,7 @@ export class CartItemRepo {
             productData = await new RetortProductRepo().get(cartItemData.productId as number);
         }
         if (cartItemData.productType == 'packaging') {
-            productData = await new ProductRepo().get(cartItemData.productId as number);
+            // productData = await new ProductRepo().get(cartItemData.productId as number);
         }
         if (productData) {
             const subtotal = productData.price * cartItemData.quantity;
@@ -30,7 +30,7 @@ export class CartItemRepo {
     }
 
     // Update an existing cart item (quantity or price)
-    async update(cartId: string, productId: number, productType: string, updateCartItemData: { quantity?: number }) {
+    async update(cartId: number, productId: number, productType: string, updateCartItemData: { quantity?: number }) {
         // Find the existing product in the cart
 
         let productData: any;
@@ -38,7 +38,7 @@ export class CartItemRepo {
             productData = await new RetortProductRepo().get(productId as number);
         }
         if (productType == 'packaging') {
-            productData = await new ProductRepo().get(productId as number);
+            // productData = await new ProductRepo().get(productId as number);
         }
         if (productData) {
             const cartItem = await CartItemModel.findOne({
@@ -75,7 +75,7 @@ export class CartItemRepo {
     }
 
     // Remove a product from the cart
-    async remove(cartId: string, productId: number, productType: string) {
+    async remove(cartId: number, productId: number, productType: string) {
         try {
             // Find the product in the cart
             const cartItem = await CartItemModel.findOne({

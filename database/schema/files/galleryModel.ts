@@ -5,7 +5,7 @@ import { GalleryAttributes } from "../../../interfaces";
 interface GalleryCreationAttributes extends Optional<GalleryAttributes, 'id' | 'createdAt' | 'updatedAt'> { }
 
 class GalleryModel extends Model<GalleryAttributes, GalleryCreationAttributes> implements GalleryAttributes {
-    public id!: string;
+    public id!: number;
     public name!: string;
     public message!: string;
     public url!: string;
@@ -16,10 +16,10 @@ class GalleryModel extends Model<GalleryAttributes, GalleryCreationAttributes> i
 
 GalleryModel.init({
     id: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        defaultValue: DataTypes.UUIDV4
+        autoIncrement: true, 
     },
     name: {
         type: DataTypes.STRING,

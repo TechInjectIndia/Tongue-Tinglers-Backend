@@ -13,7 +13,7 @@ import IBaseRepo from '../controllers/controller/IController';
 export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters> {
     constructor() { }
 
-    public async get(id: string): Promise<ProposalModels | null> {
+    public async get(id: number): Promise<ProposalModels | null> {
         const data = await ProposalLeadModels.findOne({
             where: {
                 id,
@@ -26,7 +26,7 @@ export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters
         const total = await ProposalLeadModels.count({
             where: {
                 title: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -36,7 +36,7 @@ export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters
             limit: filters.limit,
             where: {
                 title: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -49,7 +49,7 @@ export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters
         return response;
     }
 
-    public async update(id: string, data: TPayloadProposalModel): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TPayloadProposalModel): Promise<[affectedCount: number]> {
         return await ProposalLeadModels.update(data, {
             where: {
                 id: id,

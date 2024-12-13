@@ -4,6 +4,7 @@ import {
     TQueryFilters,
     TContractsList,
     TContractPayload,
+    TListFiltersContract,
 } from "../../../types";
 import {
     CONTRACT_PAYMENT_STATUS,
@@ -15,8 +16,9 @@ import { ContractModel } from "../../../database/schema";
 import IContractsController from "../controllers/controller/IContractsController";
 
 export class ContractRepo
-    implements IContractsController<TContract, TQueryFilters> {
-    constructor() { }
+    implements IContractsController<TContract, TListFiltersContract>
+{
+    constructor() {}
 
     // Method to fetch associated contracts
     public async getAssociatedContracts(
@@ -37,17 +39,19 @@ export class ContractRepo
         return contracts;
     }
 
-    public async getAssociatedContractsByLeadId(leadId: string): Promise<string[]> {
+    public async getAssociatedContractsByLeadId(
+        leadId: number
+    ): Promise<number[]> {
         const contracts = await ContractModel.findAll({
             where: { leadId: leadId },
-            attributes: ['id'], // Select only the 'id' attribute
+            attributes: ["id"], // Select only the 'id' attribute
         });
 
         // Map to extract only the 'id' attribute
-        return contracts ? contracts.map(contract => contract.id) : null;
+        return contracts ? contracts.map((contract) => contract.id) : null;
     }
 
-    public async getContractByDocId(docId: string): Promise<TContract | null> {
+    public async getContractByDocId(docId: number): Promise<TContract | null> {
         try {
             const contract = await ContractModel.findOne({
                 where: {
@@ -65,7 +69,7 @@ export class ContractRepo
     }
 
     public async updatePaymentStatus(
-        contractId: string,
+        contractId: number,
         payment: ContractPaymentDetails[],
         status: CONTRACT_STATUS
     ): Promise<any> {
@@ -77,7 +81,7 @@ export class ContractRepo
 
             await contract.update({
                 payment,
-                status
+                status,
             });
         } catch (error) {
             console.error("Error updating payment status:", error);
@@ -106,7 +110,7 @@ export class ContractRepo
     }
 
     public async updateContractDoc(
-        contractId: string,
+        contractId: number,
         docData: any
     ): Promise<TContract> {
         const [affectedCount, updatedContracts] = await ContractModel.update(
@@ -138,36 +142,72 @@ export class ContractRepo
         return data ? data.get() : null;
     }
 
-    public async get(id: string): Promise<TContract | null> {
+    public async get(id: number): Promise<TContract | null> {
         const data = await ContractModel.findOne({
             where: { id },
         });
         return data ? data : null;
     }
 
-    public async list(filters: TQueryFilters): Promise<TContractsList> {
+    public async list(filters: TListFiltersContract): Promise<TContractsList> {
+        console.log("contract list ",filters);
+        const where: any = {};
+        const validStatuses = Object.values(CONTRACT_STATUS).filter(
+            (status) => status === filters.filters?.status
+        );
+        console.log(validStatuses);
+
+        if (
+            filters?.filters.status &&
+            validStatuses.includes(filters.filters.status)
+        ) {
+            where.status = filters.filters.status;
+        }
+
+        if (filters?.search && filters?.search !== '') {
+            where.templateId = {
+                [Op.like]: `%${filters.search}%`,
+            };
+        }
+
+        // Filter for min_price and max_price
+    if (filters?.filters.min_price !== undefined && filters?.filters.min_price !== null) {
+        where.amount = { [Op.gte]: filters.filters.min_price };
+    }
+    if (filters?.filters.max_price !== undefined && filters?.filters.max_price !== null) {
+        where.amount = { ...where.amount, [Op.lte]: filters.filters.max_price };
+    }
+
+    // Filter for due_date
+    if (filters?.filters.due_date) {
+        where.dueDate = filters.filters.due_date;  // Assuming it's a direct match, you can adjust the condition if needed (e.g., range).
+    }
+
+    // Filter for region
+    if (filters?.filters.region) {
+        where.region = filters.filters.region;
+    }
+
+    // Filter for assignee
+    if (filters?.filters.assignee) {
+        where.assigneeId = filters.filters.assignee;  // Assuming assignee is identified by an ID
+    }
+        
+        console.log(where);
         const total = await ContractModel.count({
-            where: {
-                templateId: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
+            where: where
         });
         const data = await ContractModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
-            where: {
-                templateId: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
+            where: where
         });
         return { total, data };
     }
 
     public async update(
-        id: string,
+        id: number,
         data: Partial<TContract>
     ): Promise<[affectedCount: number]> {
         const response = await ContractModel.update(data, {
@@ -177,7 +217,7 @@ export class ContractRepo
     }
 
     public async updatePayment(
-        contractId: string,
+        contractId: number,
         paymentData: ContractPaymentDetails[],
         logs: ITrackable[],
         status: CONTRACT_STATUS
@@ -190,7 +230,7 @@ export class ContractRepo
         return affectedCount > 0;
     }
 
-    public async delete(ids: string[]): Promise<number> {
+    public async delete(ids: number[]): Promise<number> {
         const response = await ContractModel.destroy({
             where: { id: ids },
         });

@@ -5,7 +5,7 @@ import { TQueryFilters, TAddUser, TEditUser, TEditUserProfile, TUsersList, TUser
  * Interface for User Controller.
  */
 interface IUserController<T, F extends TQueryFilters> {
-    checkIfUserExist(id: string): Promise<any>
+    checkIfUserExist(id: number): Promise<any>
 
     /**
      * List users with filters.
@@ -19,7 +19,7 @@ interface IUserController<T, F extends TQueryFilters> {
      * @param id - The ID of the user.
      * @returns Promise resolving to the user with permissions.
      */
-    get(id: string): Promise<TUserWithPermission>;
+    get(id: number): Promise<TUserWithPermission>;
 
     /**
      * Create a new user.
@@ -34,7 +34,7 @@ interface IUserController<T, F extends TQueryFilters> {
      * @param payload - The data to update the user.
      * @returns Promise resolving to the affected count.
      */
-    update(id: string, payload: TEditUser): Promise<[affectedCount: number]>;
+    update(id: number, payload: TEditUser): Promise<[affectedCount: number]>;
 
     /**
      * Delete users by IDs.
@@ -42,7 +42,7 @@ interface IUserController<T, F extends TQueryFilters> {
      * @param deletedBy - ID of the user who deleted the users.
      * @returns Promise resolving to the count of deleted users.
      */
-    delete(ids: string[], deletedBy: number): Promise<number>;
+    delete(ids: number[], deletedBy: number): Promise<number>;
 
     /**
      * Retrieve a list of deleted users.
@@ -56,14 +56,14 @@ interface IUserController<T, F extends TQueryFilters> {
      * @param ids - Array of user IDs to restore.
      * @returns Promise resolving to void.
      */
-    restore(ids: string[]): Promise<void>;
+    restore(ids: number[]): Promise<void>;
 
     /**
      * Permanently delete users by IDs.
      * @param ids - Array of user IDs to delete permanently.
      * @returns Promise resolving to the count of permanently deleted users.
      */
-    deletePermanant(ids: string[]): Promise<number>;
+    deletePermanant(ids: number[]): Promise<number>;
 
     /**
      * Update user profile by ID.
@@ -71,7 +71,7 @@ interface IUserController<T, F extends TQueryFilters> {
      * @param payload - The data to update the user profile.
      * @returns Promise resolving to the affected count.
      */
-    updateProfile(id: string, payload: TEditUserProfile): Promise<[affectedCount: number]>;
+    updateProfile(id: number, payload: TEditUserProfile): Promise<[affectedCount: number]>;
 
     /**
      * Get a user by referral code.
@@ -100,7 +100,7 @@ interface IUserController<T, F extends TQueryFilters> {
      * @param data - The referral data to save.
      * @returns Promise resolving to the affected count.
      */
-    saveReferral(id: string, data: TUpdateUserReferralCode): Promise<[affectedCount: number]>;
+    saveReferral(id: number, data: TUpdateUserReferralCode): Promise<[affectedCount: number]>;
 }
 
 export default IUserController;

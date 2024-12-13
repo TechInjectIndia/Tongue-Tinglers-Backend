@@ -6,10 +6,10 @@ export type TLeadStatus = {
 };
 
 export type TAssignLead = {
-  assignedTo: string,
-  assignedBy: string,
+  assignedTo: number,
+  assignedBy: number,
   assignedDate: Date,
-  leadId: string,
+  leadId: number,
 };
 
 export interface TLeadPayload {

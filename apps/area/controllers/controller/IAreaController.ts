@@ -38,7 +38,7 @@ interface IAreaController<T, F extends TQueryFilters> {
      * @param deletedBy - The ID of the user who deleted the Areas.
      * @returns Promise resolving to the count of deleted Areas.
      */
-    delete(ids: number[], deletedBy: string): Promise<number>;
+    delete(ids: number[], deletedBy: number): Promise<number>;
 }
 
 export default IAreaController;

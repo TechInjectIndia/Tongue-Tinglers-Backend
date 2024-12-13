@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../../constants";
-import { WebProductRepo } from '../../models/web/products';
+// import { WebProductRepo } from '../../models/web/products';
 
 export default class webProductsController {
     static async list(req: Request, res: Response, next: NextFunction) {
@@ -14,13 +14,13 @@ export default class webProductsController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
 
-            const Products = await new WebProductRepo().list({
-                offset: skip as number,
-                limit: size as number,
-                search: search as string,
-                sorting: sorting,
-                trashOnly: trashOnly as string
-            });
+            // const Products = await new WebProductRepo().list({
+            //     offset: skip as number,
+            //     limit: size as number,
+            //     search: search as string,
+            //     sorting: sorting,
+            //     trashOnly: trashOnly as string
+            // });
 
             return res
                 .status(200)
@@ -28,7 +28,7 @@ export default class webProductsController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        Products
+                        // Products
                     )
                 );
         } catch (err) {
@@ -42,18 +42,18 @@ export default class webProductsController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const slug = get(req?.params, "slug", "");
-            const Product = await new WebProductRepo().getProductBySlug(slug as string);
+            // const Product = await new WebProductRepo().getProductBySlug(slug as string);
 
-            if (isEmpty(Product)) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS
-                        )
-                    );
-            }
+            // if (isEmpty(Product)) {
+            //     return res
+            //         .status(400)
+            //         .send(
+            //             sendResponse(
+            //                 RESPONSE_TYPE.ERROR,
+            //                 ERROR_MESSAGE.NOT_EXISTS
+            //             )
+            //         );
+            // }
 
             return res
                 .status(200)
@@ -61,7 +61,7 @@ export default class webProductsController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        Product
+                        // Product
                     )
                 );
         } catch (err) {
@@ -77,18 +77,18 @@ export default class webProductsController {
             const limit = get(req?.query, "limit", 500);
             const type = get(req?.query, "type");
 
-            const Products = await new WebProductRepo().getProductByTag(type as string, limit as number);
+            // const Products = await new WebProductRepo().getProductByTag(type as string, limit as number);
 
-            if (isEmpty(Products)) {
-                return res
-                    .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS
-                        )
-                    );
-            }
+            // if (isEmpty(Products)) {
+            //     return res
+            //         .status(400)
+            //         .send(
+            //             sendResponse(
+            //                 RESPONSE_TYPE.ERROR,
+            //                 ERROR_MESSAGE.NOT_EXISTS
+            //             )
+            //         );
+            // }
 
             return res
                 .status(200)
@@ -96,7 +96,7 @@ export default class webProductsController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        Products
+                        // Products
                     )
                 );
         } catch (err) {
@@ -113,10 +113,10 @@ export default class webProductsController {
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
 
-            const Products = await new WebProductRepo().search({
-                search: search as string,
-                sorting,
-            });
+            // const Products = await new WebProductRepo().search({
+            //     search: search as string,
+            //     sorting,
+            // });
 
             return res
                 .status(200)
@@ -124,7 +124,7 @@ export default class webProductsController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        Products
+                        // Products
                     )
                 );
         } catch (err) {

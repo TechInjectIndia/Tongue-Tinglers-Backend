@@ -1,7 +1,7 @@
 import * as express from "express";
 import ContractController from "../controllers/ContractController";
 import * as ContractValidation from "../validations/index";
-import { hasPermission } from '../../../middlewares';
+import { auth, hasPermission } from "../../../middlewares";
 
 const router = express.Router();
 
@@ -181,7 +181,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/contracts/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get all contracts
@@ -210,7 +210,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/contracts/get/{id}:
  *   get:
  *     summary: Get a contract by ID
@@ -235,7 +235,7 @@ const {
  *         description: Unauthorized
  *       '404':
  *         description: Contract not found
- * 
+ *
  * /api/admin/contracts/update/{id}:
  *   put:
  *     summary: Update a contract
@@ -410,7 +410,7 @@ const {
  *         description: Contract not found
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/contracts/delete:
  *   delete:
  *     summary: Delete contracts
@@ -441,11 +441,40 @@ const {
  */
 
 // ====== Contracts Starts ======
-router.post("/create", hasPermission('contracts', 'create'), validateCreateContractBody, ContractController.create);
-router.get("/list", hasPermission('contracts', 'read'), ContractController.list);
-router.get("/get/:id", hasPermission('contracts', 'read'), validateEditContractParams, ContractController.get);
-router.put("/update/:id", hasPermission('contracts', 'update'), validateEditContractParams, validateEditContractBody, ContractController.update);
-router.delete("/delete", hasPermission('contracts', 'delete'), ContractController.delete);
+router.post(
+    "/create",
+    auth,
+    hasPermission("contracts", "create"),
+    validateCreateContractBody,
+    ContractController.create
+);
+router.get(
+    "/list",
+    auth,
+    hasPermission("contracts", "read"),
+    ContractController.list
+);
+router.get(
+    "/get/:id",
+    hasPermission("contracts", "read"),
+    validateEditContractParams,
+    ContractController.get
+);
+router.put(
+    "/update/:id",
+    auth,
+    hasPermission("contracts", "update"),
+    validateEditContractParams,
+    validateEditContractBody,
+    ContractController.update
+);
+router.delete(
+    "/delete",
+    auth,
+    hasPermission("contracts", "delete"),
+    ContractController.delete
+);
+router.post("/convert",  auth, ContractController.convert);
 // ====== Contracts Ends ======
 
 export default router;

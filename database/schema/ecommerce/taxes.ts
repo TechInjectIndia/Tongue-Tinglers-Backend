@@ -5,7 +5,7 @@ import { TaxAttributes } from "../../../interfaces";
 interface TaxCreationAttributes extends Optional<TaxAttributes, 'id'> { }
 
 class Tax extends Model<TaxAttributes, TaxCreationAttributes> implements TaxAttributes {
-    public id!: string;
+    public id!: number;
     public name!: string;
     public rate!: number;
     public isActive!: boolean;
@@ -17,9 +17,10 @@ class Tax extends Model<TaxAttributes, TaxCreationAttributes> implements TaxAttr
 Tax.init(
     {
         id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+            type: DataTypes.INTEGER,
             primaryKey: true,
+            allowNull: false,
+            autoIncrement: true, 
         },
         name: {
             type: DataTypes.STRING,

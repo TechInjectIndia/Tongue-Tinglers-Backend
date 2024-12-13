@@ -162,7 +162,7 @@ export default class FilesController {
             const id = get(req?.params, "id", '');
             const user_id = get(req, 'user_id', '');
 
-            const existingFranchiseModel = await new FilesRepo().get(id as string);
+            const existingFranchiseModel = await new FilesRepo().get(id as number);
 
             if (isEmpty(existingFranchiseModel)) {
                 return res

@@ -9,6 +9,7 @@ const axios = require('axios');
 const apiUrl = 'https://api.petpooja.com'; // Base URL for PetPooja API
 const apiKey = process.env.API_KEY; // API key from PetPooja
 import IBaseRepo from '../controllers/controller/IPetPoojaController';
+import { firestore, } from "firebase-admin";
 
 // Function to get today's start time and the end time 24 hours later
 function getTodayStartTime(): Date {
@@ -24,7 +25,7 @@ function get24HoursLater(startTime: Date): Date {
 export class PetPoojaRepo implements IBaseRepo<TEditUser, TListFilters> {
     constructor() { }
 
-    public async updateStockData(user_id: string, data: any): Promise<[affectedCount: number]> {
+    public async updateStockData(user_id: number, data: any): Promise<[affectedCount: number]> {
         const todayStart = getTodayStartTime();
         const todayEnd = get24HoursLater(todayStart);
 
@@ -48,7 +49,7 @@ export class PetPoojaRepo implements IBaseRepo<TEditUser, TListFilters> {
     public async getAllFranchise(): Promise<any> {
         const data = await UserModel.findAll({
             where: {
-                type: USER_TYPE.MASTER_FRANCHISE
+                type: USER_TYPE.SUPER_FRANSHISE
             },
         });
         return data;
@@ -82,7 +83,7 @@ export class PetPoojaRepo implements IBaseRepo<TEditUser, TListFilters> {
         return itemStocks
     }
 
-    public async getInventory(franchiseId: string): Promise<any> {
+    public async getInventory(franchiseId: number): Promise<any> {
         const response = await axios.get(`${apiUrl}/inventory`, {
             headers: {
                 'Authorization': `Bearer ${apiKey}`
@@ -92,8 +93,19 @@ export class PetPoojaRepo implements IBaseRepo<TEditUser, TListFilters> {
         // Save inventory to database, date wise, ( franchiseId )
     }
 
-    public async savePetPoojaOrder(franchiseId: string): Promise<any> {
+    public async savePetPoojaOrder(franchiseId: number): Promise<any> {
 
         // Save new Order        
+    }
+
+    public async getOrdersWebHook(json: any): Promise<boolean> {
+        try {
+            await firestore().collection('petpooja-webhook-test').doc().set(json);
+            return true;
+        } catch (error) {
+            console.log(error);
+
+            return false;
+        }
     }
 }

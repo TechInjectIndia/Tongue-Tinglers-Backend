@@ -30,7 +30,7 @@ export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
         const total = await AffiliateModel.count({
             where: {
                 type: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -40,7 +40,7 @@ export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
             limit: filters.limit,
             where: {
                 type: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

@@ -112,7 +112,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
     }
 
     public async sendDocumentUsingTemplate(
-        templateId: string,
+        templateId: number,
         data: any
     ): Promise<any> {
         return await this.handleTokenError(async () => {
@@ -157,7 +157,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
         });
     }
 
-    public async getDocument(documentId: string): Promise<DocumentDetails> {
+    public async getDocument(documentId: number): Promise<DocumentDetails> {
         return await this.handleTokenError(async () => {
             try {
                 const accessToken = await this.getAccessTokenFromDb();
@@ -177,7 +177,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
         });
     }
 
-    public async getTemplateFields(templateId: string): Promise<FieldType> {
+    public async getTemplateFields(templateId: number): Promise<FieldType> {
         return await this.handleTokenError(async () => {
             try {
                 const accessToken =

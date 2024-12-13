@@ -45,10 +45,6 @@ const createCustomerBody = Joi.object().keys({
             'string.min': 'Password must be at least 8 characters long.',
             'any.required': 'Password is required.'
         }),
-    userName: Joi.string().required()
-        .messages({
-            'any.required': 'Username is required.'
-        }),
     phoneNumber: Joi.string().pattern(/^\+\d{1,3}\d{9,}$/).required()
         .messages({
             'string.pattern.base': 'Phone number must be in international format (e.g., +1234567890).',
@@ -68,7 +64,7 @@ const createCustomerBody = Joi.object().keys({
 
 // Validation for editing Customer params
 const editCustomerParams = Joi.object().keys({
-    id: Joi.string().required()
+    id: Joi.number().required()
         .messages({
             'any.required': 'Customer ID is required.'
         }),
@@ -83,10 +79,6 @@ const editCustomerBody = Joi.object().keys({
     lastName: Joi.string().required()
         .messages({
             'any.required': 'Last name is required.'
-        }),
-    userName: Joi.string().required()
-        .messages({
-            'any.required': 'Username is required.'
         }),
     phoneNumber: Joi.string().pattern(/^\+\d{1,3}\d{9,}$/).required()
         .messages({

@@ -1,5 +1,4 @@
 const { OrderItem } = require("sequelize");
-import { ProductsModel } from '../../database/schema'
 
 // ProductCategory type Starts
 export interface TProductCategory {
@@ -10,7 +9,6 @@ export interface TProductCategory {
   slug: string; // Ensure you have this field
   createdAt: Date; // Ensure you have this field
   updatedAt: Date; // Ensure you have this field
-  products?: ProductsModel[];
 }
 
 export type TEditProductCategory = {

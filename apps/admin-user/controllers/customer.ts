@@ -81,7 +81,7 @@ export default class CustomerController {
             await new CustomerRepo().create({
                 ...payload,
                 password: hashedPassword,
-                type: USER_TYPE.CUSTOMER,
+                type: USER_TYPE.FRANCHISE,
                 firebaseUid: firebaseUser.uid
             });
 
@@ -112,7 +112,7 @@ export default class CustomerController {
             //     payload = { ...payload, password: hashedPassword };
             // }
 
-            await new CustomerRepo().update(id as string, payload);
+            await new CustomerRepo().update(id as number, payload);
             return res
                 .status(200)
                 .send(
@@ -155,7 +155,7 @@ export default class CustomerController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const existingCustomer = await new CustomerRepo().get(id as string);
+            const existingCustomer = await new CustomerRepo().get(id as number);
             if (isEmpty(existingCustomer)) {
                 return res
                     .status(400)

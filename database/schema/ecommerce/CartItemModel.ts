@@ -2,14 +2,13 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
 import { ICartItemAttributes } from "../../../interfaces";
-import { ProductsModel } from './product.model';
 import { RetortProductsModel } from '../retort/retort-product';
 
 interface ICartItemCreationAttributes extends Optional<ICartItemAttributes, 'id'> { }
 
 class CartItemModel extends Model<ICartItemAttributes, ICartItemCreationAttributes> implements ICartItemAttributes {
-    public id!: string;
-    public cart_id!: string;
+    public id!: number;
+    public cart_id!: number;
     public productId!: number;
     public productType!: string;
     public quantity!: number;
@@ -19,7 +18,6 @@ class CartItemModel extends Model<ICartItemAttributes, ICartItemCreationAttribut
     public readonly updatedAt!: Date;
 
     public static associate() {
-        this.belongsTo(ProductsModel, { foreignKey: 'productId', as: 'product' });
         this.belongsTo(RetortProductsModel, { foreignKey: 'productId', as: 'retortProduct' });
     }
 }
@@ -27,13 +25,13 @@ class CartItemModel extends Model<ICartItemAttributes, ICartItemCreationAttribut
 CartItemModel.init(
     {
         id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
-            defaultValue: DataTypes.UUIDV4,
+            autoIncrement: true, 
         },
         cart_id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         productId: {

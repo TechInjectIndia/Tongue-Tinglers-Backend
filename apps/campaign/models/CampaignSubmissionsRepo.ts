@@ -13,7 +13,7 @@ import IBaseRepo from '../controllers/controller/ICampaignSubmissionsController'
 export class CampaignSubmissionsRepo implements IBaseRepo<ICampaignSubmisisons, TListFilters> {
     constructor() { }
 
-    public async get(id: string): Promise<ICampaignSubmisisons | null> {
+    public async get(id: number): Promise<ICampaignSubmisisons | null> {
         // Retrieve a campaign by its ID
         const campaign = await CampaignSubmissions.findOne({
             where: {
@@ -28,7 +28,7 @@ export class CampaignSubmissionsRepo implements IBaseRepo<ICampaignSubmisisons, 
         const total = await CampaignSubmissions.count({
             where: {
                 response: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -40,7 +40,7 @@ export class CampaignSubmissionsRepo implements IBaseRepo<ICampaignSubmisisons, 
             limit: filters.limit,
             where: {
                 response: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -54,7 +54,7 @@ export class CampaignSubmissionsRepo implements IBaseRepo<ICampaignSubmisisons, 
         return response;
     }
 
-    public async update(id: string, data: TPayloadCampaignSubmisisons): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TPayloadCampaignSubmisisons): Promise<[affectedCount: number]> {
         // Update a campaign by its ID
         return await CampaignSubmissions.update(data, {
             where: {
@@ -63,7 +63,7 @@ export class CampaignSubmissionsRepo implements IBaseRepo<ICampaignSubmisisons, 
         });
     }
 
-    public async delete(ids: string[]): Promise<number> {
+    public async delete(ids: number[]): Promise<number> {
         // Soft delete campaigns by IDs
         const response = await CampaignSubmissions.destroy({
             where: {

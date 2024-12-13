@@ -10,14 +10,14 @@ interface IOrdersController<T, F extends TQueryFilters> {
      * @param id - The ID of the order.
      * @returns Promise resolving to the order.
      */
-    get(id: string): Promise<T>;
+    get(id: number): Promise<T>;
 
     /**
      * Get the status of an order by its ID.
      * @param id - The ID of the order.
      * @returns Promise resolving to the order's status.
      */
-    orderStatus(id: string): Promise<T>;
+    orderStatus(id: number): Promise<T>;
 
     /**
      * Create a new order.
@@ -39,7 +39,7 @@ interface IOrdersController<T, F extends TQueryFilters> {
      * @param payload - The data to update the order.
      * @returns Promise resolving to the affected count.
      */
-    update(id: string, payload: TOrderPayload): Promise<[affectedCount: number]>;
+    update(id: number, payload: TOrderPayload): Promise<[affectedCount: number]>;
 }
 
 export default IOrdersController;

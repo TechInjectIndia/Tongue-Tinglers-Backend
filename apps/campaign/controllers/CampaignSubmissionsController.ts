@@ -45,7 +45,7 @@ export default class CampaignSubmissionsController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req.params, "id", "");
-            const payload = await new CampaignSubmissionsRepo().get(id as string);
+            const payload = await new CampaignSubmissionsRepo().get(id as number);
 
             if (isEmpty(payload)) {
                 return res.status(404).send(

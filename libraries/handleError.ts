@@ -17,7 +17,6 @@ export const createUserResponse = (user: TUser) => {
         lastName: user.lastName,
         nameForSearch: user.nameForSearch,
         email: user.email,
-        userName: user.userName,
         phoneNumber: user.phoneNumber,
         type: user.type,
         status: user.status,

@@ -8,10 +8,10 @@ interface TestimonialsCreationAttributes extends Optional<TTestimonials, 'id' | 
 
 class TestimonialsModel extends Model<TTestimonials, TestimonialsCreationAttributes> implements TTestimonials {
     public id!: number;
-    public user_id!: string;
+    public user_id!: number;
     public testimonial_text!: string;
     public rating!: number;
-    public item_id!: string;
+    public item_id!: number;
     public item_type!: string;
     public date_submitted!: Date;
     public approved!: number;
@@ -26,7 +26,7 @@ TestimonialsModel.init({
         primaryKey: true,
     },
     user_id: { // Refers to the Users table.
-        type: STRING,
+        type: INTEGER,
         allowNull: false,
     },
     testimonial_text: { // The main content of the testimonial.

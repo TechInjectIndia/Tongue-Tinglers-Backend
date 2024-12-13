@@ -34,7 +34,8 @@ export const ERROR_MESSAGE = {
     UPDATED: "updated successfully",
     REFERRAL_CODE_REQUIRED: 'Referral code is required',
     REFERRAL_CODE_NOT_EXISTS: 'Referral code does not exist',
-    REFERRAL_CODE_USED: 'Referral code has already been used'
+    REFERRAL_CODE_USED: 'Referral code has already been used',
+    FRANCHISE_NOT_CREATED: "Franchise not created",
 };
 
 export const SUCCESS_MESSAGE = {
@@ -67,6 +68,7 @@ export const SUCCESS_MESSAGE = {
     ADMINS_FETCHED: "Admin users fetched successfully",
     ADMIN_CREATED: "Admin user created successfully",
     ADMIN_UPDATED: "Admin user updated successfully",
+    ADMIN_TYPE_UPDATED: "Admin type updated successfully",
     ADMIN_DELETED: "Admin user moved to trash successfully",
     ADMIN_FETCHED: "Admin user fetched successfully",
     GUEST_FETCHED: "Guest user fetched successfully",

@@ -10,7 +10,7 @@ class PermissionModel extends Model<TPermission, PermissionsCreationAttributes> 
     public name!: string;
     public description!: string;    
     public active!: number;    
-    public updatedBy!: string;
+    public updatedBy!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }

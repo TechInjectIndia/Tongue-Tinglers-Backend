@@ -1,6 +1,6 @@
 
 interface GalleryAttributes {
-    id: string;
+    id: number;
     name: string;
     message: string;
     url: string;

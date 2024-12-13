@@ -31,7 +31,7 @@ enum IPdiChecklistStatus {
 }
 
 type TPdiChecklistPayload = {
-    franchiseeId: string;
+    franchiseeId: number;
     checklistName: string;
     pdiDate: Date;
     status: IPdiChecklistStatus;
@@ -39,8 +39,8 @@ type TPdiChecklistPayload = {
 };
 
 interface IPdiChecklist {
-    id: string,
-    franchiseeId: string,
+    id: number,
+    franchiseeId: number,
     checklistName: string,
     pdiDate: Date,
     status: IPdiChecklistStatus,

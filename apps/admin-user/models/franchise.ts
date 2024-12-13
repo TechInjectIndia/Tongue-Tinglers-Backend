@@ -1,119 +1,147 @@
 const { Op } = require("sequelize");
 import {
     TListFilters,
-    TUser,
-    TAddUser,
-    TEditUser,
-    TConvertLeadToFranchise
 } from "../../../types";
-import { UserModel } from "../../../database/schema";
-import { USER_TYPE, USER_STATUS } from '../../../interfaces';
-import IBaseRepo from '../controllers/controller/IFranchiseController';
+import { Franchise } from "../../../interfaces";
+import IBaseRepo from "../controllers/controller/IFranchiseController";
 
-export class FranchiseRepo implements IBaseRepo<TUser, TListFilters> {
-    constructor() { }
-
-    public async list(filters: TListFilters): Promise<any> {
-        const total = await UserModel.count({
-            where: {
-                email: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-                type: USER_TYPE.FRANCHISE
-            },
-        });
-        const data = await UserModel.findAll({
-            order: [filters?.sorting],
-            offset: filters.offset,
-            limit: filters.limit,
-            where: {
-                email: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-                type: USER_TYPE.FRANCHISE
-            },
-        });
-        return { total, data };
+export class FranchiseRepo implements IBaseRepo<Franchise, Franchise, TListFilters> {
+    constructor() {
     }
 
-    public async get(id: number): Promise<TUser> {
-        const data = await UserModel.findOne({
-            where: {
-                id,
-                type: USER_TYPE.FRANCHISE
-            },
-        });
-        return data;
+    list(filters: TListFilters): Promise<Franchise[]> {
+        throw new Error("Method not implemented.");
     }
 
-    public async createFranchiseFromLead(data: TConvertLeadToFranchise): Promise<TUser> {
-        return await UserModel.create({ ...data, type: USER_TYPE.FRANCHISE, status: USER_STATUS.ACTIVE });
+    get(id: number): Promise<Franchise> {
+        throw new Error("Method not implemented.");
     }
 
-    public async create(data: TAddUser): Promise<TUser> {
-        return await UserModel.create({ ...data, type: USER_TYPE.FRANCHISE });
+    create(payload: Franchise): Promise<Franchise> {
+        throw new Error("Method not implemented.");
     }
 
-    public async update(id: number, data: TEditUser): Promise<[affectedCount: number]> {
-        return await UserModel.update(data, {
-            where: {
-                id,
-            },
-        });
+    update(id: number, payload: Franchise): Promise<[affectedCount: number]> {
+        throw new Error("Method not implemented.");
     }
 
-    public async delete(ids: number[], deletedBy: number): Promise<number> {
-        const response = await UserModel.destroy({
-            where: {
-                id: ids,
-            },
-        });
-
-        await UserModel.update({
-            status: USER_STATUS.DELETED,
-            deletedBy: deletedBy?.toString()
-        }, {
-            where: {
-                id: ids,
-            },
-        });
-        return response;
+    delete(ids: number[], deletedBy: number): Promise<number> {
+        throw new Error("Method not implemented.");
     }
 
-    public async getFranchiseByEmail(email: string): Promise<TUser> {
-        const data = await UserModel.findOne({
-            where: {
-                email,
-                type: USER_TYPE.FRANCHISE
-            },
-        });
-        return data;
+    getFranchiseByEmail(email: string): Promise<Franchise> {
+        throw new Error("Method not implemented.");
     }
 
-    public async deletedList(filters: TListFilters): Promise<any> {
-        const total = await UserModel.count({
-            where: {
-                email: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-                type: USER_TYPE.FRANCHISE,
-                deletedAt: { [Op.not]: null },
-            },
-            paranoid: false,
-        });
-        const data = await UserModel.findAll({
-            order: [filters?.sorting],
-            offset: filters.offset,
-            limit: filters.limit,
-            where: {
-                email: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-                type: USER_TYPE.FRANCHISE,
-                deletedAt: { [Op.not]: null },
-            },
-            paranoid: false,
-        });
-        return { total, data };
+    deletedList(filters: TListFilters): Promise<Franchise[]> {
+        throw new Error("Method not implemented.");
     }
+
+    // public async list(filters: TListFilters): Promise<any> {
+    //     const total = await UserModel.count({
+    //         where: {
+    //             email: {
+    //                 [Op.like]: `%${filters.search}%`,
+    //             },
+    //             type: USER_TYPE.FRANCHISE,
+    //         },
+    //     });
+    //     const data = await UserModel.findAll({
+    //         order: [filters?.sorting],
+    //         offset: filters.offset,
+    //         limit: filters.limit,
+    //         where: {
+    //             email: {
+    //                 [Op.like]: `%${filters.search}%`,
+    //             },
+    //             type: USER_TYPE.FRANCHISE,
+    //         },
+    //     });
+    //     return { total, data };
+    // }
+    //
+    // public async get(id: number): Promise<Franchisee> {
+    //     const data = await UserModel.findOne({
+    //         where: {
+    //             id,
+    //             type: USER_TYPE.FRANCHISE,
+    //         },
+    //     });
+    //     return data;
+    // }
+    //
+    // public async createFranchiseFromLead(data: TConvertLeadToFranchise): Promise<TUser> {
+    //     return await UserModel.create({
+    //         ...data,
+    //         type: USER_TYPE.FRANCHISE,
+    //         status: USER_STATUS.ACTIVE,
+    //     });
+    // }
+    //
+    // public async create(data: TAddUser): Promise<Franchisee> {
+    //     return await UserModel.create({ ...data, type: USER_TYPE.FRANCHISE });
+    // }
+    //
+    // public async update(id: number, data: TEditUser): Promise<[affectedCount: number]> {
+    //     return await UserModel.update(data, {
+    //         where: {
+    //             id,
+    //         },
+    //     });
+    // }
+    //
+    // public async delete(ids: number[], deletedBy: number): Promise<number> {
+    //     const response = await UserModel.destroy({
+    //         where: {
+    //             id: ids,
+    //         },
+    //     });
+    //
+    //     await UserModel.update({
+    //         status: USER_STATUS.DELETED,
+    //         deletedBy: deletedBy,
+    //     }, {
+    //         where: {
+    //             id: ids,
+    //         },
+    //     });
+    //     return response;
+    // }
+    //
+    // public async getFranchiseByEmail(email: string): Promise<TUser> {
+    //     const data = await UserModel.findOne({
+    //         where: {
+    //             email,
+    //             type: USER_TYPE.FRANCHISE,
+    //         },
+    //     });
+    //     return data;
+    // }
+    //
+    // public async deletedList(filters: TListFilters): Promise<any> {
+    //     const total = await UserModel.count({
+    //         where: {
+    //             email: {
+    //                 [Op.like]: `%${filters.search}%`,
+    //             },
+    //             type: USER_TYPE.FRANCHISE,
+    //             deletedAt: { [Op.not]: null },
+    //         },
+    //         paranoid: false,
+    //     });
+    //     const data = await UserModel.findAll({
+    //         order: [filters?.sorting],
+    //         offset: filters.offset,
+    //         limit: filters.limit,
+    //         where: {
+    //             email: {
+    //                 [Op.like]: `%${filters.search}%`,
+    //             },
+    //             type: USER_TYPE.FRANCHISE,
+    //             deletedAt: { [Op.not]: null },
+    //         },
+    //         paranoid: false,
+    //     });
+    //     return { total, data };
+    // }
 }

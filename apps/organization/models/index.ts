@@ -1,118 +1,225 @@
 import { Op } from "sequelize";
-import {
-    TListFilters,
-    TListFiltersCampaigns,
-    TPayloadAddressUser,
-} from "../../../types";
-import {
-    TCampaignList,
-    TPayloadCampaign,
-    ICampaign,
-    IQuestion,
-} from "../../../interfaces";
-import { AddressModel, CampaignAdModel, questionModel } from "../../../database/schema";
+import { TListFilters } from "../../../types";
+import { AddressModel, UserModel } from "../../../database/schema";
 import IBaseRepo from "../controllers/controller/IController";
 import {
-    IOrganization,
-    IOrganizationPayload,
-    TOrganization,
+  IOrganization,
+  IOrganizationPayloadDataWithMeta,
 } from "../../../interfaces/organization";
-import { OrganizationTableModel } from "../database/organization_schema";
-import { AddressRepo } from "../../../apps/address/models";
+import { OrganizationModel } from "../database/organization_schema";
+import RepoProvider from "../../RepoProvider";
+import { ProductModel } from "../../../database/schema/product/productModel";
 
 export class OrganizationRepo
-    implements IBaseRepo<IOrganization, TListFilters>
+  implements
+    IBaseRepo<IOrganizationPayloadDataWithMeta, IOrganization, TListFilters>
 {
-    constructor() {}
-    
+  constructor() {}
 
-    public async create(data: TOrganization): Promise<any> {
-        const address = await new AddressRepo().createForUser({
-            city: data.city,
-            country: data.country,
-            postalCode: data.postalCode,
-            state: data.state,
-            street: data.street,
-            user_id: data.createdBy,
-        });
+  async create(
+    payload: IOrganizationPayloadDataWithMeta,
+    userId: number
+  ): Promise<IOrganization> {
+    const billingAddress = (
+      await RepoProvider.address.create(payload.billingAddress)
+    ).id;
 
-        const organization = {
-            prospectId: data.prospectId,
-            name: data.name,
+    const shippingAddresses = (
+      await AddressModel.bulkCreate(payload.shippingAddresses)
+    ).map((add) => add.id);
 
-            contactPersonName: data.contactPersonName,
-            contactNumber: data.contactNumber,
-            contactEmail: data.contactEmail,
+    const organization = await OrganizationModel.create({
+      name: payload.name,
+      contactPersonName: payload.contactPersonName,
+      contactNumber: payload.contactNumber,
+      contactEmail: payload.contactEmail,
+      pan: payload.pan,
+      gst: payload.gst,
+      bankName: payload.bankName,
+      bankAccountNumber: payload.bankAccountNumber,
+      bankIFSCCode: payload.bankIFSCCode,
+      billingAddressId: billingAddress,
+      masterFranchiseId: payload.masterFranchiseId,
+      rootUser: payload.rootUser,
+      createdBy: userId,
+      businessType: payload.businessType,
+      type: payload.type,
+    });
 
-            addressId: address.id,
-            pan: data.pan,
-            gst: data.gst,
-            bankName: data.bankName,
-            bankAccountNumber: data.bankAccountNumber,
-            bankIFSCCode: data.bankIFSCCode,
-            masterFranchiseId: data.masterFranchiseId,
-            createdBy: data.createdBy,
+    await organization.addShippingAddresses(shippingAddresses);
+
+    return (
+      await OrganizationModel.findByPk(organization.id, {
+        include: [
+          {
+            model: AddressModel,
+            as: "billingAddress", // Include billing address
+          },
+          {
+            model: UserModel,
+            as: "user", // Include root user
+          },
+          {
+            model: AddressModel,
+            as: "shippingAddresses", // The alias defined above
+            through: { attributes: [] },
+          },
+          {
+            model: OrganizationModel,
+            as: "masterFranchise",
+            attributes: ["id", "name"], // Include master franchise (if applicable)
+          },
+          {
+            model: UserModel,
+            as: "createdByUser", // Include createdByUser
+          },
+          {
+            model: UserModel,
+            as: "updatedByUser", // Include updatedByUser
+          },
+          {
+            model: UserModel,
+            as: "deletedByUser", // Include deletedByUser
+          },
+        ],
+      })
+    ).toJSON();
+  }
+
+  public async get(id: number): Promise<IOrganization | null> {
+    return await OrganizationModel.findOne({
+      where: { id },
+      include: [
+        {
+          model: AddressModel,
+          as: "billingAddress", // Include billing address
+        },
+        {
+          model: UserModel,
+          as: "user", // Include root user
+        },
+        {
+          model: AddressModel,
+          as: "shippingAddresses", // The alias defined above
+          through: { attributes: [] },
+        },
+        {
+          model: OrganizationModel,
+          as: "masterFranchise",
+          attributes: ["id", "name"], // Include master franchise (if applicable)
+        },
+        {
+          model: UserModel,
+          as: "createdByUser", // Include createdByUser
+        },
+        {
+          model: UserModel,
+          as: "updatedByUser", // Include updatedByUser
+        },
+        {
+          model: UserModel,
+          as: "deletedByUser", // Include deletedByUser
+        },
+      ],
+    });
+  }
+
+  public async update(id: number, data: any): Promise<[affectedCount: number]> {
+    return await OrganizationModel.update(data, {
+      where: { id },
+    });
+  }
+
+  public async delete(id: any): Promise<number> {
+    try {
+      return await OrganizationModel.destroy({
+        where: {
+          id: id,
+        },
+      });
+    } catch (error) {
+      console.error("Error deleting Organization:", error);
+      throw new Error("Failed to delete Organization"); // Rethrow or handle as needed
+    }
+  }
+
+  public async list(
+    page: number,
+    limit: number,
+    search: string,
+    filters: object
+  ): Promise<any> {
+    const offset = (page - 1) * limit;
+
+    const query: any = {};
+
+    // Add search functionality
+    if (search) {
+      query[Op.or] = [
+        { name: { [Op.iLike]: `%${search}%` } },
+        { description: { [Op.iLike]: `%${search}%` } },
+      ];
+    }
+
+    // Add filters
+    if (filters) {
+      Object.assign(query, filters);
+    }
+
+    const { rows: organizations, count: total } =
+      await OrganizationModel.findAndCountAll({
+        where: query,
+        offset,
+        limit,
+        order: [["createdAt", "DESC"]],
+        include: [
+          {
+            model: AddressModel,
+            as: "billingAddress", // Billing address (one-to-one association)
+            attributes: { exclude: [] }, // Include all fields of the address
+          },
+          {
+            model: AddressModel,
+            as: "shippingAddresses", // Shipping addresses (many-to-many association)
+            through: {
+              attributes: [], // Exclude join table data
+            },
+            attributes: { exclude: [] }, // Include all fields of the address
+          },
+          {
+            model: UserModel,
+            as: "user", // Root user
+            attributes: ["id", "firstName", "lastName", "email"],
+          },
+          {
+            model: OrganizationModel,
+            as: "masterFranchise", // Master franchise
+            attributes: ["id", "name"],
+          },
+          {
+            model: UserModel,
+            as: "createdByUser", // Created by
+            attributes: ["id", "firstName", "lastName", "email"],
+          },
+          {
+            model: UserModel,
+            as: "updatedByUser", // Updated by
+            attributes: ["id", "firstName", "lastName", "email"],
+          },
+          {
+            model: UserModel,
+            as: "deletedByUser", // Deleted by
+            attributes: ["id", "firstName", "lastName", "email"],
+          },
+        ],
+      }).then((res) => {
+        return {
+          rows: res.rows.map((organization) => organization.toJSON()),
+          count: res.count,
         };
+      });
 
-        return await OrganizationTableModel.create(organization);
-    }
-
-    public async get(id: number): Promise<IOrganization | null> {
-        const data = await OrganizationTableModel.findOne({
-            where: { id },
-            include: [
-                {
-                    model: AddressModel,
-                    as: 'address',
-                    attributes: ['user_id', 'street', 'city', "state", 'postalCode', 'country'],
-                }
-            ],
-        });
-        return data;
-    }
-
-    public async update(id: number, data: any): Promise<[affectedCount: number]> {
-        const response = await OrganizationTableModel.update(data, {
-            where: { id },
-        });
-        return response;
-    }
-
-    public async delete(id: any): Promise<number> {
-        try {
-            const deletedCount = await OrganizationTableModel.destroy({
-                where: {
-                    id: id,
-                },
-            });
-            return deletedCount;
-        } catch (error) {
-            console.error("Error deleting Organization:", error);
-            throw new Error("Failed to delete Organization"); // Rethrow or handle as needed
-        }
-    }
-
-    public async list(filters: any): Promise<any> {
-        const total = await OrganizationTableModel.count({
-            where: {
-                name: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
-        });
-
-        const data = await OrganizationTableModel.findAll({
-            order: [filters?.sorting],
-            offset: filters.offset,
-            limit: filters.limit,
-            where: {
-                name: {
-                    [Op.like]: `%${filters.search}%`,
-                },
-            },
-        });
-
-        return { total, data };
-    }
-
+    const totalPages = Math.ceil(total / limit);
+    return { data: organizations, total, totalPages };
+  }
 }

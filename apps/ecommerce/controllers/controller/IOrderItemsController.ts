@@ -10,7 +10,7 @@ interface IOrderItemsController<T, F extends TQueryFilters> {
      * @param productId - The ID of the product.
      * @returns Promise resolving to the order item if found, otherwise null.
      */
-    checkRepeatedOrder(userId: string, productId: number): Promise<T>;
+    checkRepeatedOrder(userId: number, productId: number): Promise<T>;
 
     /**
      * Create a new order item.

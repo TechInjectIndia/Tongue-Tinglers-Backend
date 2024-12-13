@@ -7,7 +7,7 @@ interface IArea extends UpdatedMetaData, BaseModelIdNumber, DeletionMetaData {
 
 interface TPayloadArea {
     title: string;
-    createdBy: string;
+    createdBy: number;
 }
 
 interface TAreaList {

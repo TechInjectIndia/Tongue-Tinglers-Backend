@@ -3,7 +3,7 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { TestimonialsRepo } from '../models/testimonials';
-import { ProductRepo } from '../../ecommerce/models/products';
+// import { ProductRepo } from '../../ecommerce/models/products';
 import { AdminRepo as FranchiseRepo } from '../../admin-user/models/user';
 import { TESTIMONIAL_ITEM_TYPE } from '../../../interfaces';
 
@@ -17,9 +17,9 @@ export default class TestimonialsController {
             let checkIfExist: any;
             let franchiseOrProduct = TESTIMONIAL_ITEM_TYPE.PRODUCT
             if (item_type == TESTIMONIAL_ITEM_TYPE.PRODUCT) {
-                checkIfExist = await new ProductRepo().get(item_id as number);
+                // checkIfExist = await new ProductRepo().get(item_id as number);
             } else if (item_type == TESTIMONIAL_ITEM_TYPE.FRANCHISE) {
-                checkIfExist = await new FranchiseRepo().get(item_id as string);
+                checkIfExist = await new FranchiseRepo().get(item_id as number);
                 franchiseOrProduct = TESTIMONIAL_ITEM_TYPE.FRANCHISE
             }
             if (isEmpty(checkIfExist)) {

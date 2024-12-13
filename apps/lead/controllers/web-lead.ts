@@ -4,10 +4,8 @@ import { sendResponse, sendEmail, getEmailTemplate, EMAIL_TEMPLATE, EMAIL_HEADIN
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { LeadRepo } from '../models/web-lead';
 import { RolesRepo } from '../../admin-user/models/roles';
-import { FranchiseeRepo } from '../../franchisee/models/FranchiseeRepo';
 import { LeadSource, LeadStatus } from '../../../interfaces';
 import { TLeadFilters, } from "../../../types";
-import { CONFIG } from '../../../config';
 
 export default class WebLeadController {
     static async list(req: Request, res: Response, next: NextFunction): Promise<Response> {
@@ -32,12 +30,7 @@ export default class WebLeadController {
             if (roleData) {
                 userRole = roleData.name;
 
-                let franchiseeId: any = '';
-                const franchiseRepo = new FranchiseeRepo();
-                const franchiseData = await franchiseRepo.getFranchiseeByUserId(user_id as string);
-                if(franchiseData){
-                    franchiseeId = franchiseData.id;
-                }
+
                 const leadsList = await new LeadRepo().list({
                     offset: skip,
                     limit: size,
@@ -45,7 +38,6 @@ export default class WebLeadController {
                     sorting,
                     dateRange,
                     userRole,
-                    franchiseeId
                 } as TLeadFilters);
 
                 return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, leadsList));

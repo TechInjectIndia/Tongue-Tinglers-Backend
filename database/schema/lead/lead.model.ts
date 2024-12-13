@@ -4,13 +4,16 @@ import { sequelize } from "../../../config";
 import { ILead } from "../../../interfaces";
 import { UserModel } from '../user/user.model';
 import { INTEGER } from "sequelize";
+import { NUMBER } from "sequelize";
+import { CampaignModel } from "../crm";
+import { CampaignAdModel } from "../campaign-ui/campaignAdModel";
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
 
 interface LeadCreationAttributes extends Optional<ILead, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
 class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
-    public id!: string;
-    public campaignId?: string;
+    public id!: number;
+    public campaignId?: number;
     public firstName!: string;
     public status!: LeadStatus;
     public lastName!: string;
@@ -24,15 +27,15 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public referBy!: UserDetails;
     public logs!: Record<string, ITrackable[]>;
     public notes!: Note[] | null;
-    public proposalModalId?: string | null;
+    public proposalModalId?: number | null;
     public amount?: number | null;
     public franchiseModals: Array<FranchiseModels> | null;
     public affiliate: Array<Affiliate> | null;
     public marketing: Array<string> | null;
     public other: Array<ExtraFields> | null;
-    public createdBy!: string;
-    public updatedBy!: string | null;
-    public deletedBy!: string | null;
+    public createdBy!: number;
+    public updatedBy!: number | null;
+    public deletedBy!: number | null;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
@@ -46,13 +49,16 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
 
 LeadsModel.init({
     id: {
-        type: STRING,
+        type: INTEGER,
+        autoIncrement: true,
         primaryKey: true,
-        allowNull: false,
-        defaultValue: UUIDV4
     },
     campaignId: {
-        type: STRING,
+        type: INTEGER,
+        references: {
+            model: 'campaigns',
+            key: 'id'
+        },
         allowNull: true
     },
     firstName: {
@@ -108,7 +114,7 @@ LeadsModel.init({
         allowNull: true
     },
     proposalModalId: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true
     },
     amount: {
@@ -132,15 +138,15 @@ LeadsModel.init({
         allowNull: true
     },
     createdBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: false
     },
     updatedBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true
     },
     deletedBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true
     },
     createdAt: {
@@ -167,5 +173,9 @@ LeadsModel.init({
     timestamps: true,
     paranoid: true
 });
+
+LeadsModel.belongsTo(CampaignAdModel, { foreignKey: 'campaignId' , as: 'campaign' });
+CampaignAdModel.hasMany(LeadsModel, { foreignKey: 'campaignId', as: 'campaign' });
+
 
 export { LeadsModel };

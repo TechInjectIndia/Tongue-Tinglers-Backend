@@ -6,7 +6,7 @@ import {
     TAddProductCategory,
     TEditProductCategory,
 } from "../../../types/ecommerce";
-import { ProductCategoryModel, CategoryImageModel, ProductsModel, ProductImagesModel, StockModel } from "../../../database/schema";
+import { ProductCategoryModel, CategoryImageModel, ProductImagesModel, StockModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/category/IProductsCategoryController';
 
 export class ProductCategoryRepo implements IBaseRepo<TProductCategory, TProductCategoryFilters> {
@@ -14,19 +14,6 @@ export class ProductCategoryRepo implements IBaseRepo<TProductCategory, TProduct
 
     public async listAllCategoriesWithProducts(): Promise<TProductCategory[]> {
         const categories = await ProductCategoryModel.findAll({
-            include: [{
-                model: ProductsModel,
-                as: 'products',
-                include: [{
-                    model: ProductImagesModel,
-                    as: 'images',
-                },
-                {
-                    model: StockModel,
-                    as: 'stock',
-                }
-                ],
-            }],
         });
 
         return categories;
@@ -58,7 +45,7 @@ export class ProductCategoryRepo implements IBaseRepo<TProductCategory, TProduct
         const total = await ProductCategoryModel.count({
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -68,7 +55,7 @@ export class ProductCategoryRepo implements IBaseRepo<TProductCategory, TProduct
             limit: filters.limit,
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

@@ -15,7 +15,7 @@ import IBaseRepo from '../controllers/controller/IController';
 export class FranchiseModelRepo implements IBaseRepo<FranchiseModels, TListFilters> {
     constructor() { }
 
-    public async get(id: string): Promise<FranchiseModels | null> {
+    public async get(id: number): Promise<FranchiseModels | null> {
         const data = await FranchiseLeadModel.findOne({
             where: {
                 id,
@@ -48,7 +48,7 @@ export class FranchiseModelRepo implements IBaseRepo<FranchiseModels, TListFilte
             limit: filters.limit,
             where: {
                 title: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -60,7 +60,7 @@ export class FranchiseModelRepo implements IBaseRepo<FranchiseModels, TListFilte
         return response;
     }
 
-    public async update(id: string, data: TPayloadFranchiseModel): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TPayloadFranchiseModel): Promise<[affectedCount: number]> {
         return await FranchiseLeadModel.update(data, {
             where: {
                 id: id,
@@ -68,7 +68,7 @@ export class FranchiseModelRepo implements IBaseRepo<FranchiseModels, TListFilte
         });
     }
 
-    public async delete(ids: string[]): Promise<number> {
+    public async delete(ids: number[]): Promise<number> {
         const response = await FranchiseLeadModel.destroy({
             where: {
                 id: ids,

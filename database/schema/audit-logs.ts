@@ -8,19 +8,19 @@ interface AuditLogsCreationAttributes extends Optional<TAuditLog, 'id' | 'create
 
 class AuditLogsModel extends Model<TAuditLog, AuditLogsCreationAttributes> implements TAuditLog {
     public id!: number;
-    public user_id!: string;
+    public user_id!: number;
     public description!: string;
     public activity_type!: string;
-    public updatedBy!: string;
+    public updatedBy!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
     // Method to create a new log entry
     public static async createLog(
-        userId: string,
+        userId: number,
         description: string,
         activityType: string,
-        updatedBy: string
+        updatedBy: number
     ): Promise<AuditLogsModel> {
         const log = await this.create({
             user_id: userId,
@@ -32,7 +32,7 @@ class AuditLogsModel extends Model<TAuditLog, AuditLogsCreationAttributes> imple
     }
 
     // Method to retrieve logs by user ID
-    public static async getLogsByUserId(userId: string): Promise<AuditLogsModel[]> {
+    public static async getLogsByUserId(userId: number): Promise<AuditLogsModel[]> {
         return await this.findAll({ where: { user_id: userId } });
     }
 
@@ -68,7 +68,7 @@ AuditLogsModel.init({
         allowNull: false,
     },
     updatedBy: {
-        type: STRING,
+        type: INTEGER,
         allowNull: false,
     },
     createdAt: {

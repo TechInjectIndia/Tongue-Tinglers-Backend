@@ -15,14 +15,14 @@ export class CampaignAdRepo
 {
     constructor() {}
 
-    public async getCampaignsByFranchiseId(franchiseId: string): Promise<any> {
+    public async getCampaignsByFranchiseId(franchiseId: number): Promise<any> {
         let whereOptions: any = { franchiseId: franchiseId };
         return await CampaignAdModel.findAll({
             where: whereOptions,
         });
     }
 
-    public async get(id: number): Promise<ICampaign | null> {
+    public async get(id: any): Promise<ICampaign | null> {
         const campaign = await CampaignAdModel.findOne({ where: { id } });
 
         const { questionList } = campaign;
@@ -43,8 +43,8 @@ export class CampaignAdRepo
         // Initialize the whereCondition object
         const whereCondition: any = {
             [Op.or]: [
-                { name: { [Op.like]: `%${filters.search}%` } }, // Assuming `name` is a string
-                { description: { [Op.like]: `%${filters.search}%` } }, // Assuming `description` is a string
+                { name: { [Op.iLike]: `%${filters.search}%` } }, // Assuming `name` is a string
+                { description: { [Op.iLike]: `%${filters.search}%` } }, // Assuming `description` is a string
             ],
         };
 

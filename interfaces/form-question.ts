@@ -30,7 +30,7 @@ type TPayloadQuestion = {
     type: QuestionType;
     required: boolean;
     options?: IOptions[];
-    createdBy: string;
+    createdBy: number;
 }
 
 export {

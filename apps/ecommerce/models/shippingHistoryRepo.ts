@@ -6,7 +6,7 @@ export class ShippingHistoryRepo {
     constructor() { }
 
     // Create a new shipping history record
-    public async addShippingHistory(orderId: string, shippingData: IShippingHistoryPayload): Promise<IShippingHistory> {
+    public async addShippingHistory(orderId: number, shippingData: IShippingHistoryPayload): Promise<IShippingHistory> {
         try {
             const shippingHistory = await ShippingHistoryModel.create({
                 orderId,
@@ -21,7 +21,7 @@ export class ShippingHistoryRepo {
     }
 
     // Get shipping history for a specific order
-    public async getShippingHistoryByOrderId(orderId: string): Promise<IShippingHistory[]> {
+    public async getShippingHistoryByOrderId(orderId: number): Promise<IShippingHistory[]> {
         try {
             const shippingHistory = await ShippingHistoryModel.findAll({
                 where: { orderId },
@@ -35,7 +35,7 @@ export class ShippingHistoryRepo {
     }
 
     // Get specific shipping activity by orderId and tracking number (optional)
-    public async getShippingActivityByTracking(orderId: string, trackingNumber?: string): Promise<IShippingActivity[]> {
+    public async getShippingActivityByTracking(orderId: number, trackingNumber?: string): Promise<IShippingActivity[]> {
         try {
             const whereCondition = {
                 orderId,
@@ -62,7 +62,7 @@ export class ShippingHistoryRepo {
         }
     }
 
-    public async updateShippingHistory(orderId: string, status: any, trackingNumber: any): Promise<[affectedCount: number]> {
+    public async updateShippingHistory(orderId: number, status: any, trackingNumber: any): Promise<[affectedCount: number]> {
         try {
             const shippingHistory = await ShippingHistoryModel.findOne({
                 where: { orderId },
@@ -119,7 +119,7 @@ export class ShippingHistoryRepo {
     }
 
     // Delete shipping history for a specific order
-    public async deleteShippingHistory(id: string): Promise<number> {
+    public async deleteShippingHistory(id: number): Promise<number> {
         try {
             const affectedCount = await ShippingHistoryModel.destroy({
                 where: {

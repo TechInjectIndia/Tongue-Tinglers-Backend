@@ -4,7 +4,7 @@ import { TQueryFilters } from '../../../../types';
  * Interface representing stock data.
  */
 interface StockData {
-    user_id: string;
+    user_id: number;
     startStock: number;
     endStock: number;
     recorded_at?: Date;
@@ -14,7 +14,7 @@ interface StockData {
  * Interface representing a franchise.
  */
 interface Franchise {
-    id: string;
+    id: number;
     name: string;
     type: string;
 }
@@ -23,7 +23,7 @@ interface Franchise {
  * Interface representing inventory details.
  */
 interface Inventory {
-    item_id: string;
+    item_id: number;
     quantity: number;
 }
 
@@ -37,7 +37,7 @@ interface IPetPoojaController<T, F extends TQueryFilters> {
      * @param data - The stock data to update.
      * @returns Promise resolving to the affected count.
      */
-    updateStockData(user_id: string, data: StockData): Promise<[affectedCount: number]>;
+    updateStockData(user_id: number, data: StockData): Promise<[affectedCount: number]>;
 
     /**
      * Save stock data.
@@ -81,14 +81,14 @@ interface IPetPoojaController<T, F extends TQueryFilters> {
      * @param franchiseId - The ID of the franchise.
      * @returns Promise resolving to an array of inventory items.
      */
-    getInventory(franchiseId: string): Promise<Inventory[]>;
+    getInventory(franchiseId: number): Promise<Inventory[]>;
 
     /**
      * Save a Pet Pooja order for a franchise.
      * @param franchiseId - The ID of the franchise.
      * @returns Promise resolving to the order details.
      */
-    savePetPoojaOrder(franchiseId: string): Promise<any>;
+    savePetPoojaOrder(franchiseId: number): Promise<any>;
 }
 
 export default IPetPoojaController;

@@ -90,7 +90,7 @@ export default class FranchiseModelController {
             // Update Franchise Model
             delete franchiseData.images
             delete franchiseData.others
-            const franchiseModel = await new FranchiseModelRepo().update(id as string, { ...franchiseData, user_id });
+            const franchiseModel = await new FranchiseModelRepo().update(id as number, { ...franchiseData, user_id });
 
             // Update Images  
             if (images && images.length > 0) {
@@ -116,11 +116,11 @@ export default class FranchiseModelController {
             // Update Extra Fields
             if (others && others.length > 0) {
                 // First, delete any existing extra fields associated with the franchise model
-                await new ExtraFieldRepo().deleteByFranchiseModelId(id as string);
+                await new ExtraFieldRepo().deleteByFranchiseModelId(id as number);
 
                 // Add new extra fields
                 const extraFieldPromises = others.map(async (extra) =>
-                    await new ExtraFieldRepo().create({ ...extra, franchiseModelId: id as string })
+                    await new ExtraFieldRepo().create({ ...extra, franchiseModelId: id as number })
                 );
                 await Promise.all(extraFieldPromises);
             }
@@ -145,7 +145,7 @@ export default class FranchiseModelController {
             const id = get(req?.params, "id", 0);
             const user_id = get(req, 'user_id', 0);
 
-            const existingFranchiseModel = await new FranchiseModelRepo().get(id as string);
+            const existingFranchiseModel = await new FranchiseModelRepo().get(id as number);
 
             if (isEmpty(existingFranchiseModel)) {
                 return res

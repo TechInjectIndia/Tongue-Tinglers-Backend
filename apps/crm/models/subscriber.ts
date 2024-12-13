@@ -25,7 +25,7 @@ export class SubscriberRepo implements IBaseRepo<TSubscriber, TQueryFilters> {
         const total = await SubscriberModel.count({
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -35,7 +35,7 @@ export class SubscriberRepo implements IBaseRepo<TSubscriber, TQueryFilters> {
             limit: filters.limit,
             where: {
                 name: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

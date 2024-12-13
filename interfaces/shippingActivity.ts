@@ -1,6 +1,6 @@
 export interface IShippingHistory {
-    id: string;
-    orderId: string;
+    id: number;
+    orderId: number;
     date?: string;
     activities: IShippingActivity[];
     trackingNumber?: string | null;
@@ -9,7 +9,7 @@ export interface IShippingHistory {
 }
 
 export interface IShippingHistoryPayload {
-    orderId?: string;
+    orderId?: number;
     date?: string;
     activities: IShippingActivity[];
     trackingNumber?: string | null;

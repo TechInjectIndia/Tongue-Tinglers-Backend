@@ -4,7 +4,7 @@ import { sendResponse, createPassword, createFirebaseUser } from "../../../libra
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { CustomerRegisterRepo } from '../models/customer-register';
 import { Auth } from '../../auth/models';
-import { USER_TYPE, USER_STATUS } from '../../../interfaces';
+import { USER_STATUS, USER_TYPE } from '../../../interfaces';
 
 export default class CustomerRegisterController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -46,7 +46,7 @@ export default class CustomerRegisterController {
             await new CustomerRegisterRepo().create({
                 ...payload,
                 password: hashedPassword,
-                type: USER_TYPE.CUSTOMER,
+                type: USER_TYPE.GUEST_USER,
                 status: USER_STATUS.INACTIVE,
                 role: 2,
                 firebaseUid: firebaseUser.uid

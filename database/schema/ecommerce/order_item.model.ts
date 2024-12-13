@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { TOrderItem } from "../../../types";
-import { ProductsModel } from './product.model';
+
 import { RetortProductsModel } from '../retort/retort-product';
 
 const { INTEGER, STRING, DATE, NOW } = DataTypes;
@@ -10,8 +10,8 @@ interface OrderItemsCreationAttributes extends Optional<TOrderItem, 'id' | 'crea
 
 class OrderItemsModel extends Model<TOrderItem, OrderItemsCreationAttributes> implements TOrderItem {
     public id!: number;
-    public orderId: string;
-    public userId: string;
+    public orderId: number;
+    public userId: number;
     public productId: number;
     public productType: string;
     public quantity: number;
@@ -29,11 +29,11 @@ OrderItemsModel.init({
         primaryKey: true,
     },
     orderId: {
-        type: STRING,
+        type: INTEGER,
         allowNull: false,
     },
     userId: {
-        type: STRING,
+        type: INTEGER,
         allowNull: true,
     },
     isRepeated: {
@@ -77,7 +77,7 @@ OrderItemsModel.init({
     },
 }, {
     sequelize,
-    tableName: 'order_items',
+    tableName: 'order_items_demo',
     timestamps: true,
 });
 

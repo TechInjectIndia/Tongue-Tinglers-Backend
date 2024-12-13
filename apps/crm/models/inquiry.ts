@@ -25,7 +25,7 @@ export class InquiryRepo implements IBaseRepo<TInquiry, TQueryFilters> {
         const total = await InquiryModel.count({
             where: {
                 email: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
@@ -35,7 +35,7 @@ export class InquiryRepo implements IBaseRepo<TInquiry, TQueryFilters> {
             limit: filters.limit,
             where: {
                 email: {
-                    [Op.like]: `%${filters.search}%`,
+                    [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });

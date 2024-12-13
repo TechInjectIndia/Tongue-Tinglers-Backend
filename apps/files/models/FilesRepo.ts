@@ -10,10 +10,10 @@ export class FilesRepo {
         const searchConditions: any = {};
 
         if (name) {
-            searchConditions.name = { [Op.like]: `%${name}%` };
+            searchConditions.name = { [Op.iLike]: `%${name}%` };
         }
         if (message) {
-            searchConditions.message = { [Op.like]: `%${message}%` };
+            searchConditions.message = { [Op.iLike]: `%${message}%` };
         }
 
         if (!name && !message) {
@@ -31,7 +31,7 @@ export class FilesRepo {
         }
     }
 
-    public async update(id: string, data: any): Promise<any> {
+    public async update(id: number, data: any): Promise<any> {
         const existingFile = await FileModel.findByPk(id);
 
         if (!existingFile) {
@@ -58,7 +58,7 @@ export class FilesRepo {
         return response;
     }
 
-    public async get(id: string): Promise<any> {
+    public async get(id: number): Promise<any> {
         const data = await FileModel.findOne({
             where: {
                 id,
@@ -68,7 +68,7 @@ export class FilesRepo {
     }
 
     public async updateFile(
-        id: string,
+        id: number,
         file: any,
         fileInfo: any,
         destinationPath: string

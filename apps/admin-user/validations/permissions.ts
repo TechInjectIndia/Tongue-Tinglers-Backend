@@ -47,7 +47,7 @@ const editPermissionBody = Joi.object().keys({
 
 // Validation for editing permission parameters
 const editPermissionParams = Joi.object().keys({
-    id: Joi.string().required()
+    id: Joi.number().required()
         .messages({
             'any.required': 'Permission ID is required.',
         }),

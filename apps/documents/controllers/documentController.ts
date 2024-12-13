@@ -7,6 +7,7 @@ import { Request, Response } from "express";
 import { BaseDocument, Document } from '../../../interfaces/documents';
 import { DocumentModel } from "../../../database/schema/documents/documentModel";
 import { Op } from "sequelize";
+import { getDocumentTransformData, transformData } from "../utils/utils"
 
 export class DocumentController {
     static async createDocument(req: Request, res: Response){
@@ -14,10 +15,10 @@ export class DocumentController {
             const user_id = get(req, 'user_id', 0);
             const payload:any = req?.body;
             payload.entity_type = Object.keys(payload)
-            const transformData = await DocumentController.prototype.transformData(payload, user_id)
+            const documentTransform = await transformData(payload, user_id)
             const existingRecords = await DocumentModel.findAll({
                 where: {
-                    [Op.or]: transformData.map(doc => ({
+                    [Op.or]: documentTransform.map(doc => ({
                         entity_id: doc.entity_id,
                         doc_name: doc.doc_name,
                         entity_type: doc.entity_type,
@@ -34,7 +35,7 @@ export class DocumentController {
                                 ),
                             );
             }
-            const documentRepo = await RepoProvider.documentRepo.createDocument(transformData)
+            const documentRepo = await RepoProvider.documentRepo.createDocument(documentTransform)
             return res.status(200)
                 .send(
                     sendResponse(
@@ -51,23 +52,36 @@ export class DocumentController {
         }
     }
 
-    // Function to transform data
-    transformData(data:any, userId:any){
-        const transformed = [];
-        for (const [entityType, entities] of Object.entries(data)) {
-            (entities as Document[]).forEach(entity => {
-                if(typeof entity !== 'string'){
-                    transformed.push({
-                        entity_id: entity.entity_id,
-                        doc_name: entity.doc_name,
-                        entity_type: entityType, // Add entity_type based on key
-                        link: entity.link,
-                        createdBy: userId,
-                    });
+    static async getDocument(req: Request, res: Response){
+        try {
+            const id = get(req, 'params.id', 0);
+            const documentRepo = await RepoProvider.documentRepo.getDocument(id)
+            if(!documentRepo){
+                return res.status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `Document ${ERROR_MESSAGE.NOT_EXISTS}`,
+                        ),
+                    );
                 }
-            });
+                const documentTransformData = await getDocumentTransformData(documentRepo)
+            return res.status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.CREATED,
+                        documentTransformData,
+                    ),
+                );
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send(
+                sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while creating doucuments.'),
+            );
         }
-        return transformed;
-    };
+    }
+
+    
 }
 

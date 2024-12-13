@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import {BaseDocument, Document} from '../../../interfaces/documents'
 import { sequelize } from "../../../config";
+import { UserModel } from "../user/user.model";
 
 interface DocumentCreationAttributes extends Optional<Document, | "id">{}
 
@@ -70,6 +71,9 @@ DocumentModel.init({
     timestamps: true,  // Enable automatic timestamps
     paranoid: true,  // Enable soft deletes
 })
+
+// UserModel.hasMany(DocumentModel, {as: 'documents', foreignKey:'createdBy'})
+DocumentModel.belongsTo(UserModel, {as: 'created', foreignKey:'createdBy'})
 
 export {
     DocumentModel

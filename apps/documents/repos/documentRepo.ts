@@ -3,6 +3,7 @@ import { BaseDocument, Document } from '../../../interfaces/documents';
 import { IDocumentRepo } from './IDocumentRepo';
 import {DocumentModel} from "../../../database/schema/documents/documentModel"
 import { Op } from 'sequelize';
+import { UserModel } from '../../../database/schema';
 export class DocumentRepo implements IDocumentRepo {
 
     async createDocument(document: BaseDocument[]): Promise<Document[] | null> {
@@ -21,8 +22,25 @@ export class DocumentRepo implements IDocumentRepo {
     async deleteDocument(id: number): Promise<Document> {
         throw new Error("Method not implemented.");
     }
-    async getDocument(id: number): Promise<Document> {
-        throw new Error("Method not implemented.");
+    async getDocument(id: number): Promise<Document[]> {
+        try {
+            const document = await DocumentModel.findAll({
+                where: {
+                    id: id,
+                },
+                include:[
+                    {
+                        model: UserModel,
+                        as: 'created',
+                        attributes: ['id', 'firstName', 'lastName', 'email']
+                    }
+                ]
+            });
+            return document.map((doc: DocumentModel) => doc.toJSON());
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
     }
     async getDocuments(): Promise<Document[]> {
         throw new Error("Method not implemented.");

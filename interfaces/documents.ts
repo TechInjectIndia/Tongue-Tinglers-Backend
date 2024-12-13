@@ -10,9 +10,18 @@ interface BaseDocument extends BaseMetaUsers {
 
 interface Document extends BaseMeta, BaseDocument{}
 
+interface DocumentData {
+    entity_id: number;
+    doc_name: string;
+    entity_type: string;
+    link: string;
+    createdBy: number;
+}
+
 export {
     BaseDocument,
-    Document
+    Document,
+    DocumentData
 }
 
 

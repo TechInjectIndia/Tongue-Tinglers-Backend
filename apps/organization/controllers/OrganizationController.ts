@@ -20,13 +20,15 @@ import { ContractRepo } from "../../contracts/models/ContractRepo";
 export default class OrganizationController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, "user_id", 0);
+            const user_id = get(req, "user_id", 1);
 
             console.log(user_id);
 
             const body = req.body;
 
             const prospectId = body.prospectId ?? null;
+
+            console.log(prospectId);
 
 
             const payload: IOrganizationPayloadDataWithMeta = {

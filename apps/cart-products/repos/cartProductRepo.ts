@@ -2,6 +2,12 @@ import { BaseCartProduct, CartProduct, UpdateQuantity } from "../../../interface
 import { ICartProductRepo } from "./ICartProductRepo";
 import {CartProductModel} from "../../../database/schema/cart-product/cartProductModel";
 import { CartDetailsModel } from "../../../database/schema/cart_details/cartDetailsModel";
+import { ProductModel } from "../../../database/schema/product/productModel";
+import { ProductOptionsModel } from "../../../database/schema/product-options/productOptionsModel";
+import { Op } from "sequelize";
+import { OptionsValueModel } from "../../../database/schema/optionsValue/optionsValueModel";
+import { OptionsModel } from "../../../database/schema/options/optionModel";
+import { parseCartProduct } from "../parser/cartProductParser";
 export class CartProductRepo implements ICartProductRepo {
     async create(cartProduct:any): Promise<any | null> {
         const transaction = await CartProductModel.sequelize?.transaction();
@@ -28,8 +34,39 @@ export class CartProductRepo implements ICartProductRepo {
             await createCartDetails.addCartProductses(cartProductIds);
             // await organization.addShippingAddresses(shippingAddresses);
             await transaction?.commit();
-            // Return the created cart products (optional)
-            return createdCartProducts.map((product) => product.toJSON());
+
+            const cartProductsWithDetails = await CartProductModel.findAll({
+                where: {id: {[Op.in]:  cartProductIds} },
+                include: [
+                    {
+                        model: ProductModel, // Assuming you have defined an association
+                        as: 'product', // Alias name if used in associations
+                    },
+                    {
+                        model: ProductOptionsModel, // Assuming you have defined an association
+                        as: 'variations', // Alias name if used in associations
+                        include: [
+                            {
+                              model: OptionsValueModel,
+                              as: "optionsValue", // Include these fields from the User model
+                              attributes: ["id", "name", "option_id"],
+                              include:[
+                                {
+                                  model: OptionsModel,
+                                  as: 'options',
+                                  attributes:['id', 'name']
+                                }
+                              ]
+                            }
+                        ],
+                    },
+                ],
+            }).then((cartProductData) => {
+                return cartProductData.map((cartProduct) => {
+                    return parseCartProduct(cartProduct)
+                })
+            })
+            return cartProductsWithDetails
         } catch (error) {
             console.log(error);
             await transaction?.rollback();

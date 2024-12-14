@@ -1,4 +1,6 @@
 import { BaseMeta } from "../database/schema/base/Base";
+import { ParsedOptionsValue, parseOptionsValues } from "./optionsValue";
+import { ParsedUser } from "./user";
 
 interface BaseProductOptions {
     id: any
@@ -20,7 +22,7 @@ interface ProductOptions extends BaseMeta, BaseProductOptions {
 
 enum PRODUCT_OPTIONS_STATUS {
     ACTIVE = "active",
-    INACTIVE = "inactive"
+    INACTIVE = "inactive",
 }
 
 interface Pagination<T> {
@@ -33,10 +35,32 @@ interface ProductOptionsList<T> {
     productOptions: T[];
 }
 
+interface ParsedProductOptions {
+    id: number;
+    product_id: number;
+    option_value: ParsedOptionsValue;
+    price: number;
+    stock: number;
+    status: PRODUCT_OPTIONS_STATUS;
+    images: string;
+}
+
+export const parsedProductOptions = (data: any) => {
+    return {
+        id: data.id,
+        optionsValue: parseOptionsValues(data.optionsValue),
+        price: data.price,
+        stock: data.stock,
+        status: data.status,
+        images: data.images,
+    };
+};
+
 export {
     BaseProductOptions,
     ProductOptions,
     PRODUCT_OPTIONS_STATUS,
     Pagination,
     ProductOptionsList,
+    ParsedProductOptions,
 };

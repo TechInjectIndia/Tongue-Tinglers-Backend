@@ -132,7 +132,7 @@ router.use(`${ADMIN}/contracts`, contractsRouter);
 router.use(`${ADMIN}/lead`, leadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
-router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
+router.use(`${ADMIN}/franchise`, frachiseRouter);
 router.use(`${ADMIN}/commission`, auth, commissionRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/options`, auth, optionsRouter);
@@ -140,9 +140,9 @@ router.use(`${ADMIN}/options-values`, optionsValuesRouter);
 router.use(`${ADMIN}/product-options`, auth, productOptionsRouter);
 router.use(`${ADMIN}/products-category`, auth, productsCategoryRouter);
 router.use("/cart-product", auth, cartProductRouter);
-router.use("/cart-detail", auth, cartDetailRouter);
+router.use("/cart-detail", auth,cartDetailRouter);
 router.use("/order-items", auth, orderItemRouter);
-router.use("/order", OrderRouter);
+router.use("/order", auth, OrderRouter);
 router.use(`/cart`, auth, cartRouter);
 router.use("/migration", migrationRouter);
 
@@ -200,7 +200,7 @@ router.use(`/product`, webProductsRouter);
 router.use(`/register`, webRegisterRouter);
 router.use(`/campaign-ad`, webCampaignRouter);
 /* organization router */
-router.use(`/organization`, auth, organizationRouter);
+router.use(`/organization`, organizationRouter);
 
 // ====== Frontend ======
 

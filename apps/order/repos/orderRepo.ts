@@ -11,12 +11,25 @@ import { OrderModel } from "../../../database/schema/order/orderModel";
 import { NotesModel } from "../../../database/schema/order/notesModel";
 import { Pagination } from "../../../interfaces";
 import { Op } from "sequelize";
+import { OrderItem } from "../../../interfaces/order_items";
+import { OrderItemModel } from "../../../database/schema/order-items/orderItemsModel";
+import { OrderItemsModel } from "../../../database/schema";
 
 export class OrderRepo implements IOrderRepo {
     async createOrder(order: OrderPayload): Promise<Order | null> {
         try {
             let notesCreated: Notes[] = [];
-            const { notes, ...orderDetails } = order;
+            let orderItemsCreated: OrderItem[] = [];
+            const { notes,order_items, ...orderDetails } = order;
+
+            if(order_items && order_items.length > 0){
+                orderItemsCreated = await Promise.all(
+                    order_items.map(async (orderItem) => {
+                        const createdOrderItem = await OrderItemModel.create(orderItem);
+                        return createdOrderItem.toJSON(); // Convert to plain object if needed
+                    })
+                );
+            }
 
             // Create notes if provided
             if (notes && notes.length > 0) {
@@ -28,6 +41,7 @@ export class OrderRepo implements IOrderRepo {
                 );
             }
 
+            const orderItemIds = orderItemsCreated.map((orderItem)=> orderItem.id)
             const noteIds = notesCreated.map((note) => note.id);
 
             // Create the order

@@ -2,6 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { BaseProductOptions, PRODUCT_OPTIONS_STATUS, ProductOptions } from "../../../interfaces/product-options";
 import { ProductModel } from "../product/productModel";
+import { OptionsValueModel } from "../optionsValue/optionsValueModel";
 
 interface ProductOptionsCreationAttributes extends Optional<ProductOptions, | "id"> {
 }
@@ -47,7 +48,7 @@ ProductOptionsModel.init({
         allowNull: false,
     },
     images: {
-        type: DataTypes.STRING,
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
     },
     createdBy: {
@@ -82,11 +83,11 @@ ProductOptionsModel.init({
     },
 }, {
     sequelize,
-    modelName: 'ProductOptions',
-    tableName: 'product_options',
+    modelName: 'Variations',
+    tableName: 'variations',
     timestamps: true
 })
 
-
+ProductOptionsModel.belongsTo(OptionsValueModel, {as: 'optionsValue', foreignKey: 'optionValueId'})
 
 export { ProductOptionsModel }

@@ -1,3 +1,5 @@
+import { extend } from "lodash";
+
 const { OrderItem } = require("sequelize");
 
 
@@ -57,5 +59,10 @@ export type TAddressFilters = {
     trashOnly?: string;
 };
 
+interface ParsedAddress extends BaseAddress {
+    id: number;
+}
 
-export { BaseAddress, Address };
+
+
+export { BaseAddress, Address, ParsedAddress };

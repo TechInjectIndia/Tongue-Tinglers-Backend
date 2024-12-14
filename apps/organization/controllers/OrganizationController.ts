@@ -58,7 +58,7 @@ export default class OrganizationController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const id = get(req.params, "id", "");
+            const id = get(req.params, "id", 0);
             // todo remove type casting
             const existingOrganization = await new OrganizationRepo().get(
                 id as unknown as number,

@@ -60,6 +60,36 @@ OrderItemModel.init({
         type: DataTypes.ENUM(...Object.values(ORDER_ITEM_TYPE)),
         allowNull: false,
     },
+    createdBy: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+    updatedBy: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+    deletedBy: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+        field: "created_at",
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+        field: "updated_at",
+    },
+    deletedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: null,
+        field: "deleted_at",
+    },
 }, {
     sequelize,
     tableName: "order_items",

@@ -3,6 +3,7 @@ import { AddressRepo } from '../models/AddressRepo';
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { get } from "lodash";
+import { parseAddress } from '../parser/addressParser';
 
 export default class UserAddressController {
     /**

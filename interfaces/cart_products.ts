@@ -24,6 +24,10 @@ interface Cart{
     user_id: any
     carts:Array<BaseCartProduct>
 }
+interface ParseCart{
+    user_id: any
+    carts:Array<ParsedCartProduct>
+}
 
 
 interface ParsedCartProduct {
@@ -63,5 +67,6 @@ export {
     UpdateQuantity,
     Cart,
     ParsedCartProduct,
-    parsedVariations
+    parsedVariations,
+    ParseCart
 }

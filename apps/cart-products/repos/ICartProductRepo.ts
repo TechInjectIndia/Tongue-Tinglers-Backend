@@ -1,7 +1,7 @@
-import { BaseCartProduct, Cart, CartProduct, UpdateQuantity } from "../../../interfaces/cart_products";
+import { BaseCartProduct, Cart, CartProduct, ParseCart, ParsedCartProduct, UpdateQuantity } from "../../../interfaces/cart_products";
 
 export interface ICartProductRepo {
-    create(product:any): Promise<Cart| null>;
+    create(product:any): Promise<ParseCart | null>;
 
     update(product: CartProduct): Promise<CartProduct>;
 

@@ -4,13 +4,17 @@ import { CartDetailsModel } from "../../../database/schema/cart_details/cartDeta
 import { ProductOptionsModel } from "../../../database/schema/product-options/productOptionsModel";
 import { ProductModel } from "../../../database/schema/product/productModel";
 import { ICartDetailRepo } from "./ICartDetailRepo";
+import {parseCartDetails} from "../parser/cartDetailsParser"
 import { Op, Sequelize } from "sequelize";
+import { OptionsValueModel } from "../../../database/schema/optionsValue/optionsValueModel";
+import { OptionsModel } from "../../../database/schema/options/optionModel";
+import { UserModel } from "../../../database/schema";
 
 export class CartDetailRepo implements ICartDetailRepo {
     async getCartDetailByUserId(userId: number): Promise<any> {
         try {
             const cartDetails = await CartDetailsModel.findAll({
-                where: { user_id: userId }, // Filter by user_id
+                where: { user_id: 1 }, // Filter by user_id
                 include: [
                     {
                         model: CartProductModel,
@@ -24,15 +28,37 @@ export class CartDetailRepo implements ICartDetailRepo {
                             },
                             {
                                 model: ProductOptionsModel,  // Assuming you have a ProductOptionsModel
-                                as: "productOption",  // Alias for ProductOptions (ensure the association is correct)
-                                attributes: ['id', "product_id", "optionValueId", "price", "stock", "status", "images"] // Specify which fields to include for the product option
+                                as: "variations",  // Alias for ProductOptions (ensure the association is correct)
+                                attributes: ['id', "product_id", "optionValueId", "price", "stock", "status", "images"], // Specify which fields to include for the product option
+                                include: [
+                                    {
+                                        model: OptionsValueModel,
+                                        as: "optionsValue", // Include these fields from the User model
+                                        attributes: ["id", "name", "option_id"],
+                                        include:[
+                                          {
+                                            model: OptionsModel,
+                                            as: 'options',
+                                            attributes:['id', 'name']
+                                          }
+                                        ]
+                                      }
+                                ]
                             }
                         ]
                     },
+                    {
+                        model: UserModel,
+                        as: 'users',
+                        attributes: ['id','firstName', 'lastName', 'email']
+                    }
                 ],
                 order: [['createdAt', 'DESC']], 
             });
-            return cartDetails;
+            const cartDetailsData = cartDetails.map((cartDetail) => {
+                return parseCartDetails(cartDetail)
+            })
+            return cartDetailsData
         } catch (error) {
             console.log(error);
             return null;

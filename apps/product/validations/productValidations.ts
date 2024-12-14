@@ -38,7 +38,6 @@ const productValidationSchema = Joi.object({
     "number.base": "Vendor ID must be a number",
     "number.positive": "Vendor ID must be greater than 0",
   }),
-  productOptionsIds: Joi.array().items(Joi.number().integer()).optional(),
   variations: Joi.array()
     .items(
       Joi.object({

@@ -1,4 +1,6 @@
-import { BaseMeta } from "../database/schema/base/Base"
+import { BaseMeta, ParsedMeta } from "../database/schema/base/Base"
+import { ParsedProductOptions } from "./product-options";
+import { ParsedProduct } from "./products";
 
 interface BaseOrderItem {
     product_id: number,
@@ -12,12 +14,26 @@ interface BaseOrderItem {
     type: ORDER_ITEM_TYPE
 }
 
+interface ParsedOrderItem extends ParsedMeta {
+    id: number;
+    product: ParsedProduct,
+    product_option_id: ParsedProductOptions,
+    quantity: number,
+    total_price: number,
+    total_tax: number,
+    coupon_discount: number,
+    points_discount: number,
+    student_discount: number,
+    type: ORDER_ITEM_TYPE
+    order_items?: ParsedOrderItem[]; 
+}
+
 enum ORDER_ITEM_TYPE {
     RETORT = 'retort',
     PACKAGING = 'packaging'
 }
 
-interface OrderItem extends BaseOrderItem {
+interface OrderItem extends BaseOrderItem, ParsedMeta {
     id: number
 }
 
@@ -44,5 +60,6 @@ export {
     UpdateQuantity,
     UpdateCouponDiscount,
     UpdatePointsDiscount,
-    UpdateStudentDiscount
+    UpdateStudentDiscount,
+    ParsedOrderItem
 }

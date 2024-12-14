@@ -1,6 +1,7 @@
 import IUserAddressController from "../controllers/IAddressController"; // Ensure this interface is correctly defined
 import { Address, BaseAddress, TListFilters } from "../../../types";
 import { AddressModel } from "../../../database/schema";
+import {parseAddress} from "../parser/addressParser"
 
 export class AddressRepo implements IUserAddressController<BaseAddress, Address, TListFilters> {
     public async list(filters: TListFilters = {
@@ -18,9 +19,11 @@ export class AddressRepo implements IUserAddressController<BaseAddress, Address,
                 limit,
                 offset,
 
-            });
+            }).then((res) => {
+                return res.map((address) => parseAddress(address.toJSON()));
+            })
 
-            return userAddresses.map(address => address.get() as Address);
+            return userAddresses;
         } catch (error) {
             throw new Error(`Error fetching user addresses: ${(error as Error).message}`);
         }
@@ -47,8 +50,10 @@ export class AddressRepo implements IUserAddressController<BaseAddress, Address,
      */
     public async findById(id: number): Promise<Address | null> {
         try {
-            const userAddress = await AddressModel.findByPk(id);
-            return userAddress ? userAddress.get() as Address : null;
+            const userAddress = await AddressModel.findByPk(id).then((address) => {
+                return parseAddress(address.toJSON());
+            });
+            return userAddress;
         } catch (error) {
             throw new Error(`Error fetching user address: ${(error as Error).message}`);
         }

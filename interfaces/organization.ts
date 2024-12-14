@@ -1,6 +1,7 @@
 
 import { BaseMeta } from "../database/schema/base/Base";
-import { Address, BaseAddress } from "../types";
+import { Address, BaseAddress, ParsedAddress } from "../types";
+import { ParsedUser } from "./user";
 
 interface BaseOrganization {
     name: string;
@@ -81,6 +82,27 @@ export interface TOrganization {
 
 
 
-export interface parsedOrganization {
-
+export interface ParsedOrganization {
+    id: number;
+    user: ParsedUser;
+    name: string;
+    contactPersonName: string;
+    contactNumber: string;
+    contactEmail: string;
+    pan: string | null;
+    gst: string | null;
+    bankName: string;
+    bankAccountNumber: string;
+    bankIFSCCode: string;
+    billingAddress: ParsedAddress;
+    shippingAddress: Array<ParsedAddress>;
+    masterFranchise: ParsedOrganization | null;
+    type: ORGANIZATION_TYPE;
+    businessType: BUSINESS_TYPE;
+    createdBy: ParsedUser;
+    createdAt: Date;
+    updatedBy: ParsedUser | null;
+    updatedAt: Date;
+    deletedBy: ParsedUser | null;
+    deletedAt: Date;
 }

@@ -1,9 +1,9 @@
-import { BaseCartProduct, CartProduct, UpdateQuantity } from "../../../interfaces/cart_products";
+import { BaseCartProduct, Cart, CartProduct, UpdateQuantity } from "../../../interfaces/cart_products";
 import { ICartProductRepo } from "./ICartProductRepo";
 import {CartProductModel} from "../../../database/schema/cart-product/cartProductModel";
 import { CartDetailsModel } from "../../../database/schema/cart_details/cartDetailsModel";
 export class CartProductRepo implements ICartProductRepo {
-    async create(cartProduct:any): Promise<any | null> {
+    async create(cartProduct:Cart): Promise<Cart | null> {
         const transaction = await CartProductModel.sequelize?.transaction();
         try {
 
@@ -29,7 +29,10 @@ export class CartProductRepo implements ICartProductRepo {
             // await organization.addShippingAddresses(shippingAddresses);
             await transaction?.commit();
             // Return the created cart products (optional)
-            return createdCartProducts.map((product) => product.toJSON());
+            return {
+                user_id: cartProduct.user_id, // Assuming `cartsts` comes from `createCartDetails`
+                carts: createdCartProducts.map((product) => product.toJSON()),
+            };
         } catch (error) {
             console.log(error);
             await transaction?.rollback();

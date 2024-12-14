@@ -4,6 +4,8 @@ interface BaseCartProduct {
     quantity: number
 }
 
+
+
 interface CartProduct extends BaseCartProduct {
     id: number
 }
@@ -15,8 +17,16 @@ interface UpdateQuantity {
     quantity: number
 }
 
+interface Cart{
+    user_id: any
+    carts:Array<BaseCartProduct>
+}
+
+
+
 export {
     BaseCartProduct,
     CartProduct,
-    UpdateQuantity
+    UpdateQuantity,
+    Cart
 }

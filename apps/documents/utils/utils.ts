@@ -1,16 +1,21 @@
-async function transformData(data: any, userId: number){
+async function transformData(data: any, userId: number, isUpdate: boolean = false){
     const transformed: any[] = [];
 
     for (const [entityType, entities] of Object.entries(data)) {
         (entities as any[]).forEach(entity => {
             if(typeof entity !== 'string'){
-                transformed.push({
+                const transformedEntity: any = {
                     entity_id: entity.entity_id,
                     doc_name: entity.doc_name,
                     entity_type: entityType, // Use entityType as entity_type
                     link: entity.link,
-                    createdBy: userId, // Add createdBy field
-                });
+                };
+                if (isUpdate) {
+                    transformedEntity.updatedBy = userId;
+                } else {
+                    transformedEntity.createdBy = userId;
+                }
+                transformed.push(transformedEntity);
             }
         });
     }

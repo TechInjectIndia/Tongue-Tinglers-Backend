@@ -34,6 +34,10 @@ const productValidationSchema = Joi.object({
     "number.base": "Tax Rate ID must be a number",
     "number.positive": "Tax Rate ID must be greater than 0",
   }),
+  vendorId:Joi.number().integer().positive().required().messages({
+    "number.base": "Vendor ID must be a number",
+    "number.positive": "Vendor ID must be greater than 0",
+  }),
   productOptionsIds: Joi.array().items(Joi.number().integer()).optional(),
   variations: Joi.array()
     .items(

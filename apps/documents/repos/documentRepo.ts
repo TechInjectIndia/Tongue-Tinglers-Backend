@@ -16,9 +16,44 @@ export class DocumentRepo implements IDocumentRepo {
             return null;
         }
     }
-    async updateDocument(documet: BaseDocument): Promise<Document> {
-        throw new Error("Method not implemented.");
+
+    async updateDocument(documents: BaseDocument[]): Promise<Document[] | null> {
+        const transaction = await DocumentModel.sequelize?.transaction();
+        try {
+            const results: Document[] = [];
+    
+            for (const doc of documents) {
+                // Check if the document exists
+                const existingDocument = await DocumentModel.findOne({
+                    where: { 
+                        doc_name: doc.doc_name, 
+                        entity_id: doc.entity_id,
+                        entity_type: doc.entity_type,
+                    },
+                    transaction
+                });
+    
+                if (existingDocument) {
+                    // Update the document if it exists
+                    const updatedDocument = await existingDocument.update(doc, { transaction });
+                    results.push(updatedDocument.toJSON());
+                } else {
+                    // Create the document if it does not exist
+                    doc.createdBy = doc.updatedBy;
+                    delete doc.updatedBy;
+                    const createdDocument = await DocumentModel.create(doc, { transaction });
+                    results.push(createdDocument.toJSON());
+                }
+            }
+            await transaction?.commit();
+            return results;
+        } catch (error) {
+            console.error(error);
+            await transaction?.rollback();
+            return null;
+        }
     }
+    
     async deleteDocument(id: number): Promise<Document> {
         throw new Error("Method not implemented.");
     }

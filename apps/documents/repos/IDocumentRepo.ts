@@ -5,5 +5,5 @@ export interface IDocumentRepo {
     updateDocument(documet: BaseDocument): Promise<Document>
     deleteDocument(id: number): Promise<Document>
     getDocument(id: number): Promise<Document[]>
-    getDocuments(): Promise<Document[]>
+    getDocumentByUser(data:any): Promise<Document[]>
 }

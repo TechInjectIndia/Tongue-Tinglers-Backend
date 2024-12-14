@@ -55,11 +55,47 @@ export class DocumentController {
             );
         }
     }
-    
+
     static async getDocument(req: Request, res: Response){
         try {
             const id = get(req, 'params.id', 0);
             const documentRepo = await RepoProvider.documentRepo.getDocument(id)
+            if(!documentRepo){
+                return res.status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `Document ${ERROR_MESSAGE.NOT_EXISTS}`,
+                        ),
+                    );
+                }
+                const documentTransformData = await getDocumentTransformData(documentRepo)
+            return res.status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.CREATED,
+                        documentTransformData,
+                    ),
+                );
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send(
+                sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while creating doucuments.'),
+            );
+        }
+    }
+
+    static async getDocumentByUser(req: Request, res: Response){
+        try {
+            const user_id = get(req, 'user_id', 1);
+            const {entity_type, entity_id} = req.query
+            const payload = {
+                entity_type: entity_type,
+                createdBy: user_id,
+                entity_id: entity_id
+            }
+            const documentRepo = await RepoProvider.documentRepo.getDocumentByUser(payload)
             if(!documentRepo){
                 return res.status(400)
                     .send(

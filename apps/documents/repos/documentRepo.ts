@@ -42,7 +42,27 @@ export class DocumentRepo implements IDocumentRepo {
             return null;
         }
     }
-    async getDocuments(): Promise<Document[]> {
-        throw new Error("Method not implemented.");
+    async getDocumentByUser(data:any): Promise<Document[]> {
+        try {
+            const documents = await DocumentModel.findAll({
+                where: {
+                    createdBy: data.createdBy,
+                    entity_type: data.entity_type,
+                    entity_id: data.entity_id
+                },
+                include:[
+                    {
+                        model: UserModel,
+                        as: 'created',
+                        attributes: ['id', 'firstName', 'lastName', 'email']
+                    }
+                ]
+            });
+            return documents.map((doc: DocumentModel) => doc.toJSON());
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
     }
+
 }

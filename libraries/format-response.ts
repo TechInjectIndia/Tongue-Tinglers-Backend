@@ -1,9 +1,10 @@
 import common500 from "constants";
 
-export default (message, data, error = false) => ({
+export default (message, data, error = false, errorData = null) => ({
   error: !!error,
   message: message || (error ? common500 : "Success"),
-  data,
+  errorData: error ? errorData : null,
+  data: error ? null : data,
 });
 
 export function safeStringify(obj) {

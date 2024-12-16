@@ -220,4 +220,4 @@ export const validateChangeProductStatus = (
   req: Request,
   res: Response,
   next: NextFunction
-) => validateReq(req, res, next, changeProductStatusValidationSchema, "body");
+) => validateReq(req, res, next, changeProductStatusValidationSchema, "body"); 

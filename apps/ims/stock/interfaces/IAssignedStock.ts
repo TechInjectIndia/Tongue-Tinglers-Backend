@@ -10,3 +10,4 @@ interface IAssignedStock extends BaseModel, UpdatedMetaData, DeletionMetaData {
 export {
     IAssignedStock,
 }
+

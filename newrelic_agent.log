@@ -1,0 +1,136 @@
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69746,"time":"2024-12-16T10:20:28.276Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v22.11.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69746,"time":"2024-12-16T10:20:28.390Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69746,"time":"2024-12-16T10:20:28.439Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69746,"time":"2024-12-16T10:20:28.449Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69746,"time":"2024-12-16T10:20:28.449Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69746,"time":"2024-12-16T10:20:41.858Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69746,"time":"2024-12-16T10:20:41.859Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BapI1D2SuzLIAF8SMDuIqyBnX_9IAAgBAAAnIQEAARByAgQ8dz-TAwAGMTIuOC4xAAd0ZWNoLU1TAA5Ub25ndWUgVGluZ2xlcg.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69746,"time":"2024-12-16T10:20:41.859Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69746,"time":"2024-12-16T10:20:41.860Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69746,"time":"2024-12-16T10:20:41.863Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69746,"time":"2024-12-16T10:20:42.863Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69948,"time":"2024-12-16T10:21:23.515Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v22.11.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69948,"time":"2024-12-16T10:21:23.571Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69948,"time":"2024-12-16T10:21:23.596Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69948,"time":"2024-12-16T10:21:23.599Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69948,"time":"2024-12-16T10:21:23.599Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69948,"time":"2024-12-16T10:21:36.493Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69948,"time":"2024-12-16T10:21:36.493Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BQ27p0jiWYLzAF8SMDuIqyBnX_-EAAgBAAAnIQEAARE8AgQ8dz-TAwAGMTIuOC4xAAd0ZWNoLU1TAA5Ub25ndWUgVGluZ2xlcg.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69948,"time":"2024-12-16T10:21:36.493Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69948,"time":"2024-12-16T10:21:36.494Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69948,"time":"2024-12-16T10:21:36.498Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":69948,"time":"2024-12-16T10:21:37.498Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70159,"time":"2024-12-16T10:21:57.986Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v22.11.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70159,"time":"2024-12-16T10:21:58.042Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70159,"time":"2024-12-16T10:21:58.069Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70159,"time":"2024-12-16T10:21:58.073Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70159,"time":"2024-12-16T10:21:58.073Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70159,"time":"2024-12-16T10:22:07.971Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70159,"time":"2024-12-16T10:22:07.972Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BSHPTt7JdIi6AF8SMDuIqyBnX__AAAgBAAAnIQEAARIPAgQ8dz-TAwAGMTIuOC4xAAd0ZWNoLU1TAA5Ub25ndWUgVGluZ2xlcg.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70159,"time":"2024-12-16T10:22:07.972Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70159,"time":"2024-12-16T10:22:07.973Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70159,"time":"2024-12-16T10:22:07.976Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70159,"time":"2024-12-16T10:22:08.976Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70322,"time":"2024-12-16T10:22:13.286Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v22.11.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70322,"time":"2024-12-16T10:22:13.362Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70322,"time":"2024-12-16T10:22:13.389Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70322,"time":"2024-12-16T10:22:13.392Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70322,"time":"2024-12-16T10:22:13.393Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70322,"time":"2024-12-16T10:22:23.505Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70322,"time":"2024-12-16T10:22:23.506Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BakkNFWY2oZtAF8SMDuIqyBnX__AAAgBAAAnIQEAARKyAgQ8dz-TAwAGMTIuOC4xAAd0ZWNoLU1TAA5Ub25ndWUgVGluZ2xlcg.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70322,"time":"2024-12-16T10:22:23.506Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70322,"time":"2024-12-16T10:22:23.507Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70322,"time":"2024-12-16T10:22:23.511Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70322,"time":"2024-12-16T10:22:24.512Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70508,"time":"2024-12-16T10:23:41.795Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v22.11.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70508,"time":"2024-12-16T10:23:41.864Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70508,"time":"2024-12-16T10:23:41.895Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70508,"time":"2024-12-16T10:23:41.899Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70508,"time":"2024-12-16T10:23:41.899Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70508,"time":"2024-12-16T10:23:49.858Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70508,"time":"2024-12-16T10:23:49.858Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BWsxnT-J9tmyAF8SMDuIqyBnX__8AAgBAAAnIQEAARNsAgQ8dz-TAwAGMTIuOC4xAAd0ZWNoLU1TAA5Ub25ndWUgVGluZ2xlcg.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70508,"time":"2024-12-16T10:23:49.859Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70508,"time":"2024-12-16T10:23:49.860Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70508,"time":"2024-12-16T10:23:49.863Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70508,"time":"2024-12-16T10:23:50.862Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70727,"time":"2024-12-16T10:24:24.589Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v22.11.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70727,"time":"2024-12-16T10:24:24.646Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70727,"time":"2024-12-16T10:24:24.672Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70727,"time":"2024-12-16T10:24:24.676Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70727,"time":"2024-12-16T10:24:24.676Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70727,"time":"2024-12-16T10:24:35.954Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70727,"time":"2024-12-16T10:24:35.955Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BT06oZuVIg9GAF8SMDuIqyBnYAA4AAgBAAAnIQEAARRHAgQ8dz-TAwAGMTIuOC4xAAd0ZWNoLU1TAA5Ub25ndWUgVGluZ2xlcg.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70727,"time":"2024-12-16T10:24:35.955Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70727,"time":"2024-12-16T10:24:35.956Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70727,"time":"2024-12-16T10:24:35.959Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70727,"time":"2024-12-16T10:24:36.959Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70833,"time":"2024-12-16T10:24:46.076Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v22.11.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70833,"time":"2024-12-16T10:24:46.145Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70833,"time":"2024-12-16T10:24:46.182Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70833,"time":"2024-12-16T10:24:46.188Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70833,"time":"2024-12-16T10:24:46.188Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70833,"time":"2024-12-16T10:24:53.229Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70833,"time":"2024-12-16T10:24:53.229Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BdFcd6fHhTx-AF8SMDuIqyBnYAA4AAgBAAAnIQEAARSxAgQ8dz-TAwAGMTIuOC4xAAd0ZWNoLU1TAA5Ub25ndWUgVGluZ2xlcg.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70833,"time":"2024-12-16T10:24:53.229Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70833,"time":"2024-12-16T10:24:53.230Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70833,"time":"2024-12-16T10:24:53.233Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":70833,"time":"2024-12-16T10:24:54.233Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71163,"time":"2024-12-16T10:25:45.817Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v22.11.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71163,"time":"2024-12-16T10:25:45.871Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71163,"time":"2024-12-16T10:25:45.897Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71163,"time":"2024-12-16T10:25:45.900Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71163,"time":"2024-12-16T10:25:45.900Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71163,"time":"2024-12-16T10:25:58.543Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71163,"time":"2024-12-16T10:25:58.543Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BXtiXnXm3siwAF8SMDuIqyBnYAB0AAgBAAAnIQEAARX7AgQ8dz-TAwAGMTIuOC4xAAd0ZWNoLU1TAA5Ub25ndWUgVGluZ2xlcg.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71163,"time":"2024-12-16T10:25:58.544Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71163,"time":"2024-12-16T10:25:58.545Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71163,"time":"2024-12-16T10:25:58.556Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71163,"time":"2024-12-16T10:25:59.556Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71419,"time":"2024-12-16T10:27:08.354Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v22.11.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71419,"time":"2024-12-16T10:27:08.410Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71419,"time":"2024-12-16T10:27:08.437Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71419,"time":"2024-12-16T10:27:08.443Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71419,"time":"2024-12-16T10:27:08.443Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71419,"time":"2024-12-16T10:27:16.545Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71419,"time":"2024-12-16T10:27:16.545Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BYl0qJ3XweDKAF8SMDuIqyBnYADsAAgBAAAnIQEAARb7AgQ8dz-TAwAGMTIuOC4xAAd0ZWNoLU1TAA5Ub25ndWUgVGluZ2xlcg.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71419,"time":"2024-12-16T10:27:16.545Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71419,"time":"2024-12-16T10:27:16.547Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71419,"time":"2024-12-16T10:27:16.550Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71487,"time":"2024-12-16T10:27:17.262Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v22.11.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71487,"time":"2024-12-16T10:27:17.321Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71487,"time":"2024-12-16T10:27:17.347Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71487,"time":"2024-12-16T10:27:17.351Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71487,"time":"2024-12-16T10:27:17.351Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71635,"time":"2024-12-16T10:27:23.986Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v22.11.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71635,"time":"2024-12-16T10:27:24.063Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71635,"time":"2024-12-16T10:27:24.095Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71635,"time":"2024-12-16T10:27:24.099Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71635,"time":"2024-12-16T10:27:24.100Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71635,"time":"2024-12-16T10:27:34.847Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71635,"time":"2024-12-16T10:27:34.848Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BYh4522WvycjAF8SMDuIqyBnYADsAAgBAAAnIQEAARfTAgQ8dz-TAwAGMTIuOC4xAAd0ZWNoLU1TAA5Ub25ndWUgVGluZ2xlcg.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71635,"time":"2024-12-16T10:27:34.848Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71635,"time":"2024-12-16T10:27:34.849Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71635,"time":"2024-12-16T10:27:34.852Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71635,"time":"2024-12-16T10:27:35.853Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71747,"time":"2024-12-16T10:27:42.917Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v22.11.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71747,"time":"2024-12-16T10:27:42.996Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71747,"time":"2024-12-16T10:27:43.031Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71747,"time":"2024-12-16T10:27:43.037Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71747,"time":"2024-12-16T10:27:43.037Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71747,"time":"2024-12-16T10:27:49.197Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71747,"time":"2024-12-16T10:27:49.197Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BSbzX-XTkTfTAF8SMDuIqyBnYADsAAgBAAAnIQEAARhDAgQ8dz-TAwAGMTIuOC4xAAd0ZWNoLU1TAA5Ub25ndWUgVGluZ2xlcg.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71747,"time":"2024-12-16T10:27:49.197Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71747,"time":"2024-12-16T10:27:49.198Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71747,"time":"2024-12-16T10:27:49.202Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71747,"time":"2024-12-16T10:27:50.202Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71829,"time":"2024-12-16T10:27:51.274Z","msg":"Using New Relic for Node.js. Agent version: 12.8.1; Node version: v22.11.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71829,"time":"2024-12-16T10:27:51.344Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71829,"time":"2024-12-16T10:27:51.377Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71829,"time":"2024-12-16T10:27:51.381Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71829,"time":"2024-12-16T10:27:51.382Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71829,"time":"2024-12-16T10:27:59.473Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71829,"time":"2024-12-16T10:27:59.473Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BdYmnnTP61MiAF8SMDuIqyBnYADsAAgBAAAnIQEAARiVAgQ8dz-TAwAGMTIuOC4xAAd0ZWNoLU1TAA5Ub25ndWUgVGluZ2xlcg.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71829,"time":"2024-12-16T10:27:59.474Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6230576/applications/1014448019","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71829,"time":"2024-12-16T10:27:59.475Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71829,"time":"2024-12-16T10:27:59.478Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"tech-MS","pid":71829,"time":"2024-12-16T10:28:00.479Z","msg":"Starting initial 1000ms harvest."}

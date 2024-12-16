@@ -1,15 +1,14 @@
 import { Model, Optional, DataTypes } from "sequelize";
-import { IStock } from "../../../../apps/ims/stock/interfaces/IStock";
 import { sequelize } from "../../../../config";
-import { AssignedStocksTable } from "./AssignedStocksTable";
+import { ISupplier } from "../../../../apps/ims/supplier/interfaces/ISupplier";
 const { STRING, DATE, INTEGER, NOW, } = DataTypes;
 
 
 
-interface StockCreationAttributes extends Optional<IStock, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
+interface SupplierCreationAttributes extends Optional<ISupplier, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
 
-class StocksTable extends Model<IStock, StockCreationAttributes> implements IStock {
+class SuppliersTable extends Model<ISupplier, SupplierCreationAttributes> implements ISupplier {
     public id: number;
     public sku: string;
     public supplierId: number;

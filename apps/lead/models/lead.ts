@@ -14,7 +14,8 @@ import { UserModel } from "../../../database/schema";
 import { LeadStatus, ILead } from "../../../interfaces"; // Use the LeadStatus enum from interfaces
 import IBaseRepo from "../controllers/controller/ILeadController";
 import { createLeadsResponse } from "../../../libraries";
-
+import {parseLead} from "../parser/leadParser"
+import {DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO} from "../../DTO/DTO"
 export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
     constructor() {}
 
@@ -78,12 +79,23 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
     }
 
     // Get lead by ID
-    public async get(id: number): Promise<ILead | null> {
-        const data = await LeadsModel.findOne({
-            raw: true,
-            where: { id },
-        });
-        return data as ILead | null;
+    public async get(id: number): Promise<DTO<ILead>> {
+        try{
+            const data = await LeadsModel.findOne({
+                raw: true,
+                where: { id },
+            });
+            
+            if(!data){
+                return getHandledErrorDTO(`lead not found for id ${id}`)
+            }
+
+            return getSuccessDTO(data as ILead)
+        }catch(error:any){
+
+            const message = `${error.message ?? ''}: error while geting lead for id: ${id}`
+             getUnhandledErrorDTO(message, error)
+        }
     }
 
     // Get lead by ID and status
@@ -206,15 +218,24 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
     }
 
     // Create a new lead
-    public async create(data: TLeadPayload): Promise<ILead> {
-        const leadData: TLeadPayload = {
-            ...data,
-            // Ensure logs is kept as an array
-            logs: data.logs, // Assuming logs is already of type ITrackable[]
-        };
+    public async create(data: TLeadPayload): Promise<DTO<ILead>> {
+        try{
+            const leadData: TLeadPayload = {
+                ...data,
+                // Ensure logs is kept as an array
+                logs: data.logs, // Assuming logs is already of type ITrackable[]
+            };
+    
+            const response = await LeadsModel.create(leadData);
 
-        const response = await LeadsModel.create(leadData);
-        return response as ILead; // Explicitly cast the response to ILead
+            if(!response){
+                return getHandledErrorDTO(`lead not created`,response)
+            }
+            return getSuccessDTO(response); // Explicitly cast the response to ILead
+        }catch(error){
+            const message = `${error.message ?? ''}: error while creating lead`
+            getHandledErrorDTO(message, error)
+        }
     }
 
     // Update lead information

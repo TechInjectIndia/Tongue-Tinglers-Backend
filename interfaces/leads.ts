@@ -1,3 +1,4 @@
+import { ParsedMeta } from "../database/schema/base/Base";
 import type {
     UpdatedMetaData,
     BaseModel,
@@ -5,6 +6,7 @@ import type {
     ITrackable,
     Note,
     UserDetails,
+    ParseCampaign,
 } from "../interfaces";
 
 enum followStatus {
@@ -63,6 +65,31 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     affiliate: Array<Affiliate> | null;
     marketing: Array<string> | null;
     other: Array<ExtraFields> | null;
+}
+
+interface ParseLead extends ParsedMeta {
+    id: number;
+    campaign: ParseCampaign,
+    status: LeadStatus;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    email: string;
+    address: LeadAddress;
+    additionalInfo: string | null;
+    source: LeadSource;
+    sourceInfo: string | null;
+    followDetails: Array<FollowDetails> | null;
+    referBy: UserDetails | null;
+    logs: Record<string, ITrackable[]>;
+    notes: Note[] | null;
+    proposalModalId?: number | null;
+    amount?: number | null;
+    franchiseModals: Array<FranchiseModels> | null;
+    affiliate: Array<Affiliate> | null;
+    marketing: Array<string> | null;
+    other: Array<ExtraFields> | null;
+
 }
 
 interface ProposalModels {
@@ -242,5 +269,6 @@ export {
     extraFieldTypes,
     SeoImagePayload,
     AssignAttributes,
-    parsedAffiliate
+    parsedAffiliate,
+    ParseLead
 };

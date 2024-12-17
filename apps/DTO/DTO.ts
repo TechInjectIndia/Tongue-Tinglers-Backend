@@ -1,57 +1,62 @@
-type DTO<T> =
-    | {
-    success: true;
-    code: DTO_CODES.SUCCESS;
-    message: string | null;
-    data: T;
-}
-    | {
-    code: DTO_CODES.HANDLED_ERROR | DTO_CODES.UNHANDLED_ERROR; // code 1 means handled, code 2 means need to handle
-    success: false;
-    message: string;
-    error: unknown;
-    data: null;
-};
+type DTO<T, E = unknown> = SuccessDTO<T> | FailedDTO<E>;
 
-enum DTO_CODES {
+enum DTO_CODE {
     SUCCESS,
     HANDLED_ERROR,
     UNHANDLED_ERROR,
 }
 
-// Getter Functions
+interface SuccessDTO<T> {
+    success: true;
+    code: DTO_CODE.SUCCESS;
+    message: string | null;
+    data: T;
+}
 
-const getSuccessDTO = <T>(data: T, message: string | null = null): DTO<T> => {
-    return {
+/**
+ * code 1 mean handled, code 2 means need to handle
+ */
+interface FailedDTO<E> {
+    code: DTO_CODE.HANDLED_ERROR | DTO_CODE.UNHANDLED_ERROR;
+    success: false;
+    message: string;
+    data: null;
+    error: E | null;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                    Functions                               */
+/* -------------------------------------------------------------------------- */
+
+const getSuccessDTO = <T, E>(data: T, message: string | null = null): DTO<T, E> => {
+    const res: DTO<T, E> = {
         success: true,
-        code: DTO_CODES.SUCCESS,
+        code: DTO_CODE.SUCCESS,
         message,
         data,
     };
+    return res;
 };
 
-const getHandledErrorDTO = <T>(message: string, error: any = null): DTO<T> => {
-    return {
+const getHandledErrorDTO = <T, E>(message: string, error: E | null = null): DTO<T, E> => {
+    const dto: DTO<T, E> = {
         success: false,
-        code: DTO_CODES.HANDLED_ERROR,
+        code: DTO_CODE.HANDLED_ERROR,
         message,
-        error,
         data: null,
+        error,
     };
+    return dto;
 };
 
-const getUnhandledErrorDTO = <T>(message: string, error: any = null): DTO<T> => ({
-    success: false,
-    code: DTO_CODES.UNHANDLED_ERROR,
-    message,
-    error,
-    data: null,
-});
-
-export {
-    getSuccessDTO,
-    getUnhandledErrorDTO,
-    getHandledErrorDTO,
-    DTO_CODES,
-    type DTO,
+const getUnhandledErrorDTO = <T, E>(message: string, error: E | null = null): DTO<T, E> => {
+    const dto: DTO<T, E> = {
+        success: false,
+        code: DTO_CODE.UNHANDLED_ERROR,
+        message,
+        data: null,
+        error,
+    };
+    return dto;
 };
+export { getSuccessDTO, getUnhandledErrorDTO, getHandledErrorDTO, DTO_CODE, type DTO };

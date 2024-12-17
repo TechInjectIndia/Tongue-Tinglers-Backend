@@ -35,6 +35,19 @@ interface ICampaignSubmisisons {
     updatedAt: Date;
 }
 
+interface ParseCampaign {
+    id: number;
+    name: string;
+    franchiseId?: number;
+    regionId: number;
+    description?: string;
+    questionList: string[];
+    affiliateId?: number
+    proposalIds: number[];
+    start: Date;
+    to: Date;
+}
+
 type TPayloadCampaignSubmisisons = {
     campaignId: number;
     response: string;
@@ -51,5 +64,6 @@ export {
     TPayloadCampaign,
     ICampaignSubmisisons,
     TCampaignSubmisisonsList,
-    TPayloadCampaignSubmisisons
+    TPayloadCampaignSubmisisons,
+    ParseCampaign
 }

@@ -1,15 +1,15 @@
-import {get} from "lodash";
-import {BaseProduct, Pagination, Product} from "../../../interfaces";
+import {get, isEmpty} from "lodash";
+import {BaseProduct, Pagination, ParsedProduct,Product} from "../../../interfaces";
 import RepoProvider from "../../RepoProvider";
 import {sendResponse} from "../../../libraries";
-import {RESPONSE_TYPE, SUCCESS_MESSAGE} from "../../../constants";
+import {ERROR_MESSAGE,RESPONSE_TYPE, SUCCESS_MESSAGE} from "../../../constants";
 import {Request, Response} from "express";
-
+import { ProductModel } from "../../../database/schema/product/productModel";
 export default class ProductController {
     static async createProduct(req: Request, res: Response) {
         const payload: any = req?.body;
 
-        const user_id = get(req, "user_id", 0);
+        const user_id = get(req, "user_id", null);
         const product: BaseProduct = {
             ...payload,
             createdBy: user_id,
@@ -54,7 +54,7 @@ export default class ProductController {
                         );
                 }
             }
-            const products: Pagination<Product> =
+            const products: Pagination<ParsedProduct> =
                 await RepoProvider.ProductRepo.getAll(page, limit, search,
                     filterObj);
             return res.status(200).send(
@@ -80,7 +80,12 @@ export default class ProductController {
     static async getProductById(req: Request, res: Response) {
         try {
             const id = parseInt(req.params.id, 0);
-            const product: Product = await RepoProvider.ProductRepo.getById(id);
+            const product: ParsedProduct = await RepoProvider.ProductRepo.getById(id);
+      if (isEmpty(product)) {
+        return res
+            .status(400)
+            .send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
+    }
             return res
                 .status(200)
                 .send(

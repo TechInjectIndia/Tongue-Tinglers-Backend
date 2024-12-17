@@ -5,7 +5,6 @@ interface BaseDocument extends BaseMetaUsers {
     link: string;
     entity_type: string;
     entity_id: number;
-
 }
 
 interface Document extends BaseMeta, BaseDocument{}

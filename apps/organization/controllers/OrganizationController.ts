@@ -19,13 +19,15 @@ import {ContractRepo} from "../../contracts/models/ContractRepo";
 export default class OrganizationController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, "user_id", 0);
+            const user_id = get(req, "user_id", 1);
 
             console.log(user_id);
 
             const body = req.body;
 
             const prospectId = body.prospectId ?? null;
+
+            console.log(prospectId);
 
 
             const payload: IOrganizationPayloadDataWithMeta = {
@@ -60,7 +62,7 @@ export default class OrganizationController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const id = get(req.params, "id", "");
+            const id = get(req.params, "id", 0);
             // todo remove type casting
             const existingOrganization = await new OrganizationRepo().get(
                 id as unknown as number,

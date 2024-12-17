@@ -32,7 +32,7 @@ OptionsModel.init(
     },
 );
 
-OptionsModel.hasMany(OptionsValueModel, { as: 'options', foreignKey: 'options_id' })
-OptionsValueModel.belongsTo(OptionsModel, { as: 'options', foreignKey: 'product_id' });
+OptionsModel.hasMany(OptionsValueModel, { as: 'options', foreignKey: 'option_id' })
+OptionsValueModel.belongsTo(OptionsModel, { as: 'options', foreignKey: 'option_id' });
 
 export { OptionsModel };

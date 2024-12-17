@@ -1,9 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { BaseModelIdNumber, PRODUCTS_TYPE, BaseProduct, Product, PRODUCT_STATUS } from "../../../interfaces";
-import { BaseProductOptions } from "../../../interfaces/product-options";
+import { PRODUCTS_TYPE, BaseProduct, Product, PRODUCT_STATUS } from "../../../interfaces";
 import { ProductOptionsModel } from "../product-options/productOptionsModel";
-import { CartProductModel } from "../cart-product/cartProductModel";
+import { UserModel } from "../user/user.model";
 
 interface ProductCreationAttributes extends Optional<Product, | "id"> {
 }
@@ -18,12 +17,18 @@ class ProductModel extends Model<Product, ProductCreationAttributes> implements 
     slug: string;
     status: PRODUCT_STATUS;
     type: PRODUCTS_TYPE;
-    variationIds: number[];
-    productOptionsIds: number[];
     tax_rate_id: number;
+    vendorId: number;
     createdBy: number;
     updatedBy: number;
     deletedBy: number;
+
+    public addVariation!: (option: ProductOptionsModel | number) => Promise<void>;
+    public addVariations!: (options: Array<ProductOptionsModel | number>) => Promise<void>;
+    public setVariationses!: (options: Array<ProductOptionsModel | number>) => Promise<void>;
+    public getVariationses!: () => Promise<ProductOptionsModel[]>;
+    public removeVariations!: (option: ProductOptionsModel | number) => Promise<void>;
+    public removeVariationses!: (options: Array<ProductOptionsModel | number>) => Promise<void>;
 }
 
 ProductModel.init({
@@ -65,15 +70,11 @@ ProductModel.init({
         type: DataTypes.ENUM('retort', 'packaging'),
         allowNull: false,
     },
-    variationIds: {
-        type: DataTypes.ARRAY(DataTypes.INTEGER),
-        allowNull: false,
-    },
-    productOptionsIds: {
-        type: DataTypes.ARRAY(DataTypes.INTEGER),
+    tax_rate_id: {
+        type: DataTypes.INTEGER,
         allowNull: true,
     },
-    tax_rate_id: {
+    vendorId: {
         type: DataTypes.INTEGER,
         allowNull: true,
     },
@@ -114,8 +115,28 @@ ProductModel.init({
     timestamps: true
 })
 
-ProductModel.hasMany(ProductOptionsModel, { as: 'options', foreignKey: 'product_id' });
-ProductOptionsModel.belongsTo(ProductModel, { as: 'product', foreignKey: 'product_id' });
+ProductModel.belongsToMany(ProductOptionsModel, {
+    through: "product_options_join", // Join table name
+    foreignKey: "productId", // Foreign key in the join table
+    otherKey: "product_options_id", // Other foreign key in the join table
+    as: "variations", // Alias for the relationship
+});
+
+// ProductModel.hasMany(ProductOptionsModel, {
+//     foreignKey: "product_id", // The foreign key in ProductOptionsModel
+//     as: "product_Options", // Alias for the relationship
+//   });
+  
+//   ProductOptionsModel.belongsTo(ProductModel, {
+//     foreignKey: "product_id",
+//     as: "product", // Alias for the reverse relationship
+//   });
+
+ProductModel.belongsTo(UserModel, {as: 'createdByUser', foreignKey: 'createdBy'})
+ProductModel.belongsTo(UserModel, {as: 'updatedByUser', foreignKey: 'updatedBy'})
+ProductModel.belongsTo(UserModel, {as: 'deletedByUser', foreignKey: 'deletedBy'})
+
+
 // ProductModel.hasMany(CartProductModel, {
 //     foreignKey: 'product_id',
 //     as: 'cartProducts'  // Alias to use if you want to reference CartProduct from Product

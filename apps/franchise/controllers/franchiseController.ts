@@ -48,6 +48,10 @@ export default class FranchiseController {
         try {
             const id = parseInt(get(req.params, "id"));
             if (isNaN(id)) throw Error('Missing id or isNaN');
+console.log("****");
+            console.log(id);
+
+
 
             const franchiseDetails = await RepoProvider.franchise.getById(id);
             return res

@@ -5,21 +5,22 @@ import IBaseRepo from "../controllers/controller/IController";
 import {
   IOrganization,
   IOrganizationPayloadDataWithMeta,
+  ParsedOrganization,
 } from "../../../interfaces/organization";
 import { OrganizationModel } from "../database/organization_schema";
 import RepoProvider from "../../RepoProvider";
 import { ProductModel } from "../../../database/schema/product/productModel";
-
+import {parseOrganization} from "../parser/organizationParser"  
 export class OrganizationRepo
   implements
-    IBaseRepo<IOrganizationPayloadDataWithMeta, IOrganization, TListFilters>
+    IBaseRepo<IOrganizationPayloadDataWithMeta, ParsedOrganization, TListFilters>
 {
   constructor() {}
 
   async create(
     payload: IOrganizationPayloadDataWithMeta,
     userId: number
-  ): Promise<IOrganization> {
+  ): Promise<ParsedOrganization> {
     const billingAddress = (
       await RepoProvider.address.create(payload.billingAddress)
     ).id;
@@ -48,8 +49,8 @@ export class OrganizationRepo
 
     await organization.addShippingAddresses(shippingAddresses);
 
-    return (
-      await OrganizationModel.findByPk(organization.id, {
+
+    const organizationData =  await OrganizationModel.findByPk(organization.id, {
         include: [
           {
             model: AddressModel,
@@ -82,12 +83,15 @@ export class OrganizationRepo
             as: "deletedByUser", // Include deletedByUser
           },
         ],
+      }).then((organization)=>{
+        return parseOrganization(organization?.toJSON())
       })
-    ).toJSON();
-  }
 
-  public async get(id: number): Promise<IOrganization | null> {
-    return await OrganizationModel.findOne({
+      return organizationData
+    }
+
+  public async get(id: number): Promise<ParsedOrganization | null> {
+    const organizationData =  await OrganizationModel.findOne({
       where: { id },
       include: [
         {
@@ -121,7 +125,10 @@ export class OrganizationRepo
           as: "deletedByUser", // Include deletedByUser
         },
       ],
-    });
+    }).then((organization) => {
+        return parseOrganization(organization?.toJSON())
+    })
+    return organizationData
   }
 
   public async update(id: number, data: any): Promise<[affectedCount: number]> {
@@ -214,7 +221,7 @@ export class OrganizationRepo
         ],
       }).then((res) => {
         return {
-          rows: res.rows.map((organization) => organization.toJSON()),
+          rows: res.rows.map((organization) => parseOrganization(organization.toJSON())),
           count: res.count,
         };
       });

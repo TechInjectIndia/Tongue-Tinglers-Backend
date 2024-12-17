@@ -1,22 +1,27 @@
-import { BaseMeta } from "../database/schema/base/Base"
+import { BaseMeta, BaseMetaUsers } from "../database/schema/base/Base";
+import { PRODUCT_STATUS } from "./products";
+import { ParsedUser } from "./user";
 
-interface BaseProductsCategory {
+interface BaseProductsCategory extends BaseMetaUsers {
     name: string;
     description: string;
     status: PRODUCT_CATEGORY_STATUS;
     slug: string;
-    createdBy: number;
-    updatedBy: number;
-    deletedBy: number;
+    type: CATEGORY_TYPE;
+}
+
+enum CATEGORY_TYPE {
+    RETORT = "retort",
+    PACKAGING = "packaging",
 }
 
 enum PRODUCT_CATEGORY_STATUS {
-    ACTIVE = 'active',
-    INACTIVE = 'inactive'
+    ACTIVE = "active",
+    INACTIVE = "inactive",
 }
 
 interface ProductsCategory extends BaseMeta, BaseProductsCategory {
-    id: number
+    id: number;
 }
 
 interface Pagination<T> {
@@ -25,9 +30,20 @@ interface Pagination<T> {
     totalPages: number;
 }
 
+interface ParsedCategory {
+    id: number;
+    name: string;
+    slug: string;
+    description: string;
+    type: CATEGORY_TYPE;
+    status: PRODUCT_STATUS;
+}
+
 export {
     BaseProductsCategory,
     ProductsCategory,
     PRODUCT_CATEGORY_STATUS,
-    Pagination
-}
+    Pagination,
+    ParsedCategory,
+    CATEGORY_TYPE
+};

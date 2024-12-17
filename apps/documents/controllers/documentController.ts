@@ -19,7 +19,7 @@ export class DocumentController {
             const user_id = get(req, 'user_id', 0);
             const payload:any = req?.body;
             payload.entity_type = Object.keys(payload)
-            const documentTransform = await transformData(payload, user_id)
+            const documentTransform = await transformData(payload, user_id, false)
             const existingRecords = await DocumentModel.findAll({
                 where: {
                     [Op.or]: documentTransform.map(doc => ({
@@ -114,6 +114,37 @@ export class DocumentController {
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.CREATED,
                         documentTransformData,
+                    ),
+                );
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send(
+                sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while creating doucuments.'),
+            );
+        }
+    }
+
+    static async updateDocument(req: Request, res: Response){
+        try {
+            const user_id = get(req, 'user_id', 0);
+            const payload: Document[] = req?.body;
+            const documentTransform = await transformData(payload, user_id, true)
+            const documentRepo = await RepoProvider.documentRepo.updateDocument(documentTransform)
+            if(!documentRepo){
+                return res.status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `Document ${ERROR_MESSAGE.NOT_EXISTS}`,
+                        ),
+                    );
+                }
+            return res.status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPDATED,
+                        documentRepo,
                     ),
                 );
         } catch (error) {

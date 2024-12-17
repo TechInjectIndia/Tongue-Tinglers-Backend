@@ -1,9 +1,13 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import {DataTypes, Model, Optional} from "sequelize";
 import {BaseDocument, Document} from '../../../interfaces/documents'
-import { sequelize } from "../../../config";
-import { UserModel } from "../user/user.model";
+import {sequelize} from "../../../config";
+import {FranchiseModel, UserModel} from "../index";
+import {
+    OrganizationModel
+} from "../../../apps/organization/database/organization_schema";
 
-interface DocumentCreationAttributes extends Optional<Document, | "id">{}
+interface DocumentCreationAttributes extends Optional<Document, | "id"> {
+}
 
 class DocumentModel extends Model<Document, DocumentCreationAttributes> implements BaseDocument {
     doc_name: string;
@@ -13,7 +17,24 @@ class DocumentModel extends Model<Document, DocumentCreationAttributes> implemen
     createdBy: number;
     updatedBy: number;
     deletedBy: number;
-    
+
+
+    public static associate() {
+        // UserModel.hasMany(DocumentModel, {as: 'documents', foreignKey:'createdBy'})
+        this.belongsTo(UserModel, {as: 'created', foreignKey: 'createdBy'})
+
+        this.belongsTo(OrganizationModel, {
+            foreignKey: "entity_id",
+            as: "organization",
+            scope: {entity_type: "organization"},
+        });
+
+        this.belongsTo(FranchiseModel, {
+            foreignKey: "entity_id",
+            as: "franchise",
+            scope: {entity_type: "franchise"},
+        });
+    }
 }
 
 DocumentModel.init({
@@ -72,9 +93,6 @@ DocumentModel.init({
     paranoid: true,  // Enable soft deletes
 })
 
-// UserModel.hasMany(DocumentModel, {as: 'documents', foreignKey:'createdBy'})
-DocumentModel.belongsTo(UserModel, {as: 'created', foreignKey:'createdBy'})
-
 export {
     DocumentModel
-}
+};

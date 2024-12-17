@@ -1,14 +1,13 @@
 
 import { BaseDocument, Document } from '../../../interfaces/documents';
 import { IDocumentRepo } from './IDocumentRepo';
-import {DocumentModel} from "../../../database/schema/documents/documentModel"
-import { Op } from 'sequelize';
 import { UserModel } from '../../../database/schema';
+import { DocumentModel } from '../../../database/schema/documents/documentModel';
 export class DocumentRepo implements IDocumentRepo {
 
     async createDocument(document: BaseDocument[]): Promise<Document[] | null> {
         try {
-            
+
             const documentCreated = await DocumentModel.bulkCreate(document);
             return documentCreated.map((doc: DocumentModel) => doc.toJSON());
         } catch (error) {
@@ -21,18 +20,18 @@ export class DocumentRepo implements IDocumentRepo {
         const transaction = await DocumentModel.sequelize?.transaction();
         try {
             const results: Document[] = [];
-    
+
             for (const doc of documents) {
                 // Check if the document exists
                 const existingDocument = await DocumentModel.findOne({
-                    where: { 
-                        doc_name: doc.doc_name, 
+                    where: {
+                        doc_name: doc.doc_name,
                         entity_id: doc.entity_id,
                         entity_type: doc.entity_type,
                     },
                     transaction
                 });
-    
+
                 if (existingDocument) {
                     // Update the document if it exists
                     const updatedDocument = await existingDocument.update(doc, { transaction });
@@ -53,7 +52,7 @@ export class DocumentRepo implements IDocumentRepo {
             return null;
         }
     }
-    
+
     async deleteDocument(id: number): Promise<Document> {
         throw new Error("Method not implemented.");
     }

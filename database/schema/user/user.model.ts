@@ -3,7 +3,6 @@ import { sequelize } from "../../../config";
 import { USER_STATUS, USER_TYPE, UserInformation } from "../../../interfaces";
 import { TUser } from "../../../types";
 import RepoProvider from "../../../apps/RepoProvider";
-import { DocumentModel } from "../documents/documentModel";
 
 const { INTEGER, STRING, ENUM, JSONB } = DataTypes;
 

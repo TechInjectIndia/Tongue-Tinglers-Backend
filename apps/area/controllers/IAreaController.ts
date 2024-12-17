@@ -1,6 +1,5 @@
-import { NextFunction, Response } from "express";
-import { TQueryFilters } from "../../../../types"; // Adjust the import path as necessary
-import { TAreaList, TPayloadArea } from "../../../../interfaces"; // Ensure these types are defined in your interfaces
+import { TQueryFilters } from "../../../types"; // Adjust the import path as necessary
+import { TAreaList, TPayloadArea } from "../../../interfaces"; // Ensure these types are defined in your interfaces
 
 interface IAreaController<T, F extends TQueryFilters> {
     /**
@@ -30,7 +29,7 @@ interface IAreaController<T, F extends TQueryFilters> {
      * @param payload - The data to update the Area.
      * @returns Promise resolving to the affected count.
      */
-    update(id: number, payload: TPayloadArea): Promise<[affectedCount: number]>; 
+    update(id: number, payload: TPayloadArea): Promise<[affectedCount: number]>;
 
     /**
      * Delete Areas by IDs.

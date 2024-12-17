@@ -1,4 +1,5 @@
-const { Op } = require("sequelize");
+import {Op} from "sequelize";
+
 import {
     Affiliate,
     AffiliatesList,

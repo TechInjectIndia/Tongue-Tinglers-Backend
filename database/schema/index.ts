@@ -1,4 +1,27 @@
 // Admin model starts
+
+import {CampaignAdModel} from "./campaign-ui/campaignAdModel";
+// import { questionModel } from "./campaign-ui/questionModel";
+import {FranchiseModel} from "./franchise/franchiseModel";
+import {AffiliateModel} from "./lead/affiliateModels";
+import {AssignModel} from "./lead/assigneeModels";
+import {LeadsModel} from "./lead/lead.model";
+import {UserModel} from "./user/user.model";
+
+import {RegionModel} from "./franchise/RegionsModel";
+import {ProposalLeadModels} from "./lead/proposalModels";
+
+import {RetortProductsModel} from "./retort/retort-product";
+import {RetortProductCategoryModel} from "./retort/retort-category";
+import {
+    RetortProductCategoryMapModel
+} from "./retort/retort-product_category_map";
+import {
+    OrganizationModel
+} from "../../apps/organization/database/organization_schema";
+import {DocumentModel} from "./documents/documentModel";
+import {handleError} from "../../apps/common/utils/HelperMethods";
+
 export * from "./user/user.model";
 export * from "./user/address";
 export * from "./admin-roles";
@@ -73,20 +96,18 @@ export * from "./franchise/pdiModel";
 export * from "./franchise/RegionsModel";
 export * from "./franchise/AreaModel";
 
+
+
 // --- Sequelize Associations Setup --- //
 
-import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
-// import { questionModel } from "./campaign-ui/questionModel";
-import { FranchiseModel } from "./franchise/franchiseModel";
-import { AffiliateModel } from "./lead/affiliateModels";
-import { SocialMediaDetailsModel } from "./lead/smDetailsModel";
-import { AssignModel } from "./lead/assigneeModels";
-import { LeadsModel } from "./lead/lead.model";
-import { UserModel } from "./user/user.model";
 
-import { RegionModel } from "./franchise/RegionsModel";
-import { ProposalLeadModels } from "./lead/proposalModels";
-import {OptionsModel} from "./options/optionModel"
+
+// Initialize Models
+const models = {
+    Document: DocumentModel.initModel(),
+    Organization: OrganizationModel.initModel(),
+    Franchise: FranchiseModel.initModel(),
+};
 
 // Establish association with CampaignAdModel
 
@@ -103,6 +124,7 @@ import {OptionsModel} from "./options/optionModel"
 //     otherKey: 'campaignId',
 //     as: 'campaigns',
 // });
+
 
 CampaignAdModel.hasOne(RegionModel, {
     foreignKey: "regionId",
@@ -186,14 +208,6 @@ AssignModel.belongsTo(LeadsModel, {
 // });
 // // Establish association with AffiliateModel
 
-import { ProductCategoryModel } from "./ecommerce/category.model";
-import { ProductCategoryMapModel } from "./ecommerce/product_category_map.model";
-
-
-import { RetortProductsModel } from "./retort/retort-product";
-import { RetortProductCategoryModel } from "./retort/retort-category";
-import { RetortProductCategoryMapModel } from "./retort/retort-product_category_map";
-
 RetortProductCategoryModel.belongsToMany(RetortProductsModel, {
     through: RetortProductCategoryMapModel,
     foreignKey: "categoryId",
@@ -208,4 +222,23 @@ RetortProductsModel.belongsToMany(RetortProductCategoryModel, {
     as: "categories", // Ensure this alias matches
 });
 
-console.log("Associations initialized successfully.");
+let currentModel: string = null;
+
+try {
+    // Initialize Associations
+    Object.keys(models).forEach((modelName) => {
+        currentModel = modelName;
+
+        console.log(models[modelName], Object.getOwnPropertyNames(models[modelName]));
+
+        if (models[modelName].associate) {
+            models[modelName].associate();
+        }
+    });
+    console.log("Associations initialized successfully.");
+}
+catch (e) {
+    handleError(e, currentModel)
+}
+
+

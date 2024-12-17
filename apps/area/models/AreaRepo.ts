@@ -8,7 +8,7 @@ import {
     IArea,
 } from "../../../interfaces";
 import { AreaModel } from "../../../database/schema";
-import IBaseRepo from '../controllers/controller/IAreaController';
+import IBaseRepo from '../controllers/IAreaController';
 
 export class AreaRepo implements IBaseRepo<IArea, TListFiltersAreas> {
     constructor() { }

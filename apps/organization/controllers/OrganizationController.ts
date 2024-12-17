@@ -1,21 +1,20 @@
 // src/controllers/CampaignController.ts
-import { NextFunction, Request, Response } from "express";
-import { get, isEmpty } from "lodash";
-import { sendResponse } from "../../../libraries"; // Adjust this import path as necessary
+import {NextFunction, Request, Response} from "express";
+import {get, isEmpty} from "lodash";
+import {sendResponse} from "../../../libraries"; // Adjust this import path as
+                                                 // necessary
 import {
+    ERROR_MESSAGE,
     RESPONSE_TYPE,
     SUCCESS_MESSAGE,
-    ERROR_MESSAGE,
 } from "../../../constants"; // Adjust this import path as necessary
-import { OrganizationRepo } from "../models";
+import {OrganizationRepo} from "../models";
 import {
     IOrganizationPayloadDataWithMeta,
     Organization,
 } from "../../../interfaces/organization";
-import { Pagination } from "../../../interfaces";
-import RepoProvider from "../../RepoProvider";
-import ContractController from "../../contracts/controllers/ContractController";
-import { ContractRepo } from "../../contracts/models/ContractRepo";
+import {Pagination} from "../../../interfaces";
+import {ContractRepo} from "../../contracts/models/ContractRepo";
 
 export default class OrganizationController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -37,14 +36,17 @@ export default class OrganizationController {
             const data = await new OrganizationRepo().create(payload, user_id);
 
             if (prospectId) {
-                await new ContractRepo().update(prospectId, { organizationId: data.id });
+                await new ContractRepo().update(prospectId,
+                    {organizationId: data.id});
             }
             return res
                 .status(201)
                 .send(
-                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, data),
+                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED,
+                        data),
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -66,7 +68,8 @@ export default class OrganizationController {
             if (isEmpty(existingOrganization)) {
                 return res
                     .status(400)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
+                    .send(sendResponse(RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.NOT_EXISTS));
             }
 
             return res
@@ -78,11 +81,12 @@ export default class OrganizationController {
                         existingOrganization,
                     ),
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error(err);
             return res
                 .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
 
@@ -94,7 +98,7 @@ export default class OrganizationController {
         try {
             const user_id = get(req, "user_id", "");
             const id = get(req.params, "id", "");
-            const payload = { ...req.body, createdBy: user_id };
+            const payload = {...req.body, createdBy: user_id};
 
             const existingOrganization = await new OrganizationRepo().get(
                 id as unknown as number,
@@ -102,7 +106,8 @@ export default class OrganizationController {
             if (isEmpty(existingOrganization)) {
                 return res
                     .status(400)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
+                    .send(sendResponse(RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.NOT_EXISTS));
             }
 
             const updatedOrganization = await new OrganizationRepo().update(
@@ -119,11 +124,12 @@ export default class OrganizationController {
                         updatedOrganization,
                     ),
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error(err);
             return res
                 .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
 
@@ -141,7 +147,8 @@ export default class OrganizationController {
             if (isEmpty(existingOrganization)) {
                 return res
                     .status(400)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
+                    .send(sendResponse(RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.NOT_EXISTS));
             }
 
             const deletedCount = await new OrganizationRepo().delete(id);
@@ -151,11 +158,12 @@ export default class OrganizationController {
                     deletedCount,
                 }),
             );
-        } catch (err) {
+        }
+        catch (err) {
             console.error(err);
             return res
                 .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
 
@@ -166,17 +174,20 @@ export default class OrganizationController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const page = parseInt(req.query.page, 0) || 1;
-            const limit = parseInt(req.query.limit, 10) || 10;
-            const search = (req.query.search as string) || ""; // For text search
-            const filters = (req.query.filters as string) || "";
+            const page = parseInt(get(req.query, 'page').toString(), 0) || 1;
+            const limit = parseInt(get(req.query, 'limit').toString(), 10) ||
+                10;
+
+            const search = <string>get(req.query, "search", ""); // For text search
+            const filters = <string>get(req.query,"filters");
 
             // Parse filters into an object
             let filterObj = {};
             if (filters) {
                 try {
                     filterObj = JSON.parse(filters);
-                } catch (error) {
+                }
+                catch (error) {
                     return res
                         .status(400)
                         .send(
@@ -188,14 +199,16 @@ export default class OrganizationController {
                 }
             }
             const Franchise: Pagination<Organization> =
-                await new OrganizationRepo().list(page, limit, search, filterObj);
+                await new OrganizationRepo().list(page, limit, search,
+                    filterObj);
             return res.status(200).send(
                 sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, {
                     ...Franchise,
                     currentPage: page,
                 }),
             );
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
             return res
                 .status(500)

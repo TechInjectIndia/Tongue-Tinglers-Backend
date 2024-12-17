@@ -1,5 +1,4 @@
 import { Op } from "sequelize";
-import { TListFilters } from "../../../types"; // Adjust imports according to your types
 import { ICheckList, TICheckListList, TICheckListPayload, TListFiltersICheckListt } from "../../../interfaces/ichecklist"; // Adjust imports according to your types
 import { IChecklistModel } from "../../../database/schema/franchise/iChecklist"; // Adjust the import path based on your project structure
 import IBaseRepo from '../controllers/controller/IiChecklist';

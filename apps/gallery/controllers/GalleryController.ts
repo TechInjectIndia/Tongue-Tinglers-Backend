@@ -121,7 +121,7 @@ export default class GalleryController {
     static async update(req: Request, res: Response) {
         try {
 
-            const id = parseInt(get(req.params, "user_id"));
+            const id = parseInt(get(req.params, "id"));
             if (isNaN(id)) throw Error('Missing id or isNaN');
 
             let parsedImageDetails: any[] = [];
@@ -188,7 +188,7 @@ export default class GalleryController {
 
     static async update12(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = parseInt(get(req.params, "user_id"));
+            const id = parseInt(get(req.params, "id"));
             if (isNaN(id)) throw Error('Missing id or isNaN');
 
             const payload = req.body;

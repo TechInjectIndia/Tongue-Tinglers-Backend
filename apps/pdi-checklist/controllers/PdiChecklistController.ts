@@ -67,7 +67,8 @@ class PdiChecklistController {
     // Get a PDI Checklist by ID
     static async get(req: Request, res: Response) {
         try {
-            const { id } = req.params;
+            const id = parseInt(get(req.params, "id"));
+            if (!id || isNaN(id)) throw Error('Missing id or isNaN');
 
             const checklist = await new PdiChecklistRepo().findByPk(id);
             if (!checklist) {

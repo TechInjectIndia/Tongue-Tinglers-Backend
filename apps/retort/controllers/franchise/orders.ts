@@ -41,22 +41,24 @@ export default class OrderController {
 
     static async list(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '');
+            const user_id = <number>get(req, 'user_id', );
+            if(!user_id || isNaN(user_id)) throw Error('Missing user_id or isNaN');
 
-            const size = get(req?.query, "size", 10);
-            const skip = get(req?.query, "skip", 1);
-            const search = get(req?.query, "search", "");
-            const trashOnly = get(req?.query, "trashOnly", "");
-            let sorting = get(req?.query, "sorting", "id DESC");
-            sorting = sorting.toString().split(" ");
+            let size = parseInt(<string>get(req.query, "size", '10'));
+            if (isNaN(size)) size = 10;
+            let skip = parseInt(<string>get(req.query, "skip", '1'));
+            if (isNaN(skip)) skip = 1;
+            const search = <string>get(req.query, "search", '');
+            const trashOnly = <string>get(req.query, "trashOnly", '');
+            const sorting = <string>get(req.query, "sorting", "id DESC");
 
             const Orders = await new FranchiseOrderRepo().list({
-                offset: skip as number,
-                limit: size as number,
-                search: search as string,
+                offset: skip,
+                limit: size ,
+                search: search,
                 sorting: sorting,
-                trashOnly: trashOnly as string,
-                user_id: user_id as number
+                trashOnly: trashOnly ,
+                user_id: user_id
             });
 
             return res

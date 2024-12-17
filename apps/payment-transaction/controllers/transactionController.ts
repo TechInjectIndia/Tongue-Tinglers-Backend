@@ -1,13 +1,9 @@
-import { LogModel } from "../../../database/schema/logs/LogsModels";
-import { Model, ModelStatic } from "sequelize";
-import { Request, Response } from "express";
-import { get } from "lodash";
-import { BaseProduct, Pagination, Product } from "../../../interfaces";
-import RepoProvider from "../../RepoProvider";
-import { sendResponse } from "../../../libraries";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
-import { Log } from "../models/Log";
-import { TransactionRepo } from "../repos/TransactionRepo";
+import {Request, Response} from "express";
+import {get} from "lodash";
+import {Pagination} from "../../../interfaces";
+import {sendResponse} from "../../../libraries";
+import {RESPONSE_TYPE, SUCCESS_MESSAGE} from "../../../constants";
+import {TransactionRepo} from "../repos/TransactionRepo";
 //
 // export const logModelAction = async <T extends Model<any, any>>(
 //     action: string,
@@ -59,17 +55,30 @@ import { TransactionRepo } from "../repos/TransactionRepo";
 export default class transactionRouter {
     static async getAllLogs(req: Request, res: Response) {
         try {
-            const page = parseInt(req.query.page, 0) || 1;
-            const limit = parseInt(req.query.limit, 10) || 10;
-            const search = (req.query.search as string) || ""; // For text search
-            const filters = (req.query.filters as string) || "";
+            const page = <number>get(req.query, 'page', 1);
+            if (isNaN(page) || page < 1) {
+                throw new Error(
+                    'Page number must be greater than 0')
+            }
+
+            const limit = <number>get(req.query, 'limit', 10);
+            if (isNaN(limit) || limit <= 0) {
+                throw new Error(
+                    'limit must be a positive number greater than 0')
+            }
+
+            // For text search
+            const search = <string>get(req.query, 'search', "");
+            // For filtering search
+            const filters = <string>get(req.query, 'filters', "");
 
             // Parse filters into an object
             let filterObj = {};
             if (filters) {
                 try {
                     filterObj = JSON.parse(filters);
-                } catch (error) {
+                }
+                catch (error) {
                     return res
                         .status(400)
                         .send(
@@ -81,14 +90,16 @@ export default class transactionRouter {
                 }
             }
             const transactions: Pagination<any> =
-                await new TransactionRepo().getAll(page, limit, search, filterObj);
+                await new TransactionRepo().getAll(page, limit, search,
+                    filterObj);
             return res.status(200).send(
                 sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, {
                     ...transactions,
                     currentPage: page,
                 }),
             );
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
             return res
                 .status(500)

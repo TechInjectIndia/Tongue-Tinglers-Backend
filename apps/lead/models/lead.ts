@@ -1,23 +1,31 @@
-import { Op } from "sequelize";
+import {Op} from "sequelize";
 import {
-    TLeadStatus,
-    TAssignLead,
     TLeadPayload,
-    TListFilters,
     TLeadsList,
+    TLeadStatus,
+    TListFilters,
     TListFiltersAreas,
 } from "../../../types";
-import { ITrackable } from "../../../interfaces";
-import { CampaignAdModel, CampaignModel, LeadsModel } from "../../../database/schema";
-import { AssignModel } from "../../../database/schema";
-import { UserModel } from "../../../database/schema";
-import { LeadStatus, ILead } from "../../../interfaces"; // Use the LeadStatus enum from interfaces
+import {ILead} from "../../../interfaces"; // Use the LeadStatus
+import {
+    AssignModel,
+    CampaignAdModel,
+    LeadsModel,
+    UserModel
+} from "../../../database/schema";
+// enum from interfaces
 import IBaseRepo from "../controllers/controller/ILeadController";
-import { createLeadsResponse } from "../../../libraries";
-import {parseLead} from "../parser/leadParser"
-import {DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO} from "../../DTO/DTO"
+import {createLeadsResponse} from "../../../libraries";
+import {
+    getHandledErrorDTO,
+    getSuccessDTO,
+    getUnhandledErrorDTO
+} from "../../DTO/DTO"
+import {handleError} from "../../common/utils/HelperMethods";
+
 export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
-    constructor() {}
+    constructor() {
+    }
 
     // Update the status of a lead
     public async updateStatus(
@@ -25,7 +33,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
         data: TLeadStatus
     ): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
-            where: { id },
+            where: {id},
         });
         return response;
     }
@@ -36,7 +44,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
         whereVal: any,
         getAttributes: any = ["*"]
     ): Promise<TLeadStatus | null> {
-        const whereAttributes = { [whereName]: whereVal };
+        const whereAttributes = {[whereName]: whereVal};
         const data = await LeadsModel.findOne({
             raw: true,
             attributes: getAttributes,
@@ -51,7 +59,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
         whereVal: any,
         getAttributes: any = ["*"]
     ): Promise<any | null> {
-        const whereAttributes = { [whereName]: whereVal };
+        const whereAttributes = {[whereName]: whereVal};
         const data = await LeadsModel.findOne({
             where: whereAttributes,
             include: [
@@ -79,22 +87,16 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
     }
 
     // Get lead by ID
-    public async get(id: number): Promise<DTO<ILead>> {
-        try{
-            const data = await LeadsModel.findOne({
+    public async get(id: number): Promise<ILead> {
+        try {
+            return LeadsModel.findOne({
                 raw: true,
-                where: { id },
+                where: {id},
             });
-            
-            if(!data){
-                return getHandledErrorDTO(`lead not found for id ${id}`)
-            }
 
-            return getSuccessDTO(data as ILead)
-        }catch(error:any){
-
-            const message = `${error.message ?? ''}: error while geting lead for id: ${id}`
-             getUnhandledErrorDTO(message, error)
+        }
+        catch (error: any) {
+            handleError(error, id)
         }
     }
 
@@ -117,7 +119,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
         const data = await LeadsModel.findOne({
             where: {
                 email: email,
-                id: { [Op.ne]: excludeId },
+                id: {[Op.ne]: excludeId},
             },
         });
         return data as ILead | null;
@@ -169,11 +171,15 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
         const include: any[] = [];
         if (filters?.filters.campaign) {
             include.push({
-                model: CampaignAdModel, // Replace with your actual Campaign model
+                model: CampaignAdModel, // Replace with your actual Campaign
+                                        // model
                 as: "campaign", // Alias defined in the relationship
                 where: {
                     name: {
-                        [Op.iLike]: `%${filters.filters.campaign}%`, // Search by campaign name
+                        [Op.iLike]: `%${filters.filters.campaign}%`, // Search
+                                                                     // by
+                                                                     // campaign
+                                                                     // name
                     },
                 },
                 required: true, // Ensures only matching leads are included
@@ -185,7 +191,8 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
             };
         }
         if (filters?.filters.date) {
-            where.date = filters.filters.date; // Adjust for exact or range filtering.
+            where.date = filters.filters.date; // Adjust for exact or range
+                                               // filtering.
         }
         if (filters?.filters.affiliate) {
             where.affiliate = {
@@ -214,27 +221,25 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
             include: include
         });
 
-        return { total, data } as TLeadsList;
+        return {total, data} as TLeadsList;
     }
 
     // Create a new lead
-    public async create(data: TLeadPayload): Promise<DTO<ILead>> {
-        try{
+    public async create(data: TLeadPayload): Promise<ILead|null> {
+        try {
             const leadData: TLeadPayload = {
                 ...data,
                 // Ensure logs is kept as an array
-                logs: data.logs, // Assuming logs is already of type ITrackable[]
+                logs: data.logs, // Assuming logs is already of type
+                                 // ITrackable[]
             };
-    
-            const response = await LeadsModel.create(leadData);
-
-            if(!response){
-                return getHandledErrorDTO(`lead not created`,response)
-            }
-            return getSuccessDTO(response); // Explicitly cast the response to ILead
-        }catch(error){
+            return LeadsModel.create(leadData);
+        }
+        catch (error) {
+            handleError(error, data)
             const message = `${error.message ?? ''}: error while creating lead`
-            getHandledErrorDTO(message, error)
+            // todo @sunil getHandledErrorDTO(message, error)
+            return null
         }
     }
 
@@ -244,7 +249,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
         data: TLeadPayload
     ): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
-            where: { id },
+            where: {id},
         });
         return response;
     }
@@ -256,13 +261,16 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
     ): Promise<[affectedCount: number]> {
         try {
             const response = await LeadsModel.update(data, {
-                where: { id },
+                where: {id},
             });
 
             return response;
-        } catch (error) {
+        }
+        catch (error) {
             console.error("Error updating lead:", error);
-            throw new Error("Failed to assign lead to user"); // Rethrow or handle as needed
+            throw new Error("Failed to assign lead to user"); // Rethrow or
+                                                              // handle as
+                                                              // needed
         }
     }
 
@@ -275,9 +283,11 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
                 },
             });
             return deletedCount;
-        } catch (error) {
+        }
+        catch (error) {
             console.error("Error deleting leads:", error);
-            throw new Error("Failed to delete leads"); // Rethrow or handle as needed
+            throw new Error("Failed to delete leads"); // Rethrow or handle as
+                                                       // needed
         }
     }
 
@@ -287,9 +297,9 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
             where: {
                 [Op.or]: [
                     // { id: { [Op.like]: `%${filters.search}%` } },
-                    { firstName: { [Op.iLike]: `%${filters.search}%` } },
-                    { lastName: { [Op.iLike]: `%${filters.search}%` } },
-                    { email: { [Op.iLike]: `%${filters.search}%` } },
+                    {firstName: {[Op.iLike]: `%${filters.search}%`}},
+                    {lastName: {[Op.iLike]: `%${filters.search}%`}},
+                    {email: {[Op.iLike]: `%${filters.search}%`}},
                 ],
             },
         });
@@ -301,9 +311,9 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
             where: {
                 [Op.or]: [
                     // { id: { [Op.like]: Number(`%${filters.search}%`) } },
-                    { firstName: { [Op.iLike]: `%${filters.search}%` } },
-                    { lastName: { [Op.iLike]: `%${filters.search}%` } },
-                    { email: { [Op.iLike]: `%${filters.search}%` } },
+                    {firstName: {[Op.iLike]: `%${filters.search}%`}},
+                    {lastName: {[Op.iLike]: `%${filters.search}%`}},
+                    {email: {[Op.iLike]: `%${filters.search}%`}},
                 ],
             },
             include: [
@@ -329,6 +339,6 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
 
         const data = createLeadsResponse(leads);
 
-        return { total, data } as TLeadsList;
+        return {total, data} as TLeadsList;
     }
 }

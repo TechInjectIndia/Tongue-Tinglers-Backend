@@ -1,21 +1,25 @@
-import { APIResponse } from "../../common/models/ApiResponse";
-import { ICommissionRepo } from "./ICommissionRepo";
-import { HelperMethods } from "../../common/utils/HelperMethods";
-import { CommissionTable } from "../../../database/schema/commission/CommissionTable";
-import { ICommission } from "../../../interfaces/commission";
-import { CommissionEntityMapTable, ICommissionEntityMapping, ICommissionEntityMappingResponse } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
-import { Op, UniqueConstraintError } from "sequelize";
-import { FranchiseModel } from "../../../database/schema";
-import { OrganizationModel } from "../../organization/database/organization_schema";
+import {APIResponse} from "../../common/models/ApiResponse";
+import {ICommissionRepo} from "./ICommissionRepo";
+import {handleError, HelperMethods} from "../../common/utils/HelperMethods";
+import {
+    CommissionTable
+} from "../../../database/schema/commission/CommissionTable";
+import {ICommission} from "../../../interfaces/commission";
+import {
+    CommissionEntityMapTable,
+    ICommissionEntityMapping,
+    ICommissionEntityMappingResponse
+} from "../../../database/schema/commission/CommissionAndEntityMappingTable";
+import {Op, UniqueConstraintError} from "sequelize";
+import {FranchiseModel} from "../../../database/schema";
+import {
+    OrganizationModel
+} from "../../organization/database/organization_schema";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
 
     async getMappingsData(): Promise<APIResponse<ICommissionEntityMappingResponse[]>> {
-
         try {
-
-
-
             const result = await CommissionEntityMapTable.findAll(
                 {
                     include: [
@@ -84,13 +88,15 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
             return HelperMethods.getSuccessResponse(response);
 
-        } catch (error) {
-            HelperMethods.handleError(error);
+        }
+        catch (error) {
+            handleError(error);
             return HelperMethods.getErrorResponse();
         }
     }
 
-    async search(searchText: string, type?: string): Promise<APIResponse<ICommission[]>> {
+    async search(searchText: string,
+        type?: string): Promise<APIResponse<ICommission[]>> {
 
         try {
 
@@ -112,8 +118,9 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
             return HelperMethods.getSuccessResponse(result);
 
-        } catch (error) {
-            HelperMethods.handleError(error);
+        }
+        catch (error) {
+            handleError(error, searchText, type);
             return HelperMethods.getErrorResponse();
         }
     }
@@ -124,13 +131,15 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             await CommissionEntityMapTable.bulkCreate(mapEntities);
             return HelperMethods.getSuccessResponse<boolean>(true);
 
-        } catch (error) {
-            HelperMethods.handleError(error);
+        }
+        catch (error) {
+            handleError(error, mapEntities);
             return HelperMethods.getErrorResponse();
         }
     }
 
-    async updateMapEntity(id: number, mapEntity: ICommissionEntityMapping): Promise<APIResponse<boolean>> {
+    async updateMapEntity(id: number,
+        mapEntity: ICommissionEntityMapping): Promise<APIResponse<boolean>> {
         try {
 
             await CommissionEntityMapTable.update(mapEntity, {
@@ -141,13 +150,15 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
             return HelperMethods.getSuccessResponse<boolean>(true);
 
-        } catch (error) {
-            HelperMethods.handleError(error);
+        }
+        catch (error) {
+            handleError(error, id, mapEntity);
             return HelperMethods.getErrorResponse();
         }
     }
 
-    async delete(ids: number[], deletedById: number): Promise<APIResponse<boolean>> {
+    async delete(ids: number[],
+        deletedById: number): Promise<APIResponse<boolean>> {
         try {
 
             await CommissionTable.update(
@@ -155,15 +166,16 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                     deletedBy: deletedById,
                     deletedAt: new Date(),
                 }, {
-                where: {
-                    id: ids
-                }
-            });
+                    where: {
+                        id: ids
+                    }
+                });
 
             return HelperMethods.getSuccessResponse<boolean>(true);
 
-        } catch (error) {
-            HelperMethods.handleError(error);
+        }
+        catch (error) {
+            handleError(error, ids, deletedById);
             return HelperMethods.getErrorResponse(error.toString());
         }
 
@@ -178,8 +190,9 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
             return HelperMethods.getSuccessResponse(result);
 
-        } catch (error) {
-            HelperMethods.handleError(error);
+        }
+        catch (error) {
+            handleError(error);
             return HelperMethods.getErrorResponse(error.toString());
         }
     }
@@ -191,8 +204,9 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
             return HelperMethods.getSuccessResponse(result);
 
-        } catch (error) {
-            HelperMethods.handleError(error);
+        }
+        catch (error) {
+            handleError(error, id);
             return HelperMethods.getErrorResponse(error.toString());
         }
     }
@@ -203,8 +217,9 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             const saved = await CommissionTable.create(commission);
             return HelperMethods.getSuccessResponse<CommissionTable>(saved);
 
-        } catch (error) {
-            HelperMethods.handleError(error);
+        }
+        catch (error) {
+            handleError(error, commission);
             if (error instanceof UniqueConstraintError) {
                 return HelperMethods.getErrorResponse('Title already exists');
             }
@@ -212,7 +227,8 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         }
     }
 
-    async update(id: number, commission: CommissionTable): Promise<APIResponse<boolean>> {
+    async update(id: number,
+        commission: CommissionTable): Promise<APIResponse<boolean>> {
         try {
 
             await CommissionTable.update(commission, {
@@ -223,8 +239,9 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
             return HelperMethods.getSuccessResponse<boolean>(true);
 
-        } catch (error) {
-            HelperMethods.handleError(error);
+        }
+        catch (error) {
+            handleError(error, id, commission);
             if (error instanceof UniqueConstraintError) {
                 return HelperMethods.getErrorResponse('Title already exists');
             }
@@ -247,10 +264,11 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
                 return HelperMethods.getSuccessResponse<boolean>(false);
             }
-            return HelperMethods.getSuccessResponse<boolean>(true, 'Title already exists');
-
-        } catch (error) {
-            HelperMethods.handleError(error);
+            return HelperMethods.getSuccessResponse<boolean>(true,
+                'Title already exists');
+        }
+        catch (error) {
+            handleError(error, title);
             return HelperMethods.getErrorResponse();
         }
     }

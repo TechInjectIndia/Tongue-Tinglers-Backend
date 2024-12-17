@@ -1,8 +1,6 @@
-import { Response } from "express";
+
 import { TQueryFilters, TLeadPayload, TLeadStatus, TLeadsList } from '../../../../types';
 import { ILead } from '../../../../interfaces';
-import { DTO } from "../../../DTO/DTO";
-
 /**
  * Interface for Lead Controller.
  */
@@ -19,7 +17,7 @@ interface ILeadController<T, F extends TQueryFilters> {
      * @param id - The ID of the lead.
      * @returns Promise resolving to the lead data.
      */
-    get(id: number): Promise<DTO<ILead> | null>;
+    get(id: number): Promise<ILead | null>;
 
     /**
      * Update the status of a lead.
@@ -50,7 +48,7 @@ interface ILeadController<T, F extends TQueryFilters> {
      * @param payload - The data to create the lead.
      * @returns Promise resolving to the created lead.
      */
-    create(payload: TLeadPayload): Promise<DTO<ILead>>;
+    create(payload: TLeadPayload): Promise<ILead>;
 
     /**
      * Update an existing lead.

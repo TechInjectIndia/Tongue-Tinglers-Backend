@@ -34,10 +34,12 @@ export default class LeadController {
         next: NextFunction,
     ): Promise<Response | void> {
         try {
-            const id = get(req.body, "id", 0);
+
+            const id = parseInt(get(req.body, "id"));
+            if(isNaN(id)) throw Error('Missing id or isNaN');
 
             // get contract
-            const existingContract = await new ContractRepo().get(id as number);
+            const existingContract = await new ContractRepo().get(id);
             if (existingContract) {
                 return res
                     .status(400)
@@ -49,7 +51,7 @@ export default class LeadController {
                     );
             }
 
-            const existingLead = await new LeadRepo().get(id as number);
+            const existingLead = await new LeadRepo().get(id);
             if (!existingLead) {
                 return res
                     .status(400)
@@ -65,7 +67,9 @@ export default class LeadController {
             //     return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.ALREADY_CONVERTED));
             // }
 
-            const user_id = get(req, "user_id", 1);
+            const user_id = parseInt(get(req, "user_id"));
+            if(isNaN(user_id)) throw Error('Missing user_id or isNaN');
+
             const payload = {
                 firstName: existingLead.firstName,
                 lastName: existingLead.lastName,
@@ -358,7 +362,7 @@ export default class LeadController {
                     assignedTo: assign.assignedTo.id,
                     assignedBy: assign.assignedBy.id,
                     assignedDate: assign.assignedDate,
-                    leadId: newLead.id as number, // Reference the new lead's ID
+                    leadId: newLead.id, // Reference the new lead's ID
                 };
 
                 // Create assignment in AssignRepo

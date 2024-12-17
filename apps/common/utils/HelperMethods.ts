@@ -1,4 +1,4 @@
-import { APIResponse } from "../models/ApiResponse";
+import {APIResponse} from "../models/ApiResponse";
 
 class HelperMethods {
 
@@ -9,6 +9,7 @@ class HelperMethods {
             data: data
         };
     }
+
     static getErrorResponse<T>(message?: string): APIResponse<T> {
         return {
             success: false,
@@ -16,10 +17,15 @@ class HelperMethods {
             data: null
         };
     }
+}
 
-    static handleError(error: any): void {
-        console.error(error);
+function handleError(error: unknown, ...params: any[]) {
+    console.error(error);
+    if (params && params.length > 0) {
+        params.forEach((param) => {
+            console.log(param);
+        });
     }
 }
 
-export { HelperMethods };
+export {HelperMethods, handleError};

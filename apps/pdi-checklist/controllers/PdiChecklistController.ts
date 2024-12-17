@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { PdiChecklistRepo } from "../models/PdiChecklistRepo"; // Adjust the import path based on your project structure
+import {get} from "lodash";
 
 class PdiChecklistController {
     // Create a new PDI Checklist
@@ -28,7 +29,10 @@ class PdiChecklistController {
     // Update a PDI Checklist
     static async update(req: Request, res: Response) {
         try {
-            const { id } = req.params;
+            const id = parseInt(get(req.params, "id"));
+            if (!id || isNaN(id)) throw Error('Missing id or isNaN');
+
+            //todo @nitesh these are all any !
             const { checklistName, pdiDate, status, items, franchiseeId } = req.body;
 
             // Use the repo to find the checklist by ID

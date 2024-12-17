@@ -193,13 +193,13 @@ export default class OrderPaymentController {
 
             // Create the order and save order items
             const newOrder = await new OrderRepo().create({
-                userId: userId as number,
-                trackingNumber: "" as string,
-                shippingAddresses: "" as string,
-                paymentMethod: "Razorpay" as string,
+                userId: userId,
+                trackingNumber: "",
+                shippingAddresses: "",
+                paymentMethod: "Razorpay",
                 paymentId: link.id,
-                totalPrice: cart.totalAmount as number,
-                isRepeated: 0 as number,
+                totalPrice: cart.totalAmount,
+                isRepeated: 0,
                 orderStatus: OrderStatus.PROCESSED,
                 paymentStatus: PAYMENT_STATUS.PROCESSED,
                 orderType: ORDER_TYPE.FRANCHISE,
@@ -219,7 +219,7 @@ export default class OrderPaymentController {
             await new OrderItemRepo().bulkCreate(orderItems);
 
             const shippingPayload = {
-                orderId: newOrder.id as number,
+                orderId: newOrder.id,
                 activities: [
                     {
                         status: ShippingStatus.OrderReceived,
@@ -230,7 +230,7 @@ export default class OrderPaymentController {
                 date: new Date().toISOString(),
             };
             await new ShippingHistoryRepo().addShippingHistory(
-                newOrder.id as number,
+                newOrder.id,
                 shippingPayload,
             );
 
@@ -244,7 +244,7 @@ export default class OrderPaymentController {
             });
 
             try {
-                const emailContent = await getEmailTemplate(
+                const emailContent =  getEmailTemplate(
                     EMAIL_TEMPLATE.PAYMENT_REQUEST,
                     {
                         email: franchiseData.pocEmail,

@@ -130,8 +130,8 @@ export const sendEmailFromRequest = async (
     }
 };
 
-export const getEmailTemplate = async (template: string, params?: any) => {
-    const data = await ejs.renderFile(
+export const getEmailTemplate = (template: string, params?: any):string => {
+    const data = ejs.renderFile<string>(
         path.join(__dirname, `../static/views/email/${template}.ejs`),
         params ?? {}
     );

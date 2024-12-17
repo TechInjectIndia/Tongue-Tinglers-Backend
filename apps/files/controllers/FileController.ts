@@ -2,14 +2,16 @@ import { NextFunction, Request, Response } from "express";
 import { FilesRepo } from '../models/FilesRepo';
 import { sendResponse } from '../../../libraries';
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from '../../../constants';
-import { Multer } from 'multer';
-import { get, isEmpty } from "lodash";
 
+import { get, isEmpty } from "lodash";
 
 export default class FilesController {
     static async updateFile(req: Request, res: Response) {
         try {
-            const id = get(req?.params, "id", '');
+
+            const id = parseInt(get(req.params, "id"));
+            if (isNaN(id)) throw Error('Missing id or isNaN');
+
             let parsedFileDetails: any[] = [];
             let uploadedFiles: any[] = [];
 
@@ -29,8 +31,12 @@ export default class FilesController {
             }
 
             let result: any;
-            if (req.files && req.files.length > 0) {
-                uploadedFiles = req.files as Multer.File[];
+            // Properly cast req.files to Express.Multer.File[]
+            const files = req.files as Express.Multer.File[] | undefined;
+
+            if (files && files.length > 0) {
+                uploadedFiles = files; // Safe assignment without conflicting assertions
+
 
                 // Process and upload each file
                 const uploadPromises = uploadedFiles.map(async (file, index) => {
@@ -91,7 +97,7 @@ export default class FilesController {
     static async uploadFile(req: Request, res: Response) {
         try {
             let parsedFileDetails: any[] = [];
-            let files: any[] = [];
+            let files: Express.Multer.File[] = [];
 
             let fileDetails = req.body.fileDetails;
             if (typeof fileDetails === 'string') {
@@ -108,11 +114,11 @@ export default class FilesController {
             }
 
             let result: any
-            if (req.files && req.files.length != 0) {
-                files = req.files as Multer.File;
+            if (req.files && Array.isArray(req.files) && req.files.length != 0) {
+                files = req.files ?? [];
 
                 // Process each file and upload it
-                const uploadPromises = files.map(async (file: Multer.File, index: number) => {
+                const uploadPromises = files.map(async (file: Express.Multer.File, index: number) => {
                     const details = parsedFileDetails[index];
                     const fileInfo = {
                         originalname: file.originalname,
@@ -159,10 +165,10 @@ export default class FilesController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", '');
-            const user_id = get(req, 'user_id', '');
+            const id = parseInt(get(req.params, "id"));
+            if (isNaN(id)) throw Error('Missing id or isNaN');
 
-            const existingFranchiseModel = await new FilesRepo().get(id as number);
+            const existingFranchiseModel = await new FilesRepo().get(id);
 
             if (isEmpty(existingFranchiseModel)) {
                 return res

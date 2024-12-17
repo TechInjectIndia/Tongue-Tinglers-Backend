@@ -7,7 +7,7 @@ import {
     ERROR_MESSAGE,
 } from "../../../constants";
 import { AnalyticsModel } from "../models/lead-analytics";
-import { CampaignAdRepo } from "../../campaign/models/index";
+import { CampaignAdRepo } from "../../campaign/models";
 import {
     subDays,
     eachDayOfInterval,
@@ -88,7 +88,10 @@ export default class LeadAnalyticsController {
         try {
 
             const franchiseId = get(req, "franchise_id", "");
-            const user_id = get(req, "user_id", "");
+
+            const user_id = parseInt(get(req, 'user_id'));
+            if(isNaN(user_id)) throw Error('userId not passed or isNan')
+
             let analyticsData: any[] = [];
 
             const filter = get(req.query, "filter", "this_year") as string;
@@ -127,7 +130,7 @@ export default class LeadAnalyticsController {
                 });
             }
 
-            const franchiseData = await RepoProvider.franchise.getById(user_id as number);
+            const franchiseData = await RepoProvider.franchise.getById(user_id);
             if (!franchiseData) {
                 return res.status(404).send({ message: "Franchise data not found." });
             }
@@ -181,7 +184,10 @@ export default class LeadAnalyticsController {
 
     static async leadList(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {
-            const user_id = get(req, "user_id", "");
+            const user_id = parseInt(get(req, 'user_id'));
+            if(isNaN(user_id)) throw Error('userId not passed or isNan')
+
+
             const size = get(req.query, "size", 100);
             const skip = get(req.query, "skip", 0);
             const search = get(req.query, "search", "") as string;
@@ -197,7 +203,7 @@ export default class LeadAnalyticsController {
 
             const franchiseId = get(req, "franchise_id", "");
 
-            const franchiseData = await RepoProvider.franchise.getById(user_id as number);
+            const franchiseData = await RepoProvider.franchise.getById(user_id);
             if (!franchiseData) {
                 return res.status(404).send({ message: "Franchise data not found." });
             }
@@ -248,13 +254,16 @@ export default class LeadAnalyticsController {
 
     static async leadStatusByFranchiseId(req: Request, res: Response, next: NextFunction) {
         try {
-            const franchiseid = get(req.query, "franchiseId", "") as number;
-            const filter = get(req.query, "filter", "") as string;
-            const startDate = get(req.query, "startDate", "") as string;
-            const endDate = get(req.query, "endDate", "") as string;
+
+            const franchiseId = parseInt(get(req, 'franchiseId'));
+            if(isNaN(franchiseId)) throw Error('userId not passed or isNan')
+
+            const filter = get(req.query, "filter", "").toString();
+            const startDate = get(req.query, "startDate", "").toString();
+            const endDate = get(req.query, "endDate", "").toString();
             const dateRange = getDateRange(filter, startDate, endDate);
 
-            const campaigns = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseid as number);
+            const campaigns = await new CampaignAdRepo().getCampaignsByFranchiseId(franchiseId);
             // get leads where campaign id is campaigns.id using map
             const campaignIds = campaigns.map(campaign => campaign.id);
             const analyticsData = await new AnalyticsModel().getLeadStatusByCampaignIdsAndDateRange(campaignIds, dateRange.start, dateRange.end);

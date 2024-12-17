@@ -151,7 +151,8 @@ export default class OrderPaymentController {
     ) {
         try {
             // get cart & cart items
-            const userId = get(req, "user_id", "");
+            const userId = parseInt(get(req, 'user_id'));
+            if(isNaN(userId)) throw Error('userId not passed or isNan')
 
             // Find if the cart already exists for the user
             let cart = await new CartRepo().findById(userId);
@@ -206,13 +207,13 @@ export default class OrderPaymentController {
 
             // Save each cart item as an order item
             const orderItems = cart.items.map((item) => ({
-                orderId: newOrder.id as number,
-                userId: userId as string,
-                productId: item.productId as number,
-                productType: item.productType as string,
-                quantity: item.quantity as number,
-                price: item.price as number,
-                subtotal: item.subtotal as number,
+                orderId: newOrder.id,
+                userId: userId,
+                productId: item.productId,
+                productType: item.productType,
+                quantity: item.quantity,
+                price: item.price,
+                subtotal: item.subtotal,
             }));
 
             await new OrderItemRepo().bulkCreate(orderItems);
@@ -295,10 +296,11 @@ export default class OrderPaymentController {
             const { paymentId } = req.body;
 
             // get cart & cart items
-            const userId = get(req, "user_id", "");
+            const user_id = parseInt(get(req, 'user_id'));
+            if(isNaN(user_id)) throw Error('userId not passed or isNan')
 
             // Find if the cart already exists for the user
-            let cart = await new CartRepo().findById(userId);
+            let cart = await new CartRepo().findById(user_id);
             if (!cart) {
                 return res
                     .status(404)
@@ -395,10 +397,11 @@ export default class OrderPaymentController {
     ) {
         try {
             // Get user ID from request
-            const userId = get(req, "user_id", "");
+            const user_id = parseInt(get(req, 'user_id'));
+            if(isNaN(user_id)) throw Error('userId not passed or isNan')
 
             // Find if the cart already exists for the user
-            let cart = await new CartRepo().findById(userId);
+            let cart = await new CartRepo().findById(user_id);
             if (!cart || cart.items.length === 0) {
                 return res
                     .status(404)

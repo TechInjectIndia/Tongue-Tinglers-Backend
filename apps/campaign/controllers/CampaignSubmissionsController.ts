@@ -9,19 +9,23 @@ export default class CampaignSubmissionsController {
     // Method to list campaigns
     static async list(req: Request, res: Response, next: NextFunction) {
         try {
-            const size = get(req.query, "size", 10);
-            const skip = get(req.query, "skip", 0);
-            const search = get(req.query, "search", "");
-            const trashOnly = get(req?.query, "trashOnly", "");
+
+            let size = parseInt(get(req.query.toString(), "size", "10"));
+            if (isNaN(size)) size = 10;
+            let skip = parseInt(get(req.query.toString(), "skip", "0"));
+            if (isNaN(skip)) skip = 0;
+
+            const search = get(req.query, "search", "").toString();
+            const trashOnly = get(req?.query, "trashOnly", "").toString();
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
 
             const campaigns = await new CampaignSubmissionsRepo().list({
-                offset: skip as number,
-                limit: size as number,
-                search: search as string,
+                offset: skip,
+                limit: size ,
+                search: search,
                 sorting: sorting,
-                trashOnly: trashOnly as string
+                trashOnly: trashOnly
             });
 
             return res
@@ -44,8 +48,11 @@ export default class CampaignSubmissionsController {
     // Method to get a specific campaign by ID
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req.params, "id", "");
-            const payload = await new CampaignSubmissionsRepo().get(id as number);
+
+            const id = parseInt(get(req.params, "id"));
+            if(isNaN(id)) throw Error('Missing id or isNaN')
+
+            const payload = await new CampaignSubmissionsRepo().get(id);
 
             if (isEmpty(payload)) {
                 return res.status(404).send(

@@ -452,9 +452,14 @@ export default class LeadController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const user_id = get(req, "user_id", 1);
+            const user_id = parseInt(get(req, 'user_id'));
+            if(isNaN(user_id)) throw Error('userId not passed or isNan')
+
             // const user_name = get(req, 'user_name', '');
-            const id = get(req.params, "id", "");
+
+            const id = parseInt(get(req.params, 'id'));
+            if(isNaN(id)) throw Error('id not passed or isNan')
+
             const payload = req.body;
 
             let getAttributes: any = ["*"];

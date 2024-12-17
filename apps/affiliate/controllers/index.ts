@@ -112,9 +112,9 @@ export default class AffiliateController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
-            const user_id = get(req, 'user_id', 0);
-            const updateAffiliate = req?.body;
+            const id = parseInt(get(req.params, "id"));
+            // const user_id = parseInt(get(req, 'user_id'));
+            const updateAffiliate = req.body;
 
             // Check for social media details in the request
             const { sm } = updateAffiliate;

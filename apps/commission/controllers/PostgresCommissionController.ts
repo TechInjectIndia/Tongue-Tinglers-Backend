@@ -1,191 +1,237 @@
-import { CommissionTable } from "../../../database/schema/commission/CommissionTable";
-import { APIResponse } from "../../common/models/ApiResponse";
-import { ICommissionController } from "./ICommissionController";
-import { NextFunction, Request, Response } from "express";
-import { get } from "lodash";
+import {
+    CommissionTable
+} from "../../../database/schema/commission/CommissionTable";
+import {APIResponse} from "../../common/models/ApiResponse";
+import {ICommissionController} from "./ICommissionController";
+import {NextFunction, Request, Response} from "express";
+import {get} from "lodash";
 
 import {
-  COMMISSION_PAID_STATUS,
-  CommissionEntityMapTable,
-  OrganizationCommissions,
+    COMMISSION_PAID_STATUS,
+    OrganizationCommissions,
 } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
 import RepoProvider from "../../RepoProvider";
 
 export class PostgresCommissionController implements ICommissionController {
-  async getMappingsData(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<APIResponse<CommissionEntityMapTable[]>> {
-    const result = await RepoProvider.commissionRepo.getMappingsData();
-    if (!result.success) {
-      return res.status(500).send(result);
-    }
-    return res.status(200).send(result);
-  }
-
-  async searchCommission(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<APIResponse<CommissionTable[]>> {
-    const title = get(req.query, "title");
-    const type = get(req.query, "type");
-
-    const result = await RepoProvider.commissionRepo.search(title, type);
-
-    if (!result.success) {
-      return res.status(500).send(result);
-    }
-    return res.status(200).send(result);
-  }
-
-  async createMapEntry(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<APIResponse<null>> {
-    /* prepare the input */
-    const user_id = get(req, "user_id");
-    const franchiseId = get(req.body, "franchiseId");
-    const mappings = get(req.body, "mappings") as OrganizationCommissions[];
-
-    const entries: any[] = [];
-
-    for (const commission of mappings) {
-      entries.push({
-        createdBy: user_id,
-        franchiseId: franchiseId,
-        commissionId: commission.commissionId,
-        organizationId: commission.organizationId,
-        status: COMMISSION_PAID_STATUS.PENDING,
-      });
+    async getMappingsData(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        const result = await RepoProvider.commissionRepo.getMappingsData();
+        if (!result.success) {
+            res.status(500).send(result);
+            return;
+        }
+        res.status(200).send(result);
     }
 
-    const result = await RepoProvider.commissionRepo.createMapEntities(entries);
-    if (!result.success) {
-      return res.status(500).send(result);
+    async searchCommission(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        const title = get(req.query, "title").toString();
+        const type = get(req.query, "type")?.toString();
+
+        if (!title) {
+            res.status(400).send({
+                success: false,
+                message: "Missing title or type",
+            });
+            return;
+        }
+
+        const result = await RepoProvider.commissionRepo.search(title, type);
+
+        if (!result.success) {
+            res.status(500).send(result);
+            return;
+        }
+        res.status(200).send(result);
     }
-    return res.status(200).send(result);
-  }
 
-  updateMapEntry(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<APIResponse<null>> {
-    throw new Error("Method not implemented.");
-  }
+    async createMapEntry(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        /* prepare the input */
+        const user_id = get(req, "user_id");
+        const franchiseId = get(req.body, "franchiseId");
+        const mappings = get(req.body, "mappings") as OrganizationCommissions[];
 
-  async getById(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<APIResponse<CommissionTable>> {
-    const id = get(req.params, "id");
-    const result = await RepoProvider.commissionRepo.getById(id);
+        const entries: any[] = [];
 
-    if (!result.success) {
-      return res.status(500).send(result);
+        for (const commission of mappings) {
+            entries.push({
+                createdBy: user_id,
+                franchiseId: franchiseId,
+                commissionId: commission.commissionId,
+                organizationId: commission.organizationId,
+                status: COMMISSION_PAID_STATUS.PENDING,
+            });
+        }
+
+        const result = await RepoProvider.commissionRepo.createMapEntities(
+            entries);
+        if (!result.success) {
+             res.status(500).send(result);
+             return ;
+        }
+        res.status(200).send(result);
     }
-    return res.status(200).send(result);
-  }
 
-  async delete(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<APIResponse<boolean>> {
-    /* prepare the input */
-    const userId = get(req, "user_id");
-
-    const ids = get(req.body, "ids");
-
-    const result = await RepoProvider.commissionRepo.delete(ids, userId);
-
-    if (!result.success) {
-      return res.status(500).send(result);
+    updateMapEntry(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<APIResponse<null>> {
+        throw new Error("Method not implemented.");
     }
-    return res.status(200).send(result);
-  }
 
-  async getAll(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<APIResponse<CommissionTable[]>> {
-    const result = await RepoProvider.commissionRepo.getAll();
+    async getById(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<APIResponse<CommissionTable>> {
 
-    if (!result.success) {
-      return res.status(500).send(result);
+        const id = parseInt(get(req.params, "id"));
+        if(isNaN(id)) throw Error('Missing id or isNaN')
+        const result = await RepoProvider.commissionRepo.getById(id);
+
+        if (!result.success) {
+             res.status(500).send(result);
+             return;
+        }
+        res.status(200).send(result);
     }
-    return res.status(200).send(result);
-  }
 
-  async create(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<APIResponse<CommissionTable>> {
-    /* prepare the input */
-    const user_id = get(req, "user_id", "");
+    async delete(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        /* prepare the input */
 
-    const input = { ...req.body, createdBy: user_id };
+        const user_id = parseInt(get(req, "user_id"));
+        if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
 
-    input.title = input.title.trim().toLowerCase();
+        const ids = get(req.body, "ids");
 
-    // const isTitleAlreadyExists = await RepoProvider.commissionRepo.isTitleAlreadyExists(input.title.trim());
+        // Check if ids exists and is an array
+        if (!ids || !Array.isArray(ids)) {
+            throw Error('ids must be an array');
+        }
 
-    // if (!isTitleAlreadyExists.success) {
-    //     return res.status(500).send(isTitleAlreadyExists);
-    // }
-    // else if (isTitleAlreadyExists.data) {
-    //     return res.status(400).send({
-    //         success: false,
-    //         message: isTitleAlreadyExists.message,
-    //         data: null,
+        // Convert strings to numbers and validate
+        const numericIds = ids.map(id => {
+            const num = typeof id === 'string' ? parseInt(id) : id;
+            if (typeof num !== 'number' || isNaN(num)) {
+                throw Error('all ids must be valid numbers or numeric strings');
+            }
+            return num;
+        });
 
-    //     });
-    // }
+        if (numericIds.length === 0) {
+            throw Error('ids array is empty');
+        }
 
-    const result = await RepoProvider.commissionRepo.create(input);
-    if (!result.success) {
-      return res.status(500).send(result);
+        const result = await RepoProvider.commissionRepo.delete(ids, user_id);
+
+        if (!result.success) {
+            res.status(500).send(result);
+            return;
+        }
+        res.status(200).send(result);
     }
-    return res.status(200).send(result);
-  }
 
-  async update(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<APIResponse<CommissionTable>> {
-    /* prepare the input */
-    const user_id = get(req, "user_id");
+    async getAll(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        const result = await RepoProvider.commissionRepo.getAll();
 
-    const id = get(req.params, "id");
-
-    const input = { ...req.body, updatedBy: user_id };
-    input.title = input.title.trim().toLowerCase();
-
-    // const isTitleAlreadyExists = await RepoProvider.commissionRepo.isTitleAlreadyExists(input.title.trim());
-
-    // if (!isTitleAlreadyExists.success) {
-    //     return res.status(500).send(isTitleAlreadyExists);
-    // }
-    // else if (isTitleAlreadyExists.data) {
-    //     return res.status(400).send({
-    //         success: false,
-    //         message: isTitleAlreadyExists.message,
-    //         data: null,
-
-    //     });
-    // }
-
-    const result = await RepoProvider.commissionRepo.update(id, input);
-    if (!result.success) {
-      return res.status(500).send(result);
+        if (!result.success) {
+            res.status(500).send(result);
+            return;
+        }
+        res.status(200).send(result);
     }
-    return res.status(200).send(result);
-  }
+
+    async create(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<APIResponse<CommissionTable>> {
+        /* prepare the input */
+        const user_id = get(req, "user_id", "");
+
+        const input = {...req.body, createdBy: user_id};
+
+        input.title = input.title.trim().toLowerCase();
+
+        // const isTitleAlreadyExists = await
+        // RepoProvider.commissionRepo.isTitleAlreadyExists(input.title.trim());
+
+        // if (!isTitleAlreadyExists.success) {
+        //     return res.status(500).send(isTitleAlreadyExists);
+        // }
+        // else if (isTitleAlreadyExists.data) {
+        //     return res.status(400).send({
+        //         success: false,
+        //         message: isTitleAlreadyExists.message,
+        //         data: null,
+
+        //     });
+        // }
+
+        const result = await RepoProvider.commissionRepo.create(input);
+        if (!result.success) {
+             res.status(500).send(result);
+             return;
+        }
+        res.status(200).send(result);
+    }
+
+    async update(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<APIResponse<CommissionTable>> {
+        /* prepare the input */
+
+        const user_id = parseInt(get(req, "user_id"));
+        if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
+
+        const id = parseInt(get(req, "id"));
+        if (isNaN(id)) throw Error('Missing id or isNaN');
+
+
+        const input = {...req.body, updatedBy: user_id};
+        input.title = input.title.trim().toLowerCase();
+
+        // const isTitleAlreadyExists = await
+        // RepoProvider.commissionRepo.isTitleAlreadyExists(input.title.trim());
+
+        // if (!isTitleAlreadyExists.success) {
+        //     return res.status(500).send(isTitleAlreadyExists);
+        // }
+        // else if (isTitleAlreadyExists.data) {
+        //     return res.status(400).send({
+        //         success: false,
+        //         message: isTitleAlreadyExists.message,
+        //         data: null,
+
+        //     });
+        // }
+
+        const result = await RepoProvider.commissionRepo.update(id, input);
+        if (!result.success) {
+            res.status(500).send(result);
+            return;
+        }
+        res.status(200).send(result);
+    }
 }

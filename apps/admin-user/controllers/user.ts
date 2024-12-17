@@ -175,7 +175,7 @@ export default class AdminController {
             const id = get(req?.params, "id", 0);
             const payload = { ...req?.body, updatedBy: id };
             console.log(payload);
-            
+
             await new AdminRepo().update(id as number, payload);
             return res
                 .status(200)
@@ -265,7 +265,7 @@ export default class AdminController {
             //     payload = { ...payload, password: hashedPassword };
             // }
             console.log(payload);
-            
+
 
             await new AdminRepo().update(id as number, payload);
             return res
@@ -309,8 +309,10 @@ export default class AdminController {
 
     static async getAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id");
-            const existingAdmin = await new AdminRepo().get(id as number);
+            const id = parseInt(get(req.params, "id"));
+            if(isNaN(id)) throw Error("id not passed or isNan")
+
+            const existingAdmin = await new AdminRepo().get(id);
             if (!existingAdmin?.id) {
                 return res
                     .status(400)

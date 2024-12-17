@@ -337,12 +337,12 @@ export default class ZohoSignController {
         res: Response,
         next: NextFunction
     ) {
-        const templateId = get(req?.params, "templateId", "");
+        const templateId = parseInt(get(req.params, "templateId"));
+        if (isNaN(templateId)) throw Error('Missing templateId or isNaN');
+
         try {
             const getTemplateFields =
-                await new ZohoSignRepo().getTemplateFields(
-                    templateId as number
-                );
+                await new ZohoSignRepo().getTemplateFields(templateId);
             if (!getTemplateFields) {
                 res.status(403).send("No template found");
             }

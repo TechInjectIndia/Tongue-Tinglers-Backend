@@ -58,7 +58,9 @@ export class DocumentController {
 
     static async getDocument(req: Request, res: Response){
         try {
-            const id = get(req, 'params.id', 0);
+            const id = parseInt(get(req.params, "id"));
+            if (isNaN(id)) throw Error('Missing id or isNaN');
+
             const documentRepo = await RepoProvider.documentRepo.getDocument(id)
             if(!documentRepo){
                 return res.status(400)
@@ -124,5 +126,5 @@ export class DocumentController {
   }
 
 
-    
+
 

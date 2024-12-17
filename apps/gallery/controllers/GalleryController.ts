@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { GalleryRepo } from '../models/GalleryRepo';
 import { sendResponse } from '../../../libraries';
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from '../../../constants';
-import { Multer } from 'multer';
+
 import { get, isEmpty } from "lodash";
 
 export default class GalleryController {
@@ -25,10 +25,10 @@ export default class GalleryController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", '');
-            const user_id = get(req, 'user_id', '');
+            const id = parseInt(get(req.params, "id"));
+            if (isNaN(id)) throw Error('Missing id or isNaN');
 
-            const existingFranchiseModel = await new GalleryRepo().get(id as number);
+            const existingFranchiseModel = await new GalleryRepo().get(id);
 
             if (isEmpty(existingFranchiseModel)) {
                 return res
@@ -61,7 +61,7 @@ export default class GalleryController {
     // Upload multiple images with details
     static async uploadImages(req: Request, res: Response, next: NextFunction) {
         try {
-            const images = req.files as Multer.File[];
+            const images = req.files as Express.Multer.File[];
             let imageDetails = req.body.imageDetails;
 
             // Check if images were uploaded
@@ -91,8 +91,10 @@ export default class GalleryController {
                 });
             }
 
+            type File = Express.Multer.File;
+
             // Process each image and upload it
-            const uploadPromises = images.map(async (image: Multer.File, index: number) => {
+            const uploadPromises = images.map(async (image: File, index: number) => {
                 const details = parsedImageDetails[index];
                 const imageInfo = {
                     name: details.name || '',
@@ -118,11 +120,13 @@ export default class GalleryController {
 
     static async update(req: Request, res: Response) {
         try {
-            
-            const id = get(req?.params, "id", '');
+
+            const id = parseInt(get(req.params, "user_id"));
+            if (isNaN(id)) throw Error('Missing id or isNaN');
+
             let parsedImageDetails: any[] = [];
             let uploadedFiles: any[] = [];
-            
+
             // Parse imageDetails from the request body
             const { imageDetails } = req.body;
             if (typeof imageDetails === 'string') {
@@ -139,8 +143,8 @@ export default class GalleryController {
             }
 
             let result: any;
-            if (req.files && req.files.length > 0) {
-                uploadedFiles = req.files as Multer.File[];
+            if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+                uploadedFiles = req.files as Express.Multer.File[];
 
                 // Process and upload each file
                 const uploadPromises = uploadedFiles.map(async (file, index) => {
@@ -184,11 +188,13 @@ export default class GalleryController {
 
     static async update12(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
-            const payload = req?.body;
+            const id = parseInt(get(req.params, "user_id"));
+            if (isNaN(id)) throw Error('Missing id or isNaN');
+
+            const payload = req.body;
             delete payload.id;
 
-            const payloadUpdated = await new GalleryRepo().update(id as number, { ...payload });
+            const payloadUpdated = await new GalleryRepo().update(id, { ...payload });
             return res
                 .status(200)
                 .send(

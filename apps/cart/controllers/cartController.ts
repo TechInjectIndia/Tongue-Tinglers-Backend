@@ -88,11 +88,13 @@ export default class CartController {
     // Remove a product from the cart
     static async deleteProduct(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '');
+            const user_id = parseInt(get(req, "user_id"));
+            if(isNaN(user_id)) throw Error('Missing user_id or isNaN')
+
             const { product_id, productType } = req.body;
 
             if (productType == 'retort') {
-                const existingProduct = await new RetortProductRepo().get(product_id as number);
+                const existingProduct = await new RetortProductRepo().get(product_id);
                 if (!existingProduct) {
                     return res
                         .status(400)
@@ -139,7 +141,9 @@ export default class CartController {
     // Update the quantity or price of a product in the cart
     static async removeProduct(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '');
+            const user_id = parseInt(get(req, "user_id"));
+            if(isNaN(user_id)) throw Error('Missing user_id or isNaN')
+
             const { product_id, quantity, productType } = req.body;
 
             if (productType == 'retort') {
@@ -196,8 +200,10 @@ export default class CartController {
     // Empty a cart
     static async empty(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = get(req, 'user_id', '');
-            const cart = await new CartRepo().findById(userId);
+            const user_id = parseInt(get(req, "user_id"));
+            if(isNaN(user_id)) throw Error('Missing user_id or isNaN')
+
+            const cart = await new CartRepo().findById(user_id);
 
             if (!cart) {
                 return res.status(404).send({
@@ -225,8 +231,10 @@ export default class CartController {
     // Get a cart by ID
     static async getCartById(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = get(req, 'user_id', '');
-            const cart = await new CartRepo().findById(userId);
+            const user_id = parseInt(get(req, "user_id"));
+            if(isNaN(user_id)) throw Error('Missing user_id or isNaN')
+
+            const cart = await new CartRepo().findById(user_id);
 
             if (!cart) {
                 return res.status(404).send({
@@ -252,8 +260,10 @@ export default class CartController {
     // Delete a cart by ID
     static async deleteCart(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = get(req, 'user_id', '');
-            const cart = await new CartRepo().findById(userId);
+            const user_id = parseInt(get(req, "user_id"));
+            if(isNaN(user_id)) throw Error('Missing user_id or isNaN')
+
+            const cart = await new CartRepo().findById(user_id);
 
             if (!cart) {
                 return res.status(404).send({

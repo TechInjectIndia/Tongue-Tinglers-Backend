@@ -25,7 +25,7 @@ class AgreementDocModel extends Model<IBaseAgreementDocs, AgreementDocsCreationA
         this.belongsTo(UserModel, {as: 'deletedByUser', foreignKey: 'deletedBy'})
     }
 
-    static initModel(){
+    public static initModel(){
         AgreementDocModel.init({
             id: {
                 type: DataTypes.INTEGER,
@@ -97,5 +97,5 @@ class AgreementDocModel extends Model<IBaseAgreementDocs, AgreementDocsCreationA
 
 
 
-export {AgreementDocModel}
+export {AgreementDocModel};
 

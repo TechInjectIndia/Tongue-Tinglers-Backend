@@ -8,6 +8,8 @@ import {AssignModel} from "./lead/assigneeModels";
 import {LeadsModel} from "./lead/lead.model";
 import {UserModel} from "./user/user.model";
 
+import {AgreementDocModel} from "../../apps/agreement-docs/model/agreementDocModel";
+
 import {RegionModel} from "./franchise/RegionsModel";
 import {ProposalLeadModels} from "./lead/proposalModels";
 
@@ -20,7 +22,7 @@ import {
     OrganizationModel
 } from "../../apps/organization/database/organization_schema";
 import {DocumentModel} from "./documents/documentModel";
-import {AgreementDocModel} from "../../apps/agreement-docs/model/agreementDocModel";
+
 import {handleError} from "../../apps/common/utils/HelperMethods";
 
 export * from "./user/user.model";
@@ -101,7 +103,7 @@ export * from "./franchise/AreaModel";
 
 // --- Sequelize Associations Setup --- //
 
-
+console.log(DocumentModel,AgreementDocModel);
 
 // Initialize Models
 const models = {

@@ -42,4 +42,34 @@ export default class AgreementDocController {
             });
         }
     }
+
+    static async getAgreementDoc(req: Request, res: Response) {
+        try {
+            const id = parseInt(req.params.id);
+            if (!id) {
+                throw Error("Missing id or isNaN");
+            }
+            if (isNaN(id)) throw Error("Missing id or isNaN");
+            
+            const agreementDoc = await RepoProvider.agreementDocRepo.getAgreementDocById(id);
+            if(!agreementDoc){
+                return res.status(500).send({
+                    message: ERROR_MESSAGE.AGREEMENT_DOC_NOT_FOUND,
+                });
+            }
+            return res.status(200)
+            .send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.FETCHED,
+                    agreementDoc,
+                ),
+            );
+        } catch (error) {
+            console.error("Error:", error);
+            return res.status(500).send({
+                message: error.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
 }

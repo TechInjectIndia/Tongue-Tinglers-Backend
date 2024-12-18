@@ -20,6 +20,7 @@ import {
     OrganizationModel
 } from "../../apps/organization/database/organization_schema";
 import {DocumentModel} from "./documents/documentModel";
+import {AgreementDocModel} from "../../apps/agreement-docs/model/agreementDocModel";
 import {handleError} from "../../apps/common/utils/HelperMethods";
 
 export * from "./user/user.model";
@@ -107,6 +108,7 @@ const models = {
     Document: DocumentModel.initModel(),
     Organization: OrganizationModel.initModel(),
     Franchise: FranchiseModel.initModel(),
+    AgreementDoc: AgreementDocModel.initModel(),
 };
 
 // Establish association with CampaignAdModel

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { Request, Response } from "express";
 import { logRouter } from "../apps/logs/api/logrouter";
 
-const multer = require("multer");
+import multer from "multer";
 const upload = multer({ storage: multer.memoryStorage() });
 import { sendEmail } from "../libraries";
 
@@ -94,7 +94,7 @@ import productsCategoryRouter
     from "../apps/products-category/api/productsCategoryApi";
 import OrderRouter from "../apps/order/api/orderApi";
 import documentRouter from "../apps/documents/api/documentApi";
-
+import agreementDocRouter from "../apps/agreement-docs/api/agreementDocApi"
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
 // router.use(`${ADMIN}/customer`, auth, customerUsersRouter);
@@ -152,6 +152,7 @@ router.use("/order", auth, OrderRouter);
 router.use(`/cart`, auth, cartRouter);
 router.use("/migration", migrationRouter);
 router.use("/document", auth, documentRouter)
+router.use(`${ADMIN}/agreement-docs`, agreementDocRouter)
 
 // router.use(`${GUEST}/users`, auth, guestUsersRouter);
 

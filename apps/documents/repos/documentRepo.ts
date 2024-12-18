@@ -7,7 +7,6 @@ export class DocumentRepo implements IDocumentRepo {
 
     async createDocument(document: BaseDocument[]): Promise<Document[] | null> {
         try {
-
             const documentCreated = await DocumentModel.bulkCreate(document);
             return documentCreated.map((doc: DocumentModel) => doc.toJSON());
         } catch (error) {

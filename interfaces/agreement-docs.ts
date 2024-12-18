@@ -1,7 +1,6 @@
+import { BaseMeta, BaseMetaUsers } from "../database/schema/base/Base";
 
-import {BaseMeta, BaseMetaUsers} from '../database/schema/base/Base'
-
-interface BaseAgreementDocs {
+interface BaseAgreementDocs extends BaseMeta {
     entity_id: number;
     entity_type: ENTITY_TYPE_AGREEMENT;
     agreement_id: string;
@@ -13,15 +12,11 @@ interface BaseAgreementDocs {
 enum ENTITY_TYPE_AGREEMENT {
     PROSPECT = "prospect",
     FRANCHISE = "franchise",
-    ORGANISATION = "organisation"
+    ORGANISATION = "organisation",
 }
 
-interface IBaseAgreementDocs extends BaseAgreementDocs, BaseMeta, BaseMetaUsers {
+interface IBaseAgreementDocs extends BaseAgreementDocs, BaseMeta {
     id: number;
 }
 
-export {
-    BaseAgreementDocs,
-    ENTITY_TYPE_AGREEMENT,
-    IBaseAgreementDocs
-}
+export { BaseAgreementDocs, ENTITY_TYPE_AGREEMENT, IBaseAgreementDocs };

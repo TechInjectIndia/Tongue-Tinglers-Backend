@@ -1,23 +1,20 @@
-import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../../../config";
-import { UserModel } from "../user/user.model";
-import { questionModel } from "./questionModel";
-import { ICampaign } from "../../../interfaces";
-import { RegionModel } from "../franchise/RegionsModel";
-import { AffiliateModel } from "../lead/affiliateModels";
+import {DataTypes, Model, Optional} from "sequelize";
+import {sequelize} from "../../../config";
+import {ICampaign} from "../../../interfaces";
+import {RegionModel} from "../franchise/RegionsModel";
 
-const { STRING, INTEGER, DATE, NOW, UUIDV4, JSONB, UUID } = DataTypes;
+const {STRING, INTEGER, DATE, NOW, JSONB} = DataTypes;
 
 interface CampaignCreationAttributes
     extends Optional<
         ICampaign,
         "id" | "createdAt" | "updatedAt" | "deletedAt"
-    > {}
+    > {
+}
 
 class CampaignAdModel
     extends Model<ICampaign, CampaignCreationAttributes>
-    implements ICampaign
-{
+    implements ICampaign {
     public id!: number;
     public name!: string;
     public franchiseId?: number;
@@ -134,4 +131,4 @@ CampaignAdModel.init(
     }
 );
 
-export { CampaignAdModel };
+export {CampaignAdModel};

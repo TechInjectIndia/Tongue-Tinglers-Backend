@@ -1,4 +1,5 @@
-import { TQueryFilters, TAddInquiry, TInquirysList, TEditInquiry } from '../../../../types';
+import { TQueryFilters } from "../../../../types";
+import { TAddInquiry, TInquirysList, TEditInquiry } from "../../../../types/crm/crm";
 
 /**
  * Interface for Inquiry Controller.

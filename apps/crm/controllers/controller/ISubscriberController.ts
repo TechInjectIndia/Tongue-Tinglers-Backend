@@ -1,4 +1,5 @@
-import { TQueryFilters, TAddSubscriber, TSubscribersList, TEditSubscriber } from '../../../../types';
+import { TQueryFilters } from "../../../../types";
+import { TAddSubscriber, TSubscribersList, TEditSubscriber } from "../../../../types/crm/crm";
 
 /**
  * Interface for Subscriber Controller.

@@ -1,7 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { TInquiry } from "../../../types";
+
 import { INQUIRY_TYPE } from "../../../interfaces";
+import { TInquiry } from "../../../types/crm/crm";
 const { INTEGER, STRING, ENUM, DATE, NOW } = DataTypes;
 
 interface InquiryCreationAttributes extends Optional<TInquiry, 'id' | 'createdAt' | 'updatedAt'> { }

@@ -1,13 +1,8 @@
 const { Op } = require("sequelize");
-import {
-    TEmail,
-    TQueryFilters,
-    TEmailsList,
-    TAddEmail,
-    TEditEmail,
-    TAssignCampaign
-} from "../../../types";
+
 import { EmailModel } from "../../../database/schema";
+import { TQueryFilters } from "../../../types";
+import { TEmail, TEmailsList, TAddEmail, TEditEmail } from "../../../types/crm/crm";
 import IBaseRepo from '../controllers/controller/IEmailController';
 
 export class EmailRepo implements IBaseRepo<TEmail, TQueryFilters> {

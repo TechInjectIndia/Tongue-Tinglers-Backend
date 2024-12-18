@@ -1,7 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { CAMPAIGN_STATUS } from '../../../interfaces';
-import { TCampaign } from "../../../types";
+import { TCampaign } from "../../../types/crm/crm";
+
 const { INTEGER, STRING, ENUM, TEXT } = DataTypes;
 
 interface campaignAttributes extends Optional<TCampaign, 'id' | 'createdAt' | 'updatedAt'> { }

@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { TSubscriber } from "../../../types";
+import { TSubscriber } from "../../../types/crm/crm";
+
 const { INTEGER, STRING } = DataTypes;
 
 interface SubscriberCreationAttributes extends Optional<TSubscriber, 'id' | 'createdAt' | 'updatedAt'> { }

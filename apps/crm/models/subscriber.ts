@@ -1,12 +1,8 @@
 const { Op } = require("sequelize");
-import {
-    TSubscriber,
-    TQueryFilters,
-    TSubscribersList,
-    TAddSubscriber,
-    TEditSubscriber,
-} from "../../../types";
+
 import { SubscriberModel } from "../../../database/schema";
+import { TQueryFilters } from "../../../types";
+import { TSubscriber, TSubscribersList, TAddSubscriber, TEditSubscriber } from "../../../types/crm/crm";
 import IBaseRepo from '../controllers/controller/ISubscriberController';
 
 export class SubscriberRepo implements IBaseRepo<TSubscriber, TQueryFilters> {

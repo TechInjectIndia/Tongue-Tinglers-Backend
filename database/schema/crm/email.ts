@@ -1,10 +1,11 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { TEmail } from "../../../types";
+
 import { EMAIL_STATUS } from "../../../interfaces";
 const { INTEGER, DATE, ENUM, NOW } = DataTypes;
 import { CampaignModel } from './campaign';
 import { SubscriberModel } from './subscriber';
+import { TEmail } from "../../../types/crm/crm";
 
 interface EmailCreationAttributes extends Optional<TEmail, 'id' | 'createdAt' | 'updatedAt'> { }
 

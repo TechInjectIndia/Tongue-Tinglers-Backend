@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
+import {NextFunction, Request, Response} from "express";
 import Joi from "@hapi/joi";
-import { validateReq } from "../../../libraries";
+import {validateReq} from "../../../libraries";
 
 // Validation schema for creating a user address
 const createUserAddressSchema = Joi.object({

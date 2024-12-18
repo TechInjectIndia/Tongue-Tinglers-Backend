@@ -1,4 +1,5 @@
-import { TQueryFilters, TEmail, TAddEmail, TEmailsList, TEditEmail, TAssignCampaign } from '../../../../types';
+import { TQueryFilters } from "../../../../types";
+import { TAddEmail, TEmailsList, TEditEmail } from "../../../../types/crm/crm";
 
 /**
  * Interface for Email Controller.

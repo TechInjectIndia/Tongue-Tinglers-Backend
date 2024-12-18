@@ -1,14 +1,10 @@
 const { Op } = require("sequelize");
-import {
-    TCampaign,
-    TQueryFilters,
-    TCampaignsList,
-    TAddCampaign,
-    TEditCampaign,
-} from "../../../types";
+
 import { CampaignModel } from "../../../database/schema";
 import { EmailModel } from "../../../database/schema";
 import { SubscriberModel } from "../../../database/schema";
+import { TQueryFilters } from "../../../types";
+import { TCampaign, TCampaignsList, TAddCampaign, TEditCampaign } from "../../../types/crm/crm";
 import IBaseRepo from '../controllers/controller/ICampaignController';
 
 export class CampaignRepo implements IBaseRepo<TCampaign, TQueryFilters> {

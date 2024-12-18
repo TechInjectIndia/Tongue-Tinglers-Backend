@@ -1,11 +1,13 @@
-import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../../../config";
-import { CampaignAdModel } from './campaignAdModel';
-import { ICampaignSubmisisons } from '../../../interfaces';
+import {DataTypes, Model, Optional} from "sequelize";
+import {sequelize} from "../../../config";
 
-const { TEXT, DATE, INTEGER, NOW, UUIDV4 } = DataTypes;
+import {ICampaignSubmisisons} from '../../../interfaces';
+import {CampaignModel} from "../crm";
 
-interface AnswerCreationAttributes extends Optional<ICampaignSubmisisons, 'id' | 'createdAt' | 'updatedAt'> { }
+const {TEXT, DATE, INTEGER, NOW, UUIDV4} = DataTypes;
+
+interface AnswerCreationAttributes extends Optional<ICampaignSubmisisons, 'id' | 'createdAt' | 'updatedAt'> {
+}
 
 class CampaignSubmissions extends Model<ICampaignSubmisisons, AnswerCreationAttributes> implements ICampaignSubmisisons {
     public id!: number;
@@ -16,7 +18,7 @@ class CampaignSubmissions extends Model<ICampaignSubmisisons, AnswerCreationAttr
     public readonly updatedAt!: Date;
 
     public static associate() {
-        CampaignSubmissions.belongsTo(CampaignAdModel, {
+        CampaignSubmissions.belongsTo(CampaignModel, {
             foreignKey: 'campaignId',
             as: 'campaign',
         });
@@ -28,7 +30,7 @@ CampaignSubmissions.init({
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        autoIncrement: true, 
+        autoIncrement: true,
     },
     campaignId: {
         type: INTEGER,
@@ -60,4 +62,4 @@ CampaignSubmissions.init({
 
 CampaignSubmissions.associate();
 
-export { CampaignSubmissions };
+export {CampaignSubmissions};

@@ -11,7 +11,6 @@ export * from './reviews';
 export * from './testimonials';
 export * from './common';
 export * from './baseAddress';
-export * from './crm';
 export * from './contracts';
 export * from './token';
 export type MulterFile = Express.Multer.File;

@@ -1,26 +1,29 @@
 // Admin model starts
 
-import {CampaignAdModel} from "./campaign-ui/campaignAdModel";
+import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
 // import { questionModel } from "./campaign-ui/questionModel";
-import {FranchiseModel} from "./franchise/franchiseModel";
-import {AffiliateModel} from "./lead/affiliateModels";
-import {AssignModel} from "./lead/assigneeModels";
-import {LeadsModel} from "./lead/lead.model";
-import {UserModel} from "./user/user.model";
+import { FranchiseModel } from "./franchise/franchiseModel";
+import { AffiliateModel } from "./lead/affiliateModels";
+import { AssignModel } from "./lead/assigneeModels";
+import { LeadsModel } from "./lead/lead.model";
+import { UserModel } from "./user/user.model";
 
-import {RegionModel} from "./franchise/RegionsModel";
-import {ProposalLeadModels} from "./lead/proposalModels";
+import { RegionModel } from "./franchise/RegionsModel";
+import { ProposalLeadModels } from "./lead/proposalModels";
 
-import {RetortProductsModel} from "./retort/retort-product";
-import {RetortProductCategoryModel} from "./retort/retort-category";
+import { RetortProductsModel } from "./retort/retort-product";
+import { RetortProductCategoryModel } from "./retort/retort-category";
 import {
     RetortProductCategoryMapModel
 } from "./retort/retort-product_category_map";
 import {
     OrganizationModel
 } from "../../apps/organization/database/organization_schema";
-import {DocumentModel} from "./documents/documentModel";
-import {handleError} from "../../apps/common/utils/HelperMethods";
+import { DocumentModel } from "./documents/documentModel";
+import { handleError } from "../../apps/common/utils/HelperMethods";
+import { CampaignModel } from "./crm";
+
+
 
 export * from "./user/user.model";
 export * from "./user/address";
@@ -107,6 +110,7 @@ const models = {
     Document: DocumentModel.initModel(),
     Organization: OrganizationModel.initModel(),
     Franchise: FranchiseModel.initModel(),
+
 };
 
 // Establish association with CampaignAdModel

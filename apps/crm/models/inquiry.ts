@@ -1,12 +1,8 @@
 const { Op } = require("sequelize");
-import {
-    TInquiry,
-    TQueryFilters,
-    TInquirysList,
-    TAddInquiry,
-    TEditInquiry,
-} from "../../../types";
+
 import { InquiryModel } from "../../../database/schema";
+import { TQueryFilters } from "../../../types";
+import { TInquiry, TInquirysList, TAddInquiry, TEditInquiry } from "../../../types/crm/crm";
 import IBaseRepo from '../controllers/controller/IInquiryController';
 
 export class InquiryRepo implements IBaseRepo<TInquiry, TQueryFilters> {

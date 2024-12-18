@@ -1,4 +1,6 @@
-import { TQueryFilters, TAddCampaign, TCampaign, TCampaignsList, TEditCampaign } from '../../../../types';
+import { TQueryFilters } from "../../../../types/admin";
+import { TAddCampaign, TCampaign, TCampaignsList, TEditCampaign } from "../../../../types/crm/crm";
+
 
 /**
  * Interface for Campaign Controller.

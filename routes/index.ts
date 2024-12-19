@@ -1,10 +1,10 @@
-import { Router } from "express";
-import { Request, Response } from "express";
-import { logRouter } from "../apps/logs/api/logrouter";
+import {Router} from "express";
+import {Request, Response} from "express";
+import {logRouter} from "../apps/logs/api/logrouter";
 
 import multer from "multer";
-const upload = multer({ storage: multer.memoryStorage() });
-import { sendEmail } from "../libraries";
+const upload = multer({storage: multer.memoryStorage()});
+import {sendEmail} from "../libraries";
 
 const router = Router();
 
@@ -14,7 +14,7 @@ const CUSTOMER = "/customer";
 const GUEST = "/guest";
 
 // ====== Auth ======
-import { auth } from "../middlewares/auth";
+import {auth} from "../middlewares/auth";
 import authRouter from "../apps/auth/api";
 
 router.use(`/auth`, authRouter);
@@ -74,7 +74,7 @@ import shippingHistory from "../apps/ecommerce/api/shippingHistoryApi";
 
 import vendorRouter from "../apps/vendor/api/vendorApi";
 import frachiseRouter from "../apps/franchise/api/franchise";
-import { commissionRouter } from "../apps/commission/api/CommissionApi";
+import {commissionRouter} from "../apps/commission/api/CommissionApi";
 
 /* Migration Router */
 import migrationRouter from "../migrations/routes/migrateRoute";
@@ -145,11 +145,11 @@ router.use(`${ADMIN}/options`, auth, optionsRouter);
 router.use(`${ADMIN}/options-values`, auth, optionsValuesRouter);
 router.use(`${ADMIN}/product-options`, auth, productOptionsRouter);
 router.use(`${ADMIN}/products-category`, auth, productsCategoryRouter);
-router.use("/cart-product", auth, cartProductRouter);
+
 router.use("/cart-detail", auth, cartDetailRouter);
 router.use("/order-items", auth, orderItemRouter);
 router.use("/order", auth, OrderRouter);
-router.use(`/cart`, auth, cartRouter);
+router.use(`/cart`, auth, cartProductRouter);
 router.use("/migration", migrationRouter);
 router.use("/document", auth, documentRouter)
 router.use(`${ADMIN}/agreement-docs`, agreementDocRouter)

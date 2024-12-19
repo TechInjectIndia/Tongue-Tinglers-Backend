@@ -29,7 +29,18 @@ export class CartProductRepo implements ICartProductRepo {
                 // cart_ids: cartProductIds,
                 user_id: cartProduct.user_id
             }
-            const createCartDetails = await CartDetailsModel.create(payload, { transaction })
+
+            const userExist = await CartDetailsModel.findOne({
+                where: {
+                    user_id: cartProduct.user_id
+                }
+            })
+            var createCartDetails = null;
+            if(!userExist){
+                createCartDetails = await CartDetailsModel.create(payload, { transaction })
+            }else{
+                createCartDetails = userExist
+            }
             
             await createCartDetails.addCartProductses(cartProductIds);
             // await organization.addShippingAddresses(shippingAddresses);

@@ -12,7 +12,7 @@ import {
     Note,
 } from "../../interfaces";
 
-const { INTEGER, STRING, FLOAT, DATE, JSONB, ENUM, UUIDV4 } = DataTypes;
+const { INTEGER, STRING, FLOAT, DATE, JSONB, ENUM } = DataTypes;
 import { LeadsModel } from "./lead/lead.model";
 import { UserModel } from "./user/user.model";
 

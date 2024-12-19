@@ -16,52 +16,57 @@ class ItemStockModel extends Model<IItemStockAttributes, ItemStockCreationAttrib
     // Timestamps
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
+    public static initModel() {
+        ItemStockModel.init({
+            user_id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                allowNull: false,
+                autoIncrement: true,
+            },
+            startStock: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            endStock: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            recorded_at: {
+                type: DataTypes.DATE,
+                defaultValue: DataTypes.NOW,
+            },
+            createdAt: {
+                type: DataTypes.DATE,
+                allowNull: false,
+                defaultValue: DataTypes.NOW,
+            },
+            updatedAt: {
+                type: DataTypes.DATE,
+                allowNull: false,
+                defaultValue: DataTypes.NOW,
+            }
+        }, {
+            sequelize,
+            tableName: 'item_stocks',
+            timestamps: true
+        });
+
+        // Define associations
+        UserModel.hasMany(ItemStockModel, {
+            foreignKey: 'user_id',
+            as: 'itemStocks' // Optional: provides an alias for the association
+        });
+
+        ItemStockModel.belongsTo(UserModel, {
+            foreignKey: 'user_id',
+            as: 'franchise' // Optional: provides an alias for the association
+        });
+
+        return ItemStockModel
+    }
 }
 
-ItemStockModel.init({
-    user_id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        allowNull: false,
-        autoIncrement: true, 
-    },
-    startStock: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    endStock: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    recorded_at: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-    }
-}, {
-    sequelize,
-    tableName: 'item_stocks',
-    timestamps: true
-});
-
-// Define associations
-UserModel.hasMany(ItemStockModel, {
-    foreignKey: 'user_id',
-    as: 'itemStocks' // Optional: provides an alias for the association
-});
-
-ItemStockModel.belongsTo(UserModel, {
-    foreignKey: 'user_id',
-    as: 'franchise' // Optional: provides an alias for the association
-});
 
 export { ItemStockModel };

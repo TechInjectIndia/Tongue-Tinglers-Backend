@@ -4,6 +4,8 @@ import {sequelize} from "../../../config";
 import {ICampaign} from "../../../interfaces";
 import {RegionModel} from "../franchise/RegionsModel";
 import {LeadsModel} from "../lead/lead.model";
+import {AffiliateModel} from "../lead/affiliateModels";
+import {ProposalLeadModels} from "../lead/proposalModels";
 
 
 const {STRING, INTEGER, DATE, NOW, JSONB} = DataTypes;
@@ -139,6 +141,20 @@ class CampaignAdModel
     public static associate() {
         CampaignAdModel.hasMany(LeadsModel,
             {foreignKey: 'campaignId', as: 'campaign'});
+        CampaignAdModel.hasOne(RegionModel, {
+            foreignKey: "regionId",
+            as: "region",
+        });
+
+        CampaignAdModel.hasOne(AffiliateModel, {
+            foreignKey: "affiliateId",
+            as: "affiliate",
+        });
+
+        CampaignAdModel.hasMany(ProposalLeadModels, {
+            foreignKey: "proposalIds",
+            as: "proposals",
+        });
     }
 }
 

@@ -3,7 +3,7 @@ import { sequelize } from "../../../config";
 import { CampaignAdModel } from './campaignAdModel';
 import { ICampaignSubmisisons } from '../../../interfaces';
 
-const { TEXT, DATE, INTEGER, NOW, UUIDV4 } = DataTypes;
+const { TEXT, DATE, INTEGER, NOW } = DataTypes;
 
 interface AnswerCreationAttributes extends Optional<ICampaignSubmisisons, 'id' | 'createdAt' | 'updatedAt'> { }
 

@@ -1,7 +1,7 @@
-import { Model, DataTypes, Optional } from "sequelize";
-import { sequelize } from "../../../config";
-import { UserModel } from '../user/user.model';
-import { LeadsModel } from './lead.model';
+import {DataTypes, Model, Optional} from "sequelize";
+import {sequelize} from "../../../config";
+import {UserModel} from '../user/user.model';
+import {LeadsModel} from './lead.model';
 
 // Define the attributes for Assign creation (Optional `id` if auto-generated)
 interface AssignAttributes {
@@ -13,10 +13,12 @@ interface AssignAttributes {
 }
 
 // Define the interface for Assign model creation
-interface AssignCreationAttributes extends Optional<AssignAttributes, "id"> { }
+interface AssignCreationAttributes extends Optional<AssignAttributes, "id"> {
+}
 
 // Model class
-class AssignModel extends Model<AssignAttributes, AssignCreationAttributes> implements AssignAttributes {
+class AssignModel extends Model<AssignAttributes, AssignCreationAttributes>
+    implements AssignAttributes {
     public id!: number;
     public assignedTo!: number;
     public assignedBy!: number;
@@ -28,9 +30,24 @@ class AssignModel extends Model<AssignAttributes, AssignCreationAttributes> impl
     public readonly updatedAt!: Date;
 
     public static associate() {
-        this.belongsTo(UserModel, { foreignKey: 'assignedTo', as: 'assignedToId', });
-        this.belongsTo(UserModel, { foreignKey: 'assignedBy', as: 'assignedById', });
-        this.belongsTo(LeadsModel, { foreignKey: 'leadId', as: 'leadData', });
+        this.belongsTo(UserModel,
+            {foreignKey: 'assignedTo', as: 'assignedToId',});
+        this.belongsTo(UserModel,
+            {foreignKey: 'assignedBy', as: 'assignedById',});
+        this.belongsTo(LeadsModel, {foreignKey: 'leadId', as: 'leadData',});
+        AssignModel.belongsTo(UserModel, {
+            foreignKey: "assignedTo",
+            as: "assignedUser",
+        });
+        AssignModel.belongsTo(UserModel, {
+            foreignKey: "assignedBy",
+            as: "assignerUser",
+        });
+
+        AssignModel.belongsTo(LeadsModel, {
+            foreignKey: "leadId",
+            as: "lead",
+        });
     }
 
     public static initModel() {
@@ -82,4 +99,4 @@ class AssignModel extends Model<AssignAttributes, AssignCreationAttributes> impl
     }
 }
 
-export { AssignModel };
+export {AssignModel};

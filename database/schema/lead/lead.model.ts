@@ -1,15 +1,27 @@
-import { DataTypes, Model, Optional } from "sequelize";
-import { LeadSource, LeadStatus, FollowDetails, LeadAddress, UserDetails, ITrackable, Note, Affiliate, ExtraFields, FranchiseModels, TPayloadProposalModel } from '../../../interfaces';
-import { sequelize } from "../../../config";
-import { ILead } from "../../../interfaces";
-import { UserModel } from '../user/user.model';
-import { INTEGER } from "sequelize";
-import { NUMBER } from "sequelize";
-import { CampaignModel } from "../crm";
-import { CampaignAdModel } from "../campaign-ui/campaignAdModel";
-const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
+import {DataTypes, INTEGER, Model, Optional} from "sequelize";
+import {
+    Affiliate,
+    ExtraFields,
+    FollowDetails,
+    FranchiseModels,
+    ILead,
+    ITrackable,
+    LeadAddress,
+    LeadSource,
+    LeadStatus,
+    Note,
+    UserDetails
+} from '../../../interfaces';
+import {sequelize} from "../../../config";
+import {UserModel} from '../user/user.model';
+import {CampaignAdModel} from "../campaign-ui/campaignAdModel";
+import {AssignModel} from "./assigneeModels";
 
-interface LeadCreationAttributes extends Optional<ILead, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
+const {STRING, TEXT, DATE, JSONB, ENUM, NOW} = DataTypes;
+
+interface LeadCreationAttributes
+    extends Optional<ILead, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> {
+}
 
 class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public id!: number;
@@ -41,10 +53,21 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public readonly deletedAt!: Date | null;
 
     public static associate() {
-        LeadsModel.belongsTo(UserModel, { foreignKey: 'createdBy', as: 'creator' });
-        LeadsModel.belongsTo(UserModel, { foreignKey: 'updatedBy', as: 'updater' });
-        LeadsModel.belongsTo(UserModel, { foreignKey: 'deletedBy', as: 'deleter' });
-        LeadsModel.belongsTo(CampaignAdModel, { foreignKey: 'campaignId' , as: 'campaign' });
+        LeadsModel.belongsTo(UserModel,
+            {foreignKey: 'createdBy', as: 'creator'});
+        LeadsModel.belongsTo(UserModel,
+            {foreignKey: 'updatedBy', as: 'updater'});
+        LeadsModel.belongsTo(UserModel,
+            {foreignKey: 'deletedBy', as: 'deleter'});
+        LeadsModel.belongsTo(CampaignAdModel,
+            {foreignKey: 'campaignId', as: 'campaign'});
+
+        // Establish association with AssignModel
+        LeadsModel.hasMany(AssignModel, {
+            foreignKey: "leadId",
+            as: "assign",
+        });
+
     }
 
     public static initModel() {
@@ -178,9 +201,4 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     }
 }
 
-
-
-
-
-
-export { LeadsModel };
+export {LeadsModel};

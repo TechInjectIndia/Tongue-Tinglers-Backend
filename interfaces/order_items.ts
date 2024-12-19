@@ -14,18 +14,24 @@ interface BaseOrderItem {
     type: ORDER_ITEM_TYPE
 }
 
-interface ParsedOrderItem  {
-    id?: number;
+interface PriceComponent {
+}
+
+interface PreSaleParsedOrderItem  {
+
     product: ParsedProduct,
     productOptionId: ParsedProductOptions,
     quantity: number,
     total_price: number,
     totalTax: number,
-    couponDiscount: number,
-    pointsDiscount: number,
-    studentDiscount: number,
+    prices:Array<PriceComponent>
+    disc:Array<PriceComponent>
     type: ORDER_ITEM_TYPE
     // order_items?: ParsedOrderItem[];
+}
+
+interface ParsedOrderItem extends PreSaleParsedOrderItem{
+    id: number;
 }
 
 enum ORDER_ITEM_TYPE {
@@ -61,5 +67,7 @@ export {
     UpdateCouponDiscount,
     UpdatePointsDiscount,
     UpdateStudentDiscount,
-    ParsedOrderItem
+    ParsedOrderItem,
+    PriceComponent,
+    PreSaleParsedOrderItem
 }

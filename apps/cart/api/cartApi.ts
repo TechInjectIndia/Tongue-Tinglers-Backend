@@ -1,7 +1,6 @@
 import * as express from "express";
 import CartController from "../controllers/cartController";
 import * as CartValidation from "../validations/CartValidations";
-import { hasPermission } from "../../../middlewares";
 
 const router = express.Router();
 
@@ -11,10 +10,10 @@ const {
   validateUpdateProduct,
 } = CartValidation;
 
-// ====== Cart Starts ====== 
+// ====== Cart Starts ======
 /**
  * @swagger
- * 
+ *
  * /api/cart/empty:
  *   delete:
  *     summary: Empty a Cart
@@ -28,7 +27,7 @@ const {
  *         description: Unauthorized
  *       '404':
  *         description: Cart not found
- * 
+ *
  * /api/cart:
  *   get:
  *     summary: Get a Cart for the authenticated user
@@ -42,7 +41,7 @@ const {
  *         description: Unauthorized
  *       '404':
  *         description: Cart not found
- * 
+ *
  * /api/cart/product/add:
  *   post:
  *     summary: Add a product to the cart
@@ -73,7 +72,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/cart/product/delete:
  *   delete:
  *     summary: delete a product from the cart
@@ -103,7 +102,7 @@ const {
  *         description: Unauthorized
  *       '404':
  *         description: Product or cart not found
- * 
+ *
  * /api/cart/product/remove:
  *   put:
  *     summary: remove a product in the cart
@@ -134,7 +133,7 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
+ *
  */
 router.delete("/empty", CartController.empty);
 router.get("/", CartController.getCartById);

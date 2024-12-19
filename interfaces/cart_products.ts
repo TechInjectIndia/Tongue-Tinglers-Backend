@@ -31,7 +31,7 @@ interface ParseCart{
 
 
 interface ParsedCartProduct {
-    id: number,
+    id: number, // cartItemId
     product: ParsedProduct,
     variation: ParsedVariations,
     quantity: number,

@@ -25,7 +25,7 @@ interface Notes extends BaseNotes{
     id: number;
 }
 
-interface BaseOrder{
+interface BaseOrder {
     status: string;
     item_count: number;
     total: number;
@@ -55,20 +55,33 @@ interface BaseOrder{
 interface ParsedOrder extends ParsedMeta, OrderPayload {
     id: number;
     status: string;
-    itemsCount: number;
-    total: number;
+    itemsCount: number; //todo @Nitesh remove
+    total: number; // without Tax
     totalTax: number;
     deliveryStatus: string;
     customerDetails: ParsedUser;
-    paymentType: string;
+    paymentType: string; //todo convert to enum
     paymentId: number;
-    cancelledItems: ParsedOrderItem[];
+    cancelledItems: ParsedOrderItem[]; //todo @nitesh break into 2 interfaces - PresaleOrder & Order
+    //todo and keep cancelledItems in presalesOrder
     totalDiscount: number;
-    deliveryDetails: any;
+    deliveryDetails: any; //todo @nitesh convert to interface
+    shippingAddress: Address;
     totalShipping: number;
-    anomalyArr: number[]
-    prices: string;
-    discountPrices: string;
+    anomalyArr: number[];
+    coupon:string;
+    items: ParsedOrderItem[];
+
+}
+
+interface PresaleParsedOrder extends ParsedMeta, OrderPayload {
+    total: number; // without Tax
+    totalTax: number;
+    cancelledItems: ParsedOrderItem[]; //todo @nitesh break into 2 interfaces - PresaleOrder & Order
+    //todo and keep cancelledItems in presalesOrder
+    totalDiscount: number;
+    coupon:string;
+    items: ParsedOrderItem[];
 }
 
 interface OrderPayload {
@@ -94,5 +107,6 @@ export {
     Notes,
     OrderPayload,
     OrderPagination,
-    ParsedOrder
+    ParsedOrder,
+    PresaleParsedOrder
 }

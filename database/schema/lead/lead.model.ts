@@ -7,6 +7,7 @@ import { INTEGER } from "sequelize";
 import { NUMBER } from "sequelize";
 import { CampaignModel } from "../crm";
 import { CampaignAdModel } from "../campaign-ui/campaignAdModel";
+import RepoProvider from "../../../apps/RepoProvider";
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
 
 interface LeadCreationAttributes extends Optional<ILead, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
@@ -176,6 +177,21 @@ LeadsModel.init({
 
 LeadsModel.belongsTo(CampaignAdModel, { foreignKey: 'campaignId' , as: 'campaign' });
 CampaignAdModel.hasMany(LeadsModel, { foreignKey: 'campaignId', as: 'campaign' });
+
+LeadsModel.addHook("afterCreate", async (instance, options) => {
+    await RepoProvider.LogRepo.logModelAction("create", "Leads", instance, options);
+});
+
+// After Update Hook - Log the updated fields of the Leads
+LeadsModel.addHook("afterUpdate", async (instance, options) => {
+    // Now call logModelAction as before
+    await RepoProvider.LogRepo.logModelAction("update", "Leads", instance, options);
+});
+
+// After Destroy Hook - Log the deletion of the Leads
+LeadsModel.addHook("afterDestroy", async (instance, options) => {
+    await RepoProvider.LogRepo.logModelAction("delete", "Leads", instance, options);
+});
 
 
 export { LeadsModel };

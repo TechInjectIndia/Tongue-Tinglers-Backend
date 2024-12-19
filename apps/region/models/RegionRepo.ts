@@ -80,11 +80,14 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
     }
 
     public async update(id: number, data: TPayloadRegion): Promise<[affectedCount: number]> {
-        return await RegionModel.update(data, {
-            where: {
-                id,
-            },
-        });
+        const regions = await RegionModel.findByPk(id);
+        if (!regions) {
+        throw new Error("Regions not found");
+        }
+        regions.set(data);
+        await regions.save();
+
+        return [1];
     }
 
     public async delete(ids: number[]): Promise<number> {

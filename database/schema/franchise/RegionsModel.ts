@@ -2,7 +2,8 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
 import { IRegion } from '../../../interfaces';
-import { UserModel } from '../user/user.model';;
+import { UserModel } from '../user/user.model';import RepoProvider from '../../../apps/RepoProvider';
+;
 
 interface RegionCreationAttributes extends Optional<IRegion, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
@@ -78,5 +79,20 @@ RegionModel.init(
         tableName: 'regions',
     }
 );
+
+RegionModel.addHook("afterCreate", async (instance, options) => {
+    await RepoProvider.LogRepo.logModelAction("create", "Regions", instance, options);
+});
+
+// After Update Hook - Log the updated fields of the Regions
+RegionModel.addHook("afterUpdate", async (instance, options) => {
+    // Now call logModelAction as before
+    await RepoProvider.LogRepo.logModelAction("update", "Regions", instance, options);
+});
+
+// After Destroy Hook - Log the deletion of the Regions
+RegionModel.addHook("afterDestroy", async (instance, options) => {
+    await RepoProvider.LogRepo.logModelAction("delete", "Regions", instance, options);
+});
 
 export { RegionModel };

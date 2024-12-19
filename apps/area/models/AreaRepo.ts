@@ -68,11 +68,14 @@ export class AreaRepo implements IBaseRepo<IArea, TListFiltersAreas> {
     }
 
     public async update(id: number, data: TPayloadArea): Promise<[affectedCount: number]> {
-        return await AreaModel.update(data, {
-            where: {
-                id,
-            },
-        });
+    console.log("data ==> ", data);
+        const areas = await AreaModel.findByPk(id);
+        if (!areas) {
+            throw new Error("Areas not found");
+        }
+        areas.set(data);
+        await areas.save();
+        return [1];
     }
 
     public async delete(ids: number[]): Promise<number> {

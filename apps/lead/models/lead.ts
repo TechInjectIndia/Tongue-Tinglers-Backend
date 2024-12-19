@@ -248,10 +248,14 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
         id: number,
         data: TLeadPayload
     ): Promise<[affectedCount: number]> {
-        const response = await LeadsModel.update(data, {
-            where: {id},
-        });
-        return response;
+        const lead = await LeadsModel.findByPk(id);
+        if (!lead) {
+        throw new Error("Leads not found");
+        }
+        lead.set(data);
+        await lead.save();
+
+        return [1];
     }
 
     // Assign a lead to a user

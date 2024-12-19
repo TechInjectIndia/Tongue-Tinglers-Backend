@@ -77,7 +77,7 @@ export default class AreaController {
             const id = get(req.params, "id", 0);
             const updateData = req.body;
             delete updateData.id;
-            const user_id = get(req, "user_id", "");
+            const user_id = get(req, "user_id", 0);
             const updatedArea = await new AreaRepo().update(id as number, { ...updateData, updatedBy: user_id });
 
             return res

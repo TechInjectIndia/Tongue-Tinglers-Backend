@@ -3,6 +3,7 @@ import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
 import { IArea } from '../../../interfaces';
 import { UserModel } from '../user/user.model';
+import RepoProvider from '../../../apps/RepoProvider';
 
 interface AreaCreationAttributes extends Optional<IArea, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
 
@@ -71,5 +72,20 @@ AreaModel.init(
         tableName: 'Areas',
     }
 );
+
+AreaModel.addHook("afterCreate", async (instance, options) => {
+    await RepoProvider.LogRepo.logModelAction("create", "Areas", instance, options);
+});
+
+// After Update Hook - Log the updated fields of the Areas
+AreaModel.addHook("afterUpdate", async (instance, options) => {
+    // Now call logModelAction as before
+    await RepoProvider.LogRepo.logModelAction("update", "Areas", instance, options);
+});
+
+// After Destroy Hook - Log the deletion of the Areas
+AreaModel.addHook("afterDestroy", async (instance, options) => {
+    await RepoProvider.LogRepo.logModelAction("delete", "Areas", instance, options);
+});
 
 export { AreaModel };

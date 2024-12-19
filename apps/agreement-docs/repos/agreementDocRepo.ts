@@ -4,6 +4,7 @@ import { handleError } from '../../common/utils/HelperMethods';
 import { AgreementDocModel } from '../model/agreementDocModel';
 import { IAgreementDocRepo } from './IAgreementDocRepo';
 import { UserModel } from '../../../database/schema';
+import { Pagination } from '../../../interfaces';
 
 export class AgreementDocRepo implements IAgreementDocRepo{
 
@@ -60,15 +61,66 @@ export class AgreementDocRepo implements IAgreementDocRepo{
         }
     }
 
+    async getAgreementDoc(entity_id: number, entity_type: string): Promise<IBaseAgreementDocs> {
+        try {
+            const agreementDoc = await AgreementDocModel.findOne({
+                where: {
+                    entity_id: entity_id,
+                    entity_type: entity_type
+                },
+                include: [
+                    {
+                        model: UserModel,
+                        as: "createdByUser",
+                        attributes: ["id", "firstName", "lastName", "email"]
+                    },
+                ]
+            })
+
+            if(!agreementDoc){
+                handleError(`Failed to retrieve the agreement document for the provided entity_id: ${entity_id} and entity_type: ${entity_type}`);
+                throw new Error(`Failed to retrieve the agreement document for the provided entity_id: ${entity_id} and entity_type: ${entity_type}`);
+            }
+            return agreementDoc.toJSON();
+        } catch (error) {
+            handleError(error, entity_id, entity_type)
+            throw error
+        }
+    }
+
+    async getAllAgreementDoc(page: number,limit: number): Promise<Pagination<IBaseAgreementDocs>> {
+        try{
+            const offset = (page - 1) * limit;
+            const {rows: agreementDoc, count: total} = await AgreementDocModel.findAndCountAll({
+                offset,
+                limit,
+                order: [["createdAt", "DESC"]]
+            })
+            const totalPages = Math.ceil(agreementDoc.length / limit);
+
+            return { data: agreementDoc, total: agreementDoc.length, totalPages };
+        }catch(error){
+            handleError(error)
+            throw error
+        }
+    }
+
     async updateAgreementDoc(payload: IBaseAgreementDocs): Promise<IBaseAgreementDocs> {
-        throw new Error("Method not implemented.");
-    }
-
-    async getAgreementDoc(entity_id: number, entity_type: any): Promise<IBaseAgreementDocs> {
-        throw new Error("Method not implemented.");
-    }
-
-    async getAllAgreementDoc(): Promise<IBaseAgreementDocs[]> {
-        throw new Error("Method not implemented.");
+        try{
+            const agreementDoc = await AgreementDocModel.findOne({
+                where: {
+                    id: payload.id
+                }
+            })
+            if(!agreementDoc){
+                handleError(`Failed to retrieve the agreement document for the provided id: ${payload.id}`);
+                throw new Error(`Failed to retrieve the agreement document for the provided id: ${payload.id}`);
+            }
+            const updatedAgreementDoc = await agreementDoc.update(payload)
+            return updatedAgreementDoc.toJSON();
+        }catch(error){
+            handleError(error, payload)
+            throw error
+        }
     }
 }

@@ -110,7 +110,6 @@ const models = {
     Document: DocumentModel.initModel(),
     Organization: OrganizationModel.initModel(),
     Franchise: FranchiseModel.initModel(),
-    AgreementDoc: AgreementDocModel.initModel(),
 };
 
 // Establish association with CampaignAdModel

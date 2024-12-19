@@ -37,7 +37,8 @@ export const ERROR_MESSAGE = {
     REFERRAL_CODE_USED: 'Referral code has already been used',
     FRANCHISE_NOT_CREATED: "Franchise not created",
     AGREEMENT_DOC_NOT_CREATED: "Agreement document not created",
-    AGREEMENT_DOC_NOT_FOUND: "Agreement document not found"
+    AGREEMENT_DOC_NOT_FOUND: "Agreement document not found",
+    AGREEMENT_DOC_NOT_UPDATED: "Agreement document not updated"
 };
 
 export const SUCCESS_MESSAGE = {

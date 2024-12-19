@@ -1,3 +1,4 @@
+import { Pagination } from "../../../interfaces";
 import { BaseAgreementDocs, ENTITY_TYPE_AGREEMENT, IBaseAgreementDocs } from "../../../interfaces/agreement-docs";
 
 export interface IAgreementDocRepo {
@@ -7,7 +8,7 @@ export interface IAgreementDocRepo {
 
     updateAgreementDoc(payload: IBaseAgreementDocs): Promise<IBaseAgreementDocs>
 
-    getAgreementDoc(entity_id: number, entity_type: ENTITY_TYPE_AGREEMENT): Promise<IBaseAgreementDocs>
+    getAgreementDoc(entity_id: number, entity_type: string): Promise<IBaseAgreementDocs>
 
-    getAllAgreementDoc(): Promise<IBaseAgreementDocs[]>
+    getAllAgreementDoc(page: number,limit: number): Promise<Pagination<IBaseAgreementDocs>>
 }

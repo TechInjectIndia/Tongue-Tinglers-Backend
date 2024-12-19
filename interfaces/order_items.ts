@@ -14,18 +14,18 @@ interface BaseOrderItem {
     type: ORDER_ITEM_TYPE
 }
 
-interface ParsedOrderItem extends ParsedMeta {
-    id: number;
+interface ParsedOrderItem  {
+    id?: number;
     product: ParsedProduct,
-    product_option_id: ParsedProductOptions,
+    productOptionId: ParsedProductOptions,
     quantity: number,
     total_price: number,
-    total_tax: number,
-    coupon_discount: number,
-    points_discount: number,
-    student_discount: number,
+    totalTax: number,
+    couponDiscount: number,
+    pointsDiscount: number,
+    studentDiscount: number,
     type: ORDER_ITEM_TYPE
-    order_items?: ParsedOrderItem[]; 
+    // order_items?: ParsedOrderItem[];
 }
 
 enum ORDER_ITEM_TYPE {

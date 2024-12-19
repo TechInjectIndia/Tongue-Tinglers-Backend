@@ -1,7 +1,6 @@
-import { extend } from "dayjs";
 import { BaseMeta, ParsedMeta } from "../database/schema/base/Base";
 import { BaseOrderItem, ParsedOrderItem } from "./order_items";
-import { MetaUser, ParsedUser } from "./user";
+import { ParsedUser } from "./user";
 import { Address } from "../types";
 
 export enum PAYMENT_STATUS {
@@ -56,25 +55,25 @@ interface BaseOrder{
 interface ParsedOrder extends ParsedMeta, OrderPayload {
     id: number;
     status: string;
-    item_count: number;
+    itemsCount: number;
     total: number;
-    total_tax: number;
-    delivery_status: string;
-    customer_details: ParsedUser;
-    payment_type: string;
-    payment_id: number;
-    cancelled_items: ParsedOrderItem[];
-    total_discount: number;
-    delivery_details: any;
-    total_shipping: number;
+    totalTax: number;
+    deliveryStatus: string;
+    customerDetails: ParsedUser;
+    paymentType: string;
+    paymentId: number;
+    cancelledItems: ParsedOrderItem[];
+    totalDiscount: number;
+    deliveryDetails: any;
+    totalShipping: number;
     anomalyArr: number[]
     prices: string;
-    discount_prices: string;
+    discountPrices: string;
 }
 
 interface OrderPayload {
     notes: Notes[];
-    order_items: BaseOrderItem[];
+    orderItems: BaseOrderItem[];
 }
 interface Order extends BaseMeta, BaseOrder {
     id: number;

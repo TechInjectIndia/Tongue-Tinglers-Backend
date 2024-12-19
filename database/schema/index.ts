@@ -24,6 +24,7 @@ import {
 import {DocumentModel} from "./documents/documentModel";
 
 import {handleError} from "../../apps/common/utils/HelperMethods";
+import {CampaignSubmissions} from "./campaign-ui/campaignSubmissions";
 
 export * from "./user/user.model";
 export * from "./user/address";
@@ -103,13 +104,19 @@ export * from "./franchise/AreaModel";
 
 // --- Sequelize Associations Setup --- //
 
-console.log(DocumentModel,AgreementDocModel);
+console.log(DocumentModel, AgreementDocModel);
 
 // Initialize Models
 const models = {
     Document: DocumentModel.initModel(),
     Organization: OrganizationModel.initModel(),
     Franchise: FranchiseModel.initModel(),
+    Campaign: CampaignAdModel.initModel(),
+    Agreement: AgreementDocModel.initModel(),
+    Leads: LeadsModel.initModel(),
+    CampaignSubmissions: CampaignSubmissions.initModel(),
+    AssignModel: AssignModel.initModel(),
+
 };
 
 // Establish association with CampaignAdModel

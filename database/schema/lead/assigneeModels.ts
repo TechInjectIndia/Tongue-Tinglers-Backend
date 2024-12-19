@@ -32,53 +32,54 @@ class AssignModel extends Model<AssignAttributes, AssignCreationAttributes> impl
         this.belongsTo(UserModel, { foreignKey: 'assignedBy', as: 'assignedById', });
         this.belongsTo(LeadsModel, { foreignKey: 'leadId', as: 'leadData', });
     }
-}
 
-// Step 2: Initialize the Model
-AssignModel.init(
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            allowNull: false,
-            autoIncrement: true, 
-        },
-        assignedTo: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: UserModel,
-                key: "id",
+    public static initModel() {
+        // Step 2: Initialize the Model
+        AssignModel.init(
+            {
+                id: {
+                    type: DataTypes.INTEGER,
+                    primaryKey: true,
+                    allowNull: false,
+                    autoIncrement: true,
+                },
+                assignedTo: {
+                    type: DataTypes.INTEGER,
+                    allowNull: false,
+                    references: {
+                        model: UserModel,
+                        key: "id",
+                    },
+                },
+                assignedBy: {
+                    type: DataTypes.INTEGER,
+                    allowNull: false,
+                    references: {
+                        model: UserModel,
+                        key: "id",
+                    },
+                },
+                assignedDate: {
+                    type: DataTypes.DATE,
+                    allowNull: false,
+                },
+                leadId: {
+                    type: DataTypes.INTEGER,
+                    allowNull: false,
+                    references: {
+                        model: LeadsModel,
+                        key: "id",
+                    },
+                },
             },
-        },
-        assignedBy: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: UserModel,
-                key: "id",
-            },
-        },
-        assignedDate: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
-        leadId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: LeadsModel,
-                key: "id",
-            },
-        },
-    },
-    {
-        sequelize,
-        tableName: "lead_assignments",
-        timestamps: true,
+            {
+                sequelize,
+                tableName: "lead_assignments",
+                timestamps: true,
+            }
+        );
+        return AssignModel;
     }
-);
-
-AssignModel.associate();
+}
 
 export { AssignModel };

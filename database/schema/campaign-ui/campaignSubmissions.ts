@@ -21,43 +21,47 @@ class CampaignSubmissions extends Model<ICampaignSubmisisons, AnswerCreationAttr
             as: 'campaign',
         });
     }
+
+    public static initModel() {
+        CampaignSubmissions.init({
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                allowNull: false,
+                autoIncrement: true,
+            },
+            campaignId: {
+                type: INTEGER,
+                allowNull: false,
+            },
+            response: {
+                type: TEXT,
+                allowNull: false,
+                comment: 'The actual answer provided by the user',
+            },
+            createdAt: {
+                type: DATE,
+                allowNull: false,
+                defaultValue: NOW,
+                comment: 'Timestamp when the answer was created',
+            },
+            updatedAt: {
+                type: DATE,
+                allowNull: false,
+                defaultValue: NOW,
+                comment: 'Timestamp when the answer was last updated',
+            },
+        }, {
+            sequelize,
+            tableName: 'campaign_submissions',
+            timestamps: true,
+            comment: 'Table to store answers for campaigns',
+        });
+
+        return CampaignSubmissions;
+    }
 }
 
-CampaignSubmissions.init({
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        allowNull: false,
-        autoIncrement: true, 
-    },
-    campaignId: {
-        type: INTEGER,
-        allowNull: false,
-    },
-    response: {
-        type: TEXT,
-        allowNull: false,
-        comment: 'The actual answer provided by the user',
-    },
-    createdAt: {
-        type: DATE,
-        allowNull: false,
-        defaultValue: NOW,
-        comment: 'Timestamp when the answer was created',
-    },
-    updatedAt: {
-        type: DATE,
-        allowNull: false,
-        defaultValue: NOW,
-        comment: 'Timestamp when the answer was last updated',
-    },
-}, {
-    sequelize,
-    tableName: 'campaign_submissions',
-    timestamps: true,
-    comment: 'Table to store answers for campaigns',
-});
 
-CampaignSubmissions.associate();
 
 export { CampaignSubmissions };

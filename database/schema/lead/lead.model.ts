@@ -44,138 +44,143 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
         LeadsModel.belongsTo(UserModel, { foreignKey: 'createdBy', as: 'creator' });
         LeadsModel.belongsTo(UserModel, { foreignKey: 'updatedBy', as: 'updater' });
         LeadsModel.belongsTo(UserModel, { foreignKey: 'deletedBy', as: 'deleter' });
+        LeadsModel.belongsTo(CampaignAdModel, { foreignKey: 'campaignId' , as: 'campaign' });
+    }
+
+    public static initModel() {
+        LeadsModel.init({
+            id: {
+                type: INTEGER,
+                autoIncrement: true,
+                primaryKey: true,
+            },
+            campaignId: {
+                type: INTEGER,
+                references: {
+                    model: 'campaigns',
+                    key: 'id'
+                },
+                allowNull: true
+            },
+            firstName: {
+                type: STRING,
+                allowNull: false
+            },
+            lastName: {
+                type: STRING,
+                allowNull: false
+            },
+            email: {
+                type: STRING,
+                allowNull: false
+            },
+            phoneNumber: {
+                type: STRING,
+                allowNull: false
+            },
+            address: {
+                type: JSONB,
+                allowNull: false
+            },
+            additionalInfo: {
+                type: TEXT,
+                allowNull: true
+            },
+            status: {
+                type: ENUM(...Object.values(LeadStatus)),
+                allowNull: false
+            },
+            source: {
+                type: ENUM(...Object.values(LeadSource)),
+                allowNull: false
+            },
+            sourceInfo: {
+                type: STRING,
+                allowNull: true
+            },
+            followDetails: {
+                type: JSONB,
+                allowNull: true
+            },
+            referBy: {
+                type: JSONB,
+                allowNull: true
+            },
+            logs: {
+                type: JSONB,
+                allowNull: true
+            },
+            notes: {
+                type: JSONB,
+                allowNull: true
+            },
+            proposalModalId: {
+                type: INTEGER,
+                allowNull: true
+            },
+            amount: {
+                type: INTEGER,
+                allowNull: true
+            },
+            franchiseModals: {
+                type: JSONB,
+                allowNull: true
+            },
+            affiliate: {
+                type: JSONB,
+                allowNull: true
+            },
+            marketing: {
+                type: JSONB,
+                allowNull: true
+            },
+            other: {
+                type: JSONB,
+                allowNull: true
+            },
+            createdBy: {
+                type: INTEGER,
+                allowNull: false
+            },
+            updatedBy: {
+                type: INTEGER,
+                allowNull: true
+            },
+            deletedBy: {
+                type: INTEGER,
+                allowNull: true
+            },
+            createdAt: {
+                type: DATE,
+                allowNull: false,
+                defaultValue: NOW,
+                field: "created_at",
+            },
+            updatedAt: {
+                type: DATE,
+                allowNull: false,
+                defaultValue: NOW,
+                field: "updated_at",
+            },
+            deletedAt: {
+                type: DATE,
+                allowNull: true,
+                defaultValue: null,
+                field: "deleted_at",
+            },
+        }, {
+            sequelize,
+            tableName: 'leads',
+            timestamps: true,
+            paranoid: true
+        });
+        return LeadsModel;
     }
 }
 
-LeadsModel.init({
-    id: {
-        type: INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-    },
-    campaignId: {
-        type: INTEGER,
-        references: {
-            model: 'campaigns',
-            key: 'id'
-        },
-        allowNull: true
-    },
-    firstName: {
-        type: STRING,
-        allowNull: false
-    },
-    lastName: {
-        type: STRING,
-        allowNull: false
-    },
-    email: {
-        type: STRING,
-        allowNull: false
-    },
-    phoneNumber: {
-        type: STRING,
-        allowNull: false
-    },
-    address: {
-        type: JSONB,
-        allowNull: false
-    },
-    additionalInfo: {
-        type: TEXT,
-        allowNull: true
-    },
-    status: {
-        type: ENUM(...Object.values(LeadStatus)),
-        allowNull: false
-    },
-    source: {
-        type: ENUM(...Object.values(LeadSource)),
-        allowNull: false
-    },
-    sourceInfo: {
-        type: STRING,
-        allowNull: true
-    },
-    followDetails: {
-        type: JSONB,
-        allowNull: true
-    },
-    referBy: {
-        type: JSONB,
-        allowNull: true
-    },
-    logs: {
-        type: JSONB,
-        allowNull: true
-    },
-    notes: {
-        type: JSONB,
-        allowNull: true
-    },
-    proposalModalId: {
-        type: INTEGER,
-        allowNull: true
-    },
-    amount: {
-        type: INTEGER,
-        allowNull: true
-    },
-    franchiseModals: {
-        type: JSONB,
-        allowNull: true
-    },
-    affiliate: {
-        type: JSONB,
-        allowNull: true
-    },
-    marketing: {
-        type: JSONB,
-        allowNull: true
-    },
-    other: {
-        type: JSONB,
-        allowNull: true
-    },
-    createdBy: {
-        type: INTEGER,
-        allowNull: false
-    },
-    updatedBy: {
-        type: INTEGER,
-        allowNull: true
-    },
-    deletedBy: {
-        type: INTEGER,
-        allowNull: true
-    },
-    createdAt: {
-        type: DATE,
-        allowNull: false,
-        defaultValue: NOW,
-        field: "created_at",
-    },
-    updatedAt: {
-        type: DATE,
-        allowNull: false,
-        defaultValue: NOW,
-        field: "updated_at",
-    },
-    deletedAt: {
-        type: DATE,
-        allowNull: true,
-        defaultValue: null,
-        field: "deleted_at",
-    },
-}, {
-    sequelize,
-    tableName: 'leads',
-    timestamps: true,
-    paranoid: true
-});
 
-LeadsModel.belongsTo(CampaignAdModel, { foreignKey: 'campaignId' , as: 'campaign' });
-CampaignAdModel.hasMany(LeadsModel, { foreignKey: 'campaignId', as: 'campaign' });
+
+
 
 
 export { LeadsModel };

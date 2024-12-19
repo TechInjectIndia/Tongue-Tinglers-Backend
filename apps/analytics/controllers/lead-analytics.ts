@@ -130,12 +130,7 @@ export default class LeadAnalyticsController {
                 });
             }
 
-            const franchiseData = await RepoProvider.franchise.getById(user_id);
-            if (!franchiseData) {
-                return res.status(404).send({ message: "Franchise data not found." });
-            }
-            console.log("franchiseData.franchiseType", franchiseData);
-
+        
             analyticsData = await new AnalyticsModel().leadTimelineForSuperFranchisee(startDate, endDate, groupBy);
 
             // Format dates in analyticsData to match dateInterval formatting

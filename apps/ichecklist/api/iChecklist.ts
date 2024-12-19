@@ -1,5 +1,5 @@
 import * as express from "express";
-import PdiChecklistController from "../controllers/iChecklist";
+
 import {
     validateCreateIChecklistBody,
     validateDeleteMultipleIdsBody,
@@ -7,6 +7,8 @@ import {
     validateEditCheckpointParams,
     validateListChecklistQuery,
 } from "../validations/iChecklistValidation";
+import PdiChecklistController from "../controllers/IChecklist";
+
 const router = express.Router();
 
 // ===== Swagger Documentation =====
@@ -132,7 +134,7 @@ const router = express.Router();
  *         description: Unauthorized
  *       404:
  *         description: Checklist not found
- * 
+ *
  * /api/admin/checklist/update/{id}:
  *   put:
  *     summary: Update a Checklist by ID
@@ -211,7 +213,7 @@ router.get(
     PdiChecklistController.get
 );
 
-router.get("/getChecklistByFranchiseModalId/:franchiseModalId",PdiChecklistController.getChecklistByFranchiseModalId)
+router.get("/getChecklistByFranchiseModalId/:franchiseModalId", PdiChecklistController.getChecklistByFranchiseModalId)
 
 router.put(
     "/update/:id",

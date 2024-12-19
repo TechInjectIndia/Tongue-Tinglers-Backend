@@ -23,14 +23,14 @@ export class CartProductRepo implements ICartProductRepo {
                 { transaction, returning: true } // Return created rows
             );
 
-            let cartProductIds: number[] = []; 
+            let cartProductIds: number[] = [];
             cartProductIds = createdCartProducts.map((option) => option.id);
             let payload = {
                 // cart_ids: cartProductIds,
-                user_id: cartProduct.user_id
+                user_id: 1
             }
             const createCartDetails = await CartDetailsModel.create(payload, { transaction })
-            
+
             await createCartDetails.addCartProductses(cartProductIds);
             // await organization.addShippingAddresses(shippingAddresses);
             await transaction?.commit();
@@ -74,10 +74,10 @@ export class CartProductRepo implements ICartProductRepo {
         } catch (error) {
             console.log(error);
             await transaction?.rollback();
-            return null;  
+            return null;
         }
     }
-    
+
     update(product: CartProduct): Promise<CartProduct> {
         throw new Error("Method not implemented.");
     }
@@ -95,7 +95,7 @@ export class CartProductRepo implements ICartProductRepo {
             return cartProduct.toJSON();
         } catch (error) {
             console.log(error);
-            return null; 
+            return null;
         }
     }
 
@@ -120,7 +120,7 @@ export class CartProductRepo implements ICartProductRepo {
             return existingCartProduct.toJSON();
         } catch (error) {
             console.log(error);
-            return null; 
+            return null;
         }
     }
 }

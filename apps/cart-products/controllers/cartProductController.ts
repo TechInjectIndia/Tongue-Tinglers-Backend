@@ -1,14 +1,15 @@
-import { get } from "lodash";
-import { BaseCartProduct, CartProduct} from '../../../interfaces/cart_products'
+import {get} from "lodash";
+import {BaseCartProduct, CartProduct} from '../../../interfaces/cart_products'
 import RepoProvider from "../../RepoProvider";
-import { sendResponse } from "../../../libraries";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
-import { Request, Response } from "express";
+import {sendResponse} from "../../../libraries";
+import {RESPONSE_TYPE, SUCCESS_MESSAGE} from "../../../constants";
+import {Request, Response} from "express";
+
 export default class CartProductController {
 
     static async createCartProduct(req: Request, res: Response) {
         try {
-            const payload:any = req?.body;
+            const payload: any = req?.body;
             const user_id = get(req, "user_id", 0);
             const product = {
                 ...payload,
@@ -29,7 +30,7 @@ export default class CartProductController {
     static async updateQuantity(req: Request, res: Response) {
         try {
             const id = parseInt(req.params.id, 0);
-            const payload:any = req?.body;
+            const payload: any = req?.body;
             payload.id = id
             const productDetails = await RepoProvider.cartProductRepo.updateQuantity(payload);
             return res.status(201).send(

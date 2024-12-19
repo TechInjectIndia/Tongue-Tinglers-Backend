@@ -26,7 +26,7 @@ class ShippingHistoryModel
 
     public static associate() {
         OrdersModel.belongsTo(UserModel, {foreignKey: 'userId'});
-        OrdersModel.hasMany(OrderItemsModel, {foreignKey: 'orderId', as: 'items'});
+        // OrdersModel.hasMany(OrderItemsModel, {foreignKey: 'orderId', as: 'items'});
     }
 
     public static initModel() {

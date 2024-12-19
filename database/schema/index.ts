@@ -25,6 +25,7 @@ import {DocumentModel} from "./documents/documentModel";
 
 import {handleError} from "../../apps/common/utils/HelperMethods";
 import {CampaignSubmissions} from "./campaign-ui/campaignSubmissions";
+import {ContractModel} from "./contracts";
 
 export * from "./user/user.model";
 export * from "./user/address";
@@ -116,6 +117,7 @@ const models = {
     Leads: LeadsModel.initModel(),
     CampaignSubmissions: CampaignSubmissions.initModel(),
     AssignModel: AssignModel.initModel(),
+    ContractModel: ContractModel.initModel(),
 
 };
 

@@ -72,116 +72,116 @@ class ContractModel
             constraints: false,
         });
     }
+    public static initModel() {
+        ContractModel.init(
+            {
+                id: {
+                    type: DataTypes.INTEGER,
+                    primaryKey: true,
+                    allowNull: false,
+                    autoIncrement: true,
+                },
+                status: {
+                    type: ENUM,
+                    values: [...Object.values(CONTRACT_STATUS)],
+                    allowNull: false,
+                },
+                proposalData: {
+                    type: JSONB,
+                    allowNull: true,
+                },
+                organizationId: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
+                },
+                terminationDetails: {
+                    type: JSONB,
+                    allowNull: true,
+                },
+                payment: {
+                    type: JSONB,
+                    allowNull: true,
+                },
+                leadId: {
+                    type: STRING,
+                    allowNull: true,
+                },
+                templateId: {
+                    type: STRING,
+                    allowNull: true,
+                },
+                amount: {
+                    type: FLOAT,
+                    allowNull: true,
+                },
+                signedDate: {
+                    type: DATE,
+                    allowNull: true,
+                },
+                dueDate: {
+                    type: DATE,
+                    allowNull: false,
+                },
+                validity: {
+                    type: JSONB,
+                    allowNull: false,
+                },
+                logs: {
+                    type: JSONB,
+                    allowNull: true,
+                },
+                signedDocs: {
+                    type: JSONB,
+                    allowNull: true,
+                },
+                notes: {
+                    type: JSONB,
+                    allowNull: true,
+                },
+                additionalInfo: {
+                    type: STRING,
+                    allowNull: true,
+                    defaultValue: "",
+                },
+                createdBy: {
+                    type: INTEGER,
+                    allowNull: false,
+                },
+                deletedAt: {
+                    type: DATE,
+                    allowNull: true,
+                },
+                updatedBy: {
+                    type: INTEGER,
+                    allowNull: true,
+                },
+                deletedBy: {
+                    type: INTEGER,
+                    allowNull: true,
+                },
+                createdAt: {
+                    type: DATE,
+                    allowNull: false,
+                    defaultValue: DataTypes.NOW,
+                    field: "created_at",
+                },
+                updatedAt: {
+                    type: DATE,
+                    allowNull: false,
+                    defaultValue: DataTypes.NOW,
+                    field: "updated_at",
+                },
+            },
+            {
+                sequelize,
+                tableName: "contracts",
+                timestamps: true,
+            },
+        );
+        return ContractModel;
+    }
 
     organizationId: number | null;
 }
-
-ContractModel.init(
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            allowNull: false,
-            autoIncrement: true,
-        },
-        status: {
-            type: ENUM,
-            values: [...Object.values(CONTRACT_STATUS)],
-            allowNull: false,
-        },
-        proposalData: {
-            type: JSONB,
-            allowNull: true,
-        },
-        organizationId: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
-        terminationDetails: {
-            type: JSONB,
-            allowNull: true,
-        },
-        payment: {
-            type: JSONB,
-            allowNull: true,
-        },
-        leadId: {
-            type: STRING,
-            allowNull: true,
-        },
-        templateId: {
-            type: STRING,
-            allowNull: true,
-        },
-        amount: {
-            type: FLOAT,
-            allowNull: true,
-        },
-        signedDate: {
-            type: DATE,
-            allowNull: true,
-        },
-        dueDate: {
-            type: DATE,
-            allowNull: false,
-        },
-        validity: {
-            type: JSONB,
-            allowNull: false,
-        },
-        logs: {
-            type: JSONB,
-            allowNull: true,
-        },
-        signedDocs: {
-            type: JSONB,
-            allowNull: true,
-        },
-        notes: {
-            type: JSONB,
-            allowNull: true,
-        },
-        additionalInfo: {
-            type: STRING,
-            allowNull: true,
-            defaultValue: "",
-        },
-        createdBy: {
-            type: INTEGER,
-            allowNull: false,
-        },
-        deletedAt: {
-            type: DATE,
-            allowNull: true,
-        },
-        updatedBy: {
-            type: INTEGER,
-            allowNull: true,
-        },
-        deletedBy: {
-            type: INTEGER,
-            allowNull: true,
-        },
-        createdAt: {
-            type: DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
-            field: "created_at",
-        },
-        updatedAt: {
-            type: DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
-            field: "updated_at",
-        },
-    },
-    {
-        sequelize,
-        tableName: "contracts",
-        timestamps: true,
-    },
-);
-
-ContractModel.associate();
 
 export { ContractModel };

@@ -13,4 +13,4 @@ build/
 .nvmrc
 package-lock.json
 firebase-adminsdk.json
-/newrelic_agent.log
+newrelic_agent.log

@@ -39,10 +39,10 @@ export const validateReq = (
     let result;
     switch (typeName) {
         case "params":
-            result = schema.validate(req.params);
+            result = errorResponseParser(schema, req.params);
             break;
         case "query":
-            result = schema.validate(req.query);
+            result = errorResponseParser(schema, req.query);
             break;
         default:
             // result = schema.validate(req.body);

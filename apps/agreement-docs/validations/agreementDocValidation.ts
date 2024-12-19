@@ -21,7 +21,11 @@ const createAgreementDocSchema = Joi.object({
         "any.required": "Entity ID is required.",
     }),
     entity_type: Joi.string()
-        .valid("type1", "type2", "type3") // Replace with actual valid types
+        .valid(
+            ENTITY_TYPE_AGREEMENT.FRANCHISE,
+            ENTITY_TYPE_AGREEMENT.ORGANISATION,
+            ENTITY_TYPE_AGREEMENT.PROSPECT
+        ) // Replace with actual valid types
         .required()
         .messages({
             "string.base": "Entity type must be a string.",
@@ -85,43 +89,35 @@ const getAllAgreementDocSchema = Joi.object({
 });
 
 const updateAgreementDocSchema = Joi.object({
-    agreement_id: Joi.string()
-        .optional()
-        .messages({
-            'string.base': 'Agreement ID must be a string.',
-        }),
-    doc_link: Joi.string()
-        .uri()
-        .optional()
-        .messages({
-            'string.base': 'Document link must be a string.',
-            'string.uri': 'Document link must be a valid URI.',
-        }),
-    entity_id: Joi.string()
-        .optional()
-        .messages({
-            'string.base': 'Entity ID must be a string.',
-        }),
+    agreement_id: Joi.string().optional().messages({
+        "string.base": "Agreement ID must be a string.",
+    }),
+    doc_link: Joi.string().uri().optional().messages({
+        "string.base": "Document link must be a string.",
+        "string.uri": "Document link must be a valid URI.",
+    }),
+    entity_id: Joi.string().optional().messages({
+        "string.base": "Entity ID must be a string.",
+    }),
     entity_type: Joi.string()
-        .valid('type1', 'type2', 'type3') // Replace with your valid entity types
+        .valid(
+            ENTITY_TYPE_AGREEMENT.FRANCHISE,
+            ENTITY_TYPE_AGREEMENT.ORGANISATION,
+            ENTITY_TYPE_AGREEMENT.PROSPECT
+        ) // Replace with your valid entity types
         .optional()
         .messages({
-            'string.base': 'Entity type must be a string.',
-            'any.only': 'Entity type must be one of the allowed values: type1, type2, type3.',
+            "string.base": "Entity type must be a string.",
+            "any.only":
+                "Entity type must be one of the allowed values: type1, type2, type3.",
         }),
-    signed_date: Joi.date()
-        .iso()
-        .optional()
-        .messages({
-            'date.base': 'Signed date must be a valid date.',
-            'date.format': 'Signed date must be in ISO format.',
-        }),
-    error: Joi.string()
-        .allow(null)
-        .optional()
-        .messages({
-            'string.base': 'Error must be a string.',
-        }),
+    signed_date: Joi.date().iso().optional().messages({
+        "date.base": "Signed date must be a valid date.",
+        "date.format": "Signed date must be in ISO format.",
+    }),
+    error: Joi.string().allow(null).optional().messages({
+        "string.base": "Error must be a string.",
+    }),
 });
 
 export const validateCreateAgreementDoc = (
@@ -153,5 +149,3 @@ export const validateUpdateAgreementDoc = (
     res: Response,
     next: NextFunction
 ) => validateReq(req, res, next, updateAgreementDocSchema, "body");
-
-

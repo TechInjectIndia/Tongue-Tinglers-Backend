@@ -42,13 +42,13 @@ export class AgreementDocRepo implements IAgreementDocRepo{
                 where:{
                     id: id
                 },
-                include: [
-                    {
-                        model: UserModel,
-                        as: "createdByUser",
-                        attributes: ["id", "firstName", "lastName", "email"]
-                    },
-                ]
+                // include: [
+                //     {
+                //         model: UserModel,
+                //         as: "createdByUser",
+                //         attributes: ["id", "firstName", "lastName", "email"]
+                //     },
+                // ]
             })
             if(!agreementDoc){
                 handleError(`Failed to fetch agreement doc by this ${id}`);

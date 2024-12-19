@@ -3,16 +3,15 @@ import {get} from "lodash";
 import {ParsedOrder, PresaleParsedOrder} from "../../../interfaces";
 
 
-
-
-interface OrderParams{
-    userId:string;
-    couponCode?:string;
-    shippingAddId?:string;
-    billingAddId?:string;
+interface OrderParams {
+    userId: string;
+    couponCode?: string;
+    shippingAddId?: string;
+    billingAddId?: string;
 }
 
 export default class CheckoutController {
+
 
     static getOrder(req: Request, res: Response): Promise<ParsedOrder> {
 

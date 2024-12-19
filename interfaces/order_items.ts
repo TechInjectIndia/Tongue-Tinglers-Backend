@@ -1,6 +1,6 @@
-import { BaseMeta, ParsedMeta } from "../database/schema/base/Base"
-import { ParsedProductOptions } from "./product-options";
-import { ParsedProduct } from "./products";
+import {BaseMeta, ParsedMeta} from "../database/schema/base/Base"
+import {ParsedProductOptions} from "./product-options";
+import {ParsedProduct} from "./products";
 
 interface BaseOrderItem {
     product_id: number,
@@ -17,20 +17,20 @@ interface BaseOrderItem {
 interface PriceComponent {
 }
 
-interface PreSaleParsedOrderItem  {
+interface PreSaleParsedOrderItem {
 
     product: ParsedProduct,
     productOptionId: ParsedProductOptions,
     quantity: number,
     total_price: number,
     totalTax: number,
-    prices:Array<PriceComponent>
-    disc:Array<PriceComponent>
+    prices: Array<PriceComponent>
+    disc: Array<PriceComponent>
     type: ORDER_ITEM_TYPE
     // order_items?: ParsedOrderItem[];
 }
 
-interface ParsedOrderItem extends PreSaleParsedOrderItem{
+interface ParsedOrderItem extends PreSaleParsedOrderItem {
     id: number;
 }
 
@@ -43,7 +43,7 @@ interface OrderItem extends BaseOrderItem, ParsedMeta {
     id: number
 }
 
-interface UpdateQuantity extends OrderItem{
+interface UpdateQuantity extends OrderItem {
     quantity: number
 }
 

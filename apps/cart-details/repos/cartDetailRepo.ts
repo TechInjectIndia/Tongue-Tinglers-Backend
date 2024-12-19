@@ -14,7 +14,7 @@ export class CartDetailRepo implements ICartDetailRepo {
     async getCartDetailByUserId(userId: number): Promise<any> {
         try {
             const cartDetails = await CartDetailsModel.findAll({
-                where: { user_id: 1 }, // Filter by user_id
+                where: { user_id: userId }, // Filter by user_id
                 include: [
                     {
                         model: CartProductModel,

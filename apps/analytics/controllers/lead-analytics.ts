@@ -136,7 +136,7 @@ export default class LeadAnalyticsController {
             }
             console.log("franchiseData.franchiseType", franchiseData);
 
-            analyticsData = await new AnalyticsModel().leadTimelineForMasterFranchisee(startDate, endDate, groupBy, franchiseId);
+            analyticsData = await new AnalyticsModel().leadTimelineForSuperFranchisee(startDate, endDate, groupBy);
 
             // Format dates in analyticsData to match dateInterval formatting
             const formattedAnalyticsData = analyticsData.map(item => ({

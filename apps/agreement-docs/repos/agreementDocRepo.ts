@@ -61,27 +61,27 @@ export class AgreementDocRepo implements IAgreementDocRepo{
         }
     }
 
-    async getAgreementDoc(entity_id: number, entity_type: string): Promise<IBaseAgreementDocs> {
+    async getAgreementDoc(entity_id: number, entity_type: string): Promise<IBaseAgreementDocs[]> {
         try {
-            const agreementDoc = await AgreementDocModel.findOne({
+            const agreementDoc = await AgreementDocModel.findAll({
                 where: {
                     entity_id: entity_id,
                     entity_type: entity_type
                 },
-                include: [
-                    {
-                        model: UserModel,
-                        as: "createdByUser",
-                        attributes: ["id", "firstName", "lastName", "email"]
-                    },
-                ]
+                // include: [
+                //     {
+                //         model: UserModel,
+                //         as: "createdByUser",
+                //         attributes: ["id", "firstName", "lastName", "email"]
+                //     },
+                // ]
             })
 
             if(!agreementDoc){
                 handleError(`Failed to retrieve the agreement document for the provided entity_id: ${entity_id} and entity_type: ${entity_type}`);
                 throw new Error(`Failed to retrieve the agreement document for the provided entity_id: ${entity_id} and entity_type: ${entity_type}`);
             }
-            return agreementDoc.toJSON();
+            return agreementDoc
         } catch (error) {
             handleError(error, entity_id, entity_type)
             throw error

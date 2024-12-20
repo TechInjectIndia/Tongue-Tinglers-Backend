@@ -56,11 +56,13 @@ export class CampaignSubmissionsRepo implements IBaseRepo<ICampaignSubmisisons, 
 
     public async update(id: number, data: TPayloadCampaignSubmisisons): Promise<[affectedCount: number]> {
         // Update a campaign by its ID
-        return await CampaignSubmissions.update(data, {
-            where: {
-                id,
-            },
-        });
+        const campaignSubmission = await CampaignSubmissions.findByPk(id);
+        if (!campaignSubmission) {
+            throw new Error("Campaign Submission not found");
+        }
+        campaignSubmission.set(data);
+        await campaignSubmission.save();
+        return [1];
     }
 
     public async delete(ids: number[]): Promise<number> {

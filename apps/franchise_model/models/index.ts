@@ -61,11 +61,14 @@ export class FranchiseModelRepo implements IBaseRepo<FranchiseModels, TListFilte
     }
 
     public async update(id: number, data: TPayloadFranchiseModel): Promise<[affectedCount: number]> {
-        return await FranchiseLeadModel.update(data, {
-            where: {
-                id: id,
-            },
-        });
+        const franchiseLead = await FranchiseLeadModel.findByPk(id);
+        if (!franchiseLead) {
+          throw new Error("Franchise Lead not found");
+        }
+        franchiseLead.set(data);
+        await franchiseLead.save();
+    
+        return [1];
     }
 
     public async delete(ids: number[]): Promise<number> {

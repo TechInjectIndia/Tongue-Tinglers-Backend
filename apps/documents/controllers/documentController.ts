@@ -17,7 +17,7 @@ export class DocumentController {
 
     static async createDocument(req: Request, res: Response) {
         try {
-            const user_id = get(req, 'user_id', 0);
+            const user_id = get(req, 'user_id', 1);
             const payload: any = req?.body;
             payload.entity_type = Object.keys(payload)
             const documentTransform = await transformData(payload, user_id,
@@ -98,7 +98,7 @@ export class DocumentController {
 
     static async getDocumentByUser(req: Request, res: Response) {
         try {
-            const user_id = get(req, 'user_id', 1);
+            const user_id = get(req, 'user_id', 0);
             const {entity_type, entity_id} = req.query
             const payload = {
                 entity_type: entity_type,

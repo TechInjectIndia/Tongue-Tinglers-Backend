@@ -1,23 +1,27 @@
-import { Model, DataTypes, Optional } from 'sequelize';
+import { Model, DataTypes, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { checkPointsValue, ICheckList } from '../../../interfaces/ichecklist';
-import { PdiCheckpointModel } from './pdiCheckPointModel';
-import { FranchiseModelRepo } from '../../../apps/franchise_model/models';
-import { FranchiseModel } from './franchiseModel';
-import { FranchiseLeadModel } from '../lead/franchiseModels';
+import { checkPointsValue, ICheckList } from "../../../interfaces/ichecklist";
+import { PdiCheckpointModel } from "./pdiCheckPointModel";
+import { FranchiseModelRepo } from "../../../apps/franchise_model/models";
+import { FranchiseModel } from "./franchiseModel";
+import { FranchiseLeadModel } from "../lead/franchiseModels";
+import RepoProvider from "../../../apps/RepoProvider";
 
 // Define the optional attributes for creation
-interface IChecklistCreationAttributes extends Optional<ICheckList, 'id'> { }
+interface IChecklistCreationAttributes extends Optional<ICheckList, "id"> {}
 
-class IChecklistModel extends Model<ICheckList, IChecklistCreationAttributes> implements ICheckList {
+class IChecklistModel
+    extends Model<ICheckList, IChecklistCreationAttributes>
+    implements ICheckList
+{
     id: number;
-    title:string;
+    title: string;
     checkPoints: Array<number>;
     franchiseModelId: number;
-    createdBy:number;
-    updatedBy:number|null;
-    deletedAt:Date|null;
-    deletedBy:Date|null;
+    createdBy: number;
+    updatedBy: number | null;
+    deletedAt: Date | null;
+    deletedBy: Date | null;
 
     // public static associate() {
 
@@ -71,18 +75,47 @@ class IChecklistModel extends Model<ICheckList, IChecklistCreationAttributes> im
             },
             {
                 sequelize,
-                tableName: 'pdi_checklists',
+                tableName: "pdi_checklists",
                 timestamps: true,
-            },
+            }
         );
-        return IChecklistModel
+        return IChecklistModel;
+    }
+
+    public static hook() {
+        IChecklistModel.addHook("afterCreate", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "create",
+                "Checklist",
+                instance,
+                options
+            );
+        });
+
+        // After Update Hook - Log the updated fields of the FranchiseLead
+        IChecklistModel.addHook("afterUpdate", async (instance, options) => {
+            // Now call logModelAction as before
+            await RepoProvider.LogRepo.logModelAction(
+                "update",
+                "Checklist",
+                instance,
+                options
+            );
+        });
+
+        // After Destroy Hook - Log the deletion of the FranchiseLead
+        IChecklistModel.addHook("afterDestroy", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "delete",
+                "Checklist",
+                instance,
+                options
+            );
+        });
     }
 }
 
-
-
 // IChecklistModel.belongsTo(PdiCheckpointModel, { foreignKey: 'id', as: 'checkpoint', constraints: true })
 // IChecklistModel.hasMany(PdiCheckpointModel, { foreignKey: 'checkPoints', as: 'checkpoint'})
-
 
 export { IChecklistModel };

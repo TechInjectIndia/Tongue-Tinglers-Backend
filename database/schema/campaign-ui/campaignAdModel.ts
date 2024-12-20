@@ -1,25 +1,25 @@
-import {DataTypes, Model, Optional} from "sequelize";
-import {sequelize} from "../../../config";
+import { DataTypes, Model, Optional } from "sequelize";
+import { sequelize } from "../../../config";
 
-import {ICampaign} from "../../../interfaces";
-import {RegionModel} from "../franchise/RegionsModel";
-import {LeadsModel} from "../lead/lead.model";
-import {AffiliateModel} from "../lead/affiliateModels";
-import {ProposalLeadModels} from "../lead/proposalModels";
+import { ICampaign } from "../../../interfaces";
+import { RegionModel } from "../franchise/RegionsModel";
+import { LeadsModel } from "../lead/lead.model";
+import { AffiliateModel } from "../lead/affiliateModels";
+import { ProposalLeadModels } from "../lead/proposalModels";
+import RepoProvider from "../../../apps/RepoProvider";
 
-
-const {STRING, INTEGER, DATE, NOW, JSONB} = DataTypes;
+const { STRING, INTEGER, DATE, NOW, JSONB } = DataTypes;
 
 interface CampaignCreationAttributes
     extends Optional<
         ICampaign,
         "id" | "createdAt" | "updatedAt" | "deletedAt"
-    > {
-}
+    > {}
 
 class CampaignAdModel
     extends Model<ICampaign, CampaignCreationAttributes>
-    implements ICampaign {
+    implements ICampaign
+{
     public id!: number;
     public name!: string;
     public franchiseId?: number;
@@ -81,7 +81,8 @@ class CampaignAdModel
                 proposalIds: {
                     type: JSONB,
                     allowNull: true,
-                    comment: "List of proposal model associated with the campaign",
+                    comment:
+                        "List of proposal model associated with the campaign",
                 }, // New field added
                 start: {
                     type: DATE,
@@ -139,8 +140,10 @@ class CampaignAdModel
     }
 
     public static associate() {
-        CampaignAdModel.hasMany(LeadsModel,
-            {foreignKey: 'campaignId', as: 'campaign'});
+        CampaignAdModel.hasMany(LeadsModel, {
+            foreignKey: "campaignId",
+            as: "campaign_ad",
+        });
         CampaignAdModel.hasOne(RegionModel, {
             foreignKey: "regionId",
             as: "region",
@@ -156,6 +159,38 @@ class CampaignAdModel
             as: "proposals",
         });
     }
+
+    public static hook() {
+        CampaignAdModel.addHook("afterCreate", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "create",
+                "Campaign",
+                instance,
+                options
+            );
+        });
+
+        // After Update Hook - Log the updated fields of the CampaignAdModel
+        CampaignAdModel.addHook("afterUpdate", async (instance, options) => {
+            // Now call logModelAction as before
+            await RepoProvider.LogRepo.logModelAction(
+                "update",
+                "Campaign",
+                instance,
+                options
+            );
+        });
+
+        // After Destroy Hook - Log the deletion of the CampaignAdModel
+        CampaignAdModel.addHook("afterDestroy", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "delete",
+                "Campaign",
+                instance,
+                options
+            );
+        });
+    }
 }
 
-export {CampaignAdModel};
+export { CampaignAdModel };

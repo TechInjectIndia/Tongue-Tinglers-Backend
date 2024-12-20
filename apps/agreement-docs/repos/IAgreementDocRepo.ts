@@ -8,7 +8,7 @@ export interface IAgreementDocRepo {
 
     updateAgreementDoc(payload: IBaseAgreementDocs): Promise<IBaseAgreementDocs>
 
-    getAgreementDoc(entity_id: number, entity_type: string): Promise<IBaseAgreementDocs>
+    getAgreementDoc(entity_id: number, entity_type: string): Promise<IBaseAgreementDocs[]>
 
     getAllAgreementDoc(page: number,limit: number): Promise<Pagination<IBaseAgreementDocs>>
 }

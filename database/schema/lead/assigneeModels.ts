@@ -1,7 +1,8 @@
-import {DataTypes, Model, Optional} from "sequelize";
-import {sequelize} from "../../../config";
-import {UserModel} from '../user/user.model';
-import {LeadsModel} from './lead.model';
+import { DataTypes, Model, Optional } from "sequelize";
+import { sequelize } from "../../../config";
+import { UserModel } from "../user/user.model";
+import { LeadsModel } from "./lead.model";
+import RepoProvider from "../../../apps/RepoProvider";
 
 // Define the attributes for Assign creation (Optional `id` if auto-generated)
 interface AssignAttributes {
@@ -13,12 +14,13 @@ interface AssignAttributes {
 }
 
 // Define the interface for Assign model creation
-interface AssignCreationAttributes extends Optional<AssignAttributes, "id"> {
-}
+interface AssignCreationAttributes extends Optional<AssignAttributes, "id"> {}
 
 // Model class
-class AssignModel extends Model<AssignAttributes, AssignCreationAttributes>
-    implements AssignAttributes {
+class AssignModel
+    extends Model<AssignAttributes, AssignCreationAttributes>
+    implements AssignAttributes
+{
     public id!: number;
     public assignedTo!: number;
     public assignedBy!: number;
@@ -30,11 +32,15 @@ class AssignModel extends Model<AssignAttributes, AssignCreationAttributes>
     public readonly updatedAt!: Date;
 
     public static associate() {
-        this.belongsTo(UserModel,
-            {foreignKey: 'assignedTo', as: 'assignedToId',});
-        this.belongsTo(UserModel,
-            {foreignKey: 'assignedBy', as: 'assignedById',});
-        this.belongsTo(LeadsModel, {foreignKey: 'leadId', as: 'leadData',});
+        this.belongsTo(UserModel, {
+            foreignKey: "assignedTo",
+            as: "assignedToId",
+        });
+        this.belongsTo(UserModel, {
+            foreignKey: "assignedBy",
+            as: "assignedById",
+        });
+        this.belongsTo(LeadsModel, { foreignKey: "leadId", as: "leadData" });
         AssignModel.belongsTo(UserModel, {
             foreignKey: "assignedTo",
             as: "assignedUser",
@@ -97,6 +103,38 @@ class AssignModel extends Model<AssignAttributes, AssignCreationAttributes>
         );
         return AssignModel;
     }
+
+    public static hook() {
+        AssignModel.addHook("afterCreate", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "create",
+                "Lead Assignments",
+                instance,
+                options
+            );
+        });
+
+        // After Update Hook - Log the updated fields of the Lead Assignments
+        AssignModel.addHook("afterUpdate", async (instance, options) => {
+            // Now call logModelAction as before
+            await RepoProvider.LogRepo.logModelAction(
+                "update",
+                "Lead Assignments",
+                instance,
+                options
+            );
+        });
+
+        // After Destroy Hook - Log the deletion of the Lead Assignments
+        AssignModel.addHook("afterDestroy", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "delete",
+                "Lead Assignments",
+                instance,
+                options
+            );
+        });
+    }
 }
 
-export {AssignModel};
+export { AssignModel };

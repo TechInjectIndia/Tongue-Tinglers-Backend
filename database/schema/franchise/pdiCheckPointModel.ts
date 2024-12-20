@@ -12,41 +12,54 @@ class PdiCheckpointModel extends Model<ICheckPoint, PdiCheckpointCreationAttribu
     createdBy: number | null;
     updatedBy: number | null;
     deletedBy: number | null;
+
+    public static associate(){
+
+    }
+
+    public static initModel() {
+        PdiCheckpointModel.init(
+            {
+                id: {
+                    type: DataTypes.INTEGER,
+                    primaryKey: true,
+                    allowNull: false,
+                    autoIncrement: true, 
+                },
+                title: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
+                createdBy: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
+                },
+                updatedBy: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
+                },
+                deletedBy:{
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
+                },
+                
+            },
+            {
+                sequelize,
+                tableName: 'pdi_checkpoints',
+                timestamps: true,
+            },
+        );
+        return PdiCheckpointModel
+    }
+
+    public static hook() {
+        
+    }
 }
 
 // Initialize the PdiChecklist model
-PdiCheckpointModel.init(
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            allowNull: false,
-            autoIncrement: true, 
-        },
-        title: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        createdBy: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
-        updatedBy: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
-        deletedBy:{
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
-        
-    },
-    {
-        sequelize,
-        tableName: 'pdi_checkpoints',
-        timestamps: true,
-    },
-);
+
 
 
 export { PdiCheckpointModel };

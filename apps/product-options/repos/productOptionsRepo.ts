@@ -31,7 +31,8 @@ export class ProductOptionRepo implements IProductOptionsRepo{
             if (!existingProductOption) {
                 throw new Error(`Product with ID ${productOptions.id} not found`);
             }
-            await existingProductOption.update(productOptions);
+            await existingProductOption.set(productOptions);
+            await existingProductOption.save();
             return existingProductOption.toJSON();
         } catch (error) {
             console.log(error);

@@ -52,6 +52,8 @@ export class PdiChecklistRepo implements IBaseRepo<ICheckList, TListFiltersIChec
 
     // Update PDI Checklist information
     public async update(id: number, data: TICheckListPayload): Promise<[number, ICheckList[]]> {
+
+        
         const [affectedCount] = await IChecklistModel.update(data, {
             where: { id },
         });

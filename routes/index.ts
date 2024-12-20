@@ -151,7 +151,7 @@ router.use("/order-items", auth, orderItemRouter);
 router.use("/order", auth, OrderRouter);
 router.use(`/cart`, auth, cartProductRouter);
 router.use("/migration", migrationRouter);
-router.use("/document", auth, documentRouter)
+router.use("/document", documentRouter)
 router.use(`${ADMIN}/agreement-docs`, agreementDocRouter)
 
 // router.use(`${GUEST}/users`, auth, guestUsersRouter);
@@ -213,7 +213,7 @@ router.use(`/product`, webProductsRouter);
 router.use(`/register`, webRegisterRouter);
 router.use(`/campaign-ad`, webCampaignRouter);
 /* organization router */
-router.use(`/organization`, auth, organizationRouter);
+router.use(`/organization`, organizationRouter);
 
 // ====== Frontend ======
 

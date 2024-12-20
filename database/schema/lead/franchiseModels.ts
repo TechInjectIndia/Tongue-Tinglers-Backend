@@ -5,6 +5,7 @@ import { FranchiseModels } from "../../../interfaces";
 import { SeoImageModel } from "./SeoImageModel";
 import { ExtraFieldsModel } from "./extraFieldsModel";
 import { IChecklistModel } from "../franchise/iChecklist";
+import RepoProvider from "../../../apps/RepoProvider";
 
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
 
@@ -57,7 +58,7 @@ class FranchiseLeadModel
         });
     }
 
-    public static initModel(){
+    public static initModel() {
         FranchiseLeadModel.init(
             {
                 id: {
@@ -102,6 +103,41 @@ class FranchiseLeadModel
             }
         );
         return FranchiseLeadModel;
+    }
+
+    public static hook() {
+        FranchiseLeadModel.addHook("afterCreate", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "create",
+                "Checklist",
+                instance,
+                options
+            );
+        });
+
+        // After Update Hook - Log the updated fields of the FranchiseLead
+        FranchiseLeadModel.addHook("afterUpdate", async (instance, options) => {
+            // Now call logModelAction as before
+            await RepoProvider.LogRepo.logModelAction(
+                "update",
+                "Checklist",
+                instance,
+                options
+            );
+        });
+
+        // After Destroy Hook - Log the deletion of the FranchiseLead
+        FranchiseLeadModel.addHook(
+            "afterDestroy",
+            async (instance, options) => {
+                await RepoProvider.LogRepo.logModelAction(
+                    "delete",
+                    "Checklist",
+                    instance,
+                    options
+                );
+            }
+        );
     }
 }
 

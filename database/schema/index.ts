@@ -26,6 +26,7 @@ import { AreaModel } from "./franchise/AreaModel";
 import { OptionsModel } from "./options/optionModel";
 import { FranchiseLeadModel } from "./lead/franchiseModels";
 import { IChecklistModel } from "./franchise/iChecklist";
+import { ProductOptionsModel } from "./product-options/productOptionsModel";
 
 export * from "./user/user.model";
 export * from "./user/address";
@@ -124,8 +125,9 @@ const models = {
     AreaModel: AreaModel.initModel(),
     OptionsModel: OptionsModel.initModel(),
     FranchiseLeadModel: FranchiseLeadModel.initModel(),
-    IChecklistModel: IChecklistModel.initModel()
-
+    IChecklistModel: IChecklistModel.initModel(),
+    Variations: ProductOptionsModel.initModel(),
+    CampaignSubmission: CampaignSubmissions.initModel(),
 };
 
 console.log(Object.keys(models).join(" "))

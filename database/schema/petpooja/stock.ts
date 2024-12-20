@@ -2,6 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { IItemStockAttributes } from '../../../interfaces';
 import { UserModel } from '../user/user.model'
+import RepoProvider from "../../../apps/RepoProvider";
 
 // Define the ItemStock creation attributes interface
 interface ItemStockCreationAttributes extends Optional<IItemStockAttributes, 'recorded_at'> { }
@@ -65,6 +66,38 @@ class ItemStockModel extends Model<IItemStockAttributes, ItemStockCreationAttrib
         });
 
         return ItemStockModel
+    }
+
+    public static hook(){
+        ItemStockModel.addHook("afterCreate", async (instance, options) => {
+                    await RepoProvider.LogRepo.logModelAction(
+                        "create",
+                        "Items Stock",
+                        instance,
+                        options
+                    );
+                });
+        
+                // After Update Hook - Log the updated fields of the Leads
+                ItemStockModel.addHook("afterUpdate", async (instance, options) => {
+                    // Now call logModelAction as before
+                    await RepoProvider.LogRepo.logModelAction(
+                        "update",
+                        "Items Stock",
+                        instance,
+                        options
+                    );
+                });
+        
+                // After Destroy Hook - Log the deletion of the Leads
+                ItemStockModel.addHook("afterDestroy", async (instance, options) => {
+                    await RepoProvider.LogRepo.logModelAction(
+                        "delete",
+                        "Items Stock",
+                        instance,
+                        options
+                    );
+                });
     }
 }
 

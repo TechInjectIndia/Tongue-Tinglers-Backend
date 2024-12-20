@@ -173,7 +173,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
             include.push({
                 model: CampaignAdModel, // Replace with your actual Campaign
                                         // model
-                as: "campaign", // Alias defined in the relationship
+                as: "campaign_ad", // Alias defined in the relationship
                 where: {
                     name: {
                         [Op.iLike]: `%${filters.filters.campaign}%`, // Search

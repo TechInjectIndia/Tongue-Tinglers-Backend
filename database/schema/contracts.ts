@@ -15,14 +15,15 @@ import {
 const { INTEGER, STRING, FLOAT, DATE, JSONB, ENUM } = DataTypes;
 import { LeadsModel } from "./lead/lead.model";
 import { UserModel } from "./user/user.model";
+import RepoProvider from "../../apps/RepoProvider";
 
 interface ContractCreationAttributes
-    extends Optional<IContract, "id" | "createdAt" | "updatedAt"> {
-}
+    extends Optional<IContract, "id" | "createdAt" | "updatedAt"> {}
 
 class ContractModel
     extends Model<IContract, ContractCreationAttributes>
-    implements IContract {
+    implements IContract
+{
     public id!: number;
     public status!: CONTRACT_STATUS;
     public proposalData: ProposalModels | null;
@@ -34,12 +35,12 @@ class ContractModel
     public payment!:
         | null
         | {
-        paymentId: string;
-        amount: number;
-        date: Date;
-        status: CONTRACT_PAYMENT_STATUS;
-        additionalInfo: string;
-    }[];
+              paymentId: string;
+              amount: number;
+              date: Date;
+              status: CONTRACT_PAYMENT_STATUS;
+              additionalInfo: string;
+          }[];
     public leadId!: number | null;
     public templateId!: string | null;
     public amount!: number;
@@ -176,9 +177,41 @@ class ContractModel
                 sequelize,
                 tableName: "contracts",
                 timestamps: true,
-            },
+            }
         );
         return ContractModel;
+    }
+
+    public static hook() {
+        ContractModel.addHook("afterCreate", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "create",
+                "Contracts",
+                instance,
+                options
+            );
+        });
+
+        // After Update Hook - Log the updated fields of the Contracts
+        ContractModel.addHook("afterUpdate", async (instance, options) => {
+            // Now call logModelAction as before
+            await RepoProvider.LogRepo.logModelAction(
+                "update",
+                "Contracts",
+                instance,
+                options
+            );
+        });
+
+        // After Destroy Hook - Log the deletion of the Contracts
+        ContractModel.addHook("afterDestroy", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "delete",
+                "Contracts",
+                instance,
+                options
+            );
+        });
     }
 
     organizationId: number | null;

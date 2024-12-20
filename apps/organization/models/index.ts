@@ -10,7 +10,7 @@ import {
 import { OrganizationModel } from "../database/organization_schema";
 import RepoProvider from "../../RepoProvider";
 import { ProductModel } from "../../../database/schema/product/productModel";
-import {parseOrganization} from "../parser/organizationParser"  
+import {parseOrganization} from "../parser/organizationParser"
 export class OrganizationRepo
   implements
     IBaseRepo<IOrganizationPayloadDataWithMeta, ParsedOrganization, TListFilters>
@@ -26,7 +26,7 @@ export class OrganizationRepo
     ).id;
 
     const shippingAddresses = (
-      await AddressModel.bulkCreate(payload.shippingAddresses)
+      await AddressModel.bulkCreate(payload.shippingAddress)
     ).map((add) => add.id);
 
     const organization = await OrganizationModel.create({

@@ -44,7 +44,7 @@ export enum ORGANIZATION_TYPE {
 
 export interface IOrganizationPayloadData extends BaseOrganization {
     billingAddress: BaseAddress;
-    shippingAddresses: Array<BaseAddress>;
+    shippingAddress: Array<BaseAddress>;
 }
 
 export interface IOrganizationPayloadDataWithMeta extends IOrganizationPayloadData, BaseMeta {

@@ -68,7 +68,6 @@ const createFranchiseModelBody = Joi.object({
             'string.empty': 'Inclusions cannot contain empty strings.',
             'any.required': 'Inclusions are required.'
         }),
-    others: ExtraFieldsSchema,
 });
 
 // Validation schema for editing a FranchiseModel
@@ -110,7 +109,7 @@ const editFranchiseModelBody = Joi.object({
             'string.base': 'Each inclusion must be a string.',
             'string.empty': 'Inclusions cannot contain empty strings.',
         }),
-    others: ExtraFieldsSchema,
+
 }).or('description', 'title', 'reqArea', 'images', 'investment', 'runningCost', 'bestFor', 'inclusions', 'others')
     .messages({
         'object.missing': 'At least one field must be provided for update.'

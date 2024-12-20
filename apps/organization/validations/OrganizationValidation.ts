@@ -36,7 +36,7 @@ const createOrganizationBody = Joi.object({
         .valid(...Object.values(BUSINESS_TYPE))
         .required(), // Use `valid()` with `Object.values()`
     billingAddress: addressSchema.required(),
-    shippingAddresses: Joi.array().items(addressSchema).required(),
+    shippingAddress: Joi.array().items(addressSchema).required(),
     prospectId: Joi.number().optional(),
 });
 

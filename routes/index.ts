@@ -3,6 +3,7 @@ import {Request, Response} from "express";
 import {logRouter} from "../apps/logs/api/logrouter";
 
 import multer from "multer";
+
 const upload = multer({storage: multer.memoryStorage()});
 import {sendEmail} from "../libraries";
 
@@ -36,6 +37,8 @@ import productCategoryRouter from "../apps/ecommerce/api/category";
 import orderRouter from "../apps/ecommerce/api/orders";
 import productTagRouter from "../apps/ecommerce/api/tags";
 import leadRouter from "../apps/lead/api/lead";
+import webLeadRouter from "../apps/lead/api/web-lead";
+
 import followUpsRouter from "../apps/lead/api/followups";
 import profileRouter from "../apps/admin-user/api/profile";
 import settingsRouter from "../apps/admin-user/api/settings"; // pending
@@ -135,7 +138,8 @@ router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
 router.use(`${ADMIN}/region`, auth, regionRouter);
 router.use(`${ADMIN}/area`, auth, areaRouter);
 router.use(`${ADMIN}/contracts`, contractsRouter);
-router.use(`${ADMIN}/lead`, leadRouter); // dont add auth to this url
+router.use(`${ADMIN}/lead`, auth, leadRouter); // dont add auth to this url
+router.use(`${ADMIN}/web-lead`, webLeadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`${ADMIN}/franchise`, frachiseRouter);
@@ -197,7 +201,7 @@ router.use(`${CUSTOMER}/analytics/orders`, auth, orderCustomerAnalyticsRouter); 
 router.use(`${CUSTOMER}/testimonials`, auth, customerTestimonialsRouter);
 
 // ====== Frontend imports ======
-import webLeadRouter from "../apps/lead/api/web-lead";
+
 import webTestimonialsRouter from "../apps/testimonials/api/web-testimonials";
 import webReviewsRouter from "../apps/reviews/api/web-reviews";
 import webProductsRouter from "../apps/ecommerce/api/web/products";
@@ -206,7 +210,7 @@ import webCampaignRouter from "../apps/campaign/api/web";
 
 // ====== Frontend routes ======
 // router.use(`/menu`, webMenuRouter); // pending
-router.use(`/lead`, webLeadRouter);
+// router.use(`/lead`, webLeadRouter);
 router.use(`/reviews`, webReviewsRouter);
 router.use(`/testimonials`, webTestimonialsRouter);
 router.use(`/product`, webProductsRouter);

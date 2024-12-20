@@ -103,6 +103,8 @@ export default class PaymentsController {
                     .send(sendResponse(RESPONSE_TYPE.ERROR, "Contract ID is required."));
             }
 
+            console.log("#23223###", contract_id);
+
             const contractDetails = await new ContractRepo().get(contract_id);
             if (!contractDetails) {
                 return res
@@ -113,6 +115,9 @@ export default class PaymentsController {
             const leadDetails = await new LeadRepo().get(
                 contractDetails.leadId as number,
             );
+
+            console.log("#23223###", leadDetails);
+
             if (!leadDetails) {
                 return res
                     .status(404)
@@ -134,6 +139,9 @@ export default class PaymentsController {
                 description: `${contractDetails.leadId}`,
                 notify: { email: false, sms: false },
             };
+
+            console.log("####", paymentLinkPayload);
+
 
             const link = await RepoProvider.razorpayRepo.createPaymentLink(paymentLinkPayload);
 

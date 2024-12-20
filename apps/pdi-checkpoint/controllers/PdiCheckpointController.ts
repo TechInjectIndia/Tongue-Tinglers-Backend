@@ -1,11 +1,7 @@
-import {Request, Response} from "express";
-import {PdiCheckpointRepo} from "../model/pdiCheckpointRepo"; // Adjust the
-                                                              // import path
-                                                              // based on your
-                                                              // project
-                                                              // structure
-import {get} from "lodash";
-import {sendResponse} from "../../../libraries";
+import { Request, Response } from "express";
+import { PdiCheckpointRepo } from "../model/pdiCheckpointRepo";
+import { get } from "lodash";
+import { sendResponse } from "../../../libraries";
 import {
     ERROR_MESSAGE,
     RESPONSE_TYPE,
@@ -17,8 +13,8 @@ class PdiCheckpointController {
     // Create a new PDI Checkpoint
     static async create(req: Request, res: Response) {
         try {
-            const user_id = get(req, 'user_id', '');
-            const payload = {...req.body, createdBy: user_id};
+            const user_id = get(req, 'user_id');
+            const payload = { ...req.body, createdBy: user_id };
 
             const newCheckpoint = await new PdiCheckpointRepo().create(payload);
 
@@ -29,7 +25,7 @@ class PdiCheckpointController {
         }
         catch (error) {
             console.error(error);
-            return res.status(400).json({message: "Invalid request body"});
+            return res.status(400).json({ message: "Invalid request body" });
         }
     }
 
@@ -97,23 +93,23 @@ class PdiCheckpointController {
             const checkpoint = await new PdiCheckpointRepo().findByPk(id);
             if (!checkpoint) {
                 return res.status(404)
-                    .json({message: "PDI Checklist not found"});
+                    .json({ message: "PDI Checklist not found" });
             }
 
             // Update the Checkpoint in the repo
             const updatedCheckpoint = await new PdiCheckpointRepo().update(
-                id as number, {...updateData, updatedBy: user_id});
+                id as number, { ...updateData, updatedBy: user_id });
 
             return res.status(200).json({
                 message: "PDI Checkpoint updated successfully",
-                data: {...checkpoint, ...updatedCheckpoint}, // Return the
-                                                             // updated
-                                                             // Checkpoint data
+                data: { ...checkpoint, ...updatedCheckpoint }, // Return the
+                // updated
+                // Checkpoint data
             });
         }
         catch (error) {
             console.error(error);
-            return res.status(400).json({message: "Invalid request body"});
+            return res.status(400).json({ message: "Invalid request body" });
         }
     }
 
@@ -127,7 +123,7 @@ class PdiCheckpointController {
             const checkpoint = await new PdiCheckpointRepo().findByPk(id);
             if (!checkpoint) {
                 return res.status(404)
-                    .json({message: "PDI Checkpoint not found"});
+                    .json({ message: "PDI Checkpoint not found" });
             }
 
             return res.status(200).json({
@@ -137,14 +133,14 @@ class PdiCheckpointController {
         }
         catch (error) {
             console.error(error);
-            return res.status(400).json({message: "Invalid request"});
+            return res.status(400).json({ message: "Invalid request" });
         }
     }
 
     // Delete a PDI Checklist
     static async delete(req: Request, res: Response) {
         try {
-            const {ids} = req.body;
+            const { ids } = req.body;
 
             // Call the repo's delete method directly with the ids
             const deletedCount = await new PdiCheckpointRepo().delete(ids);
@@ -152,7 +148,7 @@ class PdiCheckpointController {
             // Check if any Checkpoint were deleted
             if (deletedCount === 0) {
                 return res.status(404)
-                    .json({message: "PDI Checkpoint not found"});
+                    .json({ message: "PDI Checkpoint not found" });
             }
 
             return res.status(200).json({
@@ -162,7 +158,7 @@ class PdiCheckpointController {
         }
         catch (error) {
             console.error(error);
-            return res.status(400).json({message: "Invalid request body"});
+            return res.status(400).json({ message: "Invalid request body" });
         }
     }
 }

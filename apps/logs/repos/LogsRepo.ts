@@ -88,6 +88,7 @@ class LogsRepo implements ILogsRepo {
                 recordId: instance.get(primaryKey),
                 data: dataToLog,
                 userId: options.userId || null,
+                userName: options.userName || null,
                 timestamp: new Date(),
             });
         } catch (error) {

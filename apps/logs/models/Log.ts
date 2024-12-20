@@ -8,3 +8,22 @@ interface Log {
 }
 
 export { Log };
+
+
+
+declare module "sequelize" {
+  interface CreateOptions {
+    userId?: number;
+    userName?: string;
+  }
+
+  interface UpdateOptions {
+    userId?: number;
+    userName?: string;
+  }
+
+  interface DestroyOptions {
+    userId?: number;
+    userName?: string;
+  }
+}

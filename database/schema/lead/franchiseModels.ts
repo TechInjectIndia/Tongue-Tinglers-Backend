@@ -1,5 +1,4 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { SeoImage, ExtraFields } from "../../../interfaces";
 import { sequelize } from "../../../config";
 import { FranchiseModels } from "../../../interfaces";
 import { SeoImageModel } from "./SeoImageModel";
@@ -7,16 +6,15 @@ import { ExtraFieldsModel } from "./extraFieldsModel";
 import { IChecklistModel } from "../franchise/iChecklist";
 import RepoProvider from "../../../apps/RepoProvider";
 
-const { STRING, TEXT, DATE, JSONB, ENUM, NOW, UUIDV4 } = DataTypes;
+const { STRING, TEXT, JSONB } = DataTypes;
 
 // Define the attributes for lead creation
-interface LeadCreationAttributes extends Optional<FranchiseModels, "id"> {}
+interface LeadCreationAttributes extends Optional<FranchiseModels, "id"> { }
 
 // Define the model class for FranchiseModels
 class FranchiseLeadModel
     extends Model<FranchiseModels, LeadCreationAttributes>
-    implements FranchiseModels
-{
+    implements FranchiseModels {
     public id!: number;
     public description!: string;
     public title!: string;
@@ -109,9 +107,9 @@ class FranchiseLeadModel
         FranchiseLeadModel.addHook("afterCreate", async (instance, options) => {
             await RepoProvider.LogRepo.logModelAction(
                 "create",
-                "Checklist",
+                "Franchise Model",
                 instance,
-                options
+                options // Pass it for logging
             );
         });
 
@@ -120,7 +118,7 @@ class FranchiseLeadModel
             // Now call logModelAction as before
             await RepoProvider.LogRepo.logModelAction(
                 "update",
-                "Checklist",
+                "Franchise Model",
                 instance,
                 options
             );
@@ -132,7 +130,7 @@ class FranchiseLeadModel
             async (instance, options) => {
                 await RepoProvider.LogRepo.logModelAction(
                     "delete",
-                    "Checklist",
+                    "Franchise Model",
                     instance,
                     options
                 );

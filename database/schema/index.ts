@@ -1,32 +1,33 @@
 // Admin model starts
 
-import {CampaignAdModel} from "./campaign-ui/campaignAdModel";
+import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
 // import { questionModel } from "./campaign-ui/questionModel";
-import {FranchiseModel} from "./franchise/franchiseModel";
-import {AssignModel} from "./lead/assigneeModels";
-import {LeadsModel} from "./lead/lead.model";
-import {UserModel} from "./user/user.model";
+import { FranchiseModel } from "./franchise/franchiseModel";
+import { AssignModel } from "./lead/assigneeModels";
+import { LeadsModel } from "./lead/lead.model";
+import { UserModel } from "./user/user.model";
 
 import {
     AgreementDocModel
 } from "../../apps/agreement-docs/model/agreementDocModel";
-import {RetortProductCategoryModel} from "./retort/retort-category";
+import { RetortProductCategoryModel } from "./retort/retort-category";
 import {
     OrganizationModel
 } from "../../apps/organization/database/organization_schema";
-import {DocumentModel} from "./documents/documentModel";
+import { DocumentModel } from "./documents/documentModel";
 
-import {handleError} from "../../apps/common/utils/HelperMethods";
-import {CampaignSubmissions} from "./campaign-ui/campaignSubmissions";
-import {ContractModel} from "./contracts";
-import {OrdersModel} from "./ecommerce/order.model";
-import {ShippingHistoryModel} from "./ecommerce/shippingActivity";
-import {ItemStockModel} from "./petpooja/stock";
+import { handleError } from "../../apps/common/utils/HelperMethods";
+import { CampaignSubmissions } from "./campaign-ui/campaignSubmissions";
+import { ContractModel } from "./contracts";
+import { OrdersModel } from "./ecommerce/order.model";
+import { ShippingHistoryModel } from "./ecommerce/shippingActivity";
+import { ItemStockModel } from "./petpooja/stock";
 import { AreaModel } from "./franchise/AreaModel";
 import { OptionsModel } from "./options/optionModel";
 import { FranchiseLeadModel } from "./lead/franchiseModels";
 import { IChecklistModel } from "./franchise/iChecklist";
 import { ProductOptionsModel } from "./product-options/productOptionsModel";
+import { PdiCheckpointModel } from "./franchise/pdiCheckPointModel";
 
 export * from "./user/user.model";
 export * from "./user/address";
@@ -125,6 +126,7 @@ const models = {
     AreaModel: AreaModel.initModel(),
     OptionsModel: OptionsModel.initModel(),
     FranchiseLeadModel: FranchiseLeadModel.initModel(),
+    PdiCheckPoints: PdiCheckpointModel.initModel(),
     IChecklistModel: IChecklistModel.initModel(),
     Variations: ProductOptionsModel.initModel(),
     CampaignSubmission: CampaignSubmissions.initModel(),

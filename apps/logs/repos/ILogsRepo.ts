@@ -15,7 +15,7 @@ export interface ILogsRepo {
     logModelAction<T extends Model<any, any>>(
         action: string,
         modelName: string,
-        instance: T,
+        instance: T, 
         options: any,
     ): Promise<void>; // Return type would depend on your use case (e.g., void, boolean, or a more specific result type)
 }

@@ -8,6 +8,7 @@ class LogModel extends Model {
   public recordId!: number; // The ID of the record being modified
   public data!: Record<string, any>; // Data of the record being modified
   public userId!: number | null; // User performing the action, optional
+  public userName!: string | null; // User performing the action, optional
   public timestamp!: Date; // Timestamp of the operation
 }
 
@@ -31,6 +32,10 @@ LogModel.init(
     },
     userId: {
       type: DataTypes.INTEGER,
+      allowNull: true, // To store who performed the action
+    },
+    userName: {
+      type: DataTypes.STRING,
       allowNull: true, // To store who performed the action
     },
     timestamp: {

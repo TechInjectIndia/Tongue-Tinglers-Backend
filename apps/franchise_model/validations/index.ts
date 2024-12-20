@@ -37,12 +37,7 @@ const createFranchiseModelBody = Joi.object({
             'number.min': 'Required area must be a positive number.',
             'any.required': 'Required area is required.'
         }),
-    images: Joi.array().items(SeoImageSchema).min(1).required()
-        .messages({
-            'array.base': 'Images must be an array.',
-            'array.min': 'At least one image is required.',
-            'any.required': 'Images are required.'
-        }),
+
     investment: Joi.number().precision(2).min(0).required()
         .messages({
             'number.base': 'Investment must be a number.',
@@ -88,11 +83,7 @@ const editFranchiseModelBody = Joi.object({
             'number.integer': 'Required area must be an integer.',
             'number.min': 'Required area must be a positive number.'
         }),
-    images: Joi.array().items(SeoImageSchema).min(1).optional()
-        .messages({
-            'array.base': 'Images must be an array.',
-            'array.min': 'At least one image is required.',
-        }),
+
     investment: Joi.number().precision(2).min(0).optional()
         .messages({
             'number.base': 'Investment must be a number.',
@@ -161,15 +152,8 @@ const listFranchiseModelQuery = Joi.object({
 
 // Validation schema for editing multiple FranchiseModels
 const editMultipleIdsBody = Joi.object({
-    ids: Joi.array().items(Joi.string().uuid())
-        .min(1)
-        .required()
-        .messages({
-            'array.base': 'IDs must be an array.',
-            'array.min': 'At least one ID is required.',
-            'string.guid': 'Each ID must be a valid UUID.',
-            'any.required': 'IDs are required.'
-        }),
+    ids: Joi.array().items(Joi.number())
+
 });
 
 // Middleware for validating FranchiseModel creation

@@ -7,12 +7,10 @@ import {
 import {
     TListFilters,
 } from "../../../types";
-import { FranchiseLeadModel } from "../../../database/schema";
-import { ExtraFieldsModel } from "../../../database/schema";
-import { SeoImageModel } from "../../../database/schema";
-import IBaseRepo from '../controllers/controller/IController';
+import { FranchiseLeadModel, UserModel } from "../../../database/schema";
 
-export class FranchiseModelRepo implements IBaseRepo<FranchiseModels, TListFilters> {
+
+export class FranchiseModelRepo {
     constructor() { }
 
     public async get(id: number): Promise<FranchiseModels | null> {
@@ -20,16 +18,6 @@ export class FranchiseModelRepo implements IBaseRepo<FranchiseModels, TListFilte
             where: {
                 id,
             },
-            include: [
-                {
-                    model: ExtraFieldsModel,
-                    as: 'others',
-                },
-                {
-                    model: SeoImageModel,
-                    as: 'images',
-                }
-            ],
         });
         return data;
     }
@@ -55,19 +43,34 @@ export class FranchiseModelRepo implements IBaseRepo<FranchiseModels, TListFilte
         return { total, data };
     }
 
-    public async create(data: TPayloadFranchiseModel): Promise<FranchiseModels> {
-        const response = await FranchiseLeadModel.create(data);
+    public async create(
+        data: TPayloadFranchiseModel,
+        userId: number
+    ): Promise<FranchiseModels> {
+        // Fetch user data from UserModel
+        const user = await UserModel.findByPk(userId);
+
+        if (!user) {
+            throw new Error(`User with ID ${userId} not found.`);
+        }
+
+        // Use user data (e.g., userName) when creating the record
+        const response = await FranchiseLeadModel.create(data, {
+            userId: user.id,
+            userName: user.firstName,
+        });
+
         return response;
     }
 
     public async update(id: number, data: TPayloadFranchiseModel): Promise<[affectedCount: number]> {
         const franchiseLead = await FranchiseLeadModel.findByPk(id);
         if (!franchiseLead) {
-          throw new Error("Franchise Lead not found");
+            throw new Error("Franchise Lead not found");
         }
         franchiseLead.set(data);
         await franchiseLead.save();
-    
+
         return [1];
     }
 

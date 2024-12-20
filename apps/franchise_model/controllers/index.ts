@@ -9,19 +9,12 @@ import { ExtraFieldRepo } from '../models/ExtraFieldRepo';
 export default class FranchiseModelController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '');
-            const { images, others, ...franchiseData } = req.body;
+            const user_id = get(req, 'user_id',);
+            const { others, ...franchiseData } = req.body;
 
             // Create Franchise Model
-            const franchiseModel = await new FranchiseModelRepo().create({ ...franchiseData, user_id });
+            const franchiseModel = await new FranchiseModelRepo().create({ ...franchiseData }, user_id);
 
-            // Create Images
-            if (images && images.length > 0) {
-                const imagePromises = images.map(async image =>
-                    await new ImageRepo().create({ ...image, franchiseModelId: franchiseModel.id })
-                );
-                await Promise.all(imagePromises);
-            }
 
             // Create Extra Fields
             if (others && others.length > 0) {

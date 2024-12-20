@@ -1,47 +1,31 @@
-import {Router} from "express";
-import {Request, Response} from "express";
-import {logRouter} from "../apps/logs/api/logrouter";
+import { Router } from "express";
+import { Request, Response } from "express";
+import { logRouter } from "../apps/logs/api/logrouter";
 
 import multer from "multer";
 
-const upload = multer({storage: multer.memoryStorage()});
-import {sendEmail} from "../libraries";
+const upload = multer({ storage: multer.memoryStorage() });
+import { sendEmail } from "../libraries";
 
 const router = Router();
 
 const ADMIN = "/admin";
-const FRANCHISE = "/franchise";
-const CUSTOMER = "/customer";
-const GUEST = "/guest";
 
-// ====== Auth ======
-import {auth} from "../middlewares/auth";
+import { auth } from "../middlewares/auth";
 import authRouter from "../apps/auth/api";
 
 router.use(`/auth`, authRouter);
-// ====== Auth ======
 
-import referralRouter from "../apps/referral/api";
-
-router.use("/referral", referralRouter);
-
-// ====== Admin imports ======
 import rolesRouter from "../apps/admin-user/api/roles";
 import permissionsRouter from "../apps/admin-user/api/permissions";
 import adminUsersRouter from "../apps/admin-user/api/user";
-// import guestUsersRouter from "../apps/guest-user/api/guest-user";
-// import customerUsersRouter from "../apps/admin-user/api/customer";
-// import productRouter from "../apps/ecommerce/api/products";
-import taxesRouter from "../apps/ecommerce/api/taxes";
-import productCategoryRouter from "../apps/ecommerce/api/category";
-import orderRouter from "../apps/ecommerce/api/orders";
-import productTagRouter from "../apps/ecommerce/api/tags";
+
 import leadRouter from "../apps/lead/api/lead";
 import webLeadRouter from "../apps/lead/api/web-lead";
 
 import followUpsRouter from "../apps/lead/api/followups";
 import profileRouter from "../apps/admin-user/api/profile";
-import settingsRouter from "../apps/admin-user/api/settings"; // pending
+import settingsRouter from "../apps/admin-user/api/settings";
 import paymentsRouter from "../apps/payments/api";
 import paymentsOrdersRouter from "../apps/payments/api/orderPayment";
 import reviewsRouter from "../apps/reviews/api/reviews";
@@ -56,7 +40,7 @@ import retortProductRouter from "../apps/retort/api/products";
 import retortProductCategoryRouter from "../apps/retort/api/category";
 import retortOrderRouter from "../apps/retort/api/orders";
 import campaignRouter from "../apps/crm/api/campaign";
-import testUsersRouter from "../apps/test-user/api/user"; // for testing only
+import testUsersRouter from "../apps/test-user/api/user";
 import contractsRouter from "../apps/contracts/api";
 import questionRouter from "../apps/questions/api";
 import campaignAdRouter from "../apps/campaign/api";
@@ -64,27 +48,23 @@ import campaignSubmissionsRouter
     from "../apps/campaign/api/campaignSubmissionsApi";
 import filesRouter from "../apps/files/api/files";
 import galleryRouter from "../apps/gallery/api/gallery";
+
 import pdiChecklistRouter from "../apps/pdi-checklist/api/pdiChecklist";
 import IChecklistRouter from "../apps/ichecklist/api/iChecklist";
-import pdiCheckoutRouter from "../apps/pdi-checkpoint/api/pdiCheckpoint";
+import pdiCheckPointRouter from "../apps/pdi-checkpoint/api/pdiCheckpoint";
+
 import PdiRouter from "../apps/pdi/api/pdiApi";
 import quickActionEmailRouter from "../apps/quick-actions/api/email";
 import quickActionWhatsappRouter from "../apps/quick-actions/api/whatsapp";
 import regionRouter from "../apps/region/api/index";
 import areaRouter from "../apps/area/api/index";
-import cartRouter from "../apps/cart/api/cartApi";
 import shippingHistory from "../apps/ecommerce/api/shippingHistoryApi";
 
 import vendorRouter from "../apps/vendor/api/vendorApi";
 import frachiseRouter from "../apps/franchise/api/franchise";
-import {commissionRouter} from "../apps/commission/api/CommissionApi";
-
-/* Migration Router */
+import { commissionRouter } from "../apps/commission/api/CommissionApi";
 import migrationRouter from "../migrations/routes/migrateRoute";
-
-/* organization router */
 import organizationRouter from "../apps/organization/api/index";
-
 import productRouter from "../apps/product/api/productApi";
 import optionsRouter from "../apps/options/api/optionsApi";
 import optionsValuesRouter from "../apps/optionsValue/api/optionsValueApi";
@@ -98,9 +78,18 @@ import productsCategoryRouter
 import OrderRouter from "../apps/order/api/orderApi";
 import documentRouter from "../apps/documents/api/documentApi";
 import agreementDocRouter from "../apps/agreement-docs/api/agreementDocApi"
+import petPoojaApiRouter from "../apps/pet-pooja/api/petpooja";
+import zohoSignApiRouter from "../apps/zoho-sign/api/zohosign";
+import {
+    transactionRouter,
+} from "../apps/payment-transaction/api/TransactionRouter";
+
+
+
+
+
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
-// router.use(`${ADMIN}/customer`, auth, customerUsersRouter);
 router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
 router.use(`${ADMIN}/roles`, auth, rolesRouter);
 router.use(`${ADMIN}/testimonials`, auth, testimonialsRouter);
@@ -113,11 +102,7 @@ router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter);
 router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter);
 router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter);
 router.use(`${ADMIN}/menu`, auth, menuRouter);
-// router.use(`${ADMIN}/ecommerce/product`, auth, productRouter);
-router.use(`${ADMIN}/tax`, auth, taxesRouter);
-router.use(`${ADMIN}/product/category`, auth, productCategoryRouter);
-// router.use(`${ADMIN}/order`, auth, orderRouter);
-router.use(`${ADMIN}/product/tag`, auth, productTagRouter);
+
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 router.use(`${ADMIN}/retort/product`, auth, retortProductRouter);
 router.use(`${ADMIN}/retort/category`, auth, retortProductCategoryRouter);
@@ -130,7 +115,7 @@ router.use(`${ADMIN}/campaign-submissions`, auth, campaignSubmissionsRouter);
 router.use(`${ADMIN}/files`, auth, filesRouter);
 router.use(`${ADMIN}/gallery`, auth, galleryRouter);
 router.use(`${ADMIN}/pdi-checklist`, auth, pdiChecklistRouter);
-router.use(`${ADMIN}/checkpoint`, auth, pdiCheckoutRouter);
+router.use(`${ADMIN}/checkpoint`, auth, pdiCheckPointRouter);
 router.use(`${ADMIN}/checklist`, auth, IChecklistRouter);
 router.use(`${ADMIN}/pdi`, auth, PdiRouter);
 router.use(`${ADMIN}/quick-actions/email`, auth, quickActionEmailRouter);
@@ -149,77 +134,16 @@ router.use(`${ADMIN}/options`, auth, optionsRouter);
 router.use(`${ADMIN}/options-values`, auth, optionsValuesRouter);
 router.use(`${ADMIN}/product-options`, auth, productOptionsRouter);
 router.use(`${ADMIN}/products-category`, auth, productsCategoryRouter);
-
 router.use("/cart-detail", auth, cartDetailRouter);
 router.use("/order-items", auth, orderItemRouter);
 router.use("/order", auth, OrderRouter);
 router.use(`/cart`, auth, cartProductRouter);
 router.use("/migration", migrationRouter);
-router.use("/document", documentRouter)
-router.use(`${ADMIN}/agreement-docs`, agreementDocRouter)
-
-// router.use(`${GUEST}/users`, auth, guestUsersRouter);
-
-// ====== Franchise imports ======
-import franchiseOrderAnalyticsRouter
-    from "../apps/analytics/api/franchise/orders-analytics"; // pending
-import franchiseRetortAnalyticsRouter
-    from "../apps/analytics/api/franchise/retort-analytics"; // pending
-import franchiseOrderRouter from "../apps/ecommerce/api/franchise/orders";
-import franchiseRetortOrderRouter from "../apps/retort/api/franchise/orders";
-import franchiseTestimonialsRouter
-    from "../apps/testimonials/api/franchise-testimonials";
-
-router.use(`${FRANCHISE}/order`, auth, franchiseOrderRouter);
-router.use(`/retort/order`, auth, franchiseRetortOrderRouter);
-router.use(
-    `${FRANCHISE}/analytics/orders`,
-    auth,
-    franchiseOrderAnalyticsRouter,
-); // pending
-router.use(
-    `${FRANCHISE}/analytics/retort`,
-    auth,
-    franchiseRetortAnalyticsRouter,
-); // pending
-router.use(`${FRANCHISE}/testimonials`, auth, franchiseTestimonialsRouter);
-
-// ====== Customer imports ======
-import customerReviewsRouter from "../apps/reviews/api/customer-reviews";
-import customerProfileRouter from "../apps/customer-user/api/profile";
-import customerSettingsRouter from "../apps/customer-user/api/settings"; // pending
-import orderCustomerAnalyticsRouter
-    from "../apps/analytics/api/customer/orders-analytics";
-import customerTestimonialsRouter
-    from "../apps/testimonials/api/customer-testimonials";
-// ====== Customer routes ======
-// router.use(`${CUSTOMER}/order`, orderCustomerRouter);
-router.use(`${CUSTOMER}/reviews`, auth, customerReviewsRouter);
-router.use(`${CUSTOMER}/profile`, auth, customerProfileRouter);
-router.use(`${CUSTOMER}/settings`, auth, customerSettingsRouter); // pending
-router.use(`${CUSTOMER}/analytics/orders`, auth, orderCustomerAnalyticsRouter); // pending
-router.use(`${CUSTOMER}/testimonials`, auth, customerTestimonialsRouter);
-
-// ====== Frontend imports ======
-
-import webTestimonialsRouter from "../apps/testimonials/api/web-testimonials";
-import webReviewsRouter from "../apps/reviews/api/web-reviews";
-import webProductsRouter from "../apps/ecommerce/api/web/products";
-import webRegisterRouter from "../apps/admin-user/api/customer-register";
-import webCampaignRouter from "../apps/campaign/api/web";
-
-// ====== Frontend routes ======
-// router.use(`/menu`, webMenuRouter); // pending
-// router.use(`/lead`, webLeadRouter);
-router.use(`/reviews`, webReviewsRouter);
-router.use(`/testimonials`, webTestimonialsRouter);
-router.use(`/product`, webProductsRouter);
-router.use(`/register`, webRegisterRouter);
-router.use(`/campaign-ad`, webCampaignRouter);
-/* organization router */
+router.use("/document", documentRouter);
+router.use(`${ADMIN}/agreement-docs`, agreementDocRouter);
+router.use(`/pet-pooja`, petPoojaApiRouter);
 router.use(`/organization`, organizationRouter);
 
-// ====== Frontend ======
 
 router.post(
     `/upload-file`,
@@ -230,21 +154,8 @@ router.post(
     },
 );
 
-// ====== Pet Pooja ======
-import petPoojaApiRouter from "../apps/pet-pooja/api/petpooja";
-
-router.use(`/pet-pooja`, petPoojaApiRouter);
-// ====== Pet Pooja ======
-
-// ====== Zoho Sign ======
-import zohoSignApiRouter from "../apps/zoho-sign/api/zohosign";
-import {
-    transactionRouter,
-} from "../apps/payment-transaction/api/TransactionRouter";
 
 router.use(`/zoho-sign`, zohoSignApiRouter);
-// ====== Zoho Sign ======
-
 router.use("/logs", logRouter);
 router.use("/transaction", transactionRouter);
 

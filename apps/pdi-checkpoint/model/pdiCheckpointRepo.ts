@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { TListFilters } from "../../../types"; // Adjust imports according to your types
-import { ICheckPoint,TPdiCheckpointPayload,TPdiCheckpointList, TListFiltersCheckpoint } from "../../../interfaces/pdiCheckPoint"; // Adjust imports according to your types
+import { ICheckPoint, TPdiCheckpointPayload, TPdiCheckpointList, TListFiltersCheckpoint } from "../../../interfaces/pdiCheckPoint"; // Adjust imports according to your types
 import { PdiCheckpointModel } from "../../../database/schema/franchise/pdiCheckPointModel"; // Adjust the import path based on your project structure
 import IBaseRepo from '../controllers/controller/IPdiCheckpointController';
 

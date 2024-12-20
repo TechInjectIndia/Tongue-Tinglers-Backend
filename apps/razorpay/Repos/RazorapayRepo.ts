@@ -125,7 +125,7 @@ export class RazorpayRepo implements IRazorpayRepo {
       });
       return paymentLink;
     } catch (error) {
-      throw new Error(`Error creating payment link: ${error.message}`);
+      throw new Error(`Error creating payment link: ${error}`);
     }
   }
 }

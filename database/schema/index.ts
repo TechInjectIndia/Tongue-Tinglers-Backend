@@ -22,6 +22,10 @@ import {ContractModel} from "./contracts";
 import {OrdersModel} from "./ecommerce/order.model";
 import {ShippingHistoryModel} from "./ecommerce/shippingActivity";
 import {ItemStockModel} from "./petpooja/stock";
+import { AreaModel } from "./franchise/AreaModel";
+import { OptionsModel } from "./options/optionModel";
+import { FranchiseLeadModel } from "./lead/franchiseModels";
+import { IChecklistModel } from "./franchise/iChecklist";
 
 export * from "./user/user.model";
 export * from "./user/address";
@@ -117,6 +121,11 @@ const models = {
     ShippingHistoryModel: ShippingHistoryModel.initModel(),
     ItemStockModel: ItemStockModel.initModel(),
     AssignModel: AssignModel.initModel(), //depends on Lead & User model
+    AreaModel: AreaModel.initModel(),
+    OptionsModel: OptionsModel.initModel(),
+    FranchiseLeadModel: FranchiseLeadModel.initModel(),
+    IChecklistModel: IChecklistModel.initModel()
+
 };
 
 console.log(Object.keys(models).join(" "))

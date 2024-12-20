@@ -191,7 +191,7 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
             };
         }
         if (filters?.filters.date) {
-            where.date = filters.filters.date; // Adjust for exact or range
+            where.created_at = filters.filters.date; // Adjust for exact or range
                                                // filtering.
         }
         if (filters?.filters.affiliate) {

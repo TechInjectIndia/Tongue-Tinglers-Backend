@@ -16,6 +16,7 @@ import {sequelize} from "../../../config";
 import {UserModel} from '../user/user.model';
 import {CampaignAdModel} from "../campaign-ui/campaignAdModel";
 import {AssignModel} from "./assigneeModels";
+import RepoProvider from "../../../apps/RepoProvider";
 
 const {STRING, TEXT, DATE, JSONB, ENUM, NOW} = DataTypes;
 
@@ -198,6 +199,28 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
             paranoid: true
         });
         return LeadsModel;
+    }
+
+    public static hook() {
+    
+            LeadsModel.addHook("afterCreate", async (instance, options) => {
+                await RepoProvider.LogRepo.logModelAction("create", "Leads",
+                    instance, options);
+            });
+    
+            // After Update Hook - Log the updated fields of the Leads
+            LeadsModel.addHook("afterUpdate", async (instance, options) => {
+                // Now call logModelAction as before
+                await RepoProvider.LogRepo.logModelAction("update", "Leads",
+                    instance, options);
+            });
+    
+            // After Destroy Hook - Log the deletion of the Leads
+            LeadsModel.addHook("afterDestroy", async (instance, options) => {
+                await RepoProvider.LogRepo.logModelAction("delete", "Leads",
+                    instance, options);
+            });
+    
     }
 }
 

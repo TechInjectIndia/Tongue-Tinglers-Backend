@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { BaseNotes, BaseOrder, Order, ORDER_TYPE } from "../../../interfaces";
+import { BaseOrder, Order, ORDER_TYPE } from "../../../interfaces";
 import { sequelize } from "../../../config";
 import { NotesModel } from "./notesModel";
 import { OrderItemsModel } from "../ecommerce/order_item.model";

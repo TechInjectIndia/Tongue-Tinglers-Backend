@@ -1,8 +1,11 @@
-import { extend } from "dayjs";
-import { BaseMeta, ParsedMeta } from "../database/schema/base/Base";
-import { BaseOrderItem, ParsedOrderItem } from "./order_items";
-import { MetaUser, ParsedUser } from "./user";
-import { Address } from "../types";
+import {BaseMeta, ParsedMeta} from "../database/schema/base/Base";
+import {
+    BaseOrderItem,
+    ParsedOrderItem,
+    PreSaleParsedOrderItem
+} from "./order_items";
+import {ParsedUser} from "./user";
+import {Address} from "../types";
 
 export enum PAYMENT_STATUS {
     PAID = "paid",
@@ -17,16 +20,16 @@ export enum ORDER_TYPE {
 }
 
 interface BaseNotes {
-    isNew:boolean,
+    isNew: boolean,
     notes: string;
     createdBy: number;
 }
 
-interface Notes extends BaseNotes{
+interface Notes extends BaseNotes {
     id: number;
 }
 
-interface BaseOrder{
+interface BaseOrder {
     status: string;
     item_count: number;
     total: number;
@@ -56,26 +59,37 @@ interface BaseOrder{
 interface ParsedOrder extends ParsedMeta, OrderPayload {
     id: number;
     status: string;
-    item_count: number;
-    total: number;
-    total_tax: number;
-    delivery_status: string;
-    customer_details: ParsedUser;
-    payment_type: string;
-    payment_id: number;
-    cancelled_items: ParsedOrderItem[];
-    total_discount: number;
-    delivery_details: any;
-    total_shipping: number;
-    anomalyArr: number[]
-    prices: string;
-    discount_prices: string;
+    total: number; // without Tax
+    totalTax: number;
+    deliveryStatus: string;
+    customerDetails: ParsedUser;
+    paymentType: string; //todo convert to enum
+    paymentId: number;
+    cancelledItems: ParsedOrderItem[];
+    totalDiscount: number;
+    deliveryDetails: any; //todo @nitesh convert to interface
+    shippingAddress: Address;
+    totalShipping: number;
+    anomalyArr: number[];
+    coupon: string;
+    items: ParsedOrderItem[];
+
+}
+
+interface PresaleParsedOrder extends OrderPayload {
+    total: number; // without Tax
+    totalTax: number;
+    cancelledItems: PreSaleParsedOrderItem[];
+    totalDiscount: number;
+    coupon: string;
+    items: PreSaleParsedOrderItem[];
 }
 
 interface OrderPayload {
     notes: Notes[];
-    order_items: BaseOrderItem[];
+    orderItems: BaseOrderItem[];
 }
+
 interface Order extends BaseMeta, BaseOrder {
     id: number;
 }
@@ -95,5 +109,6 @@ export {
     Notes,
     OrderPayload,
     OrderPagination,
-    ParsedOrder
+    ParsedOrder,
+    PresaleParsedOrder
 }

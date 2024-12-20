@@ -9,6 +9,7 @@ import { OptionsValueModel } from "../../../database/schema/optionsValue/options
 import { OptionsModel } from "../../../database/schema/options/optionModel";
 import { parseCartProduct } from "../parser/cartProductParser";
 export class CartProductRepo implements ICartProductRepo {
+
     async create(cartProduct:Cart): Promise<ParseCart | null> {
         const transaction = await CartProductModel.sequelize?.transaction();
         try {
@@ -17,13 +18,13 @@ export class CartProductRepo implements ICartProductRepo {
             const createdCartProducts = await CartProductModel.bulkCreate(
                 cartProduct.carts.map((product) => ({
                     product_id: product.product_id,
-                    product_option_id: product.product_option_id,
+                    product_option_id: product.product_option_id, // todo @nitesh @sunil rename to option value id
                     quantity: product.quantity,
                 })),
                 { transaction, returning: true } // Return created rows
             );
 
-            let cartProductIds: number[] = []; 
+            let cartProductIds: number[] = [];
             cartProductIds = createdCartProducts.map((option) => option.id);
             let payload = {
                 // cart_ids: cartProductIds,
@@ -41,7 +42,7 @@ export class CartProductRepo implements ICartProductRepo {
             }else{
                 createCartDetails = userExist
             }
-            
+
             await createCartDetails.addCartProductses(cartProductIds);
             // await organization.addShippingAddresses(shippingAddresses);
             await transaction?.commit();
@@ -85,10 +86,10 @@ export class CartProductRepo implements ICartProductRepo {
         } catch (error) {
             console.log(error);
             await transaction?.rollback();
-            return null;  
+            return null;
         }
     }
-    
+
     update(product: CartProduct): Promise<CartProduct> {
         throw new Error("Method not implemented.");
     }
@@ -106,7 +107,7 @@ export class CartProductRepo implements ICartProductRepo {
             return cartProduct.toJSON();
         } catch (error) {
             console.log(error);
-            return null; 
+            return null;
         }
     }
 
@@ -131,7 +132,7 @@ export class CartProductRepo implements ICartProductRepo {
             return existingCartProduct.toJSON();
         } catch (error) {
             console.log(error);
-            return null; 
+            return null;
         }
     }
 }

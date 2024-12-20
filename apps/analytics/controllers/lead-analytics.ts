@@ -24,7 +24,7 @@ export default class LeadAnalyticsController {
 
             const user_id = get(req, "user_id", "");
 
-            const franchiseId = get(req, "franchise_id", "");
+            const franchiseId = get(req, "franchise_id");
             const statusType = get(req.query, "statusType", "") as string;
             const filter = get(req.query, "filter", "") as string;
             const startDate = get(req.query, "startDate", "") as string;
@@ -87,10 +87,10 @@ export default class LeadAnalyticsController {
     static async leadTimeline(req: Request, res: Response, next: NextFunction) {
         try {
 
-            const franchiseId = get(req, "franchise_id", "");
+            const franchiseId = get(req, "franchise_id");
 
             const user_id = parseInt(get(req, 'user_id'));
-            if(isNaN(user_id)) throw Error('userId not passed or isNan')
+            if (isNaN(user_id)) throw Error('userId not passed or isNan')
 
             let analyticsData: any[] = [];
 
@@ -130,24 +130,8 @@ export default class LeadAnalyticsController {
                 });
             }
 
-            const franchiseData = await RepoProvider.franchise.getById(user_id);
-            if (!franchiseData) {
-                return res.status(404).send({ message: "Franchise data not found." });
-            }
-            console.log("franchiseData.franchiseType", franchiseData);
-            switch (franchiseData) {
-                // case FranchiseType.MASTER_FRANCHISE:
-                //     analyticsData = await new AnalyticsModel().leadTimelineForMasterFranchisee(startDate, endDate, groupBy, franchiseId);
-                //     break;
-                // case FranchiseType.SUPER_FRANCHISE:
-                //     analyticsData = await new AnalyticsModel().leadTimelineForSuperFranchisee(startDate, endDate, groupBy, franchiseData, franchiseId);
-                //     break;
-                // case FranchiseType.FRANCHISE:
-                //     analyticsData = await new AnalyticsModel().leadTimelineForFranchisee(startDate, endDate, groupBy, franchiseData);
-                //     break;
-                default:
-                    return res.status(400).send({ message: "Invalid franchise type." });
-            }
+        
+            analyticsData = await new AnalyticsModel().leadTimelineForSuperFranchisee(startDate, endDate, groupBy);
 
             // Format dates in analyticsData to match dateInterval formatting
             const formattedAnalyticsData = analyticsData.map(item => ({
@@ -185,7 +169,7 @@ export default class LeadAnalyticsController {
     static async leadList(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {
             const user_id = parseInt(get(req, 'user_id'));
-            if(isNaN(user_id)) throw Error('userId not passed or isNan')
+            if (isNaN(user_id)) throw Error('userId not passed or isNan')
 
 
             const size = get(req.query, "size", 100);
@@ -256,7 +240,7 @@ export default class LeadAnalyticsController {
         try {
 
             const franchiseId = parseInt(get(req, 'franchiseId'));
-            if(isNaN(franchiseId)) throw Error('userId not passed or isNan')
+            if (isNaN(franchiseId)) throw Error('userId not passed or isNan')
 
             const filter = get(req.query, "filter", "").toString();
             const startDate = get(req.query, "startDate", "").toString();

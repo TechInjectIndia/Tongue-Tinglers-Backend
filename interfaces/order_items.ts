@@ -1,6 +1,6 @@
-import { BaseMeta, ParsedMeta } from "../database/schema/base/Base"
-import { ParsedProductOptions } from "./product-options";
-import { ParsedProduct } from "./products";
+import {BaseMeta, ParsedMeta} from "../database/schema/base/Base"
+import {ParsedProductOptions} from "./product-options";
+import {ParsedProduct} from "./products";
 
 interface BaseOrderItem {
     product_id: number,
@@ -14,18 +14,24 @@ interface BaseOrderItem {
     type: ORDER_ITEM_TYPE
 }
 
-interface ParsedOrderItem extends ParsedMeta {
-    id: number;
+interface PriceComponent {
+}
+
+interface PreSaleParsedOrderItem {
+
     product: ParsedProduct,
-    product_option_id: ParsedProductOptions,
+    productOptionId: ParsedProductOptions,
     quantity: number,
     total_price: number,
-    total_tax: number,
-    coupon_discount: number,
-    points_discount: number,
-    student_discount: number,
+    totalTax: number,
+    prices: Array<PriceComponent>
+    disc: Array<PriceComponent>
     type: ORDER_ITEM_TYPE
-    order_items?: ParsedOrderItem[]; 
+    // order_items?: ParsedOrderItem[];
+}
+
+interface ParsedOrderItem extends PreSaleParsedOrderItem {
+    id: number;
 }
 
 enum ORDER_ITEM_TYPE {
@@ -37,7 +43,7 @@ interface OrderItem extends BaseOrderItem, ParsedMeta {
     id: number
 }
 
-interface UpdateQuantity extends OrderItem{
+interface UpdateQuantity extends OrderItem {
     quantity: number
 }
 
@@ -61,5 +67,7 @@ export {
     UpdateCouponDiscount,
     UpdatePointsDiscount,
     UpdateStudentDiscount,
-    ParsedOrderItem
+    ParsedOrderItem,
+    PriceComponent,
+    PreSaleParsedOrderItem
 }

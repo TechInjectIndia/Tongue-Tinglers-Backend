@@ -22,7 +22,15 @@ enum LeadSource {
     EMAIL_MARKETING = "email-marketing",
     PAID = "paid",
     EVENT = "event",
-    REFERRAL = "referral"
+    REFERRAL = "referral",
+    GOOGLE_SEARCH = "google search",
+    INSTAGRAM = "instagram",
+    FACEBOOK = "facebook",
+    LINKEDIN = "linkedin",
+    EMAIL = "email",
+    PHYSICAL_EVENT = "physical event",
+    ADVERTISEMENT = "advertisement",
+    CALL = "call",
 }
 
 enum LeadStatus {

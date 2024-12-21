@@ -122,8 +122,8 @@ router.use(`${ADMIN}/quick-actions/email`, auth, quickActionEmailRouter);
 router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
 router.use(`${ADMIN}/region`, auth, regionRouter);
 router.use(`${ADMIN}/area`, auth, areaRouter);
-router.use(`${ADMIN}/contracts`, contractsRouter);
-router.use(`${ADMIN}/lead`, leadRouter); // dont add auth to this url
+router.use(`${ADMIN}/contracts`, auth, contractsRouter);// dont add auth to this url
+router.use(`${ADMIN}/lead`, auth, leadRouter); 
 router.use(`${ADMIN}/web-lead`, webLeadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);

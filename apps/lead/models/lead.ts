@@ -23,6 +23,7 @@ import {
 } from "../../DTO/DTO"
 import {handleError} from "../../common/utils/HelperMethods";
 import { getUserName } from "../../common/utils/commonUtils";
+import moment from "moment";
 
 export class LeadRepo {
     constructor() {
@@ -192,8 +193,13 @@ export class LeadRepo {
             };
         }
         if (filters?.filters.date) {
-            where.created_at = filters.filters.date; // Adjust for exact or range
-                                               // filtering.
+            const date = moment(filters.filters.date); // Parse the given date
+            where.created_at = {
+                [Op.between]: [
+                    date.startOf('day').toDate(), // Start of the day (00:00)
+                    date.endOf('day').toDate(),   // End of the day (23:59:59)
+                ],
+            };// Adjust for exact or range
         }
         if (filters?.filters.affiliate) {
             where.affiliate = {

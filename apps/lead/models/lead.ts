@@ -204,11 +204,11 @@ export class LeadRepo {
             where.amount = {};
     
             if (filters?.filters.minAmount) {
-                where.amount[Op.gte] = parseFloat(filters.filters.minAmount); // Minimum amount
+                where.amount[Op.gte] = filters?.filters.minAmount; // Minimum amount
             }
     
             if (filters?.filters.maxAmount) {
-                where.amount[Op.lte] = parseFloat(filters.filters.maxAmount); // Maximum amount
+                where.amount[Op.lte] = filters?.filters.maxAmount; // Maximum amount
             }
         }
         console.log(where);

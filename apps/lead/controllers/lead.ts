@@ -406,7 +406,8 @@ export default class LeadController {
             const assignee = get(req.query, "assignee");
             const followUpDate = get(req.query, "followUpDate");
             const affiliate = get(req.query, "affiliate");
-            const amountRange = get(req.query, "amountRange");
+            const minAmount = get(req.query, "minAmount");
+            const maxAmount = get(req.query, "maxAmount");
             const quickActionFilter = get(req.query, "quickActionFilter");
 
             // Prepare filter object
@@ -419,12 +420,8 @@ export default class LeadController {
             if (date) filters.date = date;
             if (assignee) filters.assignee = assignee;
             if (affiliate) filters.affiliate = affiliate;
-
-            // Handle range filter (e.g., amount range)
-            if (amountRange) {
-                const [min, max] = amountRange.toString().split("-");
-                filters.amount = { [Op.between]: [parseFloat(min), parseFloat(max)] };
-            }
+            if (minAmount) filters.minAmount = minAmount;
+            if (maxAmount) filters.maxAmount = maxAmount;
 
             const leadsList = await new LeadRepo().list({
                 offset: skip as number,

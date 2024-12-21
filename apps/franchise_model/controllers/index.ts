@@ -9,7 +9,7 @@ import { ExtraFieldRepo } from '../models/ExtraFieldRepo';
 export default class FranchiseModelController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id',);
+            const user_id = get(req, 'user_id');
             const { others, ...franchiseData } = req.body;
 
             // Create Franchise Model

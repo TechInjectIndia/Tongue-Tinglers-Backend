@@ -11,9 +11,9 @@ import {QuestionRepo} from '../models';
 export default class QuestionController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '');
+            const user_id = parseInt(get(req, 'user_id'));
             const payload = {...req?.body, createdBy: user_id};
-            const question = await new QuestionRepo().create(payload);
+            const question = await new QuestionRepo().create(payload, user_id);
             return res
                 .status(200)
                 .send(
@@ -82,7 +82,7 @@ export default class QuestionController {
             }
 
             const updatedQuestion = await new QuestionRepo().update(id,
-                {...updateQuestion, updatedBy: user_id});
+                {...updateQuestion, updatedBy: user_id}, user_id);
             return res
                 .status(200)
                 .send(

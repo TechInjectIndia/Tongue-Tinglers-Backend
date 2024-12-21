@@ -3,8 +3,10 @@ import { TListFilters } from "../../../types"; // Adjust imports according to yo
 import { ICheckPoint, TPdiCheckpointPayload, TPdiCheckpointList, TListFiltersCheckpoint } from "../../../interfaces/pdiCheckPoint"; // Adjust imports according to your types
 import { PdiCheckpointModel } from "../../../database/schema/franchise/pdiCheckPointModel"; // Adjust the import path based on your project structure
 import IBaseRepo from '../controllers/controller/IPdiCheckpointController';
+import { UserModel } from "../../../database/schema";
+import { getUserName } from "../../common/utils/commonUtils";
 
-export class PdiCheckpointRepo implements IBaseRepo<ICheckPoint, TListFiltersCheckpoint> {
+export class PdiCheckpointRepo {
     constructor() { }
 
     // Find a PDI Checklist by primary key
@@ -14,8 +16,16 @@ export class PdiCheckpointRepo implements IBaseRepo<ICheckPoint, TListFiltersChe
     }
 
     // Create a new PDI Checklist
-    public async create(data: TPdiCheckpointPayload): Promise<ICheckPoint> {
-        const response = await PdiCheckpointModel.create(data);
+    public async create(data: TPdiCheckpointPayload, userId: number): Promise<ICheckPoint> {
+        const user = await UserModel.findByPk(userId);
+        if(!user){
+            throw new Error(`User with ID ${userId} not found.`);
+        }
+
+        const response = await PdiCheckpointModel.create(data, {
+            userId: user.id,
+            userName: getUserName(user),
+        });
         return response as ICheckPoint;
     }
 
@@ -52,14 +62,23 @@ export class PdiCheckpointRepo implements IBaseRepo<ICheckPoint, TListFiltersChe
     }
 
     // Update PDI Checklist information
-    public async update(id: number, data: TPdiCheckpointPayload): Promise<[number, ICheckPoint[]]> {
-        const [affectedCount] = await PdiCheckpointModel.update(data, {
-            where: { id },
-        });
-
+    public async update(id: number, data: TPdiCheckpointPayload, userId: number): Promise<[number, ICheckPoint[]]> {
+        const user = await UserModel.findByPk(userId);
+        if(!user){
+            throw new Error(`User with ID ${userId} not found.`);
+        }
+        const checkpoint = await PdiCheckpointModel.findByPk(id);
+        if (!checkpoint) {
+            throw new Error("Checkpoint not found");
+        }
+        checkpoint.set(data);
+        checkpoint.save({
+            userId: user.id,
+            userName: getUserName(user),
+        }); 
         // Return the affected count along with the updated instances
-        const updatedChecklist = await PdiCheckpointModel.findAll({ where: { id } });
-        return [affectedCount, updatedChecklist];
+        const updatedCheckpoint = await PdiCheckpointModel.findAll({ where: { id } });
+        return [1, updatedCheckpoint];
     }
 
     // Delete PDI Checklists by an array of IDs

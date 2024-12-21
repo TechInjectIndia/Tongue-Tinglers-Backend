@@ -13,10 +13,10 @@ class PdiCheckpointController {
     // Create a new PDI Checkpoint
     static async create(req: Request, res: Response) {
         try {
-            const user_id = get(req, 'user_id');
+            const user_id = parseInt(get(req, 'user_id'));
             const payload = { ...req.body, createdBy: user_id };
 
-            const newCheckpoint = await new PdiCheckpointRepo().create(payload);
+            const newCheckpoint = await new PdiCheckpointRepo().create(payload, user_id);
 
             return res.status(200).json({
                 message: "PDI Checkpoint created successfully",
@@ -98,7 +98,7 @@ class PdiCheckpointController {
 
             // Update the Checkpoint in the repo
             const updatedCheckpoint = await new PdiCheckpointRepo().update(
-                id as number, { ...updateData, updatedBy: user_id });
+                id, { ...updateData, updatedBy: user_id }, user_id);
 
             return res.status(200).json({
                 message: "PDI Checkpoint updated successfully",

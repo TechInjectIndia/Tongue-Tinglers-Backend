@@ -17,6 +17,7 @@ import {
 import { AdminRepo } from "../models/user";
 import { Auth } from "../../auth/models";
 import { USER_TYPE } from "../../../interfaces";
+import RepoProvider from "../../RepoProvider";
 
 export default class AdminController {
     static async getAllUsers(req: Request, res: Response, next: NextFunction) {
@@ -265,31 +266,29 @@ export default class AdminController {
 
     static async editAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
-            const user_id = get(req, "user_id", 0);
+            const id = parseInt(get(req?.params, "id"));
+            if (isNaN(id)) throw Error('id cannot be empty');
+
+            const user_id = parseInt(get(req, "user_id"));
+            if (!user_id) throw Error('user_id cannot be empty');
+
             let payload = { ...req?.body, updatedBy: user_id };
 
-            // if (payload.password) {
-            //     const hashedPassword = await
-            // createPassword(payload.password); payload = { ...payload,
-            // password: hashedPassword }; }
-            console.log(payload);
-
-
             await new AdminRepo().update(id as number, payload);
+            const response = await new AdminRepo().get(id);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.ADMIN_UPDATED
+                        SUCCESS_MESSAGE.ADMIN_UPDATED,
+                        response
                     )
                 );
         }
         catch (err) {
-            console.log(err);
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err,
             });
         }
     }

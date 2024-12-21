@@ -14,7 +14,7 @@ import { USER_TYPE, USER_STATUS } from "../../../interfaces";
 import IBaseRepo from "../controllers/controller/IUserController";
 
 export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
-  constructor() {}
+  constructor() { }
 
   public async getByReferralCode(referralCode: string) {
     const data = await UserModel.findOne({
@@ -138,15 +138,8 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
   public async get(id: number): Promise<TUserWithPermission> {
     const data = await UserModel.findOne({
       where: {
-        id:id
+        id: id
       },
-      // include: [
-      //     {
-      //         model: UserAddressModel,
-      //         as: "address",
-      //         order: [["isActive", "ASC"]],
-      //     },
-      // ],
     });
     if (data) {
       const role = await RolesModel.findOne({

@@ -287,7 +287,8 @@ const listLeadQuery = Joi.object().keys({
   assignee: Joi.string().optional().allow(""),
   followUpDate: Joi.string().optional().allow(""),
   affiliate: Joi.string().optional().allow(""),
-  amountRange: Joi.string().optional().allow(""),
+  minAmount: Joi.string().optional().allow(""),
+  maxAmount: Joi.string().optional().allow(""),
   quickActionFilter: Joi.string().optional().allow(""),
 });
 

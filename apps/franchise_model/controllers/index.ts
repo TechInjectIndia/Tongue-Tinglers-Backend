@@ -76,47 +76,33 @@ export default class FranchiseModelController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req.params, "id", 0);
-            const user_id = get(req, 'user_id', 0);
-            const { images, others, ...franchiseData } = req.body;
+            const id = parseInt(get(req.params, "id"));
+            const user_id = parseInt(get(req, 'user_id'));
 
-            // Update Franchise Model
-            delete franchiseData.images
-            delete franchiseData.others
-            const franchiseModel = await new FranchiseModelRepo().update(id as number, { ...franchiseData, user_id });
+            console.log(id);
+            console.log(user_id);
 
-            // Update Images  
-            if (images && images.length > 0) {
-                const imageRepo = new ImageRepo();
 
-                // Separate images with and without id
-                const imagesWithId = images.filter((image: any) => image.id);
-                const newImages = images.filter((image: any) => !image.id);
-
-                // Update images with id
-                const updatePromises = imagesWithId.map(async (image) => {
-                    return await imageRepo.update(image.id, { ...image, franchiseModelId: id as string });
-                });
-
-                // Add new images without id
-                const createPromises = newImages.map(async (image) => {
-                    return await imageRepo.create({ ...image, franchiseModelId: id as string });
-                });
-
-                await Promise.all([...updatePromises, ...createPromises]);
-            }
-
-            // Update Extra Fields
-            if (others && others.length > 0) {
-                // First, delete any existing extra fields associated with the franchise model
-                await new ExtraFieldRepo().deleteByFranchiseModelId(id as number);
-
-                // Add new extra fields
-                const extraFieldPromises = others.map(async (extra) =>
-                    await new ExtraFieldRepo().create({ ...extra, franchiseModelId: id as number })
+            if (!id || !user_id) {
+                return res.status(400).send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.NOT_EXISTS
+                    )
                 );
-                await Promise.all(extraFieldPromises);
+            } else if ((id && isNaN(id)) || (user_id && isNaN(user_id))) {
+                return res.status(400).send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.ID_SHOULD_BE_NUMBER + " and " + ERROR_MESSAGE.USER_ID_SHOULD_BE_NUMBER
+                    )
+                );
             }
+
+
+            const { others, ...franchiseData } = req.body;
+
+            const franchiseModel = await new FranchiseModelRepo().update(id, { ...franchiseData }, user_id);
 
             return res.status(200).send(
                 sendResponse(

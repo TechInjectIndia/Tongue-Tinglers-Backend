@@ -27,3 +27,12 @@ declare module "sequelize" {
     userName?: string;
   }
 }
+
+
+// Extend SaveOptions to allow custom properties
+declare module 'sequelize' {
+  interface SaveOptions {
+    userId?: number;
+    userName?: string;
+  }
+}

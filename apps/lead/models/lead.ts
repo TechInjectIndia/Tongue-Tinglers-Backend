@@ -14,13 +14,7 @@ import {
     UserModel
 } from "../../../database/schema";
 // enum from interfaces
-import IBaseRepo from "../controllers/controller/ILeadController";
 import {createLeadsResponse} from "../../../libraries";
-import {
-    getHandledErrorDTO,
-    getSuccessDTO,
-    getUnhandledErrorDTO
-} from "../../DTO/DTO"
 import {handleError} from "../../common/utils/HelperMethods";
 import { getUserName } from "../../common/utils/commonUtils";
 import moment from "moment";

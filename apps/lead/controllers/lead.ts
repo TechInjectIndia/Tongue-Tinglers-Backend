@@ -17,7 +17,6 @@ import { LeadRepo } from "../models/lead";
 import { AssignRepo } from "../models/AssignRepo";
 import { ContractRepo } from "../../contracts/models/ContractRepo";
 import { AdminRepo } from "../../admin-user/models/user";
-import { FranchiseRepo } from "../../admin-user/models/franchise";
 import { USER_TYPE, USER_STATUS, CONTRACT_STATUS } from "../../../interfaces";
 import jwt from "jsonwebtoken";
 import { CONFIG } from "../../../config";
@@ -25,8 +24,6 @@ import { createLeadResponse } from "../../../libraries";
 import { TContractPayload } from "../../../types/contracts";
 import { ZohoSignRepo } from "../../zoho-sign/models/zohosign";
 import { TAddUser } from "../../../types/admin/admin-user";
-import { Number } from "twilio/lib/twiml/VoiceResponse";
-import { log } from "console";
 
 export default class LeadController {
     static async convertLeadToProspect(
@@ -462,7 +459,7 @@ export default class LeadController {
         try {
             const user_id = parseInt(get(req, 'user_id'));
 
-            log('user_id', user_id);
+            console.log('user_id', user_id);
             if(isNaN(user_id)) throw Error('userId not passed or isNan')
 
             // const user_name = get(req, 'user_name', '');

@@ -22,8 +22,9 @@ import {
     getUnhandledErrorDTO
 } from "../../DTO/DTO"
 import {handleError} from "../../common/utils/HelperMethods";
+import { getUserName } from "../../common/utils/commonUtils";
 
-export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
+export class LeadRepo {
     constructor() {
     }
 
@@ -225,15 +226,22 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
     }
 
     // Create a new lead
-    public async create(data: TLeadPayload): Promise<ILead|null> {
+    public async create(data: TLeadPayload, userId:number): Promise<ILead|null> {
         try {
+            const user = await UserModel.findByPk(userId);
+            if (!user) {
+                throw new Error(`User with ID ${userId} not found.`);
+            }
             const leadData: TLeadPayload = {
                 ...data,
                 // Ensure logs is kept as an array
                 logs: data.logs, // Assuming logs is already of type
                                  // ITrackable[]
             };
-            return LeadsModel.create(leadData);
+            return LeadsModel.create(leadData, {
+                userId: user.id,
+                userName: getUserName(user),
+            });
         }
         catch (error) {
             handleError(error, data)

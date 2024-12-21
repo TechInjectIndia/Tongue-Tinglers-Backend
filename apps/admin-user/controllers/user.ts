@@ -91,7 +91,10 @@ export default class AdminController {
 
     static async addAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, "user_id", 0);
+            const user_id = parseInt(get(req, "user_id"));
+            if(!user_id){
+                throw new Error('Missing user_id or isNaN');
+            }
             const payload = {...req?.body, createdBy: user_id};
 
             const existingAdmin = await new Auth().getUserByEmail(

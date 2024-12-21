@@ -12,11 +12,11 @@ import {
     ContractPaymentDetails,
     ITrackable,
 } from "../../../interfaces";
-import { ContractModel } from "../../../database/schema";
+import { ContractModel, UserModel } from "../../../database/schema";
 import IContractsController from "../controllers/controller/IContractsController";
+import { getUserName } from "../../common/utils/commonUtils";
 
 export class ContractRepo
-    implements IContractsController<TContract, TListFiltersContract>
 {
     constructor() {}
 
@@ -126,8 +126,15 @@ export class ContractRepo
         return updatedContracts[0] as TContract;
     }
 
-    public async create(data: TContractPayload): Promise<TContract> {
-        const response = await ContractModel.create(data);
+    public async create(data: TContractPayload, userId: number): Promise<TContract> {
+        const user = await UserModel.findByPk(userId);
+        if(!user){
+            throw new Error(`User with ID ${userId} not found.`);
+        }
+        const response = await ContractModel.create(data, {
+            userId: user.id,
+            userName: getUserName(user),
+        });
         return response.get();
     }
 

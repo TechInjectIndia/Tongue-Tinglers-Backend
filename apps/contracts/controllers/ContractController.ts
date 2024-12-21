@@ -27,6 +27,10 @@ import {
 export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
+            const user_id = parseInt(get(req, "user_id"));
+            if(!user_id){
+                throw Error('Missing user_id or isNaN');
+            }
             const newContract: TContractPayload = req.body;
             if (newContract.leadId) {
                 const leadExists = await new LeadRepo().get(newContract.leadId);
@@ -36,7 +40,7 @@ export default class ContractController {
                     });
                 }
             }
-            const contract = await new ContractRepo().create(newContract);
+            const contract = await new ContractRepo().create(newContract, user_id);
             return res
                 .status(201)
                 .send(

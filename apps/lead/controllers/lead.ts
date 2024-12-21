@@ -117,7 +117,7 @@ export default class LeadController {
                 createdBy: user_id,
             };
 
-            const prospect = await new ContractRepo().create(prospectData);
+            const prospect = await new ContractRepo().create(prospectData, user_id);
 
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
@@ -280,7 +280,10 @@ export default class LeadController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const user_id = get(req, "user_id", 1);
+            const user_id = parseInt(get(req, "user_id"));
+            if(!user_id){
+                throw Error('Missing user_id or isNaN');
+            }
             const whereVal = get(req.body, "email", "");
 
             const existingLead = await new LeadRepo().getLeadByAttr(
@@ -354,7 +357,7 @@ export default class LeadController {
                 }
             }
 
-            const newLead = await new LeadRepo().create(payload);
+            const newLead = await new LeadRepo().create(payload, user_id);
 
             // Check and create assignment if 'assign' object is provided in the request body
             if (assign != null) {

@@ -6,11 +6,41 @@ import { DocumentModel } from '../../../database/schema/documents/documentModel'
 export class DocumentRepo implements IDocumentRepo {
 
     async createDocument(document: BaseDocument[]): Promise<Document[] | null> {
+        const transaction = await DocumentModel.sequelize?.transaction();
         try {
-            const documentCreated = await DocumentModel.bulkCreate(document);
-            return documentCreated.map((doc: DocumentModel) => doc.toJSON());
+            
+            // const documentCreated = await DocumentModel.bulkCreate(document);
+            // return documentCreated.map((doc: DocumentModel) => doc.toJSON());
+            const results: Document[] = [];
+
+            for (const doc of document) {
+                // Check if the document exists
+                const existingDocument = await DocumentModel.findOne({
+                    where: {
+                        doc_name: doc.doc_name,
+                        entity_id: doc.entity_id,
+                        entity_type: doc.entity_type,
+                    },
+                    transaction
+                });
+
+                if (existingDocument) {
+                    // Update the document if it exists
+                    const updatedDocument = await existingDocument.update(doc, { transaction });
+                    results.push(updatedDocument.toJSON());
+                } else {
+                    // Create the document if it does not exist
+                    doc.createdBy = doc.updatedBy;
+                    delete doc.updatedBy;
+                    const createdDocument = await DocumentModel.create(doc, { transaction });
+                    results.push(createdDocument.toJSON());
+                }
+            }
+            await transaction?.commit();
+            return results;
         } catch (error) {
             console.log(error);
+            await transaction?.rollback();
             return null;
         }
     }

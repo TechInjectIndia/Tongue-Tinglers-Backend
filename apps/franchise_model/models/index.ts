@@ -4,14 +4,12 @@ import {
     FranchiseModelsList,
     TPayloadFranchiseModel,
 } from "../../../interfaces";
-import {
-    TListFilters,
-} from "../../../types";
+import { TListFilters } from "../../../types";
 import { FranchiseLeadModel, UserModel } from "../../../database/schema";
-
+import { getUserName } from "../../common/utils/commonUtils";
 
 export class FranchiseModelRepo {
-    constructor() { }
+    constructor() {}
 
     public async get(id: number): Promise<FranchiseModels | null> {
         const data = await FranchiseLeadModel.findOne({
@@ -57,13 +55,16 @@ export class FranchiseModelRepo {
         // Use user data (e.g., userName) when creating the record
         const response = await FranchiseLeadModel.create(data, {
             userId: user.id,
-            userName: user.firstName,
+            userName: getUserName(user),
         });
 
         return response;
     }
 
-    public async update(id: number, data: TPayloadFranchiseModel): Promise<[affectedCount: number]> {
+    public async update(
+        id: number,
+        data: TPayloadFranchiseModel
+    ): Promise<[affectedCount: number]> {
         const franchiseLead = await FranchiseLeadModel.findByPk(id);
         if (!franchiseLead) {
             throw new Error("Franchise Lead not found");

@@ -7,6 +7,8 @@ import {
 import { TListFilters } from "../../../types";
 import { FranchiseLeadModel, UserModel } from "../../../database/schema";
 import { getUserName } from "../../common/utils/commonUtils";
+import sequelize from "sequelize";
+
 
 export class FranchiseModelRepo {
     constructor() {}
@@ -61,17 +63,21 @@ export class FranchiseModelRepo {
         return response;
     }
 
-    public async update(
-        id: number,
-        data: TPayloadFranchiseModel
-    ): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TPayloadFranchiseModel, userId: number): Promise<[affectedCount: number]> {
         const franchiseLead = await FranchiseLeadModel.findByPk(id);
+        const user = await UserModel.findByPk(userId);
         if (!franchiseLead) {
             throw new Error("Franchise Lead not found");
         }
+        if (!user) {
+            throw new Error(`User with ID ${userId} not found.`);
+        }
         franchiseLead.set(data);
-        await franchiseLead.save();
-
+        await franchiseLead.save({
+            userId: user.id,
+            userName: user.firstName,
+        });
+        // Return affected count
         return [1];
     }
 

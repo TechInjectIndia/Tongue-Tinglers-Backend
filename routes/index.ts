@@ -127,7 +127,7 @@ router.use(`${ADMIN}/lead`, auth, leadRouter);
 router.use(`${ADMIN}/web-lead`, webLeadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);
 router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
-router.use(`${ADMIN}/franchise`, frachiseRouter);
+router.use(`${ADMIN}/franchise`,auth, frachiseRouter);
 router.use(`${ADMIN}/commission`, auth, commissionRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
 router.use(`${ADMIN}/options`, auth, optionsRouter);

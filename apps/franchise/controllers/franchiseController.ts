@@ -23,7 +23,7 @@ export default class FranchiseController {
 
 
             const franchiseDetails = await RepoProvider.franchise.create(
-                franchise);
+                franchise, user_id);
 
             return res
                 .status(200)

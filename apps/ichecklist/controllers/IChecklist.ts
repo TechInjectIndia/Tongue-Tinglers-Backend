@@ -13,7 +13,7 @@ class PdiChecklistController {
             if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
 
             const payload = { ...req.body, createdBy: user_id };
-            const newChecklist = await new PdiChecklistRepo().create(payload);
+            const newChecklist = await new PdiChecklistRepo().create(payload, user_id);
 
             return res.status(200).json({
                 message: "PDI Checklist created successfully",
@@ -88,7 +88,7 @@ class PdiChecklistController {
             }
 
             // Update the Checkpoint in the repo
-            const updatedCheckpoint = await new PdiChecklistRepo().update(id as number, { ...updateData, updatedBy: user_id });
+            const updatedCheckpoint = await new PdiChecklistRepo().update(id as number, { ...updateData, updatedBy: user_id }, user_id);
 
             return res.status(200).json({
                 message: "PDI Checkpoint updated successfully",

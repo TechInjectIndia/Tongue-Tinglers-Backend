@@ -11,7 +11,7 @@ import {
     ICommissionEntityMappingResponse
 } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
 import {Op, UniqueConstraintError} from "sequelize";
-import {FranchiseModel} from "../../../database/schema";
+import {FranchiseModel, UserModel} from "../../../database/schema";
 import {
     OrganizationModel
 } from "../../organization/database/organization_schema";
@@ -127,10 +127,8 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
     async createMapEntities(mapEntities: ICommissionEntityMapping[]): Promise<APIResponse<boolean>> {
         try {
-
             await CommissionEntityMapTable.bulkCreate(mapEntities);
             return HelperMethods.getSuccessResponse<boolean>(true);
-
         }
         catch (error) {
             handleError(error, mapEntities);

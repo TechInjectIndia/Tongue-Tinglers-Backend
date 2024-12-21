@@ -17,10 +17,15 @@ import { OrganizationModel } from "../../organization/database/organization_sche
 import { TListFilters } from "../../../types/common";
 import { Op } from "sequelize";
 import { parseFranchise } from "../parser/franchiseParser";
+import { getUserName } from "../../common/utils/commonUtils";
 
 export class FranchiseRepo implements IFranchiseRepo {
-  async create(franchise: FranchiseDetails): Promise<Franchise | null> {
+  async create(franchise: FranchiseDetails, userId: number): Promise<Franchise | null> {
     try {
+      const user = await UserModel.findByPk(userId);
+      if (!user) {
+        throw new Error(`User with ID ${userId} not found.`);
+      }
       const existFranchise = await this.exists(franchise.pocEmail);
       if (!existFranchise) {
         const addressId = (
@@ -49,6 +54,9 @@ export class FranchiseRepo implements IFranchiseRepo {
           createdBy: franchise.createdBy,
           updatedBy: franchise.updatedBy,
           deletedBy: franchise.deletedBy,
+        }, {
+          userId: user.id,
+          userName: getUserName(user)
         });
 
         console.log(res);
@@ -69,7 +77,59 @@ export class FranchiseRepo implements IFranchiseRepo {
     }
   }
 
-  update(franchise: Franchise): Promise<Franchise> {
+  async update(franchise: Franchise): Promise<Franchise> {
+    // try {
+    //   const user = await UserModel.findByPk(userId);
+    //   if (!user) {
+    //     throw new Error(`User with ID ${userId} not found.`);
+    //   }
+  
+    //   const existingFranchise = await FranchiseModel.findByPk(franchiseId);
+    //   if (!existingFranchise) {
+    //     throw new Error(`Franchise with ID ${franchiseId} not found.`);
+    //   }
+  
+    //   // Update Address (if provided)
+    //   let addressId = existingFranchise.location;
+    //   if (franchise.location) {
+    //     addressId = (
+    //       await RepoProvider.address.updateById(franchise.location, addressId)
+    //     ).id;
+    //   }
+  
+    //   // Update SM (if provided)
+    //   let smIds: number[] = existingFranchise.sm || [];
+    //   if (franchise.sm && franchise.sm.length > 0) {
+    //     const smDetails = await RepoProvider.smRepo.saveBulk(franchise.sm);
+    //     smIds = smDetails.map((sm) => sm.id);
+    //   }
+  
+    //   // Update franchise details
+    //   existingFranchise.set({
+    //     pocName: franchise.pocName || existingFranchise.pocName,
+    //     pocEmail: franchise.pocEmail || existingFranchise.pocEmail,
+    //     pocPhoneNumber: franchise.pocPhoneNumber || existingFranchise.pocPhoneNumber,
+    //     users: franchise.users || existingFranchise.users,
+    //     regionId: franchise.regionId || existingFranchise.regionId,
+    //     area: franchise.area || existingFranchise.area,
+    //     agreementIds: franchise.agreementIds || existingFranchise.agreementIds,
+    //     paymentIds: franchise.paymentIds || existingFranchise.paymentIds,
+    //     status: franchise.status || existingFranchise.status,
+    //     establishedDate: franchise.establishedDate || existingFranchise.establishedDate,
+    //     organizationId: franchise.organizationId || existingFranchise.organizationId,
+    //     location: addressId,
+    //     sm: smIds,
+    //     updatedBy: getUserName(user),
+    //   });
+  
+    //   await existingFranchise.save();
+  
+    //   console.log(`Franchise with ID ${franchiseId} updated successfully.`);
+    //   return existingFranchise.toJSON();
+    // } catch (e) {
+    //   console.error(`Error updating franchise with ID ${franchiseId}:`, e);
+    //   return null;
+    // }
     throw new Error("Method not implemented.");
   }
 

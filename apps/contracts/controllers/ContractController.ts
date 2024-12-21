@@ -219,6 +219,7 @@ export default class ContractController {
     static async convert(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req.body, "id", 0);
+            const user_id = parseInt(get(req, "user_id"))
             const address = get(req.body, "address", null);
             const mappings = get(req.body, "mappings", []);
 
@@ -274,7 +275,7 @@ export default class ContractController {
             console.log("_____");
 
             const resData = await RepoProvider.franchise.create(
-                franchiseDetailsData);
+                franchiseDetailsData, user_id);
             console.log("res", resData);
 
             const entries: any[] = [];

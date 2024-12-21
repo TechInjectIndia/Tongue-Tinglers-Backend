@@ -1,5 +1,5 @@
-import {NextFunction, Request, Response} from "express";
-import {get} from "lodash";
+import { NextFunction, Request, Response } from "express";
+import { get } from "lodash";
 import {
     createFirebaseUser,
     createPassword,
@@ -14,9 +14,9 @@ import {
     RESPONSE_TYPE,
     SUCCESS_MESSAGE,
 } from "../../../constants";
-import {AdminRepo} from "../models/user";
-import {Auth} from "../../auth/models";
-import {USER_TYPE} from "../../../interfaces";
+import { AdminRepo } from "../models/user";
+import { Auth } from "../../auth/models";
+import { USER_TYPE } from "../../../interfaces";
 
 export default class AdminController {
     static async getAllUsers(req: Request, res: Response, next: NextFunction) {
@@ -92,10 +92,10 @@ export default class AdminController {
     static async addAdmin(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = parseInt(get(req, "user_id"));
-            if(!user_id){
+            if (!user_id) {
                 throw new Error('Missing user_id or isNaN');
             }
-            const payload = {...req?.body, createdBy: user_id};
+            const payload = { ...req?.body, createdBy: user_id };
 
             const existingAdmin = await new Auth().getUserByEmail(
                 payload.email
@@ -182,7 +182,7 @@ export default class AdminController {
             const id = parseInt(get(req.params, "id"));
             if (!id || isNaN(id)) throw Error('id cannot be empty')
 
-            const payload = {...req.body, updatedBy: id};
+            const payload = { ...req.body, updatedBy: id };
 
             await new AdminRepo().update(id as number, payload);
             return res
@@ -208,7 +208,7 @@ export default class AdminController {
     ) {
         try {
             const user_id = get(req, "user_id", "");
-            const payload = {...req?.body, createdBy: user_id};
+            const payload = { ...req?.body, createdBy: user_id };
 
             const existingAdmin = await new Auth().getUserByEmail(
                 payload.email
@@ -267,7 +267,7 @@ export default class AdminController {
         try {
             const id = get(req?.params, "id", 0);
             const user_id = get(req, "user_id", 0);
-            let payload = {...req?.body, updatedBy: user_id};
+            let payload = { ...req?.body, updatedBy: user_id };
 
             // if (payload.password) {
             //     const hashedPassword = await

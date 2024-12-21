@@ -26,6 +26,7 @@ import { TContractPayload } from "../../../types/contracts";
 import { ZohoSignRepo } from "../../zoho-sign/models/zohosign";
 import { TAddUser } from "../../../types/admin/admin-user";
 import { Number } from "twilio/lib/twiml/VoiceResponse";
+import { log } from "console";
 
 export default class LeadController {
     static async convertLeadToProspect(
@@ -460,6 +461,8 @@ export default class LeadController {
     ): Promise<Response> {
         try {
             const user_id = parseInt(get(req, 'user_id'));
+
+            log('user_id', user_id);
             if(isNaN(user_id)) throw Error('userId not passed or isNan')
 
             // const user_name = get(req, 'user_name', '');

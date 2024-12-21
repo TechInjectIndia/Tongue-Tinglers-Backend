@@ -206,13 +206,16 @@ export class LeadRepo {
                 [Op.iLike]: `%${filters.filters.affiliate}%`,
             };
         }
-        if (filters?.filters.amountRange) {
-            const [min, max] = filters.filters.amountRange
-                .toString()
-                .split("-");
-            where.amount = {
-                [Op.between]: [parseFloat(min), parseFloat(max)],
-            };
+        if (filters?.filters.minAmount || filters?.filters.maxAmount) {
+            where.amount = {};
+    
+            if (filters?.filters.minAmount) {
+                where.amount[Op.gte] = parseFloat(filters.filters.minAmount); // Minimum amount
+            }
+    
+            if (filters?.filters.maxAmount) {
+                where.amount[Op.lte] = parseFloat(filters.filters.maxAmount); // Maximum amount
+            }
         }
         console.log(where);
         const total = await LeadsModel.count({

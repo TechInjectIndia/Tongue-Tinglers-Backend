@@ -138,7 +138,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
   public async get(id: number): Promise<TUserWithPermission> {
     const data = await UserModel.findOne({
       where: {
-        [Op.or]: [{ id: id }, { firebaseUid: id }],
+        id:id
       },
       // include: [
       //     {

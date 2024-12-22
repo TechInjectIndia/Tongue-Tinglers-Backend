@@ -125,9 +125,10 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         }
     }
 
-    async createMapEntities(mapEntities: ICommissionEntityMapping[]): Promise<APIResponse<boolean>> {
+    async createMapEntities(mapEntities: ICommissionEntityMapping[], options?: { transaction?: any }): Promise<APIResponse<boolean>> {
         try {
-            await CommissionEntityMapTable.bulkCreate(mapEntities);
+            const { transaction } = options || {};
+            await CommissionEntityMapTable.bulkCreate(mapEntities, {transaction});
             return HelperMethods.getSuccessResponse<boolean>(true);
         }
         catch (error) {

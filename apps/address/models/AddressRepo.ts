@@ -34,9 +34,10 @@ export class AddressRepo implements IUserAddressController<BaseAddress, Address,
      * @param payload - Data to create the address
      * @returns The newly created user address
      */
-    public async create(payload: BaseAddress): Promise<Address> {
+    public async create(payload: BaseAddress, options?: { transaction?: any }): Promise<Address> {
         try {
-            const newUserAddress = await AddressModel.create(payload);
+            const { transaction } = options || {};
+            const newUserAddress = await AddressModel.create(payload, {transaction});
             return newUserAddress.toJSON();
         } catch (error) {
             throw new Error(`Error creating user address: ${(error as Error).message}`);

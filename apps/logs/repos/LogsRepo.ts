@@ -96,6 +96,23 @@ class LogsRepo implements ILogsRepo {
             console.error("Error logging action:", error);
         }
     };
+
+    async getLogsByModelNameAndId(modelName: string, recordId: number): Promise<Log[]> {
+        try {
+            const logs = await LogModel.findAll({
+                where: {
+                    model: modelName,
+                    recordId: recordId,
+                },
+                order: [['createdAt', 'DESC']],
+            });
+
+            return logs.map((log) => log.toJSON());
+        } catch (error) {
+            console.error("Error fetching logs:", error);
+            throw error;
+        }
+    }
 }
 
 export { LogsRepo };

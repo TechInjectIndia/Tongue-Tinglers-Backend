@@ -99,38 +99,41 @@ export default class FilesController {
             let parsedFileDetails: any[] = [];
             let files: Express.Multer.File[] = [];
 
-            let fileDetails = req.body.fileDetails;
-            if (typeof fileDetails === 'string') {
-                try {
-                    parsedFileDetails = JSON.parse(fileDetails);
-                } catch (error) {
-                    return res.status(400).send({
-                        error: true,
-                        message: 'Invalid fileDetails format. It should be a valid JSON string.',
-                    });
-                }
-            } else {
-                parsedFileDetails = fileDetails;
-            }
+            let fileDetails = req.body;
+            // if (typeof fileDetails === 'string') {
+            //     try {
+            //         parsedFileDetails = JSON.parse(fileDetails);
+            //     } catch (error) {
+            //         return res.status(400).send({
+            //             error: true,
+            //             message: 'Invalid fileDetails format. It should be a valid JSON string.',
+            //         });
+            //     }
+            // } else {
+            //     parsedFileDetails = fileDetails;
+            // }
 
             let result: any
+            let imageArray: any
             if (req.files && Array.isArray(req.files) && req.files.length != 0) {
                 files = req.files ?? [];
+                console.log("files ==> ", files);
 
                 // Process each file and upload it
                 const uploadPromises = files.map(async (file: Express.Multer.File, index: number) => {
-                    const details = parsedFileDetails[index];
-                    const fileInfo = {
-                        originalname: file.originalname,
-                        message: details.message || '',
-                        name: details.name || '',
-                        recommended: details.recommended,
-                    };
-
-                    const url = await new FilesRepo().uploadFile(file, fileInfo, 'uploads');
-                    return { originalname: file.originalname, url, recommended: fileInfo.recommended };
+                    const url = await new FilesRepo().uploadFile(file, 'uploads');
+                    return url
+                    // return { originalname: file.originalname, url, recommended: fileInfo.recommended };
                 });
-                result = await Promise.all(uploadPromises);
+                imageArray = await Promise.all(uploadPromises);
+                const fileInfo = {
+                    message: fileDetails.message || '',
+                    name: fileDetails.name || '',
+                    recommended: fileDetails.recommended,
+                    subject: fileDetails.subject,
+                    url: imageArray
+                };
+                result = await new FilesRepo().create(fileInfo);
             } else {
                 const details = parsedFileDetails[0];
                 const fileInfo = {

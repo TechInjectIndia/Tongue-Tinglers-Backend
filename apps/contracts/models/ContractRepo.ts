@@ -126,7 +126,8 @@ export class ContractRepo
         return updatedContracts[0] as TContract;
     }
 
-    public async create(data: TContractPayload, userId: number): Promise<TContract> {
+    public async create(data: TContractPayload, userId: number, options?: { transaction?: any }): Promise<TContract> {
+        const { transaction } = options || {};
         const user = await UserModel.findByPk(userId);
         if(!user){
             throw new Error(`User with ID ${userId} not found.`);
@@ -134,7 +135,8 @@ export class ContractRepo
         const response = await ContractModel.create(data, {
             userId: user.id,
             userName: getUserName(user),
-        });
+            transaction
+        },);
         return response.get();
     }
 
@@ -149,9 +151,11 @@ export class ContractRepo
         return data ? data.get() : null;
     }
 
-    public async get(id: number): Promise<TContract | null> {
+    public async get(id: number, options?: { transaction?: any }): Promise<TContract | null> {
+        const { transaction } = options || {};
         const data = await ContractModel.findOne({
             where: { id },
+            transaction
         });
         return data ? data : null;
     }

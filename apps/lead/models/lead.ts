@@ -54,8 +54,10 @@ export class LeadRepo {
     public async getLeadByAttr(
         whereName: keyof ILead,
         whereVal: any,
-        getAttributes: any = ["*"]
+        getAttributes: any = ["*"],
+        options?: { transaction?: any }
     ): Promise<any | null> {
+        const { transaction } = options || {};
         const whereAttributes = { [whereName]: whereVal };
         const data = await LeadsModel.findOne({
             where: whereAttributes,
@@ -82,6 +84,7 @@ export class LeadRepo {
                 },
 
             ],
+            transaction
         });
 
         console.dir(parseLead(data.toJSON()), { depth: null });
@@ -92,11 +95,13 @@ export class LeadRepo {
     }
 
     // Get lead by ID
-    public async get(id: number): Promise<ILead> {
+    public async get(id: number, options?: { transaction?: any }): Promise<ILead> {
         try {
+            const { transaction } = options || {};
             const data = await LeadsModel.findOne({
                 raw: true,
                 where: { id },
+                transaction
             });
             // console.dir(data.toJSON(), { depth: true });
 

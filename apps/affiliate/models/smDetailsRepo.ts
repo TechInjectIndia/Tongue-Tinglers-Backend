@@ -54,10 +54,11 @@ export class SocialMediaDetailsRepo implements IBaseRepo<SocialMediaDetails> {
         return response;
     }
 
-    public async saveBulk(data: BaseSocialMedia[]): Promise<SocialMediaDetails[]> {
+    public async saveBulk(data: BaseSocialMedia[], options?: { transaction?: any }): Promise<SocialMediaDetails[]> {
         try {
+            const { transaction } = options || {};
             // Use bulkCreate to insert multiple records
-            const response = await SocialMediaDetailsModel.bulkCreate(data);
+            const response = await SocialMediaDetailsModel.bulkCreate(data, {transaction});
 
             // Map over the response array to convert each instance to JSON
             return response.map(item => item.toJSON());

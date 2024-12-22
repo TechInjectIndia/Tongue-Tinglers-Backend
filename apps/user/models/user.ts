@@ -167,8 +167,9 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     return data;
   }
 
-  public async create(data: TAddUser): Promise<TUser> {
-    return await UserModel.create({ ...data });
+  public async create(data: TAddUser, options?: { transaction?: any }): Promise<TUser> {
+    const { transaction } = options || {};
+    return await UserModel.create({ ...data }, {transaction});
   }
 
   public async update(

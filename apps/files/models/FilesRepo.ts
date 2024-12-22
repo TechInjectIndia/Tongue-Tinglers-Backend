@@ -53,7 +53,9 @@ export class FilesRepo {
         const response = await FileModel.create({
             name: data.name,
             message: data.message,
-            recommended: data.recommended
+            recommended: data.recommended,
+            subject: data.subject,
+            url: data.url
         });
         return response;
     }
@@ -86,7 +88,7 @@ export class FilesRepo {
             name: fileInfo.name,
             message: fileInfo.message,
             recommended: fileInfo.recommended,
-            url: url || existingFile.url,
+            // url: url || existingFile.url,
             updatedAt: new Date(),
         }, { where: { id: id } });
 
@@ -94,18 +96,18 @@ export class FilesRepo {
     }
 
     // Uploads a file to Firebase Storage and saves the file data in the database
-    public async uploadFile(file: any, fileInfo: any, destinationPath: string): Promise<string> {
+    public async uploadFile(file: any, destinationPath: string): Promise<string> {
         const urlArray = await uploadFileToFirebase(file, destinationPath);
         const url = urlArray[0];
 
-        const newFile = await FileModel.create({
-            name: fileInfo.name,
-            message: fileInfo.message,
-            url: url,
-            recommended: fileInfo.recommended
-        });
+        // const newFile = await FileModel.create({
+        //     name: fileInfo.name,
+        //     message: fileInfo.message,
+        //     url: url,
+        //     recommended: fileInfo.recommended
+        // });
 
-        return newFile.url;
+        return url
     }
 
     // Retrieve uploaded files (List files from Firebase and the database)

@@ -16,7 +16,7 @@ import {
 import { LeadRepo } from "../models/lead";
 import { AssignRepo } from "../models/AssignRepo";
 import { ContractRepo } from "../../contracts/models/ContractRepo";
-import { AdminRepo } from "../../admin-user/models/user";
+import { AdminRepo } from "../../user/models/user";
 import { USER_TYPE, USER_STATUS, CONTRACT_STATUS } from "../../../interfaces";
 import jwt from "jsonwebtoken";
 import { CONFIG } from "../../../config";
@@ -594,8 +594,8 @@ export default class LeadController {
             // const existingLogs = Array.isArray(existingLead.logs) ? existingLead.logs : [];
             // const updatedLogs = [...existingLogs, updateLog];
 
-            const { assign } = payload;
-            delete payload.assign;
+
+
 
             const updatedLead = await new LeadRepo().update(id, {
                 ...payload,
@@ -603,47 +603,7 @@ export default class LeadController {
                 // logs: updatedLogs
             });
 
-            if (assign != null) {
-                const existingUser = await new AdminRepo().checkIfUserExist(
-                    assign.assignedTo.id,
-                );
-                if (!existingUser) {
-                    return res
-                        .status(400)
-                        .send(
-                            sendResponse(
-                                RESPONSE_TYPE.ERROR,
-                                `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`,
-                            ),
-                        );
-                }
-                const existingassignedByUser = await new AdminRepo().checkIfUserExist(
-                    assign.assignedBy.id,
-                );
-                if (!existingassignedByUser) {
-                    return res
-                        .status(400)
-                        .send(
-                            sendResponse(
-                                RESPONSE_TYPE.ERROR,
-                                `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`,
-                            ),
-                        );
-                }
-            }
 
-            if (assign != null) {
-                const assignPayload = {
-                    assignedTo: assign.assignedTo.id,
-                    assignedBy: assign.assignedBy.id,
-                    assignedDate: assign.assignedDate,
-                };
-
-                // Create assignment in AssignRepo
-                await new AssignRepo().createOrUpdate(id, assignPayload);
-            } else {
-                await new AssignRepo().delete(id as number);
-            }
 
             return res
                 .status(200)
@@ -665,12 +625,13 @@ export default class LeadController {
     static async get(
         req: Request,
         res: Response,
-        next: NextFunction,
     ): Promise<Response> {
         try {
             const id = get(req.params, "id", "");
 
             const existingLead = await new LeadRepo().getLeadByAttr("id", id);
+            console.log(existingLead);
+            
             if (isEmpty(existingLead)) {
                 return res
                     .status(400)

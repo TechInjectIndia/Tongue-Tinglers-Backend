@@ -1,8 +1,9 @@
-import {ParseLead} from '../../../interfaces/leads'
-const parseLead = (lead: ParseLead) => {
+import { ParseLead } from '../../../interfaces/leads'
+import { parseUserToMetaUser } from '../../user/parser/user-parser'
+const parseLead = (lead: any) => {
     const data: ParseLead = {
         id: lead.id,
-        campaign: lead.campaign,
+        campaign: lead.campaign_ad,
         status: lead.status,
         address: lead.address,
         additionalInfo: lead.additionalInfo,
@@ -27,9 +28,10 @@ const parseLead = (lead: ParseLead) => {
         updatedAt: lead.updatedAt,
         updatedBy: lead.updatedBy,
         deletedAt: lead.deletedAt,
-        deletedBy: lead.deletedBy
+        deletedBy: lead.deletedBy,
+        assignedUser: parseUserToMetaUser(lead.assignee)
     }
     return data
 }
 
-export {parseLead}
+export { parseLead }

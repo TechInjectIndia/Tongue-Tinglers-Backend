@@ -16,16 +16,16 @@ import authRouter from "../apps/auth/api";
 
 router.use(`/auth`, authRouter);
 
-import rolesRouter from "../apps/admin-user/api/roles";
-import permissionsRouter from "../apps/admin-user/api/permissions";
-import adminUsersRouter from "../apps/admin-user/api/user";
+import rolesRouter from "../apps/user/api/roles";
+import permissionsRouter from "../apps/user/api/permissions";
+import adminUsersRouter from "../apps/user/api/user";
 
-import leadRouter from "../apps/lead/api/lead";
+import leadRouter from "../apps/lead/api/lead-router";
 import webLeadRouter from "../apps/lead/api/web-lead";
 
 import followUpsRouter from "../apps/lead/api/followups";
-import profileRouter from "../apps/admin-user/api/profile";
-import settingsRouter from "../apps/admin-user/api/settings";
+import profileRouter from "../apps/user/api/profile";
+import settingsRouter from "../apps/user/api/settings";
 import paymentsRouter from "../apps/payments/api";
 import paymentsOrdersRouter from "../apps/payments/api/orderPayment";
 import reviewsRouter from "../apps/reviews/api/reviews";
@@ -83,7 +83,6 @@ import zohoSignApiRouter from "../apps/zoho-sign/api/zohosign";
 import {
     transactionRouter,
 } from "../apps/payment-transaction/api/TransactionRouter";
-import API from "razorpay/dist/types/api";
 
 
 

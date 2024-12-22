@@ -17,6 +17,7 @@ import {
 import { createLeadsResponse } from "../../../libraries";
 import { handleError } from "../../common/utils/HelperMethods";
 import { getUserName } from "../../common/utils/commonUtils";
+import { parseLead } from "../parser/leadParser";
 import moment from "moment";
 
 export class LeadRepo {
@@ -60,35 +61,47 @@ export class LeadRepo {
             where: whereAttributes,
             include: [
                 {
-                    model: AssignModel,
-                    as: "assign",
-                    attributes: ["assignedTo", "assignedBy", "assignedDate"],
-                    include: [
-                        {
-                            model: UserModel,
-                            as: "assignedUser", // Use the alias for assignedTo
-                            attributes: ["id"],
-                        },
-                        {
-                            model: UserModel,
-                            as: "assignerUser", // Use the alias for assignedBy
-                            attributes: ["id"],
-                        },
-                    ],
+                    model: UserModel,
+                    as: "creator",
                 },
+                {
+                    model: UserModel,
+                    as: "updater",
+                },
+                {
+                    model: UserModel,
+                    as: "deleter",
+                },
+                {
+                    model: CampaignAdModel,
+                    as: "campaign_ad",
+                },
+                {
+                    model: UserModel,
+                    as: "assignee",
+                },
+
             ],
         });
 
-        return data; 
+        console.dir(parseLead(data.toJSON()), { depth: null });
+
+
+
+        return parseLead(data.toJSON());
     }
 
     // Get lead by ID
     public async get(id: number): Promise<ILead> {
         try {
-            return LeadsModel.findOne({
+            const data = await LeadsModel.findOne({
                 raw: true,
                 where: { id },
             });
+            // console.dir(data.toJSON(), { depth: true });
+
+            return data;
+
 
         }
         catch (error: any) {
@@ -306,7 +319,7 @@ export class LeadRepo {
     }
 
     // Search leads with filters
-    public async searchLead(filters: TListFilters): Promise<TLeadsList> {
+    public async searchLead(filters: TListFilters): Promise<any> {
         const total = await LeadsModel.count({
             where: {
                 [Op.or]: [
@@ -353,6 +366,6 @@ export class LeadRepo {
 
         const data = createLeadsResponse(leads);
 
-        return { total, data } as TLeadsList;
+        return { total, data };
     }
 }

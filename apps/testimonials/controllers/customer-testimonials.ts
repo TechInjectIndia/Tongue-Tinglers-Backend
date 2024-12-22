@@ -5,7 +5,7 @@ import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constant
 import { CustomerTestimonialsRepo } from '../models/customer-testimonials';
 import { TESTIMONIAL_ITEM_TYPE } from '../../../interfaces';
 // import { ProductRepo } from '../../ecommerce/models/products';
-import { AdminRepo as FranchiseRepo } from '../../admin-user/models/user';
+import { AdminRepo as FranchiseRepo } from '../../user/models/user';
 
 export default class CustomerTestimonialsController {
     static async create(req: Request, res: Response, next: NextFunction) {

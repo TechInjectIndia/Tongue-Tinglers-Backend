@@ -1,5 +1,4 @@
 import {
-    PaymentLinkCustomer,
     PaymentLinkPayload,
 } from "./apps/razorpay/models/Razorpay";
 
@@ -40,7 +39,7 @@ declare global {
         toJSON: () => string;
     }
 }
-BigInt.prototype.toJSON = function() {
+BigInt.prototype.toJSON = function () {
     return this.toString();
 };
 

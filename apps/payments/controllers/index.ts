@@ -24,7 +24,7 @@ import {
 import { ContractPaymentDetails } from "../../../interfaces";
 import { CONFIG } from "../../../config";
 import RepoProvider from "../../RepoProvider";
-import lead from "../../lead/api/lead";
+import lead from "../../lead/api/lead-router";
 
 const {
     validateWebhookSignature,

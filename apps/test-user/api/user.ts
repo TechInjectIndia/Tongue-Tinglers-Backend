@@ -1,11 +1,11 @@
 import * as express from "express";
 // import AdminController from "../controllers/user";
 import * as AdminValidation from "../validations/user";
-import AdminController from "../../admin-user/controllers/user";
+import AdminController from "../../user/controllers/user";
 import { Auth } from "../../auth/models";
 import { createFirebaseUser, createPassword, EMAIL_HEADING, EMAIL_TEMPLATE, getEmailTemplate, sendEmail, sendResponse } from "../../../libraries";
 import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
-import { AdminRepo } from "../../admin-user/models/user";
+import { AdminRepo } from "../../user/models/user";
 
 const router = express.Router();
 

@@ -7,6 +7,8 @@ import type {
     Note,
     UserDetails,
     ParseCampaign,
+    ParsedUser,
+    MetaUser,
 } from "../interfaces";
 
 enum followStatus {
@@ -45,14 +47,13 @@ enum LeadStatus {
 }
 
 interface AssignAttributes {
-    id?: number;
     assignedTo: number;
     assignedBy: number;
     assignedDate: Date;
-    leadId: number;
 }
 
 interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
+    assignedUser: number;
     campaignId?: number;
     status: LeadStatus;
     firstName: string;
@@ -77,6 +78,7 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
 
 interface ParseLead extends ParsedMeta {
     id: number;
+    assignedUser: MetaUser;
     campaign: ParseCampaign,
     status: LeadStatus;
     firstName: string;

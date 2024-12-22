@@ -4,7 +4,7 @@ import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { TestimonialsRepo } from '../models/testimonials';
 // import { ProductRepo } from '../../ecommerce/models/products';
-import { AdminRepo as FranchiseRepo } from '../../admin-user/models/user';
+import { AdminRepo as FranchiseRepo } from '../../user/models/user';
 import { TESTIMONIAL_ITEM_TYPE } from '../../../interfaces';
 
 export default class TestimonialsController {

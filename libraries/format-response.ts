@@ -49,11 +49,7 @@ export const createLeadResponse = (obj: any) => {
     "createdAt": obj?.createdAt,
     "updatedAt": obj?.updatedAt,
     "deletedAt": obj?.deletedAt ?? null,
-    "assign": obj?.assign?.length ? {
-      assignedBy: obj?.assign[0]['assignerUser'],
-      assignedDate: obj?.assign[0]['assignedDate'],
-      assignedTo: obj?.assign[0]['assignedUser']
-    } : null
+    "assignedUser": obj?.assignedUser ?? null
   }
 }
 

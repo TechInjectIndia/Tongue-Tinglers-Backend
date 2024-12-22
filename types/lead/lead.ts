@@ -13,6 +13,7 @@ export type TAssignLead = {
 };
 
 export interface TLeadPayload {
+  assignedUser: number;
   firstName: string;
   lastName: string;
   phoneNumber: string;

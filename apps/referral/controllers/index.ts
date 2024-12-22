@@ -6,7 +6,7 @@ import {
     RESPONSE_TYPE,
     SUCCESS_MESSAGE
 } from "../../../constants";
-import {AdminRepo} from '../../admin-user/models/user';
+import {AdminRepo} from '../../user/models/user';
 import crypto from 'crypto';
 
 // Generate a user-friendly referral code

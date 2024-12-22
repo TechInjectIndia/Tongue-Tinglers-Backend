@@ -21,9 +21,10 @@ import RepoProvider from "../../../apps/RepoProvider";
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW } = DataTypes;
 
 interface LeadCreationAttributes
-    extends Optional<ILead, "id" | "createdAt" | "updatedAt" | "deletedAt"> {}
+    extends Optional<ILead, "id" | "createdAt" | "updatedAt" | "deletedAt"> { }
 
 class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
+    public assignedUser: number;
     public id!: number;
     public campaignId?: number;
     public firstName!: string;
@@ -65,15 +66,13 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
             foreignKey: "deletedBy",
             as: "deleter",
         });
+        LeadsModel.belongsTo(UserModel, {
+            foreignKey: "assignedUser",
+            as: "assignee",
+        });
         LeadsModel.belongsTo(CampaignAdModel, {
             foreignKey: "campaignId",
             as: "campaign_ad",
-        });
-
-        // Establish association with AssignModel
-        LeadsModel.hasMany(AssignModel, {
-            foreignKey: "leadId",
-            as: "assign",
         });
     }
 
@@ -174,6 +173,10 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
                     allowNull: false,
                 },
                 updatedBy: {
+                    type: INTEGER,
+                    allowNull: true,
+                },
+                assignedUser: {
                     type: INTEGER,
                     allowNull: true,
                 },

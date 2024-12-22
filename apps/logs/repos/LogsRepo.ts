@@ -29,21 +29,22 @@ class LogsRepo implements ILogsRepo {
                 Object.assign(query, filters);
             }
 
-            const { rows: products, count: total } =
+            const { rows: logs, count: total } =
                 await LogModel.findAndCountAll({
                     where: query,
                     offset,
                     limit,
+                    order: [['createdAt', 'DESC']],
                 }).then((res) => {
                     return {
-                        rows: res.rows.map((product) => product.toJSON()),
+                        rows: res.rows.map((log) => log.toJSON()),
                         count: res.count,
                     };
                 });
 
             const totalPages = Math.ceil(total / limit);
 
-            return { data: products, total, totalPages };
+            return { data: logs, total, totalPages };
         } catch (error) {
             console.log(error);
             return null;

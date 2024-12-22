@@ -26,6 +26,107 @@ import { ZohoSignRepo } from "../../zoho-sign/models/zohosign";
 import { TAddUser } from "../../../types/admin/admin-user";
 
 export default class LeadController {
+
+    static async frontEnd(
+        req: Request,
+        res: Response,
+    ): Promise<Response> {
+        try {
+
+            const whereVal = get(req.body, "email", "");
+
+            const existingLead = await new LeadRepo().getLeadByAttr(
+                "email",
+                whereVal,
+            );
+            if (existingLead) {
+                return res
+                    .status(400)
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.EXISTS));
+            }
+
+            const payload = {
+                ...req.body,
+                createdBy: 1,
+            };
+            const { assign } = payload;
+
+            if (assign != null) {
+                const existingUser = await new AdminRepo().checkIfUserExist(
+                    assign.assignedTo.id,
+                );
+                if (!existingUser) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`,
+                            ),
+                        );
+                }
+                const existingassignedByUser = await new AdminRepo().checkIfUserExist(
+                    assign.assignedBy.id,
+                );
+                if (!existingassignedByUser) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`,
+                            ),
+                        );
+                }
+            }
+
+            delete payload.assign;
+
+            if (payload.referby) {
+                const existingReferral = await new AdminRepo().getByReferralCode(
+                    payload.referby,
+                );
+                if (!existingReferral) {
+                    return res
+                        .status(404)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `Referral code ${ERROR_MESSAGE.NOT_EXISTS}`,
+                            ),
+                        );
+                }
+            }
+
+            const newLead = await new LeadRepo().create(payload, 1);
+
+            // Check and create assignment if 'assign' object is provided in the request body
+            if (assign != null) {
+                const assignPayload = {
+                    assignedTo: assign.assignedTo.id,
+                    assignedBy: assign.assignedBy.id,
+                    assignedDate: assign.assignedDate,
+                    leadId: newLead.id, // Reference the new lead's ID
+                };
+
+                // Create assignment in AssignRepo
+                await new AssignRepo().create(assignPayload);
+            }
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, newLead),
+                );
+        } catch (err) {
+            console.error(err);
+            return res
+                .status(500)
+                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+        }
+    }
+
+
     static async convertLeadToProspect(
         req: Request,
         res: Response,
@@ -34,7 +135,7 @@ export default class LeadController {
         try {
 
             const id = parseInt(get(req.body, "id"));
-            if(isNaN(id)) throw Error('Missing id or isNaN');
+            if (isNaN(id)) throw Error('Missing id or isNaN');
 
             // get contract
             const existingContract = await new ContractRepo().get(id);
@@ -66,7 +167,7 @@ export default class LeadController {
             // }
 
             const user_id = parseInt(get(req, "user_id"));
-            if(isNaN(user_id)) throw Error('Missing user_id or isNaN');
+            if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
 
             const payload = {
                 firstName: existingLead.firstName,
@@ -279,7 +380,7 @@ export default class LeadController {
     ): Promise<Response> {
         try {
             const user_id = parseInt(get(req, "user_id"));
-            if(!user_id){
+            if (!user_id) {
                 throw Error('Missing user_id or isNaN');
             }
             const whereVal = get(req.body, "email", "");
@@ -383,6 +484,7 @@ export default class LeadController {
         }
     }
 
+
     static async list(
         req: Request,
         res: Response,
@@ -457,12 +559,12 @@ export default class LeadController {
             const user_id = parseInt(get(req, 'user_id'));
 
             console.log('user_id', user_id);
-            if(isNaN(user_id)) throw Error('userId not passed or isNan')
+            if (isNaN(user_id)) throw Error('userId not passed or isNan')
 
             // const user_name = get(req, 'user_name', '');
 
             const id = parseInt(get(req.params, 'id'));
-            if(isNaN(id)) throw Error('id not passed or isNan')
+            if (isNaN(id)) throw Error('id not passed or isNan')
 
             const payload = req.body;
 

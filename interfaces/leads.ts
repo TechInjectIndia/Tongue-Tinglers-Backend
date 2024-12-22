@@ -97,7 +97,6 @@ interface ParseLead extends ParsedMeta {
     affiliate: Array<Affiliate> | null;
     marketing: Array<string> | null;
     other: Array<ExtraFields> | null;
-
 }
 
 interface ProposalModels {
@@ -248,7 +247,7 @@ interface FollowDetails {
     reminder: Date | null;
 }
 
-interface parsedAffiliate{
+interface parsedAffiliate {
 
 }
 

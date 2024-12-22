@@ -1,4 +1,4 @@
-import {Op} from "sequelize";
+import { Op } from "sequelize";
 import {
     TLeadPayload,
     TLeadsList,
@@ -6,7 +6,7 @@ import {
     TListFilters,
     TListFiltersAreas,
 } from "../../../types";
-import {ILead} from "../../../interfaces"; // Use the LeadStatus
+import { ILead } from "../../../interfaces"; // Use the LeadStatus
 import {
     AssignModel,
     CampaignAdModel,
@@ -14,8 +14,8 @@ import {
     UserModel
 } from "../../../database/schema";
 // enum from interfaces
-import {createLeadsResponse} from "../../../libraries";
-import {handleError} from "../../common/utils/HelperMethods";
+import { createLeadsResponse } from "../../../libraries";
+import { handleError } from "../../common/utils/HelperMethods";
 import { getUserName } from "../../common/utils/commonUtils";
 import moment from "moment";
 
@@ -29,7 +29,7 @@ export class LeadRepo {
         data: TLeadStatus
     ): Promise<[affectedCount: number]> {
         const response = await LeadsModel.update(data, {
-            where: {id},
+            where: { id },
         });
         return response;
     }
@@ -40,7 +40,7 @@ export class LeadRepo {
         whereVal: any,
         getAttributes: any = ["*"]
     ): Promise<TLeadStatus | null> {
-        const whereAttributes = {[whereName]: whereVal};
+        const whereAttributes = { [whereName]: whereVal };
         const data = await LeadsModel.findOne({
             raw: true,
             attributes: getAttributes,
@@ -55,7 +55,7 @@ export class LeadRepo {
         whereVal: any,
         getAttributes: any = ["*"]
     ): Promise<any | null> {
-        const whereAttributes = {[whereName]: whereVal};
+        const whereAttributes = { [whereName]: whereVal };
         const data = await LeadsModel.findOne({
             where: whereAttributes,
             include: [
@@ -87,7 +87,7 @@ export class LeadRepo {
         try {
             return LeadsModel.findOne({
                 raw: true,
-                where: {id},
+                where: { id },
             });
 
         }
@@ -115,7 +115,7 @@ export class LeadRepo {
         const data = await LeadsModel.findOne({
             where: {
                 email: email,
-                id: {[Op.ne]: excludeId},
+                id: { [Op.ne]: excludeId },
             },
         });
         return data as ILead | null;
@@ -168,14 +168,14 @@ export class LeadRepo {
         if (filters?.filters.campaign) {
             include.push({
                 model: CampaignAdModel, // Replace with your actual Campaign
-                                        // model
+                // model
                 as: "campaign_ad", // Alias defined in the relationship
                 where: {
                     name: {
                         [Op.iLike]: `%${filters.filters.campaign}%`, // Search
-                                                                     // by
-                                                                     // campaign
-                                                                     // name
+                        // by
+                        // campaign
+                        // name
                     },
                 },
                 required: true, // Ensures only matching leads are included
@@ -202,11 +202,11 @@ export class LeadRepo {
         }
         if (filters?.filters.minAmount || filters?.filters.maxAmount) {
             where.amount = {};
-    
+
             if (filters?.filters.minAmount) {
                 where.amount[Op.gte] = filters?.filters.minAmount; // Minimum amount
             }
-    
+
             if (filters?.filters.maxAmount) {
                 where.amount[Op.lte] = filters?.filters.maxAmount; // Maximum amount
             }
@@ -225,11 +225,11 @@ export class LeadRepo {
             include: include
         });
 
-        return {total, data} as TLeadsList;
+        return { total, data } as TLeadsList;
     }
 
     // Create a new lead
-    public async create(data: TLeadPayload, userId:number): Promise<ILead|null> {
+    public async create(data: TLeadPayload, userId: number): Promise<ILead | null> {
         try {
             const user = await UserModel.findByPk(userId);
             if (!user) {
@@ -239,7 +239,7 @@ export class LeadRepo {
                 ...data,
                 // Ensure logs is kept as an array
                 logs: data.logs, // Assuming logs is already of type
-                                 // ITrackable[]
+                // ITrackable[]
             };
             return LeadsModel.create(leadData, {
                 userId: user.id,
@@ -261,7 +261,7 @@ export class LeadRepo {
     ): Promise<[affectedCount: number]> {
         const lead = await LeadsModel.findByPk(id);
         if (!lead) {
-        throw new Error("Lead not found");
+            throw new Error("Lead not found");
         }
         lead.set(data);
         await lead.save();
@@ -275,7 +275,7 @@ export class LeadRepo {
     ): Promise<[affectedCount: number]> {
         try {
             const response = await LeadsModel.update(data, {
-                where: {id},
+                where: { id },
             });
 
             return response;
@@ -283,8 +283,8 @@ export class LeadRepo {
         catch (error) {
             console.error("Error updating lead:", error);
             throw new Error("Failed to assign lead to user"); // Rethrow or
-                                                              // handle as
-                                                              // needed
+            // handle as
+            // needed
         }
     }
 
@@ -301,7 +301,7 @@ export class LeadRepo {
         catch (error) {
             console.error("Error deleting leads:", error);
             throw new Error("Failed to delete leads"); // Rethrow or handle as
-                                                       // needed
+            // needed
         }
     }
 
@@ -311,9 +311,9 @@ export class LeadRepo {
             where: {
                 [Op.or]: [
                     // { id: { [Op.like]: `%${filters.search}%` } },
-                    {firstName: {[Op.iLike]: `%${filters.search}%`}},
-                    {lastName: {[Op.iLike]: `%${filters.search}%`}},
-                    {email: {[Op.iLike]: `%${filters.search}%`}},
+                    { firstName: { [Op.iLike]: `%${filters.search}%` } },
+                    { lastName: { [Op.iLike]: `%${filters.search}%` } },
+                    { email: { [Op.iLike]: `%${filters.search}%` } },
                 ],
             },
         });
@@ -325,9 +325,9 @@ export class LeadRepo {
             where: {
                 [Op.or]: [
                     // { id: { [Op.like]: Number(`%${filters.search}%`) } },
-                    {firstName: {[Op.iLike]: `%${filters.search}%`}},
-                    {lastName: {[Op.iLike]: `%${filters.search}%`}},
-                    {email: {[Op.iLike]: `%${filters.search}%`}},
+                    { firstName: { [Op.iLike]: `%${filters.search}%` } },
+                    { lastName: { [Op.iLike]: `%${filters.search}%` } },
+                    { email: { [Op.iLike]: `%${filters.search}%` } },
                 ],
             },
             include: [
@@ -353,6 +353,6 @@ export class LeadRepo {
 
         const data = createLeadsResponse(leads);
 
-        return {total, data} as TLeadsList;
+        return { total, data } as TLeadsList;
     }
 }

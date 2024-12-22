@@ -1,6 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { CampaignAdModel } from "./campaignAdModel";
 import { ICampaignSubmisisons } from "../../../interfaces";
 import RepoProvider from "../../../apps/RepoProvider";
 
@@ -21,10 +20,10 @@ class CampaignSubmissions
     public readonly updatedAt!: Date;
 
     public static associate() {
-        CampaignSubmissions.belongsTo(CampaignAdModel, {
-            foreignKey: "campaignId",
-            as: "campaigns",
-        });
+        // CampaignSubmissions.belongsTo(CampaignAdModel, {
+        //     foreignKey: "campaignId",
+        //     as: "campaigns",
+        // });
     }
 
     public static initModel() {

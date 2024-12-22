@@ -37,6 +37,7 @@ class ProposalLeadModels
 }
 
 // Initialize the Proposal model
+
 ProposalLeadModels.init(
     {
         id: {

@@ -112,7 +112,7 @@ router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/question`, auth, questionRouter);
 router.use(`${ADMIN}/campaign-ad`, auth, campaignAdRouter);
 
-router.use(`/campaign-ad`, auth, campaignAdRouter);
+router.use(`/campaign-ad`, campaignAdRouter);
 
 router.use(`${ADMIN}/campaign-submissions`, auth, campaignSubmissionsRouter);
 router.use(`${ADMIN}/files`, auth, filesRouter);

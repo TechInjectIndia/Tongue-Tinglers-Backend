@@ -1186,7 +1186,7 @@ export default class PetPoojaController {
         }
     }
     
-    static async ordersCallback(req: Request, res: Response): Promise<boolean> {
+    static async ordersCallback(req: Request, res: Response): Promise<any> {
         try {
             const json = req.body;
             const result = await new PetPoojaRepo().ordersCallback(json);

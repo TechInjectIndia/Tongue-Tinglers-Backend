@@ -23,6 +23,7 @@ import RepoProvider from "../../RepoProvider";
 import {
     COMMISSION_PAID_STATUS
 } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
+import { sequelize } from "../../../config";
 
 export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -217,6 +218,7 @@ export default class ContractController {
     }
 
     static async convert(req: Request, res: Response, next: NextFunction) {
+        const transaction = await sequelize.transaction(); // Start a transaction
         try {
             const id = get(req.body, "id", 0);
             const user_id = parseInt(get(req, "user_id"))
@@ -224,15 +226,16 @@ export default class ContractController {
             const mappings = get(req.body, "mappings", []);
 
             // get contract
-            const existingContract = await new ContractRepo().get(id);
+            const existingContract = await new ContractRepo().get(id, {transaction});
 
             const existingLead = await new LeadRepo().getLeadByAttr(
                 "id",
-                existingContract.leadId
+                existingContract.leadId,
+                {transaction}
             );
 
             const existingCampaign = await new CampaignAdRepo().get(
-                existingLead.campaignId
+                existingLead.campaignId, {transaction}
             );
 
             const paymentId =
@@ -275,7 +278,7 @@ export default class ContractController {
             console.log("_____");
 
             const resData = await RepoProvider.franchise.create(
-                franchiseDetailsData, user_id);
+                franchiseDetailsData, user_id, {transaction});
             console.log("res", resData);
 
             const entries: any[] = [];
@@ -291,7 +294,8 @@ export default class ContractController {
             }
 
             const result = await RepoProvider.commissionRepo.createMapEntities(
-                entries
+                entries,
+                {transaction}
             );
 
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password`;
@@ -325,7 +329,7 @@ export default class ContractController {
             catch (emailError) {
                 console.error("Error sending email:", emailError);
             }
-
+            await transaction.commit(); // Commit the transaction
             return res
                 .status(200)
                 .send(
@@ -335,6 +339,7 @@ export default class ContractController {
         }
         catch (err) {
             console.error(err);
+            await transaction.rollback(); 
             return res
                 .status(500)
                 .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});

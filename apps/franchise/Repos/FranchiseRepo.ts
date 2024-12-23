@@ -20,16 +20,17 @@ import { parseFranchise } from "../parser/franchiseParser";
 import { getUserName } from "../../common/utils/commonUtils";
 
 export class FranchiseRepo implements IFranchiseRepo {
-  async create(franchise: FranchiseDetails, userId: number): Promise<Franchise | null> {
+  async create(franchise: FranchiseDetails, userId: number,  options?: { transaction?: any }): Promise<Franchise | null> {
     try {
-      const user = await UserModel.findByPk(userId);
+      const { transaction } = options || {};
+      const user = await UserModel.findByPk(userId, {transaction});
       if (!user) {
         throw new Error(`User with ID ${userId} not found.`);
       }
       const existFranchise = await this.exists(franchise.pocEmail);
       if (!existFranchise) {
         const addressId = (
-          await RepoProvider.address.create(franchise.location)
+          await RepoProvider.address.create(franchise.location, {transaction})
         ).id;
         let smIds: number[] = [];
 

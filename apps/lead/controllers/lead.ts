@@ -19,7 +19,7 @@ import { ContractRepo } from "../../contracts/models/ContractRepo";
 import { AdminRepo } from "../../user/models/user";
 import { USER_TYPE, USER_STATUS, CONTRACT_STATUS } from "../../../interfaces";
 import jwt from "jsonwebtoken";
-import { CONFIG } from "../../../config";
+import { CONFIG, sequelize } from "../../../config";
 import { createLeadResponse } from "../../../libraries";
 import { TContractPayload } from "../../../types/contracts";
 import { ZohoSignRepo } from "../../zoho-sign/models/zohosign";
@@ -132,14 +132,16 @@ export default class LeadController {
         res: Response,
         next: NextFunction,
     ): Promise<Response | void> {
+        const transaction = await sequelize.transaction(); // Start a transaction
         try {
 
             const id = parseInt(get(req.body, "id"));
             if (isNaN(id)) throw Error('Missing id or isNaN');
 
             // get contract
-            const existingContract = await new ContractRepo().get(id);
+            const existingContract = await new ContractRepo().get(id, { transaction });
             if (existingContract) {
+                await transaction.rollback();
                 return res
                     .status(400)
                     .send(
@@ -150,8 +152,9 @@ export default class LeadController {
                     );
             }
 
-            const existingLead = await new LeadRepo().get(id);
+            const existingLead = await new LeadRepo().get(id, { transaction });
             if (!existingLead) {
+                await transaction.rollback();
                 return res
                     .status(400)
                     .send(
@@ -216,7 +219,7 @@ export default class LeadController {
                 createdBy: user_id,
             };
 
-            const prospect = await new ContractRepo().create(prospectData, user_id);
+            const prospect = await new ContractRepo().create(prospectData, user_id, {transaction});
 
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
@@ -227,6 +230,7 @@ export default class LeadController {
             });
 
             if (!firebaseUser?.success) {
+                await transaction.rollback();
                 return res
                     .status(400)
                     .send(sendResponse(RESPONSE_TYPE.ERROR, firebaseUser?.uid));
@@ -252,7 +256,7 @@ export default class LeadController {
                 role: 0,
                 referBy: undefined,
             };
-            await new AdminRepo().create(normalUser);
+            await new AdminRepo().create(normalUser, {transaction});
 
 
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password?token=${token}`;
@@ -279,7 +283,7 @@ export default class LeadController {
             } catch (emailError) {
                 console.error("Error sending email:", emailError);
             }
-
+            await transaction.commit(); // Commit the transaction
             return res
                 .status(200)
                 .send(
@@ -287,6 +291,7 @@ export default class LeadController {
                 );
         } catch (err) {
             console.error(err);
+            await transaction.rollback(); 
             return res
                 .status(500)
                 .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });

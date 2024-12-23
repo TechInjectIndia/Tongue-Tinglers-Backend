@@ -9,7 +9,7 @@ export default interface IAddress<T, P, F> {
      * @param payload - The data for creating the entry
      * @returns A promise resolving to the created entry
      */
-    create(payload: Partial<T>): Promise<P>;
+    create(payload: Partial<T>, options?: { transaction?: any }): Promise<P>;
 
     /**
      * Find an entry by ID

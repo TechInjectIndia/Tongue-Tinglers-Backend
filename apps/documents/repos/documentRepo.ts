@@ -26,12 +26,12 @@ export class DocumentRepo implements IDocumentRepo {
 
                 if (existingDocument) {
                     // Update the document if it exists
+                    doc.updatedBy = doc.createdBy;
+                    delete doc.createdBy;
                     const updatedDocument = await existingDocument.update(doc, { transaction });
                     results.push(updatedDocument.toJSON());
                 } else {
                     // Create the document if it does not exist
-                    doc.createdBy = doc.updatedBy;
-                    delete doc.updatedBy;
                     const createdDocument = await DocumentModel.create(doc, { transaction });
                     results.push(createdDocument.toJSON());
                 }
@@ -109,7 +109,6 @@ export class DocumentRepo implements IDocumentRepo {
         try {
             const documents = await DocumentModel.findAll({
                 where: {
-                    createdBy: data.createdBy,
                     entity_type: data.entity_type,
                     entity_id: data.entity_id
                 },

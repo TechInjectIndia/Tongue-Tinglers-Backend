@@ -63,7 +63,7 @@ class DocumentModel
                 },
                 createdBy: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 updatedBy: {
                     type: DataTypes.INTEGER,

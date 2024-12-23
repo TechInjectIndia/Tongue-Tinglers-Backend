@@ -142,7 +142,7 @@ router.use("/order-items", auth, orderItemRouter);
 router.use("/order", auth, OrderRouter);
 router.use(`/cart`, auth, cartProductRouter);
 router.use("/migration", migrationRouter);
-router.use("/document", documentRouter);
+router.use("/document", auth, documentRouter);
 router.use(`${ADMIN}/agreement-docs`, agreementDocRouter);
 router.use(`/pet-pooja`, petPoojaApiRouter);
 router.use(`/organization`, organizationRouter);

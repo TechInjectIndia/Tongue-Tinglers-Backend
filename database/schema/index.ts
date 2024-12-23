@@ -1,11 +1,10 @@
 // Admin model starts
-
+import {UserModel} from "./user/user.model";
 import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
 // import { questionModel } from "./campaign-ui/questionModel";
 import { FranchiseModel } from "./franchise/franchiseModel";
 import { AssignModel } from "./lead/assigneeModels";
 import { LeadsModel } from "./lead/lead.model";
-import { UserModel } from "./user/user.model";
 
 import {
     AgreementDocModel
@@ -105,7 +104,28 @@ export * from "./franchise/AreaModel";
 
 
 // --- Sequelize Associations Setup --- //
+const m = [
+    UserModel,
+    DocumentModel,
+    OrganizationModel,
+    FranchiseModel,
+    CampaignAdModel,
+    AgreementDocModel,
+    LeadsModel,
+    CampaignSubmissions,
+    ContractModel,
+    RetortProductCategoryModel,
+    OrdersModel,
+    ShippingHistoryModel,
+    ItemStockModel,
+    AssignModel,
+    AreaModel,
+    OptionsModel,
+    FranchiseLeadModel,
+    IChecklistModel
+]
 
+console.log(m)
 
 // Initialize Models
 const models = {
@@ -126,8 +146,7 @@ const models = {
     AreaModel: AreaModel.initModel(),
     OptionsModel: OptionsModel.initModel(),
     FranchiseLeadModel: FranchiseLeadModel.initModel(),
-    PdiCheckPoints: PdiCheckpointModel.initModel(),
-    IChecklistModel: IChecklistModel.initModel(),
+    PdiCheckPoints: PdiCheckpointModel.initModel(),IChecklistModel: IChecklistModel.initModel(),
     Variations: ProductOptionsModel.initModel(),
     CampaignSubmission: CampaignSubmissions.initModel(),
 };

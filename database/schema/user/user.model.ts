@@ -3,7 +3,7 @@ import {sequelize} from "../../../config";
 import {USER_STATUS, USER_TYPE, UserInformation} from "../../../interfaces";
 import {TUser} from "../../../types";
 import RepoProvider from "../../../apps/RepoProvider";
-import {AssignModel} from "../lead/assigneeModels";
+// import {AssignModel} from "../lead/assigneeModels";
 
 const {INTEGER, STRING, ENUM, JSONB} = DataTypes;
 
@@ -153,17 +153,6 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
         return UserModel;
     }
 
-    public static associate() {
-        UserModel.hasMany(AssignModel, {
-            foreignKey: "assignedTo",
-            as: "assignmentsAsAssignedTo",
-        });
-        UserModel.hasMany(AssignModel, {
-            foreignKey: "assignedBy",
-            as: "assignmentsAsAssignedBy",
-        });
-    }
-
     public static hook() {
 
         UserModel.addHook("afterCreate", async (instance, options) => {
@@ -186,6 +175,5 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
 
     }
 }
-
 
 export {UserModel};

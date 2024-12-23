@@ -54,6 +54,15 @@ class AssignModel
             foreignKey: "leadId",
             as: "lead",
         });
+
+        UserModel.hasMany(AssignModel, {
+            foreignKey: "assignedTo",
+            as: "assignmentsAsAssignedTo",
+        });
+        UserModel.hasMany(AssignModel, {
+            foreignKey: "assignedBy",
+            as: "assignmentsAsAssignedBy",
+        });
     }
 
     public static initModel() {

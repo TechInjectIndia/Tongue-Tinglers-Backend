@@ -32,7 +32,7 @@ const {
  *             type: object
  *             required:
  *               - name
- *               - franchiseId
+ *               - organizationId
  *               - regionId
  *               - questionList
  *               - start
@@ -52,10 +52,10 @@ const {
  *                   type: string
  *                   example: "c83e8df1-d958-489a-9f6f-17fb09d6927d"
  *                 description: "List of question IDs associated with the campaign"
- *               franchiseId:
+ *               organizationId:
  *                 type: string
  *                 example: "cb5511e3-82b8-4a7d-9dec-8769a747dc64"
- *                 description: "Franchise ID associated with the campaign"
+ *                 description: "organization ID associated with the campaign"
  *               regionId:
  *                 type: integer
  *                 example: 1
@@ -112,7 +112,7 @@ const {
  *         required: false
  *         schema:
  *           type: string
- *         description: Search keyword for matching campaigns based on name, franchise ID, region, description, or other relevant fields.
+ *         description: Search keyword for matching campaigns based on name, organizationId, region, description, or other relevant fields.
  *       - in: query
  *         name: sorting
  *         required: false
@@ -121,11 +121,11 @@ const {
  *           enum: [id ASC, id DESC, name ASC, name DESC, createdAt ASC, createdAt DESC]
  *         description: Sorting order for the results, e.g., 'id ASC' or 'createdAt DESC'.
  *       - in: query
- *         name: franchiseId
+ *         name: organizationId
  *         required: false
  *         schema:
  *           type: string
- *         description: Filter campaigns by franchise ID.
+ *         description: Filter campaigns by organization ID.
  *       - in: query
  *         name: region
  *         required: false
@@ -203,10 +203,10 @@ const {
  *                   type: string
  *                 example: ["c83e8df1-d958-489a-9f6f-17fb09d6927d", "82928a12-f2f9-4212-9189-5ae20242c438"]
  *                 description: List of question IDs associated with the campaign
- *               franchiseId:
+ *               organizationId:
  *                 type: string
  *                 example: "cb5511e3-82b8-4a7d-9dec-8769a747dc64"
- *                 description: Franchise ID associated with the campaign
+ *                 description: organization ID associated with the campaign
  *               regionId:
  *                 type: integer
  *                 example: 1

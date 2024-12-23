@@ -7,7 +7,6 @@ import type {
     Note,
     UserDetails,
     ParsedCampaign,
-    ParsedUser,
     MetaUser,
 } from "../interfaces";
 

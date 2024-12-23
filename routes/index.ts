@@ -10,6 +10,10 @@ import { sendEmail } from "../libraries";
 const router = Router();
 
 const ADMIN = "/admin";
+const FRANCHISE = "/franchise";
+const CUSTOMER = "/customer";
+const GUEST = "/guest";
+const ORDERS = '/v1/orders';
 
 import { auth } from "../middlewares/auth";
 import authRouter from "../apps/auth/api";
@@ -64,6 +68,9 @@ import vendorRouter from "../apps/vendor/api/vendorApi";
 import frachiseRouter from "../apps/franchise/api/franchise";
 import { commissionRouter } from "../apps/commission/api/CommissionApi";
 import migrationRouter from "../migrations/routes/migrateRoute";
+import OrderV1Routes from '../apps/checkout/api/checkoutApi'
+
+/* organization router */
 import organizationRouter from "../apps/organization/api/index";
 import productRouter from "../apps/product/api/productApi";
 import optionsRouter from "../apps/options/api/optionsApi";
@@ -140,6 +147,7 @@ router.use(`${ADMIN}/products-category`, auth, productsCategoryRouter);
 router.use("/cart-detail", auth, cartDetailRouter);
 router.use("/order-items", auth, orderItemRouter);
 router.use("/order", auth, OrderRouter);
+router.use(ORDERS, auth, OrderV1Routes);
 router.use(`/cart`, auth, cartProductRouter);
 router.use("/migration", migrationRouter);
 router.use("/document", auth, documentRouter);

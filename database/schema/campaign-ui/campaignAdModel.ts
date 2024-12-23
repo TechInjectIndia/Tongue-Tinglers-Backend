@@ -2,11 +2,15 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 
 import { ICampaign } from "../../../interfaces";
-import { RegionModel } from "../franchise/RegionsModel";
-import { LeadsModel } from "../lead/lead.model";
-import { AffiliateModel } from "../lead/affiliateModels";
-import { ProposalLeadModels } from "../lead/proposalModels";
 import RepoProvider from "../../../apps/RepoProvider";
+import {RegionModel} from "../franchise/RegionsModel";
+import {LeadsModel} from "../lead/lead.model";
+import {AffiliateModel} from "../lead/affiliateModels";
+import {ProposalLeadModels} from "../lead/proposalModels";
+import {
+    OrganizationModel
+} from "../../../apps/organization/database/organization_schema";
+
 
 const { STRING, INTEGER, DATE, NOW, JSONB } = DataTypes;
 
@@ -22,7 +26,7 @@ class CampaignAdModel
 {
     public id!: number;
     public name!: string;
-    public franchiseId?: number;
+    public organizationId!: number;
     public regionId: number;
     public description?: string;
     public questionList!: string[];
@@ -47,7 +51,7 @@ class CampaignAdModel
                     primaryKey: true,
                     allowNull: false,
                 },
-                franchiseId: {
+                organizationId: {
                     type: INTEGER,
                     allowNull: true,
                 },
@@ -158,6 +162,11 @@ class CampaignAdModel
             foreignKey: "proposalIds",
             as: "proposals",
         });
+
+        CampaignAdModel.belongsTo(OrganizationModel, {
+            foreignKey: "organizationId",
+            as: "organization",
+        })
     }
 
     public static hook() {

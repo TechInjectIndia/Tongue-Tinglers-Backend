@@ -156,6 +156,9 @@ importers:
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
+      '@types/hapi__joi':
+        specifier: ^17.1.15
+        version: 17.1.15
       '@types/lodash':
         specifier: ^4.17.7
         version: 4.17.7
@@ -618,6 +621,9 @@ packages:
 
   '@types/form-data@0.0.33':
     resolution: {integrity: sha512-8BSvG1kGm83cyJITQMZSulnl6QV8jqAGreJsc5tPu1Jq0vTSOiY/k24Wx82JRpWwZSqrala6sd5rWi6aNXvqcw==}
+
+  '@types/hapi__joi@17.1.15':
+    resolution: {integrity: sha512-Ehq/YQB0ZqZGObrGngztxtThTiShrG0jlqyUSsNK3cebJSoyYgE/hdZvYt6lH4Wimi28RowDwnr87XseiemqAg==}
 
   '@types/http-errors@2.0.4':
     resolution: {integrity: sha512-D0CFMMtydbJAegzOyHjtiKPLlvnm3iTZyZRSZoLq2mRhDdmLfIWOCYPfQJ4cu2erKghU++QvjcUjp/5h7hESpA==}
@@ -3896,6 +3902,8 @@ snapshots:
   '@types/form-data@0.0.33':
     dependencies:
       '@types/node': 22.5.4
+
+  '@types/hapi__joi@17.1.15': {}
 
   '@types/http-errors@2.0.4': {}
 

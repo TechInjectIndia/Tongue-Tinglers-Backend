@@ -108,7 +108,7 @@ export class RazorpayRepo implements IRazorpayRepo {
   ): Promise<PaymentLinks.RazorpayPaymentLink> {
     try {
       const paymentLink = await this.razorpay.paymentLink.create({
-        amount: paymentLinkRequest.amount * 100, // Amount in paisa
+        amount: 100 * 100, // Amount in paisa
         currency: "INR",
         description: paymentLinkRequest.description,
         customer: {
@@ -125,7 +125,8 @@ export class RazorpayRepo implements IRazorpayRepo {
       });
       return paymentLink;
     } catch (error) {
-      throw new Error(`Error creating payment link: ${error.message}`);
+      console.log(error);
+      throw new Error(`Error creating payment link: ${error}`);
     }
   }
 }

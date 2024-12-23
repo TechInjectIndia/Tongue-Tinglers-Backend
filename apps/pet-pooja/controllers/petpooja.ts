@@ -1185,4 +1185,23 @@ export default class PetPoojaController {
             });
         }
     }
+<<<<<<< HEAD
 }
+=======
+    
+    static async ordersCallback(req: Request, res: Response): Promise<boolean> {
+        try {
+            const json = req.body;
+            const result = await new PetPoojaRepo().ordersCallback(json);
+            return res.status(200).send({
+                message: result ? "Done" : ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        } catch (err) {
+            console.log(err)
+            return res.status(500).send({
+                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+}
+>>>>>>> 4471f6057db897f0d761457dd3c50fd8e7519fd6

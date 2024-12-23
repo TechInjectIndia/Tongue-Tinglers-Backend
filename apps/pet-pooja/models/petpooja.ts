@@ -108,4 +108,15 @@ export class PetPoojaRepo implements IBaseRepo<TEditUser, TListFilters> {
             return false;
         }
     }
+
+    public async ordersCallback(json: any): Promise<boolean> {
+        try {
+            await firestore().collection('petpooja-order-callback-test').doc().set(json);
+            return true;
+        } catch (error) {
+            console.log(error);
+
+            return false;
+        }
+    }
 }

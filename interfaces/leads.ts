@@ -206,6 +206,7 @@ interface BaseSocialMedia {
     handle: string;
     followers: number;
     tags: string[];
+    affiliateId: number;
 }
 
 interface SocialMediaDetails extends BaseSocialMedia {
@@ -216,7 +217,8 @@ interface SocialMediaDetails extends BaseSocialMedia {
 interface Affiliate {
     id: number,
     type: string,
-    codes: Record<string, string>
+    codes: Record<string, string>,
+    userId: number
 }
 
 type AffiliatesList = {

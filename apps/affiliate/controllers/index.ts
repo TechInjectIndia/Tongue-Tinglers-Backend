@@ -30,6 +30,11 @@ export default class AffiliateController {
             // Create the affiliate record
             const Affiliate = await new AffiliateRepo().create(payload);
 
+            const affiliateId = Affiliate.id
+            if (!affiliateId) {
+                throw new Error("Failed to retrieve Affiliate ID.");
+            }
+
             // Check if social media details are provided
             if (sm && typeof sm === 'object') {
                 // Iterate through social media entries
@@ -232,5 +237,39 @@ export default class AffiliateController {
             });
         }
     }
+
+    static async getAffiliateByUserId(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user_id = get(req, 'user_id', 1);
+
+            const Affiliate = await new AffiliateRepo().getAffiliateByUserId(user_id as number);
+
+            if (isEmpty(Affiliate)) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS
+                        )
+                    );
+            }
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        Affiliate
+                    )
+                );
+        } catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }   
 
 }

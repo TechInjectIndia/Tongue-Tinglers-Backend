@@ -27,6 +27,7 @@ import { FranchiseLeadModel } from "./lead/franchiseModels";
 import { IChecklistModel } from "./franchise/iChecklist";
 import { ProductOptionsModel } from "./product-options/productOptionsModel";
 import { PdiCheckpointModel } from "./franchise/pdiCheckPointModel";
+import { AffiliateModel } from "./lead/affiliateModels";
 
 export * from "./user/user.model";
 export * from "./user/address";
@@ -149,6 +150,7 @@ const models = {
     PdiCheckPoints: PdiCheckpointModel.initModel(),IChecklistModel: IChecklistModel.initModel(),
     Variations: ProductOptionsModel.initModel(),
     CampaignSubmission: CampaignSubmissions.initModel(),
+    Affiliate: AffiliateModel.initModel()
 };
 
 console.log(Object.keys(models).join(" "))

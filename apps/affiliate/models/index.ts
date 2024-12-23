@@ -8,7 +8,7 @@ import {
 import {
     TListFilters,
 } from "../../../types";
-import { AffiliateModel } from "../../../database/schema";
+import { AffiliateModel, UserModel } from "../../../database/schema";
 import { SocialMediaDetailsModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IController';
 
@@ -21,6 +21,7 @@ export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
                 id,
             },
             include: [
+                {model: UserModel, as: "user", attributes: ['id', 'firstName', 'lastName', 'email']},
                 { model: SocialMediaDetailsModel, as: 'sm' },
             ]
         });
@@ -28,31 +29,33 @@ export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
     }
 
     public async list(filters: TListFilters): Promise<AffiliatesList> {
+        const whereCondition: any = {}; // Initialize where condition
+
+        // Apply search filter
+        if (filters.search) {
+            whereCondition[Op.or] = [
+                { type: { [Op.iLike]: `%${filters.search}%` } }, // Search by type
+                { codes: { [Op.iLike]: `%${filters.search}%` } }, // Search by codes (if serialized as a string)
+            ];
+        }
+        
         const total = await AffiliateModel.count({
-            where: {
-                type: {
-                    [Op.iLike]: `%${filters.search}%`,
-                },
-            },
+            where: whereCondition,
+           
         });
         const data = await AffiliateModel.findAll({
-            order: [filters?.sorting],
-            offset: filters.offset,
-            limit: filters.limit,
-            where: {
-                type: {
-                    [Op.iLike]: `%${filters.search}%`,
-                },
-            },
+            where: whereCondition,
+            include: [
+                {model: UserModel, as: "user", attributes: ['id', 'firstName', 'lastName', 'email']},
+                { model: SocialMediaDetailsModel, as: 'sm' },
+            ]
         });
         return { total, data };
     }
 
     public async create(data: TPayloadAffiliate): Promise<Affiliate> {
-        console.log('payloadpayloadpayload', data)
-
         const response = await AffiliateModel.create(data);
-        return response;
+        return response.dataValues;
     }
 
     public async update(id: number, data: TPayloadAffiliate): Promise<[affectedCount: number]> {
@@ -70,5 +73,18 @@ export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
             },
         });
         return response;
+    }
+
+    public async getAffiliateByUserId(userId: number): Promise<Affiliate[] | null> {
+        const data = await AffiliateModel.findAll({
+            where: {
+                userId,
+            },
+            include: [
+                {model: UserModel, as: "user", attributes: ['id', 'firstName', 'lastName', 'email']},
+                { model: SocialMediaDetailsModel, as: 'sm' },
+            ]
+        });
+        return data;
     }
 }

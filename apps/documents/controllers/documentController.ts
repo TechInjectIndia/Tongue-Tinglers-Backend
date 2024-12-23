@@ -98,10 +98,11 @@ export class DocumentController {
 
     static async getDocumentByUser(req: Request, res: Response) {
         try {
-            const user_id = get(req, 'user_id', 0);
+            const user_id = parseInt(get(req, 'user_id'));
             const {entity_type, entity_id} = req.query
             const payload = {
                 entity_type: entity_type,
+                createdBy: user_id,
                 entity_id: entity_id
             }
             const documentRepo = await RepoProvider.documentRepo.getDocumentByUser(

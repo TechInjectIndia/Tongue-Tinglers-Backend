@@ -22,11 +22,15 @@ export type TListFiltersContract = {
     sorting?: any;
     trashOnly?: string;
     filters?: {
+        zohoTemplate,
+        minPrice,
+        maxPrice
         status,
         min_price,
         max_price,
         region,
         due_date,
-        assignee
+        assignee,
+        dueDate
     };
 };

@@ -86,7 +86,7 @@ export class LeadRepo {
             ],
             transaction
         });
-        return parseLead(data.toJSON());
+        return parseLead(data);
     }
 
     // Get lead by ID

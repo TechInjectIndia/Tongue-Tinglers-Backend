@@ -2,13 +2,15 @@ import { ParseLead } from '../../../interfaces/leads'
 import { parseUserToMetaUser } from '../../user/parser/user-parser'
 const parseLead = (lead: any) => {
 
+    if(!lead) return null;
+
     console.log("$$$$");
-    console.log(lead.campaign_ad);
+
 
 
     const data: ParseLead = {
-        id: lead.id,
-        campaignId: lead.campaign_ad,
+        id: lead.id ?? null,
+        campaignId: lead.campaign_ad ?? null,
         status: lead.status,
         address: lead.address,
         additionalInfo: lead.additionalInfo,

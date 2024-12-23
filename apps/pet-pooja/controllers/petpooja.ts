@@ -1,52 +1,60 @@
-import { NextFunction, Request, Response } from "express";
-import { ERROR_MESSAGE } from "../../../constants";
-import { PetPoojaRepo } from '../models/petpooja';
+import {NextFunction, Request, Response} from "express";
+import {ERROR_MESSAGE} from "../../../constants";
+import {PetPoojaRepo} from '../models/petpooja';
 
 
 export default class PetPoojaController {
 
     // Get the total stock across all items
-    static async getTotalStock(req: Request, res: Response, next: NextFunction) {
+    static async getTotalStock(req: Request, res: Response,
+        next: NextFunction) {
         try {
             const totalStock = await new PetPoojaRepo().allEndStock();
-            res.status(200).json({ totalStock });
-        } catch (error) {
-            res.status(500).json({ error: 'Failed to fetch total stock.' });
+            res.status(200).json({totalStock});
+        }
+        catch (error) {
+            res.status(500).json({error: 'Failed to fetch total stock.'});
         }
     };
 
     // Get stock changes (difference between startStock and endStock)
-    static async getStockChanges(req: Request, res: Response, next: NextFunction) {
+    static async getStockChanges(req: Request, res: Response,
+        next: NextFunction) {
         try {
             const itemStocks = await new PetPoojaRepo().itemStocks();
             const stockChanges = itemStocks.map(stock => ({
                 user_id: stock.user_id,
                 startStock: stock.startStock,
                 endStock: stock.endStock,
-                change: stock.startStock - stock.endStock // Calculate stock change
+                change: stock.startStock - stock.endStock // Calculate stock
+                                                          // change
             }));
 
             res.status(200).json(stockChanges);
-        } catch (error) {
-            res.status(500).json({ error: 'Failed to fetch stock changes.' });
+        }
+        catch (error) {
+            res.status(500).json({error: 'Failed to fetch stock changes.'});
         }
     };
 
     // Additional Analytics: Example - Get Average Start and End Stock
-    static async getAverageStocks(req: Request, res: Response, next: NextFunction) {
+    static async getAverageStocks(req: Request, res: Response,
+        next: NextFunction) {
         try {
             const [averageStartStock, averageEndStock] = await new PetPoojaRepo().aggregate();
             res.status(200).json({
                 averageStartStock: averageStartStock.avg,
                 averageEndStock: averageEndStock.avg
             });
-        } catch (error) {
-            res.status(500).json({ error: 'Failed to fetch average stocks.' });
+        }
+        catch (error) {
+            res.status(500).json({error: 'Failed to fetch average stocks.'});
         }
     };
 
     // Example: Get Stock Trends Over Time
-    static async getStockTrends(req: Request, res: Response, next: NextFunction) {
+    static async getStockTrends(req: Request, res: Response,
+        next: NextFunction) {
         try {
             const itemStocks = await new PetPoojaRepo().getStockTrends();
 
@@ -58,12 +66,14 @@ export default class PetPoojaController {
             }));
 
             res.status(200).json(stockTrends);
-        } catch (error) {
-            res.status(500).json({ error: 'Failed to fetch stock trends.' });
+        }
+        catch (error) {
+            res.status(500).json({error: 'Failed to fetch stock trends.'});
         }
     };
 
-    static async newOrderPlaced(req: Request, res: Response, next: NextFunction) {
+    static async newOrderPlaced(req: Request, res: Response,
+        next: NextFunction) {
         try {
             const existingFranchisee = await new PetPoojaRepo().getAllFranchise();
 
@@ -78,9 +88,7 @@ export default class PetPoojaController {
                                 "menusharingcode": "xxxxxx",
                                 "currency_html": "₹",
                                 "country": "India",
-                                "images": [
-
-                                ],
+                                "images": [],
                                 "restaurantname": "Heaven",
                                 "address": "nearsargasan,sghighway,Gandhinagar",
                                 "contact": "9998696995",
@@ -146,9 +154,7 @@ export default class PetPoojaController {
                             "category_image_url": ""
                         }
                     ],
-                    "parentcategories": [
-
-                    ],
+                    "parentcategories": [],
                     "items": [
                         {
                             "itemid": "118829149",
@@ -164,9 +170,7 @@ export default class PetPoojaController {
                             "ignore_discounts": "0",
                             "in_stock": "0",
                             "variation_groupname": "",
-                            "variation": [
-
-                            ],
+                            "variation": [],
                             "addon": [
                                 {
                                     "addon_group_id": "135699",
@@ -283,12 +287,8 @@ export default class PetPoojaController {
                             "ignore_discounts": "0",
                             "in_stock": "2",
                             "variation_groupname": "",
-                            "variation": [
-
-                            ],
-                            "addon": [
-
-                            ],
+                            "variation": [],
+                            "addon": [],
                             "itemname": "Chocolate cake",
                             "item_attributeid": "1",
                             "itemdescription": "",
@@ -360,9 +360,7 @@ export default class PetPoojaController {
                                     "active": "1",
                                     "item_packingcharges": "20",
                                     "variationrank": "1",
-                                    "addon": [
-
-                                    ],
+                                    "addon": [],
                                     "variationallowaddon": 0
                                 },
                                 {
@@ -374,15 +372,11 @@ export default class PetPoojaController {
                                     "active": "1",
                                     "item_packingcharges": "20",
                                     "variationrank": "3",
-                                    "addon": [
-
-                                    ],
+                                    "addon": [],
                                     "variationallowaddon": 0
                                 }
                             ],
-                            "addon": [
-
-                            ],
+                            "addon": [],
                             "itemname": "Garlic Bread",
                             "item_attributeid": "1",
                             "itemdescription": "",
@@ -595,7 +589,8 @@ export default class PetPoojaController {
                         const stock = parseInt(item.in_stock, 10);
                         totalItems = totalItems + stock
                     }
-                    const orderFromPetPooja = await new PetPoojaRepo().updateStockData(franchisee.id, { 'endStock': totalItems });
+                    const orderFromPetPooja = await new PetPoojaRepo().updateStockData(
+                        franchisee.id, {'endStock': totalItems});
 
                     console.log(orderFromPetPooja);
                     return res.status(200).send({
@@ -608,7 +603,8 @@ export default class PetPoojaController {
                     });
                 }
             }
-        } catch (err) {
+        }
+        catch (err) {
             console.log(err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -616,7 +612,8 @@ export default class PetPoojaController {
         }
     }
 
-    static async processAndSaveStockData(req: Request, res: Response, next: NextFunction) {
+    static async processAndSaveStockData(req: Request, res: Response,
+        next: NextFunction) {
         try {
             const existingFranchisee = await new PetPoojaRepo().getAllFranchise();
             console.log(existingFranchisee);
@@ -631,9 +628,7 @@ export default class PetPoojaController {
                                 "menusharingcode": "xxxxxx",
                                 "currency_html": "₹",
                                 "country": "India",
-                                "images": [
-
-                                ],
+                                "images": [],
                                 "restaurantname": "Heaven",
                                 "address": "nearsargasan,sghighway,Gandhinagar",
                                 "contact": "9998696995",
@@ -699,9 +694,7 @@ export default class PetPoojaController {
                             "category_image_url": ""
                         }
                     ],
-                    "parentcategories": [
-
-                    ],
+                    "parentcategories": [],
                     "items": [
                         {
                             "itemid": "118829149",
@@ -717,9 +710,7 @@ export default class PetPoojaController {
                             "ignore_discounts": "0",
                             "in_stock": "2",
                             "variation_groupname": "",
-                            "variation": [
-
-                            ],
+                            "variation": [],
                             "addon": [
                                 {
                                     "addon_group_id": "135699",
@@ -836,12 +827,8 @@ export default class PetPoojaController {
                             "ignore_discounts": "0",
                             "in_stock": "2",
                             "variation_groupname": "",
-                            "variation": [
-
-                            ],
-                            "addon": [
-
-                            ],
+                            "variation": [],
+                            "addon": [],
                             "itemname": "Chocolate cake",
                             "item_attributeid": "1",
                             "itemdescription": "",
@@ -913,9 +900,7 @@ export default class PetPoojaController {
                                     "active": "1",
                                     "item_packingcharges": "20",
                                     "variationrank": "1",
-                                    "addon": [
-
-                                    ],
+                                    "addon": [],
                                     "variationallowaddon": 0
                                 },
                                 {
@@ -927,15 +912,11 @@ export default class PetPoojaController {
                                     "active": "1",
                                     "item_packingcharges": "20",
                                     "variationrank": "3",
-                                    "addon": [
-
-                                    ],
+                                    "addon": [],
                                     "variationallowaddon": 0
                                 }
                             ],
-                            "addon": [
-
-                            ],
+                            "addon": [],
                             "itemname": "Garlic Bread",
                             "item_attributeid": "1",
                             "itemdescription": "",
@@ -1151,7 +1132,12 @@ export default class PetPoojaController {
                         const stock = parseInt(item.in_stock, 10);
                         totalItems = totalItems + stock
                     }
-                    const orderFromPetPooja = await new PetPoojaRepo().saveStockData({ user_id: franchisee.id, 'startStock': totalItems, 'endStock': totalItems });
+                    const orderFromPetPooja = await new PetPoojaRepo().saveStockData(
+                        {
+                            user_id: franchisee.id,
+                            'startStock': totalItems,
+                            'endStock': totalItems
+                        });
 
                     return res.status(200).send({
                         message: 'Stock data processed and saved successfully',
@@ -1162,7 +1148,8 @@ export default class PetPoojaController {
                     });
                 }
             }
-        } catch (err) {
+        }
+        catch (err) {
             console.log(err)
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -1178,26 +1165,30 @@ export default class PetPoojaController {
             res.status(200).send({
                 message: result ? "Done" : ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
-        } catch (err) {
+        }
+        catch (err) {
             console.log(err)
             res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
-    
-    static async ordersCallback(req: Request, res: Response): Promise<boolean> {
+
+    static async ordersCallback(req: Request, res: Response): Promise<void> {
         try {
             const json = req.body;
             const result = await new PetPoojaRepo().ordersCallback(json);
-            return res.status(200).send({
+            res.status(200).send({
                 message: result ? "Done" : ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
-        } catch (err) {
+            return
+        }
+        catch (err) {
             console.log(err)
-            return res.status(500).send({
+            res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
+            return
         }
     }
 }

@@ -1,5 +1,5 @@
 
-import { BaseMeta } from "../database/schema/base/Base";
+import {BaseMeta, BaseMetaUsers} from "../database/schema/base/Base";
 import { Address, BaseAddress, ParsedAddress } from "../types";
 import { ParsedUser } from "./user";
 
@@ -36,13 +36,14 @@ export enum BUSINESS_TYPE {
 }
 
 export enum ORGANIZATION_TYPE {
+    SUPER_FRANCHISE='super_franchise',
     MASTER_FRANCHISE = "master_franchise",
     ORGANIZATION = "organization",
     AFFILIATE = "affiliate",
 }
 
 
-export interface IOrganizationPayloadData extends BaseOrganization {
+export interface IOrganizationPayloadData extends BaseOrganization, BaseMetaUsers {
     billingAddress: BaseAddress;
     shippingAddress: Array<BaseAddress>;
 }

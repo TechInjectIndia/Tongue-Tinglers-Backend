@@ -155,6 +155,7 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
     }
 
     public static associate() {
+
         UserModel.hasMany(AffiliateModel, { foreignKey: 'userId', as: 'affiliates' });
     }
 

@@ -41,6 +41,7 @@ class AssignModel
             as: "assignedById",
         });
         this.belongsTo(LeadsModel, { foreignKey: "leadId", as: "leadData" });
+
         AssignModel.belongsTo(UserModel, {
             foreignKey: "assignedTo",
             as: "assignedUser",

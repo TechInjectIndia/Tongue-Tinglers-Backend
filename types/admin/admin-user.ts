@@ -40,12 +40,12 @@ export type TAddUser = {
   password: string;
   firstName: string;
   lastName: string;
-  nameForSearch: string;
+  nameForSearch?: string;
   email: string;
   phoneNumber: string;
   type: string;
   role: number;
-  referBy: UserDetails;
+  referBy?: UserDetails;
   password_token?: string;
 };
 

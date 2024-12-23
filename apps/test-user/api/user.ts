@@ -2,14 +2,36 @@ import * as express from "express";
 // import AdminController from "../controllers/user";
 import * as AdminValidation from "../validations/user";
 import AdminController from "../../user/controllers/user";
-import { Auth } from "../../auth/models";
-import { createFirebaseUser, createPassword, EMAIL_HEADING, EMAIL_TEMPLATE, getEmailTemplate, sendEmail, sendResponse } from "../../../libraries";
-import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
-import { AdminRepo } from "../../user/models/user";
+import {Auth} from "../../auth/models";
+import {
+    checkFirebaseUser,
+    createFirebaseUser,
+    createPassword,
+    EMAIL_HEADING,
+    EMAIL_TEMPLATE,
+    getEmailTemplate,
+    sendEmail,
+    sendResponse
+} from "../../../libraries";
+import {
+    ERROR_MESSAGE,
+    RESPONSE_TYPE,
+    SUCCESS_MESSAGE
+} from "../../../constants";
+import {AdminRepo} from "../../user/models/user";
+import {USER_TYPE} from "../../../interfaces";
+import {OrganizationRepo} from "../../organization/models";
+import {TUser} from "../../../types";
+import {UserModel} from "../../../database/schema";
+import {
+    BUSINESS_TYPE,
+    IOrganizationPayloadData,
+    ORGANIZATION_TYPE
+} from "../../../interfaces/organization";
 
 const router = express.Router();
 
-const { validateCreateAdminBody } = AdminValidation;
+const {validateCreateAdminBody} = AdminValidation;
 
 // const { addAdmin } = AdminController;
 const {
@@ -42,7 +64,6 @@ const {
  *              - password
  *              - firstName
  *              - lastName
- *              - userName
  *              - phoneNumber
  *              - status
  *              - role
@@ -52,12 +73,10 @@ const {
  *                default: admin@gmail.com
  *              password:
  *                type: string
- *                default: admin
+ *                default: 123456
  *              firstName:
  *                type: string
  *              lastName:
- *                type: string
- *              userName:
  *                type: string
  *              phoneNumber:
  *                type: string
@@ -78,7 +97,7 @@ const {
 router.post("/create", validateCreateAdminBody, (async (req, res) => {
     try {
 
-        const payload = { ...req?.body, createdBy: 1 };
+        const payload = {...req?.body, createdBy: 1};
 
         const existingAdmin = await new Auth().getUserByEmail(
             payload.email
@@ -149,6 +168,177 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
                 sendResponse(
                     RESPONSE_TYPE.SUCCESS,
                     SUCCESS_MESSAGE.ADMIN_CREATED
+                )
+            );
+    }
+    catch (err) {
+        console.error("Error:", err);
+        return res.status(500).send({
+            message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+        });
+    }
+}))
+
+/**
+ * @swagger
+ * /api/admin/test-user/superOrg:
+ *   get:
+ *     summary: Create a new Root User (admin@gmail.com, password 123456)
+ *     tags: [AUTH]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: User created successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ */
+router.get("/superOrg", (async (req, res) => {
+    try {
+
+        const payload = {...req?.body, createdBy: 1};
+
+        const email = 'admin@TongueTingler.com';
+        const password = '123456';
+
+
+        const fbCheckUserRes = await checkFirebaseUser(email);
+        let uid = null;
+        if (fbCheckUserRes.success) {
+            uid = fbCheckUserRes.uid;
+        } else {
+            const fbCreateUserRes = await createFirebaseUser({
+                email: email,
+                emailVerified: true,
+                phoneNumber: null,
+                password: password,
+                disabled: false,
+            });
+            if (!fbCreateUserRes.success) {
+                return res
+                    .status(400)
+                    .send(sendResponse(RESPONSE_TYPE.ERROR,
+                        fbCreateUserRes.error ??
+                        'Failed to create user with Firebase auth'));
+            } else {
+                uid = fbCreateUserRes.uid;
+            }
+        }
+
+        console.log(uid);
+
+        if (!uid) {
+            return res
+                .status(400)
+                .send(sendResponse(RESPONSE_TYPE.ERROR, 'no uid'));
+        }
+
+        let admin: TUser = (await new Auth().getUserByEmail(
+            email
+        ));
+
+        console.log(admin, email);
+
+        if (!admin) {
+            const hashedPassword = await createPassword(password);
+            admin = await new AdminRepo().create({
+                "firstName": "Root",
+                "lastName": "User",
+                "phoneNumber": "+918220735528",
+                nameForSearch: "",
+                referBy: undefined,
+                "type": USER_TYPE.ADMIN,
+                email,
+                "role": 0,
+                password: hashedPassword,
+                firebaseUid: uid
+            }).then(uModel => (uModel as UserModel).toJSON());
+        }
+
+        console.log(admin);
+
+        const repo = new OrganizationRepo();
+        let superFranOrg = await repo.getByRootUser(admin.id)
+
+        if (!superFranOrg) {
+            const TTOrgParams: IOrganizationPayloadData = {
+                "name": "Tongue Tinglers",
+                "contactPersonName": "Munawar Ahmed",
+                "contactNumber": "+918220735528",
+                "contactEmail": "munawar@tonguetingler.com",
+                "pan": "BVKPM7409K",
+                "gst": "33BVKPM7409K1Z8",
+                "bankName": "Bank of India",
+                "bankAccountNumber": "823748272340",
+                "bankIFSCCode": "BKI00023",
+                "businessType": BUSINESS_TYPE.PROPRIETORSHIP,
+                "type": ORGANIZATION_TYPE.SUPER_FRANCHISE,
+                "billingAddress": {
+                    "street": "GROUND FLOOR, 123/76, Peters Road, Royapettah,",
+                    "city": "Chennai",
+                    "state": "Tamil Nadu",
+                    "postalCode": "600014",
+                    "country": "India",
+                    "phoneNumber": "918220735528",
+                    "firstName": "Munawar",
+                    "lastName": "Ahmed"
+                },
+                "shippingAddress": [
+                    {
+                        "street": "GROUND FLOOR, 123/76, Peters Road, Royapettah,",
+                        "city": "Chennai",
+                        "state": "Tamil Nadu",
+                        "postalCode": "600014",
+                        "country": "India",
+                        "phoneNumber": "918220735528",
+                        "firstName": "Munawar",
+                        "lastName": "Ahmed"
+                    }
+                ],
+                masterFranchiseId: null,
+                rootUser: admin.id,
+                createdBy: admin.id,
+                updatedBy: null,
+                deletedBy: null
+            }
+            superFranOrg = await repo.create(TTOrgParams, admin.id);
+        }
+
+
+        //todo @Nitesh uncomment
+
+        // const emailContent = await getEmailTemplate(
+        //     EMAIL_TEMPLATE.WELCOME_ADMIN_USER,
+        //     {
+        //         email: payload.email,
+        //         link: "some-link",
+        //     }
+        // );
+
+        // const mailOptions = {
+        //     to: payload.email,
+        //     subject: EMAIL_HEADING.WELCOME_ADMIN_USER,
+        //     templateParams: {
+        //         heading: EMAIL_HEADING.WELCOME_ADMIN_USER,
+        //         description: emailContent,
+        //     },
+        // };
+
+        // await sendEmail(
+        //     mailOptions.to,
+        //     mailOptions.subject,
+        //     mailOptions.templateParams
+        // );
+
+        return res
+            .status(200)
+            .send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.ADMIN_CREATED,
+                    superFranOrg
                 )
             );
     }

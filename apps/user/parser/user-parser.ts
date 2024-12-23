@@ -7,4 +7,5 @@ export const parseUserToMetaUser = (data: ParsedUser): MetaUser => {
         lastName: data.lastName,
         email: data.email
     };
-};
+}
+

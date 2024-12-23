@@ -35,7 +35,7 @@ interface ICampaignSubmisisons {
     updatedAt: Date;
 }
 
-interface ParseCampaign {
+interface ParsedCampaign {
     id: number;
     name: string;
     franchiseId?: number;
@@ -65,5 +65,5 @@ export {
     ICampaignSubmisisons,
     TCampaignSubmisisonsList,
     TPayloadCampaignSubmisisons,
-    ParseCampaign
+    ParsedCampaign
 }

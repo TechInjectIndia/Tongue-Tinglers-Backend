@@ -1,4 +1,4 @@
-import { ParsedUser } from "../../../interfaces";
+import { MetaUser, ParsedUser } from "../../../interfaces";
 
 interface BaseMetaUsers {
     createdBy: number;
@@ -14,9 +14,9 @@ interface BaseMeta extends BaseMetaUsers {
 }
 
 interface ParsedMeta {
-    createdBy: ParsedUser;
-    updatedBy: ParsedUser | null;
-    deletedBy: ParsedUser | null;
+    createdBy: MetaUser;
+    updatedBy: MetaUser | null;
+    deletedBy: MetaUser | null;
     createdAt: Date;
     updatedAt: Date | null;
     deletedAt: Date | null;

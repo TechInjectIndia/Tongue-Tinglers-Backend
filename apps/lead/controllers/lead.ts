@@ -635,8 +635,7 @@ export default class LeadController {
             const id = get(req.params, "id", "");
 
             const existingLead = await new LeadRepo().getLeadByAttr("id", id);
-            console.log(existingLead);
-            
+
             if (isEmpty(existingLead)) {
                 return res
                     .status(400)
@@ -649,7 +648,7 @@ export default class LeadController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        createLeadResponse(existingLead),
+                        existingLead,
                     ),
                 );
         } catch (err) {

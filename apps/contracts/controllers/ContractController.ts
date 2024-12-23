@@ -1,5 +1,5 @@
-import {NextFunction, Request, Response} from "express";
-import {get} from "lodash";
+import { NextFunction, Request, Response } from "express";
+import { get } from "lodash";
 import {
     EMAIL_HEADING,
     EMAIL_TEMPLATE,
@@ -12,13 +12,13 @@ import {
     RESPONSE_TYPE,
     SUCCESS_MESSAGE,
 } from "../../../constants";
-import {ContractRepo} from "../models/ContractRepo";
-import {LeadRepo} from "../../lead/models/lead";
-import {TContractPayload} from "../../../types";
+import { ContractRepo } from "../models/ContractRepo";
+import { LeadRepo } from "../../lead/models/lead";
+import { TContractPayload } from "../../../types";
 
-import {CampaignAdRepo} from "../../campaign/models";
-import {CONFIG} from "../../../config/environment";
-import {FRANCHISE_STATUS, FranchiseDetails,} from "../../../interfaces";
+import { CampaignAdRepo } from "../../campaign/models";
+import { CONFIG } from "../../../config/environment";
+import { FRANCHISE_STATUS, FranchiseDetails, } from "../../../interfaces";
 import RepoProvider from "../../RepoProvider";
 import {
     COMMISSION_PAID_STATUS
@@ -29,7 +29,7 @@ export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = parseInt(get(req, "user_id"));
-            if(!user_id){
+            if (!user_id) {
                 throw Error('Missing user_id or isNaN');
             }
             const newContract: TContractPayload = req.body;
@@ -84,7 +84,7 @@ export default class ContractController {
             if (zohoTemplate) filters.zohoTemplate = zohoTemplate
             if (region) filters.region = region
             if (assignee) filters.assignee = assignee
-            
+
             const Products = await new ContractRepo().list({
                 offset: skip as number,
                 limit: size as number,
@@ -232,7 +232,6 @@ export default class ContractController {
     }
 
     static async convert(req: Request, res: Response, next: NextFunction) {
-        const transaction = await sequelize.transaction(); // Start a transaction
         try {
             const id = get(req.body, "id", 0);
             const user_id = parseInt(get(req, "user_id"))
@@ -240,30 +239,29 @@ export default class ContractController {
             const mappings = get(req.body, "mappings", []);
 
             // get contract
-            const existingContract = await new ContractRepo().get(id, {transaction});
+            const existingContract = await new ContractRepo().get(id);
 
             const existingLead = await new LeadRepo().getLeadByAttr(
                 "id",
-                existingContract.leadId,
-                {transaction}
+                existingContract.leadId
             );
 
             const existingCampaign = await new CampaignAdRepo().get(
-                existingLead.campaignId, {transaction}
+                existingLead.campaignId.id
             );
 
             const paymentId =
                 existingContract.payment && existingContract.payment.length > 0
                     ? existingContract.payment[existingContract.payment.length -
-                    1]
+                        1]
                         .paymentId
                     : null;
             const signId =
                 existingContract.signedDocs &&
-                existingContract.signedDocs.length > 0
+                    existingContract.signedDocs.length > 0
                     ?
                     existingContract.signedDocs[existingContract.signedDocs.length -
-                    1]
+                        1]
                         .docId
                     : null;
 
@@ -292,7 +290,7 @@ export default class ContractController {
             console.log("_____");
 
             const resData = await RepoProvider.franchise.create(
-                franchiseDetailsData, user_id, {transaction});
+                franchiseDetailsData, user_id);
             console.log("res", resData);
 
             const entries: any[] = [];
@@ -308,8 +306,7 @@ export default class ContractController {
             }
 
             const result = await RepoProvider.commissionRepo.createMapEntities(
-                entries,
-                {transaction}
+                entries
             );
 
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password`;
@@ -343,7 +340,7 @@ export default class ContractController {
             catch (emailError) {
                 console.error("Error sending email:", emailError);
             }
-            await transaction.commit(); // Commit the transaction
+
             return res
                 .status(200)
                 .send(
@@ -353,10 +350,10 @@ export default class ContractController {
         }
         catch (err) {
             console.error(err);
-            await transaction.rollback(); 
             return res
                 .status(500)
-                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
+                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
+
 }

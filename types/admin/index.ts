@@ -29,6 +29,5 @@ export type TListFiltersContract = {
         dueDate,
         zohoTemplate,
         assignee,
-
     };
 };

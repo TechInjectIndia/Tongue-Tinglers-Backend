@@ -1,9 +1,14 @@
 import { ParseLead } from '../../../interfaces/leads'
 import { parseUserToMetaUser } from '../../user/parser/user-parser'
 const parseLead = (lead: any) => {
+
+    console.log("$$$$");
+    console.log(lead.campaign_ad);
+
+
     const data: ParseLead = {
         id: lead.id,
-        campaign: lead.campaign_ad,
+        campaignId: lead.campaign_ad,
         status: lead.status,
         address: lead.address,
         additionalInfo: lead.additionalInfo,
@@ -24,12 +29,12 @@ const parseLead = (lead: any) => {
         amount: lead.amount,
         proposalModalId: lead.proposalModalId,
         createdAt: lead.createdAt,
-        createdBy: lead.createdBy,
+        createdBy: parseUserToMetaUser(lead.creator),
         updatedAt: lead.updatedAt,
-        updatedBy: lead.updatedBy,
+        updatedBy: lead.updater ? parseUserToMetaUser(lead.updater) : null,
         deletedAt: lead.deletedAt,
-        deletedBy: lead.deletedBy,
-        assignedUser: parseUserToMetaUser(lead.assignee)
+        deletedBy: lead.deleter ? parseUserToMetaUser(lead.deleter) : null,
+        assignedUser: lead.assignee ? parseUserToMetaUser(lead.assignee) : null
     }
     return data
 }

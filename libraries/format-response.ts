@@ -23,7 +23,7 @@ export function safeStringify(obj) {
 export const createLeadResponse = (obj: any) => {
   return {
     "id": obj.id,
-    "campaignId": obj.campaignId,
+    "campaignId": obj.campaign,
     "firstName": obj.firstName,
     "lastName": obj.lastName,
     "email": obj.email,

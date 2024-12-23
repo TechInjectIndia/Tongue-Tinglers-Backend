@@ -6,7 +6,7 @@ import type {
     ITrackable,
     Note,
     UserDetails,
-    ParseCampaign,
+    ParsedCampaign,
     ParsedUser,
     MetaUser,
 } from "../interfaces";
@@ -76,10 +76,11 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     other: Array<ExtraFields> | null;
 }
 
+
 interface ParseLead extends ParsedMeta {
     id: number;
     assignedUser: MetaUser;
-    campaign: ParseCampaign,
+    campaignId: ParsedCampaign,
     status: LeadStatus;
     firstName: string;
     lastName: string;

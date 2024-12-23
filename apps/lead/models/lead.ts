@@ -83,11 +83,6 @@ export class LeadRepo {
 
             ],
         });
-
-        console.dir(parseLead(data.toJSON()), { depth: null });
-
-
-
         return parseLead(data.toJSON());
     }
 

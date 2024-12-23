@@ -81,7 +81,7 @@ router.get('/search', FilesController.searchFiles);
  *       '401':
  *         description: Unauthorized
  */
-router.post('/', upload.array('files'), FilesController.uploadFile);
+router.post('/', upload.array('files'), validateFileUpload, FilesController.uploadFile);
 
 /**
  * @swagger

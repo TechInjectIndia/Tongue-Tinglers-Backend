@@ -25,7 +25,7 @@ const fileUploadSchema = Joi.object({
                     }),
             })
         )
-        .required()
+        .optional()
         .messages({
             'array.base': 'Files are required.',
             'array.empty': 'Files cannot be empty.',

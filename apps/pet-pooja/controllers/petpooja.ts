@@ -1185,9 +1185,6 @@ export default class PetPoojaController {
             });
         }
     }
-<<<<<<< HEAD
-}
-=======
     
     static async ordersCallback(req: Request, res: Response): Promise<boolean> {
         try {
@@ -1204,4 +1201,3 @@ export default class PetPoojaController {
         }
     }
 }
->>>>>>> 4471f6057db897f0d761457dd3c50fd8e7519fd6

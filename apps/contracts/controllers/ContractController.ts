@@ -67,10 +67,24 @@ export default class ContractController {
             sorting = sorting.toString().split(" ");
 
             const status = get(req.query, "status");
+            const proposal = get(req.query, "proposal");
+            const minPice = get(req.query, "minPrice");
+            const maxPrice = get(req.query, "maxPrice");
+            const dueDate = get(req.query, "dueDate");
+            const zohoTemplate = get(req.query, "zohoTemplate");
+            const region = get(req.query, "region");
+            const assignee = get(req.query, "assignee");
 
             const filters: any = {};
             if (status) filters.status = status;
-
+            if (proposal) filters.proposal = proposal
+            if (minPice) filters.minPice = minPice
+            if (maxPrice) filters.maxPrice = maxPrice
+            if (dueDate) filters.dueDate = dueDate
+            if (zohoTemplate) filters.zohoTemplate = zohoTemplate
+            if (region) filters.region = region
+            if (assignee) filters.assignee = assignee
+            
             const Products = await new ContractRepo().list({
                 offset: skip as number,
                 limit: size as number,

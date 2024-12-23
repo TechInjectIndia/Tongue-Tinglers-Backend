@@ -15,6 +15,7 @@ import {
 import { ContractModel, UserModel } from "../../../database/schema";
 import IContractsController from "../controllers/controller/IContractsController";
 import { getUserName } from "../../common/utils/commonUtils";
+import moment from "moment";
 
 export class ContractRepo
 {
@@ -182,17 +183,28 @@ export class ContractRepo
         }
 
         // Filter for min_price and max_price
-    if (filters?.filters.min_price !== undefined && filters?.filters.min_price !== null) {
-        where.amount = { [Op.gte]: filters.filters.min_price };
-    }
-    if (filters?.filters.max_price !== undefined && filters?.filters.max_price !== null) {
-        where.amount = { ...where.amount, [Op.lte]: filters.filters.max_price };
-    }
+        if (filters?.filters.minPrice || filters?.filters.maxPrice) {
+            where.amount = {};
+
+            if (filters?.filters.minPrice) {
+                where.amount[Op.gte] = filters?.filters.minPrice; // Minimum amount
+            }
+
+            if (filters?.filters.maxPrice) {
+                where.amount[Op.lte] = filters?.filters.maxPrice; // Maximum amount
+            }
+        }
 
     // Filter for due_date
-    if (filters?.filters.due_date) {
-        where.dueDate = filters.filters.due_date;  // Assuming it's a direct match, you can adjust the condition if needed (e.g., range).
-    }
+    if (filters?.filters.dueDate) {
+                const date = moment(filters.filters.dueDate); // Parse the given date
+                where.dueDate = {
+                    [Op.between]: [
+                        date.startOf('day').toDate(), // Start of the day (00:00)
+                        date.endOf('day').toDate(),   // End of the day (23:59:59)
+                    ],
+                };// Adjust for exact or range
+            }
 
     // Filter for region
     if (filters?.filters.region) {
@@ -201,7 +213,11 @@ export class ContractRepo
 
     // Filter for assignee
     if (filters?.filters.assignee) {
-        where.assigneeId = filters.filters.assignee;  // Assuming assignee is identified by an ID
+        where.createdBy = filters.filters.assignee;  // Assuming assignee is identified by an ID
+    }
+
+    if (filters?.filters.zohoTemplate) {
+        where.templateId = filters.filters.zohoTemplate;  // Assuming assignee is identified by an ID
     }
         
         console.log(where);

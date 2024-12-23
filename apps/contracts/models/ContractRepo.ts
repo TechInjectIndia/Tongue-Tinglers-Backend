@@ -17,8 +17,7 @@ import IContractsController from "../controllers/controller/IContractsController
 import { getUserName } from "../../common/utils/commonUtils";
 import moment from "moment";
 
-export class ContractRepo
-{
+export class ContractRepo {
     constructor() {}
 
     // Method to fetch associated contracts
@@ -127,17 +126,21 @@ export class ContractRepo
         return updatedContracts[0] as TContract;
     }
 
-    public async create(data: TContractPayload, userId: number, options?: { transaction?: any }): Promise<TContract> {
+    public async create(
+        data: TContractPayload,
+        userId: number,
+        options?: { transaction?: any }
+    ): Promise<TContract> {
         const { transaction } = options || {};
         const user = await UserModel.findByPk(userId);
-        if(!user){
+        if (!user) {
             throw new Error(`User with ID ${userId} not found.`);
         }
         const response = await ContractModel.create(data, {
             userId: user.id,
             userName: getUserName(user),
-            transaction
-        },);
+            transaction,
+        });
         return response.get();
     }
 
@@ -152,17 +155,20 @@ export class ContractRepo
         return data ? data.get() : null;
     }
 
-    public async get(id: number, options?: { transaction?: any }): Promise<TContract | null> {
+    public async get(
+        id: number,
+        options?: { transaction?: any }
+    ): Promise<TContract | null> {
         const { transaction } = options || {};
         const data = await ContractModel.findOne({
             where: { id },
-            transaction
+            transaction,
         });
         return data ? data : null;
     }
 
     public async list(filters: TListFiltersContract): Promise<TContractsList> {
-        console.log("contract list ",filters);
+        console.log("contract list ", filters);
         const where: any = {};
         const validStatuses = Object.values(CONTRACT_STATUS).filter(
             (status) => status === filters.filters?.status
@@ -176,7 +182,7 @@ export class ContractRepo
             where.status = filters.filters.status;
         }
 
-        if (filters?.search && filters?.search !== '') {
+        if (filters?.search && filters?.search !== "") {
             where.templateId = {
                 [Op.like]: `%${filters.search}%`,
             };
@@ -195,40 +201,40 @@ export class ContractRepo
             }
         }
 
-    // Filter for due_date
-    if (filters?.filters.dueDate) {
-                const date = moment(filters.filters.dueDate); // Parse the given date
-                where.dueDate = {
-                    [Op.between]: [
-                        date.startOf('day').toDate(), // Start of the day (00:00)
-                        date.endOf('day').toDate(),   // End of the day (23:59:59)
-                    ],
-                };// Adjust for exact or range
-            }
+        // Filter for due_date
+        if (filters?.filters.dueDate) {
+            const date = moment(filters.filters.dueDate); // Parse the given date
+            where.dueDate = {
+                [Op.between]: [
+                    date.startOf("day").toDate(), // Start of the day (00:00)
+                    date.endOf("day").toDate(), // End of the day (23:59:59)
+                ],
+            }; // Adjust for exact or range
+        }
 
-    // Filter for region
-    if (filters?.filters.region) {
-        where.region = filters.filters.region;
-    }
+        // Filter for region
+        if (filters?.filters.region) {
+            where.region = filters.filters.region;
+        }
 
-    // Filter for assignee
-    if (filters?.filters.assignee) {
-        where.createdBy = filters.filters.assignee;  // Assuming assignee is identified by an ID
-    }
+        // Filter for assignee
+        if (filters?.filters.assignee) {
+            where.createdBy = filters.filters.assignee; // Assuming assignee is identified by an ID
+        }
 
-    if (filters?.filters.zohoTemplate) {
-        where.templateId = filters.filters.zohoTemplate;  // Assuming assignee is identified by an ID
-    }
-        
+        if (filters?.filters.zohoTemplate) {
+            where.templateId = filters.filters.zohoTemplate; // Assuming assignee is identified by an ID
+        }
+
         console.log(where);
         const total = await ContractModel.count({
-            where: where
+            where: where,
         });
         const data = await ContractModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
-            where: where
+            where: where,
         });
         return { total, data };
     }

@@ -23,10 +23,12 @@ export type TListFiltersContract = {
     trashOnly?: string;
     filters?: {
         status,
-        min_price,
-        max_price,
+        minPrice,
+        maxPrice,
         region,
-        due_date,
-        assignee
+        dueDate,
+        zohoTemplate,
+        assignee,
+
     };
 };

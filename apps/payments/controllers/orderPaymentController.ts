@@ -151,7 +151,8 @@ export default class OrderPaymentController {
     ) {
         try {
             // get cart & cart items
-            const userId = get(req, "user_id", "");
+            const userId = parseInt(get(req, 'user_id'));
+            if(isNaN(userId)) throw Error('userId not passed or isNan')
 
             // Find if the cart already exists for the user
             let cart = await new CartRepo().findById(userId);
@@ -192,13 +193,13 @@ export default class OrderPaymentController {
 
             // Create the order and save order items
             const newOrder = await new OrderRepo().create({
-                userId: userId as number,
-                trackingNumber: "" as string,
-                shippingAddresses: "" as string,
-                paymentMethod: "Razorpay" as string,
+                userId: userId,
+                trackingNumber: "",
+                shippingAddresses: "",
+                paymentMethod: "Razorpay",
                 paymentId: link.id,
-                totalPrice: cart.totalAmount as number,
-                isRepeated: 0 as number,
+                totalPrice: cart.totalAmount,
+                isRepeated: 0,
                 orderStatus: OrderStatus.PROCESSED,
                 paymentStatus: PAYMENT_STATUS.PROCESSED,
                 orderType: ORDER_TYPE.RM_ORDER,
@@ -206,19 +207,19 @@ export default class OrderPaymentController {
 
             // Save each cart item as an order item
             const orderItems = cart.items.map((item) => ({
-                orderId: newOrder.id as number,
-                userId: userId as string,
-                productId: item.productId as number,
-                productType: item.productType as string,
-                quantity: item.quantity as number,
-                price: item.price as number,
-                subtotal: item.subtotal as number,
+                orderId: newOrder.id,
+                userId: userId,
+                productId: item.productId,
+                productType: item.productType,
+                quantity: item.quantity,
+                price: item.price,
+                subtotal: item.subtotal,
             }));
 
             await new OrderItemRepo().bulkCreate(orderItems);
 
             const shippingPayload = {
-                orderId: newOrder.id as number,
+                orderId: newOrder.id,
                 activities: [
                     {
                         status: ShippingStatus.OrderReceived,
@@ -229,7 +230,7 @@ export default class OrderPaymentController {
                 date: new Date().toISOString(),
             };
             await new ShippingHistoryRepo().addShippingHistory(
-                newOrder.id as number,
+                newOrder.id,
                 shippingPayload,
             );
 
@@ -243,7 +244,7 @@ export default class OrderPaymentController {
             });
 
             try {
-                const emailContent = await getEmailTemplate(
+                const emailContent =  getEmailTemplate(
                     EMAIL_TEMPLATE.PAYMENT_REQUEST,
                     {
                         email: franchiseData.pocEmail,
@@ -295,10 +296,11 @@ export default class OrderPaymentController {
             const { paymentId } = req.body;
 
             // get cart & cart items
-            const userId = get(req, "user_id", "");
+            const user_id = parseInt(get(req, 'user_id'));
+            if(isNaN(user_id)) throw Error('userId not passed or isNan')
 
             // Find if the cart already exists for the user
-            let cart = await new CartRepo().findById(userId);
+            let cart = await new CartRepo().findById(user_id);
             if (!cart) {
                 return res
                     .status(404)
@@ -395,10 +397,11 @@ export default class OrderPaymentController {
     ) {
         try {
             // Get user ID from request
-            const userId = get(req, "user_id", "");
+            const user_id = parseInt(get(req, 'user_id'));
+            if(isNaN(user_id)) throw Error('userId not passed or isNan')
 
             // Find if the cart already exists for the user
-            let cart = await new CartRepo().findById(userId);
+            let cart = await new CartRepo().findById(user_id);
             if (!cart || cart.items.length === 0) {
                 return res
                     .status(404)

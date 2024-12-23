@@ -30,6 +30,30 @@ const fileUploadSchema = Joi.object({
             'array.base': 'Files are required.',
             'array.empty': 'Files cannot be empty.',
         }),
+    name: Joi.string()
+    .trim()
+    .required()
+    .messages({
+        "string.base": "Name must be a string.",
+        "string.empty": "Name cannot be empty.",
+        "any.required": "Name is required.",
+    }),
+    message: Joi.string()
+    .trim()
+    .required()
+    .messages({
+        "string.base": "Message must be a string.",
+        "string.empty": "Message cannot be empty.",
+        "any.required": "Message is required.",
+    }),
+    subject: Joi.string()
+    .trim()
+    .required()
+    .messages({
+        "string.base": "Subject must be a string.",
+        "string.empty": "Subject cannot be empty.",
+        "any.required": "Subject is required.",
+    }),
 });
 
 // Validation schema for deleting files

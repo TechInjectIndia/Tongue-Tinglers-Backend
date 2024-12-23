@@ -14,17 +14,18 @@ import { Op } from "sequelize";
 import { OrderItem } from "../../../interfaces/order_items";
 import { OrderItemModel } from "../../../database/schema/order-items/orderItemsModel";
 import { OrderItemsModel } from "../../../database/schema";
+import { get } from "lodash";
 
 export class OrderRepo implements IOrderRepo {
     async createOrder(order: OrderPayload): Promise<Order | null> {
         try {
             let notesCreated: Notes[] = [];
             let orderItemsCreated: OrderItem[] = [];
-            const { notes,order_items, ...orderDetails } = order;
+            const { notes,orderItems, ...orderDetails } = order;
 
-            if(order_items && order_items.length > 0){
+            if(orderItems && orderItems.length > 0){
                 orderItemsCreated = await Promise.all(
-                    order_items.map(async (orderItem) => {
+                    orderItems.map(async (orderItem) => {
                         const createdOrderItem = await OrderItemModel.create(orderItem);
                         return createdOrderItem.toJSON(); // Convert to plain object if needed
                     })
@@ -59,8 +60,68 @@ export class OrderRepo implements IOrderRepo {
             return null;
         }
     }
-    updateOrder(order: any): Promise<any> {
-        throw new Error("Method not implemented.");
+
+    async updateOrder(order: any): Promise<Order | null> {
+        try {
+            const orderId = order.id;
+            let notesUpdated: Notes[] = [];
+            let orderItemsUpdated: OrderItem[] = [];
+            const { notes, order_items, ...orderDetails } = order;
+
+            // Fetch the existing order to ensure it exists
+            const existingOrder = await OrderModel.findByPk(orderId, {
+                include: [{ association: 'noteses' }, { association: 'orderItems' }]
+            });
+
+            if (!existingOrder) {
+                throw new Error(`Order with ID ${orderId} not found.`);
+            }
+
+            // Update order items if provided
+            // if (order_items && order_items.length > 0) {
+            //     // Delete existing order items if necessary (optional based on your business logic)
+            //     await OrderItemModel.destroy({ where: { id: orderId } });
+
+            //     // Add new or updated order items
+            //     orderItemsUpdated = await Promise.all(
+            //         order_items.map(async (orderItem) => {
+            //             const createdOrderItem = await OrderItemModel.create({ ...orderItem, orderId });
+            //             return createdOrderItem.toJSON();
+            //         })
+            //     );
+            // }
+
+            // // Update notes if provided
+            // if (notes && notes.length > 0) {
+            //     // Delete existing notes if necessary (optional based on your business logic)
+            //     await NotesModel.destroy({ where: { order_id: orderId } });
+
+            //     // Add new or updated notes
+            //     notesUpdated = await Promise.all(
+            //         notes.map(async (note) => {
+            //             const createdNote = await NotesModel.create({ ...note, orderId });
+            //             return createdNote.toJSON();
+            //         })
+            //     );
+            // }
+
+            // Update the order details
+            await existingOrder.update({
+                ...orderDetails, // Spread the updated order details
+                updatedAt: new Date(),
+            });
+
+            // Update associations if necessary
+            // const noteIds = notesUpdated.map((note) => note.id);
+            // if (noteIds.length > 0) {
+            //     await existingOrder.setNoteses(noteIds);
+            // }
+
+            return existingOrder.toJSON();
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
     }
     deleteOrder(orderId: number): Promise<any> {
         throw new Error("Method not implemented.");
@@ -127,5 +188,5 @@ export class OrderRepo implements IOrderRepo {
             throw new Error("Failed to fetch orders.");
         }
     }
-    
+
 }

@@ -2,6 +2,7 @@ import { PaymentLinks } from "razorpay/dist/types/paymentLink";
 import {
     PaymentLinkPayload,
 } from "../models/Razorpay";
+import { Request, Response } from "express";
 
 export interface IRazorpayRepo {
     createRazorpayOrder(orderId: string, amount: number): Promise<any>;

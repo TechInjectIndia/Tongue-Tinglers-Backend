@@ -3,7 +3,8 @@ interface FileAttributes {
     id: number;
     name: string;
     message: string;
-    url: string;
+    subject: string;
+    url: string[];
     recommended: boolean;
     createdAt?: Date;
     updatedAt?: Date;

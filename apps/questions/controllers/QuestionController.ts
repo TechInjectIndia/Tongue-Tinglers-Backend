@@ -1,15 +1,19 @@
-import { NextFunction, Request, Response } from "express";
-import { get, isEmpty } from "lodash";
-import { sendResponse } from "../../../libraries";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { QuestionRepo } from '../models';
+import {NextFunction, Request, Response} from "express";
+import {get, isEmpty} from "lodash";
+import {sendResponse} from "../../../libraries";
+import {
+    ERROR_MESSAGE,
+    RESPONSE_TYPE,
+    SUCCESS_MESSAGE
+} from "../../../constants";
+import {QuestionRepo} from '../models';
 
 export default class QuestionController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '');
-            const payload = { ...req?.body, createdBy: user_id };
-            const question = await new QuestionRepo().create(payload);
+            const user_id = parseInt(get(req, 'user_id'));
+            const payload = {...req?.body, createdBy: user_id};
+            const question = await new QuestionRepo().create(payload, user_id);
             return res
                 .status(200)
                 .send(
@@ -19,7 +23,8 @@ export default class QuestionController {
                         question
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -53,7 +58,8 @@ export default class QuestionController {
                         questions
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -63,12 +69,20 @@ export default class QuestionController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
-            const updateQuestion = req?.body;
+            const id = parseInt(get(req.params, "id"));
+            if (!id || isNaN(id)) throw Error('Missing id or isNaN');
+
+            const updateQuestion = req.body;
             delete updateQuestion.id;
 
-            const user_id = get(req, 'user_id', '');
-            const updatedQuestion = await new QuestionRepo().update(id as number, { ...updateQuestion, updatedBy: user_id });
+            const user_id = parseInt(get(req, "user_id"));
+            if (!user_id || isNaN(user_id)) {
+                throw Error(
+                    'Missing user_id or isNaN');
+            }
+
+            const updatedQuestion = await new QuestionRepo().update(id,
+                {...updateQuestion, updatedBy: user_id}, user_id);
             return res
                 .status(200)
                 .send(
@@ -78,7 +92,8 @@ export default class QuestionController {
                         updatedQuestion
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -88,9 +103,10 @@ export default class QuestionController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", "");
+            const id = parseInt(get(req.params, "id"));
+            if (!id || isNaN(id)) throw Error('Missing id or isNaN');
 
-            const existingQuestion = await new QuestionRepo().get(id as number);
+            const existingQuestion = await new QuestionRepo().get(id);
 
             if (isEmpty(existingQuestion)) {
                 return res
@@ -112,7 +128,8 @@ export default class QuestionController {
                         existingQuestion
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -134,7 +151,8 @@ export default class QuestionController {
                         deletedCount
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,

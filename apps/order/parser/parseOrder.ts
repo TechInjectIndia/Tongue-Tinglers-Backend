@@ -10,29 +10,29 @@ const parseOrder = (order: any): ParsedOrder => {
     );
     const data: ParsedOrder = {
        id: order.id,
-       order_items: productVariations,
+       orderItems: productVariations,
        status: order.status,
        total: order.total,
        anomalyArr: order.anomalyArr,
-       cancelled_items: order.cancelled_items,
-       payment_id: order.payment_id,
+       cancelledItems: order.cancelled_items,
+       paymentId: order.payment_id,
        createdBy: order.createdBy,
        updatedBy: order.updatedBy,
        deletedBy: order.deletedBy,
        createdAt: order.createdAt,
        updatedAt: order.updatedAt,
        deletedAt: order.deletedAt,
-       customer_details: order.customer_details,
-       delivery_details: order.delivery_details,
-       delivery_status: order.delivery_status,
-       item_count: order.item_count,
+       customerDetails: order.customer_details,
+       deliveryDetails: order.delivery_details,
+       deliveryStatus: order.delivery_status,
+       itemsCount: order.item_count,
        notes: order.notes,
-       payment_type: order.payment_type,
+       paymentType: order.payment_type,
        prices: order.prices,
-       total_discount: order.total_discount,
-       total_shipping: order.total_shipping,
-       total_tax: order.total_tax,
-       discount_prices: order.discount_prices
+       totalDiscount: order.total_discount,
+       totalShipping: order.total_shipping,
+       totalTax: order.total_tax,
+       discountPrices: order.discount_prices
     };
 
     return data; // Return the result

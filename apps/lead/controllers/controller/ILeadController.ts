@@ -1,7 +1,6 @@
-import { Response } from "express";
+
 import { TQueryFilters, TLeadPayload, TLeadStatus, TLeadsList } from '../../../../types';
 import { ILead } from '../../../../interfaces';
-
 /**
  * Interface for Lead Controller.
  */

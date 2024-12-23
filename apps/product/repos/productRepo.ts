@@ -12,7 +12,7 @@ import { Op } from "sequelize";
 import { ProductOptionsModel } from "../../../database/schema/product-options/productOptionsModel";
 import { ParsedProduct } from "../../../interfaces/products"
 import { ProductCategoryModel, UserModel } from "../../../database/schema";
-import {parseProduct} from "../parser/productParser" 
+import {parseProduct} from "../parser/productParser"
 import { OptionsModel } from "../../../database/schema/options/optionModel";
 import { OptionsValueModel } from "../../../database/schema/optionsValue/optionsValueModel";
 import { ProductsCategoryModel } from "../../../database/schema/product-category/productCategoryModel";
@@ -20,10 +20,10 @@ import { ProductsCategoryModel } from "../../../database/schema/product-category
 export class ProductRepo implements IProductRepo {
   async create(product: BaseProduct): Promise<Product | null> {
     const transaction = await ProductModel.sequelize.transaction();
-  
+
     try {
       let variationIds: number[] = []; // Array to store created option IDs
-  
+
       // Step 1: Create the product with a default empty array for `variationIds`
       const createdProduct = await ProductModel.create(
         {
@@ -41,7 +41,7 @@ export class ProductRepo implements IProductRepo {
         },
         { transaction }
       );
-  
+
       // Step 2: Handle variations if provided
       if (product.variations && Array.isArray(product.variations)) {
         const productOptions = product.variations.map((option) => ({
@@ -52,31 +52,31 @@ export class ProductRepo implements IProductRepo {
           status: option.status,
           images: option.images,
         }));
-  
+
         // Bulk create the product options
         const createdOptions = await ProductOptionsModel.bulkCreate(productOptions, {
           transaction,
           returning: true, // Ensure the created options are returned
         });
-  
+
         variationIds = createdOptions.map((option) => option.id);
-  
+
         // Update the product with the created option IDs
       }
-      
-      createdProduct.addVariations(variationIds);
+
+      await createdProduct.addVariations(variationIds);
 
       // Commit the transaction
       await transaction.commit();
-  
+
       // Return the created product
       return createdProduct.toJSON();
     } catch (error) {
       console.error("Error creating product:", error);
-  
+
       // Rollback the transaction in case of error
       await transaction.rollback();
-  
+
       return null;
     }
   }
@@ -241,7 +241,7 @@ export class ProductRepo implements IProductRepo {
             attributes: ["id", "name", "description", "slug", "type", "status"], // Include these fields from the User model"
           }
         ]
-      
+
       }).then((productData)=> {
         return productData ? parseProduct(productData.toJSON()): null
       })

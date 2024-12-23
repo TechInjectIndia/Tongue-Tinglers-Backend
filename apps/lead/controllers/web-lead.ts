@@ -3,7 +3,7 @@ import { get } from "lodash";
 import { sendResponse, sendEmail, getEmailTemplate, EMAIL_TEMPLATE, EMAIL_HEADING, getDateRange } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { LeadRepo } from '../models/web-lead';
-import { RolesRepo } from '../../admin-user/models/roles';
+import { RolesRepo } from '../../user/models/roles';
 import { LeadSource, LeadStatus } from '../../../interfaces';
 import { TLeadFilters, } from "../../../types";
 

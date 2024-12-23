@@ -208,8 +208,6 @@ export class AnalyticsModel {
         startDate: Date,
         endDate: Date,
         groupBy: any,
-        franchiseData: any,
-        franchiseId: number,
     ): Promise<any> {
         if (!(startDate instanceof Date) || !(endDate instanceof Date) || startDate > endDate) {
             throw new Error("Invalid date range provided.");

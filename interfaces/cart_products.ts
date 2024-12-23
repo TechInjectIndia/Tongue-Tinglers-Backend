@@ -7,6 +7,8 @@ interface BaseCartProduct {
     quantity: number
 }
 
+
+
 interface CartProduct extends BaseCartProduct {
     id: number
 }
@@ -18,8 +20,18 @@ interface UpdateQuantity {
     quantity: number
 }
 
+interface Cart{
+    user_id: any
+    carts:Array<BaseCartProduct>
+}
+interface ParseCart{
+    user_id: any
+    carts:Array<ParsedCartProduct>
+}
+
+
 interface ParsedCartProduct {
-    id: number,
+    id: number, // cartItemId
     product: ParsedProduct,
     variation: ParsedVariations,
     quantity: number,
@@ -53,6 +65,8 @@ export {
     BaseCartProduct,
     CartProduct,
     UpdateQuantity,
+    Cart,
     ParsedCartProduct,
-    parsedVariations
+    parsedVariations,
+    ParseCart
 }

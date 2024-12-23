@@ -8,7 +8,8 @@ class FileModel extends Model<FileAttributes, FileCreationAttributes> implements
     public id!: number;
     public name!: string;
     public message!: string;
-    public url!: string;
+    public subject!: string;
+    public url!: string[];
     public recommended!: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -29,12 +30,16 @@ FileModel.init({
         type: DataTypes.STRING,
         allowNull: false,
     },
+    subject: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     recommended: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
     },
     url: {
-        type: DataTypes.TEXT,
+        type: DataTypes.ARRAY(DataTypes.TEXT),
         allowNull: true,
     },
     createdAt: {

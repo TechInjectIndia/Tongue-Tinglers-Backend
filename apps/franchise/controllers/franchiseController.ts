@@ -1,21 +1,20 @@
-import { NextFunction, Request, Response } from "express";
-import { get } from "lodash";
+import {Request, Response} from "express";
+import {get} from "lodash";
+import {sendResponse,} from "../../../libraries";
 import {
-    sendResponse,
-} from "../../../libraries";
-import {
+    ERROR_MESSAGE,
     RESPONSE_TYPE,
     SUCCESS_MESSAGE,
-    ERROR_MESSAGE,
 } from "../../../constants";
 import RepoProvider from "../../RepoProvider";
-import { Franchise, FranchiseDetails, Pagination } from "../../../interfaces";
+import {Franchise, FranchiseDetails, Pagination} from "../../../interfaces";
 
 export default class FranchiseController {
     static async createFranchise(req: Request, res: Response) {
         try {
-            const payload = req?.body;
-            const user_id = get(req, "user_id", 0);
+            const payload = req.body;
+            const user_id = parseInt(get(req, "user_id"));
+            if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
 
             const franchise: FranchiseDetails = {
                 ...payload,
@@ -23,7 +22,8 @@ export default class FranchiseController {
             };
 
 
-            const franchiseDetails = await RepoProvider.franchise.create(franchise);
+            const franchiseDetails = await RepoProvider.franchise.create(
+                franchise, user_id);
 
             return res
                 .status(200)
@@ -34,7 +34,8 @@ export default class FranchiseController {
                         franchiseDetails,
                     ),
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -45,13 +46,13 @@ export default class FranchiseController {
     static async getById(req: Request, res: Response) {
 
         try {
-            const id = get(req.params, "id", 0);
-
-            console.log("****");
+            const id = parseInt(get(req.params, "id"));
+            if (isNaN(id)) throw Error('Missing id or isNaN');
+console.log("****");
             console.log(id);
-            
-            
-    
+
+
+
             const franchiseDetails = await RepoProvider.franchise.getById(id);
             return res
                 .status(200)
@@ -62,7 +63,8 @@ export default class FranchiseController {
                         franchiseDetails,
                     ),
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -72,9 +74,10 @@ export default class FranchiseController {
 
     static async getAll(req: Request, res: Response) {
         try {
-            const page = parseInt(req.query.page, 0) || 1;
-            const limit = parseInt(req.query.limit, 10) || 10;
-            const search = (req.query.search as string) || ''; // For text search
+            const page = parseInt(req.query.page.toString(), 0) || 1;
+            const limit = parseInt(req.query.limit.toString(), 10) || 10;
+            const search = (req.query.search as string) || ''; // For text
+                                                               // search
             const filters = (req.query.filters as string) || '';
 
             // Parse filters into an object
@@ -82,7 +85,8 @@ export default class FranchiseController {
             if (filters) {
                 try {
                     filterObj = JSON.parse(filters);
-                } catch (error) {
+                }
+                catch (error) {
                     return res.status(400).send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
@@ -91,7 +95,8 @@ export default class FranchiseController {
                     );
                 }
             }
-            const Franchise: Pagination<Franchise> = await RepoProvider.franchise.getAll(page, limit, search, filterObj);
+            const Franchise: Pagination<Franchise> = await RepoProvider.franchise.getAll(
+                page, limit, search, filterObj);
             return res.status(200)
                 .send(
                     sendResponse(
@@ -104,10 +109,12 @@ export default class FranchiseController {
                     ),
                 );
 
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
             return res.status(500).send(
-                sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while fetching products.'),
+                sendResponse(RESPONSE_TYPE.ERROR,
+                    'An error occurred while fetching products.'),
             );
         }
     }

@@ -1,22 +1,28 @@
 import { Op } from "sequelize";
 import {
-    TLeadStatus,
-    TAssignLead,
     TLeadPayload,
-    TListFilters,
     TLeadsList,
+    TLeadStatus,
+    TListFilters,
     TListFiltersAreas,
 } from "../../../types";
-import { ITrackable } from "../../../interfaces";
-import { CampaignAdModel, CampaignModel, LeadsModel } from "../../../database/schema";
-import { AssignModel } from "../../../database/schema";
-import { UserModel } from "../../../database/schema";
-import { LeadStatus, ILead } from "../../../interfaces"; // Use the LeadStatus enum from interfaces
-import IBaseRepo from "../controllers/controller/ILeadController";
+import { ILead } from "../../../interfaces"; // Use the LeadStatus
+import {
+    AssignModel,
+    CampaignAdModel,
+    LeadsModel,
+    UserModel
+} from "../../../database/schema";
+// enum from interfaces
 import { createLeadsResponse } from "../../../libraries";
+import { handleError } from "../../common/utils/HelperMethods";
+import { getUserName } from "../../common/utils/commonUtils";
+import { parseLead } from "../parser/leadParser";
+import moment from "moment";
 
-export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
-    constructor() {}
+export class LeadRepo {
+    constructor() {
+    }
 
     // Update the status of a lead
     public async updateStatus(
@@ -48,42 +54,59 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
     public async getLeadByAttr(
         whereName: keyof ILead,
         whereVal: any,
-        getAttributes: any = ["*"]
+        getAttributes: any = ["*"],
+        options?: { transaction?: any }
     ): Promise<any | null> {
+        const { transaction } = options || {};
         const whereAttributes = { [whereName]: whereVal };
         const data = await LeadsModel.findOne({
             where: whereAttributes,
             include: [
                 {
-                    model: AssignModel,
-                    as: "assign",
-                    attributes: ["assignedTo", "assignedBy", "assignedDate"],
-                    include: [
-                        {
-                            model: UserModel,
-                            as: "assignedUser", // Use the alias for assignedTo
-                            attributes: ["id"],
-                        },
-                        {
-                            model: UserModel,
-                            as: "assignerUser", // Use the alias for assignedBy
-                            attributes: ["id"],
-                        },
-                    ],
+                    model: UserModel,
+                    as: "creator",
                 },
-            ],
-        });
+                {
+                    model: UserModel,
+                    as: "updater",
+                },
+                {
+                    model: UserModel,
+                    as: "deleter",
+                },
+                {
+                    model: CampaignAdModel,
+                    as: "campaign_ad",
+                },
+                {
+                    model: UserModel,
+                    as: "assignee",
+                },
 
-        return data;
+            ],
+            transaction
+        });
+        return parseLead(data.toJSON());
     }
 
     // Get lead by ID
-    public async get(id: number): Promise<ILead | null> {
-        const data = await LeadsModel.findOne({
-            raw: true,
-            where: { id },
-        });
-        return data as ILead | null;
+    public async get(id: number, options?: { transaction?: any }): Promise<ILead> {
+        try {
+            const { transaction } = options || {};
+            const data = await LeadsModel.findOne({
+                raw: true,
+                where: { id },
+                transaction
+            });
+            // console.dir(data.toJSON(), { depth: true });
+
+            return data;
+
+
+        }
+        catch (error: any) {
+            handleError(error, id)
+        }
     }
 
     // Get lead by ID and status
@@ -157,11 +180,15 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
         const include: any[] = [];
         if (filters?.filters.campaign) {
             include.push({
-                model: CampaignAdModel, // Replace with your actual Campaign model
-                as: "campaign", // Alias defined in the relationship
+                model: CampaignAdModel, // Replace with your actual Campaign
+                // model
+                as: "campaign_ad", // Alias defined in the relationship
                 where: {
                     name: {
-                        [Op.iLike]: `%${filters.filters.campaign}%`, // Search by campaign name
+                        [Op.iLike]: `%${filters.filters.campaign}%`, // Search
+                        // by
+                        // campaign
+                        // name
                     },
                 },
                 required: true, // Ensures only matching leads are included
@@ -173,20 +200,29 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
             };
         }
         if (filters?.filters.date) {
-            where.date = filters.filters.date; // Adjust for exact or range filtering.
+            const date = moment(filters.filters.date); // Parse the given date
+            where.created_at = {
+                [Op.between]: [
+                    date.startOf('day').toDate(), // Start of the day (00:00)
+                    date.endOf('day').toDate(),   // End of the day (23:59:59)
+                ],
+            };// Adjust for exact or range
         }
         if (filters?.filters.affiliate) {
             where.affiliate = {
                 [Op.iLike]: `%${filters.filters.affiliate}%`,
             };
         }
-        if (filters?.filters.amountRange) {
-            const [min, max] = filters.filters.amountRange
-                .toString()
-                .split("-");
-            where.amount = {
-                [Op.between]: [parseFloat(min), parseFloat(max)],
-            };
+        if (filters?.filters.minAmount || filters?.filters.maxAmount) {
+            where.amount = {};
+
+            if (filters?.filters.minAmount) {
+                where.amount[Op.gte] = filters?.filters.minAmount; // Minimum amount
+            }
+
+            if (filters?.filters.maxAmount) {
+                where.amount[Op.lte] = filters?.filters.maxAmount; // Maximum amount
+            }
         }
         console.log(where);
         const total = await LeadsModel.count({
@@ -206,15 +242,29 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
     }
 
     // Create a new lead
-    public async create(data: TLeadPayload): Promise<ILead> {
-        const leadData: TLeadPayload = {
-            ...data,
-            // Ensure logs is kept as an array
-            logs: data.logs, // Assuming logs is already of type ITrackable[]
-        };
-
-        const response = await LeadsModel.create(leadData);
-        return response as ILead; // Explicitly cast the response to ILead
+    public async create(data: TLeadPayload, userId: number): Promise<ILead | null> {
+        try {
+            const user = await UserModel.findByPk(userId);
+            if (!user) {
+                throw new Error(`User with ID ${userId} not found.`);
+            }
+            const leadData: TLeadPayload = {
+                ...data,
+                // Ensure logs is kept as an array
+                logs: data.logs, // Assuming logs is already of type
+                // ITrackable[]
+            };
+            return LeadsModel.create(leadData, {
+                userId: user.id,
+                userName: getUserName(user),
+            });
+        }
+        catch (error) {
+            handleError(error, data)
+            const message = `${error.message ?? ''}: error while creating lead`
+            // todo @sunil getHandledErrorDTO(message, error)
+            return null
+        }
     }
 
     // Update lead information
@@ -222,10 +272,13 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
         id: number,
         data: TLeadPayload
     ): Promise<[affectedCount: number]> {
-        const response = await LeadsModel.update(data, {
-            where: { id },
-        });
-        return response;
+        const lead = await LeadsModel.findByPk(id);
+        if (!lead) {
+            throw new Error("Lead not found");
+        }
+        lead.set(data);
+        await lead.save();
+        return [1];
     }
 
     // Assign a lead to a user
@@ -239,9 +292,12 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
             });
 
             return response;
-        } catch (error) {
+        }
+        catch (error) {
             console.error("Error updating lead:", error);
-            throw new Error("Failed to assign lead to user"); // Rethrow or handle as needed
+            throw new Error("Failed to assign lead to user"); // Rethrow or
+            // handle as
+            // needed
         }
     }
 
@@ -254,14 +310,16 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
                 },
             });
             return deletedCount;
-        } catch (error) {
+        }
+        catch (error) {
             console.error("Error deleting leads:", error);
-            throw new Error("Failed to delete leads"); // Rethrow or handle as needed
+            throw new Error("Failed to delete leads"); // Rethrow or handle as
+            // needed
         }
     }
 
     // Search leads with filters
-    public async searchLead(filters: TListFilters): Promise<TLeadsList> {
+    public async searchLead(filters: TListFilters): Promise<any> {
         const total = await LeadsModel.count({
             where: {
                 [Op.or]: [
@@ -308,6 +366,6 @@ export class LeadRepo implements IBaseRepo<ILead, TListFiltersAreas> {
 
         const data = createLeadsResponse(leads);
 
-        return { total, data } as TLeadsList;
+        return { total, data };
     }
 }

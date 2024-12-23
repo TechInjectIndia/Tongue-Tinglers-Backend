@@ -8,3 +8,31 @@ interface Log {
 }
 
 export { Log };
+
+
+
+declare module "sequelize" {
+  interface CreateOptions {
+    userId?: number;
+    userName?: string;
+  }
+
+  interface UpdateOptions {
+    userId?: number;
+    userName?: string;
+  }
+
+  interface DestroyOptions {
+    userId?: number;
+    userName?: string;
+  }
+}
+
+
+// Extend SaveOptions to allow custom properties
+declare module 'sequelize' {
+  interface SaveOptions {
+    userId?: number;
+    userName?: string;
+  }
+}

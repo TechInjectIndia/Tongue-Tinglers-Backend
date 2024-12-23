@@ -4,32 +4,20 @@ import {
     FranchiseModelsList,
     TPayloadFranchiseModel,
 } from "../../../interfaces";
-import {
-    TListFilters,
-} from "../../../types";
-import { FranchiseLeadModel } from "../../../database/schema";
-import { ExtraFieldsModel } from "../../../database/schema";
-import { SeoImageModel } from "../../../database/schema";
-import IBaseRepo from '../controllers/controller/IController';
+import { TListFilters } from "../../../types";
+import { FranchiseLeadModel, UserModel } from "../../../database/schema";
+import { getUserName } from "../../common/utils/commonUtils";
+import sequelize from "sequelize";
 
-export class FranchiseModelRepo implements IBaseRepo<FranchiseModels, TListFilters> {
-    constructor() { }
+
+export class FranchiseModelRepo {
+    constructor() {}
 
     public async get(id: number): Promise<FranchiseModels | null> {
         const data = await FranchiseLeadModel.findOne({
             where: {
                 id,
             },
-            include: [
-                {
-                    model: ExtraFieldsModel,
-                    as: 'others',
-                },
-                {
-                    model: SeoImageModel,
-                    as: 'images',
-                }
-            ],
         });
         return data;
     }
@@ -55,17 +43,42 @@ export class FranchiseModelRepo implements IBaseRepo<FranchiseModels, TListFilte
         return { total, data };
     }
 
-    public async create(data: TPayloadFranchiseModel): Promise<FranchiseModels> {
-        const response = await FranchiseLeadModel.create(data);
+    public async create(
+        data: TPayloadFranchiseModel,
+        userId: number
+    ): Promise<FranchiseModels> {
+        // Fetch user data from UserModel
+        const user = await UserModel.findByPk(userId);
+
+        if (!user) {
+            throw new Error(`User with ID ${userId} not found.`);
+        }
+
+        // Use user data (e.g., userName) when creating the record
+        const response = await FranchiseLeadModel.create(data, {
+            userId: user.id,
+            userName: getUserName(user),
+        });
+
         return response;
     }
 
-    public async update(id: number, data: TPayloadFranchiseModel): Promise<[affectedCount: number]> {
-        return await FranchiseLeadModel.update(data, {
-            where: {
-                id: id,
-            },
+    public async update(id: number, data: TPayloadFranchiseModel, userId: number): Promise<[affectedCount: number]> {
+        const franchiseLead = await FranchiseLeadModel.findByPk(id);
+        const user = await UserModel.findByPk(userId);
+        if (!franchiseLead) {
+            throw new Error("Franchise Lead not found");
+        }
+        if (!user) {
+            throw new Error(`User with ID ${userId} not found.`);
+        }
+        franchiseLead.set(data);
+        await franchiseLead.save({
+            userId: user.id,
+            userName: user.firstName,
         });
+        // Return affected count
+        return [1];
     }
 
     public async delete(ids: number[]): Promise<number> {

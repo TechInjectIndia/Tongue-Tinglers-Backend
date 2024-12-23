@@ -1,4 +1,4 @@
-import { BaseCartProduct, CartProduct, UpdateQuantity } from "../../../interfaces/cart_products";
+import { BaseCartProduct, Cart, CartProduct, ParseCart, UpdateQuantity } from "../../../interfaces/cart_products";
 import { ICartProductRepo } from "./ICartProductRepo";
 import {CartProductModel} from "../../../database/schema/cart-product/cartProductModel";
 import { CartDetailsModel } from "../../../database/schema/cart_details/cartDetailsModel";
@@ -9,7 +9,8 @@ import { OptionsValueModel } from "../../../database/schema/optionsValue/options
 import { OptionsModel } from "../../../database/schema/options/optionModel";
 import { parseCartProduct } from "../parser/cartProductParser";
 export class CartProductRepo implements ICartProductRepo {
-    async create(cartProduct:any): Promise<any | null> {
+
+    async create(cartProduct:Cart): Promise<ParseCart | null> {
         const transaction = await CartProductModel.sequelize?.transaction();
         try {
 
@@ -17,23 +18,35 @@ export class CartProductRepo implements ICartProductRepo {
             const createdCartProducts = await CartProductModel.bulkCreate(
                 cartProduct.carts.map((product) => ({
                     product_id: product.product_id,
-                    product_option_id: product.product_option_id,
+                    product_option_id: product.product_option_id, // todo @nitesh @sunil rename to option value id
                     quantity: product.quantity,
                 })),
                 { transaction, returning: true } // Return created rows
             );
 
-            let cartProductIds: number[] = []; 
+            let cartProductIds: number[] = [];
             cartProductIds = createdCartProducts.map((option) => option.id);
             let payload = {
                 // cart_ids: cartProductIds,
                 user_id: cartProduct.user_id
             }
-            const createCartDetails = await CartDetailsModel.create(payload, { transaction })
-            
+
+            const userExist = await CartDetailsModel.findOne({
+                where: {
+                    user_id: cartProduct.user_id
+                }
+            })
+            var createCartDetails = null;
+            if(!userExist){
+                createCartDetails = await CartDetailsModel.create(payload, { transaction })
+            }else{
+                createCartDetails = userExist
+            }
+
             await createCartDetails.addCartProductses(cartProductIds);
             // await organization.addShippingAddresses(shippingAddresses);
             await transaction?.commit();
+            // Return the created cart products (optional)
 
             const cartProductsWithDetails = await CartProductModel.findAll({
                 where: {id: {[Op.in]:  cartProductIds} },
@@ -66,14 +79,17 @@ export class CartProductRepo implements ICartProductRepo {
                     return parseCartProduct(cartProduct)
                 })
             })
-            return cartProductsWithDetails
+            return {
+                user_id: cartProduct.user_id, // Assuming `cartsts` comes from `createCartDetails`
+                carts: cartProductsWithDetails,
+            };
         } catch (error) {
             console.log(error);
             await transaction?.rollback();
-            return null;  
+            return null;
         }
     }
-    
+
     update(product: CartProduct): Promise<CartProduct> {
         throw new Error("Method not implemented.");
     }
@@ -91,7 +107,7 @@ export class CartProductRepo implements ICartProductRepo {
             return cartProduct.toJSON();
         } catch (error) {
             console.log(error);
-            return null; 
+            return null;
         }
     }
 
@@ -116,7 +132,7 @@ export class CartProductRepo implements ICartProductRepo {
             return existingCartProduct.toJSON();
         } catch (error) {
             console.log(error);
-            return null; 
+            return null;
         }
     }
 }

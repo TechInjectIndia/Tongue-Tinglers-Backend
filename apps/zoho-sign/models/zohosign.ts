@@ -20,7 +20,7 @@ import IBaseRepo from "../controllers/controller/IZohoSignController";
 import { ContractRepo } from "../../contracts/models/ContractRepo";
 
 export class ZohoSignRepo implements IBaseRepo<TemplateType> {
-    constructor() {}
+    constructor() { }
 
     public async handleZohoSignCaptured(contractId, signedDocs) {
         // const signedDocs = contractDetails.signedDocs.map((doc) => {
@@ -177,7 +177,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
         });
     }
 
-    public async getTemplateFields(templateId: number): Promise<FieldType> {
+    public async getTemplateFields(templateId: any): Promise<FieldType> {
         return await this.handleTokenError(async () => {
             try {
                 const accessToken =

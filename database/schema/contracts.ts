@@ -12,17 +12,18 @@ import {
     Note,
 } from "../../interfaces";
 
-const { INTEGER, STRING, FLOAT, DATE, JSONB, ENUM, UUIDV4 } = DataTypes;
+const { INTEGER, STRING, FLOAT, DATE, JSONB, ENUM } = DataTypes;
 import { LeadsModel } from "./lead/lead.model";
 import { UserModel } from "./user/user.model";
+import RepoProvider from "../../apps/RepoProvider";
 
 interface ContractCreationAttributes
-    extends Optional<IContract, "id" | "createdAt" | "updatedAt"> {
-}
+    extends Optional<IContract, "id" | "createdAt" | "updatedAt"> {}
 
 class ContractModel
     extends Model<IContract, ContractCreationAttributes>
-    implements IContract {
+    implements IContract
+{
     public id!: number;
     public status!: CONTRACT_STATUS;
     public proposalData: ProposalModels | null;
@@ -34,12 +35,12 @@ class ContractModel
     public payment!:
         | null
         | {
-        paymentId: string;
-        amount: number;
-        date: Date;
-        status: CONTRACT_PAYMENT_STATUS;
-        additionalInfo: string;
-    }[];
+              paymentId: string;
+              amount: number;
+              date: Date;
+              status: CONTRACT_PAYMENT_STATUS;
+              additionalInfo: string;
+          }[];
     public leadId!: number | null;
     public templateId!: string | null;
     public amount!: number;
@@ -72,116 +73,148 @@ class ContractModel
             constraints: false,
         });
     }
+    public static initModel() {
+        ContractModel.init(
+            {
+                id: {
+                    type: DataTypes.INTEGER,
+                    primaryKey: true,
+                    allowNull: false,
+                    autoIncrement: true,
+                },
+                status: {
+                    type: ENUM,
+                    values: [...Object.values(CONTRACT_STATUS)],
+                    allowNull: false,
+                },
+                proposalData: {
+                    type: JSONB,
+                    allowNull: true,
+                },
+                organizationId: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
+                },
+                terminationDetails: {
+                    type: JSONB,
+                    allowNull: true,
+                },
+                payment: {
+                    type: JSONB,
+                    allowNull: true,
+                },
+                leadId: {
+                    type: STRING,
+                    allowNull: true,
+                },
+                templateId: {
+                    type: STRING,
+                    allowNull: true,
+                },
+                amount: {
+                    type: FLOAT,
+                    allowNull: true,
+                },
+                signedDate: {
+                    type: DATE,
+                    allowNull: true,
+                },
+                dueDate: {
+                    type: DATE,
+                    allowNull: false,
+                },
+                validity: {
+                    type: JSONB,
+                    allowNull: false,
+                },
+                logs: {
+                    type: JSONB,
+                    allowNull: true,
+                },
+                signedDocs: {
+                    type: JSONB,
+                    allowNull: true,
+                },
+                notes: {
+                    type: JSONB,
+                    allowNull: true,
+                },
+                additionalInfo: {
+                    type: STRING,
+                    allowNull: true,
+                    defaultValue: "",
+                },
+                createdBy: {
+                    type: INTEGER,
+                    allowNull: false,
+                },
+                deletedAt: {
+                    type: DATE,
+                    allowNull: true,
+                },
+                updatedBy: {
+                    type: INTEGER,
+                    allowNull: true,
+                },
+                deletedBy: {
+                    type: INTEGER,
+                    allowNull: true,
+                },
+                createdAt: {
+                    type: DATE,
+                    allowNull: false,
+                    defaultValue: DataTypes.NOW,
+                    field: "created_at",
+                },
+                updatedAt: {
+                    type: DATE,
+                    allowNull: false,
+                    defaultValue: DataTypes.NOW,
+                    field: "updated_at",
+                },
+            },
+            {
+                sequelize,
+                tableName: "contracts",
+                timestamps: true,
+            }
+        );
+        return ContractModel;
+    }
+
+    public static hook() {
+        ContractModel.addHook("afterCreate", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "create",
+                "Contracts",
+                instance,
+                options
+            );
+        });
+
+        // After Update Hook - Log the updated fields of the Contracts
+        ContractModel.addHook("afterUpdate", async (instance, options) => {
+            // Now call logModelAction as before
+            await RepoProvider.LogRepo.logModelAction(
+                "update",
+                "Contracts",
+                instance,
+                options
+            );
+        });
+
+        // After Destroy Hook - Log the deletion of the Contracts
+        ContractModel.addHook("afterDestroy", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "delete",
+                "Contracts",
+                instance,
+                options
+            );
+        });
+    }
 
     organizationId: number | null;
 }
-
-ContractModel.init(
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            allowNull: false,
-            autoIncrement: true,
-        },
-        status: {
-            type: ENUM,
-            values: [...Object.values(CONTRACT_STATUS)],
-            allowNull: false,
-        },
-        proposalData: {
-            type: JSONB,
-            allowNull: true,
-        },
-        organizationId: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
-        terminationDetails: {
-            type: JSONB,
-            allowNull: true,
-        },
-        payment: {
-            type: JSONB,
-            allowNull: true,
-        },
-        leadId: {
-            type: STRING,
-            allowNull: true,
-        },
-        templateId: {
-            type: STRING,
-            allowNull: true,
-        },
-        amount: {
-            type: FLOAT,
-            allowNull: true,
-        },
-        signedDate: {
-            type: DATE,
-            allowNull: true,
-        },
-        dueDate: {
-            type: DATE,
-            allowNull: false,
-        },
-        validity: {
-            type: JSONB,
-            allowNull: false,
-        },
-        logs: {
-            type: JSONB,
-            allowNull: true,
-        },
-        signedDocs: {
-            type: JSONB,
-            allowNull: true,
-        },
-        notes: {
-            type: JSONB,
-            allowNull: true,
-        },
-        additionalInfo: {
-            type: STRING,
-            allowNull: true,
-            defaultValue: "",
-        },
-        createdBy: {
-            type: INTEGER,
-            allowNull: false,
-        },
-        deletedAt: {
-            type: DATE,
-            allowNull: true,
-        },
-        updatedBy: {
-            type: INTEGER,
-            allowNull: true,
-        },
-        deletedBy: {
-            type: INTEGER,
-            allowNull: true,
-        },
-        createdAt: {
-            type: DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
-            field: "created_at",
-        },
-        updatedAt: {
-            type: DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
-            field: "updated_at",
-        },
-    },
-    {
-        sequelize,
-        tableName: "contracts",
-        timestamps: true,
-    },
-);
-
-ContractModel.associate();
 
 export { ContractModel };

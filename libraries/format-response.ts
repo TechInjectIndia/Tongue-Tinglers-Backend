@@ -1,9 +1,10 @@
 import common500 from "constants";
 
-export default (message, data, error = false) => ({
+export default (message, data, error = false, errorData = null) => ({
   error: !!error,
   message: message || (error ? common500 : "Success"),
-  data,
+  errorData: error ? errorData : null,
+  data: error ? null : data,
 });
 
 export function safeStringify(obj) {
@@ -22,7 +23,7 @@ export function safeStringify(obj) {
 export const createLeadResponse = (obj: any) => {
   return {
     "id": obj.id,
-    "campaignId": obj.campaignId,
+    "campaignId": obj.campaign,
     "firstName": obj.firstName,
     "lastName": obj.lastName,
     "email": obj.email,
@@ -48,11 +49,7 @@ export const createLeadResponse = (obj: any) => {
     "createdAt": obj?.createdAt,
     "updatedAt": obj?.updatedAt,
     "deletedAt": obj?.deletedAt ?? null,
-    "assign": obj?.assign?.length ? {
-      assignedBy: obj?.assign[0]['assignerUser'],
-      assignedDate: obj?.assign[0]['assignedDate'],
-      assignedTo: obj?.assign[0]['assignedUser']
-    } : null
+    "assignedUser": obj?.assignedUser ?? null
   }
 }
 

@@ -10,7 +10,7 @@ import {
     validateLeadStatusBody,
     validateConvertLeadParams,
 } from "../validations/lead";
-import { hasPermission } from "../../../middlewares";
+import {hasPermission} from "../../../middlewares";
 import affiliateRouter from "../../affiliate/api/";
 import franchiseModelRouter from "../../franchise_model/api/";
 import proposalModelRouter from "../../proposal_model/api/";
@@ -564,7 +564,7 @@ const router = express.Router();
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/lead/search-lead?size={size}&skip={skip}:
  *   get:
  *     summary: Get all Leads
@@ -597,59 +597,4 @@ router.post(
     validateCreateLeadBody,
     LeadController.create
 );
-router.get(
-    "/list",
-    hasPermission("lead", "read"),
-    validateListLeadQuery,
-    LeadController.list
-);
-router.get(
-    "/get/:id",
-    hasPermission("lead", "read"),
-    validateEditLeadParams,
-    LeadController.get
-);
-router.put(
-    "/update/:id",
-    hasPermission("lead", "update"),
-    validateEditLeadParams,
-    validateEditLeadBody,
-    LeadController.update
-);
-router.delete(
-    "/delete",
-    hasPermission("lead", "delete"),
-    validateEditMultipleIdsBody,
-    LeadController.delete
-);
-
-router.put(
-    "/assign-lead",
-    hasPermission("lead", "update"),
-    validateAssignLeadBody,
-    LeadController.assignLeadToAdminUser
-);
-router.get(
-    "/get-status/:id",
-    hasPermission("lead", "update"),
-    validateLeadStatusBody,
-    LeadController.getLeadStatus
-);
-router.post(
-    "/convert-lead",
-    hasPermission("lead", "update"),
-    validateConvertLeadParams,
-    LeadController.convertLeadToProspect
-);
-router.get(
-    "/search-lead",
-    hasPermission("lead", "read"),
-    validateListLeadQuery,
-    LeadController.searchLead
-);
-// ====== Lead Ends ======
-
-router.use("/affiliate", affiliateRouter);
-router.use("/franchise-model", franchiseModelRouter);
-router.use("/proposal-model", proposalModelRouter);
 export default router;

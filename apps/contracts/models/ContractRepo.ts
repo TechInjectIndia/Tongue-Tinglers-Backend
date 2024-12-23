@@ -12,11 +12,11 @@ import {
     ContractPaymentDetails,
     ITrackable,
 } from "../../../interfaces";
-import { ContractModel } from "../../../database/schema";
+import { ContractModel, UserModel } from "../../../database/schema";
 import IContractsController from "../controllers/controller/IContractsController";
+import { getUserName } from "../../common/utils/commonUtils";
 
 export class ContractRepo
-    implements IContractsController<TContract, TListFiltersContract>
 {
     constructor() {}
 
@@ -126,8 +126,17 @@ export class ContractRepo
         return updatedContracts[0] as TContract;
     }
 
-    public async create(data: TContractPayload): Promise<TContract> {
-        const response = await ContractModel.create(data);
+    public async create(data: TContractPayload, userId: number, options?: { transaction?: any }): Promise<TContract> {
+        const { transaction } = options || {};
+        const user = await UserModel.findByPk(userId);
+        if(!user){
+            throw new Error(`User with ID ${userId} not found.`);
+        }
+        const response = await ContractModel.create(data, {
+            userId: user.id,
+            userName: getUserName(user),
+            transaction
+        },);
         return response.get();
     }
 
@@ -142,9 +151,11 @@ export class ContractRepo
         return data ? data.get() : null;
     }
 
-    public async get(id: number): Promise<TContract | null> {
+    public async get(id: number, options?: { transaction?: any }): Promise<TContract | null> {
+        const { transaction } = options || {};
         const data = await ContractModel.findOne({
             where: { id },
+            transaction
         });
         return data ? data : null;
     }

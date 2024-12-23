@@ -1,10 +1,11 @@
 import { Op } from "sequelize";
-import { TListFilters } from "../../../types"; // Adjust imports according to your types
 import { ICheckList, TICheckListList, TICheckListPayload, TListFiltersICheckListt } from "../../../interfaces/ichecklist"; // Adjust imports according to your types
 import { IChecklistModel } from "../../../database/schema/franchise/iChecklist"; // Adjust the import path based on your project structure
 import IBaseRepo from '../controllers/controller/IiChecklist';
+import { UserModel } from "../../../database/schema";
+import { getUserName } from "../../common/utils/commonUtils";
 
-export class PdiChecklistRepo implements IBaseRepo<ICheckList, TListFiltersICheckListt> {
+export class PdiChecklistRepo {
     constructor() { }
 
     // Find a PDI Checklist by primary key
@@ -14,8 +15,17 @@ export class PdiChecklistRepo implements IBaseRepo<ICheckList, TListFiltersIChec
     }
 
     // Create a new PDI Checklist
-    public async create(data: TICheckListPayload): Promise<ICheckList> {
-        const response = await IChecklistModel.create(data);
+    public async create(data: TICheckListPayload, userId: number): Promise<ICheckList> {
+        const user = await UserModel.findByPk(userId);
+        if (!user) {
+            throw new Error(`User with ID ${userId} not found.`);
+        }
+
+        const response = await IChecklistModel.create(data, {
+            userId: user.id,
+            userName: getUserName(user),
+        });
+
         return response as ICheckList;
     }
 
@@ -52,14 +62,24 @@ export class PdiChecklistRepo implements IBaseRepo<ICheckList, TListFiltersIChec
     }
 
     // Update PDI Checklist information
-    public async update(id: number, data: TICheckListPayload): Promise<[number, ICheckList[]]> {
-        const [affectedCount] = await IChecklistModel.update(data, {
-            where: { id },
+    public async update(id: number, data: TICheckListPayload, userId: number): Promise<[number, ICheckList[]]> {
+        const checklist = await IChecklistModel.findByPk(id);
+        const user = await UserModel.findByPk(userId);
+        if (!checklist) {
+            throw new Error("Checklist not found");
+        }
+        if(!user){
+            throw new Error(`User with ID ${userId} not found.`);
+        }
+        checklist.set(data);
+        await checklist.save({
+            userId: user.id,
+            userName: user.firstName,
         });
-
+        
         // Return the affected count along with the updated instances
         const updatedChecklist = await IChecklistModel.findAll({ where: { id } });
-        return [affectedCount, updatedChecklist];
+        return [1, updatedChecklist];
     }
 
     // Delete PDI Checklists by an array of IDs

@@ -16,29 +16,132 @@ import {
 import { LeadRepo } from "../models/lead";
 import { AssignRepo } from "../models/AssignRepo";
 import { ContractRepo } from "../../contracts/models/ContractRepo";
-import { AdminRepo } from "../../admin-user/models/user";
-import { FranchiseRepo } from "../../admin-user/models/franchise";
+import { AdminRepo } from "../../user/models/user";
 import { USER_TYPE, USER_STATUS, CONTRACT_STATUS } from "../../../interfaces";
 import jwt from "jsonwebtoken";
-import { CONFIG } from "../../../config";
+import { CONFIG, sequelize } from "../../../config";
 import { createLeadResponse } from "../../../libraries";
 import { TContractPayload } from "../../../types/contracts";
 import { ZohoSignRepo } from "../../zoho-sign/models/zohosign";
 import { TAddUser } from "../../../types/admin/admin-user";
-import { Number } from "twilio/lib/twiml/VoiceResponse";
 
 export default class LeadController {
+
+    static async frontEnd(
+        req: Request,
+        res: Response,
+    ): Promise<Response> {
+        try {
+
+            const whereVal = get(req.body, "email", "");
+
+            const existingLead = await new LeadRepo().getLeadByAttr(
+                "email",
+                whereVal,
+            );
+            if (existingLead) {
+                return res
+                    .status(400)
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.EXISTS));
+            }
+
+            const payload = {
+                ...req.body,
+                createdBy: 1,
+            };
+            const { assign } = payload;
+
+            if (assign != null) {
+                const existingUser = await new AdminRepo().checkIfUserExist(
+                    assign.assignedTo.id,
+                );
+                if (!existingUser) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`,
+                            ),
+                        );
+                }
+                const existingassignedByUser = await new AdminRepo().checkIfUserExist(
+                    assign.assignedBy.id,
+                );
+                if (!existingassignedByUser) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`,
+                            ),
+                        );
+                }
+            }
+
+            delete payload.assign;
+
+            if (payload.referby) {
+                const existingReferral = await new AdminRepo().getByReferralCode(
+                    payload.referby,
+                );
+                if (!existingReferral) {
+                    return res
+                        .status(404)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                `Referral code ${ERROR_MESSAGE.NOT_EXISTS}`,
+                            ),
+                        );
+                }
+            }
+
+            const newLead = await new LeadRepo().create(payload, 1);
+
+            // Check and create assignment if 'assign' object is provided in the request body
+            if (assign != null) {
+                const assignPayload = {
+                    assignedTo: assign.assignedTo.id,
+                    assignedBy: assign.assignedBy.id,
+                    assignedDate: assign.assignedDate,
+                    leadId: newLead.id, // Reference the new lead's ID
+                };
+
+                // Create assignment in AssignRepo
+                await new AssignRepo().create(assignPayload);
+            }
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, newLead),
+                );
+        } catch (err) {
+            console.error(err);
+            return res
+                .status(500)
+                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+        }
+    }
+
+
     static async convertLeadToProspect(
         req: Request,
         res: Response,
         next: NextFunction,
     ): Promise<Response | void> {
+        const transaction = await sequelize.transaction(); // Start a transaction
         try {
-            const id = get(req.body, "id", 0);
+
+            const id = parseInt(get(req.body, "id"));
+            if (isNaN(id)) throw Error('Missing id or isNaN');
 
             // get contract
-            const existingContract = await new ContractRepo().get(id as number);
+            const existingContract = await new ContractRepo().get(id, { transaction });
             if (existingContract) {
+                await transaction.rollback();
                 return res
                     .status(400)
                     .send(
@@ -49,8 +152,9 @@ export default class LeadController {
                     );
             }
 
-            const existingLead = await new LeadRepo().get(id as number);
+            const existingLead = await new LeadRepo().get(id, { transaction });
             if (!existingLead) {
+                await transaction.rollback();
                 return res
                     .status(400)
                     .send(
@@ -65,7 +169,9 @@ export default class LeadController {
             //     return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.ALREADY_CONVERTED));
             // }
 
-            const user_id = get(req, "user_id", 1);
+            const user_id = parseInt(get(req, "user_id"));
+            if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
+
             const payload = {
                 firstName: existingLead.firstName,
                 lastName: existingLead.lastName,
@@ -113,7 +219,7 @@ export default class LeadController {
                 createdBy: user_id,
             };
 
-            const prospect = await new ContractRepo().create(prospectData);
+            const prospect = await new ContractRepo().create(prospectData, user_id, {transaction});
 
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
@@ -124,6 +230,7 @@ export default class LeadController {
             });
 
             if (!firebaseUser?.success) {
+                await transaction.rollback();
                 return res
                     .status(400)
                     .send(sendResponse(RESPONSE_TYPE.ERROR, firebaseUser?.uid));
@@ -149,7 +256,7 @@ export default class LeadController {
                 role: 0,
                 referBy: undefined,
             };
-            await new AdminRepo().create(normalUser);
+            await new AdminRepo().create(normalUser, {transaction});
 
 
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password?token=${token}`;
@@ -176,7 +283,7 @@ export default class LeadController {
             } catch (emailError) {
                 console.error("Error sending email:", emailError);
             }
-
+            await transaction.commit(); // Commit the transaction
             return res
                 .status(200)
                 .send(
@@ -184,6 +291,7 @@ export default class LeadController {
                 );
         } catch (err) {
             console.error(err);
+            await transaction.rollback(); 
             return res
                 .status(500)
                 .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
@@ -276,7 +384,10 @@ export default class LeadController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const user_id = get(req, "user_id", 1);
+            const user_id = parseInt(get(req, "user_id"));
+            if (!user_id) {
+                throw Error('Missing user_id or isNaN');
+            }
             const whereVal = get(req.body, "email", "");
 
             const existingLead = await new LeadRepo().getLeadByAttr(
@@ -350,7 +461,7 @@ export default class LeadController {
                 }
             }
 
-            const newLead = await new LeadRepo().create(payload);
+            const newLead = await new LeadRepo().create(payload, user_id);
 
             // Check and create assignment if 'assign' object is provided in the request body
             if (assign != null) {
@@ -358,7 +469,7 @@ export default class LeadController {
                     assignedTo: assign.assignedTo.id,
                     assignedBy: assign.assignedBy.id,
                     assignedDate: assign.assignedDate,
-                    leadId: newLead.id as number, // Reference the new lead's ID
+                    leadId: newLead.id, // Reference the new lead's ID
                 };
 
                 // Create assignment in AssignRepo
@@ -377,6 +488,7 @@ export default class LeadController {
                 .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
+
 
     static async list(
         req: Request,
@@ -401,7 +513,8 @@ export default class LeadController {
             const assignee = get(req.query, "assignee");
             const followUpDate = get(req.query, "followUpDate");
             const affiliate = get(req.query, "affiliate");
-            const amountRange = get(req.query, "amountRange");
+            const minAmount = get(req.query, "minAmount");
+            const maxAmount = get(req.query, "maxAmount");
             const quickActionFilter = get(req.query, "quickActionFilter");
 
             // Prepare filter object
@@ -414,12 +527,8 @@ export default class LeadController {
             if (date) filters.date = date;
             if (assignee) filters.assignee = assignee;
             if (affiliate) filters.affiliate = affiliate;
-
-            // Handle range filter (e.g., amount range)
-            if (amountRange) {
-                const [min, max] = amountRange.toString().split("-");
-                filters.amount = { [Op.between]: [parseFloat(min), parseFloat(max)] };
-            }
+            if (minAmount) filters.minAmount = minAmount;
+            if (maxAmount) filters.maxAmount = maxAmount;
 
             const leadsList = await new LeadRepo().list({
                 offset: skip as number,
@@ -452,9 +561,16 @@ export default class LeadController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const user_id = get(req, "user_id", 1);
+            const user_id = parseInt(get(req, 'user_id'));
+
+            console.log('user_id', user_id);
+            if (isNaN(user_id)) throw Error('userId not passed or isNan')
+
             // const user_name = get(req, 'user_name', '');
-            const id = get(req.params, "id", "");
+
+            const id = parseInt(get(req.params, 'id'));
+            if (isNaN(id)) throw Error('id not passed or isNan')
+
             const payload = req.body;
 
             let getAttributes: any = ["*"];
@@ -483,8 +599,8 @@ export default class LeadController {
             // const existingLogs = Array.isArray(existingLead.logs) ? existingLead.logs : [];
             // const updatedLogs = [...existingLogs, updateLog];
 
-            const { assign } = payload;
-            delete payload.assign;
+
+
 
             const updatedLead = await new LeadRepo().update(id, {
                 ...payload,
@@ -492,47 +608,7 @@ export default class LeadController {
                 // logs: updatedLogs
             });
 
-            if (assign != null) {
-                const existingUser = await new AdminRepo().checkIfUserExist(
-                    assign.assignedTo.id,
-                );
-                if (!existingUser) {
-                    return res
-                        .status(400)
-                        .send(
-                            sendResponse(
-                                RESPONSE_TYPE.ERROR,
-                                `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`,
-                            ),
-                        );
-                }
-                const existingassignedByUser = await new AdminRepo().checkIfUserExist(
-                    assign.assignedBy.id,
-                );
-                if (!existingassignedByUser) {
-                    return res
-                        .status(400)
-                        .send(
-                            sendResponse(
-                                RESPONSE_TYPE.ERROR,
-                                `User Assigned to ${ERROR_MESSAGE.NOT_EXISTS}`,
-                            ),
-                        );
-                }
-            }
 
-            if (assign != null) {
-                const assignPayload = {
-                    assignedTo: assign.assignedTo.id,
-                    assignedBy: assign.assignedBy.id,
-                    assignedDate: assign.assignedDate,
-                };
-
-                // Create assignment in AssignRepo
-                await new AssignRepo().createOrUpdate(id, assignPayload);
-            } else {
-                await new AssignRepo().delete(id as number);
-            }
 
             return res
                 .status(200)
@@ -554,12 +630,12 @@ export default class LeadController {
     static async get(
         req: Request,
         res: Response,
-        next: NextFunction,
     ): Promise<Response> {
         try {
             const id = get(req.params, "id", "");
 
             const existingLead = await new LeadRepo().getLeadByAttr("id", id);
+
             if (isEmpty(existingLead)) {
                 return res
                     .status(400)
@@ -572,7 +648,7 @@ export default class LeadController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        createLeadResponse(existingLead),
+                        existingLead,
                     ),
                 );
         } catch (err) {

@@ -1,8 +1,9 @@
 import { Resend } from "resend";
 import { CONFIG } from "../config";
-const path = require("path");
-const ejs = require("ejs");
-import { Multer } from "multer"; // Import Multer types
+
+import ejs from "ejs";
+
+import path from "path";
 
 const resend = new Resend(CONFIG.RESEND_API_KEY);
 
@@ -83,7 +84,7 @@ export const sendEmailFromRequest = async (
     to: string,
     subject: string,
     body: string,
-    files?: Multer.File[], // Array of files
+    files?: Express.Multer.File[], // Array of files
     filePaths?: { path: string; name: string }[] // Array of file paths and names
 ) => {
     try {
@@ -129,8 +130,8 @@ export const sendEmailFromRequest = async (
     }
 };
 
-export const getEmailTemplate = async (template: string, params?: any) => {
-    const data = await ejs.renderFile(
+export const getEmailTemplate = (template: string, params?: any):string => {
+    const data = ejs.renderFile<string>(
         path.join(__dirname, `../static/views/email/${template}.ejs`),
         params ?? {}
     );

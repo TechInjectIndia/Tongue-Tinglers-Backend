@@ -14,4 +14,3 @@ export * from './baseAddress';
 export * from './crm';
 export * from './contracts';
 export * from './token';
-export * from './files';

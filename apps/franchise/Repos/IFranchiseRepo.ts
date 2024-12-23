@@ -1,7 +1,7 @@
 import { Franchise, FranchiseDetails, parsedFranchise } from "../../../interfaces";
 
 export interface IFranchiseRepo {
-    create(franchise: FranchiseDetails): Promise<Franchise | null>;
+    create(franchise: FranchiseDetails, userId: number, options?: { transaction?: any }): Promise<Franchise | null>;
 
     update(franchise: Franchise): Promise<Franchise>;
 

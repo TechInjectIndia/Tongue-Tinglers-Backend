@@ -1,23 +1,29 @@
-import { Request, Response, Next } from "express";
-import { PdiChecklistRepo } from "../model/iChecklistRepo"; // Adjust the import path based on your project structure
+import { Request, Response } from "express";
+import { PdiCheckpointRepo } from "../model/pdiCheckpointRepo";
 import { get } from "lodash";
 import { sendResponse } from "../../../libraries";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
+import {
+    ERROR_MESSAGE,
+    RESPONSE_TYPE,
+    SUCCESS_MESSAGE
+} from "../../../constants";
 
 
-class PdiChecklistController {
+class PdiCheckpointController {
     // Create a new PDI Checkpoint
     static async create(req: Request, res: Response) {
         try {
-            const user_id = get(req, "user_id", 0);
+            const user_id = parseInt(get(req, 'user_id'));
             const payload = { ...req.body, createdBy: user_id };
-            const newChecklist = await new PdiChecklistRepo().create(payload);
+
+            const newCheckpoint = await new PdiCheckpointRepo().create(payload, user_id);
 
             return res.status(200).json({
-                message: "PDI Checklist created successfully",
-                data: newChecklist,
+                message: "PDI Checkpoint created successfully",
+                data: newCheckpoint,
             });
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
             return res.status(400).json({ message: "Invalid request body" });
         }
@@ -41,7 +47,7 @@ class PdiChecklistController {
             if (title) filters["title"] = title;
             if (createdBy) filters["createdBy"] = createdBy;
 
-            const Checkpoints = await new PdiChecklistRepo().list({
+            const Checkpoints = await new PdiCheckpointRepo().list({
                 offset: skip as number,
                 limit: size as number,
                 search: search as string,
@@ -59,7 +65,8 @@ class PdiChecklistController {
                         Checkpoints
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -70,25 +77,37 @@ class PdiChecklistController {
     // Update a PDI Checkpoint
     static async update(req: Request, res: Response) {
         try {
-            const id = get(req.params, "id", 0);
+            const id = parseInt(get(req.params, "id"));
+            if (!id || isNaN(id)) throw Error('Missing id or isNaN');
+
             const updateData = req.body;
             delete updateData.id;
-            const user_id = get(req, "user_id", 0);
+
+            const user_id = <number>get(req, "user_id");
+            if (!user_id || isNaN(user_id)) {
+                throw Error(
+                    'Missing user_id or isNaN');
+            }
 
             // Use the repo to find the Checkpoint by ID
-            const checkpoint = await new PdiChecklistRepo().findByPk(id);
+            const checkpoint = await new PdiCheckpointRepo().findByPk(id);
             if (!checkpoint) {
-                return res.status(404).json({ message: "PDI Checklist not found" });
+                return res.status(404)
+                    .json({ message: "PDI Checklist not found" });
             }
 
             // Update the Checkpoint in the repo
-            const updatedCheckpoint = await new PdiChecklistRepo().update(id as number, { ...updateData, updatedBy: user_id });
+            const updatedCheckpoint = await new PdiCheckpointRepo().update(
+                id, { ...updateData, updatedBy: user_id }, user_id);
 
             return res.status(200).json({
                 message: "PDI Checkpoint updated successfully",
-                data: { ...checkpoint, ...updatedCheckpoint }, // Return the updated Checkpoint data
+                data: { ...checkpoint, ...updatedCheckpoint }, // Return the
+                // updated
+                // Checkpoint data
             });
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
             return res.status(400).json({ message: "Invalid request body" });
         }
@@ -97,18 +116,22 @@ class PdiChecklistController {
     // Get a PDI Checkpoint by ID
     static async get(req: Request, res: Response) {
         try {
-            const { id } = req.params;
 
-            const checkpoint = await new PdiChecklistRepo().findByPk(id);
+            const id = parseInt(get(req.params, "id"));
+            if (!id || isNaN(id)) throw Error('Missing id or isNaN');
+
+            const checkpoint = await new PdiCheckpointRepo().findByPk(id);
             if (!checkpoint) {
-                return res.status(404).json({ message: "PDI Checkpoint not found" });
+                return res.status(404)
+                    .json({ message: "PDI Checkpoint not found" });
             }
 
             return res.status(200).json({
-                message: "PDI Checklist retrieved successfully",
+                message: "PDI Checkpoint retrieved successfully",
                 data: checkpoint,
             });
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
             return res.status(400).json({ message: "Invalid request" });
         }
@@ -120,41 +143,24 @@ class PdiChecklistController {
             const { ids } = req.body;
 
             // Call the repo's delete method directly with the ids
-            const deletedCount = await new PdiChecklistRepo().delete(ids);
+            const deletedCount = await new PdiCheckpointRepo().delete(ids);
 
             // Check if any Checkpoint were deleted
             if (deletedCount === 0) {
-                return res.status(404).json({ message: "PDI Checkpoint not found" });
+                return res.status(404)
+                    .json({ message: "PDI Checkpoint not found" });
             }
 
             return res.status(200).json({
-                message: "PDI Checklist deleted successfully",
+                message: "PDI Checkpoint deleted successfully",
                 deletedCount, // Optional: include how many were deleted
             });
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
             return res.status(400).json({ message: "Invalid request body" });
         }
     }
-
-    static async getChecklistByFranchiseModalId(req: Request, res: Response) {
-        try {
-            const { franchiseModalId } = req.params;
-
-            const checklist = await new PdiChecklistRepo().getChecklistByFranchiseId(franchiseModalId);
-            if (!checklist) {
-                return res.status(404).json({ message: "PDI Checklist not found" });
-            }
-
-            return res.status(200).json({
-                message: "PDI Checklist retrieved successfully",
-                data: checklist,
-            });
-        } catch (error) {
-            console.error(error);
-            return res.status(400).json({ message: "Invalid request" });
-        }
-    }
 }
 
-export default PdiChecklistController;
+export default PdiCheckpointController;

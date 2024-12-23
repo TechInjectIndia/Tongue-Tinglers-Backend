@@ -1,17 +1,28 @@
-import { NextFunction, Request, Response } from "express";
-import { get, isEmpty } from "lodash";
-import { sendResponse } from "../../../libraries";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { OrderRepo } from '../models/orders';
+import {NextFunction, Request, Response} from "express";
+import {get, isEmpty} from "lodash";
+import {sendResponse} from "../../../libraries";
+import {
+    ERROR_MESSAGE,
+    RESPONSE_TYPE,
+    SUCCESS_MESSAGE
+} from "../../../constants";
+import {OrderRepo} from '../models/orders';
 // import { ProductRepo } from '../models/products';
-import { OrderItemRepo } from '../models/orders-item';
-import { OrderStatus } from '../../../types';
+import {OrderItemRepo} from '../models/orders-item';
+import {OrderStatus} from '../../../types';
 
 export default class OrderController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '');
-            const payload = { ...req?.body, userId: user_id, paymentMethod: 'razorpay', orderStatus: OrderStatus.PROCESSED };
+            const user_id = parseInt(get(req, "user_id"));
+            if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
+
+            const payload = {
+                ...req?.body,
+                userId: user_id,
+                paymentMethod: 'razorpay',
+                orderStatus: OrderStatus.PROCESSED
+            };
             const cartItems = req.body.cart_items;
 
             const createOrder = await new OrderRepo().create(payload);
@@ -19,8 +30,10 @@ export default class OrderController {
                 if (cartItems.length) {
                     cartItems.map(async (product: any, index: number) => {
                         let isRepeated = 0;
-                        // const getProduct = await new ProductRepo().get(product.id as number);
-                        const checkRepeatedOrder = await new OrderItemRepo().checkRepeatedOrder(user_id as number, product.id as number);
+                        // const getProduct = await new
+                        // ProductRepo().get(product.id as number);
+                        const checkRepeatedOrder = await new OrderItemRepo().checkRepeatedOrder(
+                            user_id, product.id as number);
                         if (checkRepeatedOrder) {
                             isRepeated = 1;
                         }
@@ -47,7 +60,8 @@ export default class OrderController {
                         SUCCESS_MESSAGE.CREATED,
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -80,7 +94,8 @@ export default class OrderController {
                         Orders
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -111,7 +126,8 @@ export default class OrderController {
                     );
             }
 
-            const Order = await new OrderRepo().update(orderId as number, { orderStatus });
+            const Order = await new OrderRepo().update(orderId as number,
+                {orderStatus});
             return res
                 .status(200)
                 .send(
@@ -121,7 +137,8 @@ export default class OrderController {
                         Order
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -153,7 +170,8 @@ export default class OrderController {
                         Order
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -185,7 +203,8 @@ export default class OrderController {
                         Order
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.log('error', err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,

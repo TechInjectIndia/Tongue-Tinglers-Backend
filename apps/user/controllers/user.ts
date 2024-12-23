@@ -1,22 +1,23 @@
 import { NextFunction, Request, Response } from "express";
-import { get, isEmpty } from "lodash";
+import { get } from "lodash";
 import {
-    sendResponse,
-    createPassword,
     createFirebaseUser,
-    sendEmail,
+    createPassword,
     EMAIL_HEADING,
-    getEmailTemplate,
     EMAIL_TEMPLATE,
+    getEmailTemplate,
+    sendEmail,
+    sendResponse,
 } from "../../../libraries";
 import {
+    ERROR_MESSAGE,
     RESPONSE_TYPE,
     SUCCESS_MESSAGE,
-    ERROR_MESSAGE,
 } from "../../../constants";
 import { AdminRepo } from "../models/user";
 import { Auth } from "../../auth/models";
 import { USER_TYPE } from "../../../interfaces";
+import RepoProvider from "../../RepoProvider";
 
 export default class AdminController {
     static async getAllUsers(req: Request, res: Response, next: NextFunction) {
@@ -45,7 +46,8 @@ export default class AdminController {
                         admins
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -79,7 +81,8 @@ export default class AdminController {
                         admins
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -89,7 +92,10 @@ export default class AdminController {
 
     static async addAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, "user_id", 0);
+            const user_id = parseInt(get(req, "user_id"));
+            if (!user_id) {
+                throw new Error('Missing user_id or isNaN');
+            }
             const payload = { ...req?.body, createdBy: user_id };
 
             const existingAdmin = await new Auth().getUserByEmail(
@@ -150,7 +156,8 @@ export default class AdminController {
                     mailOptions.subject,
                     mailOptions.templateParams
                 );
-            } catch (emailError) {
+            }
+            catch (emailError) {
                 console.error("Error sending email:", emailError);
             }
 
@@ -162,7 +169,8 @@ export default class AdminController {
                         SUCCESS_MESSAGE.ADMIN_CREATED
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -172,10 +180,11 @@ export default class AdminController {
 
     static async updateType(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
-            const payload = { ...req?.body, updatedBy: id };
-            console.log(payload);
-            
+            const id = parseInt(get(req.params, "id"));
+            if (!id || isNaN(id)) throw Error('id cannot be empty')
+
+            const payload = { ...req.body, updatedBy: id };
+
             await new AdminRepo().update(id as number, payload);
             return res
                 .status(200)
@@ -185,7 +194,7 @@ export default class AdminController {
                         SUCCESS_MESSAGE.ADMIN_TYPE_UPDATED
                     )
                 );
-        }catch(err){
+        } catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -246,7 +255,8 @@ export default class AdminController {
                         SUCCESS_MESSAGE.ADMIN_CREATED
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -256,30 +266,29 @@ export default class AdminController {
 
     static async editAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", 0);
-            const user_id = get(req, "user_id", 0);
+            const id = parseInt(get(req?.params, "id"));
+            if (isNaN(id)) throw Error('id cannot be empty');
+
+            const user_id = parseInt(get(req, "user_id"));
+            if (!user_id) throw Error('user_id cannot be empty');
+
             let payload = { ...req?.body, updatedBy: user_id };
 
-            // if (payload.password) {
-            //     const hashedPassword = await createPassword(payload.password);
-            //     payload = { ...payload, password: hashedPassword };
-            // }
-            console.log(payload);
-            
-
             await new AdminRepo().update(id as number, payload);
+            const response = await new AdminRepo().get(id);
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.ADMIN_UPDATED
+                        SUCCESS_MESSAGE.ADMIN_UPDATED,
+                        response
                     )
                 );
-        } catch (err) {
-            console.log(err);
+        }
+        catch (err) {
             return res.status(500).send({
-                message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+                message: err,
             });
         }
     }
@@ -299,7 +308,8 @@ export default class AdminController {
                         SUCCESS_MESSAGE.ADMIN_DELETED
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -309,8 +319,10 @@ export default class AdminController {
 
     static async getAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id");
-            const existingAdmin = await new AdminRepo().get(id as number);
+            const id = parseInt(get(req.params, "id"));
+            if (isNaN(id)) throw Error("id not passed or isNan")
+
+            const existingAdmin = await new AdminRepo().get(id);
             if (!existingAdmin?.id) {
                 return res
                     .status(400)
@@ -331,17 +343,21 @@ export default class AdminController {
                         existingAdmin
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
     }
-    static async getAdminFirebaseUid(req: Request, res: Response, next: NextFunction) {
+
+    static async getAdminFirebaseUid(req: Request, res: Response,
+        next: NextFunction) {
         try {
             const fireabseUid = get(req?.params, "id");
-            const existingAdmin = await new AdminRepo().getUsingFireaseUid(fireabseUid as string);
+            const existingAdmin = await new AdminRepo().getUsingFireaseUid(
+                fireabseUid as string);
             if (!existingAdmin?.id) {
                 return res
                     .status(400)
@@ -362,7 +378,8 @@ export default class AdminController {
                         existingAdmin
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -385,7 +402,8 @@ export default class AdminController {
                         SUCCESS_MESSAGE.ADMIN_UPDATED
                     )
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,

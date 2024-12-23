@@ -1171,16 +1171,16 @@ export default class PetPoojaController {
     }
 
 
-    static async callOrdersWebHook(req: Request, res: Response): Promise<boolean> {
+    static async callOrdersWebHook(req: Request, res: Response): Promise<void> {
         try {
             const json = req.body;
             const result = await new PetPoojaRepo().getOrdersWebHook(json);
-            return res.status(200).send({
+            res.status(200).send({
                 message: result ? "Done" : ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         } catch (err) {
             console.log(err)
-            return res.status(500).send({
+            res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }

@@ -1,5 +1,5 @@
 import * as express from "express";
-import PdiCheckpointController from "../controllers/pdiCheckpointController";
+
 import {
     validateCreatePdiCheckpointBody,
     validateEditCheckpointBody,
@@ -7,6 +7,7 @@ import {
     validateListCheckpointQuery,
     validateDeleteMultipleIdsBody,
 } from "../validations/pdiCheckpointValidation";
+import PdiCheckpointController from "../controllers/PdiCheckpointController";
 
 const router = express.Router();
 

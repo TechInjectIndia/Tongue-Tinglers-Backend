@@ -7,10 +7,11 @@ import {
     TPayloadQuestion,
     IQuestion,
 } from "../../../interfaces";
-import { questionModel } from "../../../database/schema";
+import { questionModel, UserModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IController';
+import { getUserName } from "../../common/utils/commonUtils";
 
-export class QuestionRepo implements IBaseRepo<IQuestion, TListFilters> {
+export class QuestionRepo {
     constructor() { }
 
     public async get(id: number): Promise<IQuestion | null> {
@@ -43,17 +44,33 @@ export class QuestionRepo implements IBaseRepo<IQuestion, TListFilters> {
         return { total, data };
     }
 
-    public async create(data: TPayloadQuestion): Promise<IQuestion> {
-        const response = await questionModel.create(data);
+    public async create(data: TPayloadQuestion, user_id: number): Promise<IQuestion> {
+        const user = await UserModel.findByPk(user_id);
+        if(!user){
+            throw new Error(`User with ID ${user_id} not found.`);
+        }
+        const response = await questionModel.create(data, {
+            userId: user.id,
+            userName: getUserName(user),
+        });
         return response;
     }
 
-    public async update(id: number, data: TPayloadQuestion): Promise<[affectedCount: number]> {
-        return await questionModel.update(data, {
-            where: {
-                id,
-            },
-        });
+    public async update(id: number, data: TPayloadQuestion, userId: number): Promise<[affectedCount: number]> {
+        const question = await questionModel.findByPk(id);
+        if (!question) {
+            throw new Error(`Question with ID ${id} not found.`);
+        }
+        const user = await UserModel.findByPk(userId);
+        if(!user){
+            throw new Error(`User with ID ${userId} not found.`);
+        }
+        question.set(data);
+        question.save({
+            userId: user.id,
+            userName: getUserName(user),
+        })
+        return [1]
     }
 
     public async delete(ids: number[]): Promise<number> {

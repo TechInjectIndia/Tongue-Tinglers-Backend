@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 import { PRODUCT_CATEGORY_STATUS } from "../../../interfaces/products_category";
+import { PRODUCTS_TYPE } from "../../../interfaces";
 
 const productsCategoryValidationSchema = Joi.object({
     name: Joi.string()
@@ -28,14 +29,23 @@ const productsCategoryValidationSchema = Joi.object({
             "any.required": "Slug is required.",
         }),
 
-        status: Joi.string()
-        .valid(...Object.values(PRODUCT_CATEGORY_STATUS))
+    status: Joi.string()
+    .valid(...Object.values(PRODUCT_CATEGORY_STATUS))
+    .required()
+    .messages({
+        "string.base": "Status must be a string.",
+        "any.only": `Status must be one of [${Object.values(PRODUCT_CATEGORY_STATUS).join(", ")}].`,
+        "any.required": "Status is required.",
+    }),
+    type: Joi.string()
+        .valid(...Object.values(PRODUCTS_TYPE))
         .required()
         .messages({
-            "string.base": "Status must be a string.",
-            "any.only": `Status must be one of [${Object.values(PRODUCT_CATEGORY_STATUS).join(", ")}].`,
-            "any.required": "Status is required.",
-        }), 
+            "string.base": "Type must be a string.",
+            "any.only": `Type must be one of [${Object.values(PRODUCTS_TYPE).join(", ")}].`,
+            "any.required": "Type is required.",
+    }),
+     
 });
 
 const getAllProductsCategoryValidationSchema = Joi.object({
@@ -85,7 +95,15 @@ const productsCategoryUpdateValidationSchema = Joi.object({
             "string.base": "Status must be a string.",
             "any.only": `Status must be one of [${Object.values(PRODUCT_CATEGORY_STATUS).join(", ")}].`,
             "any.required": "Status is required.",
-        }),
+    }),
+    type: Joi.string()
+        .valid(...Object.values(PRODUCTS_TYPE))
+        .required()
+        .messages({
+            "string.base": "Type must be a string.",
+            "any.only": `Type must be one of [${Object.values(PRODUCTS_TYPE).join(", ")}].`,
+            "any.required": "Type is required.",
+    })
 });
 
 const productsCategoryDeleteValidationSchema = Joi.object({

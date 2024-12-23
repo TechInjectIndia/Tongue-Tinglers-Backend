@@ -35,7 +35,8 @@ export default class OrderController {
 
     static async updateOrder(req: any, res: any) {
         try {
-            const payload: BaseOrder = req?.body;
+            const payload: any = req?.body;
+            payload.id = get(req, "params.id", 0);
             const order = await RepoProvider.orderRepo.updateOrder(payload);
             return res.status(200)
                 .send(

@@ -10,10 +10,10 @@ export default class ProposalModelController {
             const user_id = get(req, 'user_id', 0);
 
             console.log(user_id);
-            
-            const payload = { 
-                ...req.body, 
-                createdBy: user_id, 
+
+            const payload = {
+                ...req.body,
+                createdBy: user_id,
                 updatedBy: null,  // Initially null on creation
                 createdAt: new Date(),
             };
@@ -43,7 +43,7 @@ export default class ProposalModelController {
             const search = get(req.query, "search", "");
             const trashOnly = get(req.query, "trashOnly", "");
             const sorting = get(req.query, "sorting", "id DESC").toString().split(" ");
-            
+
             const proposalModels = await new ProposalModelRepo().list({
                 offset: skip as number,
                 limit: size as number,
@@ -71,10 +71,15 @@ export default class ProposalModelController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req.params, "id");
-            const user_id = get(req, 'user_id', 0);
-            const updatePayload = { 
-                ...req.body, 
+            const user_id = parseInt(get(req, 'user_id'));
+            if(isNaN(user_id)) throw Error('userId not passed or isNan')
+
+            const id = parseInt(get(req.params, 'id'));
+            if(isNaN(id)) throw Error('userId not passed or isNan')
+
+
+            const updatePayload = {
+                ...req.body,
                 updatedBy: user_id,
                 updatedAt: new Date(),
             };
@@ -105,7 +110,8 @@ export default class ProposalModelController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req.params, "id");
+            const id = parseInt(get(req.params, 'id'));
+            if(isNaN(id)) throw Error('userId not passed or isNan')
             const existingProposalModel = await new ProposalModelRepo().get(id);
 
             if (isEmpty(existingProposalModel)) {

@@ -13,7 +13,7 @@ export interface ICommissionRepo {
 
     getById(id: number): Promise<APIResponse<ICommission>>;
 
-    createMapEntities(mapEntities: ICommissionEntityMapping[]): Promise<APIResponse<boolean>>;
+    createMapEntities(mapEntities: ICommissionEntityMapping[], options?: { transaction?: any }): Promise<APIResponse<boolean>>;
 
     updateMapEntity(id: number, mapEntity: ICommissionEntityMapping): Promise<APIResponse<boolean>>;
 

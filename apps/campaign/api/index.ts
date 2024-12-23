@@ -4,6 +4,7 @@ import CampaignController from "../controllers/CampaignController";
 import * as CampaignValidation from "../validations/CampaignValidation";
 
 const router = express.Router();
+const campaignRouter = express.Router();
 
 const {
     validateCreateCampaignBody,
@@ -269,6 +270,7 @@ const {
  *         description: Campaigns not found
  */
 router.post("/create", validateCreateCampaignBody, CampaignController.create);
+campaignRouter.post("/create", validateCreateCampaignBody, CampaignController.create);
 router.get("/list", validateListCampaignQuery, CampaignController.list);
 router.get("/get/:id", CampaignController.get);
 router.put(

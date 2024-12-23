@@ -8,7 +8,7 @@ import {
     IArea,
 } from "../../../interfaces";
 import { AreaModel } from "../../../database/schema";
-import IBaseRepo from '../controllers/controller/IAreaController';
+import IBaseRepo from '../controllers/IAreaController';
 
 export class AreaRepo implements IBaseRepo<IArea, TListFiltersAreas> {
     constructor() { }
@@ -68,11 +68,13 @@ export class AreaRepo implements IBaseRepo<IArea, TListFiltersAreas> {
     }
 
     public async update(id: number, data: TPayloadArea): Promise<[affectedCount: number]> {
-        return await AreaModel.update(data, {
-            where: {
-                id,
-            },
-        });
+        const area = await AreaModel.findByPk(id);
+        if (!area) {
+        throw new Error("Area not found");
+        }
+        area.set(data);
+        await area.save();
+        return [1];
     }
 
     public async delete(ids: number[]): Promise<number> {

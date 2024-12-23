@@ -36,11 +36,16 @@ export const ERROR_MESSAGE = {
     REFERRAL_CODE_NOT_EXISTS: 'Referral code does not exist',
     REFERRAL_CODE_USED: 'Referral code has already been used',
     FRANCHISE_NOT_CREATED: "Franchise not created",
+    AGREEMENT_DOC_NOT_CREATED: "Agreement document not created",
+    AGREEMENT_DOC_NOT_FOUND: "Agreement document not found",
+    AGREEMENT_DOC_NOT_UPDATED: "Agreement document not updated",
+    ID_SHOULD_BE_NUMBER: "ID should be a number",
+    USER_ID_SHOULD_BE_NUMBER: "User ID should be a number",
 };
 
 export const SUCCESS_MESSAGE = {
     CLEARED: "Successfully cleared",
-    PROSPECT_CREATED:"Prospect Created",
+    PROSPECT_CREATED: "Prospect Created",
     TOKEN_VALID: "Token is valid",
     SENT_NOTIFICATION: "Message sent successfully",
     SENT_EMAIL: 'Email sent successfully',

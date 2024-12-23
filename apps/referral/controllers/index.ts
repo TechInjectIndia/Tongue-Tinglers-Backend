@@ -1,8 +1,12 @@
-import { NextFunction, Request, Response } from "express";
-import { get, isEmpty } from "lodash";
-import { sendResponse } from "../../../libraries";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
-import { AdminRepo } from '../../admin-user/models/user';
+import {NextFunction, Request, Response} from "express";
+import {get} from "lodash";
+import {sendResponse} from "../../../libraries";
+import {
+    ERROR_MESSAGE,
+    RESPONSE_TYPE,
+    SUCCESS_MESSAGE
+} from "../../../constants";
+import {AdminRepo} from '../../user/models/user';
 import crypto from 'crypto';
 
 // Generate a user-friendly referral code
@@ -17,17 +21,20 @@ function generateReferralCode(length = 8): string {
 }
 
 export default class ReferralController {
-    static async getAllFranchiseByCode(req: Request, res: Response, next: NextFunction) {
+    static async getAllFranchiseByCode(req: Request, res: Response,
+        next: NextFunction) {
         try {
             const referralCode = req.params.referralCode as string;
             if (!referralCode) {
                 return res.status(400).send(
-                    sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.REFERRAL_CODE_REQUIRED)
+                    sendResponse(RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.REFERRAL_CODE_REQUIRED)
                 );
             }
 
             // Retrieve referral code details from the database
-            const referral = await new AdminRepo().getAllFranchiseByCode(referralCode);
+            const referral = await new AdminRepo().getAllFranchiseByCode(
+                referralCode);
             if (!referral) {
                 return res.status(404).send(
                     sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS)
@@ -35,9 +42,11 @@ export default class ReferralController {
             }
 
             return res.status(200).send(
-                sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, referral)
+                sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED,
+                    referral)
             );
-        } catch (err) {
+        }
+        catch (err) {
             console.error('Error fetching referral code:', err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -47,20 +56,24 @@ export default class ReferralController {
 
     static async generate(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, 'user_id', '');
+            const user_id = parseInt(get(req, 'user_id'));
+            if (isNaN(user_id)) throw Error('userId not passed or isNan')
+
             let referralCode: string;
             const checkIfExist = await new AdminRepo().get(user_id);
             if (checkIfExist) {
                 if (checkIfExist.referralCode == '' || null) {
                     do {
                         referralCode = generateReferralCode();
-                    } while (await new AdminRepo().existsByReferralCode(referralCode)); // Ensure code is unique
+                    } while (await new AdminRepo().existsByReferralCode(
+                        referralCode)); // Ensure code is unique
 
-                    const payload = { referralCode: referralCode };
+                    const payload = {referralCode: referralCode};
                     await new AdminRepo().saveReferral(user_id, payload);
 
                     return res.status(200).send(
-                        sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, { referralCode })
+                        sendResponse(RESPONSE_TYPE.SUCCESS,
+                            SUCCESS_MESSAGE.CREATED, {referralCode})
                     );
                 }
             }
@@ -68,7 +81,8 @@ export default class ReferralController {
             return res.status(404).send(
                 sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.EXISTS)
             );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -78,15 +92,17 @@ export default class ReferralController {
 
     static async validate(req: Request, res: Response, next: NextFunction) {
         try {
-            const { referralCode } = req.body;
+            const {referralCode} = req.body;
 
             if (!referralCode) {
                 return res.status(400).send(
-                    sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.REFERRAL_CODE_REQUIRED)
+                    sendResponse(RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.REFERRAL_CODE_REQUIRED)
                 );
             }
 
-            const existingReferral = await new AdminRepo().getByReferralCode(referralCode);
+            const existingReferral = await new AdminRepo().getByReferralCode(
+                referralCode);
             if (!existingReferral) {
                 return res.status(404).send(
                     sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS)
@@ -94,9 +110,12 @@ export default class ReferralController {
             }
 
             return res.status(200).send(
-                sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.REFERRAL_CODE_VALID, { userId: existingReferral })
+                sendResponse(RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.REFERRAL_CODE_VALID,
+                    {userId: existingReferral})
             );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,

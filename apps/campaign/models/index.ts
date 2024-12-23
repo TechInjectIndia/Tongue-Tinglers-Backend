@@ -22,13 +22,14 @@ export class CampaignAdRepo
         });
     }
 
-    public async get(id: any): Promise<ICampaign | null> {
+    public async get(id: any,  options?: { transaction?: any }): Promise<ICampaign | null> {
+        const { transaction } = options || {};
         const campaign = await CampaignAdModel.findOne({ where: { id } });
 
         const { questionList } = campaign;
 
         const questions = questionList?.length
-            ? await questionModel.findAll({ where: { id: questionList } })
+            ? await questionModel.findAll({ where: { id: questionList }, transaction})
             : [];
 
         const campaignWithQuestions = {

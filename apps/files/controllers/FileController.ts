@@ -2,14 +2,16 @@ import { NextFunction, Request, Response } from "express";
 import { FilesRepo } from '../models/FilesRepo';
 import { sendResponse } from '../../../libraries';
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from '../../../constants';
-import { Multer } from 'multer';
-import { get, isEmpty } from "lodash";
 
+import { get, isEmpty } from "lodash";
 
 export default class FilesController {
     static async updateFile(req: Request, res: Response) {
         try {
-            const id = get(req?.params, "id", '');
+
+            const id = parseInt(get(req.params, "id"));
+            if (isNaN(id)) throw Error('Missing id or isNaN');
+
             let parsedFileDetails: any[] = [];
             let uploadedFiles: any[] = [];
 
@@ -29,8 +31,12 @@ export default class FilesController {
             }
 
             let result: any;
-            if (req.files && req.files.length > 0) {
-                uploadedFiles = req.files as Multer.File[];
+            // Properly cast req.files to Express.Multer.File[]
+            const files = req.files as Express.Multer.File[] | undefined;
+
+            if (files && files.length > 0) {
+                uploadedFiles = files; // Safe assignment without conflicting assertions
+
 
                 // Process and upload each file
                 const uploadPromises = uploadedFiles.map(async (file, index) => {
@@ -91,40 +97,43 @@ export default class FilesController {
     static async uploadFile(req: Request, res: Response) {
         try {
             let parsedFileDetails: any[] = [];
-            let files: any[] = [];
+            let files: Express.Multer.File[] = [];
 
-            let fileDetails = req.body.fileDetails;
-            if (typeof fileDetails === 'string') {
-                try {
-                    parsedFileDetails = JSON.parse(fileDetails);
-                } catch (error) {
-                    return res.status(400).send({
-                        error: true,
-                        message: 'Invalid fileDetails format. It should be a valid JSON string.',
-                    });
-                }
-            } else {
-                parsedFileDetails = fileDetails;
-            }
+            let fileDetails = req.body;
+            // if (typeof fileDetails === 'string') {
+            //     try {
+            //         parsedFileDetails = JSON.parse(fileDetails);
+            //     } catch (error) {
+            //         return res.status(400).send({
+            //             error: true,
+            //             message: 'Invalid fileDetails format. It should be a valid JSON string.',
+            //         });
+            //     }
+            // } else {
+            //     parsedFileDetails = fileDetails;
+            // }
 
             let result: any
-            if (req.files && req.files.length != 0) {
-                files = req.files as Multer.File;
+            let imageArray: any
+            if (req.files && Array.isArray(req.files) && req.files.length != 0) {
+                files = req.files ?? [];
+                console.log("files ==> ", files);
 
                 // Process each file and upload it
-                const uploadPromises = files.map(async (file: Multer.File, index: number) => {
-                    const details = parsedFileDetails[index];
-                    const fileInfo = {
-                        originalname: file.originalname,
-                        message: details.message || '',
-                        name: details.name || '',
-                        recommended: details.recommended,
-                    };
-
-                    const url = await new FilesRepo().uploadFile(file, fileInfo, 'uploads');
-                    return { originalname: file.originalname, url, recommended: fileInfo.recommended };
+                const uploadPromises = files.map(async (file: Express.Multer.File, index: number) => {
+                    const url = await new FilesRepo().uploadFile(file, 'uploads');
+                    return url
+                    // return { originalname: file.originalname, url, recommended: fileInfo.recommended };
                 });
-                result = await Promise.all(uploadPromises);
+                imageArray = await Promise.all(uploadPromises);
+                const fileInfo = {
+                    message: fileDetails.message || '',
+                    name: fileDetails.name || '',
+                    recommended: fileDetails.recommended,
+                    subject: fileDetails.subject,
+                    url: imageArray
+                };
+                result = await new FilesRepo().create(fileInfo);
             } else {
                 const details = parsedFileDetails[0];
                 const fileInfo = {
@@ -159,10 +168,10 @@ export default class FilesController {
 
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req?.params, "id", '');
-            const user_id = get(req, 'user_id', '');
+            const id = parseInt(get(req.params, "id"));
+            if (isNaN(id)) throw Error('Missing id or isNaN');
 
-            const existingFranchiseModel = await new FilesRepo().get(id as number);
+            const existingFranchiseModel = await new FilesRepo().get(id);
 
             if (isEmpty(existingFranchiseModel)) {
                 return res

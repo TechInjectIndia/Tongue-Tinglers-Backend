@@ -1,4 +1,4 @@
-import { Request, Response, Next } from "express";
+import { Request, Response } from "express";
 import { PdiChecklistRepo } from "../model/pdiRepo"; // Adjust the import path based on your project structure
 import { get } from "lodash";
 import { sendResponse } from "../../../libraries";
@@ -9,9 +9,11 @@ class PdiChecklistController {
     // Create a new PDI Checkpoint
     static async create(req: Request, res: Response) {
         try {
-            const user_id = get(req, 'user_id', '');
+            const user_id = parseInt(get(req, "user_id"));
+            if(!user_id || isNaN(user_id)) throw Error('Missing user_id or isNaN');
+
             const payload = { ...req.body, createdBy: user_id };
-            console.log("payload: ",payload);
+
             const newChecklist = await new PdiChecklistRepo().create(payload);
 
             return res.status(200).json({
@@ -71,10 +73,15 @@ class PdiChecklistController {
     // Update a PDI Checkpoint
     static async update(req: Request, res: Response) {
         try {
-            const id = get(req.params, "id", 0);
+            const id = parseInt(get(req.params, "id"));
+            if(!id || isNaN(id)) throw Error('Missing id or isNaN');
+
+
             const updateData = req.body;
             delete updateData.id;
-            const user_id = get(req, "user_id", "");
+
+            const user_id = parseInt(get(req, "user_id"));
+            if(!user_id || isNaN(user_id)) throw Error('Missing user_id or isNaN');
 
             // Use the repo to find the Checkpoint by ID
             const checkpoint = await new PdiChecklistRepo().findByPk(id);
@@ -98,7 +105,8 @@ class PdiChecklistController {
     // Get a PDI Checkpoint by ID
     static async get(req: Request, res: Response) {
         try {
-            const { id } = req.params;
+            const id = parseInt(get(req.params, "id"));
+            if(!id || isNaN(id)) throw Error('Missing id or isNaN');
 
             const checkpoint = await new PdiChecklistRepo().findByPk(id);
             if (!checkpoint) {
@@ -140,7 +148,9 @@ class PdiChecklistController {
 
     static async getPdiByProspectId(req: Request, res: Response) {
         try {
-            const { prospectId } = req.params;
+
+            const prospectId = parseInt(get(req.params, "prospectId"));
+            if(!prospectId || isNaN(prospectId)) throw Error('Missing prospectId or isNaN');
 
             const checklist = await new PdiChecklistRepo().getPdiByProspectId(prospectId);
             if (!checklist) {

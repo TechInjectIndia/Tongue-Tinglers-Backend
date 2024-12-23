@@ -2,21 +2,26 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { Franchise, FRANCHISE_STATUS } from "../../../interfaces";
 import { RegionModel } from "./RegionsModel";
-import {
-    OrganizationModel
-} from "../../../apps/organization/database/organization_schema";
+import { OrganizationModel } from "../../../apps/organization/database/organization_schema";
 import { UserModel } from "../user/user.model";
 import { AddressModel } from "../user/address";
-
+import { DocumentModel } from "../documents/documentModel";
+import RepoProvider from "../../../apps/RepoProvider";
 
 const { STRING, INTEGER, DATE, NOW, ARRAY, ENUM } = DataTypes;
 
 // Franchisee creation attributes, making 'id' optional for creation
-interface FranchiseeCreationAttributes extends Optional<Franchise, "id" | "createdAt" | "updatedAt" | "deletedAt"> {
-}
+interface FranchiseeCreationAttributes
+    extends Optional<
+        Franchise,
+        "id" | "createdAt" | "updatedAt" | "deletedAt"
+    > {}
 
 // Franchisee class model for the Sequelize ORM
-class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> implements Franchise {
+class FranchiseModel
+    extends Model<Franchise, FranchiseeCreationAttributes>
+    implements Franchise
+{
     public organizationId: number;
     public id: number;
     public location: number;
@@ -41,8 +46,31 @@ class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> impl
     public updatedAt: Date | null;
     public affiliateId: number;
 
+    // Mixin for Documents
+    public getFranchiseDocuments!: () => Promise<DocumentModel[]>;
+    public addFranchiseDocument!: (
+        document: DocumentModel | number
+    ) => Promise<void>;
+    public addFranchiseDocuments!: (
+        documents: Array<DocumentModel | number>
+    ) => Promise<void>;
+    public setFranchiseDocuments!: (
+        documents: Array<DocumentModel | number>
+    ) => Promise<void>;
+    public removeFranchiseDocument!: (
+        document: DocumentModel | number
+    ) => Promise<void>;
+    public removeFranchiseDocuments!: (
+        documents: Array<DocumentModel | number>
+    ) => Promise<void>;
 
+    // Associations
     public static associate() {
+        this.hasMany(DocumentModel, {
+            foreignKey: "entity_id",
+            as: "franchiseDocuments",
+            scope: { entity_type: "franchise" },
+        });
 
         this.belongsTo(RegionModel, {
             foreignKey: "regionId",
@@ -73,112 +101,145 @@ class FranchiseModel extends Model<Franchise, FranchiseeCreationAttributes> impl
             foreignKey: "deletedBy",
             as: "deletedByUser",
         });
-
     }
 
+    static initModel() {
+        FranchiseModel.init(
+            {
+                id: {
+                    type: INTEGER,
+                    autoIncrement: true,
+                    primaryKey: true,
+                },
+                affiliateId: {
+                    type: INTEGER,
+                    allowNull: true,
+                },
+                createdAt: {
+                    type: DATE,
+                    allowNull: false,
+                    defaultValue: NOW,
+                },
+                updatedAt: {
+                    type: DATE,
+                    allowNull: true,
+                    defaultValue: null,
+                },
+                deletedAt: {
+                    type: DATE,
+                    allowNull: true,
+                    defaultValue: null,
+                },
+                location: {
+                    type: INTEGER,
+                    allowNull: false,
+                },
+                sm: {
+                    type: ARRAY(INTEGER),
+                    allowNull: true, // Array of numbers for 'sm' field
+                },
+                pocName: {
+                    type: STRING,
+                    allowNull: false,
+                },
+                pocEmail: {
+                    type: STRING,
+                    allowNull: false,
+                },
+                pocPhoneNumber: {
+                    type: STRING,
+                    allowNull: false,
+                },
+                users: {
+                    type: ARRAY(INTEGER),
+                    allowNull: true, // Array of user IDs (nullable)
+                },
+                organizationId: {
+                    type: INTEGER,
+                    allowNull: true,
+                },
+                regionId: {
+                    type: INTEGER,
+                    allowNull: false,
+                },
+                area: {
+                    type: STRING,
+                    allowNull: true,
+                },
+                agreementIds: {
+                    type: ARRAY(STRING),
+                    allowNull: true, // Array of agreement IDs
+                },
+                paymentIds: {
+                    type: ARRAY(STRING),
+                    allowNull: true, // Array of payment IDs
+                },
+                status: {
+                    type: ENUM(...Object.values(FRANCHISE_STATUS)), // Use values from
+                    // FRANCHISE_STATUS
+                    // enum
+                    allowNull: false,
+                },
+                establishedDate: {
+                    type: DATE,
+                    allowNull: false, // Franchisee's establishment date
+                },
+                createdBy: {
+                    type: INTEGER,
+                    allowNull: false, // User ID of the creator
+                },
+                updatedBy: {
+                    type: INTEGER,
+                    allowNull: true, // Nullable if not updated
+                },
+                deletedBy: {
+                    type: INTEGER,
+                    allowNull: true, // Nullable for soft delete
+                },
+            },
+            {
+                sequelize,
+                tableName: "franchisees", // Use a table name that makes sense
+                timestamps: true, // Enable automatic timestamps
+                paranoid: true, // Enable soft deletes
+                comment: "Table to store franchisee organizations", // Comment for the
+                // table
+            }
+        );
+        return FranchiseModel;
+    }
 
+    public static hook() {
+        FranchiseModel.addHook("afterCreate", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "create",
+                "FranchiseModel",
+                instance,
+                options
+            );
+        });
+
+        // After Update Hook - Log the updated fields of the FranchiseModel
+        FranchiseModel.addHook("afterUpdate", async (instance, options) => {
+            // Now call logModelAction as before
+            await RepoProvider.LogRepo.logModelAction(
+                "update",
+                "FranchiseModel",
+                instance,
+                options
+            );
+        });
+
+        // After Destroy Hook - Log the deletion of the FranchiseModel
+        FranchiseModel.addHook("afterDestroy", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "delete",
+                "FranchiseModel",
+                instance,
+                options
+            );
+        });
+    }
 }
 
-FranchiseModel.init(
-    {
-        id: {
-            type: INTEGER,
-            autoIncrement: true,
-            primaryKey: true,
-        },
-        affiliateId: {
-            type: INTEGER,
-            allowNull: true,
-        },
-        createdAt: {
-            type: DATE,
-            allowNull: false,
-            defaultValue: NOW,
-        },
-        updatedAt: {
-            type: DATE,
-            allowNull: true,
-            defaultValue: null,
-        },
-        deletedAt: {
-            type: DATE,
-            allowNull: true,
-            defaultValue: null,
-        },
-        location: {
-            type: INTEGER,
-            allowNull: false,
-        },
-        sm: {
-            type: ARRAY(INTEGER),
-            allowNull: true,  // Array of numbers for 'sm' field
-        },
-        pocName: {
-            type: STRING,
-            allowNull: false,
-        },
-        pocEmail: {
-            type: STRING,
-            allowNull: false,
-        },
-        pocPhoneNumber: {
-            type: STRING,
-            allowNull: false,
-        },
-        users: {
-            type: ARRAY(INTEGER),
-            allowNull: true,  // Array of user IDs (nullable)
-        },
-        organizationId: {
-            type: INTEGER, allowNull: true,
-        },
-        regionId: {
-            type: INTEGER,
-            allowNull: false,
-        },
-        area: {
-            type: STRING,
-            allowNull: true,
-        },
-        agreementIds: {
-            type: ARRAY(STRING),
-            allowNull: true,  // Array of agreement IDs
-        },
-        paymentIds: {
-            type: ARRAY(STRING),
-            allowNull: true,  // Array of payment IDs
-        },
-        status: {
-            type: ENUM(...Object.values(FRANCHISE_STATUS)), // Use values from FRANCHISE_STATUS enum
-            allowNull: false,
-        },
-        establishedDate: {
-            type: DATE,
-            allowNull: false,  // Franchisee's establishment date
-        },
-        createdBy: {
-            type: INTEGER,
-            allowNull: false,  // User ID of the creator
-        },
-        updatedBy: {
-            type: INTEGER,
-            allowNull: true,  // Nullable if not updated
-        },
-        deletedBy: {
-            type: INTEGER,
-            allowNull: true,  // Nullable for soft delete
-        },
-    },
-    {
-        sequelize,
-        tableName: "franchisees",  // Use a table name that makes sense
-        timestamps: true,  // Enable automatic timestamps
-        paranoid: true,  // Enable soft deletes
-        comment: "Table to store franchisee organizations",  // Comment for the table
-    },
-);
-
-FranchiseModel.associate();
-
 export { FranchiseModel };
-

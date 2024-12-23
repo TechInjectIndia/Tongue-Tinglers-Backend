@@ -132,7 +132,7 @@ const createLeadBody = Joi.object().keys({
       "any.required": "Status is required.",
     }),
   referBy: USER_DETAILS_SCHEMA.allow(null),
-  assign: ASSIGN_SCHEMA.optional().allow(null),
+  assignedUser: Joi.number().optional().allow(null),
   followDetails: Joi.array().items(FOLLOWED_DATE_SCHEMA).optional(),
   source: Joi.string()
     .valid(...Object.values(LeadSource))
@@ -213,7 +213,7 @@ const editLeadBody = Joi.object().keys({
       "any.required": "Status is required.",
     }),
   referBy: USER_DETAILS_SCHEMA.allow(null),
-  assign: Joi.any().optional().allow(null),
+  assignedUser: Joi.number().optional().allow(null),
   followDetails: Joi.any().optional(),
   source: Joi.string()
     .valid(...Object.values(LeadSource))
@@ -287,7 +287,8 @@ const listLeadQuery = Joi.object().keys({
   assignee: Joi.string().optional().allow(""),
   followUpDate: Joi.string().optional().allow(""),
   affiliate: Joi.string().optional().allow(""),
-  amountRange: Joi.string().optional().allow(""),
+  minAmount: Joi.string().optional().allow(""),
+  maxAmount: Joi.string().optional().allow(""),
   quickActionFilter: Joi.string().optional().allow(""),
 });
 

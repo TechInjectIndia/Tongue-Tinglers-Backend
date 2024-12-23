@@ -1,3 +1,4 @@
+import { ParsedMeta } from "../database/schema/base/Base";
 import type {
     UpdatedMetaData,
     BaseModel,
@@ -5,6 +6,9 @@ import type {
     ITrackable,
     Note,
     UserDetails,
+    ParsedCampaign,
+    ParsedUser,
+    MetaUser,
 } from "../interfaces";
 
 enum followStatus {
@@ -20,7 +24,15 @@ enum LeadSource {
     EMAIL_MARKETING = "email-marketing",
     PAID = "paid",
     EVENT = "event",
-    REFERRAL = "referral"
+    REFERRAL = "referral",
+    GOOGLE_SEARCH = "google search",
+    INSTAGRAM = "instagram",
+    FACEBOOK = "facebook",
+    LINKEDIN = "linkedin",
+    EMAIL = "email",
+    PHYSICAL_EVENT = "physical event",
+    ADVERTISEMENT = "advertisement",
+    CALL = "call",
 }
 
 enum LeadStatus {
@@ -35,15 +47,40 @@ enum LeadStatus {
 }
 
 interface AssignAttributes {
-    id?: number;
     assignedTo: number;
     assignedBy: number;
     assignedDate: Date;
-    leadId: number;
 }
 
 interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
+    assignedUser: number;
     campaignId?: number;
+    status: LeadStatus;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    email: string;
+    address: LeadAddress;
+    additionalInfo: string | null;
+    source: LeadSource;
+    sourceInfo: string | null;
+    followDetails: Array<FollowDetails> | null;
+    referBy: UserDetails | null;
+    logs: Record<string, ITrackable[]>;
+    notes: Note[] | null;
+    proposalModalId?: number | null;
+    amount?: number | null;
+    franchiseModals: Array<FranchiseModels> | null;
+    affiliate: Array<Affiliate> | null;
+    marketing: Array<string> | null;
+    other: Array<ExtraFields> | null;
+}
+
+
+interface ParseLead extends ParsedMeta {
+    id: number;
+    assignedUser: MetaUser;
+    campaignId: ParsedCampaign,
     status: LeadStatus;
     firstName: string;
     lastName: string;
@@ -170,6 +207,7 @@ interface BaseSocialMedia {
     handle: string;
     followers: number;
     tags: string[];
+    affiliateId: number;
 }
 
 interface SocialMediaDetails extends BaseSocialMedia {
@@ -180,7 +218,8 @@ interface SocialMediaDetails extends BaseSocialMedia {
 interface Affiliate {
     id: number,
     type: string,
-    codes: Record<string, string>
+    codes: Record<string, string>,
+    userId: number
 }
 
 type AffiliatesList = {
@@ -213,7 +252,7 @@ interface FollowDetails {
     reminder: Date | null;
 }
 
-interface parsedAffiliate{
+interface parsedAffiliate {
 
 }
 
@@ -242,5 +281,6 @@ export {
     extraFieldTypes,
     SeoImagePayload,
     AssignAttributes,
-    parsedAffiliate
+    parsedAffiliate,
+    ParseLead
 };

@@ -1,6 +1,6 @@
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
-import { NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 
 const listLogsQuery = Joi.object({
     page: Joi.number().integer().min(1).required().messages({

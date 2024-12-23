@@ -1,4 +1,4 @@
-const { OrderItem } = require("sequelize");
+import {OrderItem} from "../../interfaces/order_items";
 
 export type TRetortOrder = {
   id: number;
@@ -34,7 +34,7 @@ export type TRetortOrderFilters = {
   offset: number;
   limit: number;
   search?: string;
-  sorting?: typeof OrderItem;
+  sorting?: OrderItem;
   trashOnly?: string;
 };
 

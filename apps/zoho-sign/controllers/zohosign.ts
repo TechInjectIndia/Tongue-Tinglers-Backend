@@ -337,12 +337,10 @@ export default class ZohoSignController {
         res: Response,
         next: NextFunction
     ) {
-        const templateId = get(req?.params, "templateId", "");
+        const templateId = get(req.params, "templateId");
         try {
             const getTemplateFields =
-                await new ZohoSignRepo().getTemplateFields(
-                    templateId as number
-                );
+                await new ZohoSignRepo().getTemplateFields(templateId);
             if (!getTemplateFields) {
                 res.status(403).send("No template found");
             }

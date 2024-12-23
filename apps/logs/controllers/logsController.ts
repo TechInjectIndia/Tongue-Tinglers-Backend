@@ -6,7 +6,7 @@ import { BaseProduct, Pagination, Product } from "../../../interfaces";
 import RepoProvider from "../../RepoProvider";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
-import { Log } from "../models/Log"; 
+import { Log } from "../models/Log";
 //
 // export const logModelAction = async <T extends Model<any, any>>(
 //     action: string,
@@ -58,8 +58,8 @@ import { Log } from "../models/Log";
 export default class logsController {
     static async getAllLogs(req: Request, res: Response) {
         try {
-            const page = parseInt(req.query.page, 0) || 1;
-            const limit = parseInt(req.query.limit, 10) || 10;
+            const page = parseInt(req.query.page.toString(), 0) || 1;
+            const limit = parseInt(req.query.limit.toString(), 10) || 10;
             const search = (req.query.search as string) || ""; // For text search
             const filters = (req.query.filters as string) || "";
 
@@ -100,6 +100,31 @@ export default class logsController {
         }
     }
 
+    static async getLogsModelNameAndId(req: Request, res: Response) {
+        try {
+            const modelName = get(req.query, "modelName") as string || undefined;
+            const recordId = get(req.query, "recordId") as string || undefined;
+
+            const logs: Log[] = await RepoProvider.LogRepo.getLogsByModelNameAndId(
+                modelName,
+                parseInt(recordId),
+            );
+
+            return res.status(200).send(
+                sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, logs),
+            );
+        } catch (error) {
+            console.error(error);
+            return res
+                .status(500)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        "An error occurred while fetching logs.",
+                    ),
+                );
+        }
+    }
 
 }
 

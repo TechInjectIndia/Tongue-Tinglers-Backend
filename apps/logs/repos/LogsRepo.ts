@@ -29,21 +29,22 @@ class LogsRepo implements ILogsRepo {
                 Object.assign(query, filters);
             }
 
-            const { rows: products, count: total } =
+            const { rows: logs, count: total } =
                 await LogModel.findAndCountAll({
                     where: query,
                     offset,
                     limit,
+                    order: [['createdAt', 'DESC']],
                 }).then((res) => {
                     return {
-                        rows: res.rows.map((product) => product.toJSON()),
+                        rows: res.rows.map((log) => log.toJSON()),
                         count: res.count,
                     };
                 });
 
             const totalPages = Math.ceil(total / limit);
 
-            return { data: products, total, totalPages };
+            return { data: logs, total, totalPages };
         } catch (error) {
             console.log(error);
             return null;
@@ -88,12 +89,30 @@ class LogsRepo implements ILogsRepo {
                 recordId: instance.get(primaryKey),
                 data: dataToLog,
                 userId: options.userId || null,
+                userName: options.userName || null,
                 timestamp: new Date(),
             });
         } catch (error) {
             console.error("Error logging action:", error);
         }
     };
+
+    async getLogsByModelNameAndId(modelName: string, recordId: number): Promise<Log[]> {
+        try {
+            const logs = await LogModel.findAll({
+                where: {
+                    model: modelName,
+                    recordId: recordId,
+                },
+                order: [['createdAt', 'DESC']],
+            });
+
+            return logs.map((log) => log.toJSON());
+        } catch (error) {
+            console.error("Error fetching logs:", error);
+            throw error;
+        }
+    }
 }
 
 export { LogsRepo };

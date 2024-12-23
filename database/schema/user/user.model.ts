@@ -4,6 +4,7 @@ import {USER_STATUS, USER_TYPE, UserInformation} from "../../../interfaces";
 import {TUser} from "../../../types";
 import RepoProvider from "../../../apps/RepoProvider";
 import {AssignModel} from "../lead/assigneeModels";
+import { AffiliateModel } from "../lead/affiliateModels";
 
 const {INTEGER, STRING, ENUM, JSONB} = DataTypes;
 
@@ -162,6 +163,7 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
             foreignKey: "assignedBy",
             as: "assignmentsAsAssignedBy",
         });
+        UserModel.hasMany(AffiliateModel, { foreignKey: 'userId', as: 'affiliates' });
     }
 
     public static hook() {

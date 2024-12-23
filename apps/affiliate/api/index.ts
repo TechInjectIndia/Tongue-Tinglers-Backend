@@ -361,6 +361,7 @@ const {
 
 router.post("/create", validateCreateAffiliateBody, AffiliateController.create);
 router.get("/list", validateListAffiliateQuery, AffiliateController.list);
+router.get("/getByUser", AffiliateController.getAffiliateByUserId);
 router.get("/get/:id", validateEditAffiliateParams, AffiliateController.get);
 router.put("/update/:id", validateEditAffiliateParams, validateEditAffiliateBody, AffiliateController.update);
 router.delete("/delete", validateEditMultipleIdsBody, AffiliateController.delete);

@@ -17,7 +17,7 @@ class SocialMediaDetailsModel extends Model<SocialMediaDetails, SocialMediaDetai
     public handle!: string;
     public followers!: number;
     public tags!: string[];
-
+    public affiliateId: number;
 }
 
 // Initialize the model schema
@@ -46,6 +46,10 @@ SocialMediaDetailsModel.init(
             type: DataTypes.ARRAY(DataTypes.STRING),
             allowNull: false,
             defaultValue: [],
+        },
+        affiliateId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         },
     },
     {

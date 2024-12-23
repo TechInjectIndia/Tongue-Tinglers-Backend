@@ -2,7 +2,7 @@ import {
     PaymentLinkPayload,
 } from "./apps/razorpay/models/Razorpay";
 
-require("newrelic");
+
 import dotenv from "dotenv";
 import sgMail from "@sendgrid/mail";
 import { CONFIG } from "./config";

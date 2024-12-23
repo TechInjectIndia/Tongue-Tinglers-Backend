@@ -53,6 +53,7 @@ export class DocumentRepo implements IDocumentRepo {
             const results: Document[] = [];
 
             for (const doc of documents) {
+                doc.entity_type = "franchise";
                 // Check if the document exists
                 const existingDocument = await DocumentModel.findOne({
                     where: {

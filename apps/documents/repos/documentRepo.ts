@@ -8,12 +8,14 @@ export class DocumentRepo implements IDocumentRepo {
     async createDocument(document: BaseDocument[]): Promise<Document[] | null> {
         const transaction = await DocumentModel.sequelize?.transaction();
         try {
-            
+
+
             // const documentCreated = await DocumentModel.bulkCreate(document);
             // return documentCreated.map((doc: DocumentModel) => doc.toJSON());
             const results: Document[] = [];
 
             for (const doc of document) {
+                doc.entity_type = "franchise";
                 // Check if the document exists
                 const existingDocument = await DocumentModel.findOne({
                     where: {
@@ -91,7 +93,7 @@ export class DocumentRepo implements IDocumentRepo {
                 where: {
                     id: id,
                 },
-                include:[
+                include: [
                     {
                         model: UserModel,
                         as: 'created',
@@ -105,14 +107,14 @@ export class DocumentRepo implements IDocumentRepo {
             return null;
         }
     }
-    async getDocumentByUser(data:any): Promise<Document[]> {
+    async getDocumentByUser(data: any): Promise<Document[]> {
         try {
             const documents = await DocumentModel.findAll({
                 where: {
                     entity_type: data.entity_type,
                     entity_id: data.entity_id
                 },
-                include:[
+                include: [
                     {
                         model: UserModel,
                         as: 'created',

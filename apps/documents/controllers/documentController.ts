@@ -17,30 +17,30 @@ export class DocumentController {
 
     static async createDocument(req: Request, res: Response) {
         try {
-            const user_id = get(req, 'user_id', 1);
+            const user_id = parseInt(get(req, 'user_id'));
             const payload: any = req?.body;
             payload.entity_type = Object.keys(payload)
             const documentTransform = await transformData(payload, user_id,
                 false)
-            const existingRecords = await DocumentModel.findAll({
-                where: {
-                    [Op.or]: documentTransform.map(doc => ({
-                        entity_id: doc.entity_id,
-                        doc_name: doc.doc_name,
-                        entity_type: doc.entity_type,
-                        createdBy: doc.createdBy
-                    }))
-                }
-            });
-            if (existingRecords.length > 0) {
-                return res.status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            `Document ${ERROR_MESSAGE.EXISTS}`,
-                        ),
-                    );
-            }
+            // const existingRecords = await DocumentModel.findAll({
+            //     where: {
+            //         [Op.or]: documentTransform.map(doc => ({
+            //             entity_id: doc.entity_id,
+            //             doc_name: doc.doc_name,
+            //             entity_type: doc.entity_type,
+            //             createdBy: doc.createdBy
+            //         }))
+            //     }
+            // });
+            // if (existingRecords.length > 0) {
+            //     return res.status(400)
+            //         .send(
+            //             sendResponse(
+            //                 RESPONSE_TYPE.ERROR,
+            //                 `Document ${ERROR_MESSAGE.EXISTS}`,
+            //             ),
+            //         );
+            // }
             const documentRepo = await RepoProvider.documentRepo.createDocument(
                 documentTransform)
             return res.status(200)
@@ -102,7 +102,6 @@ export class DocumentController {
             const {entity_type, entity_id} = req.query
             const payload = {
                 entity_type: entity_type,
-                createdBy: user_id,
                 entity_id: entity_id
             }
             const documentRepo = await RepoProvider.documentRepo.getDocumentByUser(

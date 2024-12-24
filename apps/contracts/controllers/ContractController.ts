@@ -41,6 +41,7 @@ export default class ContractController {
                     });
                 }
             }
+            newContract.createdBy = user_id
             const contract = await new ContractRepo().create(newContract, user_id);
             return res
                 .status(201)

@@ -12,7 +12,7 @@ import {
     ContractPaymentDetails,
     ITrackable,
 } from "../../../interfaces";
-import { ContractModel, UserModel } from "../../../database/schema";
+import { CampaignAdModel, ContractModel, LeadsModel, UserModel } from "../../../database/schema";
 import IContractsController from "../controllers/controller/IContractsController";
 import { getUserName } from "../../common/utils/commonUtils";
 import moment from "moment";
@@ -34,6 +34,14 @@ export class ContractRepo {
                     [Op.in]: contractIds, // Use Op.in to match multiple IDs
                 },
             },
+            include: [{
+                model: LeadsModel,
+                as: "lead",
+                include:[{
+                    model: CampaignAdModel,
+                    as: 'campaign_ad'
+                }]
+            }],
         });
 
         return contracts;
@@ -59,6 +67,14 @@ export class ContractRepo {
                         [Op.contains]: [{ docId }] as any,
                     },
                 },
+                include: [{
+                    model: LeadsModel,
+                    as: "lead",
+                    include:[{
+                        model: CampaignAdModel,
+                        as: 'campaign_ad'
+                    }]
+                }],
             });
 
             return contract ? contract : null;
@@ -99,6 +115,14 @@ export class ContractRepo {
                         [Op.contains]: [{ paymentId }] as any,
                     },
                 },
+                include: [{
+                    model: LeadsModel,
+                    as: "lead",
+                    include:[{
+                        model: CampaignAdModel,
+                        as: 'campaign_ad'
+                    }]
+                }],
             });
 
             return contract;
@@ -132,10 +156,13 @@ export class ContractRepo {
         options?: { transaction?: any }
     ): Promise<TContract> {
         const { transaction } = options || {};
+        console.log('userId: ', userId);
         const user = await UserModel.findByPk(userId);
+        console.log('user: ', user);
         if (!user) {
             throw new Error(`User with ID ${userId} not found.`);
         }
+        console.log('data: ', data);
         const response = await ContractModel.create(data, {
             userId: user.id,
             userName: getUserName(user),
@@ -151,6 +178,14 @@ export class ContractRepo {
                     paymentId: paymentId,
                 },
             },
+            include: [{
+                model: LeadsModel,
+                as: "lead",
+                include:[{
+                    model: CampaignAdModel,
+                    as: 'campaign_ad'
+                }]
+            }],
         });
         return data ? data.get() : null;
     }
@@ -162,6 +197,14 @@ export class ContractRepo {
         const { transaction } = options || {};
         const data = await ContractModel.findOne({
             where: { id },
+            include: [{
+                model: LeadsModel,
+                as: "lead",
+                include:[{
+                    model: CampaignAdModel,
+                    as: 'campaign_ad'
+                }]
+            }],
             transaction,
         });
         return data ? data : null;
@@ -235,6 +278,14 @@ export class ContractRepo {
             offset: filters.offset,
             limit: filters.limit,
             where: where,
+            include: [{
+                model: LeadsModel,
+                as: "lead",
+                include:[{
+                    model: CampaignAdModel,
+                    as: 'campaign_ad'
+                }]
+            }],
         });
         return { total, data };
     }

@@ -9,63 +9,20 @@ export default class FilesController {
     static async updateFile(req: Request, res: Response) {
         try {
 
-            const id = parseInt(get(req.params, "id"));
-            if (isNaN(id)) throw Error('Missing id or isNaN');
-
-            let parsedFileDetails: any[] = [];
-            let uploadedFiles: any[] = [];
-
-            // Parse fileDetails from the request body
-            const { fileDetails } = req.body;
-            if (typeof fileDetails === 'string') {
-                try {
-                    parsedFileDetails = JSON.parse(fileDetails);
-                } catch (error) {
-                    return res.status(400).send({
-                        error: true,
-                        message: 'Invalid fileDetails format. It should be a valid JSON string.',
-                    });
-                }
-            } else {
-                parsedFileDetails = fileDetails || [];
-            }
-
-            let result: any;
-            // Properly cast req.files to Express.Multer.File[]
-            const files = req.files as Express.Multer.File[] | undefined;
-
-            if (files && files.length > 0) {
-                uploadedFiles = files; // Safe assignment without conflicting assertions
-
-
-                // Process and upload each file
-                const uploadPromises = uploadedFiles.map(async (file, index) => {
-                    const details = parsedFileDetails[index] || {};
-
-                    const fileInfo = {
-                        originalname: file.originalname,
-                        message: details.message || '',
-                        name: details.name || file.originalname,
-                        recommended: details.recommended || false,
-                    };
-
-                    const url = await new FilesRepo().updateFile(id, file, fileInfo, 'uploads');
-                    return { originalname: file.originalname, url, recommended: fileInfo.recommended };
-                });
-
-                result = await Promise.all(uploadPromises);
-            } else {
-                // Handle case where only file metadata is updated (no new files uploaded)
-                const details = parsedFileDetails[0] || {};
-                const fileInfo = {
-                    message: details.message || '',
-                    name: details.name || '',
-                    recommended: details.recommended || false,
-                };
-
-                result = await new FilesRepo().update(id, fileInfo);
-            }
-
+            const id = parseInt(get(req.params, "id")); // Assuming the file ID is passed as a URL parameter
+            const fileDetails = req.body;
+    
+            // Build the update information
+            const fileInfo = {
+                message: fileDetails.message || '',
+                name: fileDetails.name || '',
+                recommended: fileDetails.recommended || false,
+                subject: fileDetails.subject,
+                url: fileDetails.files
+            };
+            
+            let result = await new FilesRepo().update(id, fileInfo);
+        
             // Send success response
             return res
                 .status(200)
@@ -96,54 +53,16 @@ export default class FilesController {
 
     static async uploadFile(req: Request, res: Response) {
         try {
-            let parsedFileDetails: any[] = [];
-            let files: Express.Multer.File[] = [];
-
             let fileDetails = req.body;
-            // if (typeof fileDetails === 'string') {
-            //     try {
-            //         parsedFileDetails = JSON.parse(fileDetails);
-            //     } catch (error) {
-            //         return res.status(400).send({
-            //             error: true,
-            //             message: 'Invalid fileDetails format. It should be a valid JSON string.',
-            //         });
-            //     }
-            // } else {
-            //     parsedFileDetails = fileDetails;
-            // }
-
             let result: any
-            let imageArray: any
-            if (req.files && Array.isArray(req.files) && req.files.length != 0) {
-                files = req.files ?? [];
-                console.log("files ==> ", files);
-
-                // Process each file and upload it
-                const uploadPromises = files.map(async (file: Express.Multer.File, index: number) => {
-                    const url = await new FilesRepo().uploadFile(file, 'uploads');
-                    return url
-                    // return { originalname: file.originalname, url, recommended: fileInfo.recommended };
-                });
-                imageArray = await Promise.all(uploadPromises);
-                const fileInfo = {
-                    message: fileDetails.message || '',
-                    name: fileDetails.name || '',
-                    recommended: fileDetails.recommended,
-                    subject: fileDetails.subject,
-                    url: imageArray
-                };
-                result = await new FilesRepo().create(fileInfo);
-            } else {
-                const details = parsedFileDetails[0];
-                const fileInfo = {
-                    message: details.message || '',
-                    name: details.name || '',
-                    recommended: details.recommended,
-                };
-                result = await new FilesRepo().create(fileInfo);
-            }
-
+            const fileInfo = {
+                message: fileDetails.message || '',
+                name: fileDetails.name || '',
+                recommended: fileDetails.recommended || false,
+                subject: fileDetails.subject,
+                url: fileDetails.files
+            };
+            result = await new FilesRepo().create(fileInfo);
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPLOADED, { result }));
         } catch (err) {
             console.error("Error:", err);

@@ -24,12 +24,7 @@ class DocumentModel
         // foreignKey:'createdBy'})
         this.belongsTo(UserModel, { as: "created", foreignKey: "createdBy" });
 
-        this.belongsTo(OrganizationModel, {
-            foreignKey: "entity_id",
-            as: "organization",
-            scope: { entity_type: "organization" },
-        });
-
+      
         this.belongsTo(FranchiseModel, {
             foreignKey: "entity_id",
             as: "franchise",

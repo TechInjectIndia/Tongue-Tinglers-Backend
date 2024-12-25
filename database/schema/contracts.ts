@@ -104,7 +104,7 @@ class ContractModel
                     allowNull: true,
                 },
                 leadId: {
-                    type: STRING,
+                    type: INTEGER,
                     allowNull: true,
                 },
                 templateId: {

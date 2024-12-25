@@ -15,7 +15,7 @@ export default class CampaignController {
     // Method to create a campaign
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, "user_id", "");
+            const user_id = get(req, "user_id", 1);
             const payload = { ...req.body, createdBy: user_id };
 
             const franchiseExist = RepoProvider.franchise.getById(
@@ -118,7 +118,7 @@ export default class CampaignController {
             const updatePayload = { ...req.body };
             delete updatePayload.id; // Remove id from the update payload
 
-            const user_id = get(req, "user_id", "");
+            const user_id = get(req, "user_id", 1);
             const updatedCampaign = await new CampaignAdRepo().update(
                 id as number,
                 { ...updatePayload, updatedBy: user_id }
@@ -144,7 +144,7 @@ export default class CampaignController {
     // Method to get a specific campaign by ID
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const id = get(req.params, "id", 0);
+            const id = get(req.params, "id", 1);
             const existingCampaign = await new CampaignAdRepo().get(
                 id as number
             );

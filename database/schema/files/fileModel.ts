@@ -36,7 +36,7 @@ FileModel.init({
     },
     recommended: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
+        allowNull: true,
     },
     url: {
         type: DataTypes.ARRAY(DataTypes.TEXT),

@@ -117,9 +117,9 @@ router.use(`${ADMIN}/retort/order`, auth, retortOrderRouter);
 router.use(`${ADMIN}/crm`, auth, campaignRouter);
 router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/question`, auth, questionRouter);
-router.use(`${ADMIN}/campaign-ad`, auth, campaignAdRouter);
+router.use(`${ADMIN}/campaign-ad`, campaignAdRouter);
 
-router.use(`/campaign-ad`, auth, campaignAdRouter);
+router.use(`/campaign-ad`, campaignAdRouter);
 
 router.use(`${ADMIN}/campaign-submissions`, auth, campaignSubmissionsRouter);
 router.use(`${ADMIN}/files`, auth, filesRouter);
@@ -133,6 +133,7 @@ router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
 router.use(`${ADMIN}/region`, auth, regionRouter);
 router.use(`${ADMIN}/area`, auth, areaRouter);
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);// dont add auth to this url
+router.use(`${ADMIN}/open-contracts`, contractsRouter);// dont add auth to this url
 router.use(`${ADMIN}/lead`, auth, leadRouter);
 router.use(`${ADMIN}/web-lead`, webLeadRouter); // dont add auth to this url
 router.use(`${ADMIN}/vendors`, auth, vendorRouter);

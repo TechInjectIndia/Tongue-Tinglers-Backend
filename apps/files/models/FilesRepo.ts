@@ -42,6 +42,7 @@ export class FilesRepo {
             name: data.name,
             message: data.message,
             recommended: data.recommended,
+            subject: data.subject,
             url: data.url || existingFile.url,
             updatedAt: new Date(),
         });

@@ -1,35 +1,37 @@
 // Admin model starts
 import {UserModel} from "./user/user.model";
-import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
+import {CampaignAdModel} from "./campaign-ui/campaignAdModel";
 
-import { FranchiseModel } from "./franchise/franchiseModel";
-import { AssignModel } from "./lead/assigneeModels";
-import { LeadsModel } from "./lead/lead.model";
+import {FranchiseModel} from "./franchise/franchiseModel";
+import {AssignModel} from "./lead/assigneeModels";
+import {LeadsModel} from "./lead/lead.model";
 
 import {
     AgreementDocModel
 } from "../../apps/agreement-docs/model/agreementDocModel";
-import { RetortProductCategoryModel } from "./retort/retort-category";
+import {RetortProductCategoryModel} from "./retort/retort-category";
 import {
     OrganizationModel
 } from "../../apps/organization/database/organization_schema";
-import { DocumentModel } from "./documents/documentModel";
+import {DocumentModel} from "./documents/documentModel";
 
-import { handleError } from "../../apps/common/utils/HelperMethods";
-import { CampaignSubmissions } from "./campaign-ui/campaignSubmissions";
-import { ContractModel } from "./contracts";
-import { OrdersModel } from "./ecommerce/order.model";
-import { ShippingHistoryModel } from "./ecommerce/shippingActivity";
-import { ItemStockModel } from "./petpooja/stock";
-import { AreaModel } from "./franchise/AreaModel";
-import { OptionsModel } from "./options/optionModel";
-import { FranchiseLeadModel } from "./lead/franchiseModels";
-import { IChecklistModel } from "./franchise/iChecklist";
-import { ProductOptionsModel } from "./product-options/productOptionsModel";
-import { PdiCheckpointModel } from "./franchise/pdiCheckPointModel";
-import { AffiliateModel } from "./lead/affiliateModels";
+import {handleError} from "../../apps/common/utils/HelperMethods";
+import {CampaignSubmissions} from "./campaign-ui/campaignSubmissions";
+import {ContractModel} from "./contracts";
+import {OrdersModel} from "./ecommerce/order.model";
+import {ShippingHistoryModel} from "./ecommerce/shippingActivity";
+import {ItemStockModel} from "./petpooja/stock";
+import {AreaModel} from "./franchise/AreaModel";
+import {OptionsModel} from "./options/optionModel";
+import {FranchiseLeadModel} from "./lead/franchiseModels";
+import {IChecklistModel} from "./franchise/iChecklist";
+import {ProductOptionsModel} from "./product-options/productOptionsModel";
+import {PdiCheckpointModel} from "./franchise/pdiCheckPointModel";
+import {AffiliateModel} from "./lead/affiliateModels";
 import {QuestionModel} from "./campaign-ui/QuestionModel";
 import {CampaignQuestionModel} from "./campaign-ui/CampaignQuestionModel";
+import {AddressModel} from "./user/address";
+import {RegionModel} from "./franchise/RegionsModel";
 
 export * from "./user/user.model";
 export * from "./user/address";
@@ -108,6 +110,8 @@ export * from "./franchise/AreaModel";
 
 // --- Sequelize Associations Setup --- //
 const m = [
+    RegionModel,
+    AddressModel,
     UserModel,
     DocumentModel,
     OrganizationModel,
@@ -135,6 +139,8 @@ console.log(m)
 
 // Initialize Models
 const models = {
+    RegionModel: RegionModel.initModel(),
+    AddressModel: AddressModel.initModel(),
     UserModel: UserModel.initModel(),
     Document: DocumentModel.initModel(),
     Organization: OrganizationModel.initModel(),

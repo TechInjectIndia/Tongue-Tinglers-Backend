@@ -2,6 +2,7 @@ import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../../../config";
 
 class CampaignQuestionModel extends Model {
+
     public static initModel(){
         CampaignQuestionModel.init(
             {

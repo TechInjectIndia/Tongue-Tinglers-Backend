@@ -1,6 +1,6 @@
 
 import { TQueryFilters, TLeadPayload, TLeadStatus, TLeadsList } from '../../../../types';
-import { ILead } from '../../../../interfaces';
+import { ILead, ParseLead } from '../../../../interfaces';
 /**
  * Interface for Lead Controller.
  */
@@ -32,7 +32,7 @@ interface ILeadController<T, F extends TQueryFilters> {
      * @param filters - The filtering options.
      * @returns Promise resolving to a list of leads.
      */
-    list(filters: TQueryFilters): Promise<TLeadsList>;
+    list(filters: TQueryFilters): Promise<ParseLead>;
 
     /**
      * Get lead by a specific attribute.

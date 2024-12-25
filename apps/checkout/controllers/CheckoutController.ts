@@ -1,5 +1,5 @@
-import {Request, Response} from "express";
-import {get} from "lodash";
+import { Request, Response } from "express";
+import { get } from "lodash";
 import {
     ParsedOrder,
     PAYMENT_TYPE,
@@ -54,13 +54,19 @@ export default class CheckoutController {
         res.status(200).json(order);
     }
 
-    static getPreSaleOrder(req: Request,
+    static async getPreSaleOrder(req: Request,
         res: Response): Promise<PresaleParsedOrder> {
+        let cart = get(req, "cart");
+        if (!cart) {
+            return Promise.reject("Cart is empty");
+        }
 
         const user_id = parseInt(get(req, "user_id"));
         if (user_id === undefined || isNaN(user_id)) {
             res.status(400).json({error: "User not found"});
             return;
         }
+
+        //TODO @sumeet sir implement this
     }
 }

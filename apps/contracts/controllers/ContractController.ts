@@ -64,7 +64,7 @@ export default class ContractController {
             const skip = get(req?.query, "skip", 1);
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
-            let sorting = get(req?.query, "sorting", "id DESC");
+            let sorting = get(req?.query, "sorting", "id DESC"); //todo test id????
             sorting = sorting.toString().split(" ");
 
             const status = get(req.query, "status");
@@ -233,6 +233,8 @@ export default class ContractController {
     }
 
     static async convert(req: Request, res: Response, next: NextFunction) {
+        const transaction = await sequelize.transaction(); // Start a transaction
+
         try {
             const id = get(req.body, "id", 0);
             const user_id = parseInt(get(req, "user_id"))
@@ -351,6 +353,7 @@ export default class ContractController {
         }
         catch (err) {
             console.error(err);
+            await transaction.rollback();
             return res
                 .status(500)
                 .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });

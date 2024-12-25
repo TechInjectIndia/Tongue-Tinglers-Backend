@@ -117,7 +117,7 @@ router.use(`${ADMIN}/retort/order`, auth, retortOrderRouter);
 router.use(`${ADMIN}/crm`, auth, campaignRouter);
 router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/question`, auth, questionRouter);
-router.use(`${ADMIN}/campaign-ad`, campaignAdRouter);
+router.use(`${ADMIN}/campaign-ad`,auth , campaignAdRouter);
 
 router.use(`/campaign-ad`, campaignAdRouter);
 

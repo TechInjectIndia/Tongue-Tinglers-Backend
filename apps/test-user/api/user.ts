@@ -28,6 +28,18 @@ import {
     IOrganizationPayloadData,
     ORGANIZATION_TYPE
 } from "../../../interfaces/organization";
+import {QuestionRepo} from "../../questions/models";
+import {
+    getSampleAreas,
+    getSampleFranchiseModels,
+    getSampleProposals,
+    getSampleQuestions,
+    getSampleRegions
+} from "../utils";
+import {AreaRepo} from "../../area/models/AreaRepo";
+import {RegionRepo} from "../../region/models/RegionRepo";
+import {FranchiseModelRepo} from "../../franchise_model/models";
+import {ProposalModelRepo} from "../../proposal_model/models";
 
 const router = express.Router();
 
@@ -179,11 +191,43 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
     }
 }))
 
+async function createDummyMaster(user_id: number) {
+    const questions = getSampleQuestions();
+    const areas = getSampleAreas();
+    const regions = getSampleRegions();
+    const franchiseModels = getSampleFranchiseModels();
+    const proposals = getSampleProposals();
+
+    const qRepo = new QuestionRepo();
+    const questionsProm = Promise.all(questions.map(
+        q => qRepo.create({createdBy: user_id, ...q}, user_id)));
+
+    const aRepo = new AreaRepo();
+    const areasProm = Promise.all(areas.map(
+        a => aRepo.create({createdBy: user_id, ...a}))).then(_ => {
+        const rRepo = new RegionRepo();
+        Promise.all(regions.map(
+            r => rRepo.create({createdBy: user_id, ...r})));
+    });
+
+    const fmRepo = new FranchiseModelRepo();
+    const franchiseModelsProm = Promise.all(franchiseModels.map(
+        fm => fmRepo.create(fm, user_id))).then(_ => {
+        const pRepo = new ProposalModelRepo();
+        Promise.all(proposals.map(p => pRepo.create(p)));
+    });
+
+    const res = Promise.all(
+        [areasProm, franchiseModelsProm, questionsProm]);
+
+    return res;
+}
+
 /**
  * @swagger
  * /api/admin/test-user/superOrg:
  *   get:
- *     summary: Create a new Root User (admin@gmail.com, password 123456)
+ *     summary: Create a new Root User (admin@tonguetingler.com, pass:123456)
  *     tags: [AUTH]
  *     security:
  *       - bearerAuth: []
@@ -227,8 +271,6 @@ router.get("/superOrg", (async (req, res) => {
             }
         }
 
-        console.log(uid);
-
         if (!uid) {
             return res
                 .status(400)
@@ -239,10 +281,9 @@ router.get("/superOrg", (async (req, res) => {
             email
         ));
 
-        console.log(admin, email);
-
         if (!admin) {
             const hashedPassword = await createPassword(password);
+
             admin = await new AdminRepo().create({
                 "firstName": "Root",
                 "lastName": "User",
@@ -257,17 +298,16 @@ router.get("/superOrg", (async (req, res) => {
             }).then(uModel => (uModel as UserModel).toJSON());
         }
 
-        console.log(admin);
-
         const repo = new OrganizationRepo();
         let superFranOrg = await repo.getByRootUser(admin.id)
-
+        let createSampleData = false;
         if (!superFranOrg) {
+            createSampleData = true;
             const TTOrgParams: IOrganizationPayloadData = {
-                "name": "Tongue Tinglers",
+                "name": "Tongue Tinglers (Super)",
                 "contactPersonName": "Munawar Ahmed",
                 "contactNumber": "+918220735528",
-                "contactEmail": "munawar@tonguetingler.com",
+                "contactEmail": "admin@tonguetingler.com",
                 "pan": "BVKPM7409K",
                 "gst": "33BVKPM7409K1Z8",
                 "bankName": "Bank of India",
@@ -305,7 +345,9 @@ router.get("/superOrg", (async (req, res) => {
             }
             superFranOrg = await repo.create(TTOrgParams, admin.id);
         }
+        console.log(admin, superFranOrg)
 
+         await createDummyMaster(admin.id);
 
         //todo @Nitesh uncomment
 

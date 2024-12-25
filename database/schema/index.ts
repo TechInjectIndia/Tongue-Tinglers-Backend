@@ -1,7 +1,7 @@
 // Admin model starts
 import {UserModel} from "./user/user.model";
 import { CampaignAdModel } from "./campaign-ui/campaignAdModel";
-// import { questionModel } from "./campaign-ui/questionModel";
+
 import { FranchiseModel } from "./franchise/franchiseModel";
 import { AssignModel } from "./lead/assigneeModels";
 import { LeadsModel } from "./lead/lead.model";
@@ -28,6 +28,8 @@ import { IChecklistModel } from "./franchise/iChecklist";
 import { ProductOptionsModel } from "./product-options/productOptionsModel";
 import { PdiCheckpointModel } from "./franchise/pdiCheckPointModel";
 import { AffiliateModel } from "./lead/affiliateModels";
+import {QuestionModel} from "./campaign-ui/QuestionModel";
+import {CampaignQuestionModel} from "./campaign-ui/CampaignQuestionModel";
 
 export * from "./user/user.model";
 export * from "./user/address";
@@ -92,7 +94,7 @@ export * from "./lead/assigneeModels";
 
 export * from "./campaign-ui/campaignAdModel";
 export * from "./campaign-ui/campaignSubmissions";
-export * from "./campaign-ui/questionModel";
+export * from "./campaign-ui/QuestionModel";
 
 export * from "./files/fileModel";
 export * from "./files/emailModel";
@@ -123,7 +125,10 @@ const m = [
     AreaModel,
     OptionsModel,
     FranchiseLeadModel,
-    IChecklistModel
+    IChecklistModel,
+    CampaignQuestionModel,
+    QuestionModel,
+    CampaignAdModel
 ]
 
 console.log(m)
@@ -150,7 +155,9 @@ const models = {
     PdiCheckPoints: PdiCheckpointModel.initModel(),IChecklistModel: IChecklistModel.initModel(),
     Variations: ProductOptionsModel.initModel(),
     CampaignSubmission: CampaignSubmissions.initModel(),
-    Affiliate: AffiliateModel.initModel()
+    Affiliate: AffiliateModel.initModel(),
+    QuestionModel: QuestionModel.initModel(),
+    CampaignQuestionModel: CampaignQuestionModel.initModel()
 };
 
 console.log(Object.keys(models).join(" "))

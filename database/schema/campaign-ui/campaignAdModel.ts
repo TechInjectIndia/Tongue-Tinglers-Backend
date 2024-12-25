@@ -10,18 +10,16 @@ import {ProposalLeadModels} from "../lead/proposalModels";
 import {
     OrganizationModel
 } from "../../../apps/organization/database/organization_schema";
+import {CampaignQuestionModel} from "./CampaignQuestionModel";
+import {QuestionModel} from "./QuestionModel";
 
 
 const { STRING, INTEGER, DATE, NOW, JSONB } = DataTypes;
 
 interface CampaignCreationAttributes
-    extends Optional<
-        ICampaign,
-        "id" | "createdAt" | "updatedAt" | "deletedAt"
-    > {}
+    extends Optional<ICampaign, "id" | "createdAt" | "updatedAt" | "deletedAt"> {}
 
-class CampaignAdModel
-    extends Model<ICampaign, CampaignCreationAttributes>
+class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
     implements ICampaign
 {
     public id!: number;
@@ -166,7 +164,16 @@ class CampaignAdModel
         CampaignAdModel.belongsTo(OrganizationModel, {
             foreignKey: "organizationId",
             as: "organization",
-        })
+        });
+
+        CampaignAdModel.belongsToMany(QuestionModel, {
+            through: CampaignQuestionModel,
+            foreignKey: "campaignId",
+            otherKey: "questionId",
+            as: "questions",
+        });
+
+
     }
 
     public static hook() {

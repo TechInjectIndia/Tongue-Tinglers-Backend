@@ -62,10 +62,11 @@ export default class OrganizationController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const id = get(req.params, "id", 0);
+            const id = parseInt(get(req.params, "id", ));
+            if(!id || isNaN(id)) throw Error("missing id in params")
             // todo remove type casting
             const existingOrganization = await new OrganizationRepo().get(
-                id as unknown as number,
+                id
             );
             if (isEmpty(existingOrganization)) {
                 return res

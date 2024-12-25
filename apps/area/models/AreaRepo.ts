@@ -63,6 +63,7 @@ export class AreaRepo implements IBaseRepo<IArea, TListFiltersAreas> {
     }
 
     public async create(data: TPayloadArea): Promise<IArea> {
+        //todo validate using auth and use hooks
         const response = await AreaModel.create(data);
         return response;
     }

@@ -4,6 +4,7 @@ import { sequelize } from "../../../config";
 import { IArea } from "../../../interfaces";
 import { UserModel } from "../user/user.model";
 import RepoProvider from "../../../apps/RepoProvider";
+import {RegionModel} from "./RegionsModel";
 
 interface AreaCreationAttributes
     extends Optional<IArea, "id" | "createdAt" | "updatedAt" | "deletedAt"> {}
@@ -34,6 +35,10 @@ class AreaModel extends Model<IArea, AreaCreationAttributes> implements IArea {
             foreignKey: "deletedBy",
             as: "deleter",
             onDelete: "SET NULL",
+        });
+        RegionModel.hasMany(AreaModel, {
+            foreignKey: "regionId", // Ensure this foreign key exists
+            as: "areas",
         });
     }
 

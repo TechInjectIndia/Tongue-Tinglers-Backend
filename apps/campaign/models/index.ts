@@ -7,8 +7,16 @@ import {
     ICampaign,
     IQuestion,
 } from "../../../interfaces";
-import { CampaignAdModel, questionModel } from "../../../database/schema";
+import {
+    AreaModel,
+    CampaignAdModel,
+    QuestionModel,
+    RegionModel
+} from "../../../database/schema";
 import IBaseRepo from "../controllers/controller/IController";
+import {
+    OrganizationModel
+} from "../../organization/database/organization_schema";
 
 export class CampaignAdRepo
     implements IBaseRepo<ICampaign, TListFiltersCampaigns>
@@ -29,7 +37,7 @@ export class CampaignAdRepo
         const { questionList } = campaign;
 
         const questions = questionList?.length
-            ? await questionModel.findAll({ where: { id: questionList }, transaction})
+            ? await QuestionModel.findAll({ where: { id: questionList }, transaction})
             : [];
 
         const campaignWithQuestions = {
@@ -77,6 +85,30 @@ export class CampaignAdRepo
             offset: filters.offset,
             limit: filters.limit,
             where: whereCondition,
+            include: [
+                {
+                    model: RegionModel,
+                    as: "region",
+                    attributes: ["id", "title"], // Include only necessary fields
+                    include: [
+                        {
+                            model: AreaModel,
+                            as: "areas",
+                            attributes: ["id", "title"], // Include only necessary fields
+                        },
+                    ],
+                },
+                {
+                    model: OrganizationModel,
+                    as: "organization",
+                    attributes: ["id", "name"],
+                },
+                {
+                    model: QuestionModel,
+                    as: "questions",
+                    attributes: ["id", "question", "type"],
+                },
+            ],
         });
 
         return { total, data };

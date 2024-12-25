@@ -1,18 +1,15 @@
 // src/routes/CampaignRoutes.ts
-import * as express from "express";
+import {Router} from "express";
 import CampaignController from "../controllers/CampaignController";
-import * as CampaignValidation from "../validations/CampaignValidation";
-
-const router = express.Router();
-const campaignRouter = express.Router();
-
-const {
+import {
     validateCreateCampaignBody,
     validateEditCampaignBody,
     validateEditCampaignParams,
     validateListCampaignQuery,
     validateDeleteMultipleIdsBody,
-} = CampaignValidation;
+} from "../validations/CampaignValidation";
+
+const router = Router();
 
 /**
  * @swagger
@@ -169,7 +166,7 @@ const {
  *       '404':
  *         description: Campaign not found
  *
-* /api/admin/campaign-ad/update/{id}:
+ * /api/admin/campaign-ad/update/{id}:
  *   put:
  *     summary: Update a campaign Ad
  *     tags: [Campaigns-Ad]
@@ -270,7 +267,6 @@ const {
  *         description: Campaigns not found
  */
 router.post("/create", validateCreateCampaignBody, CampaignController.create);
-campaignRouter.post("/create", validateCreateCampaignBody, CampaignController.create);
 router.get("/list", validateListCampaignQuery, CampaignController.list);
 router.get("/get/:id", CampaignController.get);
 router.put(

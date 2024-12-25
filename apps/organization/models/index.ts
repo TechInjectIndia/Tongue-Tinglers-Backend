@@ -304,8 +304,9 @@ export class OrganizationRepo
                         },
                     ],
                 }).then((res) => {
-                    console.log(res)
+                    if(res)
                     return parseOrganization(res)
+                    return null;
                 });
 
             return organization ?? null;

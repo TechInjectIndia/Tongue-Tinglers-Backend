@@ -1,6 +1,7 @@
 import { ParseLead } from '../../../interfaces/leads'
 import { parseUserToMetaUser } from '../../user/parser/user-parser'
 const parseLead = (lead: any) => {
+    console.log('lead>>>>>>>>>>>>>>: ', lead);
 
     if(!lead) return null;
 
@@ -9,8 +10,8 @@ const parseLead = (lead: any) => {
 
 
     const data: ParseLead = {
-        id: lead.id ?? null,
-        campaignId: lead.campaign_ad ?? null,
+        id: lead.id,
+        campaignId: lead.campaignId,
         status: lead.status,
         address: lead.address,
         additionalInfo: lead.additionalInfo,
@@ -18,7 +19,7 @@ const parseLead = (lead: any) => {
         email: lead.email,
         firstName: lead.firstName,
         lastName: lead.lastName,
-        followDetails: lead.followDetails,
+        followDetails: [],
         franchiseModals: lead.franchiseModals,
         logs: lead.logs,
         marketing: lead.marketing,
@@ -31,12 +32,12 @@ const parseLead = (lead: any) => {
         amount: lead.amount,
         proposalModalId: lead.proposalModalId,
         createdAt: lead.createdAt,
-        createdBy: parseUserToMetaUser(lead.creator),
+        createdBy: null,
         updatedAt: lead.updatedAt,
         updatedBy: lead.updater ? parseUserToMetaUser(lead.updater) : null,
         deletedAt: lead.deletedAt,
         deletedBy: lead.deleter ? parseUserToMetaUser(lead.deleter) : null,
-        assignedUser: lead.assignee ? parseUserToMetaUser(lead.assignee) : null
+        assignedUser: lead.assignee ? parseUserToMetaUser(lead.assignee) : null,
     }
     return data
 }

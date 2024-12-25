@@ -6,7 +6,7 @@ import {
     TListFilters,
     TListFiltersAreas,
 } from "../../../types";
-import { ILead } from "../../../interfaces"; // Use the LeadStatus
+import { ILead, Pagination, ParseLead } from "../../../interfaces"; // Use the LeadStatus
 import {
     AssignModel,
     CampaignAdModel,
@@ -19,6 +19,7 @@ import { handleError } from "../../common/utils/HelperMethods";
 import { getUserName } from "../../common/utils/commonUtils";
 import { parseLead } from "../parser/leadParser";
 import moment from "moment";
+import { FollowDetailsModel } from "../../follow-details/model/followDetailModel";
 
 export class LeadRepo {
     constructor() {
@@ -135,7 +136,7 @@ export class LeadRepo {
     }
 
     // List leads with filters
-    public async list(filters: TListFiltersAreas): Promise<TLeadsList> {
+    public async list(filters: TListFiltersAreas): Promise<Pagination<ParseLead>> {
         const where: any = {};
 
         const validStatuses = [
@@ -236,9 +237,15 @@ export class LeadRepo {
             limit: filters.limit,
             where: where,
             include: include
+        }).then((data) => {
+            console.log('data: ', data);
+            return data.map((lead) => {
+                console.log('lead: ', lead);
+                return parseLead(lead.dataValues);
+            });
         });
 
-        return { total, data } as TLeadsList;
+        return { total, data, totalPages: 10 };
     }
 
     // Create a new lead
@@ -272,10 +279,21 @@ export class LeadRepo {
         id: number,
         data: TLeadPayload
     ): Promise<[affectedCount: number]> {
+        let followDetailsIds: number[] = []
         const lead = await LeadsModel.findByPk(id);
         if (!lead) {
             throw new Error("Lead not found");
         }
+        
+
+        console.log('data: ', data);
+        if(data.followDetails && Array.isArray(data.followDetails)){
+            const followDetailsCreated = await FollowDetailsModel.bulkCreate(data.followDetails, {returning: true})
+            
+            followDetailsIds = followDetailsCreated.map((details)=>details.id)
+        }
+
+        await lead.addFollowDetails(followDetailsIds)
         lead.set(data);
         await lead.save();
         return [1];

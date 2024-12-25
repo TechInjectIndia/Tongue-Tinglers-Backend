@@ -29,6 +29,7 @@ import { IChecklistModel } from "./franchise/iChecklist";
 import { ProductOptionsModel } from "./product-options/productOptionsModel";
 import { PdiCheckpointModel } from "./franchise/pdiCheckPointModel";
 import { AffiliateModel } from "./lead/affiliateModels";
+import {FollowDetailsModel} from "../../apps/follow-details/model/followDetailModel"
 
 export * from "./user/user.model";
 export * from "./user/address";
@@ -106,7 +107,29 @@ export * from "./franchise/AreaModel";
 
 
 // --- Sequelize Associations Setup --- //
+const m = [
+    UserModel,
+    DocumentModel,
+    OrganizationModel,
+    FranchiseModel,
+    CampaignAdModel,
+    AgreementDocModel,
+    LeadsModel,
+    CampaignSubmissions,
+    ContractModel,
+    RetortProductCategoryModel,
+    OrdersModel,
+    ShippingHistoryModel,
+    ItemStockModel,
+    AssignModel,
+    AreaModel,
+    OptionsModel,
+    FranchiseLeadModel,
+    IChecklistModel,
+    FollowDetailsModel
+]
 
+console.log(m)
 
 // Initialize Models
 const models = {
@@ -131,7 +154,10 @@ const models = {
     IChecklistModel: IChecklistModel.initModel(),
     Variations: ProductOptionsModel.initModel(),
     CampaignSubmission: CampaignSubmissions.initModel(),
-    Affiliate: AffiliateModel.initModel()
+    Affiliate: AffiliateModel.initModel(),
+    FollowDetailModel: FollowDetailsModel.initModel(),
+
+    
 };
 
 console.log(Object.keys(models).join(" "))

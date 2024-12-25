@@ -12,6 +12,7 @@ import {
 } from "../../../apps/organization/database/organization_schema";
 import {CampaignQuestionModel} from "./CampaignQuestionModel";
 import {QuestionModel} from "./QuestionModel";
+import {AreaModel} from "../franchise/AreaModel";
 
 
 const { STRING, INTEGER, DATE, NOW, JSONB } = DataTypes;
@@ -27,7 +28,7 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
     public organizationId!: number;
     public regionId: number;
     public description?: string;
-    public questionList!: string[];
+    public questionList!: number[];
     public affiliateId?: number;
     public proposalIds!: number[];
     public start!: Date;
@@ -39,6 +40,8 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
+
+    public setQuestions:(questions: Array<QuestionModel|number>) => Promise<void>;
 
     public static initModel() {
         CampaignAdModel.init(
@@ -72,7 +75,7 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
                     comment: "Description of the campaign",
                 },
                 questionList: {
-                    type: JSONB,
+                    type: INTEGER,
                     allowNull: false,
                     comment: "List of questions associated with the campaign",
                 },

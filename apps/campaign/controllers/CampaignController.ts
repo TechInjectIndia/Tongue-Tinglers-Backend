@@ -7,17 +7,19 @@ import {
     SUCCESS_MESSAGE,
     ERROR_MESSAGE,
 } from "../../../constants"; // Adjust this import path as necessary
-import { CampaignAdRepo } from "../models";
+
 import RepoProvider from "../../RepoProvider";
 import {OrganizationRepo} from "../../organization/models";
+import {CampaignAdRepo} from "../models";
 
 
 export default class CampaignController {
     // Method to create a campaign
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
+
             const user_id = get(req, "user_id");
-            console.log(user_id);
+
 
             const payload = { ...req.body, createdBy: user_id };
 
@@ -51,6 +53,7 @@ export default class CampaignController {
                         )
                     );
             }
+
             const campaign = await new CampaignAdRepo().create(payload);
             return res
                 .status(201)

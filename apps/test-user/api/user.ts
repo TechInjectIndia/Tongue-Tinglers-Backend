@@ -217,10 +217,8 @@ async function createDummyMaster(user_id: number) {
         Promise.all(proposals.map(p => pRepo.create(p)));
     });
 
-    const res = Promise.all(
+    return Promise.all(
         [areasProm, franchiseModelsProm, questionsProm]);
-
-    return res;
 }
 
 /**
@@ -347,7 +345,7 @@ router.get("/superOrg", (async (req, res) => {
         }
         console.log(admin, superFranOrg)
 
-         await createDummyMaster(admin.id);
+        if(createSampleData) await createDummyMaster(admin.id);
 
         //todo @Nitesh uncomment
 

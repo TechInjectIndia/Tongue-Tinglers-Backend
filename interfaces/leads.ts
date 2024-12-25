@@ -121,6 +121,7 @@ type TPayloadProposalModel = {
     /* comma separated string */
     prices: string;
     franchiseModel: number;
+    createdBy: number;
 }
 
 type ProposalModelsList = {

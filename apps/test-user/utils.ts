@@ -1,7 +1,9 @@
 import {
     IOptions,
     QuestionType,
-    TPayloadArea, TPayloadFranchiseModel, TPayloadProposalModel,
+    TPayloadArea,
+    TPayloadFranchiseModel,
+    TPayloadProposalModel,
     TPayloadQuestion,
     TPayloadRegion
 } from "../../interfaces";
@@ -106,7 +108,8 @@ function getSampleFranchiseModels(): TPayloadFranchiseModel[] {
             reqArea: 300, // in square feet
             investment: 1000000, // in INR
             runningCost: 30000, // in INR per month
-            bestFor: ["Online-Only Operations", "Low-Rent Locations", "Multiple Delivery Platforms"],
+            bestFor: ["Online-Only Operations", "Low-Rent Locations",
+                "Multiple Delivery Platforms"],
             inclusions: [
                 "Kitchen Equipment",
                 "Delivery Packaging",
@@ -124,30 +127,34 @@ function getSampleProposals(): TPayloadProposalModel[] {
     return [
         {
             title: "Basic QSR Proposal",
-            prices: "1500000, 1800000, 2000000", // Basic, Standard, Premium pricing tiers in INR
+            prices: "1500000, 1800000, 2000000", // Basic, Standard, Premium
+                                                 // pricing tiers in INR
             franchiseModel: 1, // QSR Model ID
-
+            createdBy: 1
         },
         {
             title: "Advanced QSR Proposal",
-            prices: "2000000, 2300000, 2500000", // Basic, Standard, Premium pricing tiers in INR
+            prices: "2000000, 2300000, 2500000", // Basic, Standard, Premium
+                                                 // pricing tiers in INR
             franchiseModel: 1, // QSR Model ID
-
+            createdBy: 1
         },
         {
             title: "Basic Cloud Kitchen Proposal",
-            prices: "1000000, 1200000, 1400000", // Basic, Standard, Premium pricing tiers in INR
+            prices: "1000000, 1200000, 1400000", // Basic, Standard, Premium
+                                                 // pricing tiers in INR
             franchiseModel: 2, // Cloud Kitchen Model ID
-
+            createdBy: 1
         },
         {
             title: "Advanced Cloud Kitchen Proposal",
-            prices: "1400000, 1600000, 1800000", // Basic, Standard, Premium pricing tiers in INR
+            prices: "1400000, 1600000, 1800000", // Basic, Standard, Premium
+                                                 // pricing tiers in INR
             franchiseModel: 2, // Cloud Kitchen Model ID
+            createdBy: 1
         },
     ];
 }
-
 
 
 export {

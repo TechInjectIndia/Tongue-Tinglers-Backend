@@ -8,12 +8,12 @@ import type {
 
 interface IRegion extends UpdatedMetaData, BaseModel, DeletionMetaData {
     title: string;
-    area?: IArea[];
+    area?: number[];
 }
 
 interface TPayloadRegion {
     title: string;
-    area: number[] | null;
+    area?: number[] | null;
     createdBy?: number;
     updatedBy?: number;
 }

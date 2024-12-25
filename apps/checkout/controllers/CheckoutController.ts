@@ -1,6 +1,7 @@
-import {Request, Response} from "express";
-import {get} from "lodash";
-import {ParsedOrder, PresaleParsedOrder} from "../../../interfaces";
+import { Request, Response } from "express";
+import { get } from "lodash";
+import { ParsedOrder, PresaleParsedOrder } from "../../../interfaces";
+import { Cart } from "../../../interfaces/cart_products";
 
 
 interface OrderParams {
@@ -19,9 +20,13 @@ export default class CheckoutController {
         //TODO @sumeet sir implement this
     }
 
-    static getPreSaleOrder(req: Request, res: Response): Promise<PresaleParsedOrder> {
+    static async getPreSaleOrder(req: Request, res: Response): Promise<PresaleParsedOrder> {
+        let cart = get(req, "cart");
+        if (!cart) {
+            return Promise.reject("Cart is empty");
+        }
 
-        const user_id = get(req, "user_id");
+
         //TODO @sumeet sir implement this
     }
 }

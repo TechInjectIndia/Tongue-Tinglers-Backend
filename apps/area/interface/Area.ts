@@ -1,7 +1,6 @@
 import { BaseMeta } from "@apps/common/models/ApiResponse";
 
 
-
 interface IArea extends BaseMeta {
     title: string;
 }

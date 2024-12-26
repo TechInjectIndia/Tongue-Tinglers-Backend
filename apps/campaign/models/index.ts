@@ -126,14 +126,17 @@ export class CampaignAdRepo
         console.log('nitesh',data)
         const { questionList, ...campaignData } = data;
 
+        console.log(questionList);
+        
+
         // Create the campaign
 
         const response = await CampaignAdModel.create(data);
 
         // Associate questions if question IDs are provided
-        if (questionList && questionList.length > 0) {
-            await response.setQuestions(questionList); // Links questions in the campaign_questions table
-        }
+        // if (questionList && questionList.length > 0) {
+        //     await response.setQuestions(questionList); 
+        // }
         return response;
 
     }

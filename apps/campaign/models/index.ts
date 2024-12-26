@@ -1,5 +1,5 @@
-import {Op} from "sequelize";
-import {TListFiltersCampaigns} from "../../../types";
+import { Op } from "sequelize";
+import { TListFiltersCampaigns } from "../../../types";
 import {
     ICampaign,
     IQuestion,
@@ -23,7 +23,7 @@ export class CampaignAdRepo
     }
 
     public async getCampaignsByFranchiseId(franchiseId: number): Promise<any> {
-        let whereOptions: any = {franchiseId: franchiseId};
+        let whereOptions: any = { franchiseId: franchiseId };
         return await CampaignAdModel.findAll({
             where: whereOptions,
         });
@@ -31,14 +31,33 @@ export class CampaignAdRepo
 
     public async get(id: any,
         options?: { transaction?: any }): Promise<ICampaign | null> {
-        const {transaction} = options || {};
-        const campaign = await CampaignAdModel.findOne({where: {id}});
+        const { transaction } = options || {};
+        const campaign = await CampaignAdModel.findOne({
+            where: { id },
+            include: [
+                {
+                    model: OrganizationModel,
+                    as: "organization",
+                },
+                {
+                    model: RegionModel,
+                    as: "region",
+                    include: [
+                        {
+                            model: AreaModel,
+                            as: "areas",
+                        },
+                    ],
+                },
 
-        const {questionList} = campaign;
+            ]
+        });
+
+        const { questionList } = campaign;
 
         const questions = questionList?.length
             ? await QuestionModel.findAll(
-                {where: {id: questionList}, transaction})
+                { where: { id: questionList }, transaction })
             : [];
 
         const campaignWithQuestions = {
@@ -53,12 +72,12 @@ export class CampaignAdRepo
         // Initialize the whereCondition object
         const whereCondition: any = {
             [Op.or]: [
-                {name: {[Op.iLike]: `%${filters.search}%`}}, // Assuming `name`
-                                                             // is a string
-                {description: {[Op.iLike]: `%${filters.search}%`}}, // Assuming
-                                                                    // `description`
-                                                                    // is a
-                                                                    // string
+                { name: { [Op.iLike]: `%${filters.search}%` } }, // Assuming `name`
+                // is a string
+                { description: { [Op.iLike]: `%${filters.search}%` } }, // Assuming
+                // `description`
+                // is a
+                // string
             ],
         };
 
@@ -70,17 +89,17 @@ export class CampaignAdRepo
             }; // Assuming franchiseId is a string or UUID
         }
         if (filters.filters?.regionId) {
-            whereCondition.regionId = {[Op.eq]: filters.filters.regionId}; // Assuming
-                                                                           // regionId
-                                                                           // is
-                                                                           // an
-                                                                           // integer
+            whereCondition.regionId = { [Op.eq]: filters.filters.regionId }; // Assuming
+            // regionId
+            // is
+            // an
+            // integer
         }
 
         // Add a specific condition for regionId if it needs to support `search`
         if (filters.search && !isNaN(Number(filters.search))) {
             whereCondition[Op.or].push({
-                regionId: {[Op.eq]: Number(filters.search)},
+                regionId: { [Op.eq]: Number(filters.search) },
             });
         }
 
@@ -119,15 +138,15 @@ export class CampaignAdRepo
             ],
         });
 
-        return {total, data};
+        return { total, data };
     }
 
     public async create(data: TPayloadCampaign): Promise<ICampaign> {
-        console.log('nitesh',data)
+        console.log('nitesh', data)
         const { questionList, ...campaignData } = data;
 
         console.log(questionList);
-        
+
 
         // Create the campaign
 
@@ -164,7 +183,7 @@ export class CampaignAdRepo
     }
 
     public async getByName(name: string): Promise<ICampaign | null> {
-        const campaign = await CampaignAdModel.findOne({where: {name}});
+        const campaign = await CampaignAdModel.findOne({ where: { name } });
 
         return campaign;
     }

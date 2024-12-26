@@ -9,8 +9,8 @@ import {
 } from "../../../constants"; // Adjust this import path as necessary
 
 import RepoProvider from "../../RepoProvider";
-import {OrganizationRepo} from "../../organization/models";
-import {CampaignAdRepo} from "../models";
+import { OrganizationRepo } from "../../organization/models";
+import { CampaignAdRepo } from "../models";
 
 
 export default class CampaignController {

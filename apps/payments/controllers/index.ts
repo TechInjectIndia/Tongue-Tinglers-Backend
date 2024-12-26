@@ -37,7 +37,51 @@ const razorpayInstance = new Razorpay({
 
 export default class PaymentsController {
     static async callback(req: Request, res: Response, next: NextFunction) {
-        await RepoProvider.razorpayRepo.callback(req, res);
+        const webhookSignature = req.headers["x-razorpay-signature"];
+        const body = req.body;
+        console.log("Payment Razorpay payload", body);
+        console.log(body.payload);
+        console.log(body.payload.payment_link);
+
+        console.log(CONFIG.RP_WEBHOOK_SECRET);
+
+        const isVerified = validateWebhookSignature(
+            JSON.stringify(body),
+            webhookSignature,
+            CONFIG.RP_WEBHOOK_SECRET
+        );
+        if (isVerified) {
+            if (
+                body.payload &&
+                body.payload.payment_link &&
+                body.payload.payment_link.entity
+            ) {
+                const paymentId = body.payload.payment_link.entity.id;
+                const status = body.payload.payment_link.entity.status;
+                const contractDetails =
+                    await new ContractRepo().getContractByPaymentId(
+                        paymentId as string
+                    );
+                if (contractDetails) {
+                    const paymentDetails: ContractPaymentDetails = {
+                        paymentId: paymentId,
+                        amount: 0,
+                        date: new Date(),
+                        status: status,
+                        additionalInfo: "",
+                    };
+                    contractDetails.payment.push(paymentDetails);
+                    await new ContractRepo().updatePaymentStatus(
+                        contractDetails.id,
+                        contractDetails.payment as unknown as ContractPaymentDetails[]
+                    );
+                }
+            }
+            return res.status(200).send({ message: "Webhook Done" });
+        } else {
+            console.log("Webhook not verified");
+            return res.status(200).send({ message: "Webhook not verified" });
+        }
     }
 
     static async fetchPayment(req: Request, res: Response, next: NextFunction) {
@@ -161,16 +205,16 @@ export default class PaymentsController {
                 additionalInfo: link.description,
             };
 
-            const logs: ITrackable[] = contractDetails.logs;
-            let status: CONTRACT_STATUS = contractDetails.status;
-
-            status = CONTRACT_STATUS.PAYMENT_LINK_SENT;
-
+            let contractPayment: ContractPaymentDetails[] = [];
+            if (contractDetails.payment) {
+                contractPayment = contractDetails.payment;
+                contractPayment.push(paymentPayload);
+            } else {
+                contractPayment = [paymentPayload];
+            }
             await new ContractRepo().updatePayment(
                 contract_id,
-                [paymentPayload],
-                logs,
-                status,
+                contractPayment
             );
 
             try {

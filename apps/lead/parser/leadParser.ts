@@ -3,6 +3,7 @@ import { parseUserToMetaUser } from '../../user/parser/user-parser'
 import { ParseFranchiseModel } from '../../franchise_model/parser/franchiseModelParser'
 import { ParseProposal } from '../../proposal_model/parser/proposalParser'
 import { ParseAffiliate } from '../../affiliate/parser/affilateParser'
+import { ParseFollowDetails } from '../../follow-details/parser/followDetailsParser'
 const parseLead = (lead: ParseLead): ParseLead => {
     if(!lead) return null;
 
@@ -15,9 +16,9 @@ const parseLead = (lead: ParseLead): ParseLead => {
         address: lead.address,
         additionalInfo: lead.additionalInfo,
         amount: lead.amount,
-        followDetails: lead.followDetails,
-        affiliate: lead.affiliate ? lead.affiliate.map((affiliate)=>ParseAffiliate(affiliate)) : null,
-        marketing: lead.marketing,
+        followDetails: lead.followDetails ? lead.followDetails.map((detail) => ParseFollowDetails(detail)) : null,
+        affiliate: lead.affiliate ? lead.affiliate.map((affiliate)=> ParseAffiliate(affiliate)) : null,
+        marketing: lead.marketing ? lead.marketing.map((market)=> parseUserToMetaUser(market)) : null,
         other: lead.other,
         proposalModalId: lead.proposalModalId ? ParseProposal(lead.proposalModalId) : null,
         assignedUser: lead.assignedUser ? parseUserToMetaUser(lead.assignedUser) : null,

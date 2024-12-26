@@ -6,7 +6,7 @@ import {
     TListFilters,
     TListFiltersAreas,
 } from "../../../types";
-import { ILead, Pagination, ParseLead } from "../../../interfaces"; // Use the LeadStatus
+import { ILead, Pagination } from "../../../interfaces"; // Use the LeadStatus
 import {
     AssignModel,
     CampaignAdModel,

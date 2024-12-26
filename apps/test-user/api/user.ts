@@ -238,8 +238,7 @@ async function createDummyMaster(user_id: number) {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- */
-router.get("/superOrg", (async (req, res) => {
+ */router.get("/superOrg", (async (req, res) => {
     try {
 
         const payload = {...req?.body, createdBy: 1};
@@ -345,10 +344,7 @@ router.get("/superOrg", (async (req, res) => {
             }
             superFranOrg = await repo.create(TTOrgParams, admin.id);
         }
-
-        console.log(admin, superFranOrg)
-
-        await createDummyMaster(admin.id);
+        if(createSampleData) await createDummyMaster(admin.id);
 
         //todo @Nitesh uncomment
 
@@ -382,6 +378,45 @@ router.get("/superOrg", (async (req, res) => {
                     RESPONSE_TYPE.SUCCESS,
                     SUCCESS_MESSAGE.ADMIN_CREATED,
                     superFranOrg
+                )
+            );
+    }
+    catch (err) {
+        console.error("Error:", err);
+        return res.status(500).send({
+            message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+        });
+    }
+}))
+
+/**
+ * @swagger
+ * /api/admin/test-user/sampleData:
+ *   get:
+ *     summary: Run this after superOrg to create sample data
+ *     tags: [AUTH]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: User created successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ */router.get("/sampleData", (async (req, res) => {
+    try {
+        const email = 'admin@TongueTingler.com';
+        let admin: TUser = (await new Auth().getUserByEmail(
+            email
+        ));
+         await createDummyMaster(admin.id);
+        return res
+            .status(200)
+            .send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.ADMIN_CREATED
                 )
             );
     }

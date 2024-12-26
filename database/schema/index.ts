@@ -32,6 +32,8 @@ import {QuestionModel} from "./campaign-ui/QuestionModel";
 import {CampaignQuestionModel} from "./campaign-ui/CampaignQuestionModel";
 import {AddressModel} from "./user/address";
 import {RegionModel} from "./franchise/RegionsModel";
+import {CampaignProposalsModel} from "./lead/CampaignProposalsModel";
+import {ProposalModel} from "./lead/proposalModels";
 
 export * from "./user/user.model";
 export * from "./user/address";
@@ -132,7 +134,9 @@ const m = [
     IChecklistModel,
     CampaignQuestionModel,
     QuestionModel,
-    CampaignAdModel
+    ProposalModel,
+    CampaignAdModel,
+    CampaignProposalsModel
 ]
 
 console.log(m)
@@ -164,68 +168,14 @@ const models = {
     CampaignSubmission: CampaignSubmissions.initModel(),
     Affiliate: AffiliateModel.initModel(),
     QuestionModel: QuestionModel.initModel(),
-    CampaignQuestionModel: CampaignQuestionModel.initModel()
+    ProposalModel:ProposalModel.initModel(),
+    CampaignQuestionModel: CampaignQuestionModel.initModel(),
+    CampaignProposalsModel: CampaignProposalsModel.initModel()
 };
 
 console.log(Object.keys(models).join(" "))
 
-// Establish association with CampaignAdModel
-
-// CampaignAdModel.belongsToMany(questionModel, {
-//     through: 'CampaignQuestions',
-//     foreignKey: 'campaignId',
-//     otherKey: 'questionId',
-//     as: 'questions',
-// });
-
-// questionModel.belongsToMany(CampaignAdModel, {
-//     through: 'CampaignQuestions',
-//     foreignKey: 'questionId',
-//     otherKey: 'campaignId',
-//     as: 'campaigns',
-// });
-
-
-// Establish association with FranchiseLocationModel
-// FranchiseeModel.hasOne(addressmodel, {
-//     foreignKey: "franchiseeId",
-//     as: "franchiseLocation",
-// });
-
-// FranchiseLocationModel.belongsTo(FranchiseeModel, {
-//     foreignKey: "franchiseeId",
-//     as: "franchisee",
-// });
-// Establish association with FranchiseLocationModel
-
-// Establish association with SocialMediaDetailsFranchiseModel
-// FranchiseeModel.hasMany(SocialMediaDetailsFranchiseModel, {
-//     foreignKey: "franchiseeId",
-//     as: "socialMediaDetails",
-// });
-
-// SocialMediaDetailsFranchiseModel.belongsTo(FranchiseeModel, {
-//     foreignKey: "franchiseeId",
-//     as: "franchisee",
-// });
-// Establish association with SocialMediaDetailsFranchiseModel
-
-// UserModel.hasMany(UserAddressModel, { foreignKey: "userId", as: "address" });
-
-
-// Establish association with AssignModel
-
 // Establish association with AffiliateModel
-// AffiliateModel.hasMany(SocialMediaDetailsModel, {
-//     foreignKey: "affiliateId",
-//     as: "sm",
-// });
-// SocialMediaDetailsModel.belongsTo(AffiliateModel, {
-//     foreignKey: "affiliateId",
-//     as: "affiliate",
-// });
-// // Establish association with AffiliateModel
-
 
 let currentModel: string = null;
 

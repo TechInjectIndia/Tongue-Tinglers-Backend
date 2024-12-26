@@ -22,6 +22,8 @@ export default class CampaignController {
 
 
             const payload = { ...req.body, createdBy: user_id };
+            console.log('srishti -1')
+            console.log(payload)
 
             const orgExist = new OrganizationRepo().get(payload.organizationId)
             if (!orgExist) {
@@ -53,6 +55,8 @@ export default class CampaignController {
                         )
                     );
             }
+
+            console.log('srishti 0')
 
             const campaign = await new CampaignAdRepo().create(payload);
             return res

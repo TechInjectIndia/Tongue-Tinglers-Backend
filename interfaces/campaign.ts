@@ -25,6 +25,7 @@ type TPayloadCampaign = {
     description?: string;
     questionList: number[];
     createdBy: number;
+    proposalIds: number[];
 }
 
 interface ICampaignSubmisisons {

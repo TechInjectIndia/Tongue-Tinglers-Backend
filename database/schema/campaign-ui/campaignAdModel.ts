@@ -6,12 +6,13 @@ import RepoProvider from "../../../apps/RepoProvider";
 import { RegionModel } from "../franchise/RegionsModel";
 import { LeadsModel } from "../lead/lead.model";
 import { AffiliateModel } from "../lead/affiliateModels";
-import { ProposalLeadModels } from "../lead/proposalModels";
+import { ProposalModel } from "../lead/proposalModels";
 import {
     OrganizationModel
 } from "../../../apps/organization/database/organization_schema";
 import { CampaignQuestionModel } from "./CampaignQuestionModel";
 import { QuestionModel } from "./QuestionModel";
+import {CampaignProposalsModel} from "../lead/CampaignProposalsModel";
 
 
 const { STRING, INTEGER, DATE, NOW, JSONB } = DataTypes;
@@ -40,6 +41,7 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
     public readonly deletedAt!: Date | null;
 
     public setQuestions: (questions: Array<QuestionModel | number>) => Promise<void>;
+    public setProposals: (proposals: Array<ProposalModel | number>) => Promise<void>;
 
     public static initModel() {
         CampaignAdModel.init(
@@ -157,8 +159,11 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
             as: "affiliate",
         });
 
-        CampaignAdModel.hasMany(ProposalLeadModels, {
-            foreignKey: "proposalIds",
+        // Many-to-Many association with ProposalModel
+        CampaignAdModel.belongsToMany(ProposalModel, {
+            through: CampaignProposalsModel, // Junction table
+            foreignKey: "campaignId",
+            otherKey: "proposalId",
             as: "proposals",
         });
 
@@ -208,6 +213,7 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
             );
         });
     }
+
 }
 
 export { CampaignAdModel };

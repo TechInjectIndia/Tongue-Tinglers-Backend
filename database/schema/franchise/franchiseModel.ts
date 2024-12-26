@@ -72,10 +72,12 @@ class FranchiseModel
             scope: { entity_type: "franchise" },
         });
 
+        // I think we dont need this todo @Nitesh confirm!!!
         this.belongsTo(RegionModel, {
             foreignKey: "regionId",
             as: "region",
         });
+
         this.belongsTo(AddressModel, {
             foreignKey: "location",
             as: "address",

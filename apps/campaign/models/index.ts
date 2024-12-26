@@ -8,7 +8,7 @@ import {
 } from "../../../interfaces";
 import {
     AreaModel,
-    CampaignAdModel,
+    CampaignAdModel, ProposalModel,
     QuestionModel,
     RegionModel
 } from "../../../database/schema";
@@ -16,7 +16,6 @@ import IBaseRepo from "../controllers/controller/IController";
 import {
     OrganizationModel
 } from "../../organization/database/organization_schema";
-
 export class CampaignAdRepo
     implements IBaseRepo<ICampaign, TListFiltersCampaigns> {
     constructor() {
@@ -89,11 +88,7 @@ export class CampaignAdRepo
             }; // Assuming franchiseId is a string or UUID
         }
         if (filters.filters?.regionId) {
-            whereCondition.regionId = { [Op.eq]: filters.filters.regionId }; // Assuming
-            // regionId
-            // is
-            // an
-            // integer
+            whereCondition.regionId = { [Op.eq]: filters.filters.regionId };
         }
 
         // Add a specific condition for regionId if it needs to support `search`
@@ -131,6 +126,10 @@ export class CampaignAdRepo
                     as: "organization",
                 },
                 {
+                    model: ProposalModel,
+                    as: "proposals",
+                },
+                {
                     model: QuestionModel,
                     as: "questions",
                     attributes: ["id", "question", "type"],
@@ -142,20 +141,21 @@ export class CampaignAdRepo
     }
 
     public async create(data: TPayloadCampaign): Promise<ICampaign> {
-        console.log('nitesh', data)
-        const { questionList, ...campaignData } = data;
 
-        console.log(questionList);
-
+        const { proposalIds, questionList, ...campaignData } = data;
 
         // Create the campaign
-
+        console.log('srishti 1')
         const response = await CampaignAdModel.create(data);
 
         // Associate questions if question IDs are provided
-        // if (questionList && questionList.length > 0) {
-        //     await response.setQuestions(questionList); 
-        // }
+        if (questionList && questionList.length > 0) {
+            await response.setQuestions(questionList);
+        }
+        console.log('srishti 2')
+        if (proposalIds && proposalIds.length > 0) {
+            await response.setProposals(proposalIds); // Associate proposals with the campaign
+        }
         return response;
 
     }
@@ -188,3 +188,5 @@ export class CampaignAdRepo
         return campaign;
     }
 }
+
+import {ProposalModelRepo} from "../../proposal_model/models";

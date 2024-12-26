@@ -15,7 +15,6 @@ import {
 import { sequelize } from "../../../config";
 import { UserModel } from "../user/user.model";
 import { CampaignAdModel } from "../campaign-ui/campaignAdModel";
-import { AssignModel } from "./assigneeModels";
 import RepoProvider from "../../../apps/RepoProvider";
 
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW } = DataTypes;

@@ -2,94 +2,99 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { SeoImage, ProposalModels } from "../../../interfaces";
 import { sequelize } from "../../../config";
 import { INTEGER } from "sequelize";
+import {CampaignAdModel} from "../campaign-ui/campaignAdModel";
+import {FranchiseModel} from "../franchise/franchiseModel";
+import {CampaignProposalsModel} from "./CampaignProposalsModel";
 
 const { STRING, TEXT, DATE, JSONB, UUIDV4 } = DataTypes;
 
-// Define the attributes for lead creation
-interface LeadCreationAttributes
+interface ProposalCreationAttributes
     extends Optional<
         ProposalModels,
-        | "id"
-        | "createdAt"
-        | "createdBy"
-        | "updatedAt"
-        | "updatedBy"
-        | "deletedAt"
-        | "deletedBy"
+        "id" | "createdAt" | "createdBy" | "updatedAt" | "updatedBy" | "deletedAt" | "deletedBy"
     > {}
 
-// Define the model class for ProposalModels
-class ProposalLeadModels
-    extends Model<ProposalModels, LeadCreationAttributes>
-    implements ProposalModels
-{
+class ProposalModel extends Model<ProposalModels, ProposalCreationAttributes>
+    implements ProposalModels {
     public id!: number;
-    public franchiseModel!: number;
+    public franchiseModel!: number; // One-to-Many: FranchiseModel ID
     public title!: string;
-    /* comma separated string */
-    public prices!: string;
+    public prices!: string; // Comma-separated prices
     public createdAt!: Date;
     public createdBy!: number;
     public updatedAt!: Date | null;
     public updatedBy!: number | null;
     public deletedAt!: Date | null;
     public deletedBy!: number | null;
-}
+
+    public static initModel() {
 
 // Initialize the Proposal model
 
-ProposalLeadModels.init(
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            allowNull: false,
-            autoIncrement: true, 
-        },
-        title: {
-            type: STRING,
-            allowNull: false,
-        },
-        prices: {
-            type: STRING,
-            allowNull: false,
-        },
-        franchiseModel: {
-            type: INTEGER,
-            allowNull: false,
-        },
-        createdAt: {
-            type: DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
-        },
-        createdBy: {
-            type: INTEGER,
-            allowNull: false,
-        },
-        updatedAt: {
-            type: DATE,
-            allowNull: true,
-        },
-        updatedBy: {
-            type: INTEGER,
-            allowNull: true,
-        },
-        deletedAt: {
-            type: DATE,
-            allowNull: true,
-        },
-        deletedBy: {
-            type: INTEGER,
-            allowNull: true,
-        },
-    },
-    {
-        sequelize,
-        tableName: "proposal_model",
-        timestamps: false, // Disable automatic timestamp management since we're defining our own
+        ProposalModel.init(
+            {
+                id: {
+                    type: DataTypes.INTEGER,
+                    primaryKey: true,
+                    allowNull: false,
+                    autoIncrement: true,
+                },
+                title: {
+                    type: STRING,
+                    allowNull: false,
+                },
+                prices: {
+                    type: STRING,
+                    allowNull: false,
+                },
+                franchiseModel: {
+                    type: INTEGER,
+                    allowNull: false,
+                },
+                createdAt: {
+                    type: DATE,
+                    allowNull: false,
+                    defaultValue: DataTypes.NOW,
+                },
+                createdBy: {
+                    type: INTEGER,
+                    allowNull: false,
+                },
+                updatedAt: {
+                    type: DATE,
+                    allowNull: true,
+                },
+                updatedBy: {
+                    type: INTEGER,
+                    allowNull: true,
+                },
+                deletedAt: {
+                    type: DATE,
+                    allowNull: true,
+                },
+                deletedBy: {
+                    type: INTEGER,
+                    allowNull: true,
+                },
+            },
+            {
+                sequelize,
+                tableName: "proposal_model",
+                timestamps: false, // Disable automatic timestamp management since we're defining our own
+            }
+        );
+        return ProposalModel;
     }
-);
+    public static associate() {
+        // Many-to-Many association with CampaignAdModel
+        ProposalModel.belongsToMany(CampaignAdModel, {
+            through: CampaignProposalsModel, // Junction table
+            foreignKey: "proposalId",
+            otherKey: "campaignId",
+            as: "campaigns",
+        });
+    }
+}
 
 // Export the model
-export { ProposalLeadModels };
+export { ProposalModel };

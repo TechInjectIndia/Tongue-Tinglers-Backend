@@ -37,7 +37,7 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public additionalInfo!: string | null;
     public source!: LeadSource;
     public sourceInfo!: string | null;
-    public followDetails?: number[] | null;
+    public followDetails?: FollowDetails[] | null;
     public referBy!: UserDetails;
     public logs!: Record<string, ITrackable[]>;
     public notes!: Note[] | null;
@@ -87,7 +87,7 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
             through: "followDetailsJoin", // Join table name
             foreignKey: "leadId", // Foreign key in the join table
             otherKey: "follow_details_id", // Other foreign key in the join table
-            as: "FollowDetail", // Alias for the relationship
+            as: "followDetails", // Alias for the relationship
         });
     }
 

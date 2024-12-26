@@ -64,7 +64,7 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     additionalInfo: string | null;
     source: LeadSource;
     sourceInfo: string | null;
-    followDetails?: number[] | null;
+    followDetails?: FollowDetails[] | null;
     referBy: UserDetails | null;
     logs: Record<string, ITrackable[]>;
     notes: Note[] | null;

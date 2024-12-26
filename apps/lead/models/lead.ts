@@ -11,7 +11,7 @@ import {
     AssignModel,
     CampaignAdModel,
     LeadsModel,
-    UserModel
+    UserModel,
 } from "../../../database/schema";
 // enum from interfaces
 import { createLeadsResponse } from "../../../libraries";
@@ -22,8 +22,7 @@ import moment from "moment";
 import { FollowDetailsModel } from "../../follow-details/model/followDetailModel";
 
 export class LeadRepo {
-    constructor() {
-    }
+    constructor() {}
 
     // Update the status of a lead
     public async updateStatus(
@@ -83,30 +82,79 @@ export class LeadRepo {
                     model: UserModel,
                     as: "assignee",
                 },
-
+                {
+                    model: FollowDetailsModel,
+                    as: "followDetails",
+                    through: {attributes: []},
+                    include: [
+                        {
+                            model: UserModel,
+                            as: "created",
+                            attributes: [
+                                "id",
+                                "firstName",
+                                "lastName",
+                                "email",
+                            ],
+                        },
+                        {
+                            model: UserModel,
+                            as: "followed",
+                            attributes: [
+                                "id",
+                                "firstName",
+                                "lastName",
+                                "email",
+                            ],
+                        },
+                    ],
+                },
             ],
-            transaction
+            transaction,
         });
         return parseLead(data);
     }
 
     // Get lead by ID
-    public async get(id: number, options?: { transaction?: any }): Promise<ILead> {
+    public async get(
+        id: number,
+        options?: { transaction?: any }
+    ): Promise<ILead> {
         try {
             const { transaction } = options || {};
             const data = await LeadsModel.findOne({
                 raw: true,
                 where: { id },
-                transaction
+                include: [
+                    {
+                        model: FollowDetailsModel,
+                        as: "followDetails",
+                        include: [
+                            {
+                                model: UserModel,
+                                as: "created",
+                            },
+                            {
+                                model: UserModel,
+                                as: "followed",
+                                attributes: [
+                                    "id",
+                                    "firstName",
+                                    "lastName",
+                                    "email",
+                                ],
+                            },
+                        ],
+                        attributes: [],
+                    },
+                ],
+                transaction,
             });
             // console.dir(data.toJSON(), { depth: true });
 
-            return data;
-
-
-        }
-        catch (error: any) {
-            handleError(error, id)
+            return data as unknown as ILead;
+        } catch (error: any) {
+            handleError(error, id);
         }
     }
 
@@ -118,7 +166,7 @@ export class LeadRepo {
                 id: id,
             },
         });
-        return data as ILead | null;
+        return data as unknown as ILead;
     }
 
     // Check if lead exists with a specific email and exclude a specific ID
@@ -132,11 +180,13 @@ export class LeadRepo {
                 id: { [Op.ne]: excludeId },
             },
         });
-        return data as ILead | null;
+        return data as unknown as ILead;
     }
 
     // List leads with filters
-    public async list(filters: TListFiltersAreas): Promise<Pagination<ParseLead>> {
+    public async list(
+        filters: TListFiltersAreas
+    ): Promise<Pagination<ParseLead>> {
         const where: any = {};
 
         const validStatuses = [
@@ -204,10 +254,10 @@ export class LeadRepo {
             const date = moment(filters.filters.date); // Parse the given date
             where.created_at = {
                 [Op.between]: [
-                    date.startOf('day').toDate(), // Start of the day (00:00)
-                    date.endOf('day').toDate(),   // End of the day (23:59:59)
+                    date.startOf("day").toDate(), // Start of the day (00:00)
+                    date.endOf("day").toDate(), // End of the day (23:59:59)
                 ],
-            };// Adjust for exact or range
+            }; // Adjust for exact or range
         }
         if (filters?.filters.affiliate) {
             where.affiliate = {
@@ -236,11 +286,10 @@ export class LeadRepo {
             offset: filters.offset,
             limit: filters.limit,
             where: where,
-            include: include
+            include: include,
         }).then((data) => {
-            console.log('data: ', data);
+            console.log("data: ", data);
             return data.map((lead) => {
-                console.log('lead: ', lead);
                 return parseLead(lead.dataValues);
             });
         });
@@ -249,7 +298,10 @@ export class LeadRepo {
     }
 
     // Create a new lead
-    public async create(data: TLeadPayload, userId: number): Promise<ILead | null> {
+    public async create(
+        data: TLeadPayload,
+        userId: number
+    ): Promise<ILead | null> {
         try {
             const user = await UserModel.findByPk(userId);
             if (!user) {
@@ -264,13 +316,12 @@ export class LeadRepo {
             return LeadsModel.create(leadData, {
                 userId: user.id,
                 userName: getUserName(user),
-            });
-        }
-        catch (error) {
-            handleError(error, data)
-            const message = `${error.message ?? ''}: error while creating lead`
+            }) as unknown as ILead;
+        } catch (error) {
+            handleError(error, data);
+            const message = `${error.message ?? ""}: error while creating lead`;
             // todo @sunil getHandledErrorDTO(message, error)
-            return null
+            return null;
         }
     }
 
@@ -279,21 +330,34 @@ export class LeadRepo {
         id: number,
         data: TLeadPayload
     ): Promise<[affectedCount: number]> {
-        let followDetailsIds: number[] = []
+        let followDetailsIds: number[] = [];
         const lead = await LeadsModel.findByPk(id);
         if (!lead) {
             throw new Error("Lead not found");
         }
-        
-
-        console.log('data: ', data);
-        if(data.followDetails && Array.isArray(data.followDetails)){
-            const followDetailsCreated = await FollowDetailsModel.bulkCreate(data.followDetails, {returning: true})
-            
-            followDetailsIds = followDetailsCreated.map((details)=>details.id)
+        if (data.followDetails && Array.isArray(data.followDetails)) {
+            for (const detail of data.followDetails) {
+                console.dir("detail: " + detail, { depth: null });
+                if (detail.id) {
+                    // If ID exists, update the record
+                    const existingDetail = await FollowDetailsModel.findByPk(
+                        detail.id
+                    );
+                    if (existingDetail) {
+                        await existingDetail.update(detail);
+                    } else {
+                        console.warn(
+                            `FollowDetail with ID ${detail.id} not found. Skipping update.`
+                        );
+                    }
+                } else {
+                    // If no ID, create a new record
+                    const newDetail = await FollowDetailsModel.create(detail);
+                    followDetailsIds.push(newDetail.id);
+                    await lead.addFollowDetails(followDetailsIds);
+                }
+            }
         }
-
-        await lead.addFollowDetails(followDetailsIds)
         lead.set(data);
         await lead.save();
         return [1];
@@ -310,8 +374,7 @@ export class LeadRepo {
             });
 
             return response;
-        }
-        catch (error) {
+        } catch (error) {
             console.error("Error updating lead:", error);
             throw new Error("Failed to assign lead to user"); // Rethrow or
             // handle as
@@ -328,8 +391,7 @@ export class LeadRepo {
                 },
             });
             return deletedCount;
-        }
-        catch (error) {
+        } catch (error) {
             console.error("Error deleting leads:", error);
             throw new Error("Failed to delete leads"); // Rethrow or handle as
             // needed

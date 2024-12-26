@@ -1,43 +1,39 @@
-import { ParseLead } from '../../../interfaces/leads'
+import { ParseLead } from '../interface/lead'
 import { parseUserToMetaUser } from '../../user/parser/user-parser'
-const parseLead = (lead: any) => {
-    console.log('lead>>>>>>>>>>>>>>: ', lead);
-
+import { ParseFranchiseModel } from '../../franchise_model/parser/franchiseModelParser'
+import { ParseProposal } from '../../proposal_model/parser/proposalParser'
+import { ParseAffiliate } from '../../affiliate/parser/affilateParser'
+const parseLead = (lead: ParseLead): ParseLead => {
     if(!lead) return null;
-
-    console.log("$$$$");
-
-
 
     const data: ParseLead = {
         id: lead.id,
-        campaignId: lead.campaignId,
-        status: lead.status,
-        address: lead.address,
-        additionalInfo: lead.additionalInfo,
-        affiliate: lead.affiliate,
-        email: lead.email,
         firstName: lead.firstName,
         lastName: lead.lastName,
-        followDetails: [],
-        franchiseModals: lead.franchiseModals,
-        logs: lead.logs,
-        marketing: lead.marketing,
-        notes: lead.notes,
+        email: lead.email,
         phoneNumber: lead.phoneNumber,
-        other: lead.other,
-        referBy: lead.referBy,
-        source: lead.source,
-        sourceInfo: lead.sourceInfo,
+        address: lead.address,
+        additionalInfo: lead.additionalInfo,
         amount: lead.amount,
-        proposalModalId: lead.proposalModalId,
+        followDetails: lead.followDetails,
+        affiliate: lead.affiliate ? lead.affiliate.map((affiliate)=>ParseAffiliate(affiliate)) : null,
+        marketing: lead.marketing,
+        other: lead.other,
+        proposalModalId: lead.proposalModalId ? ParseProposal(lead.proposalModalId) : null,
+        assignedUser: lead.assignedUser ? parseUserToMetaUser(lead.assignedUser) : null,
+        franchiseModals: lead.franchiseModals ? lead.franchiseModals.map((modal) => ParseFranchiseModel(modal) ) : null,
+        referBy: lead.referBy ? parseUserToMetaUser(lead.referBy) : null,
+        notes: lead.notes,
         createdAt: lead.createdAt,
-        createdBy: null,
+        createdBy: parseUserToMetaUser(lead.createdBy),
         updatedAt: lead.updatedAt,
-        updatedBy: lead.updater ? parseUserToMetaUser(lead.updater) : null,
+        updatedBy: lead.updatedBy ? parseUserToMetaUser(lead.updatedBy) : null,
         deletedAt: lead.deletedAt,
-        deletedBy: lead.deleter ? parseUserToMetaUser(lead.deleter) : null,
-        assignedUser: lead.assignee ? parseUserToMetaUser(lead.assignee) : null,
+        deletedBy: lead.deletedBy ? parseUserToMetaUser(lead.deletedBy) : null,
+        campaignId: lead.campaignId,
+        status: lead.status,
+        source: lead.source,
+        sourceInfo: lead.sourceInfo
     }
     return data
 }

@@ -21,6 +21,8 @@ class FollowDetailsModel extends Model<FollowDetails> implements FollowDetailsCr
     static associate(){
 
         this.belongsTo(UserModel, { as: "created", foreignKey: "createdBy" });
+        this.belongsTo(UserModel, { as: "updated", foreignKey: "updatedBy" });
+        this.belongsTo(UserModel, { as: "followed", foreignKey: "followedBy" });
         
     }
 

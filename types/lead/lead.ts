@@ -25,7 +25,7 @@ export interface TLeadPayload {
   source: LeadSource;
   sourceInfo?: string | null;
   status: LeadStatus;
-  followDetails?: number[] | null;
+  followDetails?: FollowDetails[] | null;
   referBy?: UserDetails;
   logs?: Record<string, ITrackable[]> | null;
   notes?: Note[] | null;

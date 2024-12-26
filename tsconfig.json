@@ -2,60 +2,26 @@
   "compilerOptions": {
     "sourceMap": true,
     "inlineSources": true,
-    "target": "es6", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "module": "commonjs", /* Specify what module code is generated. */
+    "target": "es6",
+    "module": "commonjs",
     "outDir": "./build",
     "allowJs": true,
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "lib": [
-      "es2019",
-      "dom"
-    ],
-    "baseUrl": "server",
+    "lib": ["es2019", "dom"],
+    "baseUrl": "./",  // Set base directory to apps
     "paths": {
-      "@constants": [
-        "./constants"
-      ],
-      "config/*": [
-        "./config/*"
-      ],
-      "contracts/*": [
-        "./contracts/*"
-      ],
-      "controllers/*": [
-        "./controllers/*"
-      ],
-      "database/*": [
-        "./database/*"
-      ],
-      "libraries/*": [
-        "libraries/*"
-      ],
-      "interfaces/*": [
-        "./interfaces/*"
-      ],
-      "middlewares/*": [
-        "./middlewares/*"
-      ],
-      "models/*": [
-        "./models/*"
-      ],
-      "routes/*": [
-        "./routes/*"
-      ],
-      "services/*": [
-        "./services/*"
-      ]
+      "@apps/*": ["apps/*"]  // Alias '@apps' to point to 'apps' directory
     }
   },
   "downlevelIteration": true,
   "include": [
-    "./server/**/*",
-    "./app.ts",
-    "src/**/*.ts"
-, "types", "database", "config", "constants", "routes", "libraries"  ],
+    "./apps/**/*",  // Include all files in the apps directory
+    "./app.ts",     // If app.ts is outside the apps folder
+    "src/**/*.ts",  // If you have any src folder
+    "types/**/*"    // If you have any type definitions
+  ],
   "exclude": [
     "node_modules"
   ]

@@ -5,6 +5,7 @@ import { IArea } from "../../../interfaces";
 import { UserModel } from "../user/user.model";
 import RepoProvider from "../../../apps/RepoProvider";
 import {RegionModel} from "./RegionsModel";
+import {AddressModel} from "../user/address";
 
 interface AreaCreationAttributes
     extends Optional<IArea, "id" | "createdAt" | "updatedAt" | "deletedAt"> {}
@@ -36,10 +37,7 @@ class AreaModel extends Model<IArea, AreaCreationAttributes> implements IArea {
             as: "deleter",
             onDelete: "SET NULL",
         });
-        RegionModel.hasMany(AreaModel, {
-            foreignKey: "regionId", // Ensure this foreign key exists
-            as: "areas",
-        });
+
     }
 
     public static initModel() {

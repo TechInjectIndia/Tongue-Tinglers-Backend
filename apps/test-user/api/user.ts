@@ -343,9 +343,10 @@ router.get("/superOrg", (async (req, res) => {
             }
             superFranOrg = await repo.create(TTOrgParams, admin.id);
         }
+
         console.log(admin, superFranOrg)
 
-        if(createSampleData) await createDummyMaster(admin.id);
+        await createDummyMaster(admin.id);
 
         //todo @Nitesh uncomment
 

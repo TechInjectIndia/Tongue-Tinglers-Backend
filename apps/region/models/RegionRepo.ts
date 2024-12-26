@@ -7,7 +7,7 @@ import {
     TPayloadRegion,
     IRegion,
 } from "../../../interfaces";
-import { RegionModel } from "../../../database/schema";
+import {AreaModel, RegionModel} from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IRegionController';
 
 export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
@@ -69,6 +69,7 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
             offset: filters.offset,
             limit: filters.limit,
             where: whereCondition,
+            include:{model: AreaModel, as: "areas"}
         });
 
         return { total, data };
@@ -76,6 +77,7 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
 
     public async create(data: TPayloadRegion): Promise<IRegion> {
         const response = await RegionModel.create(data);
+        if(data.area) await response.addAreas(data.area);
         return response;
     }
 

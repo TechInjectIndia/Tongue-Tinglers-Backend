@@ -6,7 +6,7 @@ interface ICampaign extends UpdatedMetaData, BaseModelIdNumber, DeletionMetaData
     organizationId: number;
     regionId: number;
     description?: string;
-    questionList: string[];
+    questionList: number[];
     affiliateId?: number
     proposalIds: number[];
     start: Date;
@@ -23,7 +23,7 @@ type TPayloadCampaign = {
     region?: string;
     organizationId: number;
     description?: string;
-    questionList: string[];
+    questionList: number[];
     createdBy: number;
 }
 
@@ -41,7 +41,7 @@ interface ParsedCampaign {
     organizationId: number;
     regionId: number;
     description?: string;
-    questionList: string[];
+    questionList: number[];
     affiliateId?: number
     proposalIds: number[];
     start: Date;

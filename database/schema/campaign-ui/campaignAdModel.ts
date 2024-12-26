@@ -3,31 +3,30 @@ import { sequelize } from "../../../config";
 
 import { ICampaign } from "../../../interfaces";
 import RepoProvider from "../../../apps/RepoProvider";
-import {RegionModel} from "../franchise/RegionsModel";
-import {LeadsModel} from "../lead/lead.model";
-import {AffiliateModel} from "../lead/affiliateModels";
-import {ProposalLeadModels} from "../lead/proposalModels";
+import { RegionModel } from "../franchise/RegionsModel";
+import { LeadsModel } from "../lead/lead.model";
+import { AffiliateModel } from "../lead/affiliateModels";
+import { ProposalLeadModels } from "../lead/proposalModels";
 import {
     OrganizationModel
 } from "../../../apps/organization/database/organization_schema";
-import {CampaignQuestionModel} from "./CampaignQuestionModel";
-import {QuestionModel} from "./QuestionModel";
+import { CampaignQuestionModel } from "./CampaignQuestionModel";
+import { QuestionModel } from "./QuestionModel";
 
 
 const { STRING, INTEGER, DATE, NOW, JSONB } = DataTypes;
 
 interface CampaignCreationAttributes
-    extends Optional<ICampaign, "id" | "createdAt" | "updatedAt" | "deletedAt"> {}
+    extends Optional<ICampaign, "id" | "createdAt" | "updatedAt" | "deletedAt"> { }
 
 class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
-    implements ICampaign
-{
+    implements ICampaign {
     public id!: number;
     public name!: string;
     public organizationId!: number;
     public regionId: number;
     public description?: string;
-    public questionList!: string[];
+    public questionList!: number[];
     public affiliateId?: number;
     public proposalIds!: number[];
     public start!: Date;
@@ -39,6 +38,8 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
+
+    public setQuestions: (questions: Array<QuestionModel | number>) => Promise<void>;
 
     public static initModel() {
         CampaignAdModel.init(
@@ -72,7 +73,7 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
                     comment: "Description of the campaign",
                 },
                 questionList: {
-                    type: JSONB,
+                    type: DataTypes.ARRAY(DataTypes.INTEGER), // Array of integers
                     allowNull: false,
                     comment: "List of questions associated with the campaign",
                 },

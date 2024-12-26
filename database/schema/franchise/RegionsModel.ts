@@ -1,12 +1,18 @@
 // models/Region.ts
-import { Model, DataTypes, Optional } from 'sequelize';
-import { sequelize } from "../../../config";
-import { IRegion } from '../../../interfaces';
-import { UserModel } from '../user/user.model';;
+import {DataTypes, Model, Optional} from 'sequelize';
+import {sequelize} from "../../../config";
+import {IRegion} from '../../../interfaces';
+import {UserModel} from '../user/user.model';
+import {AreaModel} from "./AreaModel";
 
-interface RegionCreationAttributes extends Optional<IRegion, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
+;
 
-class RegionModel extends Model<IRegion, RegionCreationAttributes> implements IRegion {
+interface RegionCreationAttributes
+    extends Optional<IRegion, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> {
+}
+
+class RegionModel extends Model<IRegion, RegionCreationAttributes>
+    implements IRegion {
     public id: number;
     public title: string;
     public area: number[] | null;
@@ -18,65 +24,83 @@ class RegionModel extends Model<IRegion, RegionCreationAttributes> implements IR
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
 
-    public static associate() {
-        RegionModel.belongsTo(UserModel, { foreignKey: 'createdBy', as: 'creator', onDelete: 'SET NULL' });
-        RegionModel.belongsTo(UserModel, { foreignKey: 'updatedBy', as: 'updater', onDelete: 'SET NULL' });
-        RegionModel.belongsTo(UserModel, { foreignKey: 'deletedBy', as: 'deleter', onDelete: 'SET NULL' });
+    public addAreas!: (areas: Array<AreaModel | number>) => Promise<void>;
+
+    public static initModel() {
+        RegionModel.init(
+            {
+                id: {
+                    type: DataTypes.INTEGER,
+                    primaryKey: true,
+                    allowNull: false,
+                    autoIncrement: true
+                },
+                title: {
+                    type: DataTypes.STRING(255),
+                    allowNull: false,
+                },
+                area: {
+                    type: DataTypes.JSON,
+                    allowNull: true,
+                    defaultValue: null
+                },
+                createdBy: {
+                    type: DataTypes.INTEGER,
+                    allowNull: false
+                },
+                updatedBy: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true
+                },
+                deletedBy: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true
+                },
+                createdAt: {
+                    type: DataTypes.DATE,
+                    allowNull: false,
+                    defaultValue: DataTypes.NOW,
+                    field: "created_at",
+                },
+                updatedAt: {
+                    type: DataTypes.DATE,
+                    allowNull: false,
+                    defaultValue: DataTypes.NOW,
+                    field: "updated_at",
+                },
+                deletedAt: {
+                    type: DataTypes.DATE,
+                    allowNull: true,
+                    defaultValue: null,
+                    field: "deleted_at",
+                },
+            },
+            {
+                sequelize,
+                tableName: 'regions',
+            }
+        );
+        return RegionModel;
     }
+
+    public static associate() {
+        RegionModel.belongsTo(UserModel,
+            {foreignKey: 'createdBy', as: 'creator', onDelete: 'SET NULL'});
+        RegionModel.belongsTo(UserModel,
+            {foreignKey: 'updatedBy', as: 'updater', onDelete: 'SET NULL'});
+        RegionModel.belongsTo(UserModel,
+            {foreignKey: 'deletedBy', as: 'deleter', onDelete: 'SET NULL'});
+
+        RegionModel.belongsToMany(AreaModel, {
+            through: "region_area", // Join table name
+            foreignKey: "regionId",
+            otherKey: "areaId",
+            as: "areas",
+        });
+    }
+
+
 }
 
-RegionModel.init(
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            allowNull: false,
-            autoIncrement: true
-        },
-        title: {
-            type: DataTypes.STRING(255),
-            allowNull: false,
-        },
-        area: {
-            type: DataTypes.JSON,
-            allowNull: true,
-            defaultValue: null
-        },
-        createdBy: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        updatedBy: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
-        deletedBy: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
-        createdAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
-            field: "created_at",
-        },
-        updatedAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
-            field: "updated_at",
-        },
-        deletedAt: {
-            type: DataTypes.DATE,
-            allowNull: true,
-            defaultValue: null,
-            field: "deleted_at",
-        },
-    },
-    {
-        sequelize,
-        tableName: 'regions',
-    }
-);
 
-export { RegionModel };
+export {RegionModel};

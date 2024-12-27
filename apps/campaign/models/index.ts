@@ -145,14 +145,14 @@ export class CampaignAdRepo
         const { proposalIds, questionList, ...campaignData } = data;
 
         // Create the campaign
-        console.log('srishti 1')
+
         const response = await CampaignAdModel.create(data);
 
         // Associate questions if question IDs are provided
         if (questionList && questionList.length > 0) {
             await response.setQuestions(questionList);
         }
-        console.log('srishti 2')
+
         if (proposalIds && proposalIds.length > 0) {
             await response.setProposals(proposalIds); // Associate proposals with the campaign
         }

@@ -4,6 +4,7 @@ import {sequelize} from "../../../config";
 import {IRegion} from '../../../interfaces';
 import {UserModel} from '../user/user.model';
 import {AreaModel} from "./AreaModel";
+import {CampaignAdModel} from "../campaign-ui/campaignAdModel";
 
 ;
 

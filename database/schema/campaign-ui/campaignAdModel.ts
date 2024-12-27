@@ -149,12 +149,13 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
             foreignKey: "campaignId",
             as: "campaign_ad",
         });
-        CampaignAdModel.hasOne(RegionModel, {
+
+        CampaignAdModel.belongsTo(RegionModel, {
             foreignKey: "regionId",
             as: "region",
         });
 
-        CampaignAdModel.hasOne(AffiliateModel, {
+        CampaignAdModel.belongsTo(AffiliateModel, {
             foreignKey: "affiliateId",
             as: "affiliate",
         });
@@ -178,8 +179,6 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
             otherKey: "questionId",
             as: "questions",
         });
-
-
     }
 
     public static hook() {

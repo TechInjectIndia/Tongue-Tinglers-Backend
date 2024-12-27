@@ -7,6 +7,12 @@ import {
     TPayloadQuestion,
     TPayloadRegion
 } from "../../interfaces";
+import {QuestionRepo} from "../questions/models";
+import {AreaRepo} from "../area/models/AreaRepo";
+import {RegionRepo} from "../region/models/RegionRepo";
+import {FranchiseModelRepo} from "../franchise_model/models";
+import {ProposalModelRepo} from "../proposal_model/models";
+import {CampaignAdRepo} from "../campaign/models";
 
 function getSampleQuestions(): TPayloadQuestion[] {
 
@@ -156,6 +162,53 @@ function getSampleProposals(): TPayloadProposalModel[] {
     ];
 }
 
+async function createDummyMaster(user_id: number) {
+    const questions = getSampleQuestions();
+    const areas = getSampleAreas();
+    const regions = getSampleRegions();
+    const franchiseModels = getSampleFranchiseModels();
+    const proposals = getSampleProposals();
+
+    const qRepo = new QuestionRepo();
+    const questionsProm = Promise.all(questions.map(
+        q => qRepo.create({createdBy: user_id, ...q}, user_id)));
+
+    const aRepo = new AreaRepo();
+    const areasProm = Promise.all(areas.map(
+        a => aRepo.create({createdBy: user_id, ...a}))).then(_ => {
+        const rRepo = new RegionRepo();
+        Promise.all(regions.map(
+            r => rRepo.create({createdBy: user_id, ...r})));
+    });
+
+    const fmRepo = new FranchiseModelRepo();
+    const franchiseModelsProm = Promise.all(franchiseModels.map(
+        fm => fmRepo.create(fm, user_id))).then(_ => {
+        const pRepo = new ProposalModelRepo();
+        Promise.all(proposals.map(p => pRepo.create(p)));
+    });
+
+    // Campaign creation logic
+    const campaignPayload = {
+        name: "Punjab 24-25 Q1",
+        description: "Campaign in Punjabi 2025 Quarter 1",
+        questionList: [5, 4, 3, 2, 1],
+        organizationId: 1,
+        regionId: 1,
+        start: "2025-01-01",
+        to: "2025-02-28",
+        proposalIds: [1, 2, 3,5],
+        affiliateId: null,
+        createdBy: user_id,
+    };
+
+    const campaignRepo = new CampaignAdRepo();
+    const createCampaignProm = campaignRepo.create(campaignPayload);
+
+    return Promise.all(
+        [areasProm, franchiseModelsProm, questionsProm]).then(()=>createCampaignProm);
+}
+
 
 export {
     getSampleQuestions,
@@ -163,4 +216,5 @@ export {
     getSampleAreas,
     getSampleFranchiseModels,
     getSampleProposals,
+    createDummyMaster
 }

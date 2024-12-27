@@ -30,6 +30,7 @@ import {
 } from "../../../interfaces/organization";
 import {QuestionRepo} from "../../questions/models";
 import {
+    createDummyMaster,
     getSampleAreas,
     getSampleFranchiseModels,
     getSampleProposals,
@@ -190,38 +191,6 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
         });
     }
 }))
-
-async function createDummyMaster(user_id: number) {
-    const questions = getSampleQuestions();
-    const areas = getSampleAreas();
-    const regions = getSampleRegions();
-    const franchiseModels = getSampleFranchiseModels();
-    const proposals = getSampleProposals();
-
-    const qRepo = new QuestionRepo();
-    const questionsProm = Promise.all(questions.map(
-        q => qRepo.create({createdBy: user_id, ...q}, user_id)));
-
-    const aRepo = new AreaRepo();
-    const areasProm = Promise.all(areas.map(
-        a => aRepo.create({createdBy: user_id, ...a}))).then(_ => {
-        const rRepo = new RegionRepo();
-        Promise.all(regions.map(
-            r => rRepo.create({createdBy: user_id, ...r})));
-    });
-
-    const fmRepo = new FranchiseModelRepo();
-    const franchiseModelsProm = Promise.all(franchiseModels.map(
-        fm => fmRepo.create(fm, user_id))).then(_ => {
-        const pRepo = new ProposalModelRepo();
-        Promise.all(proposals.map(p => pRepo.create(p)));
-    });
-
-    const res = Promise.all(
-        [areasProm, franchiseModelsProm, questionsProm]);
-
-    return res;
-}
 
 /**
  * @swagger

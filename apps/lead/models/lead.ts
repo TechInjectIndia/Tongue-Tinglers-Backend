@@ -144,13 +144,13 @@ export class LeadRepo {
                                     "lastName",
                                     "email",
                                 ],
-                            },
-                            {
-                                model: CampaignAdModel,
-                                as: "campaign_ad",
                             }
                         ],
                         attributes: [],
+                    },
+                    {
+                        model: CampaignAdModel,
+                        as: "campaign_ad",
                     },
                 ],
                 transaction,

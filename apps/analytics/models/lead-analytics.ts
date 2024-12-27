@@ -4,6 +4,7 @@ import { CampaignAdRepo } from "../../campaign/models";
 import { TLeadFilters } from "../../../types";
 import { TLeadsList } from "../../../types";
 import RepoProvider from "../../RepoProvider";
+import { LeadTable } from "../../lead/interface/lead";
 
 export class AnalyticsModel {
     constructor() {
@@ -91,7 +92,7 @@ export class AnalyticsModel {
             where: whereConditions,
         });
 
-        return { total, data } as TLeadsList;
+        return { total, data };
     }
 
     public async getLeadStatusByCampaignIdsAndDateRange(campaignIds: string[], startDate: Date, endDate: Date): Promise<any> {

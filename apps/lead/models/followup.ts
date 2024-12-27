@@ -1,12 +1,12 @@
 import { Op } from "sequelize";
-import { ILead } from "../../../interfaces";
 import { LeadsModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IFollowUpsController';
+import { LeadTable } from "../interface/lead";
 
-export class FollowUpsRepo implements IBaseRepo<ILead, any> {
+export class FollowUpsRepo implements IBaseRepo<LeadTable, any> {
     constructor() { }
 
-    public async getTodayFollowUps(assignedTo: string, attributes: string[] = []): Promise<ILead[]> {
+    public async getTodayFollowUps(assignedTo: string, attributes: string[] = []): Promise<LeadTable[]> {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const tomorrow = new Date(today);
@@ -52,7 +52,7 @@ export class FollowUpsRepo implements IBaseRepo<ILead, any> {
         return data;
     }
 
-    public async getLeadsByTodayFollowUps(attributes: string[] = []): Promise<ILead[]> {
+    public async getLeadsByTodayFollowUps(attributes: string[] = []): Promise<LeadTable[]> {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const tomorrow = new Date(today);
@@ -90,6 +90,6 @@ export class FollowUpsRepo implements IBaseRepo<ILead, any> {
             }],
         });
 
-        return data;
+        return data 
     }
 }

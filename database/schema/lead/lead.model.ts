@@ -5,11 +5,7 @@ import {
     FollowDetails,
     FranchiseModels,
     ILead,
-    ITrackable,
     LeadAddress,
-    LeadSource,
-    LeadStatus,
-    Note,
     UserDetails,
 } from "../../../interfaces";
 import { sequelize } from "../../../config";
@@ -18,16 +14,18 @@ import { CampaignAdModel } from "../campaign-ui/campaignAdModel";
 import { AssignModel } from "./assigneeModels";
 import RepoProvider from "../../../apps/RepoProvider";
 import { FollowDetailsModel } from "../../../apps/follow-details/model/followDetailModel";
+import { LeadTable, Note, LeadStatus, LeadSource, ITrackable } from "../../../apps/lead/interface/lead";
 
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW } = DataTypes;
 
 interface LeadCreationAttributes
-    extends Optional<ILead, "id" | "createdAt" | "updatedAt" | "deletedAt"> { }
+    extends Optional<LeadTable, "id" | "createdAt" | "updatedAt" | "deletedAt"> { }
 
-class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
+class LeadsModel extends Model<LeadTable, LeadCreationAttributes> implements LeadTable {
+    public followDetails?: FollowDetails[];
     public assignedUser: number;
     public id!: number;
-    public campaignId?: number;
+    public campaignId: number;
     public firstName!: string;
     public status!: LeadStatus;
     public lastName!: string;
@@ -37,15 +35,14 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public additionalInfo!: string | null;
     public source!: LeadSource;
     public sourceInfo!: string | null;
-    public followDetails?: FollowDetails[] | null;
-    public referBy!: UserDetails;
-    public logs!: Record<string, ITrackable[]>;
-    public notes!: Note[] | null;
-    public proposalModalId?: number | null;
-    public amount?: number | null;
-    public franchiseModals: Array<FranchiseModels> | null;
-    public affiliate: Array<Affiliate> | null;
-    public marketing: Array<string> | null;
+    public referBy!: number;
+    public logs: Record<string, ITrackable[]>;
+    public notes: Note[] | null;
+    public proposalModalId: number | null;
+    public amount: number | null;
+    public franchiseModals: number[];
+    public affiliate: number[];
+    public marketing: number[];
     public other: Array<ExtraFields> | null;
     public createdBy!: number;
     public updatedBy!: number | null;
@@ -135,6 +132,10 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
                     type: ENUM(...Object.values(LeadStatus)),
                     allowNull: false,
                 },
+                logs: {
+                    type: JSONB,
+                    allowNull: true,
+                },
                 source: {
                     type: ENUM(...Object.values(LeadSource)),
                     allowNull: false,
@@ -143,16 +144,8 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
                     type: STRING,
                     allowNull: true,
                 },
-                // followDetails: {
-                //     type: DataTypes.ARRAY(INTEGER),
-                //     allowNull: true,
-                // },
                 referBy: {
-                    type: JSONB,
-                    allowNull: true,
-                },
-                logs: {
-                    type: JSONB,
+                    type: INTEGER,
                     allowNull: true,
                 },
                 notes: {

@@ -1,8 +1,9 @@
 import {FollowDetails, ParsedFollowDetails} from "../../follow-details/interface/followDetails"
-import {Affiliate, ParsedAffiliate} from "../../affiliate/interface/affiliate"
-import { FranchiseModelsPayload, ParsedFranchiseModels } from "../../franchise_model/interface/franchiseModel";
+import { ParsedAffiliate} from "../../affiliate/interface/affiliate"
+import { ParsedFranchiseModels } from "../../franchise_model/interface/franchiseModel";
 import { ParsedProposal } from "../../proposal_model/interface/proposal";
 import { ParsedUser } from "../../user/interface/user";
+import { BaseMeta } from "../../../database/schema/base/Base";
 
 interface LeadAddress {
     address: string;
@@ -17,6 +18,12 @@ interface Note {
     note: string;
     userDetails: number;
     date: Date;
+}
+
+interface ITrackable {
+    userDetails: number;
+    events: string;
+    timeline: Date;
 }
 
 enum LeadSource {
@@ -75,7 +82,8 @@ export interface LeadPayload {
     phoneNumber: string;
     address: LeadAddress;
     additionalInfo: string | null;
-    followDetails: FollowDetails[] | null;
+    logs: Record<string, ITrackable[]>;
+    followDetails?: FollowDetails[] | null;
     referBy: number | null;
     notes: Note[] | null;
     proposalModalId: number | null;
@@ -86,6 +94,8 @@ export interface LeadPayload {
     other: ExtraFields[] | null;
     assignedUser: number | null;
 }
+
+export interface LeadTable extends LeadPayload, BaseMeta {}
 
 export interface ParseLead {
     id: number;
@@ -99,7 +109,7 @@ export interface ParseLead {
     phoneNumber: string;
     address: LeadAddress;
     additionalInfo: string | null;
-    logs: [];
+    logs: [] | null;
     followDetails: ParsedFollowDetails[] | null;
     referBy: ParsedUser | null;
     notes: Note[] | null;
@@ -117,3 +127,5 @@ export interface ParseLead {
     deletedAt: Date | null;
     deletedBy: ParsedUser | null;
 }
+
+export {Note, LeadStatus, LeadSource, ITrackable}

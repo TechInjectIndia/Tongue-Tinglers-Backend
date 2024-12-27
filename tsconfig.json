@@ -12,7 +12,7 @@
     "lib": ["es2019", "dom"],
     "baseUrl": "./",  // Set base directory to apps
     "paths": {
-      "@apps/*": ["apps/*"]  // Alias '@apps' to point to 'apps' directory
+      "*": ["*"]  // Allows any path inside the apps folder to be resolved
     }
   },
   "downlevelIteration": true,

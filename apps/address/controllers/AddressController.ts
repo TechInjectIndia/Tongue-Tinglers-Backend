@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { AddressRepo } from '../models/AddressRepo';
-import { sendResponse } from "../../../libraries";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
+
 import { get } from "lodash";
-import { parseAddress } from '../parser/addressParser';
+import { sendResponse } from 'libraries';
+import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from 'constants/response-messages';
+import { AddressRepo } from '../models/AddressRepo';
+
 
 export default class UserAddressController {
     /**
@@ -57,9 +58,20 @@ export default class UserAddressController {
     static async getUserAddressById(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = get(req, 'user_id', '');
-            const id = get(req.params, 'id', '');
-            console.log('userId', userId, 'id', id);
-            const userAddress = await new AddressRepo().findById(id as number);
+
+
+            const { id } = req.params;
+            if (!id || (id && Number.isNaN(parseInt(id)))) {
+                return res.status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `Address ${ERROR_MESSAGE.ID_SHOULD_BE_NUMBER}`,
+                        )
+                    );
+            }
+
+            const userAddress = await new AddressRepo().findById(parseInt(id));
 
             if (!userAddress) {
                 return res.status(404)
@@ -90,10 +102,20 @@ export default class UserAddressController {
     static async updateUserAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = get(req, 'user_id', '');
-            const { id } = req.params;
-            const payload = { ...req?.body, userId: userId };
 
-            const updatedUserAddress = await new AddressRepo().updateById(id as number, payload);
+            const payload = { ...req?.body, userId: userId };
+            const { id } = req.params;
+            if (!id || (id && Number.isNaN(parseInt(id)))) {
+                return res.status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `Address ${ERROR_MESSAGE.ID_SHOULD_BE_NUMBER}`,
+                        )
+                    );
+            }
+
+            const updatedUserAddress = await new AddressRepo().updateById(parseInt(id), payload);
             if (!updatedUserAddress) {
                 return res.status(404)
                     .send(
@@ -121,7 +143,17 @@ export default class UserAddressController {
     static async deleteUserAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = req.params;
-            const deleted = await new AddressRepo().deleteById(id as number);
+            if (!id || (id && Number.isNaN(parseInt(id)))) {
+                return res.status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            `Address ${ERROR_MESSAGE.ID_SHOULD_BE_NUMBER}`,
+                        )
+                    );
+            }
+
+            const deleted = await new AddressRepo().deleteById(parseInt(id));
 
             if (!deleted) {
                 return res.status(404)

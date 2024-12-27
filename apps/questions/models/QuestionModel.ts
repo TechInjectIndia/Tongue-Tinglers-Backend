@@ -1,8 +1,9 @@
 import { DataTypes, INTEGER, Model, Optional } from "sequelize";
-import { IOptions, IQuestion, QuestionType } from '../../../interfaces';
 import { sequelize } from "../../../config";
-import { CampaignAdModel } from './campaignAdModel';
-import { CampaignQuestionModel } from "./CampaignQuestionModel";
+
+import { CampaignQuestionModel } from "database/schema/campaign-ui/CampaignQuestionModel";
+import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
+;
 
 const { STRING, UUID, DATE, JSONB, ENUM, NOW, UUIDV4, BOOLEAN } = DataTypes;
 

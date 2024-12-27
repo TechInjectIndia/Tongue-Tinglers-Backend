@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 
 import { ICampaign } from "../../../interfaces";
-import RepoProvider from "../../../apps/RepoProvider";
+
 import { RegionModel } from "../franchise/RegionsModel";
 import { LeadsModel } from "../lead/lead.model";
 import { AffiliateModel } from "../lead/affiliateModels";
@@ -10,9 +10,10 @@ import { ProposalLeadModels } from "../lead/proposalModels";
 import {
     OrganizationModel
 } from "../../../apps/organization/database/organization_schema";
-import { CampaignQuestionModel } from "./CampaignQuestionModel";
-import { QuestionModel } from "./QuestionModel";
-    
+
+import { QuestionModel } from "apps/questions/models/QuestionModel";
+
+
 
 const { STRING, INTEGER, DATE, NOW, JSONB } = DataTypes;
 

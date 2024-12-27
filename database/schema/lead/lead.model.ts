@@ -17,6 +17,7 @@ import { UserModel } from "../user/user.model";
 import { CampaignAdModel } from "../campaign-ui/campaignAdModel";
 import { AssignModel } from "./assigneeModels";
 import RepoProvider from "../../../apps/RepoProvider";
+import { FollowDetailsModel } from "../../../apps/follow-details/model/followDetailModel";
 
 const { STRING, TEXT, DATE, JSONB, ENUM, NOW } = DataTypes;
 
@@ -36,7 +37,7 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public additionalInfo!: string | null;
     public source!: LeadSource;
     public sourceInfo!: string | null;
-    public followDetails!: FollowDetails[] | null;
+    public followDetails?: FollowDetails[] | null;
     public referBy!: UserDetails;
     public logs!: Record<string, ITrackable[]>;
     public notes!: Note[] | null;
@@ -53,26 +54,40 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
 
+    public addFollowDetail!: (details: FollowDetailsModel | number) => Promise<void>;
+    public addFollowDetails!: (details: Array<FollowDetailsModel | number>) => Promise<void>;
+    public setFollowDetailses!: (details: Array<FollowDetailsModel | number>) => Promise<void>;
+    public getFollowDetailses!: () => Promise<FollowDetailsModel[]>;
+    public removeFollowDetails!: (details: FollowDetailsModel | number) => Promise<void>;
+    public removeFollowDetailses!: (details: Array<FollowDetailsModel | number>) => Promise<void>;
+
+
     public static associate() {
-        LeadsModel.belongsTo(UserModel, {
+        this.belongsTo(UserModel, {
             foreignKey: "createdBy",
             as: "creator",
         });
-        LeadsModel.belongsTo(UserModel, {
+        this.belongsTo(UserModel, {
             foreignKey: "updatedBy",
             as: "updater",
         });
-        LeadsModel.belongsTo(UserModel, {
+        this.belongsTo(UserModel, {
             foreignKey: "deletedBy",
             as: "deleter",
         });
-        LeadsModel.belongsTo(UserModel, {
+        this.belongsTo(UserModel, {
             foreignKey: "assignedUser",
             as: "assignee",
         });
-        LeadsModel.belongsTo(CampaignAdModel, {
+        this.belongsTo(CampaignAdModel, {
             foreignKey: "campaignId",
             as: "campaign_ad",
+        });
+        this.belongsToMany(FollowDetailsModel, {
+            through: "followDetailsJoin", // Join table name
+            foreignKey: "leadId", // Foreign key in the join table
+            otherKey: "follow_details_id", // Other foreign key in the join table
+            as: "followDetails", // Alias for the relationship
         });
     }
 
@@ -128,10 +143,10 @@ class LeadsModel extends Model<ILead, LeadCreationAttributes> implements ILead {
                     type: STRING,
                     allowNull: true,
                 },
-                followDetails: {
-                    type: JSONB,
-                    allowNull: true,
-                },
+                // followDetails: {
+                //     type: DataTypes.ARRAY(INTEGER),
+                //     allowNull: true,
+                // },
                 referBy: {
                     type: JSONB,
                     allowNull: true,

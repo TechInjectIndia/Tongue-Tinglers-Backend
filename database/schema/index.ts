@@ -30,6 +30,7 @@ import {PdiCheckpointModel} from "./franchise/pdiCheckPointModel";
 import {AffiliateModel} from "./lead/affiliateModels";
 import {QuestionModel} from "./campaign-ui/QuestionModel";
 import {CampaignQuestionModel} from "./campaign-ui/CampaignQuestionModel";
+import {FollowDetailsModel} from "../../apps/follow-details/model/followDetailModel"
 import {AddressModel} from "./user/address";
 import {RegionModel} from "./franchise/RegionsModel";
 
@@ -132,7 +133,8 @@ const m = [
     IChecklistModel,
     CampaignQuestionModel,
     QuestionModel,
-    CampaignAdModel
+    CampaignAdModel,
+    FollowDetailsModel
 ]
 
 console.log(m)
@@ -164,7 +166,10 @@ const models = {
     CampaignSubmission: CampaignSubmissions.initModel(),
     Affiliate: AffiliateModel.initModel(),
     QuestionModel: QuestionModel.initModel(),
-    CampaignQuestionModel: CampaignQuestionModel.initModel()
+    CampaignQuestionModel: CampaignQuestionModel.initModel(),
+    FollowDetailModel: FollowDetailsModel.initModel(),
+
+
 };
 
 console.log(Object.keys(models).join(" "))

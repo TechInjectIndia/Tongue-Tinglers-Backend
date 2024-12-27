@@ -88,7 +88,7 @@ export default class AffiliateController {
             const trashOnly = get(req?.query, "trashOnly", "");
             let sorting = get(req?.query, "sorting", "id DESC");
             sorting = sorting.toString().split(" ");
-            const user_id = get(req, 'user_id', 0);
+
 
             const Affiliates = await new AffiliateRepo().list({
                 offset: skip as number,
@@ -183,7 +183,7 @@ export default class AffiliateController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const user_id = get(req, 'user_id', 0);
+            const user_id = get(req, 'user_id', );
 
             const existingAffiliate = await new AffiliateRepo().get(id as number);
 
@@ -270,6 +270,6 @@ export default class AffiliateController {
                 message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
         }
-    }   
+    }
 
 }

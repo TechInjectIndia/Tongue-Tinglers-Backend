@@ -44,7 +44,6 @@ export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters
     }
 
     public async create(data: TPayloadProposalModel): Promise<ProposalModels> {
-
         const response = await ProposalLeadModels.create(data);
         return response;
     }

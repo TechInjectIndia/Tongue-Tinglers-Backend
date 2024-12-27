@@ -217,10 +217,8 @@ async function createDummyMaster(user_id: number) {
         Promise.all(proposals.map(p => pRepo.create(p)));
     });
 
-    const res = Promise.all(
+    return Promise.all(
         [areasProm, franchiseModelsProm, questionsProm]);
-
-    return res;
 }
 
 /**

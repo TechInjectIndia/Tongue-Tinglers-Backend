@@ -1,44 +1,63 @@
-import { ParseLead } from '../../../interfaces/leads'
-import { parseUserToMetaUser } from '../../user/parser/user-parser'
-const parseLead = (lead: any) => {
-
-    if(!lead) return null;
-
-    console.log("$$$$");
-
-
+import { ParseLead } from "../interface/lead";
+import { parseUserToMetaUser } from "../../user/parser/user-parser";
+import { ParseFranchiseModel } from "../../franchise_model/parser/franchiseModelParser";
+import { ParseProposal } from "../../proposal_model/parser/proposalParser";
+import { ParseAffiliate } from "../../affiliate/parser/affilateParser";
+import { ParsedAffiliate } from "../../affiliate/interface/affiliate";
+import { parseFollowDetails } from "../../follow-details/parser/followDetailsParser";
+import { ParsedFollowDetails } from "../../follow-details/interface/followDetails";
+import { ParsedFranchiseModels } from "../../franchise_model/interface/franchiseModel";
+const parseLead = (lead: any): ParseLead => {
+    console.log("lead: ", lead);
+    if (!lead) return null;
 
     const data: ParseLead = {
-        id: lead.id ?? null,
-        campaignId: lead.campaign_ad ?? null,
-        status: lead.status,
-        address: lead.address,
-        additionalInfo: lead.additionalInfo,
-        affiliate: lead.affiliate,
-        email: lead.email,
+        id: lead.id,
         firstName: lead.firstName,
         lastName: lead.lastName,
-        followDetails: lead.followDetails,
-        franchiseModals: lead.franchiseModals,
-        logs: lead.logs,
-        marketing: lead.marketing,
-        notes: lead.notes,
+        email: lead.email,
         phoneNumber: lead.phoneNumber,
+        address: lead.address,
+        additionalInfo: lead.additionalInfo,
+        amount: lead.amount,
+        logs: lead.logs,
+        followDetails: lead.followDetails
+            ? lead.followDetails.map((detail: ParsedFollowDetails) =>
+                  parseFollowDetails(detail)
+              )
+            : [],
+        affiliate: lead.affiliate
+            ? lead.affiliate.map((affiliate: ParsedAffiliate) =>
+                  ParseAffiliate(affiliate)
+              )
+            : [],
+        marketing: lead.marketing,
         other: lead.other,
-        referBy: lead.referBy,
+        proposalModalId: lead.proposalModalId
+            ? ParseProposal(lead.proposalModalId)
+            : null,
+        assignedUser: lead.assignedUser
+            ? parseUserToMetaUser(lead.assignedUser)
+            : null,
+        franchiseModals: lead.franchiseModals
+            ? lead.franchiseModals.map((modal: ParsedFranchiseModels) =>
+                  ParseFranchiseModel(modal)
+              )
+            : null,
+        referBy: lead.referBy ? parseUserToMetaUser(lead.referBy) : null,
+        notes: lead.notes,
+        createdAt: lead.createdAt,
+        createdBy: parseUserToMetaUser(lead.createdBy),
+        updatedAt: lead.updatedAt,
+        updatedBy: lead.updatedBy ? parseUserToMetaUser(lead.updatedBy) : null,
+        deletedAt: lead.deletedAt,
+        deletedBy: lead.deletedBy ? parseUserToMetaUser(lead.deletedBy) : null,
+        campaignId: lead.campaign_ad,
+        status: lead.status,
         source: lead.source,
         sourceInfo: lead.sourceInfo,
-        amount: lead.amount,
-        proposalModalId: lead.proposalModalId,
-        createdAt: lead.createdAt,
-        createdBy: parseUserToMetaUser(lead.creator),
-        updatedAt: lead.updatedAt,
-        updatedBy: lead.updater ? parseUserToMetaUser(lead.updater) : null,
-        deletedAt: lead.deletedAt,
-        deletedBy: lead.deleter ? parseUserToMetaUser(lead.deleter) : null,
-        assignedUser: lead.assignee ? parseUserToMetaUser(lead.assignee) : null
-    }
-    return data
-}
+    };
+    return data;
+};
 
-export { parseLead }
+export { parseLead };

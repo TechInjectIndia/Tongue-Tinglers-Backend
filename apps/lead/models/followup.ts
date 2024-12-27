@@ -15,27 +15,27 @@ export class FollowUpsRepo implements IBaseRepo<ILead, any> {
         const data = await LeadsModel.findAll({
             raw: true,
             attributes,
-            where: {
-                [Op.and]: [
-                    {
-                        followDetails: {
-                            [Op.not]: null,
-                            [Op.ne]: [],
-                        },
-                    },
-                    {
-                        [Op.or]: [
-                            {
-                                '$followDetails.followedDate$': {
-                                    [Op.gte]: today,
-                                    [Op.lt]: tomorrow,
-                                },
-                            },
-                        ],
-                    },
-                    // { 'assign.assignedTo': assignedTo },
-                ],
-            },
+            // where: {
+            //     [Op.and]: [
+            //         {
+            //             followDetails: {
+            //                 [Op.not]: null,
+            //                 [Op.ne]: [],
+            //             },
+            //         },
+            //         {
+            //             [Op.or]: [
+            //                 {
+            //                     '$followDetails.followedDate$': {
+            //                         [Op.gte]: today,
+            //                         [Op.lt]: tomorrow,
+            //                     },
+            //                 },
+            //             ],
+            //         },
+            //         // { 'assign.assignedTo': assignedTo },
+            //     ],
+            // },
             include: [{
                 model: LeadsModel,
                 as: 'followDetails',
@@ -61,22 +61,22 @@ export class FollowUpsRepo implements IBaseRepo<ILead, any> {
         const data = await LeadsModel.findAll({
             raw: true,
             attributes,
-            where: {
-                [Op.and]: [
-                    {
-                        followDetails: {
-                            [Op.not]: null,
-                            [Op.ne]: [],
-                        },
-                    },
-                    {
-                        '$followDetails.followedDate$': {
-                            [Op.gte]: today,
-                            [Op.lt]: tomorrow,
-                        },
-                    },
-                ],
-            },
+            // where: {
+            //     [Op.and]: [
+            //         {
+            //             followDetails: {
+            //                 [Op.not]: null,
+            //                 [Op.ne]: [],
+            //             },
+            //         },
+            //         {
+            //             '$followDetails.followedDate$': {
+            //                 [Op.gte]: today,
+            //                 [Op.lt]: tomorrow,
+            //             },
+            //         },
+            //     ],
+            // },
             include: [{
                 model: LeadsModel,
                 as: 'followDetails',

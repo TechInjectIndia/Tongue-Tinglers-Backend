@@ -1,3 +1,4 @@
+import { FollowDetails } from "../apps/follow-details/interface/followDetails";
 import { ParsedMeta } from "../database/schema/base/Base";
 import type {
     UpdatedMetaData,
@@ -63,7 +64,7 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     additionalInfo: string | null;
     source: LeadSource;
     sourceInfo: string | null;
-    followDetails: Array<FollowDetails> | null;
+    followDetails?: FollowDetails[] | null;
     referBy: UserDetails | null;
     logs: Record<string, ITrackable[]>;
     notes: Note[] | null;
@@ -89,7 +90,7 @@ interface ParseLead extends ParsedMeta {
     additionalInfo: string | null;
     source: LeadSource;
     sourceInfo: string | null;
-    followDetails: Array<FollowDetails> | null;
+    followDetails?: [] | null;
     referBy: UserDetails | null;
     logs: Record<string, ITrackable[]>;
     notes: Note[] | null;
@@ -235,16 +236,16 @@ interface LeadAddress {
     PAN: string | null;
 }
 
-interface FollowDetails {
-    followedDate: Date | null;
-    followedBy: UserDetails;
-    notes: string | null;
-    description: string | null;
-    status: followStatus;
-    createdAt: Date;
-    createdBy: UserDetails;
-    reminder: Date | null;
-}
+// interface FollowDetails {
+//     followedDate: Date | null;
+//     followedBy: UserDetails;
+//     notes: string | null;
+//     description: string | null;
+//     status: followStatus;
+//     createdAt: Date;
+//     createdBy: UserDetails;
+//     reminder: Date | null;
+// }
 
 interface parsedAffiliate {
 

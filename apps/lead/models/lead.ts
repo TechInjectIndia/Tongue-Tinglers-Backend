@@ -6,7 +6,7 @@ import {
     TListFilters,
     TListFiltersAreas,
 } from "../../../types";
-import { ILead, Pagination, ParseLead } from "../../../interfaces"; // Use the LeadStatus
+import { ILead, Pagination } from "../../../interfaces"; // Use the LeadStatus
 import {
     AssignModel,
     CampaignAdModel,
@@ -18,6 +18,7 @@ import { createLeadsResponse } from "../../../libraries";
 import { handleError } from "../../common/utils/HelperMethods";
 import { getUserName } from "../../common/utils/commonUtils";
 import { parseLead } from "../parser/leadParser";
+import {ParseLead} from "../interface/lead"
 import moment from "moment";
 import { FollowDetailsModel } from "../../follow-details/model/followDetailModel";
 
@@ -85,7 +86,7 @@ export class LeadRepo {
                 {
                     model: FollowDetailsModel,
                     as: "followDetails",
-                    through: {attributes: []},
+                    through: { attributes: [] },
                     include: [
                         {
                             model: UserModel,
@@ -144,6 +145,10 @@ export class LeadRepo {
                                     "email",
                                 ],
                             },
+                            {
+                                model: CampaignAdModel,
+                                as: "campaign_ad",
+                            }
                         ],
                         attributes: [],
                     },
@@ -337,7 +342,6 @@ export class LeadRepo {
         }
         if (data.followDetails && Array.isArray(data.followDetails)) {
             for (const detail of data.followDetails) {
-                console.dir("detail: " + detail, { depth: null });
                 if (detail.id) {
                     // If ID exists, update the record
                     const existingDetail = await FollowDetailsModel.findByPk(

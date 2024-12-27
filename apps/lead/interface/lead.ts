@@ -99,6 +99,7 @@ export interface ParseLead {
     phoneNumber: string;
     address: LeadAddress;
     additionalInfo: string | null;
+    logs: [];
     followDetails: ParsedFollowDetails[] | null;
     referBy: ParsedUser | null;
     notes: Note[] | null;

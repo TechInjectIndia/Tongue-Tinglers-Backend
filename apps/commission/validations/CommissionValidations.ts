@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { get } from "lodash";
 import { HelperMethods } from "../../common/utils/HelperMethods";
+import { COMMISSION_PAID_STATUS } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
 
 
 const createCommissionSchema = Joi.object({
@@ -33,7 +34,6 @@ const createCommissionSchema = Joi.object({
         }),
 
 });
-
 
 const validateCreateCommission = (req: Request, res: Response, next: NextFunction) => {
     const { error } = createCommissionSchema.validate(req.body);
@@ -149,5 +149,23 @@ const validateSearchCommission = (req: Request, res: Response, next: NextFunctio
     next();
 };
 
+const updateCommissionEntityStatusSchema = Joi.object({
+    status: Joi.string()
+        .valid(...Object.values(COMMISSION_PAID_STATUS))
+        .required()
+        .messages({
+            "string.base": "Status must be a string.",
+            "any.only": `Status must be one of ${Object.values(COMMISSION_PAID_STATUS).join(", ")}.`,
+            "any.required": "Status is required.",
+        }),
+});
+const validateUpdateCommissionEntityStatus = (req: Request, res: Response, next: NextFunction) => {
+    const { error } = updateCommissionEntityStatusSchema.validate(req.body);
+    if (error) {
+        return res.status(400).json(HelperMethods.getErrorResponse(error.details[0].message));
+    }
+    next();
+};
 
-export { validateCreateCommission, validateUpdateCommission, validateDeleteCommission, validateGetCommissionById, validateCreateCommissionMapEntry, validateSearchCommission };
+
+export { validateCreateCommission, validateUpdateCommission, validateDeleteCommission, validateGetCommissionById, validateCreateCommissionMapEntry, validateSearchCommission, validateUpdateCommissionEntityStatus };

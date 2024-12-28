@@ -1,4 +1,4 @@
-import { CommissionEntityMapTable, ICommissionEntityMapping, ICommissionEntityMappingResponse } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
+import { COMMISSION_PAID_STATUS, CommissionEntityMapTable, ICommissionEntityMapping, ICommissionEntityMappingResponse } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
 import { ICommission } from "../../../interfaces/commission";
 import { APIResponse } from "../../common/models/ApiResponse";
 
@@ -22,5 +22,7 @@ export interface ICommissionRepo {
     search(searchText: string, type?: string): Promise<APIResponse<ICommission[]>>;
 
     getMappingsData(): Promise<APIResponse<ICommissionEntityMappingResponse[]>>;
+
+    updateCommisionEntityStatus(id: number, status: COMMISSION_PAID_STATUS): Promise<APIResponse<boolean>>;
 }
 

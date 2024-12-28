@@ -6,6 +6,7 @@ import {
 } from "../../../database/schema/commission/CommissionTable";
 import {ICommission} from "../../../interfaces/commission";
 import {
+    COMMISSION_PAID_STATUS,
     CommissionEntityMapTable,
     ICommissionEntityMapping,
     ICommissionEntityMappingResponse
@@ -268,6 +269,27 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         }
         catch (error) {
             handleError(error, title);
+            return HelperMethods.getErrorResponse();
+        }
+    }
+
+    async updateCommisionEntityStatus(id: number,
+        status: COMMISSION_PAID_STATUS): Promise<APIResponse<boolean>> {
+        try {
+
+            await CommissionEntityMapTable.update({
+                status: status
+            }, {
+                where: {
+                    id: id
+                }
+            });
+
+            return HelperMethods.getSuccessResponse<boolean>(true);
+
+        }
+        catch (error) {
+            handleError(error, id, status);
             return HelperMethods.getErrorResponse();
         }
     }

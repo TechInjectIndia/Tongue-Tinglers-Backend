@@ -1,5 +1,5 @@
 import { BaseMeta } from "../../../database/schema/base/Base";
-import { BaseAddress, ParsedAddress } from "../../../types";
+import { Address, BaseAddress, ParsedAddress } from "../../../types";
 import { ParsedUser } from "../../user/interface/user";
 
 export enum ORGANIZATION_TYPE {
@@ -63,3 +63,7 @@ export interface ParsedOrganization {
     deletedAt: Date;
 }
 
+export interface OrganizationAddressPayload {
+    billingAddress?: Address;
+    shippingAddress?: Array<Address>;
+}

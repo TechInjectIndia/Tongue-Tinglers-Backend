@@ -154,7 +154,7 @@ router.use("/migration", migrationRouter);
 router.use("/document", auth, documentRouter);
 router.use(`${ADMIN}/agreement-docs`, agreementDocRouter);
 router.use(`/pet-pooja`, petPoojaApiRouter);
-router.use(`/organization`, organizationRouter);
+router.use(`/organization`,auth, organizationRouter);
 
 
 router.post(

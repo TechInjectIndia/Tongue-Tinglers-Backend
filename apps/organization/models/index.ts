@@ -10,6 +10,7 @@ import {
 import {OrganizationModel} from "../database/organization_schema";
 import RepoProvider from "../../RepoProvider";
 import {parseOrganization} from "../parser/organizationParser"
+import {OrganizationAddressPayload} from "../interface/organization"
 
 export class OrganizationRepo
     implements IBaseRepo<IOrganizationPayloadDataWithMeta, ParsedOrganization, TListFilters> {
@@ -316,4 +317,57 @@ export class OrganizationRepo
             return null
         }
     }
+
+
+    public async updateAddressOfOrganization(organizationId: number, payload:OrganizationAddressPayload, userId:number): Promise<[affectedCount: number]> {
+        try {
+            const shippingAddressIds = []
+            const organization = await OrganizationModel.findByPk(organizationId);
+            console.log('organization: ', organization);
+            if (!organization) {
+                throw new Error('Organization not found');
+            }
+
+            if(payload.billingAddress){
+                // Update the address of the organization
+                const updatedAddress = await AddressModel.update(payload.billingAddress, {
+                    where: { id: organization.dataValues.billingAddressId },
+                });
+            }
+
+            if(payload.shippingAddress && Array.isArray(payload.shippingAddress)){
+                for (const detail of payload.shippingAddress) {
+                    if (detail.id) {
+                        // If ID exists, update the record
+                        const existingDetail = await AddressModel.findByPk(
+                            detail.id
+                        );
+                        if (existingDetail) {
+                            await existingDetail.update(detail);
+                        } else {
+                            console.warn(
+                                `Shipping Address with ID ${detail.id} not found. Skipping update.`
+                            );
+                        }
+                    } else {
+                        // If no ID, create a new record
+                        const newDetail = await AddressModel.create(detail);
+                        shippingAddressIds.push(newDetail.id);
+                        await organization.addShippingAddresses(shippingAddressIds);
+                    }
+                }
+            }
+            organization.set({
+                updatedBy: userId,
+                updatedAt: new Date(),
+            });
+            await organization.save();
+            return [1];
+        } catch (error) {
+            console.error('Error updating address of organization:', error);
+            throw error;
+        }
+    }
+
+
 }

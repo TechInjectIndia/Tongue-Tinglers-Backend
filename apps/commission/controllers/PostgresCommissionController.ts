@@ -234,4 +234,23 @@ export class PostgresCommissionController implements ICommissionController {
         }
         res.status(200).send(result);
     }
+
+    async updateCommisionEntityStatus(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        const id = parseInt(get(req.params, "id"));
+        if (isNaN(id)) throw Error('Missing id or isNaN');
+
+        const status = get(req.body, "status");
+
+        const result = await RepoProvider.commissionRepo.updateCommisionEntityStatus(id, status);
+
+        if (!result.success) {
+            res.status(500).send(result);
+            return;
+        }
+        res.status(200).send(result);
+    }
 }

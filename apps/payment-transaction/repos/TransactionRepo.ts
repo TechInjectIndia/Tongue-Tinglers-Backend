@@ -4,13 +4,13 @@ import { ITransactionRepo } from "./ITransactionRepo";
 import {
     TransactionModel,
 } from "../../../database/schema/payment-transaction/PaymentTransactionModel";
-
+import {TransactionFilter} from "../interface/transaction"
 class TransactionRepo implements ITransactionRepo {
     async getAll(
         page: number,
         limit: number,
         search: string,
-        filters: object,
+        filters: TransactionFilter,
     ): Promise<Pagination<any>> {
         try {
             const offset = (page - 1) * limit;
@@ -25,9 +25,25 @@ class TransactionRepo implements ITransactionRepo {
                 ];
             }
 
-            // Add filters
-            if (filters) {
-                Object.assign(query, filters);
+            // Add entity_type filter
+            if (filters.entity) {
+                query.entity = filters.entity;
+            }
+
+            // Add status filter
+            if (filters.status) {
+                query.status = filters.status;
+            }
+
+            // Add minAmount and maxAmount filters
+            if (filters.minAmount || filters.maxAmount) {
+                query.amount = {};
+                if (filters.minAmount) {
+                    query.amount[Op.gte] = filters.minAmount; // Greater than or equal to minAmount
+                }
+                if (filters.maxAmount) {
+                    query.amount[Op.lte] = filters.maxAmount; // Less than or equal to maxAmount
+                }
             }
 
             const { rows: products, count: total } =

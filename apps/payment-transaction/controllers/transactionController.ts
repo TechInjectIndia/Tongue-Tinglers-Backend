@@ -70,25 +70,18 @@ export default class transactionRouter {
             // For text search
             const search = <string>get(req.query, 'search', "");
             // For filtering search
-            const filters = <string>get(req.query, 'filters', "");
+            let entity = get(req.query, 'entity');
+            let status = get(req.query, 'status');
+            let minAmount = get(req.query, 'minAmount');
+            let maxAmount = get(req.query, 'maxAmount');
 
             // Parse filters into an object
-            let filterObj = {};
-            if (filters) {
-                try {
-                    filterObj = JSON.parse(filters);
-                }
-                catch (error) {
-                    return res
-                        .status(400)
-                        .send(
-                            sendResponse(
-                                RESPONSE_TYPE.ERROR,
-                                "Invalid filter format. It should be a valid JSON string.",
-                            ),
-                        );
-                }
-            }
+            let filterObj:any = {};
+            if(entity) filterObj.entity = entity
+            if(status) filterObj.status = status
+            if(minAmount) filterObj.minAmount = minAmount
+            if(maxAmount) filterObj.maxAmount = maxAmount
+
             const transactions: Pagination<any> =
                 await new TransactionRepo().getAll(page, limit, search,
                     filterObj);

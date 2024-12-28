@@ -1,12 +1,12 @@
-import {DataTypes, Model, Optional} from "sequelize";
-import {sequelize} from "../../../config";
-import {USER_STATUS, USER_TYPE, UserInformation} from "../../../interfaces";
-import {TUser} from "../../../types";
-import RepoProvider from "../../../apps/RepoProvider";
-// import {AssignModel} from "../lead/assigneeModels";
-import { AffiliateModel } from "../lead/affiliateModels";
+import { DataTypes, Model, Optional } from "sequelize";
+import { sequelize } from "../../../config";
 
-const {INTEGER, STRING, ENUM, JSONB} = DataTypes;
+
+import RepoProvider from "apps/RepoProvider";
+import { TUser, USER_STATUS, USER_TYPE } from "../interface/User";
+
+
+const { INTEGER, STRING, ENUM, JSONB } = DataTypes;
 
 interface UserCreationAttributes
     extends Optional<TUser, "id" | "createdAt" | "updatedAt"> {
@@ -30,7 +30,7 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
     public access_token: string;
     public password_token: string;
     public referralCode: string;
-    public referBy: UserInformation;
+    public referBy: number;
     public lastLoginAt: Date;
     public updatedBy!: number;
     public deletedBy!: number;
@@ -156,7 +156,7 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
 
     public static associate() {
 
-        UserModel.hasMany(AffiliateModel, { foreignKey: 'userId', as: 'affiliates' });
+        // UserModel.hasMany(AffiliateModel, { foreignKey: 'userId', as: 'affiliates' });
     }
 
     public static hook() {
@@ -182,4 +182,4 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
     }
 }
 
-export {UserModel};
+export { UserModel };

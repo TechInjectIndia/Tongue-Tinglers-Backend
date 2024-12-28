@@ -1,6 +1,10 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../../../config";
-import { BUSINESS_TYPE, IOrganization, ORGANIZATION_TYPE } from "interfaces/organization";
+
+import { BUSINESS_TYPE, IOrganization, ORGANIZATION_TYPE } from "../interface/Organization";
+import { sequelize } from "config/database";
+import RepoProvider from "apps/RepoProvider";
+import { DocumentModel } from "apps/documents/models/DocumentTable";
+import { UserModel } from "apps/user/models/UserTable";
 
 // Ensure this path is correct
 

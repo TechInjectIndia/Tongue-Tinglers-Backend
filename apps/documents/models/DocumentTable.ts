@@ -1,16 +1,16 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { BaseDocument, Document } from "../../../interfaces/documents";
-import { sequelize } from "../../../config";
-import { FranchiseModel, UserModel } from "../../../database/schema";
-import { OrganizationModel } from "../../../apps/organization/database/organization_schema";
-import RepoProvider from "../../../apps/RepoProvider";
 
-interface DocumentCreationAttributes extends Optional<Document, "id"> {}
+
+import { BaseDocument, SaveDocument } from "../interface/Document";
+import { UserModel } from "apps/user/models/UserTable";
+import { sequelize } from "config/database";
+import RepoProvider from "apps/RepoProvider";
+
+interface DocumentCreationAttributes extends Optional<SaveDocument, "id"> { }
 
 class DocumentModel
-    extends Model<Document, DocumentCreationAttributes>
-    implements BaseDocument
-{
+    extends Model<SaveDocument, DocumentCreationAttributes>
+    implements BaseDocument {
     doc_name: string;
     entity_id: number;
     entity_type: string;
@@ -24,7 +24,7 @@ class DocumentModel
         // foreignKey:'createdBy'})
         this.belongsTo(UserModel, { as: "created", foreignKey: "createdBy" });
 
-      
+
         this.belongsTo(FranchiseModel, {
             foreignKey: "entity_id",
             as: "franchise",

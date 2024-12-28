@@ -1,10 +1,10 @@
 import { Model, Optional, DataTypes } from "sequelize";
 import { sequelize } from "../../../config";
+import { BaseMeta } from "apps/common/models/Base";
+import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 
-import { BaseModel, DeletionMetaData, UpdatedMetaData } from "../../../interfaces";
-import { FranchiseModel } from "../franchise/franchiseModel";
-import { OrganizationModel } from "../../../apps/organization/database/organization_schema";
-import { CommissionEventType, CommissionType } from "../../../interfaces/commission";
+
+
 const { STRING, DATE, INTEGER, NOW, } = DataTypes;
 
 
@@ -134,7 +134,7 @@ type OrganizationCommissions = {
 }
 
 
-interface ICommissionEntityMapping extends BaseModel, UpdatedMetaData, DeletionMetaData {
+interface ICommissionEntityMapping extends BaseMeta {
     commissionId: number,
     franchiseId: number,
     organizationId: number,

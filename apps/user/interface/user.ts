@@ -57,7 +57,7 @@ interface ParsedUser {
 
 
 
-export enum USER_TYPE {
+enum USER_TYPE {
     ADMIN = "admin",
     FRANSHISE = "franchise",
     SUPER_FRANSHISE = "super_franchise",
@@ -67,7 +67,7 @@ export enum USER_TYPE {
     GUEST_USER = "guest_user",
 }
 
-export enum USER_STATUS {
+enum USER_STATUS {
     ACTIVE = "active",
     INACTIVE = "inactive",
     DELETED = "deleted",
@@ -113,4 +113,35 @@ interface ParsedUser extends ParsedMeta {
 
 }
 
-export { ParsedUser, MetaUser };
+type TUser = {
+    id: number;
+    firebaseUid: string;
+    createdBy: number;
+    password: string;
+    firstName: string;
+    lastName: string;
+    nameForSearch: string;
+    profilePhoto: string;
+    email: string;
+    phoneNumber: string;
+    type: string;
+    status: string;
+    cart: string;
+    access_token: string;
+    password_token: string;
+    referralCode: string;
+    referBy: number;
+    refresh_token: string;
+    updatedBy: number;
+    deletedBy: number;
+    role: number;
+    lastLoginAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date;
+};
+
+
+
+
+export { ParsedUser, MetaUser, TUser, USER_STATUS, USER_TYPE };

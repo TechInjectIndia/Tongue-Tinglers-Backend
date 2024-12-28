@@ -1,19 +1,14 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../../../config";
 
-import { ICampaign } from "../../../interfaces";
 
-import { RegionModel } from "../franchise/RegionsModel";
-
-import { AffiliateModel } from "../lead/affiliateModels";
-import { ProposalLeadModels } from "../lead/proposalModels";
-import {
-    OrganizationModel
-} from "../../../apps/organization/database/organization_schema";
 
 import { QuestionModel } from "apps/questions/models/QuestionModel";
 import RepoProvider from "apps/RepoProvider";
+
 import { CampaignQuestionModel } from "./CampaignQuestionModel";
+import { ICampaign } from "../interface/campaign";
+import { sequelize } from "config/database";
+import { LeadsModel } from "apps/lead/models/LeadModel";
 
 
 

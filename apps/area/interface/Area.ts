@@ -1,4 +1,5 @@
-import { BaseMeta } from "@apps/common/models/ApiResponse";
+import { BaseMeta } from "apps/common/models/Base";
+
 
 
 interface IArea extends BaseMeta {

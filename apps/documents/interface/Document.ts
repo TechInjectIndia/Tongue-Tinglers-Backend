@@ -8,7 +8,7 @@ interface BaseDocument extends BaseMetaUsers {
     entity_id: number;
 }
 
-interface Document extends BaseMeta, BaseDocument{}
+interface SaveDocument extends BaseMeta, BaseDocument{}
 
 interface DocumentData {
     entity_id: number;
@@ -20,7 +20,7 @@ interface DocumentData {
 
 export {
     BaseDocument,
-    Document,
+    SaveDocument,
     DocumentData
 }
 

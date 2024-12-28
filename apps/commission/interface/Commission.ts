@@ -1,6 +1,7 @@
-import type { UpdatedMetaData, BaseModel, DeletionMetaData } from ".";
+import { BaseMeta } from "apps/common/models/Base";
 
-interface ICommission extends BaseModel, UpdatedMetaData, DeletionMetaData {
+
+interface ICommission extends BaseMeta {
     title: string,
     type: CommissionType,
     value: number,

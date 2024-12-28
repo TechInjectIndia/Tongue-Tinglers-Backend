@@ -5,7 +5,7 @@ import { IArea } from "../../../interfaces";
 import { UserModel } from "../user/user.model";
 import RepoProvider from "../../../apps/RepoProvider";
 import {RegionModel} from "./RegionsModel";
-import {AddressModel} from "../user/address";
+import {AddressModel} from "../user/1";
 
 interface AreaCreationAttributes
     extends Optional<IArea, "id" | "createdAt" | "updatedAt" | "deletedAt"> {}

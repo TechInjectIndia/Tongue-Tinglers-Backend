@@ -1,24 +1,11 @@
 import { Op } from "sequelize";
-import {
-    TContract,
-    TQueryFilters,
-    TContractsList,
-    TContractPayload,
-    TListFiltersContract,
-} from "../../../types";
-import {
-    CONTRACT_PAYMENT_STATUS,
-    CONTRACT_STATUS,
-    ContractPaymentDetails,
-    ITrackable,
-} from "../../../interfaces";
+
 import { CampaignAdModel, ContractModel, LeadsModel, UserModel } from "../../../database/schema";
-import IContractsController from "../controllers/controller/IContractsController";
 import { getUserName } from "../../common/utils/commonUtils";
 import moment from "moment";
 
 export class ContractRepo {
-    constructor() {}
+    constructor() { }
 
     // Method to fetch associated contracts
     public async getAssociatedContracts(
@@ -37,7 +24,7 @@ export class ContractRepo {
             include: [{
                 model: LeadsModel,
                 as: "lead",
-                include:[{
+                include: [{
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
@@ -70,7 +57,7 @@ export class ContractRepo {
                 include: [{
                     model: LeadsModel,
                     as: "lead",
-                    include:[{
+                    include: [{
                         model: CampaignAdModel,
                         as: 'campaign_ad'
                     }]
@@ -118,7 +105,7 @@ export class ContractRepo {
                 include: [{
                     model: LeadsModel,
                     as: "lead",
-                    include:[{
+                    include: [{
                         model: CampaignAdModel,
                         as: 'campaign_ad'
                     }]
@@ -181,7 +168,7 @@ export class ContractRepo {
             include: [{
                 model: LeadsModel,
                 as: "lead",
-                include:[{
+                include: [{
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
@@ -200,7 +187,7 @@ export class ContractRepo {
             include: [{
                 model: LeadsModel,
                 as: "lead",
-                include:[{
+                include: [{
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
@@ -281,7 +268,7 @@ export class ContractRepo {
             include: [{
                 model: LeadsModel,
                 as: "lead",
-                include:[{
+                include: [{
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]

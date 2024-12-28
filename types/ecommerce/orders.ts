@@ -1,5 +1,6 @@
+import { ORDER_TYPE } from "apps/order/interface/Order";
+
 const { OrderItem } = require("sequelize");
-import { ORDER_TYPE } from '../../interfaces';
 
 export type TOrder = {
   id: number;

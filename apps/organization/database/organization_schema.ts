@@ -1,10 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { BUSINESS_TYPE, IOrganization, ORGANIZATION_TYPE } from "../../../interfaces/organization";
-import { AddressModel, UserModel } from "../../../database/schema";
-import {DocumentModel} from "../../../database/schema/documents/documentModel";
-import RepoProvider from "../../RepoProvider";
- // Ensure this path is correct
+import { BUSINESS_TYPE, IOrganization, ORGANIZATION_TYPE } from "interfaces/organization";
+
+// Ensure this path is correct
 
 const { STRING, INTEGER, DATE, NOW, ENUM } = DataTypes;
 
@@ -121,34 +119,34 @@ class OrganizationModel extends Model<IOrganization, OrganizationCreationAttribu
 
     public static hook() {
         OrganizationModel.addHook("afterCreate", async (instance, options) => {
-                    await RepoProvider.LogRepo.logModelAction(
-                        "create",
-                        "Organization",
-                        instance,
-                        options
-                    );
-                });
+            await RepoProvider.LogRepo.logModelAction(
+                "create",
+                "Organization",
+                instance,
+                options
+            );
+        });
 
-                // After Update Hook - Log the updated fields of the Organization
-                OrganizationModel.addHook("afterUpdate", async (instance, options) => {
-                    // Now call logModelAction as before
-                    await RepoProvider.LogRepo.logModelAction(
-                        "update",
-                        "Organization",
-                        instance,
-                        options
-                    );
-                });
+        // After Update Hook - Log the updated fields of the Organization
+        OrganizationModel.addHook("afterUpdate", async (instance, options) => {
+            // Now call logModelAction as before
+            await RepoProvider.LogRepo.logModelAction(
+                "update",
+                "Organization",
+                instance,
+                options
+            );
+        });
 
-                // After Destroy Hook - Log the deletion of the Organization
-                OrganizationModel.addHook("afterDestroy", async (instance, options) => {
-                    await RepoProvider.LogRepo.logModelAction(
-                        "delete",
-                        "Organization",
-                        instance,
-                        options
-                    );
-                });
+        // After Destroy Hook - Log the deletion of the Organization
+        OrganizationModel.addHook("afterDestroy", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "delete",
+                "Organization",
+                instance,
+                options
+            );
+        });
     }
 }
 

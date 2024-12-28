@@ -1,21 +1,15 @@
-import {
-    CONTRACT_STATUS,
-    ContractPaymentDetails,
-    UserDetails,
-    Note,
-    ITrackable,
-    SignDoc,
-} from "../interfaces";
+import { CONTRACT_STATUS, ContractPaymentDetails, SignDoc } from "apps/contracts/interface/Contract";
+import { Note } from "apps/lead/interface/Lead";
 
 export interface TContract {
     id: number;
     status: CONTRACT_STATUS;
     terminationDetails: null | {
-        UserDetails: UserDetails;
+        UserDetails: number;
         reason: string;
         date: Date;
     };
-    organizationId: number|null;
+    organizationId: number | null;
     payment: ContractPaymentDetails[] | null;
     leadId: number;
     templateId: string | null;
@@ -28,7 +22,6 @@ export interface TContract {
     };
     notes: Note[] | null;
     additionalInfo: string;
-    logs: ITrackable[] | null;
     signedDocs: SignDoc[] | null;
     createdBy: number;
 }
@@ -42,7 +35,7 @@ export interface TContractPayload {
     status: CONTRACT_STATUS;
     createdBy: number;
     terminationDetails: null | {
-        UserDetails: UserDetails;
+        UserDetails: number;
         reason: string;
         date: Date;
     };
@@ -59,7 +52,6 @@ export interface TContractPayload {
     };
     notes: Note[] | null;
     additionalInfo: string;
-    logs: ITrackable[] | null;
     signedDocs: SignDoc[] | null;
 }
 

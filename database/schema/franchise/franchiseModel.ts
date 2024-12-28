@@ -4,7 +4,7 @@ import { Franchise, FRANCHISE_STATUS } from "../../../interfaces";
 import { RegionModel } from "./RegionsModel";
 import { OrganizationModel } from "../../../apps/organization/database/organization_schema";
 import { UserModel } from "../user/user.model";
-import { AddressModel } from "../user/address";
+import { AddressModel } from "../user/1";
 import { DocumentModel } from "../documents/documentModel";
 import RepoProvider from "../../../apps/RepoProvider";
 

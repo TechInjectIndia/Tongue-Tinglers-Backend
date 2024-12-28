@@ -2,27 +2,25 @@
   "compilerOptions": {
     "sourceMap": true,
     "inlineSources": true,
-    "target": "es6",
-    "module": "commonjs",
+    "target": "es6", // Already set to ES6
+    "module": "esnext", // Use ESNext for native ESM
     "outDir": "./build",
     "allowJs": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": ["es2019", "dom"],
-    "baseUrl": "./",  // Set base directory to apps
+    "baseUrl": "./",
     "paths": {
-      "*": ["*"]  // Allows any path inside the apps folder to be resolved
+      "*": ["*"]
     }
   },
   "downlevelIteration": true,
   "include": [
-    "./apps/**/*",  // Include all files in the apps directory
-    "./app.ts",     // If app.ts is outside the apps folder
-    "src/**/*.ts",  // If you have any src folder
-    "types/**/*"    // If you have any type definitions
+    "./apps/**/*",
+    "./app.ts",
+    "src/**/*.ts",
+    "types/**/*"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

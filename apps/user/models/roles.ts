@@ -9,7 +9,7 @@ import {
 } from "../../../types";
 import { USER_TYPE } from '../../../interfaces';
 import { UserModel, RolesModel } from "../../../database/schema";
-import IBaseRepo from '../controllers/controller/IRolesController';
+import IBaseRepo from '../controllers/IRolesController';
 
 export class RolesRepo implements IBaseRepo<TRole, TListFilters> {
     constructor() { }

@@ -1,13 +1,7 @@
-import { BaseMeta } from "apps/common/models/ApiResponse";
+import { BaseMeta } from "apps/common/models/Base";
 
 
-import type {
-    UpdatedMetaData,
-    BaseModel,
-    DeletionMetaData,
-} from "./index";
-
-interface IRegion extends UpdatedMetaData, BaseModel, DeletionMetaData {
+interface IRegion extends BaseMeta {
     title: string;
     area?: number[];
 }

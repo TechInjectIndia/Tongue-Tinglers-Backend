@@ -18,12 +18,12 @@ import { createLeadsResponse } from "../../../libraries";
 import { handleError } from "../../common/utils/HelperMethods";
 import { getUserName } from "../../common/utils/commonUtils";
 import { parseLead } from "../parser/leadParser";
-import {ParseLead} from "../interface/lead"
+import { ParseLead } from "../interface/Lead"
 import moment from "moment";
 import { FollowDetailsModel } from "../../follow-details/model/followDetailModel";
 
 export class LeadRepo {
-    constructor() {}
+    constructor() { }
 
     // Update the status of a lead
     public async updateStatus(

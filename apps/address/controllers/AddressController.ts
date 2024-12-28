@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { get } from "lodash";
 import { sendResponse } from 'libraries';
 import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from 'constants/response-messages';
-import { AddressRepo } from '../models/AddressRepo';
+import { AddressRepo } from '../repositories/AddressRepo';
 
 
 export default class UserAddressController {

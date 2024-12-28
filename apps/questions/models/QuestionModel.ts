@@ -3,6 +3,7 @@ import { sequelize } from "../../../config";
 
 import { CampaignQuestionModel } from "database/schema/campaign-ui/CampaignQuestionModel";
 import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
+import { IOptions, IQuestion, QuestionType } from "../interface/Question";
 ;
 
 const { STRING, UUID, DATE, JSONB, ENUM, NOW, UUIDV4, BOOLEAN } = DataTypes;

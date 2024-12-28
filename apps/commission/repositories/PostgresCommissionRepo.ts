@@ -1,4 +1,4 @@
-import {APIResponse} from "../../common/models/ApiResponse";
+import {APIResponse} from "../../common/models/Base";
 import {ICommissionRepo} from "./ICommissionRepo";
 import {handleError, HelperMethods} from "../../common/utils/HelperMethods";
 import {

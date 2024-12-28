@@ -52,6 +52,12 @@ export type TListFiltersAreas = {
 };
 
 
+export interface Pagination<T> {
+    data: T[];
+    total: number;
+    totalPages: number;
+}
+
 export enum PAYMENT_STATUS{
     PAID = 'paid',
     PENDING = 'pending',

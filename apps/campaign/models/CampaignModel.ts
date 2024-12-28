@@ -4,7 +4,7 @@ import { sequelize } from "../../../config";
 import { ICampaign } from "../../../interfaces";
 
 import { RegionModel } from "../franchise/RegionsModel";
-import { LeadsModel } from "../lead/lead.model";
+
 import { AffiliateModel } from "../lead/affiliateModels";
 import { ProposalLeadModels } from "../lead/proposalModels";
 import {
@@ -12,6 +12,8 @@ import {
 } from "../../../apps/organization/database/organization_schema";
 
 import { QuestionModel } from "apps/questions/models/QuestionModel";
+import RepoProvider from "apps/RepoProvider";
+import { CampaignQuestionModel } from "./CampaignQuestionModel";
 
 
 

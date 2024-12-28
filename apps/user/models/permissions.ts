@@ -8,7 +8,7 @@ import {
     TListFilters
 } from "../../../types";
 import { UserModel, PermissionModel } from "../../../database/schema";
-import IBaseRepo from '../controllers/controller/IPermissionsController';
+import IBaseRepo from '../controllers/IPermissionsController';
 import { USER_TYPE } from '../../../interfaces';
 
 export class PermissionsRepo implements IBaseRepo<TPermission, TListFilters> {

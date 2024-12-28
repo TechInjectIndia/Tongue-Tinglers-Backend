@@ -18,13 +18,13 @@ import { ContractRepo } from "../../contracts/models/ContractRepo";
 import { LeadRepo } from "../../lead/models/lead";
 import {
     CONTRACT_PAYMENT_STATUS,
-    CONTRACT_STATUS,
-    ITrackable,
+    CONTRACT_STATUS
 } from "../../../interfaces";
 import { ContractPaymentDetails } from "../../../interfaces";
 import { CONFIG } from "../../../config";
 import RepoProvider from "../../RepoProvider";
 import lead from "../../lead/api/lead-router";
+import { ITrackable } from "../../lead/interface/lead";
 
 const {
     validateWebhookSignature,
@@ -157,7 +157,7 @@ export default class PaymentsController {
             }
 
             const leadDetails = await new LeadRepo().get(
-                contractDetails.leadId as number,
+                contractDetails.leadId,
             );
 
             console.log("#23223###", leadDetails);

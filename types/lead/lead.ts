@@ -1,5 +1,6 @@
 const { OrderItem } = require("sequelize");
 import { BaseFollowDetails } from '../../apps/follow-details/interface/followDetails';
+import { LeadTable } from '../../apps/lead/interface/lead';
 import { LeadSource, LeadStatus, FollowDetails, ILead, LeadAddress, UserDetails, Note, ITrackable, Affiliate, ExtraFields, FranchiseModels, ProposalModels } from '../../interfaces'
 
 export type TLeadStatus = {
@@ -38,7 +39,7 @@ export interface TLeadPayload {
 
 export type TLeadsList = {
   total: number;
-  data: ILead[];
+  data: LeadTable[];
 };
 
 export interface TLeadFilters {

@@ -6,23 +6,24 @@ import {
     CONTRACT_PAYMENT_STATUS,
     CONTRACT_DOCUMENT_STATUS,
     IContract,
-    ITrackable,
     SignDoc,
     UserDetails,
-    Note,
 } from "../../interfaces";
 
 const { INTEGER, STRING, FLOAT, DATE, JSONB, ENUM } = DataTypes;
 import { LeadsModel } from "./lead/lead.model";
 import { UserModel } from "./user/user.model";
 import RepoProvider from "../../apps/RepoProvider";
+import { OrganizationModel } from "../../apps/organization/database/organization_schema";
+import {ContractTable} from "../../apps/contracts/interface/contracts"
+import { ITrackable, Note } from "../../apps/lead/interface/lead";
 
 interface ContractCreationAttributes
-    extends Optional<IContract, "id" | "createdAt" | "updatedAt"> {}
+    extends Optional<ContractTable, "id" | "createdAt" | "updatedAt"> {}
 
 class ContractModel
-    extends Model<IContract, ContractCreationAttributes>
-    implements IContract
+    extends Model<ContractTable, ContractCreationAttributes>
+    implements ContractTable
 {
     public id!: number;
     public status!: CONTRACT_STATUS;
@@ -70,6 +71,11 @@ class ContractModel
         this.belongsTo(LeadsModel, {
             foreignKey: "leadId",
             as: "lead",
+            constraints: false,
+        });
+        this.belongsTo(OrganizationModel, {
+            foreignKey: "organizationId",
+            as: "organization",
             constraints: false,
         });
     }

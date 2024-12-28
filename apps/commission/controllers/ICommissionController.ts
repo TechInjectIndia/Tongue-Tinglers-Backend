@@ -33,4 +33,7 @@ export interface ICommissionController {
     getMappingsData(req: Request, res: Response,
         next: NextFunction): Promise<void>;
 
+    updateCommisionEntityStatus(req: Request, res: Response,
+        next: NextFunction): Promise<void>;
+
 }

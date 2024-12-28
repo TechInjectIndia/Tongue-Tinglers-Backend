@@ -18,7 +18,7 @@ import { createLeadsResponse } from "../../../libraries";
 import { handleError } from "../../common/utils/HelperMethods";
 import { getUserName } from "../../common/utils/commonUtils";
 import { parseLead } from "../parser/leadParser";
-import { ParseLead } from "../interface/Lead"
+import {LeadPayload, LeadTable, ParseLead} from "../interface/lead"
 import moment from "moment";
 import { FollowDetailsModel } from "../../follow-details/model/followDetailModel";
 
@@ -53,7 +53,7 @@ export class LeadRepo {
 
     // Get lead by attribute
     public async getLeadByAttr(
-        whereName: keyof ILead,
+        whereName: keyof LeadTable,
         whereVal: any,
         getAttributes: any = ["*"],
         options?: { transaction?: any }
@@ -120,7 +120,7 @@ export class LeadRepo {
     public async get(
         id: number,
         options?: { transaction?: any }
-    ): Promise<ILead> {
+    ): Promise<LeadTable> {
         try {
             const { transaction } = options || {};
             const data = await LeadsModel.findOne({
@@ -144,48 +144,48 @@ export class LeadRepo {
                                     "lastName",
                                     "email",
                                 ],
-                            },
-                            {
-                                model: CampaignAdModel,
-                                as: "campaign_ad",
                             }
                         ],
                         attributes: [],
+                    },
+                    {
+                        model: CampaignAdModel,
+                        as: "campaign_ad",
                     },
                 ],
                 transaction,
             });
             // console.dir(data.toJSON(), { depth: true });
 
-            return data as unknown as ILead;
+            return data as unknown as LeadTable;
         } catch (error: any) {
             handleError(error, id);
         }
     }
 
     // Get lead by ID and status
-    public async getLeadByStatus(id: number): Promise<ILead | null> {
+    public async getLeadByStatus(id: number): Promise<LeadTable | null> {
         const data = await LeadsModel.findOne({
             raw: true,
             where: {
                 id: id,
             },
         });
-        return data as unknown as ILead;
+        return data as unknown as LeadTable;
     }
 
     // Check if lead exists with a specific email and exclude a specific ID
     public async checkLeadExist(
         email: string,
         excludeId: number
-    ): Promise<ILead | null> {
+    ): Promise<LeadTable | null> {
         const data = await LeadsModel.findOne({
             where: {
                 email: email,
                 id: { [Op.ne]: excludeId },
             },
         });
-        return data as unknown as ILead;
+        return data as unknown as LeadTable;
     }
 
     // List leads with filters
@@ -304,15 +304,15 @@ export class LeadRepo {
 
     // Create a new lead
     public async create(
-        data: TLeadPayload,
+        data: LeadPayload,
         userId: number
-    ): Promise<ILead | null> {
+    ): Promise<LeadTable | null> {
         try {
             const user = await UserModel.findByPk(userId);
             if (!user) {
                 throw new Error(`User with ID ${userId} not found.`);
             }
-            const leadData: TLeadPayload = {
+            const leadData: LeadPayload = {
                 ...data,
                 // Ensure logs is kept as an array
                 logs: data.logs, // Assuming logs is already of type
@@ -321,7 +321,7 @@ export class LeadRepo {
             return LeadsModel.create(leadData, {
                 userId: user.id,
                 userName: getUserName(user),
-            }) as unknown as ILead;
+            }) as unknown as LeadTable;
         } catch (error) {
             handleError(error, data);
             const message = `${error.message ?? ""}: error while creating lead`;
@@ -333,7 +333,7 @@ export class LeadRepo {
     // Update lead information
     public async update(
         id: number,
-        data: TLeadPayload
+        data: LeadPayload
     ): Promise<[affectedCount: number]> {
         let followDetailsIds: number[] = [];
         const lead = await LeadsModel.findByPk(id);
@@ -342,6 +342,7 @@ export class LeadRepo {
         }
         if (data.followDetails && Array.isArray(data.followDetails)) {
             for (const detail of data.followDetails) {
+                console.log('detail: ', detail);
                 if (detail.id) {
                     // If ID exists, update the record
                     const existingDetail = await FollowDetailsModel.findByPk(

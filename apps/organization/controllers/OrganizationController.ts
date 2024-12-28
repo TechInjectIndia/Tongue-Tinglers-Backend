@@ -15,6 +15,7 @@ import {
 } from "../../../interfaces/organization";
 import {Pagination} from "../../../interfaces";
 import {ContractRepo} from "../../contracts/models/ContractRepo";
+import { ContractsPayload } from "../../contracts/interface/contracts";
 
 export default class OrganizationController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -39,7 +40,7 @@ export default class OrganizationController {
 
             if (prospectId) {
                 await new ContractRepo().update(prospectId,
-                    {organizationId: data.id});
+                    {organizationId: data.id} as Partial<ContractsPayload>);
             }
             return res
                 .status(201)

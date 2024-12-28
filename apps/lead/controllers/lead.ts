@@ -24,6 +24,7 @@ import { createLeadResponse } from "../../../libraries";
 import { TContractPayload } from "../../../types/contracts";
 import { ZohoSignRepo } from "../../zoho-sign/models/zohosign";
 import { TAddUser } from "../../../types/admin/admin-user";
+import { ContractsPayload } from "../../contracts/interface/contracts";
 
 export default class LeadController {
 
@@ -198,7 +199,7 @@ export default class LeadController {
                 templateId = templates[0].templateId;
             }
 
-            const prospectData: TContractPayload = {
+            const prospectData: ContractsPayload = {
                 organizationId: null,
                 status: CONTRACT_STATUS.ACTIVE,
                 terminationDetails: null,
@@ -217,6 +218,7 @@ export default class LeadController {
                 logs: null,
                 signedDocs: [],
                 createdBy: user_id,
+                proposalData: undefined
             };
 
             const prospect = await new ContractRepo().create(prospectData, user_id, {transaction});

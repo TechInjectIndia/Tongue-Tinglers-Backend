@@ -10,13 +10,16 @@ import {
     CONTRACT_PAYMENT_STATUS,
     CONTRACT_STATUS,
     ContractPaymentDetails,
-    ITrackable,
+    Pagination,
 } from "../../../interfaces";
 import { CampaignAdModel, ContractModel, LeadsModel, UserModel } from "../../../database/schema";
 import IContractsController from "../controllers/controller/IContractsController";
 import { getUserName } from "../../common/utils/commonUtils";
 import moment from "moment";
-
+import { OrganizationModel } from "../../organization/database/organization_schema";
+import { ContractsPayload, ParsedContract, PartialContractsUpdate } from "../interface/contracts";
+import { ITrackable } from "../../lead/interface/lead";
+import {parseContract} from "../parser/contractParser"
 export class ContractRepo {
     constructor() {}
 
@@ -59,7 +62,7 @@ export class ContractRepo {
         return contracts ? contracts.map((contract) => contract.id) : null;
     }
 
-    public async getContractByDocId(docId: number): Promise<TContract | null> {
+    public async getContractByDocId(docId: number): Promise<ParsedContract | null> {
         try {
             const contract = await ContractModel.findOne({
                 where: {
@@ -77,7 +80,7 @@ export class ContractRepo {
                 }],
             });
 
-            return contract ? contract : null;
+            return parseContract(contract)
         } catch (error) {
             console.error("Error fetching contract by docId:", error);
             throw error;
@@ -107,7 +110,7 @@ export class ContractRepo {
 
     public async getContractByPaymentId(
         paymentId: string
-    ): Promise<TContract | null> {
+    ): Promise<ParsedContract | null> {
         try {
             const contract = await ContractModel.findOne({
                 where: {
@@ -125,8 +128,7 @@ export class ContractRepo {
                 }],
             });
 
-            return contract;
-            return contract;
+            return parseContract(contract);
         } catch (error) {
             console.error("Error fetching contract by paymentId:", error);
             throw error;
@@ -136,7 +138,7 @@ export class ContractRepo {
     public async updateContractDoc(
         contractId: number,
         docData: any
-    ): Promise<TContract> {
+    ): Promise<ParsedContract> {
         const [affectedCount, updatedContracts] = await ContractModel.update(
             { signedDocs: docData },
             { where: { id: contractId }, returning: true }
@@ -147,14 +149,14 @@ export class ContractRepo {
             return null;
         }
 
-        return updatedContracts[0] as TContract;
+        return parseContract(updatedContracts[0])
     }
 
     public async create(
-        data: TContractPayload,
+        data: ContractsPayload,
         userId: number,
         options?: { transaction?: any }
-    ): Promise<TContract> {
+    ): Promise<ParsedContract> {
         const { transaction } = options || {};
         console.log('userId: ', userId);
         const user = await UserModel.findByPk(userId);
@@ -168,10 +170,10 @@ export class ContractRepo {
             userName: getUserName(user),
             transaction,
         });
-        return response.get();
+        return parseContract(response);
     }
 
-    public async getPaymentById(paymentId: string): Promise<TContract | null> {
+    public async getPaymentById(paymentId: string): Promise<ParsedContract | null> {
         const data = await ContractModel.findOne({
             where: {
                 payment: {
@@ -187,13 +189,13 @@ export class ContractRepo {
                 }]
             }],
         });
-        return data ? data.get() : null;
+        return data ? parseContract(data) : null;
     }
 
     public async get(
         id: number,
         options?: { transaction?: any }
-    ): Promise<TContract | null> {
+    ): Promise<ParsedContract | null> {
         const { transaction } = options || {};
         const data = await ContractModel.findOne({
             where: { id },
@@ -207,10 +209,10 @@ export class ContractRepo {
             }],
             transaction,
         });
-        return data ? data : null;
+        return data ? parseContract(data) : null;
     }
 
-    public async list(filters: TListFiltersContract): Promise<TContractsList> {
+    public async list(filters: TListFiltersContract): Promise<any> {
         console.log("contract list ", filters);
         const where: any = {};
         const validStatuses = Object.values(CONTRACT_STATUS).filter(
@@ -285,14 +287,18 @@ export class ContractRepo {
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
+            },{
+                model: OrganizationModel,
+                as: 'organization',
             }],
         });
-        return { total, data };
+        const parsedData: ParsedContract[] = await Promise.all(data.map((contract) => parseContract(contract)));
+        return { total,data: parsedData}
     }
 
     public async update(
         id: number,
-        data: Partial<TContract>
+        data: Partial<ContractsPayload>
     ): Promise<[affectedCount: number]> {
         const response = await ContractModel.update(data, {
             where: { id },
@@ -320,4 +326,12 @@ export class ContractRepo {
         });
         return response;
     }
+
+    public async updatePartialContract(contractId: number, payload: PartialContractsUpdate): Promise<boolean> {
+        const [affectedCount] = await ContractModel.update(payload, {
+            where: { id: contractId },
+        });
+        return affectedCount > 0;
+    }
 }
+

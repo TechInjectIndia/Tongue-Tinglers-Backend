@@ -1,10 +1,9 @@
-import {DataTypes, Model, Optional} from 'sequelize';
-import {IPdiList} from '../../../interfaces/pdi';
-import {checkPointsValue} from '../../../interfaces/ichecklist';
-import {ContractModel} from "../contracts";
-import {sequelize} from "../../../config";
-import {IChecklistModel} from "./iChecklist";
-import { PdiCheckpointModel } from './pdiCheckPointModel';
+import { IChecklistModel } from 'apps/ichecklist/model/CheckListTable';
+import { checkPointsValue, IPdiList } from 'apps/pdi-checklist/interface/Pdi';
+import { PdiCheckpointModel } from 'apps/pdi-checkpoint/model/PdiCheckPointTable';
+import { sequelize } from 'config';
+import { DataTypes, Model, Optional } from 'sequelize';
+
 
 // Define the optional attributes for creation
 interface PDICreationAttributes extends Optional<IPdiList, 'id'> {
@@ -80,7 +79,7 @@ class PdiModel extends Model<IPdiList, PDICreationAttributes>
                 timestamps: true,
             },
         );
-     return PdiModel;
+        return PdiModel;
     }
 
     public static associate() {
@@ -95,4 +94,4 @@ class PdiModel extends Model<IPdiList, PDICreationAttributes>
         })
     }
 }
-export {PdiModel};
+export { PdiModel };

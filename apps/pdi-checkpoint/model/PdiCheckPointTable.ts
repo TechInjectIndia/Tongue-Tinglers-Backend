@@ -1,7 +1,7 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
-import { ICheckPoint } from '../../../interfaces/pdiCheckPoint';
-import { IChecklistModel } from './iChecklist';
+import { ICheckPoint } from 'apps/pdi-checklist/interface/PdiCheckPoint';
+
 
 // Define the optional attributes for creation
 interface PdiCheckpointCreationAttributes extends Optional<ICheckPoint, 'id'> { }
@@ -13,7 +13,7 @@ class PdiCheckpointModel extends Model<ICheckPoint, PdiCheckpointCreationAttribu
     updatedBy: number | null;
     deletedBy: number | null;
 
-    public static associate(){
+    public static associate() {
 
     }
 
@@ -24,7 +24,7 @@ class PdiCheckpointModel extends Model<ICheckPoint, PdiCheckpointCreationAttribu
                     type: DataTypes.INTEGER,
                     primaryKey: true,
                     allowNull: false,
-                    autoIncrement: true, 
+                    autoIncrement: true,
                 },
                 title: {
                     type: DataTypes.STRING,
@@ -38,11 +38,11 @@ class PdiCheckpointModel extends Model<ICheckPoint, PdiCheckpointCreationAttribu
                     type: DataTypes.INTEGER,
                     allowNull: true,
                 },
-                deletedBy:{
+                deletedBy: {
                     type: DataTypes.INTEGER,
                     allowNull: true,
                 },
-                
+
             },
             {
                 sequelize,
@@ -54,7 +54,7 @@ class PdiCheckpointModel extends Model<ICheckPoint, PdiCheckpointCreationAttribu
     }
 
     public static hook() {
-        
+
     }
 }
 

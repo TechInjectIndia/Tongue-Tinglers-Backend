@@ -1,19 +1,15 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { checkPointsValue, ICheckList } from "../../../interfaces/ichecklist";
-import { PdiCheckpointModel } from "./pdiCheckPointModel";
-import { FranchiseModelRepo } from "../../../apps/franchise_model/models";
-import { FranchiseModel } from "./franchiseModel";
-import { FranchiseLeadModel } from "../lead/franchiseModels";
+
 import RepoProvider from "../../../apps/RepoProvider";
+import { ICheckList } from "../interface/IChecklist";
 
 // Define the optional attributes for creation
-interface IChecklistCreationAttributes extends Optional<ICheckList, "id"> {}
+interface IChecklistCreationAttributes extends Optional<ICheckList, "id"> { }
 
 class IChecklistModel
     extends Model<ICheckList, IChecklistCreationAttributes>
-    implements ICheckList
-{
+    implements ICheckList {
     id: number;
     title: string;
     checkPoints: Array<number>;

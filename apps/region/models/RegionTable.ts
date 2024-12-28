@@ -1,11 +1,9 @@
 // models/Region.ts
-import {DataTypes, Model, Optional} from 'sequelize';
-import {sequelize} from "../../../config";
-import {IRegion} from '../../../interfaces';
-import {UserModel} from '../user/user.model';
-import {AreaModel} from "./AreaModel";
-
-;
+import { DataTypes, Model, Optional } from 'sequelize';
+import { sequelize } from "../../../config";
+import { IRegion } from './Region';
+import { AreaModel } from 'apps/area/models/AreaTable';
+import { UserModel } from 'apps/user/models/UserTable';
 
 interface RegionCreationAttributes
     extends Optional<IRegion, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> {
@@ -85,11 +83,11 @@ class RegionModel extends Model<IRegion, RegionCreationAttributes>
 
     public static associate() {
         RegionModel.belongsTo(UserModel,
-            {foreignKey: 'createdBy', as: 'creator', onDelete: 'SET NULL'});
+            { foreignKey: 'createdBy', as: 'creator', onDelete: 'SET NULL' });
         RegionModel.belongsTo(UserModel,
-            {foreignKey: 'updatedBy', as: 'updater', onDelete: 'SET NULL'});
+            { foreignKey: 'updatedBy', as: 'updater', onDelete: 'SET NULL' });
         RegionModel.belongsTo(UserModel,
-            {foreignKey: 'deletedBy', as: 'deleter', onDelete: 'SET NULL'});
+            { foreignKey: 'deletedBy', as: 'deleter', onDelete: 'SET NULL' });
 
         RegionModel.belongsToMany(AreaModel, {
             through: "region_area", // Join table name
@@ -103,4 +101,4 @@ class RegionModel extends Model<IRegion, RegionCreationAttributes>
 }
 
 
-export {RegionModel};
+export { RegionModel };

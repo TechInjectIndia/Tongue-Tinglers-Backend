@@ -1,6 +1,6 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from "../../../config";
-import { IPdiChecklist, PdiChecklistItem, IPdiChecklistStatus } from '../../../interfaces';
+import { IPdiChecklist, IPdiChecklistStatus, PdiChecklistItem } from '../interface/PdiCheckList';
 
 // Define the optional attributes for creation
 interface PdiChecklistCreationAttributes extends Optional<IPdiChecklist, 'id'> { }
@@ -21,7 +21,7 @@ PdiChecklistModel.init(
             type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
-            autoIncrement: true, 
+            autoIncrement: true,
         },
         franchiseeId: {
             type: DataTypes.INTEGER,
@@ -46,7 +46,7 @@ PdiChecklistModel.init(
     },
     {
         sequelize,
-        tableName: 'pdi_checklistsss',
+        tableName: 'pdi_checklists',
         timestamps: true,
     },
 );

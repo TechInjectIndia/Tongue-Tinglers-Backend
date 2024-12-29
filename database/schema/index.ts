@@ -31,11 +31,11 @@ import {AffiliateModel} from "./lead/affiliateModels";
 import {QuestionModel} from "./campaign-ui/QuestionModel";
 import {CampaignQuestionModel} from "./campaign-ui/CampaignQuestionModel";
 import {FollowDetailsModel} from "../../apps/follow-details/model/followDetailModel"
-import {AddressModel} from "./user/address";
+import {AddressModel} from "./user/1";
 import {RegionModel} from "./franchise/RegionsModel";
 
 export * from "./user/user.model";
-export * from "./user/address";
+export * from "./user/1";
 export * from "./admin-roles";
 export * from "./admin-permissions";
 // Admin model ends

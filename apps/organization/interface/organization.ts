@@ -1,12 +1,30 @@
-import { BaseMeta } from "../../../database/schema/base/Base";
-import { Address, BaseAddress, ParsedAddress } from "../../../types";
-import { ParsedUser } from "../../user/interface/user";
+import { Address, BaseAddress, ParsedAddress } from "apps/address/interface/Address";
+import { BaseMeta, BaseMetaUsers } from "apps/common/models/Base";
+import { ParsedUser } from "apps/user/interface/User";
 
-export enum ORGANIZATION_TYPE {
-    SUPER_FRANCHISE='super_franchise',
-    MASTER_FRANCHISE = "master_franchise",
-    ORGANIZATION = "organization",
-    AFFILIATE = "affiliate",
+
+interface BaseOrganization {
+    name: string;
+    contactPersonName: string;
+    contactNumber: string;
+    contactEmail: string;
+    pan: string | null;
+    gst: string | null;
+    bankName: string;
+    bankAccountNumber: string;
+    bankIFSCCode: string;
+    masterFranchiseId: number | null;
+    rootUser: number | null;
+    type: ORGANIZATION_TYPE;
+    businessType: BUSINESS_TYPE;
+}
+
+
+export interface IOrganizationPayload extends BaseOrganization {
+    billingAddressId: number;
+}
+
+export interface IOrganization extends IOrganizationPayload, BaseMeta {
 }
 
 export enum BUSINESS_TYPE {

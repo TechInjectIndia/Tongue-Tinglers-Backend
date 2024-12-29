@@ -1,7 +1,7 @@
 import {
     CommissionTable
 } from "../../../database/schema/commission/CommissionTable";
-import {APIResponse} from "../../common/models/ApiResponse";
+import {APIResponse} from "../../common/models/Base";
 import {NextFunction, Request, Response} from "express";
 
 

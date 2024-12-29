@@ -10,8 +10,9 @@ import {
   TUpdateUserReferralCode,
 } from "../../../types";
 import { UserModel, RolesModel } from "../../../database/schema";
-import { USER_TYPE, USER_STATUS } from "../../../interfaces";
-import IBaseRepo from "../controllers/controller/IUserController";
+
+import IBaseRepo from "../controllers/IUserController";
+import { USER_STATUS, USER_TYPE } from "../interface/User";
 
 export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
   constructor() { }

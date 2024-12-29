@@ -11,7 +11,7 @@ import {
   TListFiltersRegions,
 } from "../types";
 import IAddress from "./address/controllers/IAddressController";
-import { AddressRepo } from "./address/models/AddressRepo";
+import { AddressRepo } from "./address/repositories/AddressRepo";
 import IRegionRepo from "./region/controllers/controller/IRegionController";
 import { IRegion, SocialMediaDetails } from "../interfaces";
 import { RegionRepo } from "./region/models/RegionRepo";

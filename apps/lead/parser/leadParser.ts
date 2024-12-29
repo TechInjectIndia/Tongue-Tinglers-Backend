@@ -1,4 +1,4 @@
-import { ParseLead } from "../interface/lead";
+import { ParseLead } from "../interface/Lead";
 import { parseUserToMetaUser } from "../../user/parser/user-parser";
 import { ParseFranchiseModel } from "../../franchise_model/parser/franchiseModelParser";
 import { ParseProposal } from "../../proposal_model/parser/proposalParser";

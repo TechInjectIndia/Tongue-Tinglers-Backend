@@ -5,7 +5,7 @@ import {
 } from "../../../types/";
 import { UserModel } from "../../../database/schema";
 import { USER_TYPE } from '../../../interfaces';
-import IBaseRepo from '../controllers/controller/IProfileController';
+import IBaseRepo from '../controllers/IProfileController';
 
 export class ProfileRepo implements IBaseRepo<TProfile> {
     constructor() { }

@@ -3,7 +3,7 @@ import {
     TListFilters,
 } from "../../../types";
 import { Franchise } from "../../../interfaces";
-import IBaseRepo from "../controllers/controller/IFranchiseController";
+import IBaseRepo from "../controllers/IFranchiseController";
 
 export class FranchiseRepo implements IBaseRepo<Franchise, Franchise, TListFilters> {
     constructor() {

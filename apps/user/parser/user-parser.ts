@@ -1,4 +1,4 @@
-import {ParsedUser} from "../interface/user"
+import {ParsedUser} from "../interface/User"
 
 export const parseUserToMetaUser = (data: ParsedUser): ParsedUser => {
     return {

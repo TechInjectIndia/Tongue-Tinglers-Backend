@@ -1,6 +1,6 @@
 import { COMMISSION_PAID_STATUS, CommissionEntityMapTable, ICommissionEntityMapping, ICommissionEntityMappingResponse } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
 import { ICommission } from "../../../interfaces/commission";
-import { APIResponse } from "../../common/models/ApiResponse";
+import { APIResponse } from "../../common/models/Base";
 
 export interface ICommissionRepo {
     create(commission: ICommission): Promise<APIResponse<ICommission>>;

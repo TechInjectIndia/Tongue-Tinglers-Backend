@@ -1,29 +1,21 @@
-import {
-    BaseNotes,
-    BaseOrder,
-    Notes,
-    Order,
-    OrderPagination,
-    OrderPayload,
-} from "../../../interfaces/orders";
+
 import { IOrderRepo } from "./IOrderRepo";
 import { OrderModel } from "../../../database/schema/order/orderModel";
 import { NotesModel } from "../../../database/schema/order/notesModel";
-import { Pagination } from "../../../interfaces";
 import { Op } from "sequelize";
-import { OrderItem } from "../../../interfaces/order_items";
+
 import { OrderItemModel } from "../../../database/schema/order-items/orderItemsModel";
-import { OrderItemsModel } from "../../../database/schema";
-import { get } from "lodash";
+import { OrderItem } from "../interface/OrderItem";
+import { Notes, Order, OrderPagination, OrderPayload } from "../interface/Order";
 
 export class OrderRepo implements IOrderRepo {
     async createOrder(order: OrderPayload): Promise<Order | null> {
         try {
             let notesCreated: Notes[] = [];
             let orderItemsCreated: OrderItem[] = [];
-            const { notes,orderItems, ...orderDetails } = order;
+            const { notes, orderItems, ...orderDetails } = order;
 
-            if(orderItems && orderItems.length > 0){
+            if (orderItems && orderItems.length > 0) {
                 orderItemsCreated = await Promise.all(
                     orderItems.map(async (orderItem) => {
                         const createdOrderItem = await OrderItemModel.create(orderItem);
@@ -42,7 +34,7 @@ export class OrderRepo implements IOrderRepo {
                 );
             }
 
-            const orderItemIds = orderItemsCreated.map((orderItem)=> orderItem.id)
+            const orderItemIds = orderItemsCreated.map((orderItem) => orderItem.id)
             const noteIds = notesCreated.map((note) => note.id);
 
             // Create the order
@@ -145,44 +137,44 @@ export class OrderRepo implements IOrderRepo {
         try {
             const offset = (page - 1) * limit;
 
-        // Building the query
-        const query: any = {
-            where: {},
-            limit,
-            offset,
-            include: [{ model: NotesModel, as: "noteses", through: { attributes: [] }, }],
-        };
-
-        // Adding search functionality
-        if (search) {
-            query.where = {
-                ...query.where,
-                [Op.or]: [
-                    { status: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for status
-                    { delivery_status: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for delivery_status
-                    { payment_type: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for payment_type
-                ],
+            // Building the query
+            const query: any = {
+                where: {},
+                limit,
+                offset,
+                include: [{ model: NotesModel, as: "noteses", through: { attributes: [] }, }],
             };
-        }
 
-        // Applying filters (if provided)
-        if (filters) {
-            Object.entries(filters).forEach(([key, value]) => {
-                query.where[key] = value;
-            });
-        }
+            // Adding search functionality
+            if (search) {
+                query.where = {
+                    ...query.where,
+                    [Op.or]: [
+                        { status: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for status
+                        { delivery_status: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for delivery_status
+                        { payment_type: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for payment_type
+                    ],
+                };
+            }
 
-        // Fetch data with total count
-        const { rows, count: total } = await OrderModel.findAndCountAll(query);
+            // Applying filters (if provided)
+            if (filters) {
+                Object.entries(filters).forEach(([key, value]) => {
+                    query.where[key] = value;
+                });
+            }
 
-        // Returning paginated result
-        return {
-            data: rows, // Corrected from "order" to "rows"
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
-        };
+            // Fetch data with total count
+            const { rows, count: total } = await OrderModel.findAndCountAll(query);
+
+            // Returning paginated result
+            return {
+                data: rows, // Corrected from "order" to "rows"
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+            };
         } catch (error) {
             console.error("Error fetching orders with pagination:", error);
             throw new Error("Failed to fetch orders.");

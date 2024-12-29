@@ -56,12 +56,6 @@ enum LeadStatus {
     FOLLOWED_UP = "followed-up",
 }
 
-enum extraFieldTypes {
-    STRING = "string",
-    NUMBER = "number",
-    DATE = "date"
-}
-
 interface ExtraFields {
     id: number,
     key: string,

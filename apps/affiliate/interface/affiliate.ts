@@ -1,4 +1,4 @@
-import { ParsedUser } from "../../user/interface/user"
+import { ParsedUser } from "../../user/interface/User"
 
 interface Affiliate {
     id: number,

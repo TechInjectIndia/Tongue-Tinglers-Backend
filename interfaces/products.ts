@@ -1,4 +1,5 @@
-import { BaseMeta, ParsedMeta } from "../database/schema/base/Base";
+
+import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
 import { BaseProductOptions, ParsedProductOptions } from "./product-options";
 import { ParsedCategory } from "./products_category";
 

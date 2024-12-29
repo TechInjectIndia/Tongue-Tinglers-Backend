@@ -1,109 +1,109 @@
-import { uploadFileToFirebase, getAllFilesFromFirebase, deleteFileFromFirebase } from '../../../libraries';
-import { GalleryModel } from "../../../database/schema";
-import { Op } from "sequelize";
-import { GalleryAttributes } from "../../../interfaces";
-import IGalleryController from '../controllers/controller/IGalleryController';
+// import { uploadFileToFirebase, getAllFilesFromFirebase, deleteFileFromFirebase } from '../../../libraries';
 
-export class GalleryRepo implements IGalleryController<GalleryAttributes> {
-    // Search for images based on name and message
-    public async searchImages(name?: string, message?: string): Promise<any[]> {
-        const searchConditions: any = {};
+// import { Op } from "sequelize";
+// import { GalleryAttributes } from "../../../interfaces";
+// import IGalleryController from '../controllers/controller/IGalleryController';
 
-        if (name) {
-            searchConditions.name = { [Op.iLike]: `%${name}%` };
-        }
-        if (message) {
-            searchConditions.message = { [Op.iLike]: `%${message}%` };
-        }
+// export class GalleryRepo implements IGalleryController<GalleryAttributes> {
+//     // Search for images based on name and message
+//     public async searchImages(name?: string, message?: string): Promise<any[]> {
+//         const searchConditions: any = {};
 
-        try {
-            const images = await GalleryModel.findAll({
-                where: searchConditions,
-            });
-            return images;
-        } catch (error) {
-            console.error('Error searching images:', error);
-            throw new Error('Failed to search images.');
-        }
-    }
+//         if (name) {
+//             searchConditions.name = { [Op.iLike]: `%${name}%` };
+//         }
+//         if (message) {
+//             searchConditions.message = { [Op.iLike]: `%${message}%` };
+//         }
 
-    public async get(id: number): Promise<any> {
-        const data = await GalleryModel.findOne({
-            where: {
-                id,
-            },
-        });
-        return data;
-    }
+//         try {
+//             const images = await GalleryModel.findAll({
+//                 where: searchConditions,
+//             });
+//             return images;
+//         } catch (error) {
+//             console.error('Error searching images:', error);
+//             throw new Error('Failed to search images.');
+//         }
+//     }
 
-    // Upload an image to Firebase Storage and save the image data in the database
-    public async uploadImage(file: any, fileInfo: any, destinationPath: string): Promise<string> {
-        const urlArray = await uploadFileToFirebase(file, destinationPath);
-        const url = urlArray[0];
+//     public async get(id: number): Promise<any> {
+//         const data = await GalleryModel.findOne({
+//             where: {
+//                 id,
+//             },
+//         });
+//         return data;
+//     }
 
-        const newImage = await GalleryModel.create({
-            name: fileInfo.name,
-            message: fileInfo.message,
-            url: url,
-            caption: fileInfo.caption
-        });
+//     // Upload an image to Firebase Storage and save the image data in the database
+//     public async uploadImage(file: any, fileInfo: any, destinationPath: string): Promise<string> {
+//         const urlArray = await uploadFileToFirebase(file, destinationPath);
+//         const url = urlArray[0];
 
-        return newImage.url;
-    }
+//         const newImage = await GalleryModel.create({
+//             name: fileInfo.name,
+//             message: fileInfo.message,
+//             url: url,
+//             caption: fileInfo.caption
+//         });
 
-    public async update(id: number, data: any): Promise<any> {
-        const existingFile = await GalleryModel.findByPk(id);
+//         return newImage.url;
+//     }
 
-        if (!existingFile) {
-            throw new Error(`File with ID ${id} not found.`);
-        }
+//     public async update(id: number, data: any): Promise<any> {
+//         const existingFile = await GalleryModel.findByPk(id);
 
-        const updatedFile = await existingFile.update({
-            name: data.name,
-            message: data.message,
-            url: data.url || existingFile.url,
-            caption: data.caption,
-            updatedAt: new Date(),
-        });
+//         if (!existingFile) {
+//             throw new Error(`File with ID ${id} not found.`);
+//         }
 
-        return updatedFile;
-    }
+//         const updatedFile = await existingFile.update({
+//             name: data.name,
+//             message: data.message,
+//             url: data.url || existingFile.url,
+//             caption: data.caption,
+//             updatedAt: new Date(),
+//         });
 
-    public async updateFile(
-        id: number,
-        file: any,
-        fileInfo: any,
-        destinationPath: string
-    ): Promise<any> {
-        const urlArray = await uploadFileToFirebase(file, destinationPath);
-        const url = urlArray[0];
+//         return updatedFile;
+//     }
 
-        // Check if the file already exists in the database by name or other identifier
-        const existingFile = await GalleryModel.findOne({
-            where: { name: fileInfo.name },
-        });
+//     public async updateFile(
+//         id: number,
+//         file: any,
+//         fileInfo: any,
+//         destinationPath: string
+//     ): Promise<any> {
+//         const urlArray = await uploadFileToFirebase(file, destinationPath);
+//         const url = urlArray[0];
 
-        const updatedFile = await GalleryModel.update({
-            name: fileInfo.name,
-            message: fileInfo.message,
-            url: url || existingFile.url,
-            caption: fileInfo.caption,
-            updatedAt: new Date(),
-        }, { where: { id: id } });
+//         // Check if the file already exists in the database by name or other identifier
+//         const existingFile = await GalleryModel.findOne({
+//             where: { name: fileInfo.name },
+//         });
 
-        return updatedFile;
-    }
+//         const updatedFile = await GalleryModel.update({
+//             name: fileInfo.name,
+//             message: fileInfo.message,
+//             url: url || existingFile.url,
+//             caption: fileInfo.caption,
+//             updatedAt: new Date(),
+//         }, { where: { id: id } });
 
-    // Retrieve uploaded images (List images from Firebase and the database)
-    public async getImages(prefix: string = ''): Promise<any[]> {
-        // const firebaseImages = await getAllFilesFromFirebase(prefix); 
-        const dbImages = await GalleryModel.findAll();
-        return dbImages;
-    }
+//         return updatedFile;
+//     }
 
-    // Delete an image by its name in Firebase and the database
-    public async deleteImage(imageName: string): Promise<void> {
-        await deleteFileFromFirebase(imageName);
-        await GalleryModel.destroy({ where: { name: imageName } });
-    }
-}
+//     // Retrieve uploaded images (List images from Firebase and the database)
+//     public async getImages(prefix: string = ''): Promise<any[]> {
+//         // const firebaseImages = await getAllFilesFromFirebase(prefix); 
+//         const dbImages = await GalleryModel.findAll();
+//         return dbImages;
+//     }
+
+//     // Delete an image by its name in Firebase and the database
+//     public async deleteImage(imageName: string): Promise<void> {
+//         await deleteFileFromFirebase(imageName);
+//         await GalleryModel.destroy({ where: { name: imageName } });
+//     }
+// }

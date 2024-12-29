@@ -2,7 +2,7 @@ import * as express from "express";
 // import AdminController from "../controllers/user";
 import * as AdminValidation from "../validations/user";
 import AdminController from "../../user/controllers/user";
-import {Auth} from "../../auth/models";
+import { Auth } from "../../auth/models";
 import {
     checkFirebaseUser,
     createFirebaseUser,
@@ -13,22 +13,14 @@ import {
     sendEmail,
     sendResponse
 } from "../../../libraries";
-import {
-    ERROR_MESSAGE,
-    RESPONSE_TYPE,
-    SUCCESS_MESSAGE
-} from "../../../constants";
-import {AdminRepo} from "../../user/models/user";
-import {USER_TYPE} from "../../../interfaces";
-import {OrganizationRepo} from "../../organization/models";
-import {TUser} from "../../../types";
-import {UserModel} from "../../../database/schema";
+
+
 import {
     BUSINESS_TYPE,
     IOrganizationPayloadData,
     ORGANIZATION_TYPE
 } from "../../../interfaces/organization";
-import {QuestionRepo} from "../../questions/models";
+import { QuestionRepo } from "../../questions/models";
 import {
     getSampleAreas,
     getSampleFranchiseModels,
@@ -36,14 +28,19 @@ import {
     getSampleQuestions,
     getSampleRegions
 } from "../utils";
-import {AreaRepo} from "../../area/models/AreaRepo";
-import {RegionRepo} from "../../region/models/RegionRepo";
-import {FranchiseModelRepo} from "../../franchise_model/models";
-import {ProposalModelRepo} from "../../proposal_model/models";
+import { AreaRepo } from "../../area/models/AreaRepo";
+import { RegionRepo } from "../../region/models/RegionRepo";
+import { FranchiseModelRepo } from "../../franchise_model/models";
+import { ProposalModelRepo } from "../../proposal_model/models";
+import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from "constants/response-messages";
+import { AdminRepo } from "apps/user/models/user";
+import { TUser, USER_TYPE } from "apps/user/interface/User";
+import { UserModel } from "apps/user/models/UserTable";
+import { OrganizationRepo } from "apps/organization/models";
 
 const router = express.Router();
 
-const {validateCreateAdminBody} = AdminValidation;
+const { validateCreateAdminBody } = AdminValidation;
 
 // const { addAdmin } = AdminController;
 const {
@@ -109,7 +106,7 @@ const {
 router.post("/create", validateCreateAdminBody, (async (req, res) => {
     try {
 
-        const payload = {...req?.body, createdBy: 1};
+        const payload = { ...req?.body, createdBy: 1 };
 
         const existingAdmin = await new Auth().getUserByEmail(
             payload.email
@@ -200,22 +197,22 @@ async function createDummyMaster(user_id: number) {
 
     const qRepo = new QuestionRepo();
     const questionsProm = Promise.all(questions.map(
-        q => qRepo.create({createdBy: user_id, ...q}, user_id)));
+        q => qRepo.create({ createdBy: user_id, ...q }, user_id)));
 
     const aRepo = new AreaRepo();
     const areasProm = Promise.all(areas.map(
-        a => aRepo.create({createdBy: user_id, ...a}))).then(_ => {
-        const rRepo = new RegionRepo();
-        Promise.all(regions.map(
-            r => rRepo.create({createdBy: user_id, ...r})));
-    });
+        a => aRepo.create({ createdBy: user_id, ...a }))).then(_ => {
+            const rRepo = new RegionRepo();
+            Promise.all(regions.map(
+                r => rRepo.create({ createdBy: user_id, ...r })));
+        });
 
     const fmRepo = new FranchiseModelRepo();
     const franchiseModelsProm = Promise.all(franchiseModels.map(
         fm => fmRepo.create(fm, user_id))).then(_ => {
-        const pRepo = new ProposalModelRepo();
-        Promise.all(proposals.map(p => pRepo.create(p)));
-    });
+            const pRepo = new ProposalModelRepo();
+            Promise.all(proposals.map(p => pRepo.create(p)));
+        });
 
     return Promise.all(
         [areasProm, franchiseModelsProm, questionsProm]);
@@ -240,7 +237,7 @@ async function createDummyMaster(user_id: number) {
 router.get("/superOrg", (async (req, res) => {
     try {
 
-        const payload = {...req?.body, createdBy: 1};
+        const payload = { ...req?.body, createdBy: 1 };
 
         const email = 'admin@TongueTingler.com';
         const password = '123456';
@@ -293,7 +290,7 @@ router.get("/superOrg", (async (req, res) => {
                 "role": 0,
                 password: hashedPassword,
                 firebaseUid: uid
-            }).then(uModel => (uModel as UserModel).toJSON());
+            } as TUser).then(uModel => (uModel as UserModel).toJSON());
         }
 
         const repo = new OrganizationRepo();
@@ -337,7 +334,7 @@ router.get("/superOrg", (async (req, res) => {
                 ],
                 masterFranchiseId: null,
                 rootUser: admin.id,
-                createdBy: admin.id,
+                createdBy: 1,
                 updatedBy: null,
                 deletedBy: null
             }

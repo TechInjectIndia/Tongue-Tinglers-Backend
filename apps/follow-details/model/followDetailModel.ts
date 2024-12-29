@@ -1,10 +1,10 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { FollowDetails, followStatus } from "../interface/followDetails";
-import { sequelize } from "../../../config";
-import RepoProvider from "../../RepoProvider";
-import { UserModel } from "../../../database/schema";
+import { UserModel } from "apps/user/models/UserTable";
+import { sequelize } from "config";
+import RepoProvider from "apps/RepoProvider";
 
-interface FollowDetailsCreationAttributes extends Optional<FollowDetails, "id"> {}
+interface FollowDetailsCreationAttributes extends Optional<FollowDetails, "id"> { }
 
 class FollowDetailsModel extends Model<FollowDetails> implements FollowDetailsCreationAttributes {
     id: number;
@@ -18,15 +18,15 @@ class FollowDetailsModel extends Model<FollowDetails> implements FollowDetailsCr
     updatedBy: number | null;
     deletedBy: number | null;
 
-    static associate(){
+    static associate() {
 
         this.belongsTo(UserModel, { as: "created", foreignKey: "createdBy" });
         this.belongsTo(UserModel, { as: "updated", foreignKey: "updatedBy" });
         this.belongsTo(UserModel, { as: "followed", foreignKey: "followedBy" });
-        
+
     }
 
-    public static initModel(){
+    public static initModel() {
         FollowDetailsModel.init({
             id: {
                 type: DataTypes.INTEGER,
@@ -70,7 +70,8 @@ class FollowDetailsModel extends Model<FollowDetails> implements FollowDetailsCr
                 type: DataTypes.INTEGER,
                 allowNull: true,
             }
-        },{
+
+        }, {
             sequelize,
             tableName: "follow_details",
             timestamps: true,
@@ -78,7 +79,7 @@ class FollowDetailsModel extends Model<FollowDetails> implements FollowDetailsCr
         return FollowDetailsModel
     }
 
-    public static hook(){
+    public static hook() {
         FollowDetailsModel.addHook("afterCreate", async (instance, options) => {
             await RepoProvider.LogRepo.logModelAction(
                 "create",

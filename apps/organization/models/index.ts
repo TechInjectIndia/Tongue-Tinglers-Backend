@@ -1,16 +1,14 @@
 import {Op} from "sequelize";
 import {TListFilters} from "../../../types";
-import {AddressModel, UserModel} from "../../../database/schema";
+
 import IBaseRepo from "../controllers/controller/IController";
-import {
-    IOrganizationPayloadData,
-    IOrganizationPayloadDataWithMeta,
-    ParsedOrganization,
-} from "../../../interfaces/organization";
+
 import {OrganizationModel} from "../database/organization_schema";
 import RepoProvider from "../../RepoProvider";
 import {parseOrganization} from "../parser/organizationParser"
-import {OrganizationAddressPayload} from "../interface/organization"
+import {IOrganizationPayloadData, IOrganizationPayloadDataWithMeta, OrganizationAddressPayload, ParsedOrganization} from "../interface/Organization"
+import { AddressModel } from "apps/address/models/AddressTable";
+import { UserModel } from "apps/user/models/UserTable";
 
 export class OrganizationRepo
     implements IBaseRepo<IOrganizationPayloadDataWithMeta, ParsedOrganization, TListFilters> {

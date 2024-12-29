@@ -1,13 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
-import {
-    CONTRACT_STATUS,
-    CONTRACT_DOCUMENT_STATUS,
-    CONTRACT_PAYMENT_STATUS,
-    SIGN_STATUS,
-} from "../../../interfaces/";
-
+import { CONTRACT_PAYMENT_STATUS, CONTRACT_STATUS } from "../interface/Contract";
 // Schema for UserDetails
 const USER_DETAILS_SCHEMA = Joi.object().keys({
     id: Joi.string().required()

@@ -1,4 +1,4 @@
-import { parsedFranchise } from "../../../interfaces";
+import { parsedFranchise } from "../interface/Franchise";
 
 const parseFranchise = (franchise: any) => {
   const data: parsedFranchise = {

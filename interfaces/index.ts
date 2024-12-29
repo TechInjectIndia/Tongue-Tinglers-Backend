@@ -9,7 +9,6 @@ export * from "./product_category";
 export * from "./orders";
 export * from "./crm";
 export * from "./petpooja";
-export * from "./contracts";
 export * from "./form-question";
 export * from "./campaign";
 export * from "./file";

@@ -1,7 +1,10 @@
 import { Address, BaseAddress } from "apps/address/interface/Address";
+import { ParsedAffiliate } from "apps/affiliate/interface/affiliate";
 import { BaseMeta, BaseMetaUsers, ParsedMeta } from "apps/common/models/Base";
-import { BaseSocialMedia, parsedAffiliate, SocialMediaDetails } from "apps/lead/interface/Lead";
+import { BaseSocialMedia, SocialMediaDetails } from "apps/lead/interface/Lead";
 import { ParsedOrganization } from "apps/organization/interface/Organization";
+
+
 import { parsedRegion } from "apps/region/models/Region";
 import { ParsedUser } from "apps/user/interface/User";
 
@@ -44,7 +47,7 @@ interface parsedFranchise extends ParsedMeta {
     organization: ParsedOrganization;
     status: FRANCHISE_STATUS;
     establishedDate: Date;
-    affiliate: parsedAffiliate;
+    affiliate: ParsedAffiliate;
     location: Address;
     sm: Array<SocialMediaDetails>;
 }

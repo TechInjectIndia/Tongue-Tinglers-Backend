@@ -18,6 +18,11 @@ import { Pagination, TListFilters } from "apps/common/models/common";
 import { getUserName } from "apps/common/utils/commonUtils";
 import { Op } from "sequelize";
 import { parseFranchise } from "../parser/franchiseParser";
+import { UserModel } from "apps/user/models/UserTable";
+import { FranchiseModel } from "../models/FranchiseTable";
+import { RegionModel } from "apps/region/models/RegionTable";
+import { OrganizationModel } from "apps/organization/models/OrganizationTable";
+import { AddressModel } from "apps/address/models/AddressTable";
 
 export class FranchiseRepo implements IFranchiseRepo {
   async create(franchise: FranchiseDetails, userId: number, options?: { transaction?: any }): Promise<Franchise | null> {
@@ -275,9 +280,6 @@ export class FranchiseRepo implements IFranchiseRepo {
           },
         ],
       });
-
-      console.log("nitesh");
-      console.log(res);
 
       if (res) {
         return parseFranchise(res.toJSON());

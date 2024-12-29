@@ -6,7 +6,7 @@ const ParseAffiliate = (affiliate: ParsedAffiliate): ParsedAffiliate => {
         id: affiliate.id,
         type: affiliate.type,
         codes: affiliate.codes,
-        user: parseUserToMetaUser(affiliate.user),
+        user: affiliate.user,
         createdAt: affiliate.createdAt,
         updatedAt: affiliate.updatedAt,
     }

@@ -1,5 +1,6 @@
 
-import {BaseMeta, BaseMetaUsers} from "../database/schema/base/Base";
+
+import { BaseMeta, BaseMetaUsers } from "apps/common/models/Base";
 import { Address, BaseAddress, ParsedAddress } from "../types";
 import { ParsedUser } from "./user";
 

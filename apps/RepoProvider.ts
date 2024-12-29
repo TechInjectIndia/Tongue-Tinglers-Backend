@@ -36,7 +36,6 @@ import { ProductsCategoryRepo } from "./products-category/repos/productsCategory
 import { RazorpayRepo } from "./razorpay/Repos/RazorapayRepo";
 import { IRazorpayRepo } from "./razorpay/Repos/IRazorpayRepo";
 import { IOrderRepo } from "./order/repos/IOrderRepo";
-import { OrderRepo } from "./order/repos/orderRepo";
 import { ILogsRepo } from "./logs/repos/ILogsRepo";
 import { LogsRepo } from "./logs/repos/LogsRepo";
 import { ICommissionRepo } from "./commission/repositories/ICommissionRepo";
@@ -161,12 +160,12 @@ export default class RepoProvider {
     return this._razorpayRepo;
   }
 
-  static get orderRepo() {
-    if (!this._orderRepo) {
-      this._orderRepo = new OrderRepo();
-    }
-    return this._orderRepo;
-  }
+  // static get orderRepo() {
+  //   if (!this._orderRepo) {
+  //     this._orderRepo = new OrderRepo();
+  //   }
+  //   return this._orderRepo;
+  // }
 
   static get LogRepo() {
     if (!this._logsRepo) {

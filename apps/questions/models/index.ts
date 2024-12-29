@@ -2,14 +2,11 @@ import { Op } from "sequelize";
 import {
     TListFilters,
 } from "../../../types";
-import {
-    TQuestionList,
-    TPayloadQuestion,
-    IQuestion,
-} from "../../../interfaces";
-import { QuestionModel, UserModel } from "../../../database/schema";
-import IBaseRepo from '../controllers/controller/IController';
-import { getUserName } from "../../common/utils/commonUtils";
+import { IQuestion, TPayloadQuestion, TQuestionList } from "../interface/Question";
+import { QuestionModel } from "./QuestionModel";
+import { UserModel } from "apps/user/models/UserTable";
+import { getUserName } from "apps/common/utils/commonUtils";
+
 
 export class QuestionRepo {
     constructor() { }

@@ -1,14 +1,10 @@
 import { Op } from "sequelize";
-import {
-    TListFiltersRegions,
-} from "../../../types";
-import {
-    TRegionList,
-    TPayloadRegion,
-    IRegion,
-} from "../../../interfaces";
-import {AreaModel, RegionModel} from "../../../database/schema";
+
 import IBaseRepo from '../controllers/controller/IRegionController';
+import { IRegion, TPayloadRegion, TRegionList } from "./Region";
+import { TListFiltersRegions } from "apps/common/models/common";
+import { RegionModel } from "./RegionTable";
+import { AreaModel } from "apps/area/models/AreaTable";
 
 export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
     constructor() { }

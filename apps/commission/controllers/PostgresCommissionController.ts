@@ -1,16 +1,13 @@
-import {
-    CommissionTable
-} from "../../../database/schema/commission/CommissionTable";
+
 import {APIResponse} from "../../common/models/Base";
 import {ICommissionController} from "./ICommissionController";
 import {NextFunction, Request, Response} from "express";
 import {get} from "lodash";
 
-import {
-    COMMISSION_PAID_STATUS,
-    OrganizationCommissions,
-} from "../../../database/schema/commission/CommissionAndEntityMappingTable";
+
 import RepoProvider from "../../RepoProvider";
+import { COMMISSION_PAID_STATUS, OrganizationCommissions } from "../model/CommissionEntityMapTable";
+import { CommissionTable } from "../model/CommmisionTable";
 
 export class PostgresCommissionController implements ICommissionController {
     async getMappingsData(

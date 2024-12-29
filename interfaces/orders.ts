@@ -1,4 +1,4 @@
-import {BaseMeta, ParsedMeta} from "../database/schema/base/Base";
+
 import {
     BaseOrderItem,
     ParsedOrderItem,
@@ -6,6 +6,7 @@ import {
 } from "./order_items";
 import {ParsedUser} from "./user";
 import {Address, OrderStatus} from "../types";
+import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
 
 export enum PAYMENT_STATUS {
     PAID = "paid",

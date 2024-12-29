@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { get } from "lodash";
 import { HelperMethods } from "../../common/utils/HelperMethods";
-import { COMMISSION_PAID_STATUS } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
+import { COMMISSION_PAID_STATUS } from "../model/CommissionEntityMapTable";
 
 
 const createCommissionSchema = Joi.object({

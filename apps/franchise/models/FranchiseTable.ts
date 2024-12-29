@@ -1,11 +1,15 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../../../config";
 
-import RepoProvider from "../../../apps/RepoProvider";
-import { Franchise, FRANCHISE_STATUS } from "../interface/Franchise";
 import { DocumentModel } from "apps/documents/models/DocumentTable";
+import { Franchise, FRANCHISE_STATUS } from "../interface/Franchise";
+import { RegionModel } from "apps/region/models/RegionTable";
 import { OrganizationModel } from "apps/organization/models/OrganizationTable";
+import { AddressModel } from "apps/address/models/AddressTable";
 import { UserModel } from "apps/user/models/UserTable";
+import { sequelize } from "config";
+import RepoProvider from "apps/RepoProvider";
+
+
 
 const { STRING, INTEGER, DATE, NOW, ARRAY, ENUM } = DataTypes;
 

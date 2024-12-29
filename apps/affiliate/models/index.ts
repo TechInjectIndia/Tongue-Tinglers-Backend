@@ -1,16 +1,12 @@
 import {Op} from "sequelize";
 
-import {
-    Affiliate,
-    AffiliatesList,
-    TPayloadAffiliate,
-} from "../../../interfaces";
-import {
-    TListFilters,
-} from "../../../types";
-import { AffiliateModel, UserModel } from "../../../database/schema";
-import { SocialMediaDetailsModel } from "../../../database/schema";
 import IBaseRepo from '../controllers/controller/IController';
+import { Affiliate } from "../interface/affiliate";
+import { TListFilters } from "apps/common/models/common";
+import { AffiliateModel } from "./affiliateModel";
+import { UserModel } from "apps/user/models/UserTable";
+import { SocialMediaDetailsModel } from "apps/lead/models/smDetailsTable";
+import { AffiliatesList, TPayloadAffiliate } from "interfaces";
 
 export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
     constructor() { }

@@ -15,14 +15,13 @@ import {
 import { ContractRepo } from "../models/ContractRepo";
 import { LeadRepo } from "../../lead/models/lead";
 import { TContractPayload } from "../../../types";
+import { ContractsPayload } from "../interface/Contract";
+import { CampaignAdRepo } from "apps/campaign/models";
+import { CONFIG, sequelize } from "config";
+import { FRANCHISE_STATUS, FranchiseDetails } from "apps/franchise/interface/Franchise";
+import RepoProvider from "apps/RepoProvider";
+import { COMMISSION_PAID_STATUS } from "apps/commission/model/CommissionEntityMapTable";
 
-import { CampaignAdRepo } from "../../campaign/models";
-import { CONFIG } from "../../../config/environment";
-import { FRANCHISE_STATUS, FranchiseDetails } from "../../../interfaces";
-import RepoProvider from "../../RepoProvider";
-import { COMMISSION_PAID_STATUS } from "../../../database/schema/commission/CommissionAndEntityMappingTable";
-import { sequelize } from "../../../config";
-import { ContractsPayload } from "../interface/contracts";
 
 export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {

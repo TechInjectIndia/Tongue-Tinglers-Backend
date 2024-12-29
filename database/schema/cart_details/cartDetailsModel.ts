@@ -2,7 +2,8 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { CartDetails, BaseCartDetails } from "../../../interfaces/cart_details";
 import { CartProductModel } from "../cart-product/cartProductModel";
-import { UserModel } from "../user/user.model";
+import { UserModel } from "apps/user/models/UserTable";
+
 
 // Defining the interface for the creation attributes of CartDetails
 interface CartDetailsCreationAttributes extends Optional<CartDetails, "id"> {}
@@ -47,8 +48,8 @@ CartDetailsModel.belongsToMany(CartProductModel, {
     as: "cartProductses", // Alias for the relationship
 });
 
-UserModel.hasMany(CartDetailsModel, {as: 'cartUser', foreignKey: 'user_id'})
-CartDetailsModel.belongsTo(UserModel, {as: 'users', foreignKey: 'user_id'})
+// UserModel.hasMany(CartDetailsModel, {as: 'cartUser', foreignKey: 'user_id'})
+// CartDetailsModel.belongsTo(UserModel, {as: 'users', foreignKey: 'user_id'})
 
 // Exporting the CartDetailsModel
 export { CartDetailsModel };

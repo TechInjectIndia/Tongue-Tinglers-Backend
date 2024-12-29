@@ -1,13 +1,9 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../../../config";
-import {
-    BaseProductOptions,
-    PRODUCT_OPTIONS_STATUS,
-    ProductOptions,
-} from "../../../interfaces/product-options";
-import { ProductModel } from "../product/productModel";
-import { OptionsValueModel } from "../optionsValue/optionsValueModel";
-import RepoProvider from "../../../apps/RepoProvider";
+
+import { BaseProductOptions, PRODUCT_OPTIONS_STATUS, ProductOptions } from "apps/product/interface/ProductOptions";
+import { OptionsValueModel } from "apps/optionsValue/interface/OptionValueTable";
+import { sequelize } from "config";
+import RepoProvider from "apps/RepoProvider";
 
 interface ProductOptionsCreationAttributes
     extends Optional<ProductOptions, "id"> {}

@@ -13,7 +13,7 @@ import cors from "cors";
 import router from "./routes";
 import { connectToDatabase } from "./config";
 
-require("./database/schema");
+// require("./database/schema");
 import helmet from "helmet";
 import helmetCsp from "helmet-csp";
 import xss from "xss-clean";

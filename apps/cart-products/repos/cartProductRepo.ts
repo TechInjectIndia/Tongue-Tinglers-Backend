@@ -1,13 +1,14 @@
-import { BaseCartProduct, Cart, CartProduct, ParseCart, UpdateQuantity } from "../../../interfaces/cart_products";
+import { CartDetailsModel } from "database/schema/cart_details/cartDetailsModel";
+import { Cart, CartProduct, ParseCart, UpdateQuantity } from "../interface/Cart";
+import { CartProductModel } from "../model/CartTable";
 import { ICartProductRepo } from "./ICartProductRepo";
-import {CartProductModel} from "../../../database/schema/cart-product/cartProductModel";
-import { CartDetailsModel } from "../../../database/schema/cart_details/cartDetailsModel";
-import { ProductModel } from "../../../database/schema/product/productModel";
-import { ProductOptionsModel } from "../../../database/schema/product-options/productOptionsModel";
+import { ProductModel } from "database/schema/product/productModel";
+import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
+import { OptionsModel } from "apps/options/models/optionTable";
+import { OptionsValueModel } from "apps/optionsValue/interface/OptionValueTable";
 import { Op } from "sequelize";
-import { OptionsValueModel } from "../../../database/schema/optionsValue/optionsValueModel";
-import { OptionsModel } from "../../../database/schema/options/optionModel";
 import { parseCartProduct } from "../parser/cartProductParser";
+
 export class CartProductRepo implements ICartProductRepo {
 
     async create(cartProduct:Cart): Promise<ParseCart | null> {

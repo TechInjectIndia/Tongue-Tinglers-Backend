@@ -1,9 +1,11 @@
-import {FollowDetails, ParsedFollowDetails} from "../../follow-details/interface/followDetails"
-import { ParsedAffiliate} from "../../affiliate/interface/affiliate"
-import { ParsedFranchiseModels } from "../../franchise_model/interface/franchiseModel";
-import { ParsedProposal } from "../../proposal_model/interface/proposal";
-import { ParsedUser } from "../../user/interface/user";
-import { BaseMeta } from "../../../database/schema/base/Base";
+import { ParsedAffiliate } from "apps/affiliate/interface/affiliate";
+import { BaseMeta } from "apps/common/models/Base";
+import { FollowDetails, ParsedFollowDetails } from "apps/follow-details/interface/followDetails";
+import { ParsedFranchiseModels } from "apps/franchise_model/interface/franchiseModel";
+import { ParsedProposal } from "apps/proposal_model/interface/proposal";
+import { ParsedUser } from "apps/user/interface/User";
+import { MetaUser } from "interfaces";
+
 
 interface LeadAddress {
     address: string;
@@ -56,6 +58,39 @@ enum LeadStatus {
     FOLLOWED_UP = "followed-up",
 }
 
+
+enum socialMediaEnumsPlatform {
+    FB = "fb",
+    INSTAGRAM = "instagram",
+    YOUTUBE = "youtube",
+    TWITTER = "twitter",
+    LINKEDIN = "linkedin",
+    TIKTOK = "tiktok",
+    SNAPCHAT = "snapchat",
+    PINTEREST = "pinterest",
+    REDDIT = "reddit",
+    TUMBLR = "tumblr",
+}
+
+
+interface BaseSocialMedia {
+    platform: socialMediaEnumsPlatform;  // e.g., 'FB', 'INSTAGRAM', 'YOUTUBE'
+    handle: string;
+    followers: number;
+    tags: string[];
+    affiliateId: number;
+}
+
+interface SocialMediaDetails extends BaseSocialMedia {
+    id: number;
+}
+
+enum extraFieldTypes {
+    STRING = "string",
+    NUMBER = "number",
+    DATE = "date"
+}
+
 interface ExtraFields {
     id: number,
     key: string,
@@ -89,7 +124,7 @@ export interface LeadPayload {
     assignedUser: number | null;
 }
 
-export interface LeadTable extends LeadPayload, BaseMeta {}
+export interface LeadTable extends LeadPayload, BaseMeta { }
 
 export interface ParseLead {
     id: number;
@@ -105,21 +140,21 @@ export interface ParseLead {
     additionalInfo: string | null;
     logs: [] | null;
     followDetails: ParsedFollowDetails[] | null;
-    referBy: ParsedUser | null;
+    referBy: MetaUser | null;
     notes: Note[] | null;
     proposalModalId: ParsedProposal | null;
     amount: number | null;
     franchiseModals: ParsedFranchiseModels[] | null;
     affiliate: ParsedAffiliate[] | null;
-    marketing: ParsedUser[] | null;
+    marketing: MetaUser[] | null;
     other: ExtraFields[] | null;
-    assignedUser: ParsedUser | null;
+    assignedUser: MetaUser | null;
     createdAt: Date;
-    createdBy: ParsedUser;
+    createdBy: MetaUser;
     updatedAt: Date | null;
-    updatedBy: ParsedUser | null;
+    updatedBy: MetaUser | null;
     deletedAt: Date | null;
-    deletedBy: ParsedUser | null;
+    deletedBy: MetaUser | null;
 }
 
-export {Note, LeadStatus, LeadSource, ITrackable}
+export { Note, LeadStatus, LeadSource, BaseSocialMedia, ITrackable, LeadAddress, SocialMediaDetails, ExtraFields, extraFieldTypes, socialMediaEnumsPlatform }

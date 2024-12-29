@@ -3,6 +3,7 @@ import { sequelize } from "../../../config";
 
 import RepoProvider from "../../../apps/RepoProvider";
 import { ICheckList } from "../interface/IChecklist";
+import { FranchiseLeadModel } from "apps/franchise_model/models/FranchiseModelTable";
 
 // Define the optional attributes for creation
 interface IChecklistCreationAttributes extends Optional<ICheckList, "id"> { }

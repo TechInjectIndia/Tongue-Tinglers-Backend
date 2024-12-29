@@ -1,9 +1,9 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../../../config";
 
 
 import RepoProvider from "apps/RepoProvider";
 import { TUser, USER_STATUS, USER_TYPE } from "../interface/User";
+import { sequelize } from "config";
 
 
 const { INTEGER, STRING, ENUM, JSONB } = DataTypes;

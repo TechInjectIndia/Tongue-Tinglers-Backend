@@ -1,13 +1,5 @@
 const { Op } = require("sequelize");
-import {
-    TemplateType,
-    jsonData,
-    SendResponse,
-    TemplateList,
-    FieldType,
-    DocumentDetails,
-} from "../../../types";
-import { TokenModel } from "../../../database/schema";
+
 const axios = require("axios");
 const {
     ZOHO_CLIENT_ID,
@@ -18,6 +10,9 @@ const {
 } = process.env;
 import IBaseRepo from "../controllers/controller/IZohoSignController";
 import { ContractRepo } from "../../contracts/models/ContractRepo";
+import { TemplateType } from "types";
+import { TokenModel } from "./TokenModel";
+import { DocumentDetails, FieldType, TemplateList } from "../interface/Token";
 
 export class ZohoSignRepo implements IBaseRepo<TemplateType> {
     constructor() { }

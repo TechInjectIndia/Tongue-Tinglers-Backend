@@ -1,9 +1,8 @@
 import IUserAddressController from "../controllers/IAddressController"; // Ensure this interface is correctly defined
-
-import { AddressModel } from "../../../database/schema";
-import {parseAddress} from "../parser/addressParser"
+import { parseAddress } from "../parser/addressParser"
 import { Address, BaseAddress } from "../interface/Address";
 import { TListFilters } from "types";
+import { AddressModel } from "../models/AddressTable";
 
 export class AddressRepo implements IUserAddressController<BaseAddress, Address, TListFilters> {
     public async list(filters: TListFilters = {
@@ -39,7 +38,7 @@ export class AddressRepo implements IUserAddressController<BaseAddress, Address,
     public async create(payload: BaseAddress, options?: { transaction?: any }): Promise<Address> {
         try {
             const { transaction } = options || {};
-            const newUserAddress = await AddressModel.create(payload, {transaction});
+            const newUserAddress = await AddressModel.create(payload, { transaction });
             return newUserAddress.toJSON();
         } catch (error) {
             throw new Error(`Error creating user address: ${(error as Error).message}`);

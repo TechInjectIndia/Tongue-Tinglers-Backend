@@ -5,6 +5,7 @@ import { sequelize } from "config/database";
 import RepoProvider from "apps/RepoProvider";
 import { DocumentModel } from "apps/documents/models/DocumentTable";
 import { UserModel } from "apps/user/models/UserTable";
+import { AddressModel } from "apps/address/models/AddressTable";
 
 // Ensure this path is correct
 

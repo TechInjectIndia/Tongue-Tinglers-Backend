@@ -20,4 +20,27 @@ interface ParsedProposal {
     deletedAt: Date | null;
 }
 
-export {ProposalPayload, ParsedProposal}
+
+interface ProposalTable extends ProposalPayload {
+    id: number,
+    title: string,
+    /* comma separated string */
+    prices: string;
+    franchiseModel: number;
+    createdAt: Date;
+    createdBy: number;
+    updatedAt: Date | null;
+    updatedBy: number | null;
+    deletedAt: Date | null;
+    deletedBy: number | null;
+}
+
+
+
+type ProposalModelsList = {
+    total: number;
+    data: ProposalTable[];
+};
+
+
+export { ProposalPayload, ParsedProposal, ProposalTable, ProposalModelsList }

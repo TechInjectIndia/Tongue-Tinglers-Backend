@@ -38,15 +38,15 @@ CartProductModel.init({
     tableName: 'cart_products'
 })
 
-CartProductModel.belongsTo(ProductModel, {
-    foreignKey: 'product_id',  // Foreign key in CartProductModel
-    as: 'product'  // Alias to use in the include
-});
+// CartProductModel.belongsTo(ProductModel, {
+//     foreignKey: 'product_id',  // Foreign key in CartProductModel
+//     as: 'product'  // Alias to use in the include
+// });
 
-CartProductModel.belongsTo(ProductOptionsModel, {
-    foreignKey: 'product_option_id',  // Foreign key in CartProductModel
-    as: 'variations'  // Alias to use in the include
-});
+// CartProductModel.belongsTo(ProductOptionsModel, {
+//     foreignKey: 'product_option_id',  // Foreign key in CartProductModel
+//     as: 'variations'  // Alias to use in the include
+// });
 
 // CartProductModel.belongsTo(ProductModel, {as: 'product', foreignKey: 'product_id'})
 // CartProductModel.belongsTo(ProductOptionsModel, {as: 'product_option', foreignKey: 'product_option_id'})

@@ -5,6 +5,7 @@ import { BaseDocument, SaveDocument } from "../interface/Document";
 import { UserModel } from "apps/user/models/UserTable";
 import { sequelize } from "config/database";
 import RepoProvider from "apps/RepoProvider";
+import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
 
 interface DocumentCreationAttributes extends Optional<SaveDocument, "id"> { }
 

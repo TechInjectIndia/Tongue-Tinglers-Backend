@@ -1,5 +1,5 @@
 import { BaseMeta } from "apps/common/models/Base";
-import { Note, ProposalModels } from "apps/lead/interface/Lead";
+import { Note } from "apps/lead/interface/Lead";
 
 enum CONTRACT_PAYMENT_STATUS {
     PENDING = "pending",
@@ -32,7 +32,7 @@ enum SIGN_STATUS {
 interface IContract extends BaseMeta {
     id: number;
     status: CONTRACT_STATUS;
-    proposalData: ProposalModels | null;
+    proposalData: number | null;
     terminationDetails: null | {
         UserDetails: number; // updated
         reason: string;
@@ -72,6 +72,103 @@ interface ContractPaymentDetails {
     additionalInfo: string;
 }
 
+
+import { ParseLead } from "apps/lead/interface/Lead";
+import { ParsedOrganization } from "apps/organization/interface/Organization";
+import { ParsedUser } from "apps/user/interface/User";
+
+
+
+
+
+interface ContractPaymentDetails {
+    paymentId: string;
+    amount: number;
+    date: Date;
+    status: CONTRACT_PAYMENT_STATUS;
+    additionalInfo: string;
+}
+
+interface UserDetails {
+    id: number;
+}
+
+interface SignDoc {
+    docId: number | null;
+    sentBy: number;
+    createdAt: Date;
+    status: SIGN_STATUS;
+    docLink: string | null;
+    signedDate: Date | null;
+    notes: string | null;
+}
+
+export interface ContractsPayload {
+    status: CONTRACT_STATUS
+    createdBy: number;
+    terminationDetails: null | {
+        UserDetails: number;
+        reason: string;
+        date: Date;
+    };
+    payment: ContractPaymentDetails[] | null;
+    leadId: number;
+    organizationId: number | null;
+    templateId: string | null;
+    amount: number;
+    signedDate: Date | null;
+    dueDate: Date;
+    validity: {
+        to: Date;
+        from: Date;
+    };
+    notes: Note[] | null;
+    additionalInfo: string;
+    signedDocs: SignDoc[] | null;
+    proposalData: number | null;
+
+}
+
+export interface PartialContractsUpdate {
+    dueDate?: Date;
+    validity?: {
+        to: Date;
+        from: Date;
+    };
+    templateId?: string | null;
+}
+
+interface ContractTable extends ContractsPayload, BaseMeta{}
+
+interface ParsedContract {
+    id: number;
+    leadId: number;
+    lead: ParseLead | null;
+    organizationId:number | null;
+    organization: ParsedOrganization | null;
+    templateId: string | null;
+    amount: number;
+    signedDate: Date | null;
+    dueDate: Date;
+    validity: {
+        to: Date;
+        from: Date;
+    };
+    notes: Note[] | null;
+    additionalInfo: string;
+    logs: [] | null;
+    signedDocs: SignDoc[] | null;
+    createdAt: Date;
+    createdBy: ParsedUser;
+    updatedAt: Date | null;
+    updatedBy: ParsedUser | null;
+    deletedAt: Date | null;
+    deletedBy: ParsedUser | null;
+    payment: ContractPaymentDetails[];
+    status: CONTRACT_STATUS;
+}
+
+
 export {
     CONTRACT_STATUS,
     CONTRACT_PAYMENT_STATUS,
@@ -80,4 +177,7 @@ export {
     type IContract,
     type ContractPaymentDetails,
     SIGN_STATUS,
+    ContractTable,
+    ParsedContract,
+    
 };

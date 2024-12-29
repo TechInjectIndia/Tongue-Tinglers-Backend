@@ -1,9 +1,9 @@
-import {BaseDocument, Document} from '../../../interfaces/documents'
+import { BaseDocument, SaveDocument } from "../interface/Document"
 
 export interface IDocumentRepo {
-    createDocument(documet: BaseDocument[]): Promise<Document[] | null>
-    updateDocument(documet: BaseDocument[]): Promise<Document[]>
-    deleteDocument(id: number): Promise<Document>
-    getDocument(id: number): Promise<Document[]>
-    getDocumentByUser(data:any): Promise<Document[]>
+    createDocument(documet: BaseDocument[]): Promise<SaveDocument[] | null>
+    updateDocument(documents: BaseDocument[]): Promise<SaveDocument[] | null>
+    deleteDocument(id: number): Promise<Array<SaveDocument>>
+    getDocument(id: number): Promise<SaveDocument[]>
+    getDocumentByUser(data: any): Promise<SaveDocument[]>
 }

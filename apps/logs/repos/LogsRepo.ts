@@ -1,8 +1,8 @@
 import { Model, ModelStatic, Op } from "sequelize";
-import { Pagination } from "../../../interfaces";
 import { Log } from "../models/Log";
 import { ILogsRepo } from "./ILogsRepo";
-import { LogModel } from "../../../database/schema/logs/LogsModels";
+import { Pagination } from "apps/common/models/common";
+import { LogModel } from "../models/LogsTable";
 
 class LogsRepo implements ILogsRepo {
     async getAll(

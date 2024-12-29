@@ -1,6 +1,7 @@
-import { ParsedContract } from "../interface/contracts";
-import {parseLead} from "../../lead/parser/leadParser"
-import {parseOrganization} from "../../organization/parser/organizationParser"
+import { parseLead } from "apps/lead/parser/leadParser"
+import { ParsedContract } from "../interface/Contract"
+import { parseOrganization } from "apps/organization/parser/organizationParser"
+
 const parseContract = (contract:any):ParsedContract => {
 
     const data: ParsedContract = {

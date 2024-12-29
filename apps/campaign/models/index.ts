@@ -1,21 +1,16 @@
 import { Op } from "sequelize";
 import { TListFiltersCampaigns } from "../../../types";
-import {
-    ICampaign,
-    IQuestion,
-    TCampaignList,
-    TPayloadCampaign,
-} from "../../../interfaces";
-import {
-    AreaModel,
-    CampaignAdModel,
-    QuestionModel,
-    RegionModel
-} from "../../../database/schema";
+
 import IBaseRepo from "../controllers/controller/IController";
 import {
     OrganizationModel
 } from "../../organization/database/organization_schema";
+import { ICampaign, TCampaignList, TPayloadCampaign } from "../interface/campaign";
+import { CampaignAdModel } from "./CampaignModel";
+import { RegionModel } from "apps/region/models/RegionTable";
+import { AreaModel } from "apps/area/models/AreaTable";
+import { QuestionModel } from "apps/questions/models/QuestionModel";
+import { IQuestion } from "apps/questions/interface/Question";
 
 export class CampaignAdRepo
     implements IBaseRepo<ICampaign, TListFiltersCampaigns> {

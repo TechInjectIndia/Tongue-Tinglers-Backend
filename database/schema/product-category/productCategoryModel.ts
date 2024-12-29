@@ -1,9 +1,8 @@
+import { PRODUCT_STATUS } from "apps/product/interface/Product";
+import { BaseProductsCategory, CATEGORY_TYPE, PRODUCT_CATEGORY_STATUS, ProductsCategory } from "apps/products-category/interface/Category";
+import { sequelize } from "config";
 import { DataTypes, Model, Optional, } from "sequelize";
-import { sequelize } from "../../../config";
-import { BaseProductsCategory, ProductsCategory, PRODUCT_CATEGORY_STATUS, CATEGORY_TYPE } from "../../../interfaces/products_category";
-import { P_CATEGORY_TYPE, PRODUCT_STATUS } from "../../../interfaces";
 import { ProductModel } from "../product/productModel";
-
 interface ProductsCategoryCreationAttributes extends Optional<ProductsCategory, 'id'> { }
 
 class ProductsCategoryModel extends Model<ProductsCategory, ProductsCategoryCreationAttributes> implements BaseProductsCategory {

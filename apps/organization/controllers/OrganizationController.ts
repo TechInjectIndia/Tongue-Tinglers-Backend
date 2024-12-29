@@ -15,7 +15,8 @@ import {
 } from "../../../interfaces/organization";
 import {Pagination} from "../../../interfaces";
 import {ContractRepo} from "../../contracts/models/ContractRepo";
-import { ContractsPayload } from "../../contracts/interface/contracts";
+import { ContractsPayload } from "apps/contracts/interface/Contract";
+
 
 export default class OrganizationController {
     static async create(req: Request, res: Response, next: NextFunction) {

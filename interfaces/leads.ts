@@ -1,5 +1,6 @@
+import { ParsedMeta } from "apps/common/models/Base";
 import { FollowDetails } from "../apps/follow-details/interface/followDetails";
-import { ParsedMeta } from "../database/schema/base/Base";
+
 import type {
     UpdatedMetaData,
     BaseModel,

@@ -1,7 +1,8 @@
 import { Op } from "sequelize";
-import { LeadsModel } from "../../../database/schema";
+
 import IBaseRepo from '../controllers/controller/IFollowUpsController';
-import { LeadTable } from "../interface/lead";
+import { LeadTable } from "../interface/Lead";
+import { LeadsModel } from "./LeadTable";
 
 export class FollowUpsRepo implements IBaseRepo<LeadTable, any> {
     constructor() { }

@@ -1,7 +1,7 @@
 
 import { TQueryFilters, TLeadPayload, TLeadStatus, TLeadsList } from '../../../../types';
 import { ILead, ParseLead } from '../../../../interfaces';
-import { LeadPayload, LeadTable } from "../../interface/lead"
+import { LeadPayload, LeadTable } from "../../interface/Lead"
 /**
  * Interface for Lead Controller.
  */

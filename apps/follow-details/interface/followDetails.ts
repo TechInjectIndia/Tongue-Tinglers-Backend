@@ -1,5 +1,7 @@
-import {BaseMetaUsers, BaseMeta} from '../../../database/schema/base/Base'
-import {ParsedUser} from '../../user/interface/User'
+import { BaseMetaUsers } from "apps/common/models/Base";
+import { ParsedUser } from "apps/user/interface/User";
+
+
 interface BaseFollowDetails extends BaseMetaUsers {
     followedDate: Date | null;
     followedBy: number;

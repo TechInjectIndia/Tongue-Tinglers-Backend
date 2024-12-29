@@ -1,4 +1,5 @@
-import { ParsedUser } from "../../user/interface/User"
+import { MetaUser } from "apps/user/interface/User"
+
 
 interface Affiliate {
     id: number,
@@ -11,7 +12,7 @@ interface ParsedAffiliate {
     id: number,
     type: string,
     codes: string,
-    user: ParsedUser
+    user: MetaUser
     createdAt: Date,
     updatedAt: Date,
 }

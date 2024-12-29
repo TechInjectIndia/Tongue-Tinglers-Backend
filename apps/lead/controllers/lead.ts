@@ -1,13 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { get, isEmpty } from "lodash";
 import { Op } from "sequelize";
-import {
-    sendResponse,
-    createPassword,
-    createFirebaseUser,
-    sendEmail,
-    EMAIL_HEADING,
-} from "../../../libraries";
+import jwt from 'jsonwebtoken'
+
 import {
     RESPONSE_TYPE,
     SUCCESS_MESSAGE,
@@ -15,16 +10,16 @@ import {
 } from "../../../constants";
 import { LeadRepo } from "../models/lead";
 import { AssignRepo } from "../models/AssignRepo";
-import { ContractRepo } from "../../contracts/models/ContractRepo";
-import { AdminRepo } from "../../user/models/user";
-import { USER_TYPE, USER_STATUS, CONTRACT_STATUS } from "../../../interfaces";
-import jwt from "jsonwebtoken";
-import { CONFIG, sequelize } from "../../../config";
-import { createLeadResponse } from "../../../libraries";
-import { TContractPayload } from "../../../types/contracts";
-import { ZohoSignRepo } from "../../zoho-sign/models/zohosign";
-import { TAddUser } from "../../../types/admin/admin-user";
-import { ContractsPayload } from "../../contracts/interface/contracts";
+
+import { CONFIG, sequelize } from "config";
+import { TUser, USER_STATUS, USER_TYPE } from "apps/user/interface/User";
+import { ZohoSignRepo } from "apps/zoho-sign/models/zohosign";
+import { CONTRACT_STATUS, ContractsPayload } from "apps/contracts/interface/Contract";
+import { createFirebaseUser, createPassword, EMAIL_HEADING, sendEmail, sendResponse } from "libraries";
+import { AdminRepo } from "apps/user/models/user";
+import { ContractRepo } from "apps/contracts/models/ContractRepo";
+import { TAddUser } from "types";
+
 
 export default class LeadController {
 
@@ -215,7 +210,6 @@ export default class LeadController {
                 },
                 notes: null,
                 additionalInfo: "",
-                logs: null,
                 signedDocs: [],
                 createdBy: user_id,
                 proposalData: undefined
@@ -246,7 +240,7 @@ export default class LeadController {
 
             const hashedPassword = await createPassword(payload.password);
 
-            let normalUser: TAddUser = {
+            let normalUser: TUser = {
                 firebaseUid: firebaseUser.uid,
                 password: hashedPassword,
                 firstName: payload.firstName,
@@ -257,6 +251,21 @@ export default class LeadController {
                 type: USER_TYPE.PROSPECT,
                 role: 0,
                 referBy: undefined,
+                id: 0,
+                createdBy: 0,
+                profilePhoto: "",
+                status: "",
+                cart: "",
+                access_token: "",
+                password_token: "",
+                referralCode: "",
+                refresh_token: "",
+                updatedBy: 0,
+                deletedBy: 0,
+                lastLoginAt: undefined,
+                createdAt: undefined,
+                updatedAt: undefined,
+                deletedAt: undefined
             };
             await new AdminRepo().create(normalUser, {transaction});
 
@@ -300,42 +309,6 @@ export default class LeadController {
         }
     }
 
-    static async getLeadStatus(
-        req: Request,
-        res: Response,
-        next: NextFunction,
-    ): Promise<Response> {
-        try {
-            const id = get(req.params, "id", "");
-            const getAttributes = ["status"];
-            const existingLead = await new LeadRepo().getLeadStatus(
-                "id",
-                id,
-                getAttributes,
-            );
-
-            if (isEmpty(existingLead)) {
-                return res
-                    .status(400)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
-            }
-
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FETCHED,
-                        existingLead,
-                    ),
-                );
-        } catch (err) {
-            console.error(err);
-            return res
-                .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
-        }
-    }
 
     static async assignLeadToAdminUser(
         req: Request,

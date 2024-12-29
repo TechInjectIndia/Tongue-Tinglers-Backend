@@ -1,30 +1,14 @@
-import { PaymentLinkPayload } from "../../razorpay/models/Razorpay";
+import { CONTRACT_PAYMENT_STATUS, CONTRACT_STATUS, ContractPaymentDetails } from "apps/contracts/interface/Contract";
+import { ContractRepo } from "apps/contracts/models/ContractRepo";
+import { LeadRepo } from "apps/lead/models/lead";
+import { PaymentLinkPayload } from "apps/razorpay/models/Razorpay";
+import RepoProvider from "apps/RepoProvider";
+import { CONFIG } from "config";
+import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from "constants/response-messages";
+import { Request, Response, NextFunction } from "express";
+import { EMAIL_HEADING, EMAIL_TEMPLATE, getEmailTemplate, sendEmail, sendResponse } from "libraries";
 
-const Razorpay = require("razorpay");
-import { NextFunction, Request, Response } from "express";
-import {
-    RESPONSE_TYPE,
-    SUCCESS_MESSAGE,
-    ERROR_MESSAGE,
-} from "../../../constants";
-import {
-    sendResponse,
-    sendEmail,
-    EMAIL_HEADING,
-    getEmailTemplate,
-    EMAIL_TEMPLATE,
-} from "../../../libraries";
-import { ContractRepo } from "../../contracts/models/ContractRepo";
-import { LeadRepo } from "../../lead/models/lead";
-import {
-    CONTRACT_PAYMENT_STATUS,
-    CONTRACT_STATUS
-} from "../../../interfaces";
-import { ContractPaymentDetails } from "../../../interfaces";
-import { CONFIG } from "../../../config";
-import RepoProvider from "../../RepoProvider";
-import lead from "../../lead/api/lead-router";
-import { ITrackable } from "../../lead/interface/lead";
+import Razorpay from "razorpay";
 
 const {
     validateWebhookSignature,
@@ -73,7 +57,8 @@ export default class PaymentsController {
                     contractDetails.payment.push(paymentDetails);
                     await new ContractRepo().updatePaymentStatus(
                         contractDetails.id,
-                        contractDetails.payment as unknown as ContractPaymentDetails[]
+                        contractDetails.payment as unknown as ContractPaymentDetails[],
+                        CONTRACT_STATUS.ACTIVE
                     );
                 }
             }
@@ -214,16 +199,17 @@ export default class PaymentsController {
             }
             await new ContractRepo().updatePayment(
                 contract_id,
-                contractPayment
+                contractPayment,
+                CONTRACT_STATUS.ACTIVE
             );
 
             try {
-                const emailContent = await getEmailTemplate(
+                const emailContent = getEmailTemplate(
                     EMAIL_TEMPLATE.PAYMENT_REQUEST,
                     {
                         email: leadDetails.email,
                         link: link.short_url,
-                    },
+                    }
                 );
 
                 const mailOptions = {

@@ -1,6 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { BaseCartProduct, CartProduct } from "../interface/Cart";
+import { ProductModel } from "database/schema/product/productModel";
+import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
 
 
 interface CartProductCreationAttributes extends Optional<CartProduct, | "id"> {
@@ -37,15 +39,15 @@ CartProductModel.init({
     tableName: 'cart_products'
 })
 
-CartProductModel.belongsTo(ProductModel, {
-    foreignKey: 'product_id',  // Foreign key in CartProductModel
-    as: 'product'  // Alias to use in the include
-});
+// CartProductModel.belongsTo(ProductModel, {
+//     foreignKey: 'product_id',  // Foreign key in CartProductModel
+//     as: 'product'  // Alias to use in the include
+// });
 
-CartProductModel.belongsTo(ProductOptionsModel, {
-    foreignKey: 'product_option_id',  // Foreign key in CartProductModel
-    as: 'variations'  // Alias to use in the include
-});
+// CartProductModel.belongsTo(ProductOptionsModel, {
+//     foreignKey: 'product_option_id',  // Foreign key in CartProductModel
+//     as: 'variations'  // Alias to use in the include
+// });
 
 // CartProductModel.belongsTo(ProductModel, {as: 'product', foreignKey: 'product_id'})
 // CartProductModel.belongsTo(ProductOptionsModel, {as: 'product_option', foreignKey: 'product_option_id'})

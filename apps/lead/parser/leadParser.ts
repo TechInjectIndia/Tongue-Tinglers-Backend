@@ -1,12 +1,14 @@
+import { ParsedFollowDetails } from "apps/follow-details/interface/followDetails";
 import { ParseLead } from "../interface/Lead";
-import { parseUserToMetaUser } from "../../user/parser/user-parser";
-import { ParseFranchiseModel } from "../../franchise_model/parser/franchiseModelParser";
-import { ParseProposal } from "../../proposal_model/parser/proposalParser";
-import { ParseAffiliate } from "../../affiliate/parser/affilateParser";
-import { ParsedAffiliate } from "../../affiliate/interface/affiliate";
-import { parseFollowDetails } from "../../follow-details/parser/followDetailsParser";
-import { ParsedFollowDetails } from "../../follow-details/interface/followDetails";
-import { ParsedFranchiseModels } from "../../franchise_model/interface/franchiseModel";
+import { parseFollowDetails } from "apps/follow-details/parser/followDetailsParser";
+import { ParsedAffiliate } from "apps/affiliate/interface/affiliate";
+import { ParseAffiliate } from "apps/affiliate/parser/affilateParser";
+import { ParseProposal } from "apps/proposal_model/parser/proposalParser";
+import { parseUserToMetaUser } from "apps/user/parser/user-parser";
+import { ParsedFranchiseModels } from "apps/franchise_model/interface/franchiseModel";
+import { ParseFranchiseModel } from "apps/franchise_model/parser/franchiseModelParser";
+
+
 const parseLead = (lead: any): ParseLead => {
     console.log("lead: ", lead);
     if (!lead) return null;

@@ -1,7 +1,9 @@
-import { BaseProductsCategory, Pagination, PRODUCT_CATEGORY_STATUS, ProductsCategory } from "../../../interfaces/products_category";
-import { IProductsCategoryRepo } from "./IProductsCategoryRepo";
-import { ProductsCategoryModel } from "../../../database/schema/product-category/productCategoryModel";
+
 import { Op } from "sequelize";
+import { IProductsCategoryRepo } from "./IProductsCategoryRepo";
+import { BaseProductsCategory, PRODUCT_CATEGORY_STATUS, ProductsCategory } from "../interface/Category";
+import { ProductsCategoryModel } from "database/schema/product-category/productCategoryModel";
+import { Pagination } from "apps/common/models/common";
 
 export class ProductsCategoryRepo implements IProductsCategoryRepo {
     async createProductsCategory(category: BaseProductsCategory): Promise<ProductsCategory | null> {
@@ -11,7 +13,6 @@ export class ProductsCategoryRepo implements IProductsCategoryRepo {
                 slug: category.slug,
                 description: category.description,
                 status: category.status,
-                createdBy: category.createdBy,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 deletedAt: null,
@@ -54,41 +55,41 @@ export class ProductsCategoryRepo implements IProductsCategoryRepo {
         }
     }
 
-    async getAllProductsCategory(page: number, limit: number, search: string): Promise<Pagination<ProductsCategory>> {
-        try {
-            const offset = (page - 1) * limit;
+    // async getAllProductsCategory(page: number, limit: number, search: string): Promise<Pagination<ProductsCategory>> {
+    //     try {
+    //         const offset = (page - 1) * limit;
 
-            const query: any = {};
+    //         const query: any = {};
 
-            // Add search functionality
-            if (search) {
-                query[Op.or] = [
-                    { name: { [Op.iLike]: `%${search}%` } },
-                    { description: { [Op.iLike]: `%${search}%` } },
-                ];
-            }
+    //         // Add search functionality
+    //         if (search) {
+    //             query[Op.or] = [
+    //                 { name: { [Op.iLike]: `%${search}%` } },
+    //                 { description: { [Op.iLike]: `%${search}%` } },
+    //             ];
+    //         }
 
-            const { rows: products_category, count: total } = await ProductsCategoryModel.findAndCountAll({
-                where: query,
-                offset,
-                limit,
-                order: [['createdAt', 'DESC']]
-            }).then((res)=>{
-                return {
-                    rows: res.rows.map((productsCategory) => productsCategory.toJSON()),
-                    count: res.count
-                }
-            })
+    //         const { rows: products_category, count: total } = await ProductsCategoryModel.findAndCountAll({
+    //             where: query,
+    //             offset,
+    //             limit,
+    //             order: [['createdAt', 'DESC']]
+    //         }).then((res)=>{
+    //             return {
+    //                 rows: res.rows.map((productsCategory) => productsCategory.toJSON()),
+    //                 count: res.count
+    //             }
+    //         })
 
-            const totalPages = Math.ceil(total / limit);
+    //         const totalPages = Math.ceil(total / limit);
 
-            return { products_category, total, totalPages };
+    //         return { products_category, total, totalPages };
 
-        } catch (error) {
-            console.log(error);
-            return null;
-        }
-    }
+    //     } catch (error) {
+    //         console.log(error);
+    //         return null;
+    //     }
+    // }
 
     async updateProductsCategory(category: ProductsCategory): Promise<ProductsCategory> {
         try {

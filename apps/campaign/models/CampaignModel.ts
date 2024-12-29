@@ -8,7 +8,11 @@ import RepoProvider from "apps/RepoProvider";
 import { CampaignQuestionModel } from "./CampaignQuestionModel";
 import { ICampaign } from "../interface/campaign";
 import { sequelize } from "config/database";
-import { LeadsModel } from "apps/lead/models/LeadModel";
+import { LeadsModel } from "apps/lead/models/LeadTable";
+import { RegionModel } from "apps/region/models/RegionTable";
+import { AffiliateModel } from "apps/affiliate/models/affiliateModel";
+import { ProposalLeadModels } from "apps/proposal_model/models/ProposalModelTable";
+import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 
 
 

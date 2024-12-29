@@ -1,8 +1,11 @@
 import { IChecklistModel } from "apps/ichecklist/model/CheckListTable";
-import { FranchiseModels } from "apps/lead/interface/Lead";
+
 import RepoProvider from "apps/RepoProvider";
 import { sequelize } from "config";
+
 import { DataTypes, Model, Optional } from "sequelize";
+import { FranchiseModels } from "../interface/franchiseModel";
+import { ExtraFieldsModel } from "apps/lead/models/ExtraFieldTable";
 
 
 const { STRING, TEXT, JSONB } = DataTypes;
@@ -32,21 +35,11 @@ class FranchiseLeadModel
             as: "others",
         });
 
-        FranchiseLeadModel.hasMany(SeoImageModel, {
-            foreignKey: "franchiseModelId",
-            as: "images",
-        });
 
         ExtraFieldsModel.belongsTo(FranchiseLeadModel, {
             foreignKey: "franchiseModelId",
             as: "franchiseModel",
         });
-
-        SeoImageModel.belongsTo(FranchiseLeadModel, {
-            foreignKey: "franchiseModelId",
-            as: "franchiseModel",
-        });
-
         FranchiseLeadModel.hasMany(IChecklistModel, {
             foreignKey: "franchiseModelId",
         });

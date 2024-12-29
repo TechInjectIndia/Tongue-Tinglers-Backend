@@ -1,21 +1,13 @@
+import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
 import {APIResponse} from "../../common/models/Base";
+import { COMMISSION_PAID_STATUS, CommissionEntityMapTable, ICommissionEntityMapping, ICommissionEntityMappingResponse } from "../model/CommissionEntityMapTable";
+import { CommissionTable } from "../model/CommmisionTable";
 import {ICommissionRepo} from "./ICommissionRepo";
-import {handleError, HelperMethods} from "../../common/utils/HelperMethods";
-import {
-    CommissionTable
-} from "../../../database/schema/commission/CommissionTable";
-import {ICommission} from "../../../interfaces/commission";
-import {
-    COMMISSION_PAID_STATUS,
-    CommissionEntityMapTable,
-    ICommissionEntityMapping,
-    ICommissionEntityMappingResponse
-} from "../../../database/schema/commission/CommissionAndEntityMappingTable";
-import {Op, UniqueConstraintError} from "sequelize";
-import {FranchiseModel, UserModel} from "../../../database/schema";
-import {
-    OrganizationModel
-} from "../../organization/database/organization_schema";
+import { OrganizationModel } from "apps/organization/models/OrganizationTable";
+import { handleError, HelperMethods } from "apps/common/utils/HelperMethods";
+import { ICommission } from "../interface/Commission";
+import { Op, UniqueConstraintError } from "sequelize";
+
 
 export class PostgresCommissionRepo implements ICommissionRepo {
 

@@ -1,55 +1,22 @@
 import { Op } from "sequelize";
-import {
-    TLeadPayload,
-    TLeadsList,
-    TLeadStatus,
-    TListFilters,
-    TListFiltersAreas,
-} from "../../../types";
-import { ILead, Pagination } from "../../../interfaces"; // Use the LeadStatus
-import {
-    AssignModel,
-    CampaignAdModel,
-    LeadsModel,
-    UserModel,
-} from "../../../database/schema";
-// enum from interfaces
-import { createLeadsResponse } from "../../../libraries";
-import { handleError } from "../../common/utils/HelperMethods";
-import { getUserName } from "../../common/utils/commonUtils";
-import { parseLead } from "../parser/leadParser";
-import {LeadPayload, LeadTable, ParseLead} from "../interface/lead"
+
+import { LeadPayload, LeadTable, ParseLead } from "../interface/Lead"
 import moment from "moment";
-import { FollowDetailsModel } from "../../follow-details/model/followDetailModel";
+import { LeadsModel } from "./LeadTable";
+import { UserModel } from "apps/user/models/UserTable";
+import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
+import { FollowDetailsModel } from "apps/follow-details/model/followDetailModel";
+import { parseLead } from "../parser/leadParser";
+import { handleError } from "apps/common/utils/HelperMethods";
+import { Pagination, TListFilters, TListFiltersAreas } from "apps/common/models/common";
+import { getUserName } from "apps/common/utils/commonUtils";
+import { AssignModel } from "./AssignTable";
+import { createLeadsResponse } from "libraries";
 
 export class LeadRepo {
     constructor() { }
 
-    // Update the status of a lead
-    public async updateStatus(
-        id: number,
-        data: TLeadStatus
-    ): Promise<[affectedCount: number]> {
-        const response = await LeadsModel.update(data, {
-            where: { id },
-        });
-        return response;
-    }
 
-    // Get lead status by any attribute
-    public async getLeadStatus(
-        whereName: keyof ILead,
-        whereVal: any,
-        getAttributes: any = ["*"]
-    ): Promise<TLeadStatus | null> {
-        const whereAttributes = { [whereName]: whereVal };
-        const data = await LeadsModel.findOne({
-            raw: true,
-            attributes: getAttributes,
-            where: whereAttributes,
-        });
-        return data as TLeadStatus | null;
-    }
 
     // Get lead by attribute
     public async getLeadByAttr(

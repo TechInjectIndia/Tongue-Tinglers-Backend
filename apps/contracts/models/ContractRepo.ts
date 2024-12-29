@@ -1,25 +1,17 @@
 import { Op } from "sequelize";
+import { ContractModel } from "./ContractTable";
+import { LeadsModel } from "apps/lead/models/LeadTable";
+import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
+import { CONTRACT_STATUS, ContractPaymentDetails, ContractsPayload, ParsedContract, PartialContractsUpdate } from "../interface/Contract";
+import { parseContract } from "../parser/contractParser";
+import { UserModel } from "apps/user/models/UserTable";
+import { getUserName } from "apps/common/utils/commonUtils";
+import { TListFiltersContract } from "types/admin";
+import moment from 'moment'
 
-import {
-    TContract,
-    TQueryFilters,
-    TContractsList,
-    TContractPayload,
-    TListFiltersContract,
-} from "../../../types";
-import {
-    CONTRACT_PAYMENT_STATUS,
-    CONTRACT_STATUS,
-    ContractPaymentDetails,
-    Pagination,
-} from "../../../interfaces";
-import { CampaignAdModel, ContractModel, LeadsModel, UserModel } from "../../../database/schema";
-import { getUserName } from "../../common/utils/commonUtils";
-import moment from "moment";
-import { OrganizationModel } from "../../organization/database/organization_schema";
-import { ContractsPayload, ParsedContract, PartialContractsUpdate } from "../interface/contracts";
-import { ITrackable } from "../../lead/interface/lead";
-import {parseContract} from "../parser/contractParser"
+import { OrganizationModel } from "apps/organization/models/OrganizationTable";
+
+
 export class ContractRepo {
     constructor() { }
 
@@ -287,13 +279,13 @@ export class ContractRepo {
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
-            },{
+            }, {
                 model: OrganizationModel,
                 as: 'organization',
             }],
         });
         const parsedData: ParsedContract[] = await Promise.all(data.map((contract) => parseContract(contract)));
-        return { total,data: parsedData}
+        return { total, data: parsedData }
     }
 
     public async update(
@@ -309,11 +301,10 @@ export class ContractRepo {
     public async updatePayment(
         contractId: number,
         paymentData: ContractPaymentDetails[],
-        logs: ITrackable[],
         status: CONTRACT_STATUS
     ): Promise<boolean> {
         const [affectedCount] = await ContractModel.update(
-            { payment: paymentData, logs: logs, status: status },
+            { payment: paymentData, status: status },
             { where: { id: contractId } }
         );
 

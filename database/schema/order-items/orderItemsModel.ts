@@ -1,11 +1,12 @@
+import { BaseOrderItem, ORDER_ITEM_TYPE } from "apps/order/interface/OrderItem";
+import { sequelize } from "config";
+import { OrderItem } from "interfaces/order_items";
 import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../../../config";
-import { BaseOrderItem, ORDER_ITEM_TYPE, OrderItem } from "../../../interfaces/order_items";
 
 interface OrderItemCreationAttributes extends Optional<OrderItem, | "id"> {
 }
 
-class OrderItemModel extends Model<OrderItem, OrderItemCreationAttributes> implements BaseOrderItem{
+class OrderItemModel extends Model<OrderItem, OrderItemCreationAttributes> implements BaseOrderItem {
     id: number;
     product_id: number;
     product_option_id: number;
@@ -60,36 +61,6 @@ OrderItemModel.init({
         type: DataTypes.ENUM(...Object.values(ORDER_ITEM_TYPE)),
         allowNull: false,
     },
-    createdBy: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-    },
-    updatedBy: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-    },
-    deletedBy: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-        field: "created_at",
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-        field: "updated_at",
-    },
-    deletedAt: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: null,
-        field: "deleted_at",
-    },
 }, {
     sequelize,
     tableName: "order_items",
@@ -97,4 +68,4 @@ OrderItemModel.init({
     paranoid: true,
 })
 
-export {OrderItemModel}
+export { OrderItemModel }

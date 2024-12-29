@@ -1,3 +1,4 @@
+import { ContractModel } from 'apps/contracts/models/ContractTable';
 import { IChecklistModel } from 'apps/ichecklist/model/CheckListTable';
 import { checkPointsValue, IPdiList } from 'apps/pdi-checklist/interface/Pdi';
 import { PdiCheckpointModel } from 'apps/pdi-checkpoint/model/PdiCheckPointTable';

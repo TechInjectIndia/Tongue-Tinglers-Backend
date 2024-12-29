@@ -1,9 +1,6 @@
-import {
-    TUser,
-    TUpdateUserToken,
-    TUpdateUserPassword
-} from "../../../types";
-import { UserModel } from "../../../database/schema";
+import { TUser } from "apps/user/interface/User";
+import { UserModel } from "apps/user/models/UserTable";
+import { TUpdateUserPassword, TUpdateUserToken } from "types/admin/admin-user";
 
 export class Auth {
     constructor() { }

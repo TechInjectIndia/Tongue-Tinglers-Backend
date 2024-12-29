@@ -1,4 +1,5 @@
-import { BaseProductsCategory, Pagination, ProductsCategory, PRODUCT_CATEGORY_STATUS } from "../../../interfaces/products_category";
+import { Pagination } from "apps/common/models/common"
+import { BaseProductsCategory, PRODUCT_CATEGORY_STATUS, ProductsCategory } from "../interface/Category"
 
 export interface IProductsCategoryRepo {
 
@@ -8,7 +9,7 @@ export interface IProductsCategoryRepo {
 
     getProductsCategoryBySlug(slug: string): Promise<ProductsCategory>
 
-    getAllProductsCategory(page: number, limit: number, search: string): Promise<Pagination<ProductsCategory>>
+    // getAllProductsCategory(page: number, limit: number, search: string): Promise<Pagination<ProductsCategory>>
 
     updateProductsCategory(category: ProductsCategory): Promise<ProductsCategory>
 

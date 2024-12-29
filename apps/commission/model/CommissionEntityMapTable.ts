@@ -2,6 +2,8 @@ import { Model, Optional, DataTypes } from "sequelize";
 import { sequelize } from "../../../config";
 import { BaseMeta } from "apps/common/models/Base";
 import { OrganizationModel } from "apps/organization/models/OrganizationTable";
+import { CommissionEventType, CommissionType } from "../interface/Commission";
+import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
 
 
 
@@ -89,33 +91,33 @@ CommissionEntityMapTable.init({
 
 /* associations */
 
-CommissionEntityMapTable.belongsTo(FranchiseModel, {
-    foreignKey: {
-        allowNull: false,
-        name: 'franchiseId',
-    },
-});
+// CommissionEntityMapTable.belongsTo(FranchiseModel, {
+//     foreignKey: {
+//         allowNull: false,
+//         name: 'franchiseId',
+//     },
+// });
 
-FranchiseModel.hasMany(CommissionEntityMapTable, {
-    foreignKey: {
-        allowNull: false,
-        name: 'franchiseId',
-    },
-});
+// FranchiseModel.hasMany(CommissionEntityMapTable, {
+//     foreignKey: {
+//         allowNull: false,
+//         name: 'franchiseId',
+//     },
+// });
 
-OrganizationModel.hasMany(CommissionEntityMapTable, {
-    foreignKey: {
-        allowNull: false,
-        name: 'organizationId',
-    },
-});
+// OrganizationModel.hasMany(CommissionEntityMapTable, {
+//     foreignKey: {
+//         allowNull: false,
+//         name: 'organizationId',
+//     },
+// });
 
-CommissionEntityMapTable.belongsTo(OrganizationModel, {
-    foreignKey: {
-        allowNull: false,
-        name: 'organizationId',
-    },
-});
+// CommissionEntityMapTable.belongsTo(OrganizationModel, {
+//     foreignKey: {
+//         allowNull: false,
+//         name: 'organizationId',
+//     },
+// });
 
 
 enum COMMISSION_ENTITIES {

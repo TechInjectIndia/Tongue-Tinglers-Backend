@@ -1,4 +1,4 @@
-enum LogModel {
+enum LogModels {
     USER = "User",
     DOCUMENT = "Document",
     ORGANIZATION = "Organization",

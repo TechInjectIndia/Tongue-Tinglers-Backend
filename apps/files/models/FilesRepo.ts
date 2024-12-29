@@ -1,9 +1,10 @@
 import { uploadFileToFirebase, getAllFilesFromFirebase, deleteFileFromFirebase } from '../../../libraries'; // Adjust import path as necessary
-import { FileModel } from "../../../database/schema";
+
 import { Op } from "sequelize";
 import {
     ICampaignSubmisisons,
 } from "../../../interfaces";
+import { FileModel } from './FileTable';
 
 export class FilesRepo {
     public async searchFiles(name?: string, message?: string): Promise<any[]> {

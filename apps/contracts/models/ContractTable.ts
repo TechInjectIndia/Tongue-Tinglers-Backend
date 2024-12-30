@@ -1,7 +1,7 @@
 import { DataTypes, DATE, ENUM, FLOAT, INTEGER, JSONB, Model, Optional, STRING } from "sequelize";
 
 import { CONTRACT_PAYMENT_STATUS, CONTRACT_STATUS, ContractTable, SignDoc } from "../interface/Contract";
-import { ITrackable, Note } from "apps/lead/interface/Lead";
+import { ITrackable, Note } from "apps/lead/interface/lead";
 import { UserModel } from "apps/user/models/UserTable";
 import { LeadsModel } from "apps/lead/models/LeadTable";
 import { OrganizationModel } from "apps/organization/models/OrganizationTable";

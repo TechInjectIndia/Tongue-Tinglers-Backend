@@ -2,7 +2,7 @@ import { DataTypes, INTEGER, Model, Optional } from "sequelize";
 
 import RepoProvider from "../../RepoProvider";
 import { FollowDetailsModel } from "../../follow-details/model/followDetailModel";
-import { ExtraFields, ITrackable, LeadAddress, LeadSource, LeadStatus, LeadTable, Note } from "../interface/Lead";
+import { ExtraFields, ITrackable, LeadAddress, LeadSource, LeadStatus, LeadTable, Note } from "../interface/lead";
 import { FollowDetails } from "apps/follow-details/interface/followDetails";
 import { UserModel } from "apps/user/models/UserTable";
 import { CampaignAdModel } from "apps/campaign/models/CampaignModel";

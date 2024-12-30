@@ -1,6 +1,8 @@
 import { BaseMeta } from "apps/common/models/Base";
-import { Note } from "apps/lead/interface/Lead";
-
+import { Note } from "../../lead/interface/lead";
+import { ParseLead } from "apps/lead/interface/lead";
+import { ParsedOrganization } from "../../organization/interface/organization";
+import { ParsedUser } from "apps/user/interface/User";
 enum CONTRACT_PAYMENT_STATUS {
     PENDING = "pending",
     SUCCESS = "success",
@@ -71,15 +73,6 @@ interface ContractPaymentDetails {
     status: CONTRACT_PAYMENT_STATUS;
     additionalInfo: string;
 }
-
-
-import { ParseLead } from "apps/lead/interface/Lead";
-import { ParsedOrganization } from "apps/organization/interface/Organization";
-import { ParsedUser } from "apps/user/interface/User";
-
-
-
-
 
 interface ContractPaymentDetails {
     paymentId: string;

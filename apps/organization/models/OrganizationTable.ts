@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 
-import { BUSINESS_TYPE, IOrganization, ORGANIZATION_TYPE } from "../interface/Organization";
+import { BUSINESS_TYPE, IOrganization, ORGANIZATION_TYPE } from "../interface/organization";
 import { sequelize } from "config/database";
 import RepoProvider from "apps/RepoProvider";
 import { DocumentModel } from "apps/documents/models/DocumentTable";

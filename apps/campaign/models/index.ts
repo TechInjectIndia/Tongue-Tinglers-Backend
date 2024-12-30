@@ -4,7 +4,7 @@ import { TListFiltersCampaigns } from "../../../types";
 import IBaseRepo from "../controllers/controller/IController";
 import {
     OrganizationModel
-} from "../../organization/database/organization_schema";
+} from "../../organization/models/OrganizationTable";
 import { ICampaign, TCampaignList, TPayloadCampaign } from "../interface/campaign";
 import { CampaignAdModel } from "./CampaignModel";
 import { RegionModel } from "apps/region/models/RegionTable";

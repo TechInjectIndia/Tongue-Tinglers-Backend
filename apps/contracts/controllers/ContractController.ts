@@ -72,7 +72,7 @@ export default class ContractController {
 
             const status = get(req.query, "status");
             const proposal = get(req.query, "proposal");
-            const minPice = get(req.query, "minPrice");
+            const minPrice = get(req.query, "minPrice");
             const maxPrice = get(req.query, "maxPrice");
             const dueDate = get(req.query, "dueDate");
             const zohoTemplate = get(req.query, "zohoTemplate");
@@ -81,7 +81,7 @@ export default class ContractController {
             const filters: any = {};
             if (status) filters.status = status;
             if (proposal) filters.proposal = proposal;
-            if (minPice) filters.minPice = minPice;
+            if (minPrice) filters.minPrice = minPrice;
             if (maxPrice) filters.maxPrice = maxPrice;
             if (dueDate) filters.dueDate = dueDate;
             if (zohoTemplate) filters.zohoTemplate = zohoTemplate;

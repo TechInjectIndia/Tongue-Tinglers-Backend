@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-import { ExtraFields } from 'apps/lead/interface/Lead';
+import { ExtraFields } from 'apps/lead/interface/lead';
  // Ensure this points to the correct model
 import IExtraFieldController from '../controllers/controller/IExtraFieldController';
 import { TListFilters } from 'apps/common/models/common';

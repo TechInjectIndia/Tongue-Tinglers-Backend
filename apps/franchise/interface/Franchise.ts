@@ -1,8 +1,8 @@
 import { Address, BaseAddress } from "apps/address/interface/Address";
 import { ParsedAffiliate } from "apps/affiliate/interface/affiliate";
 import { BaseMeta, BaseMetaUsers, ParsedMeta } from "apps/common/models/Base";
-import { BaseSocialMedia, SocialMediaDetails } from "apps/lead/interface/Lead";
-import { ParsedOrganization } from "apps/organization/interface/Organization";
+import { BaseSocialMedia, SocialMediaDetails } from "../../lead/interface/lead";
+import { ParsedOrganization } from "../../organization/interface/organization";
 
 
 import { parsedRegion } from "apps/region/models/Region";

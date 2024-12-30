@@ -1,5 +1,5 @@
 import { CONTRACT_STATUS, ContractPaymentDetails, SignDoc } from "apps/contracts/interface/Contract";
-import { Note } from "apps/lead/interface/Lead";
+import { Note } from "apps/lead/interface/lead";
 
 export interface TContract {
     id: number;

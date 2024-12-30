@@ -3,10 +3,10 @@ import {TListFilters} from "../../../types";
 
 import IBaseRepo from "../controllers/controller/IController";
 
-import {OrganizationModel} from "../database/organization_schema";
+import {OrganizationModel} from "../models/OrganizationTable";
 import RepoProvider from "../../RepoProvider";
 import {parseOrganization} from "../parser/organizationParser"
-import {IOrganizationPayloadData, IOrganizationPayloadDataWithMeta, OrganizationAddressPayload, ParsedOrganization} from "../interface/Organization"
+import {IOrganizationPayloadData, IOrganizationPayloadDataWithMeta, OrganizationAddressPayload, ParsedOrganization} from "../interface/organization"
 import { AddressModel } from "apps/address/models/AddressTable";
 import { UserModel } from "apps/user/models/UserTable";
 
@@ -192,7 +192,7 @@ export class OrganizationRepo
                         model: AddressModel,
                         as: "billingAddress", // Billing address (one-to-one
                                               // association)
-                        attributes: {exclude: []}, // Include all fields of the
+                        // attributes: {exclude: []}, // Include all fields of the
                                                    // address
                     },
                     {

@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { SocialMediaDetails, socialMediaEnumsPlatform } from "../interface/Lead";
+import { SocialMediaDetails, socialMediaEnumsPlatform } from "../../lead/interface/lead";
 import { sequelize } from "config";
 
 

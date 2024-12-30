@@ -21,7 +21,7 @@ import { ContractsPayload } from "apps/contracts/interface/Contract";
 export default class OrganizationController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, "user_id", 1);
+            const user_id = get(req, "user_id");
 
             console.log(user_id);
 
@@ -29,14 +29,12 @@ export default class OrganizationController {
 
             const prospectId = body.prospectId ?? null;
 
-            console.log(prospectId);
-
-
             const payload: IOrganizationPayloadDataWithMeta = {
                 ...req.body,
-                createdBy: 1,
-                rootUser: 1,
+                createdBy: user_id,
+                rootUser: user_id,
             };
+
             const data = await new OrganizationRepo().create(payload, user_id);
 
             if (prospectId) {

@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { ExtraFields, extraFieldTypes } from "../interface/Lead";
+import { ExtraFields, extraFieldTypes } from "../interface/lead";
 import { FranchiseLeadModel } from "apps/franchise_model/models/FranchiseModelTable";
 import { sequelize } from "config";
 

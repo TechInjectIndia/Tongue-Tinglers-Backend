@@ -1,5 +1,5 @@
 import { ParsedFollowDetails } from "apps/follow-details/interface/followDetails";
-import { ParseLead } from "../interface/Lead";
+import { ParseLead } from "../interface/lead";
 import { parseFollowDetails } from "apps/follow-details/parser/followDetailsParser";
 import { ParsedAffiliate } from "apps/affiliate/interface/affiliate";
 import { ParseAffiliate } from "apps/affiliate/parser/affilateParser";

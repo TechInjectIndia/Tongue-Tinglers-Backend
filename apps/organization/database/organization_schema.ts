@@ -4,7 +4,7 @@ import { sequelize } from "../../../config";
 
 import RepoProvider from "../../RepoProvider";
 import { IOrganization } from "interfaces/organization";
-import { BUSINESS_TYPE, ORGANIZATION_TYPE } from "../interface/Organization";
+import { BUSINESS_TYPE, ORGANIZATION_TYPE } from "../interface/organization";
 import { AddressModel } from "apps/address/models/AddressTable";
 import { DocumentModel } from "apps/documents/models/DocumentTable";
 import { UserModel } from "apps/user/models/UserTable";

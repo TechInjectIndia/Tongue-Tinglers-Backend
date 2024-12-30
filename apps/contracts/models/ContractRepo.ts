@@ -150,13 +150,11 @@ export class ContractRepo {
         options?: { transaction?: any }
     ): Promise<ParsedContract> {
         const { transaction } = options || {};
-        console.log('userId: ', userId);
         const user = await UserModel.findByPk(userId);
         console.log('user: ', user);
         if (!user) {
             throw new Error(`User with ID ${userId} not found.`);
         }
-        console.log('data: ', data);
         const response = await ContractModel.create(data, {
             userId: user.id,
             userName: getUserName(user),
@@ -230,11 +228,12 @@ export class ContractRepo {
             where.amount = {};
 
             if (filters?.filters.minPrice) {
-                where.amount[Op.gte] = filters?.filters.minPrice; // Minimum amount
+                console.log('filters?.filters.minPrice: ', filters?.filters.minPrice);
+                where.amount[Op.gte] = parseInt(filters?.filters.minPrice); // Minimum amount
             }
 
             if (filters?.filters.maxPrice) {
-                where.amount[Op.lte] = filters?.filters.maxPrice; // Maximum amount
+                where.amount[Op.lte] = parseInt(filters?.filters.maxPrice); // Maximum amount
             }
         }
 

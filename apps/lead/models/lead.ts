@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 
-import { LeadPayload, LeadTable, ParseLead } from "../interface/Lead"
+import { LeadPayload, LeadTable, ParseLead } from "../interface/lead"
 import moment from "moment";
 import { LeadsModel } from "./LeadTable";
 import { UserModel } from "apps/user/models/UserTable";

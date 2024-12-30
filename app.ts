@@ -2,6 +2,7 @@ import {
     PaymentLinkPayload,
 } from "./apps/razorpay/models/Razorpay";
 
+import './apps/database'
 
 import dotenv from "dotenv";
 import sgMail from "@sendgrid/mail";

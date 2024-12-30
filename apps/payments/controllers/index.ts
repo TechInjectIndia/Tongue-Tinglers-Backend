@@ -142,10 +142,8 @@ export default class PaymentsController {
             }
 
             const leadDetails = await new LeadRepo().get(
-                contractDetails.leadId,
+                contractDetails.leadId.id,
             );
-
-            console.log("#23223###", leadDetails);
 
             if (!leadDetails) {
                 return res

@@ -295,7 +295,7 @@ export default class ContractController {
                 paymentIds: [String(signId)],
                 status: FRANCHISE_STATUS.Active,
                 establishedDate: new Date(),
-                organizationId: existingContract.organizationId,
+                organizationId: existingContract.organizationId ? existingContract.organizationId.id : null,
                 affiliateId: 0,
             };
 

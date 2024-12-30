@@ -31,31 +31,6 @@ enum SIGN_STATUS {
     COMPLETED = "completed",
 }
 
-interface IContract extends BaseMeta {
-    id: number;
-    status: CONTRACT_STATUS;
-    proposalData: number | null;
-    terminationDetails: null | {
-        UserDetails: number; // updated
-        reason: string;
-        date: Date;
-    };
-    organizationId: number | null;
-    payment: ContractPaymentDetails[] | null;
-    leadId: number;
-    templateId: string | null;
-    amount: number;
-    signedDate: Date | null;
-    dueDate: Date;
-    validity: {
-        to: Date;
-        from: Date;
-    };
-    notes: Note[] | null;
-    additionalInfo: string;
-    signedDocs: SignDoc[] | null; //update
-}
-
 interface SignDoc {
     docId: number | null;
     sentBy: number;
@@ -96,14 +71,16 @@ interface SignDoc {
     notes: string | null;
 }
 
+export interface TransactionDetails{
+    UserDetails: number;
+    reason: string;
+    date: Date;
+  };
+
 export interface ContractsPayload {
     status: CONTRACT_STATUS
     createdBy: number;
-    terminationDetails: null | {
-        UserDetails: number;
-        reason: string;
-        date: Date;
-    };
+    terminationDetails: null | TransactionDetails
     payment: ContractPaymentDetails[] | null;
     leadId: number;
     organizationId: number | null;
@@ -135,10 +112,8 @@ interface ContractTable extends ContractsPayload, BaseMeta{}
 
 interface ParsedContract {
     id: number;
-    leadId: number;
-    lead: ParseLead | null;
-    organizationId:number | null;
-    organization: ParsedOrganization | null;
+    leadId: ParseLead | null;
+    organizationId: ParsedOrganization | null;
     templateId: string | null;
     amount: number;
     signedDate: Date | null;
@@ -159,6 +134,7 @@ interface ParsedContract {
     deletedBy: ParsedUser | null;
     payment: ContractPaymentDetails[];
     status: CONTRACT_STATUS;
+    proposalData: number | null;
 }
 
 
@@ -167,7 +143,6 @@ export {
     CONTRACT_PAYMENT_STATUS,
     CONTRACT_DOCUMENT_STATUS,
     SignDoc,
-    type IContract,
     type ContractPaymentDetails,
     SIGN_STATUS,
     ContractTable,

@@ -25,99 +25,111 @@ class CommissionEntityMapTable extends Model<ICommissionEntityMapping, Commissio
     public readonly createdAt: Date;
     public readonly updatedAt: Date;
     public readonly deletedAt: Date | null;
+
+    public static associate() {
+        CommissionEntityMapTable.belongsTo(FranchiseModel, {
+            foreignKey: {
+                allowNull: false,
+                name: 'franchiseId',
+            },
+        });
+
+        FranchiseModel.hasMany(CommissionEntityMapTable, {
+            foreignKey: {
+                allowNull: false,
+                name: 'franchiseId',
+            },
+        });
+
+        OrganizationModel.hasMany(CommissionEntityMapTable, {
+            foreignKey: {
+                allowNull: false,
+                name: 'organizationId',
+            },
+        });
+
+        CommissionEntityMapTable.belongsTo(OrganizationModel, {
+            foreignKey: {
+                allowNull: false,
+                name: 'organizationId',
+            },
+        });
+    }
+
+
+    public static initModel() {
+        CommissionEntityMapTable.init({
+            id: {
+                type: INTEGER,
+                primaryKey: true,
+                allowNull: false,
+                autoIncrement: true,
+            },
+            commissionId: {
+                type: INTEGER,
+                allowNull: false,
+            },
+            franchiseId: {
+                type: INTEGER,
+                allowNull: false,
+            },
+
+            organizationId: {
+                type: INTEGER,
+                allowNull: false,
+            },
+            status: {
+                type: STRING,
+                allowNull: false,
+            },
+            createdBy: {
+                type: INTEGER,
+                allowNull: false
+            },
+            updatedBy: {
+                type: INTEGER,
+                allowNull: true
+            },
+            deletedBy: {
+                type: INTEGER,
+                allowNull: true
+            },
+            createdAt: {
+                type: DATE,
+                allowNull: false,
+                defaultValue: NOW,
+                field: "created_at",
+            },
+            updatedAt: {
+                type: DATE,
+                allowNull: false,
+                defaultValue: NOW,
+                field: "updated_at",
+            },
+            deletedAt: {
+                type: DATE,
+                allowNull: true,
+                defaultValue: null,
+                field: "deleted_at",
+            },
+        }, {
+            sequelize,
+            tableName: 'commissions_entity_mapping',
+            timestamps: true,
+            paranoid: true,
+        });
+        return CommissionEntityMapTable;
+    }
+
 }
 
-CommissionEntityMapTable.init({
-    id: {
-        type: INTEGER,
-        primaryKey: true,
-        allowNull: false,
-        autoIncrement: true,
-    },
-    commissionId: {
-        type: INTEGER,
-        allowNull: false,
-    },
-    franchiseId: {
-        type: INTEGER,
-        allowNull: false,
-    },
 
-    organizationId: {
-        type: INTEGER,
-        allowNull: false,
-    },
-    status: {
-        type: STRING,
-        allowNull: false,
-    },
-    createdBy: {
-        type: INTEGER,
-        allowNull: false
-    },
-    updatedBy: {
-        type: INTEGER,
-        allowNull: true
-    },
-    deletedBy: {
-        type: INTEGER,
-        allowNull: true
-    },
-    createdAt: {
-        type: DATE,
-        allowNull: false,
-        defaultValue: NOW,
-        field: "created_at",
-    },
-    updatedAt: {
-        type: DATE,
-        allowNull: false,
-        defaultValue: NOW,
-        field: "updated_at",
-    },
-    deletedAt: {
-        type: DATE,
-        allowNull: true,
-        defaultValue: null,
-        field: "deleted_at",
-    },
-}, {
-    sequelize,
-    tableName: 'commissions_entity_mapping',
-    timestamps: true,
-    paranoid: true,
-});
+
 
 
 /* associations */
 
-// CommissionEntityMapTable.belongsTo(FranchiseModel, {
-//     foreignKey: {
-//         allowNull: false,
-//         name: 'franchiseId',
-//     },
-// });
 
-// FranchiseModel.hasMany(CommissionEntityMapTable, {
-//     foreignKey: {
-//         allowNull: false,
-//         name: 'franchiseId',
-//     },
-// });
-
-// OrganizationModel.hasMany(CommissionEntityMapTable, {
-//     foreignKey: {
-//         allowNull: false,
-//         name: 'organizationId',
-//     },
-// });
-
-// CommissionEntityMapTable.belongsTo(OrganizationModel, {
-//     foreignKey: {
-//         allowNull: false,
-//         name: 'organizationId',
-//     },
-// });
 
 
 enum COMMISSION_ENTITIES {

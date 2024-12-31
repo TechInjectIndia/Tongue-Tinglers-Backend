@@ -8,13 +8,12 @@ import { sequelize } from "config";
 const { UUID, STRING, JSONB, UUIDV4, INTEGER } = DataTypes;
 
 // Define the attributes for lead creation
-interface AffiliateCreationAttributes extends Optional<Affiliate, "id"> {}
+interface AffiliateCreationAttributes extends Optional<Affiliate, "id"> { }
 
 // Define the model class for AffiliateModel
 class AffiliateModel
     extends Model<Affiliate, AffiliateCreationAttributes>
-    implements Affiliate
-{
+    implements Affiliate {
     public id!: number;
     public type!: string;
     public codes!: Record<string, string>;

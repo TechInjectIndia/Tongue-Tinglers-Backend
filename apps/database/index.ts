@@ -4,6 +4,8 @@ import { AgreementDocModel } from "apps/agreement-docs/model/agreementDocModel";
 import { AreaModel } from "apps/area/models/AreaTable";
 import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
 import { CampaignQuestionModel } from "apps/campaign/models/CampaignQuestionModel";
+import { CommissionEntityMapTable } from "apps/commission/model/CommissionEntityMapTable";
+import { CommissionTable } from "apps/commission/model/CommmisionTable";
 import { handleError } from "apps/common/utils/HelperMethods";
 import { ContractModel } from "apps/contracts/models/ContractTable";
 import { DocumentModel } from "apps/documents/models/DocumentTable";
@@ -46,6 +48,8 @@ const models = {
     QuestionModel: QuestionModel.initModel(),
     CampaignQuestionModel: CampaignQuestionModel.initModel(),
     FollowDetailModel: FollowDetailsModel.initModel(),
+    CommissionEntityMap: CommissionEntityMapTable.initModel(),
+    Commission: CommissionTable.initModel(),
 };
 
 console.log(Object.keys(models).join(" "))

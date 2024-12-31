@@ -12,7 +12,7 @@ import { LeadRepo } from "../models/lead";
 import { AssignRepo } from "../models/AssignRepo";
 
 import { CONFIG, sequelize } from "config";
-import { TUser, USER_STATUS, USER_TYPE } from "apps/user/interface/User";
+import { TUser, USER_STATUS, USER_TYPE } from "apps/user/interface/user";
 import { ZohoSignRepo } from "apps/zoho-sign/models/zohosign";
 import { CONTRACT_STATUS, ContractsPayload } from "apps/contracts/interface/Contract";
 import { createFirebaseUser, createPassword, EMAIL_HEADING, sendEmail, sendResponse } from "libraries";
@@ -181,6 +181,7 @@ export default class LeadController {
                 status: USER_STATUS.ACTIVE,
                 referBy: existingLead.referBy,
             };
+            console.log('payload: ', payload);
 
             let templateId: "";
             const templates: any[] = await new ZohoSignRepo().getTemplates();
@@ -214,7 +215,7 @@ export default class LeadController {
                 createdBy: user_id,
                 proposalData: undefined
             };
-
+            
             const prospect = await new ContractRepo().create(prospectData, user_id, {transaction});
 
             const firebaseUser = await createFirebaseUser({
@@ -224,7 +225,7 @@ export default class LeadController {
                 password: payload.password,
                 disabled: false,
             });
-
+            
             if (!firebaseUser?.success) {
                 await transaction.rollback();
                 return res
@@ -250,33 +251,29 @@ export default class LeadController {
                 phoneNumber: payload.phoneNumber,
                 type: USER_TYPE.PROSPECT,
                 role: 0,
-                referBy: undefined,
-                id: 0,
-                createdBy: 0,
+                referBy: null,
+                createdBy: user_id,
                 profilePhoto: "",
-                status: "",
+                status: USER_STATUS.ACTIVE,
                 cart: "",
                 access_token: "",
                 password_token: "",
                 referralCode: "",
                 refresh_token: "",
-                updatedBy: 0,
-                deletedBy: 0,
-                lastLoginAt: undefined,
-                createdAt: undefined,
-                updatedAt: undefined,
-                deletedAt: undefined
+                updatedBy: null,
+                deletedBy: null,
+                lastLoginAt: null,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                deletedAt: null
             };
-            await new AdminRepo().create(normalUser, {transaction});
 
+            const respo = await new AdminRepo().create(normalUser, {transaction});
 
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password?token=${token}`;
 
             try {
-
-
-                const emailContent = `Hi Your Lead converted into Prospect Now Add Your Organisation using link: https://tonguetingler.vercel.app/organization-setup?prospectId=${prospect.id} using password:123456`;
-
+                const emailContent = `Hi Your Lead converted into Prospect Now Add Your Organisation using link: https://tonguetingler.vercel.app/organization-setup?prospectId=${prospect.id} using password:12345678`;
                 const mailOptions = {
                     to: existingLead.email,
                     subject: EMAIL_HEADING.PROSPECT_GENERATED,

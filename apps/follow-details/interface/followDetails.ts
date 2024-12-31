@@ -1,5 +1,5 @@
 import { BaseMetaUsers } from "apps/common/models/Base";
-import { ParsedUser } from "apps/user/interface/User";
+import { ParsedUser } from "apps/user/interface/user";
 
 
 interface BaseFollowDetails extends BaseMetaUsers {

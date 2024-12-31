@@ -1,5 +1,5 @@
 import { TRole, TRoleFilters, TRolesList } from "types";
-import { TUser, USER_TYPE } from "../interface/User";
+import { TUser, USER_TYPE } from "../interface/user";
 import { UserModel } from "./UserTable";
 
 const { Op } = require("sequelize");

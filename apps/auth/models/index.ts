@@ -1,4 +1,4 @@
-import { TUser } from "apps/user/interface/User";
+import { TUser } from "apps/user/interface/user";
 import { UserModel } from "apps/user/models/UserTable";
 import { TUpdateUserPassword, TUpdateUserToken } from "types/admin/admin-user";
 

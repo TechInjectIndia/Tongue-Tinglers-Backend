@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 
 
 import RepoProvider from "apps/RepoProvider";
-import { TUser, USER_STATUS, USER_TYPE } from "../interface/User";
+import { TUser, USER_STATUS, USER_TYPE } from "../interface/user";
 import { sequelize } from "config";
 
 

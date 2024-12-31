@@ -1,5 +1,5 @@
 import { ParsedFranchiseModels } from "../../franchise_model/interface/franchiseModel";
-import { ParsedUser } from "../../user/interface/User";
+import { ParsedUser } from "../../user/interface/user";
 
 interface ProposalPayload {
     title: string;

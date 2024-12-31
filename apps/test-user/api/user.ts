@@ -34,7 +34,7 @@ import { FranchiseModelRepo } from "../../franchise_model/models";
 import { ProposalModelRepo } from "../../proposal_model/models";
 import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from "constants/response-messages";
 import { AdminRepo } from "apps/user/models/user";
-import { TUser, USER_TYPE } from "apps/user/interface/User";
+import { TUser, USER_TYPE } from "apps/user/interface/user";
 import { UserModel } from "apps/user/models/UserTable";
 import { OrganizationRepo } from "apps/organization/models";
 

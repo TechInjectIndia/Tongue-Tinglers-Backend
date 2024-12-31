@@ -86,7 +86,7 @@ import {
     transactionRouter,
 } from "../apps/payment-transaction/api/TransactionRouter";
 
-
+import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics"
 
 
 
@@ -100,7 +100,7 @@ router.use(`${ADMIN}/profile`, auth, profileRouter);
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
 router.use(`/payments`, paymentsRouter); // dont add auth to this url
 
-// router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter);
+router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter);
 // router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter);
 // router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter);
 // router.use(`${ADMIN}/menu`, auth, menuRouter);

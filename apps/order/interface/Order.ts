@@ -1,6 +1,6 @@
 import { Address } from "apps/address/interface/Address";
 import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
-import { ParsedUser } from "apps/user/interface/User";
+import { ParsedUser } from "apps/user/interface/user";
 import { BaseOrderItem, ParsedOrderItem, PreSaleParsedOrderItem } from "./OrderItem";
 
 

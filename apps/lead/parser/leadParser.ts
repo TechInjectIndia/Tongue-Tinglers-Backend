@@ -1,5 +1,5 @@
 import { ParsedFollowDetails } from "apps/follow-details/interface/followDetails";
-import { ParseLead } from "../interface/lead";
+import { ParsedLead } from "../interface/lead";
 import { parseFollowDetails } from "apps/follow-details/parser/followDetailsParser";
 import { ParsedAffiliate } from "apps/affiliate/interface/affiliate";
 import { ParseAffiliate } from "apps/affiliate/parser/affilateParser";
@@ -9,11 +9,11 @@ import { ParsedFranchiseModels } from "apps/franchise_model/interface/franchiseM
 import { ParseFranchiseModel } from "apps/franchise_model/parser/franchiseModelParser";
 
 
-const parseLead = (lead: any): ParseLead => {
+const parseLead = (lead: any): ParsedLead => {
     console.log("lead: ", lead);
     if (!lead) return null;
 
-    const data: ParseLead = {
+    const data: ParsedLead = {
         id: lead.id,
         firstName: lead.firstName,
         lastName: lead.lastName,

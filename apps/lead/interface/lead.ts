@@ -3,7 +3,7 @@ import { BaseMeta } from "apps/common/models/Base";
 import { FollowDetails, ParsedFollowDetails } from "apps/follow-details/interface/followDetails";
 import { ParsedFranchiseModels } from "apps/franchise_model/interface/franchiseModel";
 import { ParsedProposal } from "apps/proposal_model/interface/proposal";
-import { ParsedUser } from "apps/user/interface/User";
+import { ParsedUser } from "apps/user/interface/user";
 import { MetaUser } from "interfaces";
 
 
@@ -126,7 +126,7 @@ export interface LeadPayload {
 
 export interface LeadTable extends LeadPayload, BaseMeta { }
 
-export interface ParseLead {
+export interface ParsedLead {
     id: number;
     status: LeadStatus;
     source: LeadSource;
@@ -155,6 +155,26 @@ export interface ParseLead {
     updatedBy: MetaUser | null;
     deletedAt: Date | null;
     deletedBy: MetaUser | null;
+}
+
+export type TLeadsList = {
+    total: number;
+    data: ParsedLead[];
+  };
+  
+export interface TLeadFilters {
+offset: number;
+limit: number;
+search: string;
+sorting: any;
+userRole?: string;
+userFranchiseeId?: string;
+franchiseId?: string;
+franchiseData?: any;
+dateRange: {
+    start: Date;
+    end: Date;
+};
 }
 
 export { Note, LeadStatus, LeadSource, BaseSocialMedia, ITrackable, LeadAddress, SocialMediaDetails, ExtraFields, extraFieldTypes, socialMediaEnumsPlatform }

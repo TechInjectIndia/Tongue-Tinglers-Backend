@@ -3,7 +3,7 @@ const { Op } = require("sequelize");
 
 import { TListFilters } from "apps/common/models/common";
 import IBaseRepo from "../controllers/IUserController";
-import { TUser, USER_STATUS, USER_TYPE } from "../interface/User";
+import { TUser, USER_STATUS, USER_TYPE } from "../interface/user";
 import { UserModel } from "./UserTable";
 import { TAddUser, TEditUser, TEditUserProfile, TUpdateUserReferralCode, TUsersList, TUserWithPermission } from "types";
 import { RolesModel } from "./RolesTable";

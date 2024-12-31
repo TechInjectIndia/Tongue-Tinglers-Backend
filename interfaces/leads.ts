@@ -78,7 +78,7 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
 }
 
 
-interface ParseLead extends ParsedMeta {
+interface ParsedLead extends ParsedMeta {
     id: number;
     assignedUser: MetaUser;
     campaignId: ParsedCampaign,
@@ -278,5 +278,5 @@ export {
     SeoImagePayload,
     AssignAttributes,
     parsedAffiliate,
-    ParseLead
+    ParsedLead
 };

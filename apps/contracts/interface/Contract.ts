@@ -1,8 +1,8 @@
 import { BaseMeta } from "apps/common/models/Base";
 import { Note } from "../../lead/interface/lead";
-import { ParseLead } from "apps/lead/interface/lead";
+import { ParsedLead } from "apps/lead/interface/lead";
 import { ParsedOrganization } from "../../organization/interface/organization";
-import { ParsedUser } from "apps/user/interface/User";
+import { ParsedUser } from "apps/user/interface/user";
 enum CONTRACT_PAYMENT_STATUS {
     PENDING = "pending",
     SUCCESS = "success",
@@ -112,7 +112,7 @@ interface ContractTable extends ContractsPayload, BaseMeta{}
 
 interface ParsedContract {
     id: number;
-    leadId: ParseLead | null;
+    leadId: ParsedLead | null;
     organizationId: ParsedOrganization | null;
     templateId: string | null;
     amount: number;

@@ -114,7 +114,7 @@ interface ParsedUser extends ParsedMeta {
 }
 
 type TUser = {
-    id: number;
+    id?: number;
     firebaseUid: string;
     createdBy: number;
     password: string;

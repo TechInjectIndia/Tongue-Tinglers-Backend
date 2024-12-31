@@ -1,6 +1,6 @@
 import { Address, BaseAddress, ParsedAddress } from "apps/address/interface/Address";
 import { BaseMeta, BaseMetaUsers } from "apps/common/models/Base";
-import { ParsedUser } from "apps/user/interface/User";
+import { ParsedUser } from "apps/user/interface/user";
 
 
 export enum ORGANIZATION_TYPE {

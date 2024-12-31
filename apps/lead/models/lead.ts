@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 
-import { LeadPayload, LeadTable, ParseLead } from "../interface/lead"
+import { LeadPayload, LeadTable, ParsedLead } from "../interface/lead"
 import moment from "moment";
 import { LeadsModel } from "./LeadTable";
 import { UserModel } from "apps/user/models/UserTable";
@@ -158,7 +158,7 @@ export class LeadRepo {
     // List leads with filters
     public async list(
         filters: TListFiltersAreas
-    ): Promise<Pagination<ParseLead>> {
+    ): Promise<Pagination<ParsedLead>> {
         const where: any = {};
 
         const validStatuses = [

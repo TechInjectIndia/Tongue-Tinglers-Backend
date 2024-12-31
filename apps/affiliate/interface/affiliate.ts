@@ -1,4 +1,4 @@
-import { MetaUser } from "apps/user/interface/User"
+import { MetaUser } from "apps/user/interface/user"
 
 
 interface Affiliate {

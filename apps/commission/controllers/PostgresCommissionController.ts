@@ -202,7 +202,7 @@ export class PostgresCommissionController implements ICommissionController {
         const user_id = parseInt(get(req, "user_id"));
         if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
 
-        const id = parseInt(get(req, "id"));
+        const id = parseInt(get(req.params, "id"));
         if (isNaN(id)) throw Error('Missing id or isNaN');
 
 

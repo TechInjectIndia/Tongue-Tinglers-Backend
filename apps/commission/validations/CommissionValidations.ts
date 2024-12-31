@@ -111,7 +111,8 @@ const validateDeleteCommission = (req: Request, res: Response, next: NextFunctio
 
 const validateGetCommissionById = (req: Request, res: Response, next: NextFunction) => {
 
-    const id = parseInt(get(req, "id"));
+    const id = parseInt(get(req.params, "id"));
+    
     if (!id || id <= 0) {
         return res.status(400).send(HelperMethods.getErrorResponse('Invalid request'));
     }

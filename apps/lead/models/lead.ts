@@ -282,8 +282,6 @@ export class LeadRepo {
             const leadData: LeadPayload = {
                 ...data,
                 // Ensure logs is kept as an array
-                logs: data.logs, // Assuming logs is already of type
-                // ITrackable[]
             };
             return LeadsModel.create(leadData, {
                 userId: user.id,

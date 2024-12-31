@@ -111,7 +111,6 @@ export interface LeadPayload {
     phoneNumber: string;
     address: LeadAddress;
     additionalInfo: string | null;
-    logs: Record<string, ITrackable[]>;
     followDetails?: FollowDetails[] | null;
     referBy: number | null;
     notes: Note[] | null;
@@ -138,7 +137,6 @@ export interface ParsedLead {
     phoneNumber: string;
     address: LeadAddress;
     additionalInfo: string | null;
-    logs: [] | null;
     followDetails: ParsedFollowDetails[] | null;
     referBy: MetaUser | null;
     notes: Note[] | null;

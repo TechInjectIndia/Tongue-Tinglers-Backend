@@ -24,7 +24,6 @@ class LeadsModel extends Model<LeadTable, LeadCreationAttributes> implements Lea
     phoneNumber: string;
     address: LeadAddress;
     additionalInfo: string;
-    logs: Record<string, ITrackable[]>;
     followDetails?: FollowDetails[];
     referBy: number;
     notes: Note[];
@@ -138,10 +137,6 @@ class LeadsModel extends Model<LeadTable, LeadCreationAttributes> implements Lea
                 //     allowNull: true,
                 // },
                 referBy: {
-                    type: JSONB,
-                    allowNull: true,
-                },
-                logs: {
                     type: JSONB,
                     allowNull: true,
                 },

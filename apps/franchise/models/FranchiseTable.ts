@@ -94,6 +94,11 @@ class FranchiseModel
             as: "createdByUser",
         });
 
+        this.belongsTo(UserModel, {
+            foreignKey: "assignUser",
+            as: "assignuser",
+        });
+
         // Updated by a user
         this.belongsTo(UserModel, {
             foreignKey: "updatedBy",

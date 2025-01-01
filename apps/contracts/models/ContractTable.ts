@@ -61,6 +61,11 @@ class ContractModel
             as: "user",
             constraints: false,
         });
+        this.belongsTo(UserModel, {
+            foreignKey: "assignUser",
+            as: "assignuser",
+            constraints: false,
+        });
         this.belongsTo(LeadsModel, {
             foreignKey: "leadId",
             as: "lead",

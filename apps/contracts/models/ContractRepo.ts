@@ -36,6 +36,9 @@ export class ContractRepo {
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
+            },{
+                model: UserModel,
+                as: "assignuser"
             }],
         });
 
@@ -69,6 +72,9 @@ export class ContractRepo {
                         model: CampaignAdModel,
                         as: 'campaign_ad'
                     }]
+                },{
+                    model: UserModel,
+                    as: "assignuser"
                 }],
             });
 
@@ -117,6 +123,9 @@ export class ContractRepo {
                         model: CampaignAdModel,
                         as: 'campaign_ad'
                     }]
+                },{
+                    model: UserModel,
+                    as: "assignuser"
                 }],
             });
 
@@ -177,6 +186,9 @@ export class ContractRepo {
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
+            },{
+                model: UserModel,
+                as: "assignuser"
             }],
         });
         return data ? parseContract(data) : null;
@@ -196,6 +208,9 @@ export class ContractRepo {
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
+            },{
+                model: UserModel,
+                as: "assignuser"
             }],
             transaction,
         });
@@ -281,6 +296,9 @@ export class ContractRepo {
             }, {
                 model: OrganizationModel,
                 as: 'organization',
+            },{
+                model: UserModel,
+                as: "assignuser"
             }],
         });
         const parsedData: ParsedContract[] = await Promise.all(data.map((contract) => parseContract(contract)));

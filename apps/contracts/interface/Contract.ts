@@ -3,6 +3,7 @@ import { Note } from "../../lead/interface/lead";
 import { ParsedLead } from "apps/lead/interface/lead";
 import { ParsedOrganization } from "../../organization/interface/organization";
 import { ParsedUser } from "apps/user/interface/user";
+import { MetaUser } from "interfaces";
 enum CONTRACT_PAYMENT_STATUS {
     PENDING = "pending",
     SUCCESS = "success",
@@ -96,7 +97,7 @@ export interface ContractsPayload {
     additionalInfo: string;
     signedDocs: SignDoc[] | null;
     proposalData: number | null;
-
+    assignedUser: number | null;
 }
 
 export interface PartialContractsUpdate {
@@ -135,6 +136,7 @@ interface ParsedContract {
     payment: ContractPaymentDetails[];
     status: CONTRACT_STATUS;
     proposalData: number | null;
+    assignedUser: MetaUser | null;
 }
 
 

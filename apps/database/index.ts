@@ -21,6 +21,7 @@ import { PdiCheckpointModel } from "apps/pdi-checkpoint/model/PdiCheckPointTable
 import { QuestionModel } from "apps/questions/models/QuestionModel";
 import { RegionModel } from "apps/region/models/RegionTable";
 import { UserModel } from "apps/user/models/UserTable";
+import { CartDetailsModel } from "database/schema/cart_details/cartDetailsModel";
 import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
 
 
@@ -50,6 +51,7 @@ const models = {
     FollowDetailModel: FollowDetailsModel.initModel(),
     CommissionEntityMap: CommissionEntityMapTable.initModel(),
     Commission: CommissionTable.initModel(),
+    CartDetails: CartDetailsModel.initModel(),
 };
 
 console.log(Object.keys(models).join(" "))

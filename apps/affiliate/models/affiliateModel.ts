@@ -3,17 +3,18 @@ import { Affiliate } from "../interface/affiliate";
 import { UserModel } from "apps/user/models/UserTable";
 import { SocialMediaDetailsModel } from "apps/lead/models/smDetailsTable";
 import { sequelize } from "config";
-
+import RepoProvider from "apps/RepoProvider";
 
 const { UUID, STRING, JSONB, UUIDV4, INTEGER } = DataTypes;
 
 // Define the attributes for lead creation
-interface AffiliateCreationAttributes extends Optional<Affiliate, "id"> { }
+interface AffiliateCreationAttributes extends Optional<Affiliate, "id"> {}
 
 // Define the model class for AffiliateModel
 class AffiliateModel
     extends Model<Affiliate, AffiliateCreationAttributes>
-    implements Affiliate {
+    implements Affiliate
+{
     public id!: number;
     public type!: string;
     public codes!: Record<string, string>;
@@ -59,7 +60,39 @@ class AffiliateModel
                 timestamps: true,
             }
         );
-        return AffiliateModel
+        return AffiliateModel;
+    }
+
+    public static hook() {
+        AffiliateModel.addHook("afterCreate", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "create",
+                "Affiliate",
+                instance,
+                options
+            );
+        });
+
+        // After Update Hook - Log the updated fields of the Affiliate
+        AffiliateModel.addHook("afterUpdate", async (instance, options) => {
+            // Now call logModelAction as before
+            await RepoProvider.LogRepo.logModelAction(
+                "update",
+                "Affiliate",
+                instance,
+                options
+            );
+        });
+
+        // After Destroy Hook - Log the deletion of the Affiliate
+        AffiliateModel.addHook("afterDestroy", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "delete",
+                "Affiliate",
+                instance,
+                options
+            );
+        });
     }
 }
 

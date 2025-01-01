@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 import { ContractModel } from "./ContractTable";
 import { LeadsModel } from "apps/lead/models/LeadTable";
 import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
@@ -317,11 +317,18 @@ export class ContractRepo {
         return response;
     }
 
-    public async updatePartialContract(contractId: number, payload: PartialContractsUpdate): Promise<boolean> {
-        const [affectedCount] = await ContractModel.update(payload, {
-            where: { id: contractId },
+    public async updatePartialContract(contractId: number, payload: PartialContractsUpdate): Promise<[affectedCount: number]> {
+        const contract = await ContractModel.findOne({
+            where:{
+                id: contractId
+            }
         });
-        return affectedCount > 0;
+        if (!contract) {
+            throw new Error("Contract not found");
+            }
+        contract.set(payload);
+        await contract.save();
+        return [1];
     }
 }
 

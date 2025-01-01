@@ -380,10 +380,11 @@ export default class ContractController {
     ) {
         try {
             const id = parseInt(get(req.params, "id"));
+            const user_id = parseInt(get(req, "user_id"));
             if (isNaN(id)) throw Error("Missing id or isNaN");
             let payload = req.body;
             const updatedContract =
-                await new ContractRepo().updatePartialContract(id, payload);
+                await new ContractRepo().updatePartialContract(id, {...payload, updatedBy: user_id});
             return res
                 .status(200)
                 .send(

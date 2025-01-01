@@ -26,6 +26,7 @@ const parseContract = (contract:any):ParsedContract => {
         payment: contract.payment,
         status: contract.status,
         proposalData: contract.proposalData ? contract.proposalData : null,
+        assignedUser: contract.assignedUser ? contract.assignedUser : null
     }
     return data
 }

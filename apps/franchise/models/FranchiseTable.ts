@@ -39,6 +39,7 @@ class FranchiseModel
     public paymentIds: string[];
     public status: FRANCHISE_STATUS;
     public establishedDate: Date;
+    public assignedUser: number | null
 
     public createdBy: number;
     public updatedBy: number | null;
@@ -187,6 +188,10 @@ class FranchiseModel
                     type: DATE,
                     allowNull: false, // Franchisee's establishment date
                 },
+                assignedUser:{
+                                    type: INTEGER,
+                                    allowNull: true,
+                                },
                 createdBy: {
                     type: INTEGER,
                     allowNull: false, // User ID of the creator

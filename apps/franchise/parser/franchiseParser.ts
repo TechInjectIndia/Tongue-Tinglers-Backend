@@ -17,6 +17,7 @@ const parseFranchise = (franchise: any) => {
     organization: franchise.organization,
     affiliate: franchise.affiliate,
     id: franchise.id,
+    assignedUser: franchise.assignedUser ? franchise.assignedUser : null,
     createdBy: franchise.createdByUser,
     updatedBy: franchise.updatedByUser,
     deletedBy: franchise.deletedByUser,

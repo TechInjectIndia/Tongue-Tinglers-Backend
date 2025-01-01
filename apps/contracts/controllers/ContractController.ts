@@ -297,6 +297,7 @@ export default class ContractController {
                 establishedDate: new Date(),
                 organizationId: existingContract.organizationId ? existingContract.organizationId.id : null,
                 affiliateId: 0,
+                assignedUser: null
             };
 
             console.log("franchise details");

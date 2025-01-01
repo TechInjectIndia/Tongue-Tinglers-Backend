@@ -22,7 +22,7 @@ const parseLead = (lead: any): ParsedLead => {
         address: lead.address,
         additionalInfo: lead.additionalInfo,
         amount: lead.amount,
-        logs: lead.logs,
+        
         followDetails: lead.followDetails
             ? lead.followDetails.map((detail: ParsedFollowDetails) =>
                   parseFollowDetails(detail)

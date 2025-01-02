@@ -15,6 +15,7 @@ interface ContractCreationAttributes
 class ContractModel
     extends Model<ContractTable, ContractCreationAttributes>
     implements ContractTable {
+    assignedUser: number;
     signedDocs: SignDoc[];
     public id!: number;
     public status!: CONTRACT_STATUS;
@@ -45,6 +46,7 @@ class ContractModel
     public notes: Note[] | null;
     public additionalInfo!: string | null;
     public logs: ITrackable[] | null;
+    
   
     public createdBy!: number;
     public updatedBy!: number | null;
@@ -57,6 +59,11 @@ class ContractModel
         this.belongsTo(UserModel, {
             foreignKey: "userId",
             as: "user",
+            constraints: false,
+        });
+        this.belongsTo(UserModel, {
+            foreignKey: "assignUser",
+            as: "assignuser",
             constraints: false,
         });
         this.belongsTo(LeadsModel, {
@@ -137,6 +144,10 @@ class ContractModel
                     type: STRING,
                     allowNull: true,
                     defaultValue: "",
+                },
+                assignedUser:{
+                    type: INTEGER,
+                    allowNull: true,
                 },
                 createdBy: {
                     type: INTEGER,

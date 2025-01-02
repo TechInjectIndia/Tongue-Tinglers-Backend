@@ -115,6 +115,33 @@ interface OrderParams {
     billingAddId: number;
 }
 
+interface OrderState {
+    cartId: number;
+    userId: number;
+    billingAddressId: number;
+    shippingAddressId: number;
+}
+
+enum RP_ORDER_STATUS {
+    PAID = "paid",
+    CREATED = "created",
+    ATTEMPTED = "attempted",
+}
+
+interface RPOrder {
+    id: string;
+    amount: number;
+    amount_paid: number;
+    amount_due: number;
+    currency: string;
+    receipt: string; // Shrey System Order Id
+    offer_id: string;
+    status: RP_ORDER_STATUS;
+    attempts: number;
+    notes: string[];
+    created_at: Date;
+}
+
 export {
     BaseOrder,
     Order,
@@ -124,5 +151,8 @@ export {
     OrderPagination,
     ParsedOrder,
     PresaleParsedOrder,
-    OrderParams
+    OrderParams,
+    OrderState,
+    RPOrder,
+    RP_ORDER_STATUS
 }

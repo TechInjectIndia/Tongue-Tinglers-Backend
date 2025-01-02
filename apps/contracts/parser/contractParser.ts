@@ -1,7 +1,7 @@
 import { parseLead } from "apps/lead/parser/leadParser"
 import { ParsedContract } from "../interface/Contract"
 import { parseOrganization } from "apps/organization/parser/organizationParser"
-
+import { parseUserToMetaUser } from "apps/user/parser/user-parser";
 const parseContract = (contract:any):ParsedContract => {
 
     const data: ParsedContract = {
@@ -26,6 +26,7 @@ const parseContract = (contract:any):ParsedContract => {
         payment: contract.payment,
         status: contract.status,
         proposalData: contract.proposalData ? contract.proposalData : null,
+        assignedUser: contract.assigneduser ? parseUserToMetaUser(contract.assigneduser) : null
     }
     return data
 }

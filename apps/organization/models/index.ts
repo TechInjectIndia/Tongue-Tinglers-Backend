@@ -5,10 +5,11 @@ import IBaseRepo from "../controllers/controller/IController";
 
 import {OrganizationModel} from "../models/OrganizationTable";
 import RepoProvider from "../../RepoProvider";
-import {parseOrganization} from "../parser/organizationParser"
-import {IOrganizationPayloadData, IOrganizationPayloadDataWithMeta, OrganizationAddressPayload, ParsedOrganization} from "../interface/organization"
+import {parseOrganization, parseOrganizationAddresses} from "../parser/organizationParser"
+import {IOrganizationPayloadData, IOrganizationPayloadDataWithMeta, OrganizationAddresses, OrganizationAddressPayload, ParsedOrganization} from "../interface/organization"
 import { AddressModel } from "apps/address/models/AddressTable";
 import { UserModel } from "apps/user/models/UserTable";
+import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
 
 export class OrganizationRepo
     implements IBaseRepo<IOrganizationPayloadDataWithMeta, ParsedOrganization, TListFilters> {
@@ -364,6 +365,42 @@ export class OrganizationRepo
         } catch (error) {
             console.error('Error updating address of organization:', error);
             throw error;
+        }
+    }
+
+    public async getAddressOfOrganization(franchiseId: number): Promise<OrganizationAddresses>{
+        try{
+            const existingFranchise = await FranchiseModel.findByPk(franchiseId);
+            if(!existingFranchise){
+                throw new Error('Franchise not found');
+            }
+            const organization = await OrganizationModel.findOne({
+                where:{
+                    id: existingFranchise.organizationId
+                },
+                include: [
+                    {
+                        model: AddressModel,
+                        as: "billingAddress", 
+                    },
+                    {
+                        model: AddressModel,
+                        as: "shippingAddresses",
+                        through: {
+                            attributes: [],
+                        },
+                        attributes: {exclude: []},
+                    },
+                ],
+                // attributes: ['billingAddress', 'shippingAddresses']
+            });
+            if(!organization){
+                throw new Error('Organization not found');
+            }
+            return parseOrganizationAddresses(organization);
+        }catch(error){
+            console.log(error)
+            return null
         }
     }
 

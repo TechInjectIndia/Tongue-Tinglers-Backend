@@ -213,7 +213,8 @@ export default class LeadController {
                 additionalInfo: "",
                 signedDocs: [],
                 createdBy: user_id,
-                proposalData: undefined
+                proposalData: undefined,
+                assignedUser: null
             };
             
             const prospect = await new ContractRepo().create(prospectData, user_id, {transaction});

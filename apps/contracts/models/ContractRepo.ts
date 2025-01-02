@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 import { ContractModel } from "./ContractTable";
 import { LeadsModel } from "apps/lead/models/LeadTable";
 import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
@@ -36,6 +36,9 @@ export class ContractRepo {
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
+            },{
+                model: UserModel,
+                as: "assignuser"
             }],
         });
 
@@ -69,6 +72,9 @@ export class ContractRepo {
                         model: CampaignAdModel,
                         as: 'campaign_ad'
                     }]
+                },{
+                    model: UserModel,
+                    as: "assignuser"
                 }],
             });
 
@@ -117,6 +123,9 @@ export class ContractRepo {
                         model: CampaignAdModel,
                         as: 'campaign_ad'
                     }]
+                },{
+                    model: UserModel,
+                    as: "assignuser"
                 }],
             });
 
@@ -177,6 +186,9 @@ export class ContractRepo {
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
+            },{
+                model: UserModel,
+                as: "assignuser"
             }],
         });
         return data ? parseContract(data) : null;
@@ -196,6 +208,9 @@ export class ContractRepo {
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
+            },{
+                model: UserModel,
+                as: "assignuser"
             }],
             transaction,
         });
@@ -281,6 +296,9 @@ export class ContractRepo {
             }, {
                 model: OrganizationModel,
                 as: 'organization',
+            },{
+                model: UserModel,
+                as: "assignuser"
             }],
         });
         const parsedData: ParsedContract[] = await Promise.all(data.map((contract) => parseContract(contract)));
@@ -317,11 +335,18 @@ export class ContractRepo {
         return response;
     }
 
-    public async updatePartialContract(contractId: number, payload: PartialContractsUpdate): Promise<boolean> {
-        const [affectedCount] = await ContractModel.update(payload, {
-            where: { id: contractId },
+    public async updatePartialContract(contractId: number, payload: PartialContractsUpdate): Promise<[affectedCount: number]> {
+        const contract = await ContractModel.findOne({
+            where:{
+                id: contractId
+            }
         });
-        return affectedCount > 0;
+        if (!contract) {
+            throw new Error("Contract not found");
+            }
+        contract.set(payload);
+        await contract.save();
+        return [1];
     }
 }
 

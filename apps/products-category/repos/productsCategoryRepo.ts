@@ -55,41 +55,41 @@ export class ProductsCategoryRepo implements IProductsCategoryRepo {
         }
     }
 
-    // async getAllProductsCategory(page: number, limit: number, search: string): Promise<Pagination<ProductsCategory>> {
-    //     try {
-    //         const offset = (page - 1) * limit;
+    async getAllProductsCategory(page: number, limit: number, search: string): Promise<Pagination<ProductsCategory>> {
+        try {
+            const offset = (page - 1) * limit;
 
-    //         const query: any = {};
+            const query: any = {};
 
-    //         // Add search functionality
-    //         if (search) {
-    //             query[Op.or] = [
-    //                 { name: { [Op.iLike]: `%${search}%` } },
-    //                 { description: { [Op.iLike]: `%${search}%` } },
-    //             ];
-    //         }
+            // Add search functionality
+            if (search) {
+                query[Op.or] = [
+                    { name: { [Op.iLike]: `%${search}%` } },
+                    { description: { [Op.iLike]: `%${search}%` } },
+                ];
+            }
 
-    //         const { rows: products_category, count: total } = await ProductsCategoryModel.findAndCountAll({
-    //             where: query,
-    //             offset,
-    //             limit,
-    //             order: [['createdAt', 'DESC']]
-    //         }).then((res)=>{
-    //             return {
-    //                 rows: res.rows.map((productsCategory) => productsCategory.toJSON()),
-    //                 count: res.count
-    //             }
-    //         })
+            const { rows: products_category, count: total } = await ProductsCategoryModel.findAndCountAll({
+                where: query,
+                offset,
+                limit,
+                order: [['createdAt', 'DESC']]
+            }).then((res)=>{
+                return {
+                    rows: res.rows.map((productsCategory) => productsCategory.toJSON()),
+                    count: res.count
+                }
+            })
 
-    //         const totalPages = Math.ceil(total / limit);
+            const totalPages = Math.ceil(total / limit);
 
-    //         return { products_category, total, totalPages };
+            return { data: products_category, total, totalPages };
 
-    //     } catch (error) {
-    //         console.log(error);
-    //         return null;
-    //     }
-    // }
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
 
     async updateProductsCategory(category: ProductsCategory): Promise<ProductsCategory> {
         try {

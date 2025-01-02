@@ -186,6 +186,10 @@ export class FranchiseRepo implements IFranchiseRepo {
               model: OrganizationModel,
               as: "organization",
             },
+            {
+              model: UserModel,
+              as: "assignuser"
+            }
           ],
         }).then((res) => {
           return {
@@ -272,6 +276,10 @@ export class FranchiseRepo implements IFranchiseRepo {
           },
           {
             model: UserModel,
+            as: "assignuser"
+          },
+          {
+            model: UserModel,
             as: "updatedByUser", // For the 'updatedBy' user
           },
           {
@@ -308,6 +316,10 @@ export class FranchiseRepo implements IFranchiseRepo {
           {
             model: UserModel,
             as: "createdByUser", // For the 'createdBy' user
+          },
+          {
+            model: UserModel,
+            as: "assignuser"
           },
           {
             model: UserModel,

@@ -7,6 +7,7 @@ import { ParsedOrganization } from "../../organization/interface/organization";
 
 import { parsedRegion } from "apps/region/models/Region";
 import { ParsedUser } from "apps/user/interface/user";
+import { MetaUser } from "interfaces";
 
 
 interface BaseFranchise {
@@ -22,6 +23,7 @@ interface BaseFranchise {
     establishedDate: Date;
     organizationId: number;
     affiliateId: number | null;
+    assignedUser: number | null;
 }
 
 interface FranchiseDetails extends BaseMetaUsers, BaseFranchise {
@@ -50,6 +52,7 @@ interface parsedFranchise extends ParsedMeta {
     affiliate: ParsedAffiliate;
     location: Address;
     sm: Array<SocialMediaDetails>;
+    assignedUser: MetaUser | null
 }
 
 enum FRANCHISE_STATUS {

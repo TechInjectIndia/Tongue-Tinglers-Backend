@@ -1,4 +1,5 @@
-import { SocialMediaDetailsModel } from "../../../database/schema"; // Adjust import based on your structure
+// Adjust import based on your structure
+import { SocialMediaDetailsModel } from "apps/lead/models/smDetailsTable";
 import {
     BaseSocialMedia,
     SocialMediaDetails,

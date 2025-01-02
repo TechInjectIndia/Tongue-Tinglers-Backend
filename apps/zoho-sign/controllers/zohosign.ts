@@ -1,14 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 const axios = require("axios");
 import { ZohoSignRepo } from "../models/zohosign";
-import { ContractRepo } from "../../contracts/models/ContractRepo";
-import { sendResponse } from "../../../libraries";
+
 import { get, isEmpty } from "lodash";
 import FormData from "form-data";
 import fs from "fs";
 import crypto from "crypto";
 import { jsonData } from "../../../types";
-import { SIGN_STATUS, SignDoc } from "../../../interfaces";
+import { ContractRepo } from "apps/contracts/models/ContractRepo";
+import { SignDoc } from "apps/contracts/interface/Contract";
+
 
 const { ZOHO_WEBHOOK_SECRET } = process.env;
 
@@ -47,10 +48,7 @@ export default class ZohoSignController {
             if (existingContract) {
                 const data: SignDoc = {
                     docId: id,
-                    sentBy: {
-                        // userName: "webhook",
-                        id: 0, // 0 is used for webhook string
-                    },
+                    sentBy: 0,
                     createdAt: new Date(),
                     status: payload.requests.actions[0].action_status,
                     docLink: "",

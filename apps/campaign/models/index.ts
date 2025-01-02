@@ -1,19 +1,21 @@
 import { Op } from "sequelize";
-import { sequelize } from "../../../config";
 import { TListFiltersCampaigns } from "../../../types";
-import {
-    TCampaignList,
-    TPayloadCampaign,
-    ICampaign,
-    IQuestion,
-} from "../../../interfaces";
-import { CampaignAdModel, questionModel } from "../../../database/schema";
+
 import IBaseRepo from "../controllers/controller/IController";
+import {
+    OrganizationModel
+} from "../../organization/models/OrganizationTable";
+import { ICampaign, TCampaignList, TPayloadCampaign } from "../interface/campaign";
+import { CampaignAdModel } from "./CampaignModel";
+import { RegionModel } from "apps/region/models/RegionTable";
+import { AreaModel } from "apps/area/models/AreaTable";
+import { QuestionModel } from "apps/questions/models/QuestionModel";
+import { IQuestion } from "apps/questions/interface/Question";
 
 export class CampaignAdRepo
-    implements IBaseRepo<ICampaign, TListFiltersCampaigns>
-{
-    constructor() {}
+    implements IBaseRepo<ICampaign, TListFiltersCampaigns> {
+    constructor() {
+    }
 
     public async getCampaignsByFranchiseId(franchiseId: number): Promise<any> {
         let whereOptions: any = { franchiseId: franchiseId };
@@ -22,14 +24,35 @@ export class CampaignAdRepo
         });
     }
 
-    public async get(id: any,  options?: { transaction?: any }): Promise<ICampaign | null> {
+    public async get(id: any,
+        options?: { transaction?: any }): Promise<ICampaign | null> {
         const { transaction } = options || {};
-        const campaign = await CampaignAdModel.findOne({ where: { id } });
+        const campaign = await CampaignAdModel.findOne({
+            where: { id },
+            include: [
+                {
+                    model: OrganizationModel,
+                    as: "organization",
+                },
+                {
+                    model: RegionModel,
+                    as: "region",
+                    include: [
+                        {
+                            model: AreaModel,
+                            as: "areas",
+                        },
+                    ],
+                },
+
+            ]
+        });
 
         const { questionList } = campaign;
 
         const questions = questionList?.length
-            ? await questionModel.findAll({ where: { id: questionList }, transaction})
+            ? await QuestionModel.findAll(
+                { where: { id: questionList }, transaction })
             : [];
 
         const campaignWithQuestions = {
@@ -44,19 +67,42 @@ export class CampaignAdRepo
         // Initialize the whereCondition object
         const whereCondition: any = {
             [Op.or]: [
-                { name: { [Op.iLike]: `%${filters.search}%` } }, // Assuming `name` is a string
-                { description: { [Op.iLike]: `%${filters.search}%` } }, // Assuming `description` is a string
+                { name: { [Op.iLike]: `%${filters.search}%` } }, // Assuming `name`
+                // is a string
+                { description: { [Op.iLike]: `%${filters.search}%` } }, // Assuming
+                // `description`
+                // is a
+                // string
             ],
         };
 
-        // Apply franchiseId and regionId filters only if valid values are provided
+        // Apply franchiseId and regionId filters only if valid values are
+        // provided
         if (filters.filters?.franchiseId) {
             whereCondition.franchiseId = {
                 [Op.eq]: filters.filters.franchiseId,
             }; // Assuming franchiseId is a string or UUID
         }
         if (filters.filters?.regionId) {
-            whereCondition.regionId = { [Op.eq]: filters.filters.regionId }; // Assuming regionId is an integer
+            whereCondition.regionId = { [Op.eq]: filters.filters.regionId }; // Assuming
+            // regionId
+            // is
+            // an
+            // integer
+        }
+
+        if (filters.filters?.fromDate || filters.filters?.toDate) {
+            whereCondition[Op.and] = whereCondition[Op.and] || [];
+            if (filters.filters.fromDate) {
+                whereCondition[Op.and].push({
+                    start: { [Op.gte]: new Date(filters.filters.fromDate) }, // Greater than or equal to start date
+                });
+            }
+            if (filters.filters.toDate) {
+                whereCondition[Op.and].push({
+                    to: { [Op.lte]: new Date(filters.filters.toDate) }, // Less than or equal to end date
+                });
+            }
         }
 
         // Add a specific condition for regionId if it needs to support `search`
@@ -71,21 +117,56 @@ export class CampaignAdRepo
             where: whereCondition,
         });
 
-        // Retrieve the campaigns with pagination, sorting, and the updated whereCondition
+        // Retrieve the campaigns with pagination, sorting, and the updated
+        // whereCondition
         const data = await CampaignAdModel.findAll({
             order: [filters.sorting], // Ensure sorting is sanitized
             offset: filters.offset,
             limit: filters.limit,
             where: whereCondition,
+            include: [
+                {
+                    model: RegionModel,
+                    as: "region",
+                    include: [
+                        {
+                            model: AreaModel,
+                            as: "areas",
+                        },
+                    ],
+                },
+                {
+                    model: OrganizationModel,
+                    as: "organization",
+                },
+                {
+                    model: QuestionModel,
+                    as: "questions",
+                    attributes: ["id", "question", "type"],
+                },
+            ],
         });
 
         return { total, data };
     }
 
     public async create(data: TPayloadCampaign): Promise<ICampaign> {
-        // Create a new campaign
+        console.log('nitesh', data)
+        const { questionList, ...campaignData } = data;
+
+        console.log(questionList);
+
+
+        // Create the campaign
+
         const response = await CampaignAdModel.create(data);
+
+        // Associate questions if question IDs are provided
+        // if (questionList && questionList.length > 0) {
+        //     await response.setQuestions(questionList); 
+        // }
         return response;
+
     }
 
     public async update(

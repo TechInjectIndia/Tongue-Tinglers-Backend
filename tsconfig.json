@@ -13,49 +13,18 @@
       "es2019",
       "dom"
     ],
-    "baseUrl": "server",
+   "baseUrl": "./",
     "paths": {
-      "@constants": [
-        "./constants"
-      ],
-      "config/*": [
-        "./config/*"
-      ],
-      "contracts/*": [
-        "./contracts/*"
-      ],
-      "controllers/*": [
-        "./controllers/*"
-      ],
-      "database/*": [
-        "./database/*"
-      ],
-      "libraries/*": [
-        "libraries/*"
-      ],
-      "interfaces/*": [
-        "./interfaces/*"
-      ],
-      "middlewares/*": [
-        "./middlewares/*"
-      ],
-      "models/*": [
-        "./models/*"
-      ],
-      "routes/*": [
-        "./routes/*"
-      ],
-      "services/*": [
-        "./services/*"
-      ]
+      "*": ["*"]
     }
   },
   "downlevelIteration": true,
   "include": [
-    "./server/**/*",
+    "./apps/**/*",
     "./app.ts",
-    "src/**/*.ts"
-, "types", "database", "config", "constants", "routes", "libraries"  ],
+    "src/**/*.ts",
+    "types/**/*"
+  ],
   "exclude": [
     "node_modules"
   ]

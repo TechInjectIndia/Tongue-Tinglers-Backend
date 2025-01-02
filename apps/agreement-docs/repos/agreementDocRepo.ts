@@ -1,10 +1,9 @@
-import { up } from './../../../server/database/seeders/permissions_roles';
-import { BaseAgreementDocs, IBaseAgreementDocs } from '../../../interfaces/agreement-docs';
-import { handleError } from '../../common/utils/HelperMethods';
-import { AgreementDocModel } from '../model/agreementDocModel';
-import { IAgreementDocRepo } from './IAgreementDocRepo';
-import { UserModel } from '../../../database/schema';
-import { Pagination } from '../../../interfaces';
+import { handleError } from "apps/common/utils/HelperMethods";
+import { BaseAgreementDocs, IBaseAgreementDocs } from "../interface/AgreementDocs";
+import { AgreementDocModel } from "../model/agreementDocModel";
+import { IAgreementDocRepo } from "./IAgreementDocRepo";
+import { Pagination } from "apps/common/models/common";
+
 
 export class AgreementDocRepo implements IAgreementDocRepo{
 

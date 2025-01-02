@@ -1,4 +1,4 @@
-import { ParsedOrganization } from "../../../interfaces/organization"
+import { ParsedOrganization } from "../interface/organization";
 
 const parseOrganization = (organization: any) => {
     const data: ParsedOrganization = {

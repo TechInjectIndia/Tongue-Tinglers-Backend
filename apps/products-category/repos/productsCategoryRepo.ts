@@ -1,7 +1,9 @@
-import { BaseProductsCategory, Pagination, PRODUCT_CATEGORY_STATUS, ProductsCategory } from "../../../interfaces/products_category";
-import { IProductsCategoryRepo } from "./IProductsCategoryRepo";
-import { ProductsCategoryModel } from "../../../database/schema/product-category/productCategoryModel";
+
 import { Op } from "sequelize";
+import { IProductsCategoryRepo } from "./IProductsCategoryRepo";
+import { BaseProductsCategory, PRODUCT_CATEGORY_STATUS, ProductsCategory } from "../interface/Category";
+import { ProductsCategoryModel } from "database/schema/product-category/productCategoryModel";
+import { Pagination } from "apps/common/models/common";
 
 export class ProductsCategoryRepo implements IProductsCategoryRepo {
     async createProductsCategory(category: BaseProductsCategory): Promise<ProductsCategory | null> {
@@ -11,7 +13,6 @@ export class ProductsCategoryRepo implements IProductsCategoryRepo {
                 slug: category.slug,
                 description: category.description,
                 status: category.status,
-                createdBy: category.createdBy,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 deletedAt: null,
@@ -82,7 +83,7 @@ export class ProductsCategoryRepo implements IProductsCategoryRepo {
 
             const totalPages = Math.ceil(total / limit);
 
-            return { products_category, total, totalPages };
+            return { data: products_category, total, totalPages };
 
         } catch (error) {
             console.log(error);

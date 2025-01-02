@@ -1,30 +1,14 @@
-import { PaymentLinkPayload } from "../../razorpay/models/Razorpay";
+import { CONTRACT_PAYMENT_STATUS, CONTRACT_STATUS, ContractPaymentDetails } from "apps/contracts/interface/Contract";
+import { ContractRepo } from "apps/contracts/models/ContractRepo";
+import { LeadRepo } from "apps/lead/models/lead";
+import { PaymentLinkPayload } from "apps/razorpay/models/Razorpay";
+import RepoProvider from "apps/RepoProvider";
+import { CONFIG } from "config";
+import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from "constants/response-messages";
+import { Request, Response, NextFunction } from "express";
+import { EMAIL_HEADING, EMAIL_TEMPLATE, getEmailTemplate, sendEmail, sendResponse } from "libraries";
 
-const Razorpay = require("razorpay");
-import { NextFunction, Request, Response } from "express";
-import {
-    RESPONSE_TYPE,
-    SUCCESS_MESSAGE,
-    ERROR_MESSAGE,
-} from "../../../constants";
-import {
-    sendResponse,
-    sendEmail,
-    EMAIL_HEADING,
-    getEmailTemplate,
-    EMAIL_TEMPLATE,
-} from "../../../libraries";
-import { ContractRepo } from "../../contracts/models/ContractRepo";
-import { LeadRepo } from "../../lead/models/lead";
-import {
-    CONTRACT_PAYMENT_STATUS,
-    CONTRACT_STATUS,
-    ITrackable,
-} from "../../../interfaces";
-import { ContractPaymentDetails } from "../../../interfaces";
-import { CONFIG } from "../../../config";
-import RepoProvider from "../../RepoProvider";
-import lead from "../../lead/api/lead-router";
+import Razorpay from "razorpay";
 
 const {
     validateWebhookSignature,
@@ -37,7 +21,52 @@ const razorpayInstance = new Razorpay({
 
 export default class PaymentsController {
     static async callback(req: Request, res: Response, next: NextFunction) {
-        await RepoProvider.razorpayRepo.callback(req, res);
+        const webhookSignature = req.headers["x-razorpay-signature"];
+        const body = req.body;
+        console.log("Payment Razorpay payload", body);
+        console.log(body.payload);
+        console.log(body.payload.payment_link);
+
+        console.log(CONFIG.RP_WEBHOOK_SECRET);
+
+        const isVerified = validateWebhookSignature(
+            JSON.stringify(body),
+            webhookSignature,
+            CONFIG.RP_WEBHOOK_SECRET
+        );
+        if (isVerified) {
+            if (
+                body.payload &&
+                body.payload.payment_link &&
+                body.payload.payment_link.entity
+            ) {
+                const paymentId = body.payload.payment_link.entity.id;
+                const status = body.payload.payment_link.entity.status;
+                const contractDetails =
+                    await new ContractRepo().getContractByPaymentId(
+                        paymentId as string
+                    );
+                if (contractDetails) {
+                    const paymentDetails: ContractPaymentDetails = {
+                        paymentId: paymentId,
+                        amount: 0,
+                        date: new Date(),
+                        status: status,
+                        additionalInfo: "",
+                    };
+                    contractDetails.payment.push(paymentDetails);
+                    await new ContractRepo().updatePaymentStatus(
+                        contractDetails.id,
+                        contractDetails.payment as unknown as ContractPaymentDetails[],
+                        CONTRACT_STATUS.ACTIVE
+                    );
+                }
+            }
+            return res.status(200).send({ message: "Webhook Done" });
+        } else {
+            console.log("Webhook not verified");
+            return res.status(200).send({ message: "Webhook not verified" });
+        }
     }
 
     static async fetchPayment(req: Request, res: Response, next: NextFunction) {
@@ -113,10 +142,8 @@ export default class PaymentsController {
             }
 
             const leadDetails = await new LeadRepo().get(
-                contractDetails.leadId as number,
+                contractDetails.leadId.id,
             );
-
-            console.log("#23223###", leadDetails);
 
             if (!leadDetails) {
                 return res
@@ -161,25 +188,26 @@ export default class PaymentsController {
                 additionalInfo: link.description,
             };
 
-            const logs: ITrackable[] = contractDetails.logs;
-            let status: CONTRACT_STATUS = contractDetails.status;
-
-            status = CONTRACT_STATUS.PAYMENT_LINK_SENT;
-
+            let contractPayment: ContractPaymentDetails[] = [];
+            if (contractDetails.payment) {
+                contractPayment = contractDetails.payment;
+                contractPayment.push(paymentPayload);
+            } else {
+                contractPayment = [paymentPayload];
+            }
             await new ContractRepo().updatePayment(
                 contract_id,
-                [paymentPayload],
-                logs,
-                status,
+                contractPayment,
+                CONTRACT_STATUS.ACTIVE
             );
 
             try {
-                const emailContent = await getEmailTemplate(
+                const emailContent = getEmailTemplate(
                     EMAIL_TEMPLATE.PAYMENT_REQUEST,
                     {
                         email: leadDetails.email,
                         link: link.short_url,
-                    },
+                    }
                 );
 
                 const mailOptions = {

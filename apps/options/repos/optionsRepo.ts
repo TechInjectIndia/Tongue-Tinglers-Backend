@@ -1,6 +1,8 @@
+import { Options } from "apps/order/interface/Options";
+import { BaseOptions } from "../interface/options";
 import { IOptionsRepo } from "./IOptionsRepo";
-import {BaseOptions, Options} from "../../../interfaces/options"
-import { OptionsModel } from "../../../database/schema/options/optionModel";
+import { OptionsModel } from "../models/optionTable";
+
 export class OptionsRepo implements IOptionsRepo {
     async create(option: BaseOptions): Promise<Options | null> {
         try {

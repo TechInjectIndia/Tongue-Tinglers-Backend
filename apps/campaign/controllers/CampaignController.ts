@@ -7,27 +7,30 @@ import {
     SUCCESS_MESSAGE,
     ERROR_MESSAGE,
 } from "../../../constants"; // Adjust this import path as necessary
-import { CampaignAdRepo } from "../models";
+
 import RepoProvider from "../../RepoProvider";
+import { OrganizationRepo } from "../../organization/models";
+import { CampaignAdRepo } from "../models";
 
 
 export default class CampaignController {
     // Method to create a campaign
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, "user_id", 1);
+
+            const user_id = get(req, "user_id");
+
+
             const payload = { ...req.body, createdBy: user_id };
 
-            const franchiseExist = RepoProvider.franchise.getById(
-                payload.franchiseId
-            );
-            if (!franchiseExist) {
+            const orgExist = new OrganizationRepo().get(payload.organizationId)
+            if (!orgExist) {
                 return res
                     .status(200)
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.SUCCESS,
-                            `Franchisee ${ERROR_MESSAGE.NOT_EXISTS}`
+                            `Organization ${ERROR_MESSAGE.NOT_EXISTS}`
                         )
                     );
             }
@@ -50,6 +53,7 @@ export default class CampaignController {
                         )
                     );
             }
+
             const campaign = await new CampaignAdRepo().create(payload);
             return res
                 .status(201)
@@ -74,16 +78,22 @@ export default class CampaignController {
             const size = get(req.query, "size", 10);
             const skip = get(req.query, "skip", 0);
             const search = get(req.query, "search", "");
-            const trashOnly = get(req?.query, "trashOnly", "");
-            let sorting = get(req?.query, "sorting", "id DESC");
+            const trashOnly = get(req?.query, "trashOnly");
+            let sorting = get(req?.query, "sorting", "createdAt DESC");
             sorting = sorting.toString().split(" ");
 
-            const franchiseId = get(req.query, "franchiseId", "");
-            const regionId = get(req.query, "regionId", "");
+            const organizationId = get(req.query, "organizationId");
+            const regionId = get(req.query, "regionId");
+            const franchiseId = get(req.query, "franchiseId")
+            const fromDate = get(req.query, "fromDate");
+            const toDate = get(req.query, "toDate");
 
             const filters = {};
-            if (franchiseId) filters["franchiseId"] = franchiseId;
+            if (organizationId) filters["organizationId"] = organizationId;
             if (regionId) filters["regionId"] = regionId;
+            if (franchiseId) filters["franchiseId"] = franchiseId;
+            if (fromDate) filters["fromDate"] = fromDate;
+            if(toDate) filters["toDate"] = toDate
 
             const campaigns = await new CampaignAdRepo().list({
                 offset: skip as number,

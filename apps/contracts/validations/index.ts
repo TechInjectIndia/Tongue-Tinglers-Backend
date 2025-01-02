@@ -1,13 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
-import {
-    CONTRACT_STATUS,
-    CONTRACT_DOCUMENT_STATUS,
-    CONTRACT_PAYMENT_STATUS,
-    SIGN_STATUS,
-} from "../../../interfaces/";
-
+import { CONTRACT_PAYMENT_STATUS, CONTRACT_STATUS } from "../interface/Contract";
 // Schema for UserDetails
 const USER_DETAILS_SCHEMA = Joi.object().keys({
     id: Joi.string().required()
@@ -125,6 +119,16 @@ const editContractBody = Joi.object().keys({
     organizationId: Joi.number().allow(null).optional(),
 });
 
+const partialContractsUpdateSchema = Joi.object({
+    dueDate: Joi.date().optional(),
+    validity: Joi.object({
+        to: Joi.date().required(),
+        from: Joi.date().required(),
+    }).optional(),
+    templateId: Joi.string().allow(null).optional(),
+    assignUser: Joi.number().allow(null).optional(),
+});
+
 // Validation schema for editing contract parameters
 const editContractParams = Joi.object().keys({
     id: Joi.string().required()
@@ -149,3 +153,9 @@ export const validateEditContractParams = async (
     res: Response,
     next: NextFunction,
 ) => validateReq(req, res, next, editContractParams, "params");
+
+export const validatePartialContractsUpdateSchema = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => validateReq(req, res, next, partialContractsUpdateSchema, "body");

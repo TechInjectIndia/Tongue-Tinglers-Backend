@@ -1,36 +1,41 @@
-import {
-  Franchise,
-  FranchiseDetails,
-  Pagination,
-  parsedFranchise,
-} from "../../../interfaces";
+
 import { IFranchiseRepo } from "./IFranchiseRepo";
 
 import RepoProvider from "../../RepoProvider";
-import {
-  AddressModel,
-  FranchiseModel,
-  RegionModel,
-  UserModel,
-} from "../../../database/schema";
-import { OrganizationModel } from "../../organization/database/organization_schema";
-import { TListFilters } from "../../../types/common";
+// import {
+//   AddressModel,
+//   FranchiseModel,
+//   RegionModel,
+//   UserModel,
+// } from "../../../database/schema";
+// import { OrganizationModel } from "../../organization/database/organization_schema";
+// import { TListFilters } from "../../../types/common";
+// import { Op } from "sequelize";
+// import { parseFranchise } from "../parser/franchiseParser";
+// import { getUserName } from "../../common/utils/commonUtils";
+import { Franchise, FranchiseDetails, parsedFranchise } from "../interface/Franchise";
+import { Pagination, TListFilters } from "apps/common/models/common";
+import { getUserName } from "apps/common/utils/commonUtils";
 import { Op } from "sequelize";
 import { parseFranchise } from "../parser/franchiseParser";
-import { getUserName } from "../../common/utils/commonUtils";
+import { UserModel } from "apps/user/models/UserTable";
+import { FranchiseModel } from "../models/FranchiseTable";
+import { RegionModel } from "apps/region/models/RegionTable";
+import { OrganizationModel } from "apps/organization/models/OrganizationTable";
+import { AddressModel } from "apps/address/models/AddressTable";
 
 export class FranchiseRepo implements IFranchiseRepo {
-  async create(franchise: FranchiseDetails, userId: number,  options?: { transaction?: any }): Promise<Franchise | null> {
+  async create(franchise: FranchiseDetails, userId: number, options?: { transaction?: any }): Promise<Franchise | null> {
     try {
       const { transaction } = options || {};
-      const user = await UserModel.findByPk(userId, {transaction});
+      const user = await UserModel.findByPk(userId, { transaction });
       if (!user) {
         throw new Error(`User with ID ${userId} not found.`);
       }
       const existFranchise = await this.exists(franchise.pocEmail);
       if (!existFranchise) {
         const addressId = (
-          await RepoProvider.address.create(franchise.location, {transaction})
+          await RepoProvider.address.create(franchise.location, { transaction })
         ).id;
         let smIds: number[] = [];
 
@@ -84,12 +89,12 @@ export class FranchiseRepo implements IFranchiseRepo {
     //   if (!user) {
     //     throw new Error(`User with ID ${userId} not found.`);
     //   }
-  
+
     //   const existingFranchise = await FranchiseModel.findByPk(franchiseId);
     //   if (!existingFranchise) {
     //     throw new Error(`Franchise with ID ${franchiseId} not found.`);
     //   }
-  
+
     //   // Update Address (if provided)
     //   let addressId = existingFranchise.location;
     //   if (franchise.location) {
@@ -97,14 +102,14 @@ export class FranchiseRepo implements IFranchiseRepo {
     //       await RepoProvider.address.updateById(franchise.location, addressId)
     //     ).id;
     //   }
-  
+
     //   // Update SM (if provided)
     //   let smIds: number[] = existingFranchise.sm || [];
     //   if (franchise.sm && franchise.sm.length > 0) {
     //     const smDetails = await RepoProvider.smRepo.saveBulk(franchise.sm);
     //     smIds = smDetails.map((sm) => sm.id);
     //   }
-  
+
     //   // Update franchise details
     //   existingFranchise.set({
     //     pocName: franchise.pocName || existingFranchise.pocName,
@@ -122,9 +127,9 @@ export class FranchiseRepo implements IFranchiseRepo {
     //     sm: smIds,
     //     updatedBy: getUserName(user),
     //   });
-  
+
     //   await existingFranchise.save();
-  
+
     //   console.log(`Franchise with ID ${franchiseId} updated successfully.`);
     //   return existingFranchise.toJSON();
     // } catch (e) {
@@ -181,6 +186,10 @@ export class FranchiseRepo implements IFranchiseRepo {
               model: OrganizationModel,
               as: "organization",
             },
+            {
+              model: UserModel,
+              as: "assignuser"
+            }
           ],
         }).then((res) => {
           return {
@@ -267,6 +276,10 @@ export class FranchiseRepo implements IFranchiseRepo {
           },
           {
             model: UserModel,
+            as: "assignuser"
+          },
+          {
+            model: UserModel,
             as: "updatedByUser", // For the 'updatedBy' user
           },
           {
@@ -275,9 +288,6 @@ export class FranchiseRepo implements IFranchiseRepo {
           },
         ],
       });
-
-      console.log("nitesh");
-      console.log(res);
 
       if (res) {
         return parseFranchise(res.toJSON());
@@ -306,6 +316,10 @@ export class FranchiseRepo implements IFranchiseRepo {
           {
             model: UserModel,
             as: "createdByUser", // For the 'createdBy' user
+          },
+          {
+            model: UserModel,
+            as: "assignuser"
           },
           {
             model: UserModel,

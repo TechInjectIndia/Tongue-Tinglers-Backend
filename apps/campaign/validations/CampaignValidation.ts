@@ -7,7 +7,7 @@ const createCampaignBody = Joi.object().keys({
     name: Joi.string()
         .required()
         .messages({ "any.required": "Campaign name is required." }),
-    franchiseId: Joi.number().optional().allow(null),
+    organizationId: Joi.number().required(),
     regionId: Joi.number()
         .required()
         .messages({ "any.required": "Region Id are required." }),
@@ -47,9 +47,8 @@ const editCampaignBody = Joi.object({
         .optional()
         .messages({ "string.base": "Campaign name must be a string." }),
 
-    franchiseId: Joi.number()
-        .allow(null)
-        .messages({ "number.base": "Franchise ID must be a number." }),
+    organizationId: Joi.number()
+        .messages({ "number.base": "Organization ID must be a number." }),
 
     regionId: Joi.number()
         .allow(null)
@@ -133,10 +132,8 @@ const listCampaignQuery = Joi.object().keys({
             "any.only":
                 "Sorting must be one of id ASC, id DESC, name ASC, name DESC, createdAt ASC, createdAt DESC.",
         }),
-    franchiseId: Joi.string()
-        .optional()
-        .allow("")
-        .messages({ "string.base": "Franchise ID must be a string." }),
+    organizationId: Joi.number()
+        .messages({ "number.base": "Organization ID must be a number." }),
     region: Joi.string()
         .optional()
         .allow("")

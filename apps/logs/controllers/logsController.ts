@@ -1,13 +1,13 @@
-import { LogModel } from "../../../database/schema/logs/LogsModels";
-import { Model, ModelStatic } from "sequelize";
+
+import { Pagination } from "apps/common/models/common";
 import { Request, Response } from "express";
+import { sendResponse } from "libraries";
 import { get } from "lodash";
-import { BaseProduct, Pagination, Product } from "../../../interfaces";
-import RepoProvider from "../../RepoProvider";
-import { sendResponse } from "../../../libraries";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
 import { Log } from "../models/Log";
-//
+import RepoProvider from "apps/RepoProvider";
+import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "constants/response-messages";
+
+
 // export const logModelAction = async <T extends Model<any, any>>(
 //     action: string,
 //     modelName: string,

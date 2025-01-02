@@ -96,4 +96,44 @@ export default class OrderController {
             );
         }
     }
+
+    static async processOrder(req: any, res: any) {
+        try {
+            const payload: any = req?.body;
+            const order = await RepoProvider.orderRepo.processOrder(payload);
+            return res.status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPDATED,
+                        order,
+                    ),
+                );
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send(
+                sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while updating orders.'),
+            );
+        }
+    }
+
+    static async proceedToPayment(req: any, res: any){
+        try{
+            const payload: any = req?.body;
+            const order = await RepoProvider.orderRepo.proceedToPayment(payload);
+            return res.status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPDATED,
+                        order,
+                    ),
+                );
+        }catch(error){
+            console.error(error);
+            return res.status(500).send(
+                sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while updating orders.'),
+            );
+        }
+    }
 }

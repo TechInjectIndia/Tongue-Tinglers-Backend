@@ -1,16 +1,21 @@
-import {BaseMeta, ParsedMeta} from "../database/schema/base/Base";
+
 import {
     BaseOrderItem,
     ParsedOrderItem,
     PreSaleParsedOrderItem
 } from "./order_items";
 import {ParsedUser} from "./user";
-import {Address} from "../types";
+import {Address, OrderStatus} from "../types";
+import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
 
 export enum PAYMENT_STATUS {
     PAID = "paid",
     UNPAID = "un-paid",
     PROCESSED = "processed",
+}
+
+export enum PAYMENT_TYPE {
+    RP_CHECKOUT = "RP-Checkout",
 }
 
 export enum ORDER_TYPE {
@@ -58,12 +63,12 @@ interface BaseOrder {
 
 interface ParsedOrder extends ParsedMeta, OrderPayload {
     id: number;
-    status: string;
+    status: OrderStatus;
     total: number; // without Tax
     totalTax: number;
     deliveryStatus: string;
     customerDetails: ParsedUser;
-    paymentType: string; //todo convert to enum
+    paymentType: PAYMENT_TYPE; //todo convert to enum
     paymentId: number;
     cancelledItems: ParsedOrderItem[];
     totalDiscount: number;
@@ -102,6 +107,13 @@ interface OrderPagination<T> {
     totalPages: number;
 }
 
+interface OrderParams {
+    userId: string;
+    couponCode?: string;
+    shippingAddId: number;
+    billingAddId: number;
+}
+
 export {
     BaseOrder,
     Order,
@@ -110,5 +122,6 @@ export {
     OrderPayload,
     OrderPagination,
     ParsedOrder,
-    PresaleParsedOrder
+    PresaleParsedOrder,
+    OrderParams
 }

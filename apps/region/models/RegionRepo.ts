@@ -1,14 +1,10 @@
 import { Op } from "sequelize";
-import {
-    TListFiltersRegions,
-} from "../../../types";
-import {
-    TRegionList,
-    TPayloadRegion,
-    IRegion,
-} from "../../../interfaces";
-import { RegionModel } from "../../../database/schema";
+
 import IBaseRepo from '../controllers/controller/IRegionController';
+import { IRegion, TPayloadRegion, TRegionList } from "./Region";
+import { TListFiltersRegions } from "apps/common/models/common";
+import { RegionModel } from "./RegionTable";
+import { AreaModel } from "apps/area/models/AreaTable";
 
 export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
     constructor() { }
@@ -69,6 +65,7 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
             offset: filters.offset,
             limit: filters.limit,
             where: whereCondition,
+            include:{model: AreaModel, as: "areas"}
         });
 
         return { total, data };
@@ -76,6 +73,7 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
 
     public async create(data: TPayloadRegion): Promise<IRegion> {
         const response = await RegionModel.create(data);
+        if(data.area) await response.addAreas(data.area);
         return response;
     }
 

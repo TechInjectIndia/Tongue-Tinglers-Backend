@@ -1,5 +1,4 @@
-import { NextFunction, Response } from "express";
-import { TPayloadProposalModel, ProposalModels, ProposalModelsList } from '../../../../interfaces';
+import { TPayloadProposalModel, ProposalModelsList } from '../../../../interfaces';
 import { TQueryFilters } from '../../../../types';
 
 /**

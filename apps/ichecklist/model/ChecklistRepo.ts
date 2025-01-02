@@ -1,9 +1,8 @@
 import { Op } from "sequelize";
-import { ICheckList, TICheckListList, TICheckListPayload, TListFiltersICheckListt } from "../../../interfaces/ichecklist"; // Adjust imports according to your types
-import { IChecklistModel } from "../../../database/schema/franchise/iChecklist"; // Adjust the import path based on your project structure
-import IBaseRepo from '../controllers/controller/IiChecklist';
-import { UserModel } from "../../../database/schema";
-import { getUserName } from "../../common/utils/commonUtils";
+import { ICheckList, TICheckListList, TICheckListPayload, TListFiltersICheckListt } from "../interface/IChecklist";
+import { IChecklistModel } from "./CheckListTable";
+import { UserModel } from "apps/user/models/UserTable";
+import { getUserName } from "apps/common/utils/commonUtils";
 
 export class PdiChecklistRepo {
     constructor() { }
@@ -68,7 +67,7 @@ export class PdiChecklistRepo {
         if (!checklist) {
             throw new Error("Checklist not found");
         }
-        if(!user){
+        if (!user) {
             throw new Error(`User with ID ${userId} not found.`);
         }
         checklist.set(data);
@@ -76,7 +75,7 @@ export class PdiChecklistRepo {
             userId: user.id,
             userName: user.firstName,
         });
-        
+
         // Return the affected count along with the updated instances
         const updatedChecklist = await IChecklistModel.findAll({ where: { id } });
         return [1, updatedChecklist];

@@ -1,19 +1,14 @@
 const { Op } = require("sequelize");
-import {
-  TListFilters,
-  TUser,
-  TAddUser,
-  TEditUser,
-  TEditUserProfile,
-  TUsersList,
-  TUserWithPermission,
-  TUpdateUserReferralCode,
-} from "../../../types";
-import { UserModel, RolesModel } from "../../../database/schema";
-import { USER_TYPE, USER_STATUS } from "../../../interfaces";
-import IBaseRepo from "../controllers/controller/IUserController";
 
-export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
+
+import { TListFilters } from "apps/common/models/common";
+import IBaseRepo from "../controllers/IUserController";
+import { TUser, USER_STATUS, USER_TYPE } from "../interface/user";
+import { UserModel } from "./UserTable";
+import { TAddUser, TEditUser, TEditUserProfile, TUpdateUserReferralCode, TUsersList, TUserWithPermission } from "types";
+import { RolesModel } from "./RolesTable";
+
+export class AdminRepo  {
   constructor() { }
 
   public async getByReferralCode(referralCode: string) {
@@ -167,7 +162,7 @@ export class AdminRepo implements IBaseRepo<TUser, TListFilters> {
     return data;
   }
 
-  public async create(data: TAddUser, options?: { transaction?: any }): Promise<TUser> {
+  public async create(data: TUser, options?: { transaction?: any }): Promise<TUser> {
     const { transaction } = options || {};
     return await UserModel.create({ ...data }, {transaction});
   }

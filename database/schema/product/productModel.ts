@@ -1,8 +1,9 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { PRODUCTS_TYPE, BaseProduct, Product, PRODUCT_STATUS } from "../../../interfaces";
+import { BaseProduct, Product, PRODUCT_STATUS, PRODUCTS_TYPE } from "apps/product/interface/Product";
 import { ProductOptionsModel } from "../product-options/productOptionsModel";
-import { UserModel } from "../user/user.model";
+import { UserModel } from "apps/user/models/UserTable";
+
 
 interface ProductCreationAttributes extends Optional<Product, | "id"> {
 }
@@ -115,12 +116,12 @@ ProductModel.init({
     timestamps: true
 })
 
-ProductModel.belongsToMany(ProductOptionsModel, {
-    through: "product_options_join", // Join table name
-    foreignKey: "productId", // Foreign key in the join table
-    otherKey: "product_options_id", // Other foreign key in the join table
-    as: "variations", // Alias for the relationship
-});
+// ProductModel.belongsToMany(ProductOptionsModel, {
+//     through: "product_options_join", // Join table name
+//     foreignKey: "productId", // Foreign key in the join table
+//     otherKey: "product_options_id", // Other foreign key in the join table
+//     as: "variations", // Alias for the relationship
+// });
 
 // ProductModel.hasMany(ProductOptionsModel, {
 //     foreignKey: "product_id", // The foreign key in ProductOptionsModel
@@ -132,9 +133,9 @@ ProductModel.belongsToMany(ProductOptionsModel, {
 //     as: "product", // Alias for the reverse relationship
 //   });
 
-ProductModel.belongsTo(UserModel, {as: 'createdByUser', foreignKey: 'createdBy'})
-ProductModel.belongsTo(UserModel, {as: 'updatedByUser', foreignKey: 'updatedBy'})
-ProductModel.belongsTo(UserModel, {as: 'deletedByUser', foreignKey: 'deletedBy'})
+// ProductModel.belongsTo(UserModel, {as: 'createdByUser', foreignKey: 'createdBy'})
+// ProductModel.belongsTo(UserModel, {as: 'updatedByUser', foreignKey: 'updatedBy'})
+// ProductModel.belongsTo(UserModel, {as: 'deletedByUser', foreignKey: 'deletedBy'})
 
 
 // ProductModel.hasMany(CartProductModel, {

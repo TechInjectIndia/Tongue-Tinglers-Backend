@@ -1,6 +1,5 @@
-import { BaseMeta } from "../database/schema/base/Base";
-import { ParsedOptionsValue, parseOptionsValues } from "./optionsValue";
-import { ParsedUser } from "./user";
+import { BaseMeta } from "apps/common/models/Base"
+import { ParsedOptionsValue, parseOptionsValues } from "./optionsValue"
 
 interface BaseProductOptions {
     id: any

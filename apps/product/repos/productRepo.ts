@@ -11,11 +11,13 @@ import { ProductModel } from "../../../database/schema/product/productModel";
 import { Op } from "sequelize";
 import { ProductOptionsModel } from "../../../database/schema/product-options/productOptionsModel";
 import { ParsedProduct } from "../../../interfaces/products"
-import { ProductCategoryModel, UserModel } from "../../../database/schema";
+
 import {parseProduct} from "../parser/productParser"
-import { OptionsModel } from "../../../database/schema/options/optionModel";
-import { OptionsValueModel } from "../../../database/schema/optionsValue/optionsValueModel";
+
 import { ProductsCategoryModel } from "../../../database/schema/product-category/productCategoryModel";
+import { UserModel } from "apps/user/models/UserTable";
+import { OptionsValueModel } from "apps/optionsValue/interface/OptionValueTable";
+import { OptionsModel } from "apps/options/models/optionTable";
 
 export class ProductRepo implements IProductRepo {
   async create(product: BaseProduct): Promise<Product | null> {

@@ -1,12 +1,13 @@
 import { Op } from "sequelize";
-import { ILead } from "../../../interfaces";
-import { LeadsModel } from "../../../database/schema";
-import IBaseRepo from '../controllers/controller/IFollowUpsController';
 
-export class FollowUpsRepo implements IBaseRepo<ILead, any> {
+import IBaseRepo from '../controllers/controller/IFollowUpsController';
+import { LeadTable } from "../interface/lead";
+import { LeadsModel } from "./LeadTable";
+
+export class FollowUpsRepo implements IBaseRepo<LeadTable, any> {
     constructor() { }
 
-    public async getTodayFollowUps(assignedTo: string, attributes: string[] = []): Promise<ILead[]> {
+    public async getTodayFollowUps(assignedTo: string, attributes: string[] = []): Promise<LeadTable[]> {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const tomorrow = new Date(today);
@@ -15,27 +16,27 @@ export class FollowUpsRepo implements IBaseRepo<ILead, any> {
         const data = await LeadsModel.findAll({
             raw: true,
             attributes,
-            where: {
-                [Op.and]: [
-                    {
-                        followDetails: {
-                            [Op.not]: null,
-                            [Op.ne]: [],
-                        },
-                    },
-                    {
-                        [Op.or]: [
-                            {
-                                '$followDetails.followedDate$': {
-                                    [Op.gte]: today,
-                                    [Op.lt]: tomorrow,
-                                },
-                            },
-                        ],
-                    },
-                    // { 'assign.assignedTo': assignedTo },
-                ],
-            },
+            // where: {
+            //     [Op.and]: [
+            //         {
+            //             followDetails: {
+            //                 [Op.not]: null,
+            //                 [Op.ne]: [],
+            //             },
+            //         },
+            //         {
+            //             [Op.or]: [
+            //                 {
+            //                     '$followDetails.followedDate$': {
+            //                         [Op.gte]: today,
+            //                         [Op.lt]: tomorrow,
+            //                     },
+            //                 },
+            //             ],
+            //         },
+            //         // { 'assign.assignedTo': assignedTo },
+            //     ],
+            // },
             include: [{
                 model: LeadsModel,
                 as: 'followDetails',
@@ -52,7 +53,7 @@ export class FollowUpsRepo implements IBaseRepo<ILead, any> {
         return data;
     }
 
-    public async getLeadsByTodayFollowUps(attributes: string[] = []): Promise<ILead[]> {
+    public async getLeadsByTodayFollowUps(attributes: string[] = []): Promise<LeadTable[]> {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const tomorrow = new Date(today);
@@ -61,22 +62,22 @@ export class FollowUpsRepo implements IBaseRepo<ILead, any> {
         const data = await LeadsModel.findAll({
             raw: true,
             attributes,
-            where: {
-                [Op.and]: [
-                    {
-                        followDetails: {
-                            [Op.not]: null,
-                            [Op.ne]: [],
-                        },
-                    },
-                    {
-                        '$followDetails.followedDate$': {
-                            [Op.gte]: today,
-                            [Op.lt]: tomorrow,
-                        },
-                    },
-                ],
-            },
+            // where: {
+            //     [Op.and]: [
+            //         {
+            //             followDetails: {
+            //                 [Op.not]: null,
+            //                 [Op.ne]: [],
+            //             },
+            //         },
+            //         {
+            //             '$followDetails.followedDate$': {
+            //                 [Op.gte]: today,
+            //                 [Op.lt]: tomorrow,
+            //             },
+            //         },
+            //     ],
+            // },
             include: [{
                 model: LeadsModel,
                 as: 'followDetails',
@@ -90,6 +91,6 @@ export class FollowUpsRepo implements IBaseRepo<ILead, any> {
             }],
         });
 
-        return data;
+        return data 
     }
 }

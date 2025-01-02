@@ -1,7 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import EmailController from '../controllers/EmailController';
-import { validateEmail } from '../validations/validateEmail';
+
 
 const upload = multer({ storage: multer.memoryStorage() });
 const router = express.Router();
@@ -84,6 +83,6 @@ const router = express.Router();
  *                         additionalProperties: true
  */
 
-router.post('/', upload.array('files'), EmailController.sendEmail);
+// router.post('/', upload.array('files'), EmailController.sendEmail);
 
 export default router;

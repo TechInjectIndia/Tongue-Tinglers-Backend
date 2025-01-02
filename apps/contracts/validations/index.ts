@@ -126,6 +126,7 @@ const partialContractsUpdateSchema = Joi.object({
         from: Joi.date().required(),
     }).optional(),
     templateId: Joi.string().allow(null).optional(),
+    assignUser: Joi.number().allow(null).optional(),
 });
 
 // Validation schema for editing contract parameters

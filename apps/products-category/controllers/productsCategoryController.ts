@@ -90,37 +90,37 @@ export default class ProductsCategoryController {
         }
     }
 
-    // static async getAllProductsCategory(req: Request, res: Response) {
-    //     try {
-    //         let page = parseInt(<string>get(req.query, 'page', '1'));
-    //         if (isNaN(page)) page = 1;
-    //         let limit = parseInt(<string>get(req.query, 'limit', '10'));
-    //         if (isNaN(limit)) limit = 10;
-    //         const search = <string>get(req.query, 'search', '');
+    static async getAllProductsCategory(req: Request, res: Response) {
+        try {
+            let page = parseInt(<string>get(req.query, 'page', '1'));
+            if (isNaN(page)) page = 1;
+            let limit = parseInt(<string>get(req.query, 'limit', '10'));
+            if (isNaN(limit)) limit = 10;
+            const search = <string>get(req.query, 'search', '');
 
 
-    //         const productsCategory: Pagination<ProductsCategory> = await RepoProvider.productsCategoryRepo.getAllProductsCategory(
-    //             page, limit, search);
-    //         return res.status(200)
-    //             .send(
-    //                 sendResponse(
-    //                     RESPONSE_TYPE.SUCCESS,
-    //                     SUCCESS_MESSAGE.FETCHED,
-    //                     {
-    //                         ...productsCategory,
-    //                         currentPage: page,
-    //                     }
-    //                 ),
-    //             );
-    //     }
-    //     catch (error) {
-    //         console.error(error);
-    //         return res.status(500).send(
-    //             sendResponse(RESPONSE_TYPE.ERROR,
-    //                 'An error occurred while fetching products.'),
-    //         );
-    //     }
-    // }
+            const productsCategory = await RepoProvider.productsCategoryRepo.getAllProductsCategory(
+                page, limit, search);
+            return res.status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        {
+                            ...productsCategory,
+                            currentPage: page,
+                        }
+                    ),
+                );
+        }
+        catch (error) {
+            console.error(error);
+            return res.status(500).send(
+                sendResponse(RESPONSE_TYPE.ERROR,
+                    'An error occurred while fetching products.'),
+            );
+        }
+    }
 
     static async updateProductsCategory(req: Request, res: Response) {
         try {

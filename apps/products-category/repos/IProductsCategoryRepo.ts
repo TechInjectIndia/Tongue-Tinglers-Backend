@@ -9,7 +9,7 @@ export interface IProductsCategoryRepo {
 
     getProductsCategoryBySlug(slug: string): Promise<ProductsCategory>
 
-    // getAllProductsCategory(page: number, limit: number, search: string): Promise<Pagination<ProductsCategory>>
+    getAllProductsCategory(page: number, limit: number, search: string): Promise<Pagination<ProductsCategory>>
 
     updateProductsCategory(category: ProductsCategory): Promise<ProductsCategory>
 

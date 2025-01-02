@@ -42,45 +42,58 @@ const createCampaignBody = Joi.object().keys({
 });
 
 // Validation schema for editing a campaign
-const editCampaignBody = Joi.object().keys({
+const editCampaignBody = Joi.object({
     name: Joi.string()
         .optional()
         .messages({ "string.base": "Campaign name must be a string." }),
-    franchiseId: Joi.string().optional().allow(null),
-    regionId: Joi.any()
-        .required()
-        .messages({ "any.required": "Region Id are required." }),
+
+    franchiseId: Joi.number()
+        .allow(null)
+        .messages({ "number.base": "Franchise ID must be a number." }),
+
+    regionId: Joi.number()
+        .allow(null)
+        .messages({ "number.base": "Region ID must be a number." }),
+
     description: Joi.string()
         .optional()
         .messages({ "string.base": "Description must be a string." }),
+
     questionList: Joi.array()
         .items(
-            Joi.string()
-                .required()
-                .messages({ "any.required": "Question ID is required." })
+            Joi.any().messages({ "any.required": "Question ID is required." })
         )
         .optional()
-        .messages({ "array.base": "Questions must be an array of strings." }),
-    affiliateId: Joi.string()
-        .required()
-        .messages({ "any.required": "Affiliate Id are required." }),
+        .messages({ "array.base": "Questions must be an array." }),
+
+    affiliateId: Joi.number()
+        .allow(null)
+        .messages({ "number.base": "Affiliate ID must be a number." }),
+
     proposalIds: Joi.array()
         .items(
-            Joi.string()
+            Joi.number()
                 .required()
-                .messages({ "any.required": "proposal Id is required." })
+                .messages({ "number.base": "Proposal ID must be a number.", "any.required": "Proposal ID is required." })
         )
         .required()
-        .messages({ "any.required": "proposals are required." }),
-    start: Joi.date().required().messages({
-        "any.required": "The start date is required.",
-        "date.base": "The start date must be a valid date.",
-    }),
-    to: Joi.date().required().messages({
-        "any.required": "The to date is required.",
-        "date.base": "The to date must be a valid date.",
-    }),
+        .messages({ "array.base": "Proposals must be an array.", "any.required": "Proposals are required." }),
+
+    start: Joi.date()
+        .required()
+        .messages({
+            "any.required": "The start date is required.",
+            "date.base": "The start date must be a valid date.",
+        }),
+
+    to: Joi.date()
+        .required()
+        .messages({
+            "any.required": "The to date is required.",
+            "date.base": "The to date must be a valid date.",
+        }),
 });
+
 
 // Validation schema for editing campaign parameters
 const editCampaignParams = Joi.object().keys({

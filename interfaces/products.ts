@@ -1,7 +1,6 @@
 import { BaseMeta, ParsedMeta } from "../database/schema/base/Base";
 import { BaseProductOptions, ParsedProductOptions } from "./product-options";
 import { ParsedCategory } from "./products_category";
-import { ParsedUser } from "./user";
 
 interface BaseProduct {
     createdBy: number;

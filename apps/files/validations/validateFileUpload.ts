@@ -6,26 +6,9 @@ import { validateReq } from "../../../libraries";
 const fileUploadSchema = Joi.object({
     files: Joi.array()
         .items(
-            Joi.object({
-                originalname: Joi.string().required()
-                    .messages({
-                        'string.empty': 'File name cannot be empty.',
-                    }),
-                mimetype: Joi.string()
-                    .valid('image/jpeg', 'image/png', 'application/pdf') // Adjust valid MIME types as needed
-                    .required()
-                    .messages({
-                        'any.only': 'File type is not allowed. Acceptable types are .jpeg, .png, .pdf.',
-                    }),
-                size: Joi.number()
-                    .max(5 * 1024 * 1024) // Set a max file size of 5MB
-                    .required()
-                    .messages({
-                        'number.max': 'File size must not exceed 5MB.',
-                    }),
-            })
+            Joi.string()
         )
-        .required()
+        .optional()
         .messages({
             'array.base': 'Files are required.',
             'array.empty': 'Files cannot be empty.',

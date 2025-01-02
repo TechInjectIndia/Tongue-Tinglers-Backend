@@ -188,3 +188,8 @@ export interface ParsedOrganization {
     deletedBy: ParsedUser | null;
     deletedAt: Date;
 }
+
+export interface OrganizationAddresses {
+    billingAddress: ParsedAddress;
+    shippingAddress: Array<ParsedAddress>;
+}

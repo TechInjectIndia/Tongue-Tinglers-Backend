@@ -38,5 +38,6 @@ router.get("/list", validateListOrgQuery, OrganizationController.list);
 
 router.put("/updateAddress/:id", validateOrganizationAddressPayloadSchema, OrganizationController.updateAddressOfOrganization);
 
+router.get("/getAddress/:id", OrganizationController.getAddressOfOrganization);
 
 export default router;

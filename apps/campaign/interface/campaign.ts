@@ -1,19 +1,4 @@
-import { BaseMeta } from "apps/common/models/Base";
-
-interface CampaignPayload {
-    name: string;
-    organizationId: number;
-    regionId: number;
-    description?: string;
-    questionList: string[];
-    affiliateId?: number
-    proposalIds: number[];
-    start: Date;
-    to: Date;
-}
-
-
-
+import {BaseMeta} from "../../common/models/Base";
 
 interface ICampaign extends BaseMeta {
     name: string;
@@ -39,6 +24,7 @@ type TPayloadCampaign = {
     description?: string;
     questionList: number[];
     createdBy: number;
+    proposalIds: number[];
 }
 
 interface ICampaignSubmisisons {
@@ -62,22 +48,10 @@ interface ParsedCampaign {
     to: Date;
 }
 
-type TPayloadCampaignSubmisisons = {
-    campaignId: number;
-    response: string;
-}
-
-type TCampaignSubmisisonsList = {
-    total: number,
-    data: ICampaignSubmisisons[]
-}
-
 export {
     ICampaign,
     TCampaignList,
     TPayloadCampaign,
     ICampaignSubmisisons,
-    TCampaignSubmisisonsList,
-    TPayloadCampaignSubmisisons,
     ParsedCampaign
 }

@@ -10,6 +10,7 @@ import {
 import RepoProvider from "apps/RepoProvider";
 import { ProductOptionsModel } from "apps/product-options/models/productOptionTable";
 import { UserModel } from "apps/user/models/UserTable";
+import { CartProductModel } from "apps/cart-products/model/CartTable";
 // import { ProductOptionsModel } from "../product-options/productOptionsModel";
 // import { ProductOptionsModel } from "";
 
@@ -80,10 +81,10 @@ class ProductModel
         ProductModel.belongsTo(UserModel, {as: 'updatedByUser', foreignKey: 'updatedBy'})
         ProductModel.belongsTo(UserModel, {as: 'deletedByUser', foreignKey: 'deletedBy'})
 
-        // ProductModel.hasMany(CartProductModel, {
-        //     foreignKey: 'product_id',
-        //     as: 'cartProducts'  // Alias to use if you want to reference CartProduct from Product
-        // });
+        ProductModel.hasMany(CartProductModel, {
+            foreignKey: 'product_id',
+            as: 'cartProducts'  // Alias to use if you want to reference CartProduct from Product
+        });
     }
 
     public static initModel() {

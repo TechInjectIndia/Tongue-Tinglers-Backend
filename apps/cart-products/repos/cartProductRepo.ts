@@ -1,5 +1,11 @@
 // import { CartDetailsModel } from "database/schema/cart_details/cartDetailsModel";
-import { Cart, CartProduct, ParseCart, ParsedCartProduct, UpdateQuantity } from "../interface/Cart";
+import {
+    Cart,
+    CartProduct,
+    ParseCart,
+    ParsedCartProduct,
+    UpdateQuantity,
+} from "../interface/Cart";
 import { CartProductModel } from "../model/CartTable";
 import { ICartProductRepo } from "./ICartProductRepo";
 // import { ProductModel } from "database/schema/product/productModel";
@@ -13,11 +19,9 @@ import { ProductOptionsModel } from "apps/product-options/models/productOptionTa
 import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
 
 export class CartProductRepo implements ICartProductRepo {
-
-    async create(cartProduct:Cart): Promise<ParseCart | null> {
+    async create(cartProduct: Cart): Promise<ParseCart | null> {
         const transaction = await CartProductModel.sequelize?.transaction();
         try {
-
             // Step 1: Bulk create cart products
             const createdCartProducts = await CartProductModel.bulkCreate(
                 cartProduct.carts.map((product) => ({
@@ -32,19 +36,21 @@ export class CartProductRepo implements ICartProductRepo {
             cartProductIds = createdCartProducts.map((option) => option.id);
             let payload = {
                 // cart_ids: cartProductIds,
-                user_id: cartProduct.user_id
-            }
+                user_id: cartProduct.user_id,
+            };
 
             const userExist = await CartDetailsModel.findOne({
                 where: {
-                    user_id: cartProduct.user_id
-                }
-            })
+                    user_id: cartProduct.user_id,
+                },
+            });
             var createCartDetails = null;
-            if(!userExist){
-                createCartDetails = await CartDetailsModel.create(payload, { transaction })
-            }else{
-                createCartDetails = userExist
+            if (!userExist) {
+                createCartDetails = await CartDetailsModel.create(payload, {
+                    transaction,
+                });
+            } else {
+                createCartDetails = userExist;
             }
 
             await createCartDetails.addCartProductses(cartProductIds);
@@ -53,43 +59,55 @@ export class CartProductRepo implements ICartProductRepo {
             // Return the created cart products (optional)
 
             const cartProductsWithDetails = await CartProductModel.findAll({
-                where: {id: {[Op.in]:  cartProductIds} },
+                where: { id: { [Op.in]: cartProductIds } },
                 include: [
                     {
                         model: ProductModel, // Assuming you have defined an association
-                        as: 'product', // Alias name if used in associations
+                        as: "product", // Alias name if used in associations
                     },
                     {
                         model: ProductOptionsModel, // Assuming you have defined an association
-                        as: 'variations', // Alias name if used in associations
+                        as: "variations", // Alias name if used in associations
                         include: [
                             {
-                              model: OptionsValueModel,
-                              as: "optionsValue", // Include these fields from the User model
-                              attributes: ["id", "name", "option_id"],
-                              include:[
-                                {
-                                  model: OptionsModel,
-                                  as: 'options',
-                                  attributes:['id', 'name']
-                                }
-                              ]
-                            }
+                                model: OptionsValueModel,
+                                as: "optionsValue", // Include these fields from the User model
+                                attributes: ["id", "name", "option_id"],
+                                include: [
+                                    {
+                                        model: OptionsModel,
+                                        as: "options",
+                                        attributes: ["id", "name"],
+                                    },
+                                ],
+                            },
                         ],
                     },
                 ],
             }).then((cartProductData) => {
                 return cartProductData.map((cartProduct) => {
-                    return parseCartProduct(cartProduct)
-                })
-            })
+                    return parseCartProduct(cartProduct);
+                });
+            });
             return {
                 user_id: cartProduct.user_id, // Assuming `cartsts` comes from `createCartDetails`
                 carts: cartProductsWithDetails,
             };
         } catch (error) {
             console.log(error);
-            await transaction?.rollback();
+
+            // Step 8: Rollback transaction if it is still active
+            if (transaction) {
+                try {
+                    await transaction.rollback();
+                } catch (rollbackError) {
+                    console.error(
+                        "Error rolling back transaction:",
+                        rollbackError
+                    );
+                }
+            }
+
             return null;
         }
     }
@@ -147,29 +165,37 @@ export class CartProductRepo implements ICartProductRepo {
                 include: [
                     {
                         model: ProductModel, // Assuming you have defined an association
-                        as: 'product', // Alias name if used in associations
+                        as: "product", // Alias name if used in associations
                     },
                     {
                         model: ProductOptionsModel, // Assuming you have defined an association
-                        as: 'variations', // Alias name if used in associations
+                        as: "variations", // Alias name if used in associations
                         include: [
                             {
-                              model: OptionsValueModel,
-                              as: "optionsValue", // Include these fields from the User model
-                              attributes: ["id", "name", "option_id"],
-                              include:[
-                                {
-                                  model: OptionsModel,
-                                  as: 'options',
-                                  attributes:['id', 'name']
-                                }
-                              ]
-                            }
+                                model: OptionsValueModel,
+                                as: "optionsValue", // Include these fields from the User model
+                                attributes: ["id", "name", "option_id"],
+                                include: [
+                                    {
+                                        model: OptionsModel,
+                                        as: "options",
+                                        attributes: ["id", "name"],
+                                    },
+                                ],
+                            },
                         ],
                     },
                 ],
-            })
-            return parseCartProduct(cartProductsWithDetails)
+            });
+            return parseCartProduct(cartProductsWithDetails);
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
+    async clearUserCart(userId: number) {
+        try {
         } catch (error) {
             console.log(error);
             return null;

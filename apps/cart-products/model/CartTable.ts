@@ -2,6 +2,8 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { BaseCartProduct, CartProduct } from "../interface/Cart";
 import RepoProvider from "apps/RepoProvider";
+import { ProductModel } from "apps/product/model/productTable";
+import { ProductOptionsModel } from "apps/product-options/models/productOptionTable";
 
 interface CartProductCreationAttributes extends Optional<CartProduct, "id"> {}
 
@@ -15,16 +17,14 @@ class CartProductModel
     quantity: number;
 
     public static associate() {
-        // CartProductModel.belongsTo(ProductModel, {
-        //     foreignKey: 'product_id',  // Foreign key in CartProductModel
-        //     as: 'product'  // Alias to use in the include
-        // });
-        // CartProductModel.belongsTo(ProductOptionsModel, {
-        //     foreignKey: 'product_option_id',  // Foreign key in CartProductModel
-        //     as: 'variations'  // Alias to use in the include
-        // });
-        // CartProductModel.belongsTo(ProductModel, {as: 'product', foreignKey: 'product_id'})
-        // CartProductModel.belongsTo(ProductOptionsModel, {as: 'product_option', foreignKey: 'product_option_id'})
+        CartProductModel.belongsTo(ProductModel, {
+            foreignKey: 'product_id',  // Foreign key in CartProductModel
+            as: 'product'  // Alias to use in the include
+        });
+        CartProductModel.belongsTo(ProductOptionsModel, {
+            foreignKey: 'product_option_id',  // Foreign key in CartProductModel
+            as: 'variations'  // Alias to use in the include
+        });
     }
 
     public static initModel() {

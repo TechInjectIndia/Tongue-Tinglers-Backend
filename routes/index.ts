@@ -136,8 +136,8 @@ router.use(`${ADMIN}/web-lead`, webLeadRouter); // dont add auth to this url
 router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
 router.use(`${ADMIN}/commission`, auth, commissionRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
-router.use(`${ADMIN}/options`, optionsRouter);
-router.use(`${ADMIN}/options-values`, optionsValuesRouter);
+router.use(`${ADMIN}/options`, auth, optionsRouter);
+router.use(`${ADMIN}/options-values`, auth, optionsValuesRouter);
 router.use(`${ADMIN}/product-options`, auth, productOptionsRouter);
 router.use(`${ADMIN}/products-category`, auth, productsCategoryRouter);
 router.use("/cart-detail", auth, cartDetailRouter);

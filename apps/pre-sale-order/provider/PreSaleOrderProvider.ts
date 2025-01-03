@@ -4,7 +4,10 @@ import { BaseCartProduct, Cart } from "apps/cart-products/interface/Cart";
 import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/DTO/DTO";
 import { ORDER_ITEM_TYPE, PreSaleParsedOrderItem } from "apps/order-items/interface/orderItem";
 import RepoProvider from "apps/RepoProvider";
-import { ParsedCartDetail } from "apps/cart-details/interface/cartDetail";
+import {
+    ParsedCartDetail,
+    ParsedCartProductDetails
+} from "apps/cart-details/interface/cartDetail";
 
 
 
@@ -97,11 +100,11 @@ export class PreSaleOrderProvider implements IPreSaleOrderProvider {
      * @returns A DTO containing the parsed pre-sale order item or an error message.
      */
     private async getPreSaleParsedOrderItemByBaseCartProduct(
-        cartProduct: BaseCartProduct
+        cartProduct: ParsedCartProductDetails
     ): Promise<DTO<PreSaleParsedOrderItem>> {
         // Fetch the product by ID.
-        const product = await RepoProvider.ProductRepo.getById(cartProduct.product_id);
-        if (!product) return getUnhandledErrorDTO(`Product not found: ${cartProduct.product_id}`);
+        const product = await RepoProvider.ProductRepo.getById(cartProduct.product.id);
+        if (!product) return getUnhandledErrorDTO(`Product not found: ${cartProduct.product.id}`);
 
         // Validate product variations.
         if (!product.variations) {
@@ -109,10 +112,10 @@ export class PreSaleOrderProvider implements IPreSaleOrderProvider {
         }
 
         // Find the specific variation by ID.
-        const variation = product.variations.find((p) => p.id === cartProduct.product_option_id);
+        const variation = product.variations.find((p) => p.id === cartProduct.variation.id);
         if (!variation) {
             return getUnhandledErrorDTO(
-                `${product.name} does not contain variation: ${cartProduct.product_option_id}`
+                `${product.name} does not contain variation: ${cartProduct.variation.id}`
             );
         }
 

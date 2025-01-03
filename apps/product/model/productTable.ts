@@ -9,6 +9,7 @@ import {
 // import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
 import RepoProvider from "apps/RepoProvider";
 import { ProductOptionsModel } from "apps/product-options/models/productOptionTable";
+import { UserModel } from "apps/user/models/UserTable";
 // import { ProductOptionsModel } from "../product-options/productOptionsModel";
 // import { ProductOptionsModel } from "";
 
@@ -75,9 +76,9 @@ class ProductModel
         //     as: "product", // Alias for the reverse relationship
         //   });
 
-        // ProductModel.belongsTo(UserModel, {as: 'createdByUser', foreignKey: 'createdBy'})
-        // ProductModel.belongsTo(UserModel, {as: 'updatedByUser', foreignKey: 'updatedBy'})
-        // ProductModel.belongsTo(UserModel, {as: 'deletedByUser', foreignKey: 'deletedBy'})
+        ProductModel.belongsTo(UserModel, {as: 'createdByUser', foreignKey: 'createdBy'})
+        ProductModel.belongsTo(UserModel, {as: 'updatedByUser', foreignKey: 'updatedBy'})
+        ProductModel.belongsTo(UserModel, {as: 'deletedByUser', foreignKey: 'deletedBy'})
 
         // ProductModel.hasMany(CartProductModel, {
         //     foreignKey: 'product_id',

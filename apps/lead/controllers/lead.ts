@@ -213,10 +213,11 @@ export default class LeadController {
                 additionalInfo: "",
                 signedDocs: [],
                 createdBy: user_id,
-                proposalData: undefined,
+                proposalData: existingLead.proposalModalId,
                 assignedUser: null
             };
-            
+
+
             const prospect = await new ContractRepo().create(prospectData, user_id, {transaction});
 
             const firebaseUser = await createFirebaseUser({
@@ -226,12 +227,12 @@ export default class LeadController {
                 password: payload.password,
                 disabled: false,
             });
-            
+
             if (!firebaseUser?.success) {
                 await transaction.rollback();
                 return res
                     .status(400)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, firebaseUser?.uid));
+                    .send(sendResponse(firebaseUser.error, firebaseUser?.uid));
             }
 
             const token = jwt.sign(
@@ -300,7 +301,7 @@ export default class LeadController {
                 );
         } catch (err) {
             console.error(err);
-            await transaction.rollback(); 
+            await transaction.rollback();
             return res
                 .status(500)
                 .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });

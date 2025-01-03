@@ -2,7 +2,7 @@ import { Sequelize } from "sequelize";
 import { CONFIG } from "./environment";
 
 export const sequelize  = new Sequelize(
-  'postgresql://tt_owner:MEF2Rk7AhPdj@ep-lingering-snowflake-a5popb2a.us-east-2.aws.neon.tech/tt',
+  'postgresql://tt_owner:MEF2Rk7AhPdj@ep-lingering-snowflake-a5popb2a.us-east-2.aws.neon.tech/a',
   {
     dialect: 'postgres',
     protocol: 'postgres',

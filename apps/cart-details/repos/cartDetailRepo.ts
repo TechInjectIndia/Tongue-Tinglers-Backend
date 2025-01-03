@@ -3,11 +3,12 @@ import { CartProductModel } from "database/schema/cart-product/cartProductModel"
 import { CartDetailsModel } from "database/schema/cart_details/cartDetailsModel";
 
 import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
-import { ProductModel } from "database/schema/product/productModel";
+// import { ProductModel } from "database/schema/product/productModel";
 import { parseCartDetails } from "../parser/cartDetailsParser";
 import { ICartDetailRepo } from "./ICartDetailRepo";
 import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { OptionsModel } from "apps/options/models/optionTable";
+import { ProductModel } from "apps/product/model/productTable";
 
 
 export class CartDetailRepo implements ICartDetailRepo {

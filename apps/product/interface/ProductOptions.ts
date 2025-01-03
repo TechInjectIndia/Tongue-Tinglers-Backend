@@ -44,10 +44,10 @@ interface ParsedProductOptions {
     images: string;
 }
 
-export const parsedProductOptions = (data: any) => {
+export const parsedProductOptions = (data: any):ParsedProductOptions => {
     return {
         id: data.id,
-        optionsValue: parseOptionsValues(data.optionsValue),
+        option_value: parseOptionsValues(data.optionsValue),
         price: data.price,
         stock: data.stock,
         status: data.status,

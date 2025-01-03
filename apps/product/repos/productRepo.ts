@@ -7,7 +7,7 @@ import {
   PRODUCTS_TYPE,
 } from "../../../interfaces/products";
 import { IProductRepo } from "./IProductRepo";
-import { ProductModel } from "../../../database/schema/product/productModel";
+// import { ProductModel } from "";
 import { Op } from "sequelize";
 import { ProductOptionsModel } from "../../../database/schema/product-options/productOptionsModel";
 import { ParsedProduct } from "../../../interfaces/products"
@@ -18,6 +18,7 @@ import { ProductsCategoryModel } from "../../../database/schema/product-category
 import { UserModel } from "apps/user/models/UserTable";
 import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { OptionsModel } from "apps/options/models/optionTable";
+import { ProductModel } from "../model/productTable";
 
 export class ProductRepo implements IProductRepo {
   async create(product: BaseProduct): Promise<Product | null> {

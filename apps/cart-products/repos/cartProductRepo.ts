@@ -2,12 +2,14 @@ import { CartDetailsModel } from "database/schema/cart_details/cartDetailsModel"
 import { Cart, CartProduct, ParseCart, ParsedCartProduct, UpdateQuantity } from "../interface/Cart";
 import { CartProductModel } from "../model/CartTable";
 import { ICartProductRepo } from "./ICartProductRepo";
-import { ProductModel } from "database/schema/product/productModel";
-import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
+// import { ProductModel } from "database/schema/product/productModel";
+// import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
 import { OptionsModel } from "apps/options/models/optionTable";
 import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { Op } from "sequelize";
 import { parseCartProduct } from "../parser/cartProductParser";
+import { ProductModel } from "apps/product/model/productTable";
+import { ProductOptionsModel } from "apps/product-options/models/productOptionTable";
 
 export class CartProductRepo implements ICartProductRepo {
 

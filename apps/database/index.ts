@@ -22,11 +22,14 @@ import { NotesModel } from "apps/order/models/NotesTable";
 import { OrderModel } from "apps/order/models/OrderTable";
 import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 import { PdiCheckpointModel } from "apps/pdi-checkpoint/model/PdiCheckPointTable";
+import { ProductOptionsModel } from "apps/product-options/models/productOptionTable";
+import { ProductModel } from "apps/product/model/productTable";
 import { QuestionModel } from "apps/questions/models/QuestionModel";
 import { RegionModel } from "apps/region/models/RegionTable";
 import { UserModel } from "apps/user/models/UserTable";;
 import { CartDetailsModel } from "database/schema/cart_details/cartDetailsModel";
-import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
+// import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
+// import { ProductModel } from "database/schema/product/productModel";
 
 
 // Initialize Models
@@ -48,7 +51,6 @@ const models = {
     PdiCheckPoints: PdiCheckpointModel.initModel(),
     IChecklistModel: IChecklistModel.initModel(),
     Variations: ProductOptionsModel.initModel(),
-
     Affiliate: AffiliateModel.initModel(),
     QuestionModel: QuestionModel.initModel(),
     CampaignQuestionModel: CampaignQuestionModel.initModel(),
@@ -56,6 +58,7 @@ const models = {
     CommissionEntityMap: CommissionEntityMapTable.initModel(),
     Commission: CommissionTable.initModel(),
     CartDetails: CartDetailsModel.initModel(),
+    Product: ProductModel.initModel(),
     Order: OrderModel.initModel(),
     Notes: NotesModel.initModel(),
     OrderItem: OrderItemsModel.initModel(),

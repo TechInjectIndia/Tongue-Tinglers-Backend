@@ -55,7 +55,7 @@
     "./server/**/*",
     "./app.ts",
     "src/**/*.ts"
-, "types", "database", "config", "constants", "routes", "libraries"  ],
+, "types", "database", "config", "constants", "routes", "libraries", "static/views/email/constants.ts"  ],
   "exclude": [
     "node_modules"
   ]

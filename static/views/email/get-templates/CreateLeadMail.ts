@@ -1,8 +1,8 @@
 import { DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO } from "../../../../apps/common/models/DTO";
-import Welcome from "../react-templates/CreateLead";
-import { IMail } from "../mail-class/IMailClass";
+import { type IMail } from "../mail-class/IMailClass";
 import { Mail } from "../mail-class/MailClass";
 import { AllMailOptions, MailBodyOptions } from "../models/MailOptions";
+import Finalize from "../react-templates/CreateLead";
 
 interface IEmail extends IMail<null> {}
 
@@ -16,7 +16,7 @@ export class CreateLeadMail extends Mail<null> implements IEmail {
     }
 
     getBody(): MailBodyOptions {
-        const react = Welcome();
+        const react = Finalize();
         return {
             html: null,
             react: react,
@@ -57,6 +57,6 @@ export class CreateLeadMail extends Mail<null> implements IEmail {
         }
     }
     getSubject(): string {
-        return "Welcome to the Tongue Tinglers Family!";
+        return "Finalize Your Details and Join the Tongue Tinglers Revolution";
     }
 }

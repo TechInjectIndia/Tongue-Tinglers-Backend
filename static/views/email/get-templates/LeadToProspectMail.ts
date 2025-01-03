@@ -1,12 +1,12 @@
 import { DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO } from "../../../../apps/common/models/DTO";
-import { type IMail } from "../mail-class/IMailClass";
+import Welcome from "../react-templates/LeadToProspect";
+import { IMail } from "../mail-class/IMailClass";
 import { Mail } from "../mail-class/MailClass";
 import { AllMailOptions, MailBodyOptions } from "../models/MailOptions";
-import Finalize from "../react-templates/Finalize";
 
-interface IWelcomeMail extends IMail<null> {}
+interface IEmail extends IMail<null> {}
 
-export class FinalizeDetailsMail extends Mail<null> implements IWelcomeMail {
+export class LeadToProspectMail extends Mail<null> implements IEmail {
     validator(data: any): string | null {
         return null;
     }
@@ -16,7 +16,7 @@ export class FinalizeDetailsMail extends Mail<null> implements IWelcomeMail {
     }
 
     getBody(): MailBodyOptions {
-        const react = Finalize();
+        const react = Welcome();
         return {
             html: null,
             react: react,
@@ -57,6 +57,6 @@ export class FinalizeDetailsMail extends Mail<null> implements IWelcomeMail {
         }
     }
     getSubject(): string {
-        return "Finalize Your Details and Join the Tongue Tinglers Revolution";
+        return "Welcome to the Tongue Tinglers Family!";
     }
 }

@@ -1,6 +1,5 @@
 import { IMail } from "./IMailClass";
-import { AllMailOptions } from "../models/Mail";
-import { MailBodyOptions } from "../models/MailOptions";
+import { AllMailOptions, MailBodyOptions } from "../models/MailOptions";
 import { DTO } from "../../../../apps/common/models/DTO";
 
 // Define an abstract Mail class with generic types T (response) and R (request body)

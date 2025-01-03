@@ -1,13 +1,8 @@
-import {
-    getHandledErrorDTO,
-    getSuccessDTO,
-    getUnhandledErrorDTO,
-    type DTO,
-} from "../../common/models/DTO";
-import Welcome from "../../templates/react-template/welcome/Welcome";
-import { MailBodyOptions, type IMail } from "../mail-class/IMailClass";
+import { DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO } from "../../../../apps/common/models/DTO";
+import Welcome from "../react-templates/Welcome";
+import { IMail } from "../mail-class/IMailClass";
 import { Mail } from "../mail-class/MailClass";
-import { AllMailOptions } from "../models/Mail";
+import { AllMailOptions, MailBodyOptions } from "../models/MailOptions";
 
 interface IWelcomeMail extends IMail<null> {}
 

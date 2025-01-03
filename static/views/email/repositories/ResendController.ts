@@ -1,3 +1,4 @@
+import { CONFIG } from "config";
 import {
     type DTO,
     getHandledErrorDTO,
@@ -18,7 +19,7 @@ export class ResendController implements IResendController {
     private resendInstance: Resend;
     //
     constructor(apiKey: string) {
-        this.resendInstance = new Resend(apiKey);
+        this.resendInstance = new Resend(CONFIG.RESEND_API_KEY);
     }
 
     async sendMail(mailOptions: AllMailOptions): Promise<DTO<boolean>> {

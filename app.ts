@@ -1,8 +1,6 @@
-import {
-    PaymentLinkPayload,
-} from "./apps/razorpay/models/Razorpay";
+import { PaymentLinkPayload } from "./apps/razorpay/models/Razorpay";
 
-import './apps/database'
+// import './apps/database'
 
 import dotenv from "dotenv";
 import sgMail from "@sendgrid/mail";
@@ -12,7 +10,8 @@ import express from "express";
 import ejs from "ejs";
 import cors from "cors";
 import router from "./routes";
-import { connectToDatabase } from "./config";
+// import { connectToDatabase } from "./config";
+import {WelcomeMail} from "./static/views/email/get-templates/WelcomeMail";
 
 // require("./database/schema");
 import helmet from "helmet";
@@ -27,6 +26,7 @@ const rateLimiter = new RateLimiterMemory({
 });
 import expressSanitizer from "express-sanitizer";
 import RepoProvider from "./apps/RepoProvider";
+import { sendMail } from "libraries/resend";
 
 require("dotenv").config();
 
@@ -48,7 +48,7 @@ BigInt.prototype.toJSON = function () {
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Database connection
-connectToDatabase();
+// connectToDatabase();
 
 // List of urls that can make requests to backend
 const whitelist = ["http://localhost:3001", "http://localhost:3000", "*"];
@@ -104,27 +104,15 @@ server.use(cors(corsOptions)); // Purpose: Provides a middleware for enabling Cr
 server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");
 server.get("/", async (_, res) => {
+    let email: string = "harshdalal.techinject@gmail.com";
 
+    // welcome mail
+    const mailDto = new WelcomeMail().getPayload({}, email);
+    const resp = await sendMail(mailDto);
 
-    const resp: PaymentLinkPayload = {
-        amount: 1000,
-        description: "test",
-        customer: {
-            name: "Nitesh",
-            email: "niteshrghv@gmail.com",
-            contact: "9997016578",
-        },
-        notify: {
-            sms: false,
-            email: false,
-        },
-    };
-
-    const ss = await RepoProvider.razorpayRepo.createPaymentLink(resp);
-
-    res.send(ss);
+    res.send(resp);
 });
-server.use("/api", router);
+// server.use("/api", router);
 
 const PORT = CONFIG.PORT;
 try {

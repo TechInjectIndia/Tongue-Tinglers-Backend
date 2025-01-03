@@ -69,5 +69,6 @@ export {
     Cart,
     ParsedCartProduct,
     parsedVariations,
+    ParsedVariations,
     ParseCart
 }

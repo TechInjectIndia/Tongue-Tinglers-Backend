@@ -11,7 +11,6 @@ import { RegionModel } from "apps/region/models/RegionTable";
 import { AreaModel } from "apps/area/models/AreaTable";
 import { QuestionModel } from "apps/questions/models/QuestionModel";
 import { IQuestion } from "apps/questions/interface/Question";
-
 export class CampaignAdRepo
     implements IBaseRepo<ICampaign, TListFiltersCampaigns> {
     constructor() {
@@ -84,11 +83,7 @@ export class CampaignAdRepo
             }; // Assuming franchiseId is a string or UUID
         }
         if (filters.filters?.regionId) {
-            whereCondition.regionId = { [Op.eq]: filters.filters.regionId }; // Assuming
-            // regionId
-            // is
-            // an
-            // integer
+            whereCondition.regionId = { [Op.eq]: filters.filters.regionId };
         }
 
         if (filters.filters?.fromDate || filters.filters?.toDate) {
@@ -140,6 +135,10 @@ export class CampaignAdRepo
                     as: "organization",
                 },
                 {
+                    model: ProposalModel,
+                    as: "proposals",
+                },
+                {
                     model: QuestionModel,
                     as: "questions",
                     attributes: ["id", "question", "type"],
@@ -151,20 +150,21 @@ export class CampaignAdRepo
     }
 
     public async create(data: TPayloadCampaign): Promise<ICampaign> {
-        console.log('nitesh', data)
-        const { questionList, ...campaignData } = data;
 
-        console.log(questionList);
-
+        const { proposalIds, questionList, ...campaignData } = data;
 
         // Create the campaign
 
         const response = await CampaignAdModel.create(data);
 
         // Associate questions if question IDs are provided
-        // if (questionList && questionList.length > 0) {
-        //     await response.setQuestions(questionList); 
-        // }
+        if (questionList && questionList.length > 0) {
+            await response.setQuestions(questionList);
+        }
+
+        if (proposalIds && proposalIds.length > 0) {
+            await response.setProposals(proposalIds); // Associate proposals with the campaign
+        }
         return response;
 
     }
@@ -197,3 +197,6 @@ export class CampaignAdRepo
         return campaign;
     }
 }
+
+import {ProposalModelRepo} from "../../proposal_model/models";
+import {ProposalModel} from "../../proposal_model/models/ProposalModelTable";

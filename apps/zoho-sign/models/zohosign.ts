@@ -13,9 +13,11 @@ import { ContractRepo } from "../../contracts/models/ContractRepo";
 import { TemplateType } from "types";
 import { TokenModel } from "./TokenModel";
 import { DocumentDetails, FieldType, TemplateList } from "../interface/Token";
+import { MakePaymentMail } from "static/views/email/get-templates/MakePaymentMail";
+import { sendMail } from "libraries/resend";
 
 export class ZohoSignRepo implements IBaseRepo<TemplateType> {
-    constructor() { }
+    constructor() {}
 
     public async handleZohoSignCaptured(contractId, signedDocs) {
         // const signedDocs = contractDetails.signedDocs.map((doc) => {
@@ -30,8 +32,15 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
 
         const res = await new ContractRepo().updateContractDoc(
             contractId,
-            signedDocs
+            signedDocs,
         );
+
+        // @Harsh After sign agreement mail
+        const mailDto = new MakePaymentMail().getPayload(
+            {},
+            res.leadId.email,
+        );
+        await sendMail(mailDto);
 
         console.log("Updated signedDocs:", res);
     }
@@ -71,7 +80,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
             await TokenModel.upsertToken(
                 response.data.access_token,
                 true,
-                "zoho"
+                "zoho",
             );
             return response.data.access_token;
         } catch (error) {
@@ -90,7 +99,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                         where: {
                             tokenType: "zoho",
                         },
-                    }
+                    },
                 );
                 console.warn("Token error detected, refreshing token...");
                 await this.getAccessTokenFromZoho();
@@ -108,7 +117,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
 
     public async sendDocumentUsingTemplate(
         templateId: number,
-        data: any
+        data: any,
     ): Promise<any> {
         return await this.handleTokenError(async () => {
             try {
@@ -162,7 +171,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                         headers: {
                             Authorization: `Zoho-oauthtoken ${accessToken}`,
                         },
-                    }
+                    },
                 );
                 return response.data;
             } catch (error) {
@@ -183,7 +192,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                         headers: {
                             Authorization: `Zoho-oauthtoken ${accessToken}`,
                         },
-                    }
+                    },
                 );
 
                 return {
@@ -197,7 +206,7 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                                     field_category: field.field_category,
                                     default_value: field.default_value,
                                 })),
-                            })
+                            }),
                         ) || [],
                     actions:
                         response.data.templates.actions.map((action: any) => ({

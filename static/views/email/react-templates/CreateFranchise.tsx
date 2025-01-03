@@ -1,7 +1,7 @@
 import React from "react";
 import MailLayout from "./MailLayout";
 
-const Congratulations = () => (
+const CreateFranchise = () => (
     <MailLayout>
         <div className="bg-white rounded-lg p-6">
             <div className="p-0">
@@ -61,4 +61,4 @@ const Congratulations = () => (
     </MailLayout>
 );
 
-export default Congratulations;
+export default CreateFranchise;

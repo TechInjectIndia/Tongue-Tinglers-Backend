@@ -1,13 +1,9 @@
-import {
-    getHandledErrorDTO,
-    getSuccessDTO,
-    getUnhandledErrorDTO,
-    type DTO,
-} from "../../common/models/DTO";
-import MakePayment from "../../templates/react-template/MakePayment/MakePayment";
-import { MailBodyOptions, type IMail } from "../mail-class/IMailClass";
+import { DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/DTO/DTO";
+import { type IMail } from "../mail-class/IMailClass";
 import { Mail } from "../mail-class/MailClass";
-import { AllMailOptions } from "../models/Mail";
+import MakePayment from "../react-templates/MakePayment";
+
+import { AllMailOptions, MailBodyOptions } from "../models/MailOptions";
 
 interface IWelcomeMail extends IMail<null> {}
 

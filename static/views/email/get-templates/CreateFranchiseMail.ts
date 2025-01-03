@@ -1,17 +1,12 @@
-import {
-    getHandledErrorDTO,
-    getSuccessDTO,
-    getUnhandledErrorDTO,
-    type DTO,
-} from "../../common/models/DTO";
-import PaymentReceived from "../../templates/react-template/PaymentReceived/PaymentReceived";
-import { MailBodyOptions, type IMail } from "../mail-class/IMailClass";
+import { IMail } from "../mail-class/IMailClass";
 import { Mail } from "../mail-class/MailClass";
-import { AllMailOptions } from "../models/Mail";
+import { AllMailOptions, MailBodyOptions } from "../models/MailOptions";
+import CreateFranchise from "../react-templates/CreateFranchise";
+import { DTO, getSuccessDTO, getUnhandledErrorDTO, getHandledErrorDTO } from "../../../../apps/common/models/DTO";
 
 interface IWelcomeMail extends IMail<null> {}
 
-export class PaymentReceivedMail extends Mail<null> implements IWelcomeMail {
+export class CreateFranchiseMail extends Mail<null> implements IWelcomeMail {
     validator(data: any): string | null {
         return null;
     }
@@ -21,7 +16,7 @@ export class PaymentReceivedMail extends Mail<null> implements IWelcomeMail {
     }
 
     getBody(): MailBodyOptions {
-        const react = PaymentReceived();
+        const react = CreateFranchise();
         return {
             html: null,
             react: react,
@@ -62,6 +57,6 @@ export class PaymentReceivedMail extends Mail<null> implements IWelcomeMail {
         }
     }
     getSubject(): string {
-        return "Payment Received – Welcome to Tongue Tinglers!";
+        return "Welcome to the Tongue Tinglers Ecosystem!";
     }
 }

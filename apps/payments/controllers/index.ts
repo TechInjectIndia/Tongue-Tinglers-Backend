@@ -1,12 +1,28 @@
-import { CONTRACT_PAYMENT_STATUS, CONTRACT_STATUS, ContractPaymentDetails } from "apps/contracts/interface/Contract";
+import {
+    CONTRACT_PAYMENT_STATUS,
+    CONTRACT_STATUS,
+    ContractPaymentDetails,
+} from "apps/contracts/interface/Contract";
 import { ContractRepo } from "apps/contracts/models/ContractRepo";
 import { LeadRepo } from "apps/lead/models/lead";
 import { PaymentLinkPayload } from "apps/razorpay/models/Razorpay";
 import RepoProvider from "apps/RepoProvider";
 import { CONFIG } from "config";
-import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from "constants/response-messages";
+import {
+    ERROR_MESSAGE,
+    RESPONSE_TYPE,
+    SUCCESS_MESSAGE,
+} from "constants/response-messages";
 import { Request, Response, NextFunction } from "express";
-import { EMAIL_HEADING, EMAIL_TEMPLATE, getEmailTemplate, sendEmail, sendResponse } from "libraries";
+import {
+    EMAIL_HEADING,
+    EMAIL_TEMPLATE,
+    getEmailTemplate,
+    sendEmail,
+    sendMail,
+    sendResponse,
+} from "libraries";
+import { PaymentReceivedMail } from "static/views/email/get-templates/PaymentReceivedMail";
 
 import Razorpay from "razorpay";
 
@@ -32,7 +48,7 @@ export default class PaymentsController {
         const isVerified = validateWebhookSignature(
             JSON.stringify(body),
             webhookSignature,
-            CONFIG.RP_WEBHOOK_SECRET
+            CONFIG.RP_WEBHOOK_SECRET,
         );
         if (isVerified) {
             if (
@@ -44,7 +60,7 @@ export default class PaymentsController {
                 const status = body.payload.payment_link.entity.status;
                 const contractDetails =
                     await new ContractRepo().getContractByPaymentId(
-                        paymentId as string
+                        paymentId as string,
                     );
                 if (contractDetails) {
                     const paymentDetails: ContractPaymentDetails = {
@@ -58,8 +74,15 @@ export default class PaymentsController {
                     await new ContractRepo().updatePaymentStatus(
                         contractDetails.id,
                         contractDetails.payment as unknown as ContractPaymentDetails[],
-                        CONTRACT_STATUS.ACTIVE
+                        CONTRACT_STATUS.ACTIVE,
                     );
+
+                    // TODO @Harsh After Success Payment
+                    const mailDto = new PaymentReceivedMail().getPayload(
+                        {},
+                        contractDetails.leadId.email,
+                    );
+                    await sendMail(mailDto);
                 }
             }
             return res.status(200).send({ message: "Webhook Done" });
@@ -76,24 +99,33 @@ export default class PaymentsController {
             if (!paymentId) {
                 return res
                     .status(400)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Payment ID is required."));
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            "Payment ID is required.",
+                        ),
+                    );
             }
 
-            const paymentDetailsFromRazorpay = await razorpayInstance.payments.fetch(
-                paymentId,
-            );
+            const paymentDetailsFromRazorpay =
+                await razorpayInstance.payments.fetch(paymentId);
             if (!paymentDetailsFromRazorpay) {
                 return res
                     .status(404)
                     .send(
-                        sendResponse(RESPONSE_TYPE.ERROR, "Payment not found in Razorpay."),
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            "Payment not found in Razorpay.",
+                        ),
                     );
             }
-            console.log("Payment Details from Razorpay:", paymentDetailsFromRazorpay);
-
-            const paymentDetailsFromRepo = await new ContractRepo().getPaymentById(
-                paymentId,
+            console.log(
+                "Payment Details from Razorpay:",
+                paymentDetailsFromRazorpay,
             );
+
+            const paymentDetailsFromRepo =
+                await new ContractRepo().getPaymentById(paymentId);
             if (!paymentDetailsFromRepo) {
                 return res
                     .status(404)
@@ -104,7 +136,10 @@ export default class PaymentsController {
                         ),
                     );
             }
-            console.log("Payment Details from Repository:", paymentDetailsFromRepo);
+            console.log(
+                "Payment Details from Repository:",
+                paymentDetailsFromRepo,
+            );
 
             return res.status(200).send(
                 sendResponse(
@@ -129,7 +164,12 @@ export default class PaymentsController {
             if (!contract_id) {
                 return res
                     .status(400)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Contract ID is required."));
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            "Contract ID is required.",
+                        ),
+                    );
             }
 
             console.log("#23223###", contract_id);
@@ -138,7 +178,12 @@ export default class PaymentsController {
             if (!contractDetails) {
                 return res
                     .status(404)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, "Contract not found."));
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            "Contract not found.",
+                        ),
+                    );
             }
 
             const leadDetails = await new LeadRepo().get(
@@ -161,7 +206,7 @@ export default class PaymentsController {
                 customer: {
                     contact: leadDetails.phoneNumber,
                     email: leadDetails.email,
-                    name: (leadDetails.firstName + " " + leadDetails.lastName),
+                    name: leadDetails.firstName + " " + leadDetails.lastName,
                 },
                 description: `${contractDetails.leadId}`,
                 notify: { email: false, sms: false },
@@ -169,14 +214,19 @@ export default class PaymentsController {
 
             console.log("####", paymentLinkPayload);
 
-
-            const link = await RepoProvider.razorpayRepo.createPaymentLink(paymentLinkPayload);
+            const link =
+                await RepoProvider.razorpayRepo.createPaymentLink(
+                    paymentLinkPayload,
+                );
 
             if (!link) {
                 return res
                     .status(500)
                     .send(
-                        sendResponse(RESPONSE_TYPE.ERROR, "Failed to create payment link."),
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            "Failed to create payment link.",
+                        ),
                     );
             }
 
@@ -198,7 +248,7 @@ export default class PaymentsController {
             await new ContractRepo().updatePayment(
                 contract_id,
                 contractPayment,
-                CONTRACT_STATUS.ACTIVE
+                CONTRACT_STATUS.ACTIVE,
             );
 
             try {
@@ -207,7 +257,7 @@ export default class PaymentsController {
                     {
                         email: leadDetails.email,
                         link: link.short_url,
-                    }
+                    },
                 );
 
                 const mailOptions = {
@@ -231,7 +281,11 @@ export default class PaymentsController {
             return res
                 .status(200)
                 .send(
-                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, link),
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.CREATED,
+                        link,
+                    ),
                 );
         } catch (err) {
             console.error("Error generating payment link:", err);

@@ -1,12 +1,12 @@
-import { IMail } from "../mail-class/IMailClass";
+import { type IMail } from "../mail-class/IMailClass";
 import { Mail } from "../mail-class/MailClass";
 import { AllMailOptions, MailBodyOptions } from "../models/MailOptions";
-import Congratulations from "../react-templates/Congratulations";
-import { DTO, getSuccessDTO, getUnhandledErrorDTO, getHandledErrorDTO } from "../../../../apps/common/models/DTO";
+import PaymentReceived from "../react-templates/PaymentReceived";
+import { DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO } from "../../../../apps/common/models/DTO";
 
 interface IWelcomeMail extends IMail<null> {}
 
-export class CongratulationsMail extends Mail<null> implements IWelcomeMail {
+export class PaymentReceivedMail extends Mail<null> implements IWelcomeMail {
     validator(data: any): string | null {
         return null;
     }
@@ -16,7 +16,7 @@ export class CongratulationsMail extends Mail<null> implements IWelcomeMail {
     }
 
     getBody(): MailBodyOptions {
-        const react = Congratulations();
+        const react = PaymentReceived();
         return {
             html: null,
             react: react,
@@ -57,6 +57,6 @@ export class CongratulationsMail extends Mail<null> implements IWelcomeMail {
         }
     }
     getSubject(): string {
-        return "Welcome to the Tongue Tinglers Ecosystem!";
+        return "Payment Received – Welcome to Tongue Tinglers!";
     }
 }

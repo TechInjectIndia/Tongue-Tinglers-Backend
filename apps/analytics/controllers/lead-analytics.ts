@@ -6,7 +6,7 @@ import {
     SUCCESS_MESSAGE,
     ERROR_MESSAGE,
 } from "../../../constants";
-import { AnalyticsModel } from "../models/lead-analytics";
+
 import { CampaignAdRepo } from "../../campaign/models";
 import {
     subDays,
@@ -14,8 +14,9 @@ import {
     eachMonthOfInterval,
     format,
 } from "date-fns";
-import { TLeadFilters } from "../../../types";
+
 import RepoProvider from "../../RepoProvider";
+import { AnalyticsModel } from "../models/lead-analytics";
 
 export default class LeadAnalyticsController {
 
@@ -193,14 +194,14 @@ export default class LeadAnalyticsController {
             }
             console.log("franchiseData.franchiseType", franchiseData);
             leadsList = await new AnalyticsModel().list({
-                offset: skip,
-                limit: size,
+                offset: Number(skip),
+                limit: Number(size),
                 search,
                 sorting,
                 dateRange,
                 franchiseData,
                 franchiseId,
-            } as TLeadFilters);
+            } );
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, leadsList));
 
         } catch (err) {

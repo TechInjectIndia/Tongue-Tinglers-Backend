@@ -1,4 +1,5 @@
-import { BaseProductsCategory, Pagination, ProductsCategory, PRODUCT_CATEGORY_STATUS } from "../../../interfaces/products_category";
+import { Pagination } from "apps/common/models/common"
+import { BaseProductsCategory, PRODUCT_CATEGORY_STATUS, ProductsCategory } from "../interface/Category"
 
 export interface IProductsCategoryRepo {
 

@@ -1,4 +1,5 @@
-import { parsedFranchise } from "../../../interfaces";
+import { parsedFranchise } from "../interface/Franchise";
+import { parseUserToMetaUser } from "apps/user/parser/user-parser";
 
 const parseFranchise = (franchise: any) => {
   const data: parsedFranchise = {
@@ -17,6 +18,7 @@ const parseFranchise = (franchise: any) => {
     organization: franchise.organization,
     affiliate: franchise.affiliate,
     id: franchise.id,
+    assignedUser: franchise.assigneduser ? parseUserToMetaUser(franchise.assigneduser) : null,
     createdBy: franchise.createdByUser,
     updatedBy: franchise.updatedByUser,
     deletedBy: franchise.deletedByUser,

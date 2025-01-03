@@ -1,29 +1,24 @@
-import { Op } from "sequelize";
-import {
-    TContract,
-    TQueryFilters,
-    TContractsList,
-    TContractPayload,
-    TListFiltersContract,
-} from "../../../types";
-import {
-    CONTRACT_PAYMENT_STATUS,
-    CONTRACT_STATUS,
-    ContractPaymentDetails,
-    ITrackable,
-} from "../../../interfaces";
-import { CampaignAdModel, ContractModel, LeadsModel, UserModel } from "../../../database/schema";
-import IContractsController from "../controllers/controller/IContractsController";
-import { getUserName } from "../../common/utils/commonUtils";
-import moment from "moment";
+import { Op, where } from "sequelize";
+import { ContractModel } from "./ContractTable";
+import { LeadsModel } from "apps/lead/models/LeadTable";
+import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
+import { CONTRACT_STATUS, ContractPaymentDetails, ContractsPayload, ParsedContract, PartialContractsUpdate } from "../interface/Contract";
+import { parseContract } from "../parser/contractParser";
+import { UserModel } from "apps/user/models/UserTable";
+import { getUserName } from "apps/common/utils/commonUtils";
+import { TListFiltersContract } from "types/admin";
+import moment from 'moment'
+
+import { OrganizationModel } from "apps/organization/models/OrganizationTable";
+
 
 export class ContractRepo {
-    constructor() {}
+    constructor() { }
 
     // Method to fetch associated contracts
     public async getAssociatedContracts(
         contractIds: string[]
-    ): Promise<ContractModel[]> {
+    ): Promise<ParsedContract[]> {
         if (!contractIds || contractIds.length === 0) {
             return [];
         }
@@ -37,14 +32,17 @@ export class ContractRepo {
             include: [{
                 model: LeadsModel,
                 as: "lead",
-                include:[{
+                include: [{
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
+            },{
+                model: UserModel,
+                as: "assignuser"
             }],
         });
 
-        return contracts;
+        return contracts.map((c)=> parseContract(c));
     }
 
     public async getAssociatedContractsByLeadId(
@@ -59,7 +57,7 @@ export class ContractRepo {
         return contracts ? contracts.map((contract) => contract.id) : null;
     }
 
-    public async getContractByDocId(docId: number): Promise<TContract | null> {
+    public async getContractByDocId(docId: number): Promise<ParsedContract | null> {
         try {
             const contract = await ContractModel.findOne({
                 where: {
@@ -70,14 +68,17 @@ export class ContractRepo {
                 include: [{
                     model: LeadsModel,
                     as: "lead",
-                    include:[{
+                    include: [{
                         model: CampaignAdModel,
                         as: 'campaign_ad'
                     }]
+                },{
+                    model: UserModel,
+                    as: "assignuser"
                 }],
             });
 
-            return contract ? contract : null;
+            return parseContract(contract)
         } catch (error) {
             console.error("Error fetching contract by docId:", error);
             throw error;
@@ -107,7 +108,7 @@ export class ContractRepo {
 
     public async getContractByPaymentId(
         paymentId: string
-    ): Promise<TContract | null> {
+    ): Promise<ParsedContract | null> {
         try {
             const contract = await ContractModel.findOne({
                 where: {
@@ -118,15 +119,17 @@ export class ContractRepo {
                 include: [{
                     model: LeadsModel,
                     as: "lead",
-                    include:[{
+                    include: [{
                         model: CampaignAdModel,
                         as: 'campaign_ad'
                     }]
+                },{
+                    model: UserModel,
+                    as: "assignuser"
                 }],
             });
 
-            return contract;
-            return contract;
+            return parseContract(contract);
         } catch (error) {
             console.error("Error fetching contract by paymentId:", error);
             throw error;
@@ -136,7 +139,7 @@ export class ContractRepo {
     public async updateContractDoc(
         contractId: number,
         docData: any
-    ): Promise<TContract> {
+    ): Promise<ParsedContract> {
         const [affectedCount, updatedContracts] = await ContractModel.update(
             { signedDocs: docData },
             { where: { id: contractId }, returning: true }
@@ -147,31 +150,29 @@ export class ContractRepo {
             return null;
         }
 
-        return updatedContracts[0] as TContract;
+        return parseContract(updatedContracts[0])
     }
 
     public async create(
-        data: TContractPayload,
+        data: ContractsPayload,
         userId: number,
         options?: { transaction?: any }
-    ): Promise<TContract> {
+    ): Promise<ParsedContract> {
         const { transaction } = options || {};
-        console.log('userId: ', userId);
         const user = await UserModel.findByPk(userId);
         console.log('user: ', user);
         if (!user) {
             throw new Error(`User with ID ${userId} not found.`);
         }
-        console.log('data: ', data);
         const response = await ContractModel.create(data, {
             userId: user.id,
             userName: getUserName(user),
             transaction,
         });
-        return response.get();
+        return parseContract(response);
     }
 
-    public async getPaymentById(paymentId: string): Promise<TContract | null> {
+    public async getPaymentById(paymentId: string): Promise<ParsedContract | null> {
         const data = await ContractModel.findOne({
             where: {
                 payment: {
@@ -181,36 +182,42 @@ export class ContractRepo {
             include: [{
                 model: LeadsModel,
                 as: "lead",
-                include:[{
+                include: [{
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
+            },{
+                model: UserModel,
+                as: "assignuser"
             }],
         });
-        return data ? data.get() : null;
+        return data ? parseContract(data) : null;
     }
 
     public async get(
         id: number,
         options?: { transaction?: any }
-    ): Promise<TContract | null> {
+    ): Promise<ParsedContract | null> {
         const { transaction } = options || {};
         const data = await ContractModel.findOne({
             where: { id },
             include: [{
                 model: LeadsModel,
                 as: "lead",
-                include:[{
+                include: [{
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
+            },{
+                model: UserModel,
+                as: "assignuser"
             }],
             transaction,
         });
-        return data ? data : null;
+        return data ? parseContract(data) : null;
     }
 
-    public async list(filters: TListFiltersContract): Promise<TContractsList> {
+    public async list(filters: TListFiltersContract): Promise<any> {
         console.log("contract list ", filters);
         const where: any = {};
         const validStatuses = Object.values(CONTRACT_STATUS).filter(
@@ -236,11 +243,12 @@ export class ContractRepo {
             where.amount = {};
 
             if (filters?.filters.minPrice) {
-                where.amount[Op.gte] = filters?.filters.minPrice; // Minimum amount
+                console.log('filters?.filters.minPrice: ', filters?.filters.minPrice);
+                where.amount[Op.gte] = parseInt(filters?.filters.minPrice); // Minimum amount
             }
 
             if (filters?.filters.maxPrice) {
-                where.amount[Op.lte] = filters?.filters.maxPrice; // Maximum amount
+                where.amount[Op.lte] = parseInt(filters?.filters.maxPrice); // Maximum amount
             }
         }
 
@@ -281,18 +289,25 @@ export class ContractRepo {
             include: [{
                 model: LeadsModel,
                 as: "lead",
-                include:[{
+                include: [{
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
+            }, {
+                model: OrganizationModel,
+                as: 'organization',
+            },{
+                model: UserModel,
+                as: "assignuser"
             }],
         });
-        return { total, data };
+        const parsedData: ParsedContract[] = await Promise.all(data.map((contract) => parseContract(contract)));
+        return { total, data: parsedData }
     }
 
     public async update(
         id: number,
-        data: Partial<TContract>
+        data: Partial<ContractsPayload>
     ): Promise<[affectedCount: number]> {
         const response = await ContractModel.update(data, {
             where: { id },
@@ -303,11 +318,10 @@ export class ContractRepo {
     public async updatePayment(
         contractId: number,
         paymentData: ContractPaymentDetails[],
-        logs: ITrackable[],
         status: CONTRACT_STATUS
     ): Promise<boolean> {
         const [affectedCount] = await ContractModel.update(
-            { payment: paymentData, logs: logs, status: status },
+            { payment: paymentData, status: status },
             { where: { id: contractId } }
         );
 
@@ -320,4 +334,19 @@ export class ContractRepo {
         });
         return response;
     }
+
+    public async updatePartialContract(contractId: number, payload: PartialContractsUpdate): Promise<[affectedCount: number]> {
+        const contract = await ContractModel.findOne({
+            where:{
+                id: contractId
+            }
+        });
+        if (!contract) {
+            throw new Error("Contract not found");
+            }
+        contract.set(payload);
+        await contract.save();
+        return [1];
+    }
 }
+

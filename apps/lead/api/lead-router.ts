@@ -629,12 +629,12 @@ router.put(
     validateAssignLeadBody,
     LeadController.assignLeadToAdminUser
 );
-router.get(
-    "/get-status/:id",
-    hasPermission("lead", "update"),
-    validateLeadStatusBody,
-    LeadController.getLeadStatus
-);
+// router.get(
+//     "/get-status/:id",
+//     hasPermission("lead", "update"),
+//     validateLeadStatusBody,
+//     LeadController.getLeadStatus
+// );
 router.post(
     "/convert-lead",
     hasPermission("lead", "update"),

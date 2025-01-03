@@ -1,11 +1,9 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../../../config";
-import {
-    ENTITY_TYPE_AGREEMENT,
-    IBaseAgreementDocs,
-} from "../../../interfaces/agreement-docs";
-import { UserModel } from "../../../database/schema/user/user.model";
-import RepoProvider from "../../RepoProvider";
+
+import RepoProvider from "apps/RepoProvider";
+import { ENTITY_TYPE_AGREEMENT, IBaseAgreementDocs } from "../interface/AgreementDocs";
+import { UserModel } from "apps/user/models/UserTable";
+import { sequelize } from "config";
 
 interface AgreementDocsCreationAttributes
     extends Optional<IBaseAgreementDocs, "id"> {}

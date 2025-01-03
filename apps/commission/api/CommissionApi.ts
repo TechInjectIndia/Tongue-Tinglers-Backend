@@ -1,5 +1,5 @@
 import * as express from "express";
-import { validateCreateCommission, validateCreateCommissionMapEntry, validateDeleteCommission, validateGetCommissionById, validateSearchCommission, validateUpdateCommission } from "../validations/CommissionValidations";
+import { validateCreateCommission, validateCreateCommissionMapEntry, validateDeleteCommission, validateGetCommissionById, validateSearchCommission, validateUpdateCommission, validateUpdateCommissionEntityStatus } from "../validations/CommissionValidations";
 import { ControllerProvider } from "../../common/utils/ControllerProvider";
 import { auth } from '../../../middlewares/auth';
 
@@ -61,5 +61,6 @@ commissionRouter.get("/commission-mappings", auth, ControllerProvider.commission
 
 commissionRouter.get("/:id", auth, validateGetCommissionById, ControllerProvider.commissionController.getById);
 
+commissionRouter.put("/update-commission-entity-status/:id", auth, validateGetCommissionById,validateUpdateCommissionEntityStatus, ControllerProvider.commissionController.updateCommisionEntityStatus)
 
 export { commissionRouter };

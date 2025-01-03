@@ -1,8 +1,9 @@
 import { Op } from "sequelize";
 import { TListFilters } from "../../../types"; // Adjust imports according to your types
-import { IPdiList, TIPdiListList, TIPdiListPayload, TListFiltersIPdiList } from "../../../interfaces/pdi"; // Adjust imports according to your types
-import { PdiModel } from "../../../database/schema/franchise/pdi"; // Adjust the import path based on your project structure
+ // Adjust the import path based on your project structure
 import IBaseRepo from '../controllers/controller/pdiController';
+import { IPdiList, TIPdiListList, TIPdiListPayload, TListFiltersIPdiList } from "apps/pdi-checklist/interface/Pdi";
+import { PdiModel } from "./PdiTable";
 
 export class PdiChecklistRepo implements IBaseRepo<IPdiList, TListFiltersIPdiList> {
     constructor() { }

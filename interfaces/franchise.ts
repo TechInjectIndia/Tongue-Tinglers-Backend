@@ -1,12 +1,9 @@
 import { Address, BaseAddress } from "../types";
-import {
-  BaseMeta,
-  BaseMetaUsers,
-  ParsedMeta,
-} from "../database/schema/base/Base";
+
 import { BaseSocialMedia, parsedAffiliate, SocialMediaDetails } from "./leads";
 import { parsedRegion, ParsedUser } from ".";
 import { ParsedOrganization } from "./organization";
+import { BaseMeta, BaseMetaUsers, ParsedMeta } from "apps/common/models/Base";
 
 interface BaseFranchise {
   pocName: string;

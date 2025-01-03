@@ -1,13 +1,10 @@
 const { Op } = require("sequelize");
-import {
-    ExtraFields,
-    TPayloadFranchiseModel,
-} from "../../../interfaces";
-import {
-    TListFilters,
-} from "../../../types";
-import { ExtraFieldsModel } from "../../../database/schema"; // Ensure this points to the correct model
+import { ExtraFields } from 'apps/lead/interface/lead';
+ // Ensure this points to the correct model
 import IExtraFieldController from '../controllers/controller/IExtraFieldController';
+import { TListFilters } from 'apps/common/models/common';
+import { ExtraFieldsModel } from 'apps/lead/models/ExtraFieldTable';
+import { TPayloadFranchiseModel } from '../interface/franchiseModel';
 
 export class ExtraFieldRepo implements IExtraFieldController<ExtraFields, TListFilters> {
     constructor() { }

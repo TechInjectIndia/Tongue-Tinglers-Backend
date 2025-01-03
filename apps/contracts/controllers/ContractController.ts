@@ -15,24 +15,22 @@ import {
 import { ContractRepo } from "../models/ContractRepo";
 import { LeadRepo } from "../../lead/models/lead";
 import { TContractPayload } from "../../../types";
+import { ContractsPayload } from "../interface/Contract";
+import { CampaignAdRepo } from "apps/campaign/models";
+import { CONFIG, sequelize } from "config";
+import { FRANCHISE_STATUS, FranchiseDetails } from "apps/franchise/interface/Franchise";
+import RepoProvider from "apps/RepoProvider";
+import { COMMISSION_PAID_STATUS } from "apps/commission/model/CommissionEntityMapTable";
 
-import { CampaignAdRepo } from "../../campaign/models";
-import { CONFIG } from "../../../config/environment";
-import { FRANCHISE_STATUS, FranchiseDetails, } from "../../../interfaces";
-import RepoProvider from "../../RepoProvider";
-import {
-    COMMISSION_PAID_STATUS
-} from "../../../database/schema/commission/CommissionAndEntityMappingTable";
-import { sequelize } from "../../../config";
 
 export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             const user_id = parseInt(get(req, "user_id"));
             if (!user_id) {
-                throw Error('Missing user_id or isNaN');
+                throw Error("Missing user_id or isNaN");
             }
-            const newContract: TContractPayload = req.body;
+            const newContract: ContractsPayload = req.body;
             if (newContract.leadId) {
                 const leadExists = await new LeadRepo().get(newContract.leadId);
                 if (!leadExists) {
@@ -41,16 +39,21 @@ export default class ContractController {
                     });
                 }
             }
-            newContract.createdBy = user_id
-            const contract = await new ContractRepo().create(newContract, user_id);
+            newContract.createdBy = user_id;
+            const contract = await new ContractRepo().create(
+                newContract,
+                user_id
+            );
             return res
                 .status(201)
                 .send(
-                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED,
-                        contract)
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.CREATED,
+                        contract
+                    )
                 );
-        }
-        catch (error) {
+        } catch (error) {
             console.log(error);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -64,28 +67,26 @@ export default class ContractController {
             const skip = get(req?.query, "skip", 1);
             const search = get(req?.query, "search", "");
             const trashOnly = get(req?.query, "trashOnly", "");
-            let sorting = get(req?.query, "sorting", "id DESC");
+            let sorting = get(req?.query, "sorting", "id DESC"); //todo test id????
             sorting = sorting.toString().split(" ");
 
             const status = get(req.query, "status");
             const proposal = get(req.query, "proposal");
-            const minPice = get(req.query, "minPrice");
+            const minPrice = get(req.query, "minPrice");
             const maxPrice = get(req.query, "maxPrice");
             const dueDate = get(req.query, "dueDate");
             const zohoTemplate = get(req.query, "zohoTemplate");
             const region = get(req.query, "region");
             const assignee = get(req.query, "assignee");
-
             const filters: any = {};
             if (status) filters.status = status;
-            if (proposal) filters.proposal = proposal
-            if (minPice) filters.minPice = minPice
-            if (maxPrice) filters.maxPrice = maxPrice
-            if (dueDate) filters.dueDate = dueDate
-            if (zohoTemplate) filters.zohoTemplate = zohoTemplate
-            if (region) filters.region = region
-            if (assignee) filters.assignee = assignee
-
+            if (proposal) filters.proposal = proposal;
+            if (minPrice) filters.minPrice = minPrice;
+            if (maxPrice) filters.maxPrice = maxPrice;
+            if (dueDate) filters.dueDate = dueDate;
+            if (zohoTemplate) filters.zohoTemplate = zohoTemplate;
+            if (region) filters.region = region;
+            if (assignee) filters.assignee = assignee;
             const Products = await new ContractRepo().list({
                 offset: skip as number,
                 limit: size as number,
@@ -98,11 +99,13 @@ export default class ContractController {
             return res
                 .status(200)
                 .send(
-                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED,
-                        Products)
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        Products
+                    )
                 );
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err);
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
@@ -113,23 +116,26 @@ export default class ContractController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = parseInt(get(req.params, "id"));
-            if (isNaN(id)) throw Error('Missing id or isNaN');
+            if (isNaN(id)) throw Error("Missing id or isNaN");
 
             const contract = await new ContractRepo().get(id);
             if (!contract) {
                 return res
                     .status(404)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR,
-                        "Contract not found"));
+                    .send(
+                        sendResponse(RESPONSE_TYPE.ERROR, "Contract not found")
+                    );
             }
             return res
                 .status(200)
                 .send(
-                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED,
-                        contract)
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        contract
+                    )
                 );
-        }
-        catch (error) {
+        } catch (error) {
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -139,18 +145,21 @@ export default class ContractController {
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = parseInt(get(req.params, "id"));
-            if (isNaN(id)) throw Error('Missing id or isNaN');
+            if (isNaN(id)) throw Error("Missing id or isNaN");
 
             const existingContract = await new ContractRepo().get(id);
             if (!existingContract) {
                 return res
                     .status(404)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR,
-                        "Contract not found"));
+                    .send(
+                        sendResponse(RESPONSE_TYPE.ERROR, "Contract not found")
+                    );
             }
 
-            const updatedContract = await new ContractRepo().update(id,
-                req.body);
+            const updatedContract = await new ContractRepo().update(
+                id,
+                req.body
+            );
             return res
                 .status(200)
                 .send(
@@ -160,8 +169,7 @@ export default class ContractController {
                         updatedContract
                     )
                 );
-        }
-        catch (error) {
+        } catch (error) {
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -174,23 +182,28 @@ export default class ContractController {
             if (!Array.isArray(ids) || ids.length === 0) {
                 return res
                     .status(400)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR,
-                        "Invalid ids provided"));
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            "Invalid ids provided"
+                        )
+                    );
             }
 
             const deleted = await new ContractRepo().delete(ids);
             if (!deleted) {
                 return res
                     .status(404)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR,
-                        "Contracts not found"));
+                    .send(
+                        sendResponse(RESPONSE_TYPE.ERROR, "Contracts not found")
+                    );
             }
             return res
                 .status(200)
-                .send(sendResponse(RESPONSE_TYPE.SUCCESS,
-                    SUCCESS_MESSAGE.DELETED));
-        }
-        catch (error) {
+                .send(
+                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.DELETED)
+                );
+        } catch (error) {
             return res.status(500).send({
                 message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
             });
@@ -200,7 +213,7 @@ export default class ContractController {
     static async updateOrganization(req: Request, res: Response) {
         try {
             const id = parseInt(get(req.params, "id"));
-            if (isNaN(id)) throw Error('Missing id or isNaN');
+            if (isNaN(id)) throw Error("Missing id or isNaN");
 
             const body = req.body;
             const organizationId = body.organizationId;
@@ -219,8 +232,7 @@ export default class ContractController {
                 existingContract.organizationId = organizationId;
                 await new ContractRepo().update(id, organizationId);
             }
-        }
-        catch (err) {
+        } catch (err) {
             return res
                 .status(500)
                 .send(
@@ -233,9 +245,11 @@ export default class ContractController {
     }
 
     static async convert(req: Request, res: Response, next: NextFunction) {
+        const transaction = await sequelize.transaction(); // Start a transaction
+
         try {
             const id = get(req.body, "id", 0);
-            const user_id = parseInt(get(req, "user_id"))
+            const user_id = parseInt(get(req, "user_id"));
             const address = get(req.body, "address", null);
             const mappings = get(req.body, "mappings", []);
 
@@ -253,17 +267,16 @@ export default class ContractController {
 
             const paymentId =
                 existingContract.payment && existingContract.payment.length > 0
-                    ? existingContract.payment[existingContract.payment.length -
-                        1]
-                        .paymentId
+                    ? existingContract.payment[
+                          existingContract.payment.length - 1
+                      ].paymentId
                     : null;
             const signId =
                 existingContract.signedDocs &&
-                    existingContract.signedDocs.length > 0
-                    ?
-                    existingContract.signedDocs[existingContract.signedDocs.length -
-                        1]
-                        .docId
+                existingContract.signedDocs.length > 0
+                    ? existingContract.signedDocs[
+                          existingContract.signedDocs.length - 1
+                      ].docId
                     : null;
 
             const franchiseDetailsData: FranchiseDetails = {
@@ -282,8 +295,9 @@ export default class ContractController {
                 paymentIds: [String(signId)],
                 status: FRANCHISE_STATUS.Active,
                 establishedDate: new Date(),
-                organizationId: existingContract.organizationId,
+                organizationId: existingContract.organizationId ? existingContract.organizationId.id : null,
                 affiliateId: 0,
+                assignedUser: null
             };
 
             console.log("franchise details");
@@ -291,7 +305,9 @@ export default class ContractController {
             console.log("_____");
 
             const resData = await RepoProvider.franchise.create(
-                franchiseDetailsData, user_id);
+                franchiseDetailsData,
+                user_id
+            );
             console.log("res", resData);
 
             const entries: any[] = [];
@@ -337,24 +353,53 @@ export default class ContractController {
                     mailOptions.subject,
                     mailOptions.templateParams
                 );
-            }
-            catch (emailError) {
+            } catch (emailError) {
                 console.error("Error sending email:", emailError);
             }
 
             return res
                 .status(200)
                 .send(
-                    sendResponse(RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FRANCHISE_CREATED)
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FRANCHISE_CREATED
+                    )
                 );
-        }
-        catch (err) {
+        } catch (err) {
             console.error(err);
+            await transaction.rollback();
             return res
                 .status(500)
                 .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
 
+    static async updatePartialContract(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const id = parseInt(get(req.params, "id"));
+            const user_id = parseInt(get(req, "user_id"));
+            if (isNaN(id)) throw Error("Missing id or isNaN");
+            let payload = req.body;
+            const updatedContract =
+                await new ContractRepo().updatePartialContract(id, {...payload, updatedBy: user_id});
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPDATED,
+                        updatedContract
+                    )
+                );
+        } catch (error) {
+            console.error(error);
+            return res
+                .status(500)
+                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+        }
+    }
 }

@@ -11,7 +11,7 @@ import {
   TListFiltersRegions,
 } from "../types";
 import IAddress from "./address/controllers/IAddressController";
-import { AddressRepo } from "./address/models/AddressRepo";
+import { AddressRepo } from "./address/repositories/AddressRepo";
 import IRegionRepo from "./region/controllers/controller/IRegionController";
 import { IRegion, SocialMediaDetails } from "../interfaces";
 import { RegionRepo } from "./region/models/RegionRepo";
@@ -36,15 +36,11 @@ import { ProductsCategoryRepo } from "./products-category/repos/productsCategory
 import { RazorpayRepo } from "./razorpay/Repos/RazorapayRepo";
 import { IRazorpayRepo } from "./razorpay/Repos/IRazorpayRepo";
 import { IOrderRepo } from "./order/repos/IOrderRepo";
-import { OrderRepo } from "./order/repos/orderRepo";
 import { ILogsRepo } from "./logs/repos/ILogsRepo";
 import { LogsRepo } from "./logs/repos/LogsRepo";
 import { ICommissionRepo } from "./commission/repositories/ICommissionRepo";
 import { PostgresCommissionRepo } from "./commission/repositories/PostgresCommissionRepo";
-import { AdminRepo } from './user/models/user';
-import {IPreSaleOrderProvider} from "./pre-sale-order/provider/IPreSaleOrderProvider"
-import {PreSaleOrderProvider} from "./pre-sale-order/provider/PreSaleOrderProvider"
-
+import { OrderRepo } from './order/repos/orderRepo';
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -64,9 +60,7 @@ export default class RepoProvider {
   private static _logsRepo: ILogsRepo;
   static _commissionRepo: ICommissionRepo;
   private static _documentRepo: IDocumentRepo;
-  private static _agreementDocRepo: IAgreementDocRepo;
-  private static _adminRepo:AdminRepo;
-  private static _preSaleProvider:IPreSaleOrderProvider
+  private static _agreementDocRepo: IAgreementDocRepo
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -193,19 +187,5 @@ export default class RepoProvider {
       this._agreementDocRepo = new AgreementDocRepo();
     }
     return this._agreementDocRepo;
-  }
-
-  static get adminRepo() {
-    if (!this._adminRepo) {
-      this._adminRepo = new AdminRepo();
-    }
-    return this._adminRepo;
-  }
-
-  static get getPreSaleOrderProvider() {
-    if (!this._preSaleProvider) {
-      this._preSaleProvider = new PreSaleOrderProvider();
-    }
-    return this._preSaleProvider;
   }
 }

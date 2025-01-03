@@ -1,4 +1,4 @@
-import { UserModel } from '../database/schema/user/user.model';
+import { UserModel } from "apps/user/models/UserTable";
 
 export const getUserByFirebaseUid = async (firebaseUid: string) => {
     return await UserModel.findOne({

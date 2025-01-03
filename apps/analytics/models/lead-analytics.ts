@@ -1,9 +1,9 @@
+import { CampaignAdRepo } from "apps/campaign/models";
+import { TLeadFilters, TLeadsList } from "apps/lead/interface/lead";
+import { LeadsModel } from "apps/lead/models/LeadTable";
+import { parseLead } from "apps/lead/parser/leadParser";
+import RepoProvider from "apps/RepoProvider";
 import { Op, Sequelize } from "sequelize";
-import { LeadsModel } from "../../../database/schema";
-import { CampaignAdRepo } from "../../campaign/models";
-import { TLeadFilters } from "../../../types";
-import { TLeadsList } from "../../../types";
-import RepoProvider from "../../RepoProvider";
 
 export class AnalyticsModel {
     constructor() {
@@ -11,58 +11,6 @@ export class AnalyticsModel {
 
     public async list(filters: TLeadFilters): Promise<TLeadsList> {
         const whereConditions: any = {};
-
-        let campaignIds: number[] = [];
-
-        if (filters.franchiseId) {
-
-            const franchiseData = await RepoProvider.franchise.getById(Number(filters.franchiseId));
-
-            if (!franchiseData) {
-                throw new Error("Franchise data not found.");
-            }
-
-            switch (franchiseData) {
-                // case FranchiseType.SUPER_FRANCHISE:
-                //     const campaignDataSuper = await new CampaignAdRepo().getCampaignsByFranchiseId(Number(filters.franchiseId));
-                //     campaignIds = campaignDataSuper.map(campaign => campaign.id);
-                // case FranchiseType.FRANCHISE:
-                //     const campaignDataFranchise = await new CampaignAdRepo().getCampaignsByFranchiseId(Number(filters.franchiseId));
-                //     campaignIds = campaignDataFranchise.map(campaign => campaign.id);
-                //     break;
-                default:
-                    throw new Error("Invalid franchise type.");
-            }
-
-            if (campaignIds.length === 0) {
-                throw new Error("No campaigns found for this franchise.");
-            }
-
-            // Add campaign ID filtering to where options
-            whereConditions.campaignId = { [Op.in]: campaignIds };
-        } else {
-            switch (filters.franchiseData.franchiseType) {
-                // case FranchiseType.MASTER_FRANCHISE:
-                //     const campaignDataMaster = await CampaignAdModel.findAll();
-                //     campaignIds = campaignDataMaster.map(campaign => campaign.id);
-                // case FranchiseType.SUPER_FRANCHISE:
-                //     const campaignDataSuper = await new CampaignAdRepo().getCampaignsByFranchiseId(filters.franchiseData.id);
-                //     campaignIds = campaignDataSuper.map(campaign => campaign.id);
-                // case FranchiseType.FRANCHISE:
-                //     const campaignDataFranchise = await new CampaignAdRepo().getCampaignsByFranchiseId(filters.franchiseData.id);
-                //     campaignIds = campaignDataFranchise.map(campaign => campaign.id);
-                //     break;
-                default:
-                    throw new Error("Invalid franchise type.");
-            }
-
-            if (campaignIds.length === 0) {
-                throw new Error("No campaigns found for this franchise.");
-            }
-
-            // Add campaign ID filtering to where options
-            whereConditions.campaignId = { [Op.in]: campaignIds };
-        }
 
         // Search filter
         if (filters.search) {
@@ -91,9 +39,11 @@ export class AnalyticsModel {
             where: whereConditions,
         });
 
-        return { total, data } as TLeadsList;
-    }
+        const dd = data.map((d)=>(parseLead(d.toJSON())))
 
+        return { total, data:dd };
+    }
+    
     public async getLeadStatusByCampaignIdsAndDateRange(campaignIds: string[], startDate: Date, endDate: Date): Promise<any> {
         return await LeadsModel.findAll({
             attributes: [

@@ -1,6 +1,5 @@
-import { BaseMeta } from "../database/schema/base/Base";
-import { ParsedOptionsValue, parseOptionsValues } from "./optionsValue";
-import { ParsedUser } from "./user";
+import { BaseMeta } from "apps/common/models/Base"
+import { ParsedOptionsValue, parseOptionsValues } from "../apps/optionsValue/interface/optionValue"
 
 interface BaseProductOptions {
     id: any
@@ -37,7 +36,6 @@ interface ProductOptionsList<T> {
 
 interface ParsedProductOptions {
     id: number;
-    product_id: number;
     option_value: ParsedOptionsValue;
     price: number;
     stock: number;
@@ -45,10 +43,10 @@ interface ParsedProductOptions {
     images: string;
 }
 
-export const parsedProductOptions = (data: any) => {
+export const parsedProductOptions = (data: any):ParsedProductOptions => {
     return {
         id: data.id,
-        optionsValue: parseOptionsValues(data.optionsValue),
+        option_value: parseOptionsValues(data.optionsValue),
         price: data.price,
         stock: data.stock,
         status: data.status,

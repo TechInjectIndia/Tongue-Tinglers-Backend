@@ -1,4 +1,5 @@
-import { BaseMeta, BaseMetaUsers } from "../database/schema/base/Base";
+
+import { BaseMeta, BaseMetaUsers } from "apps/common/models/Base";
 import { PRODUCT_STATUS } from "./products";
 import { ParsedUser } from "./user";
 

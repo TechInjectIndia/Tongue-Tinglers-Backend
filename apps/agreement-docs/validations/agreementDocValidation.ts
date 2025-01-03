@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
-import { ENTITY_TYPE_AGREEMENT } from "../../../interfaces/agreement-docs";
+import { ENTITY_TYPE_AGREEMENT } from "../interface/AgreementDocs";
+
 
 const createAgreementDocSchema = Joi.object({
     agreement_id: Joi.string().required().messages({

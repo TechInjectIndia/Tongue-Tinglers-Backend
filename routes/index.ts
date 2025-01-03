@@ -10,14 +10,17 @@ import { sendEmail } from "../libraries";
 const router = Router();
 
 const ADMIN = "/admin";
+const FRANCHISE = "/franchise";
+const CUSTOMER = "/customer";
+const GUEST = "/guest";
+const ORDERS = '/v1/orders';
 
 import { auth } from "../middlewares/auth";
 import authRouter from "../apps/auth/api";
 
 router.use(`/auth`, authRouter);
 
-import rolesRouter from "../apps/user/api/roles";
-import permissionsRouter from "../apps/user/api/permissions";
+
 import adminUsersRouter from "../apps/user/api/user";
 
 import leadRouter from "../apps/lead/api/lead-router";
@@ -27,27 +30,23 @@ import followUpsRouter from "../apps/lead/api/followups";
 import profileRouter from "../apps/user/api/profile";
 import settingsRouter from "../apps/user/api/settings";
 import paymentsRouter from "../apps/payments/api";
-import paymentsOrdersRouter from "../apps/payments/api/orderPayment";
-import reviewsRouter from "../apps/reviews/api/reviews";
-import testimonialsRouter from "../apps/testimonials/api/testimonials";
-import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics";
-import ordersAnalyticsRouter
-    from "../apps/analytics/api/admin/orders-analytics";
-import retortAnalyticsRouter
-    from "../apps/analytics/api/admin/retort-analytics";
-import menuRouter from "../apps/menu/api/menu";
-import retortProductRouter from "../apps/retort/api/products";
-import retortProductCategoryRouter from "../apps/retort/api/category";
-import retortOrderRouter from "../apps/retort/api/orders";
-import campaignRouter from "../apps/crm/api/campaign";
+
+
+
+
+
+
+// import retortProductRouter from "../apps/retort/api/products";
+// import retortProductCategoryRouter from "../apps/retort/api/category";
+// import retortOrderRouter from "../apps/retort/api/orders";
+// import campaignRouter from "../apps/crm/api/campaign";
 import testUsersRouter from "../apps/test-user/api/user";
 import contractsRouter from "../apps/contracts/api";
 import questionRouter from "../apps/questions/api";
 import campaignAdRouter from "../apps/campaign/api";
-import campaignSubmissionsRouter
-    from "../apps/campaign/api/campaignSubmissionsApi";
+
 import filesRouter from "../apps/files/api/files";
-import galleryRouter from "../apps/gallery/api/gallery";
+// import galleryRouter from "../apps/gallery/api/gallery";
 
 import pdiChecklistRouter from "../apps/pdi-checklist/api/pdiChecklist";
 import IChecklistRouter from "../apps/ichecklist/api/iChecklist";
@@ -58,12 +57,15 @@ import quickActionEmailRouter from "../apps/quick-actions/api/email";
 import quickActionWhatsappRouter from "../apps/quick-actions/api/whatsapp";
 import regionRouter from "../apps/region/api/index";
 import areaRouter from "../apps/area/api/index";
-import shippingHistory from "../apps/ecommerce/api/shippingHistoryApi";
 
-import vendorRouter from "../apps/vendor/api/vendorApi";
+
+// import vendorRouter from "../apps/vendor/api/vendorApi";
 import frachiseRouter from "../apps/franchise/api/franchise";
 import { commissionRouter } from "../apps/commission/api/CommissionApi";
 import migrationRouter from "../migrations/routes/migrateRoute";
+import OrderV1Routes from '../apps/checkout/api/checkoutApi'
+
+/* organization router */
 import organizationRouter from "../apps/organization/api/index";
 import productRouter from "../apps/product/api/productApi";
 import optionsRouter from "../apps/options/api/optionsApi";
@@ -75,48 +77,48 @@ import cartDetailRouter from "../apps/cart-details/api/cartDetailApi";
 import orderItemRouter from "../apps/order-items/api/orderItemApi";
 import productsCategoryRouter
     from "../apps/products-category/api/productsCategoryApi";
-import OrderRouter from "../apps/order/api/orderApi";
+// import OrderRouter from "../apps/order/api/orderApi";
 import documentRouter from "../apps/documents/api/documentApi";
 import agreementDocRouter from "../apps/agreement-docs/api/agreementDocApi"
-import petPoojaApiRouter from "../apps/pet-pooja/api/petpooja";
+// import petPoojaApiRouter from "../apps/pet-pooja/api/petpooja";
 import zohoSignApiRouter from "../apps/zoho-sign/api/zohosign";
 import {
     transactionRouter,
 } from "../apps/payment-transaction/api/TransactionRouter";
 
-
+import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics"
 
 
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUsersRouter);
-router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
-router.use(`${ADMIN}/roles`, auth, rolesRouter);
-router.use(`${ADMIN}/testimonials`, auth, testimonialsRouter);
-router.use(`${ADMIN}/reviews`, auth, reviewsRouter);
+// router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
+// router.use(`${ADMIN}/roles`, auth, rolesRouter);
+
+
 router.use(`${ADMIN}/profile`, auth, profileRouter);
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
 router.use(`/payments`, paymentsRouter); // dont add auth to this url
-router.use(`/order-payment`, paymentsOrdersRouter); // dont add auth to this url
+
 router.use(`${ADMIN}/analytics/leads`, auth, leadsAnalyticsRouter);
-router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter);
-router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter);
-router.use(`${ADMIN}/menu`, auth, menuRouter);
+// router.use(`${ADMIN}/analytics/orders`, auth, ordersAnalyticsRouter);
+// router.use(`${ADMIN}/analytics/retort-supply`, auth, retortAnalyticsRouter);
+// router.use(`${ADMIN}/menu`, auth, menuRouter);
 
 router.use(`${ADMIN}/followup`, auth, followUpsRouter);
-router.use(`${ADMIN}/retort/product`, auth, retortProductRouter);
-router.use(`${ADMIN}/retort/category`, auth, retortProductCategoryRouter);
-router.use(`${ADMIN}/retort/order`, auth, retortOrderRouter);
-router.use(`${ADMIN}/crm`, auth, campaignRouter);
+// router.use(`${ADMIN}/retort/product`, auth, retortProductRouter);
+// router.use(`${ADMIN}/retort/category`, auth, retortProductCategoryRouter);
+// router.use(`${ADMIN}/retort/order`, auth, retortOrderRouter);
+// router.use(`${ADMIN}/crm`, auth, campaignRouter);
 router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/question`, auth, questionRouter);
-router.use(`${ADMIN}/campaign-ad`, campaignAdRouter);
+router.use(`${ADMIN}/campaign-ad`,auth , campaignAdRouter);
 
 router.use(`/campaign-ad`, campaignAdRouter);
 
-router.use(`${ADMIN}/campaign-submissions`, auth, campaignSubmissionsRouter);
+// router.use(`${ADMIN}/campaign-submissions`, auth, campaignSubmissionsRouter);
 router.use(`${ADMIN}/files`, auth, filesRouter);
-router.use(`${ADMIN}/gallery`, auth, galleryRouter);
+// router.use(`${ADMIN}/gallery`, auth, galleryRouter);
 router.use(`${ADMIN}/pdi-checklist`, auth, pdiChecklistRouter);
 router.use(`${ADMIN}/checkpoint`, auth, pdiCheckPointRouter);
 router.use(`${ADMIN}/checklist`, auth, IChecklistRouter);
@@ -129,8 +131,8 @@ router.use(`${ADMIN}/contracts`, auth, contractsRouter);// dont add auth to this
 router.use(`${ADMIN}/open-contracts`, contractsRouter);// dont add auth to this url
 router.use(`${ADMIN}/lead`, auth, leadRouter);
 router.use(`${ADMIN}/web-lead`, webLeadRouter); // dont add auth to this url
-router.use(`${ADMIN}/vendors`, auth, vendorRouter);
-router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
+// router.use(`${ADMIN}/vendors`, auth, vendorRouter);
+// router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
 router.use(`${ADMIN}/commission`, auth, commissionRouter);
 router.use(`${ADMIN}/product`, auth, productRouter);
@@ -140,13 +142,14 @@ router.use(`${ADMIN}/product-options`, auth, productOptionsRouter);
 router.use(`${ADMIN}/products-category`, auth, productsCategoryRouter);
 router.use("/cart-detail", auth, cartDetailRouter);
 router.use("/order-items", auth, orderItemRouter);
-router.use("/order", auth, OrderRouter);
+// router.use("/order", auth, OrderRouter);
+router.use(ORDERS, auth, OrderV1Routes);
 router.use(`/cart`, auth, cartProductRouter);
 router.use("/migration", migrationRouter);
 router.use("/document", auth, documentRouter);
 router.use(`${ADMIN}/agreement-docs`, agreementDocRouter);
-router.use(`/pet-pooja`, petPoojaApiRouter);
-router.use(`/organization`, organizationRouter);
+// router.use(`/pet-pooja`, petPoojaApiRouter);
+router.use(`/organization`,auth, organizationRouter);
 
 
 router.post(

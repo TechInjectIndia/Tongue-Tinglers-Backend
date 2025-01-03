@@ -7,11 +7,11 @@ import {
     SUCCESS_MESSAGE,
 } from "../../../constants";
 import {Request, Response} from "express";
-import {Document} from "../../../interfaces/documents";
+
 
 import {Op} from "sequelize";
 import {getDocumentTransformData, transformData} from "../utils/utils"
-import {DocumentModel} from "../../../database/schema/documents/documentModel";
+
 
 export class DocumentController {
 

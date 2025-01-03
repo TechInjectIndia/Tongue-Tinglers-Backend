@@ -1,5 +1,4 @@
-import { get } from "lodash";
-import { BaseOrderItem, OrderItem, ORDER_ITEM_TYPE} from '../../../interfaces/order_items'
+import { BaseOrderItem, OrderItem} from '../../order-items/interface/orderItem'
 import RepoProvider from "../../RepoProvider";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";

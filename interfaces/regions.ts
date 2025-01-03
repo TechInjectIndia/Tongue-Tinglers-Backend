@@ -1,14 +1,18 @@
 
-import type { UpdatedMetaData, BaseModel, DeletionMetaData } from "../interfaces";
+import type {
+    UpdatedMetaData,
+    BaseModel,
+    DeletionMetaData,
+} from "./index";
 
 interface IRegion extends UpdatedMetaData, BaseModel, DeletionMetaData {
     title: string;
-    area: number[] | null;
+    area?: number[];
 }
 
 interface TPayloadRegion {
     title: string;
-    area: number[] | null;
+    area?: number[] | null;
     createdBy?: number;
     updatedBy?: number;
 }
@@ -16,6 +20,11 @@ interface TPayloadRegion {
 interface TRegionList {
     total: number;
     data: IRegion[];
+}
+
+interface TPayloadRegionArea {
+    regionId: number;
+    areaId: number;
 }
 
 

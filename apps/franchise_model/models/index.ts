@@ -5,9 +5,11 @@ import {
     TPayloadFranchiseModel,
 } from "../../../interfaces";
 import { TListFilters } from "../../../types";
-import { FranchiseLeadModel, UserModel } from "../../../database/schema";
+
 import { getUserName } from "../../common/utils/commonUtils";
 import sequelize from "sequelize";
+import { FranchiseLeadModel } from "./FranchiseModelTable";
+import { UserModel } from "apps/user/models/UserTable";
 
 
 export class FranchiseModelRepo {

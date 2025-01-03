@@ -475,6 +475,8 @@ router.delete(
     ContractController.delete
 );
 router.post("/convert",  auth, ContractController.convert);
+
+router.put("/updateContractMeta/:id", auth ,ContractValidation.validatePartialContractsUpdateSchema, ContractController.updatePartialContract)
 // ====== Contracts Ends ======
 
 export default router;

@@ -51,12 +51,25 @@ export const createFirebaseUser = async (user: TFirebaseUser) => {
     try {
         // so we can use many number on same account
         delete user.phoneNumber;
-        const data = await admin.auth().createUser(user);
-        return { success: true, uid: data?.uid };
+        const {uid} = await admin.auth().createUser(user);
+        return { success: true, uid };
     } catch (err) {
         return {
             success: false,
-            uid: err?.errorInfo?.message ?? "Something went wrong",
+            error: err?.errorInfo?.message ?? "Something went wrong",
+        };
+    }
+};
+
+export const checkFirebaseUser = async (email: string) => {
+    try {
+        const {uid} = await admin.auth().getUserByEmail(email);
+
+        return { success: true, uid };
+    } catch (err) {
+        return {
+            success: false,
+            error: err?.errorInfo?.message ?? "Something went wrong",
         };
     }
 };

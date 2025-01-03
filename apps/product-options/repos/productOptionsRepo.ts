@@ -1,6 +1,9 @@
 import { BaseProductOptions, Pagination, ProductOptions } from "../../../interfaces/product-options";
 import { IProductOptionsRepo } from "./IProductOptionsRepo";
-import {ProductOptionsModel} from "../../../database/schema/product-options/productOptionsModel";
+// import {ProductOptionsModel} from "../../../database/schema/product-options/productOptionsModel";
+import { ParsedProductOptions, parsedProductOptions } from "apps/product/interface/ProductOptions";
+import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
+import { ProductOptionsModel } from "../models/productOptionTable";
 
 export class ProductOptionRepo implements IProductOptionsRepo{
     async create(productOptions: BaseProductOptions): Promise<ProductOptions | null> {
@@ -42,16 +45,24 @@ export class ProductOptionRepo implements IProductOptionsRepo{
     delete(id: number): Promise<ProductOptions> {
         throw new Error("Method not implemented.");
     }
-    async getById(id: number): Promise<ProductOptions> {
+    async getById(id: number): Promise<ParsedProductOptions> {
         try {
             // Fetch product by primary key (ID)
-           const productOptions = (await ProductOptionsModel.findByPk(id)).toJSON();
+           const productOptions = (await ProductOptionsModel.findOne({
+            where:{
+                id: id
+            },
+            include:[{
+                model: OptionsValueModel,
+                as: "optionsValue"
+            }]
+           })).toJSON();
 
            if (!productOptions) {
                throw new Error(`Product with ID ${id} not found`);
            }
 
-           return productOptions;
+           return parsedProductOptions(productOptions);
        } catch (error) {
            console.log(error);
            return null;

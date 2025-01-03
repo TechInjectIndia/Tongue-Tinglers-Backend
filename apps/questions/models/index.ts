@@ -2,20 +2,17 @@ import { Op } from "sequelize";
 import {
     TListFilters,
 } from "../../../types";
-import {
-    TQuestionList,
-    TPayloadQuestion,
-    IQuestion,
-} from "../../../interfaces";
-import { questionModel, UserModel } from "../../../database/schema";
-import IBaseRepo from '../controllers/controller/IController';
-import { getUserName } from "../../common/utils/commonUtils";
+import { IQuestion, TPayloadQuestion, TQuestionList } from "../interface/Question";
+import { QuestionModel } from "./QuestionModel";
+import { UserModel } from "apps/user/models/UserTable";
+import { getUserName } from "apps/common/utils/commonUtils";
+
 
 export class QuestionRepo {
     constructor() { }
 
     public async get(id: number): Promise<IQuestion | null> {
-        const data = await questionModel.findOne({
+        const data = await QuestionModel.findOne({
             where: {
                 id,
             },
@@ -24,14 +21,14 @@ export class QuestionRepo {
     }
 
     public async list(filters: TListFilters): Promise<TQuestionList> {
-        const total = await questionModel.count({
+        const total = await QuestionModel.count({
             where: {
                 question: {
                     [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await questionModel.findAll({
+        const data = await QuestionModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -49,7 +46,7 @@ export class QuestionRepo {
         if(!user){
             throw new Error(`User with ID ${user_id} not found.`);
         }
-        const response = await questionModel.create(data, {
+        const response = await QuestionModel.create(data, {
             userId: user.id,
             userName: getUserName(user),
         });
@@ -57,7 +54,7 @@ export class QuestionRepo {
     }
 
     public async update(id: number, data: TPayloadQuestion, userId: number): Promise<[affectedCount: number]> {
-        const question = await questionModel.findByPk(id);
+        const question = await QuestionModel.findByPk(id);
         if (!question) {
             throw new Error(`Question with ID ${id} not found.`);
         }
@@ -74,7 +71,7 @@ export class QuestionRepo {
     }
 
     public async delete(ids: number[]): Promise<number> {
-        const response = await questionModel.destroy({
+        const response = await QuestionModel.destroy({
             where: {
                 id: ids,
             },

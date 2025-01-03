@@ -1,14 +1,10 @@
 const { Op } = require("sequelize");
-import {
-    ProposalModels,
-    ProposalModelsList,
-    TPayloadProposalModel,
-} from "../../../interfaces";
-import {
-    TListFilters,
-} from "../../../types";
-import { ProposalLeadModels } from "../../../database/schema";
+
+import { ProposalModels, TPayloadProposalModel } from 'interfaces';
 import IBaseRepo from '../controllers/controller/IController';
+import { TListFilters } from 'apps/common/models/common';
+import { ProposalLeadModels } from './ProposalModelTable';
+import { ProposalModelsList } from '../interface/proposal';
 
 export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters> {
     constructor() { }
@@ -44,7 +40,6 @@ export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters
     }
 
     public async create(data: TPayloadProposalModel): Promise<ProposalModels> {
-
         const response = await ProposalLeadModels.create(data);
         return response;
     }

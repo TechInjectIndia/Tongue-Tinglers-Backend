@@ -1,5 +1,6 @@
-import { ParsedMeta } from "../database/schema/base/Base";
-import { BaseAddress } from "../types";
+import { BaseAddress } from "apps/address/interface/Address";
+import { ParsedMeta } from "apps/common/models/Base";
+
 
 export interface cart { }
 

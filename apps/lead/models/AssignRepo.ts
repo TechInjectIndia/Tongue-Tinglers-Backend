@@ -1,14 +1,14 @@
 import { Op } from "sequelize";
-import { TAssignLead } from "../../../types";
-import { AssignAttributes } from '../../../interfaces'; // Interface for assignments
-import { AssignModel } from "../../../database/schema"; // Ensure this points to the correct assignment schema
+
 import IBaseRepo from '../controllers/controller/IAssignController';
+import { AssignAttributes } from "interfaces/leads";
+import { AssignModel } from "./AssignTable";
 
 export class AssignRepo implements IBaseRepo<AssignAttributes, any> {
     constructor() { }
 
     // Create a new assignment
-    public async create(data: TAssignLead): Promise<AssignAttributes> {
+    public async create(data: AssignAttributes): Promise<AssignAttributes> {
         const response = await AssignModel.create(data);
         return response as AssignAttributes; // Explicitly cast the response to AssignAttributes
     }
@@ -32,7 +32,7 @@ export class AssignRepo implements IBaseRepo<AssignAttributes, any> {
     }
 
     // Update an assignment
-    public async createOrUpdate(leadId, data: Partial<TAssignLead>): Promise<[instance: AssignModel, created: boolean]> {
+    public async createOrUpdate(leadId, data: Partial<AssignAttributes>): Promise<[instance: AssignModel, created: boolean]> {
         // Add leadId to data to ensure it's included in the upsert check
         const response = await AssignModel.upsert({ leadId, ...data });
 

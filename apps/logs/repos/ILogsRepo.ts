@@ -1,8 +1,6 @@
 import { Log } from "../models/Log";
-import { Pagination } from "../../../interfaces/products";
-import { Model, ModelStatic } from "sequelize";
-import { LogModel } from "../../../database/schema/logs/LogsModels";
-
+import { Pagination } from "../../../interfaces";
+import { Model } from "sequelize";
 export interface ILogsRepo {
     getAll(
         page: number,
@@ -15,7 +13,7 @@ export interface ILogsRepo {
     logModelAction<T extends Model<any, any>>(
         action: string,
         modelName: string,
-        instance: T, 
+        instance: T,
         options: any,
     ): Promise<void>; // Return type would depend on your use case (e.g., void, boolean, or a more specific result type)
 

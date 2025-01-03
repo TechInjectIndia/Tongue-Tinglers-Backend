@@ -1,7 +1,8 @@
+
+import { APIResponse } from "apps/common/models/Base";
 import {
     CommissionTable
-} from "../../../database/schema/commission/CommissionTable";
-import {APIResponse} from "../../common/models/ApiResponse";
+} from "../model/CommmisionTable";
 import {NextFunction, Request, Response} from "express";
 
 
@@ -31,6 +32,9 @@ export interface ICommissionController {
         next: NextFunction): Promise<void>;
 
     getMappingsData(req: Request, res: Response,
+        next: NextFunction): Promise<void>;
+
+    updateCommisionEntityStatus(req: Request, res: Response,
         next: NextFunction): Promise<void>;
 
 }

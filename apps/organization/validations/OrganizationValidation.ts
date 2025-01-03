@@ -74,6 +74,16 @@ const editMultipleIdsBody = Joi.object().keys({
     }),
 });
 
+const OrganizationAddressPayloadSchema = Joi.object({
+    billingAddress: addressSchema.optional().messages({
+        "object.base": "Billing address must be a valid address object.",
+    }),
+    shippingAddress: Joi.array().items(addressSchema).optional().messages({
+        "array.base": "Shipping address must be an array of valid address objects.",
+    }),
+});
+
+
 // Middleware for validating campaign creation
 export const validateCreateOrganizationBody = async (
     req: Request,
@@ -104,3 +114,9 @@ export const validateEditMultipleIdsBody = async (
     res: Response,
     next: NextFunction,
 ) => validateReq(req, res, next, editMultipleIdsBody, "body");
+
+export const validateOrganizationAddressPayloadSchema = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => validateReq(req, res, next, OrganizationAddressPayloadSchema, "body");

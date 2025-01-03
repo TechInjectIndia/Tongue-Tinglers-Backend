@@ -22,8 +22,8 @@ const parseProduct = (product: any): ParsedProduct => {
         createdAt: product.createdAt,
         updatedAt: product.updatedAt,
         deletedAt: product.deletedAt,
-        variations: variations
-    
+        variations: variations,
+        createdBy: product.createdByUser
     };
     
     return data;

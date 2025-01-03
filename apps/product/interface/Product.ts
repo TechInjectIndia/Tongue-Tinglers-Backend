@@ -2,8 +2,8 @@ import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
 import { BaseProductOptions, ParsedProductOptions } from "./ProductOptions";
 import { ParsedCategory } from "apps/products-category/interface/Category";
 
+// received from frontend
 interface BaseProduct {
-    createdBy: number;
     name: string;
     slug: string;
     description: string;
@@ -15,14 +15,14 @@ interface BaseProduct {
     // variationIds: Array<number>,
     tax_rate_id: number;
     vendorId: number;
-    variations?: Array<BaseProductOptions>;
+    variations: Array<BaseProductOptions> | null;
 }
 
-interface Product extends BaseProduct {
-    createdBy: number;
-    updatedBy: number;
-    deletedBy: number;
+interface IProductTable extends Omit<BaseProduct,'variations'>, BaseMeta {
+
 }
+
+
 
 enum PRODUCT_STATUS {
     ACTIVE = "active",
@@ -34,9 +34,6 @@ enum PRODUCTS_TYPE {
     PACKAGING = "packaging",
 }
 
-interface Product extends BaseMeta, BaseProduct {
-    id: number;
-}
 
 // interface TListFilters {
 //     offset: number;
@@ -80,7 +77,7 @@ interface ParsedProduct extends ParsedMeta {
 
 
 export {
-    Product,
+    IProductTable,
     PRODUCTS_TYPE,
     BaseProduct,
     Pagination,

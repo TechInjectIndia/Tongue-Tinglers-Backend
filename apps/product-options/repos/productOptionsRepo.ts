@@ -1,30 +1,35 @@
-import { BaseProductOptions, Pagination, ProductOptions } from "../../../interfaces/product-options";
+
 import { IProductOptionsRepo } from "./IProductOptionsRepo";
-// import {ProductOptionsModel} from "../../../database/schema/product-options/productOptionsModel";
-import { ParsedProductOptions, parsedProductOptions } from "apps/product/interface/ProductOptions";
+
+import {
+    BaseProductOptions,
+    ParsedProductOptions,
+    parsedProductOptions, ProductOptions
+} from "apps/product/interface/ProductOptions";
 import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { ProductOptionsModel } from "../models/productOptionTable";
+import {Pagination} from "../../common/models/common";
 
 export class ProductOptionRepo implements IProductOptionsRepo{
-    async create(productOptions: BaseProductOptions): Promise<ProductOptions | null> {
+    async create(productOptions: BaseProductOptions, createdBy:number): Promise<ProductOptions | null> {
         try {
+
             return (await ProductOptionsModel.create({
-                product_id: productOptions.product_id,
                 optionValueId: productOptions.optionValueId,
                 price: productOptions.price,
                 stock: productOptions.stock,
                 images: productOptions.images,
                 status: productOptions.status,
-                createdBy: productOptions.createdBy,
-                updatedBy: productOptions.updatedBy,
-                deletedBy: productOptions.deletedBy,
+                updatedBy: null,
+                createdBy,
+                deletedBy: null,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 deletedAt: null
             })).toJSON();
         } catch (error) {
             console.log(error);
-            return null;  
+            return null;
         }
     }
     async update(productOptions: ProductOptions): Promise<ProductOptions> {
@@ -34,7 +39,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
             if (!existingProductOption) {
                 throw new Error(`Product with ID ${productOptions.id} not found`);
             }
-            await existingProductOption.set(productOptions);
+            existingProductOption.set(productOptions);
             await existingProductOption.save();
             return existingProductOption.toJSON();
         } catch (error) {
@@ -71,7 +76,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
     getAll(page: number, limit: number, search: string, filters: object): Promise<Pagination<ProductOptions>> {
         throw new Error("Method not implemented.");
     }
-    
+
     async updatePrice(payload): Promise<ProductOptions> {
         try {
             // Find the product option by its ID
@@ -89,7 +94,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
             return productOption.toJSON();
         } catch (error) {
             console.log(error);
-            return null; 
+            return null;
         }
     }
 
@@ -110,7 +115,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
             return productOption.toJSON();
         } catch (error) {
             console.log(error);
-            return null; 
+            return null;
         }
     }
 

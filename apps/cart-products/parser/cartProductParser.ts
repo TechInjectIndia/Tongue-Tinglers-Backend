@@ -1,6 +1,4 @@
-import { parsedProductOptions } from './../../../interfaces/product-options';
-import {ParsedCartProduct, parsedVariations} from "../../../interfaces/cart_products"
-import { parseProduct } from "../../product/parser/productParser";
+import {ParsedCartProduct, parsedVariations} from "../interface/Cart";
 
 const parseCartProduct = (cart: any): ParsedCartProduct => {
     const data: ParsedCartProduct = {

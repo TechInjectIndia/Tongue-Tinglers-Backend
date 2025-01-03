@@ -14,8 +14,14 @@ import {FranchiseModelRepo} from "../franchise_model/models";
 import {ProposalModelRepo} from "../proposal_model/models";
 import {CampaignAdRepo} from "../campaign/models";
 import { PRODUCT_STATUS, PRODUCTS_TYPE } from "apps/product/interface/Product";
-import { PRODUCT_CATEGORY_STATUS } from "apps/products-category/interface/Category";
-import { PRODUCT_OPTIONS_STATUS } from "apps/product/interface/ProductOptions";
+import {
+    BaseProductsCategory,
+    PRODUCT_CATEGORY_STATUS
+} from "apps/products-category/interface/Category";
+import {
+    BaseProductOptions,
+    PRODUCT_OPTIONS_STATUS
+} from "../product/interface/ProductOptions";
 
 function getSampleQuestions(): TPayloadQuestion[] {
 
@@ -210,11 +216,60 @@ async function createDummyMaster(user_id: number) {
 }
 
 async function createDummyProducts() {
+
+    const variations: BaseProductOptions[]=[
+        {
+            optionValueId: 1, // Example option value ID (e.g., "Red")
+            price: 699.99, // Price for this variation
+            stock: 50, // Available stock for this variation
+            status: PRODUCT_OPTIONS_STATUS.ACTIVE, // Active status
+            images: ["https://example.com/images/smartphone-x100-red.jpg"],
+        },
+        {
+            optionValueId: 2, // Example option value ID (e.g., "Blue")
+            price: 699.99,
+            stock: 30,
+            status: PRODUCT_OPTIONS_STATUS.ACTIVE,
+            images: ["https://example.com/images/smartphone-x100-blue.jpg"],
+        },
+        {
+            optionValueId: 3, // Example option value ID (e.g., "Black")
+            price: 699.99,
+            stock: 20,
+            status: PRODUCT_OPTIONS_STATUS.ACTIVE,
+            images: ["https://example.com/images/smartphone-x100-black.jpg"],
+        },
+        {
+            optionValueId: 4, // Example option value ID (e.g., "64GB")
+            price: 749.99, // Higher price for more storage
+            stock: 40,
+            status: PRODUCT_OPTIONS_STATUS.ACTIVE,
+            images: ["https://example.com/images/smartphone-x100-64gb.jpg"],
+        },
+        {
+            optionValueId: 5, // Example option value ID (e.g., "128GB")
+            price: 849.99, // Higher price for more storage
+            stock: 25,
+            status: PRODUCT_OPTIONS_STATUS.ACTIVE,
+            images: ["https://example.com/images/smartphone-x100-128gb.jpg"],
+        }
+
+
+    ]
+    const category:BaseProductsCategory = {
+        "name": "Non-Veg Main Course",
+        "description": "North Indian Main Course Items",
+        "slug": "non-veg-main-course",
+        "status": PRODUCT_CATEGORY_STATUS.ACTIVE,
+        "type": null,
+        "createdBy": 1
+    }
+
     return {
         "category": {
-            "name": "Electronics",
-            "description": "Devices and gadgets",
-            "slug": "electronics",
+            "name": "Non-Veg Main Course",
+            "description": "North Indian Main Course Items",
+            "slug": "non-veg-main-course",
             "status": PRODUCT_CATEGORY_STATUS.ACTIVE,
             "type": null,
             "createdBy": 1
@@ -253,58 +308,7 @@ async function createDummyProducts() {
             ],
             tax_rate_id: 1, // Assuming tax rate ID 3 corresponds to 18%
             vendorId: 1, // Example vendor ID
-            variations: [
-                {
-                    optionValueId: 1, // Example option value ID (e.g., "Red")
-                    price: 699.99, // Price for this variation
-                    stock: 50, // Available stock for this variation
-                    status: PRODUCT_OPTIONS_STATUS.ACTIVE, // Active status
-                    images: ["https://example.com/images/smartphone-x100-red.jpg"], // Image URL specific to this variation
-                    createdBy: 1, // ID of the user who created this variation
-                    updatedBy: 1, // ID of the user who last updated this variation
-                    deletedBy: null // Null if not deleted
-                },
-                {
-                    optionValueId: 1, // Example option value ID (e.g., "Blue")
-                    price: 699.99,
-                    stock: 30,
-                    status: PRODUCT_OPTIONS_STATUS.ACTIVE,
-                    images: ["https://example.com/images/smartphone-x100-blue.jpg"],
-                    createdBy: 1,
-                    updatedBy: 1,
-                    deletedBy: null
-                },
-                {
-                    optionValueId: 1, // Example option value ID (e.g., "Black")
-                    price: 699.99,
-                    stock: 20,
-                    status: PRODUCT_OPTIONS_STATUS.ACTIVE,
-                    images: ["https://example.com/images/smartphone-x100-black.jpg"],
-                    createdBy: 1,
-                    updatedBy: 1,
-                    deletedBy: null
-                },
-                {
-                    optionValueId: 1, // Example option value ID (e.g., "64GB")
-                    price: 749.99, // Higher price for more storage
-                    stock: 40,
-                    status: PRODUCT_OPTIONS_STATUS.ACTIVE,
-                    images: ["https://example.com/images/smartphone-x100-64gb.jpg"],
-                    createdBy: 1,
-                    updatedBy: 1,
-                    deletedBy: null
-                },
-                {
-                    optionValueId: 1, // Example option value ID (e.g., "128GB")
-                    price: 849.99, // Higher price for more storage
-                    stock: 25,
-                    status: PRODUCT_OPTIONS_STATUS.ACTIVE,
-                    images: ["https://example.com/images/smartphone-x100-128gb.jpg"],
-                    createdBy: 1,
-                    updatedBy: 1,
-                    deletedBy: null
-                }
-            ]
+            variations
         }
     }
 }

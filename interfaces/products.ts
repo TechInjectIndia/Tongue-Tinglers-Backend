@@ -1,7 +1,9 @@
-
-import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
-import { BaseProductOptions, ParsedProductOptions } from "./product-options";
-import { ParsedCategory } from "./products_category";
+import {BaseMeta, ParsedMeta} from "apps/common/models/Base";
+import {ParsedCategory} from "./products_category";
+import {
+    BaseProductOptions,
+    ParsedProductOptions
+} from "../apps/product/interface/ProductOptions";
 
 interface BaseProduct {
     createdBy: number;

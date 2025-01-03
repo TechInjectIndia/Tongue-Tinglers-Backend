@@ -1,17 +1,13 @@
 import { BaseMeta } from "apps/common/models/Base"
 import { ParsedOptionsValue, parseOptionsValues } from "apps/order/interface/OptionsValues"
 
+//todo rename to understand its received from frontend
 interface BaseProductOptions {
-    id: any
-    product_id: number
     optionValueId: number
     price: number
     stock: number
     status: PRODUCT_OPTIONS_STATUS
-    images: string,
-    createdBy: number,
-    updatedBy: number,
-    deletedBy: number
+    images: string[],
 }
 
 interface ProductOptions extends BaseMeta, BaseProductOptions {

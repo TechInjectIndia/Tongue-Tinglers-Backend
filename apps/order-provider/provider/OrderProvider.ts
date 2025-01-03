@@ -518,6 +518,13 @@ export class OrderProvider implements IOrderProvider {
                     count: 0,
                     perUserCount: 0,
                 },
+                id: 0,
+                createdAt: undefined,
+                updatedAt: undefined,
+                deletedAt: undefined,
+                createdBy: 0,
+                updatedBy: 0,
+                deletedBy: 0
             },
             issues: {},
             hasAppliedCouponMap: false,

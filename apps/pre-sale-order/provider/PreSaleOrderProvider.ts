@@ -1,15 +1,16 @@
 import { PresaleParsedOrder } from "apps/order/interface/Order";
 import { IPreSaleOrderProvider } from "./IPreSaleOrderProvider";
-import { BaseCartProduct, Cart } from "apps/cart-products/interface/Cart";
 import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/DTO/DTO";
-import { ORDER_ITEM_TYPE, PreSaleParsedOrderItem } from "apps/order-items/interface/orderItem";
+
 import RepoProvider from "apps/RepoProvider";
 import {
     ParsedCartDetail,
     ParsedCartProductDetails
-} from "apps/cart-details/interface/cartDetail";
-
-
+} from "../../cart-details/interface/CartDetail";
+import {
+    ORDER_ITEM_TYPE,
+    PreSaleParsedOrderItem
+} from "../../order/interface/OrderItem";
 
 export class PreSaleOrderProvider implements IPreSaleOrderProvider {
     /**
@@ -37,7 +38,7 @@ export class PreSaleOrderProvider implements IPreSaleOrderProvider {
             totalTax: this.getTotalTaxByPreSaleOrderItems(),
             cancelledItems: [], // Initialize with no cancelled items.
             totalDiscount: this.getTotalDiscountByPreSaleOrderItems(),
-            coupon: "", // Initialize with no coupon.
+            coupon: null, // Initialize with no coupon.
             items: preSaleOrderItems,
             notes: [], // Initialize with no notes.
             orderItems: this.getOrderItemsByPreSaleParsedOrderItems(preSaleOrderItems),
@@ -74,7 +75,7 @@ export class PreSaleOrderProvider implements IPreSaleOrderProvider {
     private getOrderItemsByPreSaleParsedOrderItems(items: PreSaleParsedOrderItem[]) {
         return items.map((item) => ({
             product_id: item.product.id,
-            product_option_id: item.productOptionId.id,
+            product_option_id: item.productOption.id,
             quantity: item.quantity,
             total_price: item.total_price,
             total_tax: item.totalTax,
@@ -122,12 +123,12 @@ export class PreSaleOrderProvider implements IPreSaleOrderProvider {
         // Construct the pre-sale parsed order item.
         const preSaleParsedOrderItem: PreSaleParsedOrderItem = {
             product,
-            productOptionId: variation,
+            productOption: variation,
             quantity: cartProduct.quantity,
             total_price: cartProduct.quantity * variation.price,
             totalTax: 0,
-            prices: [],
-            disc: [],
+            prices: {},
+            disc: {},
             type: ORDER_ITEM_TYPE.RETORT,
         };
 

@@ -1,13 +1,12 @@
-import { PresaleParsedOrder } from "../../../interfaces";
-import { BaseCartProduct, Cart } from "../../../interfaces/cart_products";
-import {
-    BaseOrderItem,
-    ORDER_ITEM_TYPE,
-    PreSaleParsedOrderItem,
-} from "../../../interfaces/order_items";
-import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "../../common/models/DTO";
-import RepoProvider from "../../RepoProvider";
-import { IPreSaleOrderProvider } from "../provider/IPreSaleOrderProvider";
+import { PresaleParsedOrder } from "apps/order/interface/Order";
+import { IPreSaleOrderProvider } from "./IPreSaleOrderProvider";
+import { BaseCartProduct, Cart } from "apps/cart-products/interface/Cart";
+import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/DTO/DTO";
+import { ORDER_ITEM_TYPE, PreSaleParsedOrderItem } from "apps/order-items/interface/orderItem";
+import RepoProvider from "apps/RepoProvider";
+import { ParsedCartDetail } from "apps/cart-details/interface/cartDetail";
+
+
 
 export class PreSaleOrderProvider implements IPreSaleOrderProvider {
     /**
@@ -15,10 +14,10 @@ export class PreSaleOrderProvider implements IPreSaleOrderProvider {
      * @param payload - The cart containing product information.
      * @returns A DTO containing the parsed pre-sale order or an error message.
      */
-    async getPreSaleOrder(payload: Cart): Promise<DTO<PresaleParsedOrder>> {
+    async getPreSaleOrder(payload: ParsedCartDetail): Promise<DTO<PresaleParsedOrder>> {
         // Process each cart item to get its corresponding pre-sale parsed order item.
         const preSaleOrderItemsRes = await Promise.all(
-            payload.carts.map((item) => this.getPreSaleParsedOrderItemByBaseCartProduct(item))
+            payload.cart.map((item) => this.getPreSaleParsedOrderItemByBaseCartProduct(item))
         );
 
         const preSaleOrderItems: PreSaleParsedOrderItem[] = [];

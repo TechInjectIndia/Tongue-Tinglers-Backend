@@ -24,6 +24,7 @@ import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 import { PdiCheckpointModel } from "apps/pdi-checkpoint/model/PdiCheckPointTable";
 import { ProductOptionsModel } from "apps/product-options/models/productOptionTable";
 import { ProductModel } from "apps/product/model/productTable";
+import { ProductsCategoryModel } from "apps/products-category/models/ProductCategoryTable";
 import { QuestionModel } from "apps/questions/models/QuestionModel";
 import { RegionModel } from "apps/region/models/RegionTable";
 import { UserModel } from "apps/user/models/UserTable";;
@@ -58,6 +59,7 @@ const models = {
     CommissionEntityMap: CommissionEntityMapTable.initModel(),
     Commission: CommissionTable.initModel(),
     CartDetails: CartDetailsModel.initModel(),
+    ProductCategory: ProductsCategoryModel.initModel(),
     Product: ProductModel.initModel(),
     Order: OrderModel.initModel(),
     Notes: NotesModel.initModel(),

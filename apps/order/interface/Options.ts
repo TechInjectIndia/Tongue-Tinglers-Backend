@@ -11,7 +11,7 @@ interface ParsedOptions {
     name: string;
 }
 
-export const parseOptions = (data: any) => {
+export const parseOptions = (data: any):ParsedOptions => {
     return {
         id: data.id,
         name: data.name,

@@ -1,8 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { CartProduct, BaseCartProduct } from "../../../interfaces/cart_products";
-import { ProductModel } from "../product/productModel";
-import { ProductOptionsModel } from "../product-options/productOptionsModel";
+
 
 interface CartProductCreationAttributes extends Optional<CartProduct, | "id"> {
 }

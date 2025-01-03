@@ -1,4 +1,4 @@
-import { BaseOptionsValue, OptionsValue } from "apps/order/interface/OptionsValues";
+import { BaseOptionsValue, OptionsValue } from "../interface/optionValue";
 import { sequelize } from "config";
 import { DataTypes, Model, Optional } from "sequelize";
 

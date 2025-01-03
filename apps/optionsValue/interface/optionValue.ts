@@ -1,4 +1,4 @@
-import { ParsedOptions, parseOptions } from "./Options";
+import { ParsedOptions, parseOptions } from "../../options/interface/options";
 
 interface BaseOptionsValue {
     option_id: number;
@@ -15,7 +15,7 @@ interface ParsedOptionsValue {
     options: ParsedOptions;
 }
 
-export const parseOptionsValues = (data: any):ParsedOptionsValue => {
+export const parseOptionsValues = (data: ParsedOptionsValue):ParsedOptionsValue => {
     return {
         id: data.id,
         name: data.name,

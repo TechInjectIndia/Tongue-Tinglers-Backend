@@ -1,9 +1,11 @@
 // models/Region.ts
+
 import { DataTypes, Model, Optional } from 'sequelize';
-import { sequelize } from "../../../config";
+
 import { IRegion } from './Region';
 import { AreaModel } from 'apps/area/models/AreaTable';
 import { UserModel } from 'apps/user/models/UserTable';
+import {sequelize} from "../../../config";
 
 interface RegionCreationAttributes
     extends Optional<IRegion, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> {

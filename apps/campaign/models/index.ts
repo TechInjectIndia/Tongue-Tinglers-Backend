@@ -11,6 +11,7 @@ import { RegionModel } from "apps/region/models/RegionTable";
 import { AreaModel } from "apps/area/models/AreaTable";
 import { QuestionModel } from "apps/questions/models/QuestionModel";
 import { IQuestion } from "apps/questions/interface/Question";
+import {ProposalModel} from "../../proposal_model/models/ProposalModelTable";
 
 export class CampaignAdRepo
     implements IBaseRepo<ICampaign, TListFiltersCampaigns> {
@@ -84,25 +85,7 @@ export class CampaignAdRepo
             }; // Assuming franchiseId is a string or UUID
         }
         if (filters.filters?.regionId) {
-            whereCondition.regionId = { [Op.eq]: filters.filters.regionId }; // Assuming
-            // regionId
-            // is
-            // an
-            // integer
-        }
-
-        if (filters.filters?.fromDate || filters.filters?.toDate) {
-            whereCondition[Op.and] = whereCondition[Op.and] || [];
-            if (filters.filters.fromDate) {
-                whereCondition[Op.and].push({
-                    start: { [Op.gte]: new Date(filters.filters.fromDate) }, // Greater than or equal to start date
-                });
-            }
-            if (filters.filters.toDate) {
-                whereCondition[Op.and].push({
-                    to: { [Op.lte]: new Date(filters.filters.toDate) }, // Less than or equal to end date
-                });
-            }
+            whereCondition.regionId = { [Op.eq]: filters.filters.regionId };
         }
 
         // Add a specific condition for regionId if it needs to support `search`
@@ -140,6 +123,10 @@ export class CampaignAdRepo
                     as: "organization",
                 },
                 {
+                    model: ProposalModel,
+                    as: "proposals",
+                },
+                {
                     model: QuestionModel,
                     as: "questions",
                     attributes: ["id", "question", "type"],
@@ -151,20 +138,21 @@ export class CampaignAdRepo
     }
 
     public async create(data: TPayloadCampaign): Promise<ICampaign> {
-        console.log('nitesh', data)
-        const { questionList, ...campaignData } = data;
 
-        console.log(questionList);
-
+        const { proposalIds, questionList, ...campaignData } = data;
 
         // Create the campaign
 
         const response = await CampaignAdModel.create(data);
 
         // Associate questions if question IDs are provided
-        // if (questionList && questionList.length > 0) {
-        //     await response.setQuestions(questionList); 
-        // }
+        if (questionList && questionList.length > 0) {
+            await response.setQuestions(questionList);
+        }
+
+        if (proposalIds && proposalIds.length > 0) {
+            await response.setProposals(proposalIds); // Associate proposals with the campaign
+        }
         return response;
 
     }
@@ -197,3 +185,6 @@ export class CampaignAdRepo
         return campaign;
     }
 }
+
+
+

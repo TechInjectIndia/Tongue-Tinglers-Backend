@@ -1,13 +1,13 @@
-import { DataTypes, INTEGER, Model, Optional } from "sequelize";
+import {DataTypes, INTEGER, Model, Optional} from "sequelize";
+import {sequelize} from "../../../config";
+import {
+    CampaignQuestionModel
+} from "apps/campaign/models/CampaignQuestionModel";
+import {CampaignAdModel} from "apps/campaign/models/CampaignModel";
+import {IOptions, IQuestion, QuestionType} from "../interface/Question";
 
 
-import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
-import { IOptions, IQuestion, QuestionType } from "../interface/Question";
-import { sequelize } from "config";
-import { CampaignQuestionModel } from "apps/campaign/models/CampaignQuestionModel";
-;
-
-const { STRING, UUID, DATE, JSONB, ENUM, NOW, UUIDV4, BOOLEAN } = DataTypes;
+const {STRING, UUID, DATE, JSONB, ENUM, NOW, UUIDV4, BOOLEAN} = DataTypes;
 
 // Define the creation attributes by making certain fields optional
 interface FormQuestionCreationAttributes
@@ -110,4 +110,4 @@ class QuestionModel extends Model<IQuestion, FormQuestionCreationAttributes>
 
 // Initialize the QuestionModel
 
-export { QuestionModel };
+export {QuestionModel};

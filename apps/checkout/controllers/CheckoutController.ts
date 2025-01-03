@@ -3,6 +3,7 @@ import { get } from "lodash";
 
 // import { OrderStatus } from "../../../types";
 import { OrderStatus, ParsedOrder, PAYMENT_TYPE, PresaleParsedOrder } from "apps/order/interface/Order";
+import { CartDetailRepo } from "apps/cart-details/repos/cartDetailRepo";
 
 
 export default class CheckoutController {
@@ -51,19 +52,14 @@ export default class CheckoutController {
         res.status(200).json(order);
     }
 
-    static async getPreSaleOrder(req: Request,
-        res: Response): Promise<PresaleParsedOrder> {
-        let cart = get(req, "cart");
-        if (!cart) {
-            return Promise.reject("Cart is empty");
-        }
+    static async getPreSaleOrder(req: Request, res: Response): Promise<PresaleParsedOrder> {
 
         const user_id = parseInt(get(req, "user_id"));
         if (user_id === undefined || isNaN(user_id)) {
             res.status(400).json({ error: "User not found" });
             return;
         }
+        let data = new CartDetailRepo().getCartDetailByUserId(user_id);
 
-        //TODO @sumeet sir implement this
     }
 }

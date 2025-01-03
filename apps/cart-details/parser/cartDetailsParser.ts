@@ -1,5 +1,5 @@
 import { parsedVariations } from "apps/cart-products/interface/Cart";
-import { ParsedCartDetail } from "../interface/cartDetail";
+import { ParsedCartDetail } from "../interface/CartDetail";
 
 
 const parseCartDetails = (cartDetail:any) => {

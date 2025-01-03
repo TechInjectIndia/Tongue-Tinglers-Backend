@@ -17,7 +17,6 @@ const parseProduct = (product: any): ParsedProduct => {
         type: product.type,
         tax_rate_id: product.tax_rate_id,
         vendorId: product.vendorId,
-        createdBy: product.createdByUser,
         updatedBy: product.updatedByUser,
         deletedBy: product.deletedByUser,
         createdAt: product.createdAt,

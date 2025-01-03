@@ -1,6 +1,7 @@
 import { BaseProductOptions, Pagination, ProductOptions } from "../../../interfaces/product-options";
 import { IProductOptionsRepo } from "./IProductOptionsRepo";
 import {ProductOptionsModel} from "../../../database/schema/product-options/productOptionsModel";
+import { ParsedProductOptions } from "apps/product/interface/ProductOptions";
 
 export class ProductOptionRepo implements IProductOptionsRepo{
     async create(productOptions: BaseProductOptions): Promise<ProductOptions | null> {
@@ -42,7 +43,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
     delete(id: number): Promise<ProductOptions> {
         throw new Error("Method not implemented.");
     }
-    async getById(id: number): Promise<ProductOptions> {
+    async getById(id: number): Promise<ParsedProductOptions> {
         try {
             // Fetch product by primary key (ID)
            const productOptions = (await ProductOptionsModel.findByPk(id)).toJSON();

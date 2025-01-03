@@ -16,23 +16,67 @@ interface BaseOrderItem {
 }
 
 interface PriceComponent {
+
+    type: PRICE_COMP_TYPE_CART | SHIPPING_CHARGES_TYPE;
+	percent: number; // value percent
+	taxPercent: number; // taxPercent
+	value: number; // component
+	tax: number; //abs tax
+	calc: VALUE_TYPE; // calc method for price Comp
 }
 
-interface PreSaleParsedOrderItem {
+export enum PRICE_COMP_TYPE_CART {
+	BASE_PRICE = "base-price",
+}
 
+
+export enum SHIPPING_CHARGES_TYPE {
+    IN_STOCK = "in-stock",
+    REWARD_POINTS_DISC = "reward-points-disc",
+}
+
+
+export enum PRICE_COMP_TYPE{
+    BASE_PRICE = "base-price",
+	ADDON = "addon",
+}
+export enum DISCOUNT_COMP_TYPE {
+    COUPON_DISCOUNT = "coupon-discount",
+    CLEARANCE = "clearance",
+    REWARD_POINTS = "reward-points",
+    STUDENT_COUPON_DISCOUNT = "student-coupon-discount",
+}
+export enum VALUE_TYPE {
+	ABSOLUTE = "absolute",
+	PERCENTAGE = "percentage",
+}
+
+
+export interface IDiscComponent {
+	percent: number;    // valuePercent
+	taxPercent: number; // taxPercent
+	type: DISCOUNT_COMP_TYPE;
+	value: number; //ex vat value
+	tax: number; // auto calculate
+	calc: VALUE_TYPE;
+}
+
+
+interface PreSaleParsedOrderItem {
     product: ParsedProduct,
-    productOptionId: ParsedProductOptions,
+    productOption: ParsedProductOptions,
     quantity: number,
     total_price: number,
     totalTax: number,
-    prices: Array<PriceComponent>
-    disc: Array<PriceComponent>
+    prices: Record<string, PriceComponent>;
+    disc: Record<string, IDiscComponent>;
     type: ORDER_ITEM_TYPE
     // order_items?: ParsedOrderItem[];
 }
 
 interface ParsedOrderItem extends PreSaleParsedOrderItem {
     id: number;
+    totalDiscount: number
 }
 
 enum ORDER_ITEM_TYPE {

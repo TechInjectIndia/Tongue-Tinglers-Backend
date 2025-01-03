@@ -1,3 +1,5 @@
+import { ParsedProduct } from "apps/product/interface/Product"
+import { ParsedProductOptions } from "interfaces/product-options"
 
 
 interface BaseCartProduct {

@@ -18,7 +18,7 @@ export class ContractRepo {
     // Method to fetch associated contracts
     public async getAssociatedContracts(
         contractIds: string[]
-    ): Promise<ContractModel[]> {
+    ): Promise<ParsedContract[]> {
         if (!contractIds || contractIds.length === 0) {
             return [];
         }
@@ -42,7 +42,7 @@ export class ContractRepo {
             }],
         });
 
-        return contracts;
+        return contracts.map((c)=> parseContract(c));
     }
 
     public async getAssociatedContractsByLeadId(

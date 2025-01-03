@@ -62,7 +62,7 @@ class ContractModel
             constraints: false,
         });
         this.belongsTo(UserModel, {
-            foreignKey: "assignUser",
+            foreignKey: "assignedUser",
             as: "assignuser",
             constraints: false,
         });

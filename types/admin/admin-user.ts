@@ -4,7 +4,7 @@ interface UserDetails {
 }
 
 export type TUser = {
-  id: number;
+  id?: number;
   firebaseUid: string;
   createdBy: number;
   password: string;
@@ -20,7 +20,7 @@ export type TUser = {
   access_token: string;
   password_token: string;
   referralCode: string;
-  referBy: UserDetails;
+  referBy: number;
   refresh_token: string;
   updatedBy: number;
   deletedBy: number;

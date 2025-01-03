@@ -2,6 +2,7 @@ import {
     PaymentLinkPayload,
 } from "./apps/razorpay/models/Razorpay";
 
+import './apps/database'
 
 import dotenv from "dotenv";
 import sgMail from "@sendgrid/mail";
@@ -13,7 +14,7 @@ import cors from "cors";
 import router from "./routes";
 import { connectToDatabase } from "./config";
 
-require("./database/schema");
+// require("./database/schema");
 import helmet from "helmet";
 import helmetCsp from "helmet-csp";
 import xss from "xss-clean";

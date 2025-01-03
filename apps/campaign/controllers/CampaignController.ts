@@ -85,10 +85,16 @@ export default class CampaignController {
 
             const organizationId = get(req.query, "organizationId");
             const regionId = get(req.query, "regionId");
+            const franchiseId = get(req.query, "franchiseId")
+            const fromDate = get(req.query, "fromDate");
+            const toDate = get(req.query, "toDate");
 
             const filters = {};
             if (organizationId) filters["organizationId"] = organizationId;
             if (regionId) filters["regionId"] = regionId;
+            if (franchiseId) filters["franchiseId"] = franchiseId;
+            if (fromDate) filters["fromDate"] = fromDate;
+            if(toDate) filters["toDate"] = toDate
 
             const campaigns = await new CampaignAdRepo().list({
                 offset: skip as number,

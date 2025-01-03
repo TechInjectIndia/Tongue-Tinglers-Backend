@@ -1,4 +1,4 @@
-import { BaseOrderItem, OrderItem, ORDER_ITEM_TYPE, UpdateQuantity, UpdateStudentDiscount, UpdateCouponDiscount, UpdatePointsDiscount } from "../../../interfaces/order_items";
+import { BaseOrderItem, OrderItem, ORDER_ITEM_TYPE, UpdateQuantity, UpdateStudentDiscount, UpdateCouponDiscount, UpdatePointsDiscount } from "../interface/orderItem";
 export interface IOrderItemRepo {
 
     createOrderItem(orderItem: BaseOrderItem): Promise<OrderItem>;

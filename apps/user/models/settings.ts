@@ -1,9 +1,8 @@
+import { TPayloadSettings, TSettings } from "types";
+import { SettingsModel } from "./SettingTable";
+
 const { Op } = require("sequelize");
-import {
-    TSettings,
-    TPayloadSettings
-} from "../../../types";
-import { SettingsModel } from "../../../database/schema";
+
 
 export class SettingsRepo {
     constructor() { }

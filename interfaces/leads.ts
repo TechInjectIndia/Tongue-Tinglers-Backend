@@ -1,4 +1,6 @@
-import { ParsedMeta } from "../database/schema/base/Base";
+import { ParsedMeta } from "apps/common/models/Base";
+import { FollowDetails } from "../apps/follow-details/interface/followDetails";
+
 import type {
     UpdatedMetaData,
     BaseModel,
@@ -63,7 +65,7 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
     additionalInfo: string | null;
     source: LeadSource;
     sourceInfo: string | null;
-    followDetails: Array<FollowDetails> | null;
+    followDetails?: FollowDetails[] | null;
     referBy: UserDetails | null;
     logs: Record<string, ITrackable[]>;
     notes: Note[] | null;
@@ -76,7 +78,7 @@ interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
 }
 
 
-interface ParseLead extends ParsedMeta {
+interface ParsedLead extends ParsedMeta {
     id: number;
     assignedUser: MetaUser;
     campaignId: ParsedCampaign,
@@ -89,7 +91,7 @@ interface ParseLead extends ParsedMeta {
     additionalInfo: string | null;
     source: LeadSource;
     sourceInfo: string | null;
-    followDetails: Array<FollowDetails> | null;
+    followDetails?: [] | null;
     referBy: UserDetails | null;
     logs: Record<string, ITrackable[]>;
     notes: Note[] | null;
@@ -235,16 +237,16 @@ interface LeadAddress {
     PAN: string | null;
 }
 
-interface FollowDetails {
-    followedDate: Date | null;
-    followedBy: UserDetails;
-    notes: string | null;
-    description: string | null;
-    status: followStatus;
-    createdAt: Date;
-    createdBy: UserDetails;
-    reminder: Date | null;
-}
+// interface FollowDetails {
+//     followedDate: Date | null;
+//     followedBy: UserDetails;
+//     notes: string | null;
+//     description: string | null;
+//     status: followStatus;
+//     createdAt: Date;
+//     createdBy: UserDetails;
+//     reminder: Date | null;
+// }
 
 interface parsedAffiliate {
 
@@ -276,5 +278,5 @@ export {
     SeoImagePayload,
     AssignAttributes,
     parsedAffiliate,
-    ParseLead
+    ParsedLead
 };

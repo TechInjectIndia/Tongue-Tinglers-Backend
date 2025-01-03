@@ -5,7 +5,7 @@ import {
     TAddUser,
 } from "../../../types";
 import { UserModel, RolesModel } from "../../../database/schema";
-import IBaseRepo from '../controllers/controller/ICustomerRegisterController';
+import IBaseRepo from '../controllers/ICustomerRegisterController';
 
 export class CustomerRegisterRepo implements IBaseRepo<TUser, TListFilters> {
     constructor() { }

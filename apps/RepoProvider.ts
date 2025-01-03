@@ -11,7 +11,7 @@ import {
   TListFiltersRegions,
 } from "../types";
 import IAddress from "./address/controllers/IAddressController";
-import { AddressRepo } from "./address/models/AddressRepo";
+import { AddressRepo } from "./address/repositories/AddressRepo";
 import IRegionRepo from "./region/controllers/controller/IRegionController";
 import { IRegion, SocialMediaDetails } from "../interfaces";
 import { RegionRepo } from "./region/models/RegionRepo";
@@ -36,11 +36,11 @@ import { ProductsCategoryRepo } from "./products-category/repos/productsCategory
 import { RazorpayRepo } from "./razorpay/Repos/RazorapayRepo";
 import { IRazorpayRepo } from "./razorpay/Repos/IRazorpayRepo";
 import { IOrderRepo } from "./order/repos/IOrderRepo";
-import { OrderRepo } from "./order/repos/orderRepo";
 import { ILogsRepo } from "./logs/repos/ILogsRepo";
 import { LogsRepo } from "./logs/repos/LogsRepo";
 import { ICommissionRepo } from "./commission/repositories/ICommissionRepo";
 import { PostgresCommissionRepo } from "./commission/repositories/PostgresCommissionRepo";
+import { OrderRepo } from './order/repos/orderRepo';
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;

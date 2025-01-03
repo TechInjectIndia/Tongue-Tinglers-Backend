@@ -5,6 +5,7 @@ import {
     validateEditOrganizationBody,
     validateEditOrgParams,
     validateListOrgQuery,
+    validateOrganizationAddressPayloadSchema
 } from "../validations/OrganizationValidation";
 
 const router = express.Router();
@@ -35,6 +36,8 @@ router.delete("/delete", validateEditOrgParams, OrganizationController.delete);
 
 router.get("/list", validateListOrgQuery, OrganizationController.list);
 
+router.put("/updateAddress/:id", validateOrganizationAddressPayloadSchema, OrganizationController.updateAddressOfOrganization);
 
+router.get("/getAddress/:id", OrganizationController.getAddressOfOrganization);
 
 export default router;

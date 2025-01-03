@@ -4,7 +4,7 @@ import RepoProvider from "../../RepoProvider";
 import {sendResponse} from "../../../libraries";
 import {ERROR_MESSAGE,RESPONSE_TYPE, SUCCESS_MESSAGE} from "../../../constants";
 import {Request, Response} from "express";
-import { ProductModel } from "../../../database/schema/product/productModel";
+// import { ProductModel } from "../../../database/schema/product/productModel";
 export default class ProductController {
     static async createProduct(req: Request, res: Response) {
         const payload: any = req?.body;

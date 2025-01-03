@@ -2,7 +2,7 @@ import * as express from "express";
 // import AdminController from "../controllers/user";
 import * as AdminValidation from "../validations/user";
 import AdminController from "../../user/controllers/user";
-import {Auth} from "../../auth/models";
+import { Auth } from "../../auth/models";
 import {
     checkFirebaseUser,
     createFirebaseUser,
@@ -13,22 +13,14 @@ import {
     sendEmail,
     sendResponse
 } from "../../../libraries";
-import {
-    ERROR_MESSAGE,
-    RESPONSE_TYPE,
-    SUCCESS_MESSAGE
-} from "../../../constants";
-import {AdminRepo} from "../../user/models/user";
-import {USER_TYPE} from "../../../interfaces";
-import {OrganizationRepo} from "../../organization/models";
-import {TUser} from "../../../types";
-import {UserModel} from "../../../database/schema";
+
+
 import {
     BUSINESS_TYPE,
     IOrganizationPayloadData,
     ORGANIZATION_TYPE
 } from "../../../interfaces/organization";
-import {QuestionRepo} from "../../questions/models";
+import { QuestionRepo } from "../../questions/models";
 import {
     createDummyMaster,
     getSampleAreas,
@@ -37,14 +29,19 @@ import {
     getSampleQuestions,
     getSampleRegions
 } from "../utils";
-import {AreaRepo} from "../../area/models/AreaRepo";
-import {RegionRepo} from "../../region/models/RegionRepo";
-import {FranchiseModelRepo} from "../../franchise_model/models";
-import {ProposalModelRepo} from "../../proposal_model/models";
+import { AreaRepo } from "../../area/models/AreaRepo";
+import { RegionRepo } from "../../region/models/RegionRepo";
+import { FranchiseModelRepo } from "../../franchise_model/models";
+import { ProposalModelRepo } from "../../proposal_model/models";
+import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from "constants/response-messages";
+import { AdminRepo } from "apps/user/models/user";
+import { TUser, USER_TYPE } from "apps/user/interface/user";
+import { UserModel } from "apps/user/models/UserTable";
+import { OrganizationRepo } from "apps/organization/models";
 
 const router = express.Router();
 
-const {validateCreateAdminBody} = AdminValidation;
+const { validateCreateAdminBody } = AdminValidation;
 
 // const { addAdmin } = AdminController;
 const {
@@ -110,7 +107,7 @@ const {
 router.post("/create", validateCreateAdminBody, (async (req, res) => {
     try {
 
-        const payload = {...req?.body, createdBy: 1};
+        const payload = { ...req?.body, createdBy: 1 };
 
         const existingAdmin = await new Auth().getUserByEmail(
             payload.email
@@ -210,7 +207,7 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
  */router.get("/superOrg", (async (req, res) => {
     try {
 
-        const payload = {...req?.body, createdBy: 1};
+        const payload = { ...req?.body, createdBy: 1 };
 
         const email = 'admin@TongueTingler.com';
         const password = '123456';
@@ -263,7 +260,7 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
                 "role": 0,
                 password: hashedPassword,
                 firebaseUid: uid
-            }).then(uModel => (uModel as UserModel).toJSON());
+            } as TUser).then(uModel => (uModel as UserModel).toJSON());
         }
 
         const repo = new OrganizationRepo();
@@ -307,7 +304,7 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
                 ],
                 masterFranchiseId: null,
                 rootUser: admin.id,
-                createdBy: admin.id,
+                createdBy: 1,
                 updatedBy: null,
                 deletedBy: null
             }

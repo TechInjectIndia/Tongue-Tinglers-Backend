@@ -1,16 +1,13 @@
-import {
-    CommissionTable
-} from "../../../database/schema/commission/CommissionTable";
-import {APIResponse} from "../../common/models/ApiResponse";
+
+import {APIResponse} from "../../common/models/Base";
 import {ICommissionController} from "./ICommissionController";
 import {NextFunction, Request, Response} from "express";
 import {get} from "lodash";
 
-import {
-    COMMISSION_PAID_STATUS,
-    OrganizationCommissions,
-} from "../../../database/schema/commission/CommissionAndEntityMappingTable";
+
 import RepoProvider from "../../RepoProvider";
+import { COMMISSION_PAID_STATUS, OrganizationCommissions } from "../model/CommissionEntityMapTable";
+import { CommissionTable } from "../model/CommmisionTable";
 
 export class PostgresCommissionController implements ICommissionController {
     async getMappingsData(
@@ -205,7 +202,7 @@ export class PostgresCommissionController implements ICommissionController {
         const user_id = parseInt(get(req, "user_id"));
         if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
 
-        const id = parseInt(get(req, "id"));
+        const id = parseInt(get(req.params, "id"));
         if (isNaN(id)) throw Error('Missing id or isNaN');
 
 
@@ -228,6 +225,25 @@ export class PostgresCommissionController implements ICommissionController {
         // }
 
         const result = await RepoProvider.commissionRepo.update(id, input);
+        if (!result.success) {
+            res.status(500).send(result);
+            return;
+        }
+        res.status(200).send(result);
+    }
+
+    async updateCommisionEntityStatus(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        const id = parseInt(get(req.params, "id"));
+        if (isNaN(id)) throw Error('Missing id or isNaN');
+
+        const status = get(req.body, "status");
+
+        const result = await RepoProvider.commissionRepo.updateCommisionEntityStatus(id, status);
+
         if (!result.success) {
             res.status(500).send(result);
             return;

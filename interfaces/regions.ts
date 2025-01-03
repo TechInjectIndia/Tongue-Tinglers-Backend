@@ -3,7 +3,6 @@ import type {
     UpdatedMetaData,
     BaseModel,
     DeletionMetaData,
-    IArea
 } from "./index";
 
 interface IRegion extends UpdatedMetaData, BaseModel, DeletionMetaData {

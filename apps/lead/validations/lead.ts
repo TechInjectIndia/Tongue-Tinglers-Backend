@@ -1,11 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
-import { validateReq } from "../../../libraries";
-import {
-  LeadSource,
-  LeadStatus,
-  followStatus,
-} from "../../../interfaces/leads";
+import { followStatus } from "apps/follow-details/interface/followDetails";
+import { LeadSource, LeadStatus } from "../interface/lead";
+import { validateReq } from "libraries";
+
 
 // Schema for UserDetails
 const USER_DETAILS_SCHEMA = Joi.object().keys({
@@ -51,20 +49,6 @@ const NOTE_SCHEMA = Joi.object().keys({
     "any.required": "User details are required for the note.",
   }),
   date: Joi.date().iso().required().messages({
-    "date.iso": "Date must be in ISO format.",
-    "any.required": "Date is required.",
-  }),
-});
-
-// Schema for Logs
-const LOGS_SCHEMA = Joi.object().keys({
-  userDetails: USER_DETAILS_SCHEMA.required().messages({
-    "any.required": "User details are required for the note.",
-  }),
-  events: Joi.string().required().messages({
-    "any.required": "Logs content is required.",
-  }),
-  timeline: Joi.date().iso().required().messages({
     "date.iso": "Date must be in ISO format.",
     "any.required": "Date is required.",
   }),
@@ -145,7 +129,6 @@ const createLeadBody = Joi.object().keys({
     }),
   sourceInfo: Joi.optional().allow(null),
   notes: Joi.array().items(NOTE_SCHEMA).optional(),
-  logs: Joi.array().items(LOGS_SCHEMA).optional(),
   proposalModalId: Joi.number().optional().allow(null),
   amount: Joi.number().optional().allow(null),
   franchiseModals: Joi.array().items(Joi.number()).optional().allow(null),
@@ -226,7 +209,6 @@ const editLeadBody = Joi.object().keys({
     }),
   sourceInfo: Joi.optional().allow(null),
   notes: Joi.array().items(NOTE_SCHEMA).optional(),
-  logs: Joi.array().items(LOGS_SCHEMA).optional(),
   proposalModalId: Joi.number().optional().allow(null),
   amount: Joi.number().optional().allow(null),
   franchiseModals: Joi.array().items(Joi.number()).optional().allow(null),

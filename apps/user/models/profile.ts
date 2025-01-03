@@ -1,11 +1,9 @@
 const { Op } = require("sequelize");
-import {
-    TProfile,
-    TEditUserProfile,
-} from "../../../types/";
-import { UserModel } from "../../../database/schema";
+
+import { TEditUserProfile, TProfile } from 'types';
 import { USER_TYPE } from '../../../interfaces';
-import IBaseRepo from '../controllers/controller/IProfileController';
+import IBaseRepo from '../controllers/IProfileController';
+import { UserModel } from './UserTable';
 
 export class ProfileRepo implements IBaseRepo<TProfile> {
     constructor() { }

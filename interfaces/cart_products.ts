@@ -20,13 +20,13 @@ interface UpdateQuantity {
     quantity: number
 }
 
-interface Cart{
-    user_id: any
-    carts:Array<BaseCartProduct>
+interface Cart {
+    user_id: number
+    carts: Array<BaseCartProduct>
 }
-interface ParseCart{
+interface ParseCart {
     user_id: any
-    carts:Array<ParsedCartProduct>
+    carts: Array<ParsedCartProduct>
 }
 
 

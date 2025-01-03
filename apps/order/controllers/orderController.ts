@@ -1,5 +1,4 @@
 import { get } from "lodash";
-import { BaseOrder, Order} from '../../../interfaces/orders'
 import RepoProvider from "../../RepoProvider";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
@@ -90,6 +89,66 @@ export default class OrderController {
                     ),
                 );
         } catch (error) {
+            console.error(error);
+            return res.status(500).send(
+                sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while fetching orders.'),
+            );
+        }
+    }
+
+    static async processOrder(req: any, res: any) {
+        try {
+            const payload: any = req?.body;
+            const order = await RepoProvider.orderRepo.processOrder(payload);
+            return res.status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPDATED,
+                        order,
+                    ),
+                );
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send(
+                sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while updating orders.'),
+            );
+        }
+    }
+
+    static async proceedToPayment(req: any, res: any){
+        try{
+            const payload: any = req?.body;
+            const order = await RepoProvider.orderRepo.proceedToPayment(payload);
+            return res.status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPDATED,
+                        order,
+                    ),
+                );
+        }catch(error){
+            console.error(error);
+            return res.status(500).send(
+                sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while updating orders.'),
+            );
+        }
+    }
+
+    static async getOrdersByUserId(req: any, res: any){
+        try{
+            const user_id = parseInt(get(req, "user_id"));
+            const orders = await RepoProvider.orderRepo.getOrdersByUser(user_id);
+            return res.status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        orders,
+                    ),
+                );
+        }catch(error){
             console.error(error);
             return res.status(500).send(
                 sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while fetching orders.'),

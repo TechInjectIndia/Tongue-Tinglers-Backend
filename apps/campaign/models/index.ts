@@ -12,10 +12,17 @@ import {
     QuestionModel,
     RegionModel
 } from "../../../database/schema";
+
 import IBaseRepo from "../controllers/controller/IController";
 import {
     OrganizationModel
-} from "../../organization/database/organization_schema";
+} from "../../organization/models/OrganizationTable";
+import { ICampaign, TCampaignList, TPayloadCampaign } from "../interface/campaign";
+import { CampaignAdModel } from "./CampaignModel";
+import { RegionModel } from "apps/region/models/RegionTable";
+import { AreaModel } from "apps/area/models/AreaTable";
+import { QuestionModel } from "apps/questions/models/QuestionModel";
+import { IQuestion } from "apps/questions/interface/Question";
 export class CampaignAdRepo
     implements IBaseRepo<ICampaign, TListFiltersCampaigns> {
     constructor() {
@@ -89,6 +96,20 @@ export class CampaignAdRepo
         }
         if (filters.filters?.regionId) {
             whereCondition.regionId = { [Op.eq]: filters.filters.regionId };
+        }
+
+        if (filters.filters?.fromDate || filters.filters?.toDate) {
+            whereCondition[Op.and] = whereCondition[Op.and] || [];
+            if (filters.filters.fromDate) {
+                whereCondition[Op.and].push({
+                    start: { [Op.gte]: new Date(filters.filters.fromDate) }, // Greater than or equal to start date
+                });
+            }
+            if (filters.filters.toDate) {
+                whereCondition[Op.and].push({
+                    to: { [Op.lte]: new Date(filters.filters.toDate) }, // Less than or equal to end date
+                });
+            }
         }
 
         // Add a specific condition for regionId if it needs to support `search`

@@ -2,7 +2,7 @@ import * as express from 'express';
 import ProductsCategoryController from '../controllers/productsCategoryController';
 import { validateCreateProductsCategory, validateDeleteProductsCategory, validateGetAllProductsCategory, validateGetProductsCategoryById, validateGetProductsCategoryBySlug, validateUpdateProductsCategory, validateUpdateStatus } from '../validations/productsCategoryValidation';
 // import { validateCreateProduct, validateProductList, validateProductById, validateUpdateProduct, validateDeleteProduct, validateChangeProductStatus } from "../validations/productValidations";
-const {createProductsCategory, deleteProductsCategory, getAllProductsCategory, getProductsCategoryById, getProductsCategoryBySlug, updateProductsCategory, updateStatus} = ProductsCategoryController
+const {createProductsCategory, deleteProductsCategory, getProductsCategoryById, getProductsCategoryBySlug, updateProductsCategory, updateStatus, getAllProductsCategory} = ProductsCategoryController
 const router = express.Router();
 
 router.post('/create', validateCreateProductsCategory,createProductsCategory);

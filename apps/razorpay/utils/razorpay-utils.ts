@@ -1,11 +1,7 @@
-import {
-    TransactionModel,
-} from "../../../database/schema/payment-transaction/PaymentTransactionModel";
-import { ContractRepo } from "../../contracts/models/ContractRepo";
-import {
-    CONTRACT_PAYMENT_STATUS, CONTRACT_STATUS,
-    ContractPaymentDetails,
-} from "../../../interfaces";
+import { CONTRACT_PAYMENT_STATUS, CONTRACT_STATUS, ContractPaymentDetails } from "apps/contracts/interface/Contract";
+import { ContractRepo } from "apps/contracts/models/ContractRepo";
+import { TransactionModel } from "database/schema/payment-transaction/PaymentTransactionModel";
+
 
 async function parseAndSaveEvent(eventPayload: any) {
     const { event, payload } = eventPayload;

@@ -1,18 +1,19 @@
+import { UserModel } from "apps/user/models/UserTable";
+import { BaseDocument, SaveDocument } from "../interface/Document";
+import { DocumentModel } from "../models/DocumentTable";
+import { IDocumentRepo } from "./IDocumentRepo";
 
-import { BaseDocument, Document } from '../../../interfaces/documents';
-import { IDocumentRepo } from './IDocumentRepo';
-import { UserModel } from '../../../database/schema';
-import { DocumentModel } from '../../../database/schema/documents/documentModel';
+
 export class DocumentRepo implements IDocumentRepo {
 
-    async createDocument(document: BaseDocument[]): Promise<Document[] | null> {
+    async createDocument(document: BaseDocument[]): Promise<SaveDocument[] | null> {
         const transaction = await DocumentModel.sequelize?.transaction();
         try {
 
 
             // const documentCreated = await DocumentModel.bulkCreate(document);
             // return documentCreated.map((doc: DocumentModel) => doc.toJSON());
-            const results: Document[] = [];
+            const results: SaveDocument[] = [];
 
             for (const doc of document) {
                 doc.entity_type = "franchise";
@@ -47,10 +48,10 @@ export class DocumentRepo implements IDocumentRepo {
         }
     }
 
-    async updateDocument(documents: BaseDocument[]): Promise<Document[] | null> {
+    async updateDocument(documents: BaseDocument[]): Promise<SaveDocument[] | null> {
         const transaction = await DocumentModel.sequelize?.transaction();
         try {
-            const results: Document[] = [];
+            const results: SaveDocument[] = [];
 
             for (const doc of documents) {
                 doc.entity_type = "franchise";
@@ -85,10 +86,10 @@ export class DocumentRepo implements IDocumentRepo {
         }
     }
 
-    async deleteDocument(id: number): Promise<Document> {
+    async deleteDocument(id: number): Promise<Array<SaveDocument>> {
         throw new Error("Method not implemented.");
     }
-    async getDocument(id: number): Promise<Document[]> {
+    async getDocument(id: number): Promise<SaveDocument[]> {
         try {
             const document = await DocumentModel.findAll({
                 where: {
@@ -108,7 +109,7 @@ export class DocumentRepo implements IDocumentRepo {
             return null;
         }
     }
-    async getDocumentByUser(data: any): Promise<Document[]> {
+    async getDocumentByUser(data: any): Promise<SaveDocument[]> {
         try {
             const documents = await DocumentModel.findAll({
                 where: {

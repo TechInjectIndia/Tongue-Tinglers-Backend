@@ -1,14 +1,9 @@
 import { Op } from "sequelize";
-import {
-    TListFiltersAreas,
-} from "../../../types";
-import {
-    TAreaList,
-    TPayloadArea,
-    IArea,
-} from "../../../interfaces";
-import { AreaModel } from "../../../database/schema";
+
 import IBaseRepo from '../controllers/IAreaController';
+import { IArea, TAreaList, TPayloadArea } from "../interface/Area";
+import { TListFiltersAreas } from "apps/common/models/common";
+import { AreaModel } from "./AreaTable";
 
 export class AreaRepo implements IBaseRepo<IArea, TListFiltersAreas> {
     constructor() { }

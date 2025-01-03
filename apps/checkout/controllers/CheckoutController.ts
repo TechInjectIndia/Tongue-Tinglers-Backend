@@ -1,11 +1,9 @@
-import {Request, Response} from "express";
-import {get} from "lodash";
-import {
-    ParsedOrder,
-    PAYMENT_TYPE,
-    PresaleParsedOrder
-} from "../../../interfaces";
-import {OrderStatus} from "../../../types";
+import { Request, Response } from "express";
+import { get } from "lodash";
+
+// import { OrderStatus } from "../../../types";
+import { OrderStatus, ParsedOrder, PAYMENT_TYPE, PresaleParsedOrder } from "apps/order/interface/Order";
+import { CartDetailRepo } from "apps/cart-details/repos/cartDetailRepo";
 
 
 export default class CheckoutController {
@@ -24,7 +22,7 @@ export default class CheckoutController {
         const coupon_code: (string | undefined) = get(req, "coupon_code");
         const shippingAddId = parseInt(get(req, "shippingAddId"));
         const billingAddId = parseInt(get(req, "billingAddId"));
-        const order:ParsedOrder = {
+        const order: ParsedOrder = {
             anomalyArr: [],
             cancelledItems: [],
             coupon: "code1",
@@ -54,13 +52,17 @@ export default class CheckoutController {
         res.status(200).json(order);
     }
 
-    static getPreSaleOrder(req: Request,
+    static async getPreSaleOrder(req: Request,
         res: Response): Promise<PresaleParsedOrder> {
 
         const user_id = parseInt(get(req, "user_id"));
         if (user_id === undefined || isNaN(user_id)) {
-            res.status(400).json({error: "User not found"});
+            res.status(400).json({ error: "User not found" });
             return;
         }
+
+        let data = new CartDetailRepo().getCartDetailByUserId(user_id);
+
+        //TODO @sumeet sir implement this
     }
 }

@@ -1,6 +1,6 @@
 import IUserAddressController from "../controllers/IAddressController"; // Ensure this interface is correctly defined
 import { Address, BaseAddress, TListFilters } from "../../../types";
-import { AddressModel } from "../../../database/schema";
+import { AddressModel } from "../models/AddressTable";
 import {parseAddress} from "../parser/addressParser"
 
 export class AddressRepo implements IUserAddressController<BaseAddress, Address, TListFilters> {

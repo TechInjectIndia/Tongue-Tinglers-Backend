@@ -1,4 +1,3 @@
-import { ProductModel } from '../../../database/schema/product/productModel';
 import { BaseProduct, CHANGE_STATUS, Pagination, ParsedProduct, Product, PRODUCTS_TYPE} from '../../../interfaces/products';
 
 export interface IProductRepo {
@@ -8,7 +7,7 @@ export interface IProductRepo {
 
     delete(id: number): Promise<Product>;
 
-    getById(id: number): Promise<ParsedProduct>;
+    getById(id: number): Promise<ParsedProduct | null> ;
 
     getAll(page: number, limit: number, search: string, filters: object): Promise<Pagination<ParsedProduct>>;
 

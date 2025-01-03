@@ -1,5 +1,5 @@
-import { EmailLogModel, UserModel } from '../../../database/schema';
-import { getUserName } from '../../common/utils/commonUtils';
+
+import { UserModel } from 'apps/user/models/UserTable';
 
 export type TEmailLogPayload = {
     to: string;
@@ -15,10 +15,10 @@ export class EmailRepo {
             if(!user){
                 throw new Error(`User with ID ${userId} not found.`);
             }
-            await EmailLogModel.create(data, {
-                userId: user.id,
-                userName: getUserName(user)
-            });
+            // await EmailLogModel.create(data, {
+            //     userId: user.id,
+            //     userName: getUserName(user)
+            // });
             console.log('Email log created successfully.');
         } catch (error) {
             console.error('Error creating email log:', error);

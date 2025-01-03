@@ -5,6 +5,7 @@ import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
 import { Request, Response } from "express";
 import { BaseProductOptions, ProductOptions, ProductOptionsList } from "../../../interfaces/product-options";
+import { parsedProductOptions } from "apps/product/interface/ProductOptions";
 
 export default class ProductOptionsController {
     static async createProductOptions(req: Request, res: Response) {
@@ -60,13 +61,13 @@ export default class ProductOptionsController {
     static async getProductOptionsById(req: Request, res: Response) {
         try {
             const id = parseInt(req.params.id, 0);
-            const productOptions: BaseProductOptions = await RepoProvider.productOptionsRepo.getById(id);
+            const productOptions = await RepoProvider.productOptionsRepo.getById(id);
             return res.status(200)
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.SUCCESS,
                             SUCCESS_MESSAGE.FETCHED,
-                            productOptions,
+                            parsedProductOptions(productOptions),
                         ),
                     );
         } catch (error) {

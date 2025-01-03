@@ -1,15 +1,15 @@
 import {Op} from "sequelize";
 import {TListFilters} from "../../../types";
-import {AddressModel, UserModel} from "../../../database/schema";
+
 import IBaseRepo from "../controllers/controller/IController";
-import {
-    IOrganizationPayloadData,
-    IOrganizationPayloadDataWithMeta,
-    ParsedOrganization,
-} from "../../../interfaces/organization";
-import {OrganizationModel} from "../database/organization_schema";
+
+import {OrganizationModel} from "../models/OrganizationTable";
 import RepoProvider from "../../RepoProvider";
-import {parseOrganization} from "../parser/organizationParser"
+import {parseOrganization, parseOrganizationAddresses} from "../parser/organizationParser"
+import {IOrganizationPayloadData, IOrganizationPayloadDataWithMeta, OrganizationAddresses, OrganizationAddressPayload, ParsedOrganization} from "../interface/organization"
+import { AddressModel } from "apps/address/models/AddressTable";
+import { UserModel } from "apps/user/models/UserTable";
+import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
 
 export class OrganizationRepo
     implements IBaseRepo<IOrganizationPayloadDataWithMeta, ParsedOrganization, TListFilters> {
@@ -193,7 +193,7 @@ export class OrganizationRepo
                         model: AddressModel,
                         as: "billingAddress", // Billing address (one-to-one
                                               // association)
-                        attributes: {exclude: []}, // Include all fields of the
+                        // attributes: {exclude: []}, // Include all fields of the
                                                    // address
                     },
                     {
@@ -316,4 +316,93 @@ export class OrganizationRepo
             return null
         }
     }
+
+
+    public async updateAddressOfOrganization(organizationId: number, payload:OrganizationAddressPayload, userId:number): Promise<[affectedCount: number]> {
+        try {
+            const shippingAddressIds = []
+            const organization = await OrganizationModel.findByPk(organizationId);
+            console.log('organization: ', organization);
+            if (!organization) {
+                throw new Error('Organization not found');
+            }
+
+            if(payload.billingAddress){
+                // Update the address of the organization
+                const updatedAddress = await AddressModel.update(payload.billingAddress, {
+                    where: { id: organization.dataValues.billingAddressId },
+                });
+            }
+
+            if(payload.shippingAddress && Array.isArray(payload.shippingAddress)){
+                for (const detail of payload.shippingAddress) {
+                    if (detail.id) {
+                        // If ID exists, update the record
+                        const existingDetail = await AddressModel.findByPk(
+                            detail.id
+                        );
+                        if (existingDetail) {
+                            await existingDetail.update(detail);
+                        } else {
+                            console.warn(
+                                `Shipping Address with ID ${detail.id} not found. Skipping update.`
+                            );
+                        }
+                    } else {
+                        // If no ID, create a new record
+                        const newDetail = await AddressModel.create(detail);
+                        shippingAddressIds.push(newDetail.id);
+                        await organization.addShippingAddresses(shippingAddressIds);
+                    }
+                }
+            }
+            organization.set({
+                updatedBy: userId,
+                updatedAt: new Date(),
+            });
+            await organization.save();
+            return [1];
+        } catch (error) {
+            console.error('Error updating address of organization:', error);
+            throw error;
+        }
+    }
+
+    public async getAddressOfOrganization(franchiseId: number): Promise<OrganizationAddresses>{
+        try{
+            const existingFranchise = await FranchiseModel.findByPk(franchiseId);
+            if(!existingFranchise){
+                throw new Error('Franchise not found');
+            }
+            const organization = await OrganizationModel.findOne({
+                where:{
+                    id: existingFranchise.organizationId
+                },
+                include: [
+                    {
+                        model: AddressModel,
+                        as: "billingAddress", 
+                    },
+                    {
+                        model: AddressModel,
+                        as: "shippingAddresses",
+                        through: {
+                            attributes: [],
+                        },
+                        attributes: {exclude: []},
+                    },
+                ],
+                // attributes: ['billingAddress', 'shippingAddresses']
+            });
+            if(!organization){
+                throw new Error('Organization not found');
+            }
+            return parseOrganizationAddresses(organization);
+        }catch(error){
+            console.log(error)
+            return null
+        }
+    }
+
+
 }

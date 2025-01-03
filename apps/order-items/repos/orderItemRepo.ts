@@ -1,12 +1,12 @@
-import { OrderItemModel } from "../../../database/schema/order-items/orderItemsModel";
-import { BaseOrderItem, OrderItem, UpdateCouponDiscount, UpdatePointsDiscount, UpdateQuantity, UpdateStudentDiscount } from "../../../interfaces/order_items";
+import { OrderItemsModel } from "../models/OrderItemsTable";
+import { BaseOrderItem, OrderItem, UpdateCouponDiscount, UpdatePointsDiscount, UpdateQuantity, UpdateStudentDiscount } from "../interface/orderItem";
 import { IOrderItemRepo } from "./IOrderItemRepo";
 
 export class OrderItemRepo implements IOrderItemRepo {
 
   async createOrderItem(orderItem: BaseOrderItem): Promise<OrderItem> {
     try {
-      const orderItemCreated = await OrderItemModel.create(orderItem)
+      const orderItemCreated = await OrderItemsModel.create(orderItem)
       return orderItemCreated.toJSON();
     } catch (error) {
       console.log(error);
@@ -16,7 +16,7 @@ export class OrderItemRepo implements IOrderItemRepo {
 
   async createBulkOrderItem(orderItems: BaseOrderItem[]): Promise<OrderItem[]> {
     try {
-      const orderItemsCreated = await OrderItemModel.bulkCreate(orderItems)
+      const orderItemsCreated = await OrderItemsModel.bulkCreate(orderItems)
       return orderItemsCreated.map((orderItem) => orderItem.toJSON());
     } catch (error) {
       console.log(error);
@@ -26,7 +26,7 @@ export class OrderItemRepo implements IOrderItemRepo {
   
   async getOrderItemsById(id: number): Promise<OrderItem> {
     try{
-      const orderItem = await OrderItemModel.findByPk(id);
+      const orderItem = await OrderItemsModel.findByPk(id);
       if(!orderItem){
         throw new Error(`Order-Item with ID ${id} not found`);
       }
@@ -39,7 +39,7 @@ export class OrderItemRepo implements IOrderItemRepo {
 
   async updateOrderItem(orderItem: OrderItem): Promise<OrderItem> {
     try {
-      const existingOrderItem = await OrderItemModel.findByPk(orderItem.id);
+      const existingOrderItem = await OrderItemsModel.findByPk(orderItem.id);
       if(!existingOrderItem){
         throw new Error(`Order-Item with ID ${orderItem.id} not found`);
       }
@@ -53,7 +53,7 @@ export class OrderItemRepo implements IOrderItemRepo {
 
   async deleteOrderItem(id: number): Promise<OrderItem> {
     try {
-      const orderItem = await OrderItemModel.findByPk(id);
+      const orderItem = await OrderItemsModel.findByPk(id);
       if(!orderItem){
         throw new Error(`Order-Item with ID ${id} not found`);
       }
@@ -68,7 +68,7 @@ export class OrderItemRepo implements IOrderItemRepo {
   async updateQuantity(update_quantity: UpdateQuantity): Promise<OrderItem> {
     try {
       const {id, quantity} = update_quantity;
-      const existingOrderItem = await OrderItemModel.findByPk(id);
+      const existingOrderItem = await OrderItemsModel.findByPk(id);
       if(!existingOrderItem){
         throw new Error(`Order-Item with ID ${id} not found`);
       }
@@ -83,7 +83,7 @@ export class OrderItemRepo implements IOrderItemRepo {
   async updateCouponDiscount(update_coupon_discount: UpdateCouponDiscount): Promise<OrderItem> {
     try {
       const {id, coupon_discount} = update_coupon_discount;
-      const existingOrderItem = await OrderItemModel.findByPk(id);
+      const existingOrderItem = await OrderItemsModel.findByPk(id);
       if(!existingOrderItem){
         throw new Error(`Order-Item with ID ${id} not found`);
       }
@@ -98,7 +98,7 @@ export class OrderItemRepo implements IOrderItemRepo {
   async updatePointsDiscount(update_points_discount: UpdatePointsDiscount): Promise<OrderItem> {
     try {
       const {id, points_discount} = update_points_discount;
-      const existingOrderItem = await OrderItemModel.findByPk(id);
+      const existingOrderItem = await OrderItemsModel.findByPk(id);
       if(!existingOrderItem){
         throw new Error(`Order-Item with ID ${id} not found`);
       }
@@ -113,7 +113,7 @@ export class OrderItemRepo implements IOrderItemRepo {
   async updateStudentDiscount(update_student_discount: UpdateStudentDiscount): Promise<OrderItem> {
     try {
       const {id, student_discount} = update_student_discount;
-      const existingOrderItem = await OrderItemModel.findByPk(id);
+      const existingOrderItem = await OrderItemsModel.findByPk(id);
       if(!existingOrderItem){
         throw new Error(`Order-Item with ID ${id} not found`);
       }

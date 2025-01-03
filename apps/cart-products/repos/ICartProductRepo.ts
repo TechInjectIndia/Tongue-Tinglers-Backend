@@ -8,4 +8,8 @@ export interface ICartProductRepo {
     delete(id: number): Promise<CartProduct>;
 
     updateQuantity(cartProduct: UpdateQuantity): Promise<CartProduct>;
+
+    getCartById(id: number): Promise<ParsedCartProduct>;
+
+    clearUserCart(userId: number);
 }

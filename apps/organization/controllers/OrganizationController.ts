@@ -15,11 +15,13 @@ import {
 } from "../../../interfaces/organization";
 import {Pagination} from "../../../interfaces";
 import {ContractRepo} from "../../contracts/models/ContractRepo";
+import { ContractsPayload } from "apps/contracts/interface/Contract";
+
 
 export default class OrganizationController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const user_id = get(req, "user_id", 1);
+            const user_id = get(req, "user_id");
 
             console.log(user_id);
 
@@ -27,19 +29,17 @@ export default class OrganizationController {
 
             const prospectId = body.prospectId ?? null;
 
-            console.log(prospectId);
-
-
             const payload: IOrganizationPayloadDataWithMeta = {
                 ...req.body,
-                createdBy: 1,
-                rootUser: 1,
+                createdBy: user_id,
+                rootUser: user_id,
             };
+
             const data = await new OrganizationRepo().create(payload, user_id);
 
             if (prospectId) {
                 await new ContractRepo().update(prospectId,
-                    {organizationId: data.id});
+                    {organizationId: data.id} as Partial<ContractsPayload>);
             }
             return res
                 .status(201)
@@ -221,6 +221,80 @@ export default class OrganizationController {
                         "An error occurred while fetching products.",
                     ),
                 );
+        }
+    }
+
+    static async updateAddressOfOrganization(req: Request, res: Response, next: NextFunction){
+        try {
+            const id = parseInt(get(req.params, "id"));
+            if(!id) throw Error("missing id in params")
+            const user_id = get(req, "user_id");
+            if(!user_id) throw Error("missing user_id in req")
+
+            const payload = {...req.body};
+
+            const existingOrganization = await new OrganizationRepo().get(
+                id,
+            );
+            if (isEmpty(existingOrganization)) {
+                return res
+                    .status(400)
+                    .send(sendResponse(RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.NOT_EXISTS));
+            }
+
+            const updatedOrganization = await new OrganizationRepo().updateAddressOfOrganization(
+                id,
+                payload,
+                user_id
+            );
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.UPDATED,
+                        updatedOrganization,
+                    ),
+                );
+        }
+        catch (err) {
+            console.error(err);
+            return res
+                .status(500)
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
+        }
+    }
+
+    static async getAddressOfOrganization(req: Request, res: Response, next: NextFunction){
+        try {
+            const franchiseId = parseInt(get(req.params, "id"));
+            if(!franchiseId) throw Error("missing id in params")
+                const organizationAddress = await new OrganizationRepo().getAddressOfOrganization(
+                    franchiseId
+                );
+                if (isEmpty(organizationAddress)) {
+                    return res
+                        .status(400)
+                        .send(sendResponse(RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS));
+                }
+    
+                return res
+                    .status(200)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.SUCCESS,
+                            SUCCESS_MESSAGE.FETCHED,
+                            organizationAddress,
+                        ),
+                    );
+        } catch (error) {
+            console.error(error);
+            return res
+                .status(500)
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
 }

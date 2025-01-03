@@ -1,122 +1,122 @@
-const { Op } = require("sequelize");
-import {
-    TListFilters,
-    TEditUser,
-} from "../../../types";
-import { UserModel, ItemStockModel } from "../../../database/schema";
-import { USER_TYPE } from '../../../interfaces';
-const axios = require('axios');
-const apiUrl = 'https://api.petpooja.com'; // Base URL for PetPooja API
-const apiKey = process.env.API_KEY; // API key from PetPooja
-import IBaseRepo from '../controllers/controller/IPetPoojaController';
-import { firestore, } from "firebase-admin";
-
-// Function to get today's start time and the end time 24 hours later
-function getTodayStartTime(): Date {
-    const now = new Date();
-    return new Date(now.setHours(0, 0, 0, 0));
-}
-
-function get24HoursLater(startTime: Date): Date {
-    return new Date(startTime.getTime() + 24 * 60 * 60 * 1000 - 1); // Subtract 1 ms to get to 23:59:59
-}
+// const { Op } = require("sequelize");
+// import {
+//     TListFilters,
+//     TEditUser,
+// } from "../../../types";
 
 
-export class PetPoojaRepo implements IBaseRepo<TEditUser, TListFilters> {
-    constructor() { }
+// const axios = require('axios');
+// const apiUrl = 'https://api.petpooja.com'; // Base URL for PetPooja API
+// const apiKey = process.env.API_KEY; // API key from PetPooja
+// import IBaseRepo from '../controllers/controller/IPetPoojaController';
+// import { firestore, } from "firebase-admin";
 
-    public async updateStockData(user_id: number, data: any): Promise<[affectedCount: number]> {
-        const todayStart = getTodayStartTime();
-        const todayEnd = get24HoursLater(todayStart);
+// // Function to get today's start time and the end time 24 hours later
+// function getTodayStartTime(): Date {
+//     const now = new Date();
+//     return new Date(now.setHours(0, 0, 0, 0));
+// }
 
-        const response = await ItemStockModel.update(data, {
-            where: {
-                user_id,
-                recorded_at: {
-                    [Op.between]: [todayStart, todayEnd] // Sequelize operator for range check
-                }
+// function get24HoursLater(startTime: Date): Date {
+//     return new Date(startTime.getTime() + 24 * 60 * 60 * 1000 - 1); // Subtract 1 ms to get to 23:59:59
+// }
 
-            },
-        });
-        return response;
-    }
 
-    public async saveStockData(data: any): Promise<any> {
-        const response = await ItemStockModel.create(data);
-        return response;
-    }
+// export class PetPoojaRepo implements IBaseRepo<TEditUser, TListFilters> {
+//     constructor() { }
 
-    public async getAllFranchise(): Promise<any> {
-        const data = await UserModel.findAll({
-            where: {
-                type: USER_TYPE.SUPER_FRANSHISE
-            },
-        });
-        return data;
-    }
+//     public async updateStockData(user_id: number, data: any): Promise<[affectedCount: number]> {
+//         const todayStart = getTodayStartTime();
+//         const todayEnd = get24HoursLater(todayStart);
 
-    public async allEndStock(): Promise<any> {
-        const totalStock = await ItemStockModel.sum('endStock'); // Sum of all endStock values
-        return totalStock
-    }
+//         const response = await ItemStockModel.update(data, {
+//             where: {
+//                 user_id,
+//                 recorded_at: {
+//                     [Op.between]: [todayStart, todayEnd] // Sequelize operator for range check
+//                 }
 
-    public async itemStocks(): Promise<any> {
-        const itemStocks = await ItemStockModel.findAll({
-            attributes: ['user_id', 'startStock', 'endStock'],
-        });
-        return itemStocks
-    }
+//             },
+//         });
+//         return response;
+//     }
 
-    public async aggregate(): Promise<any> {
-        const [averageStartStock, averageEndStock] = await Promise.all([
-            ItemStockModel.aggregate('startStock', 'avg', { plain: false }), // Average startStock
-            ItemStockModel.aggregate('endStock', 'avg', { plain: false }) // Average endStock
-        ]);
-        return [averageStartStock, averageEndStock]
-    }
+//     public async saveStockData(data: any): Promise<any> {
+//         const response = await ItemStockModel.create(data);
+//         return response;
+//     }
 
-    public async getStockTrends(): Promise<any> {
-        const itemStocks = await ItemStockModel.findAll({
-            attributes: ['recorded_at', 'startStock', 'endStock'],
-            order: [['recorded_at', 'ASC']], // Order by date
-        });
-        return itemStocks
-    }
+//     public async getAllFranchise(): Promise<any> {
+//         const data = await UserModel.findAll({
+//             where: {
+//                 type: USER_TYPE.SUPER_FRANSHISE
+//             },
+//         });
+//         return data;
+//     }
 
-    public async getInventory(franchiseId: number): Promise<any> {
-        const response = await axios.get(`${apiUrl}/inventory`, {
-            headers: {
-                'Authorization': `Bearer ${apiKey}`
-            }
-        });
+//     public async allEndStock(): Promise<any> {
+//         const totalStock = await ItemStockModel.sum('endStock'); // Sum of all endStock values
+//         return totalStock
+//     }
 
-        // Save inventory to database, date wise, ( franchiseId )
-    }
+//     public async itemStocks(): Promise<any> {
+//         const itemStocks = await ItemStockModel.findAll({
+//             attributes: ['user_id', 'startStock', 'endStock'],
+//         });
+//         return itemStocks
+//     }
 
-    public async savePetPoojaOrder(franchiseId: number): Promise<any> {
+//     public async aggregate(): Promise<any> {
+//         const [averageStartStock, averageEndStock] = await Promise.all([
+//             ItemStockModel.aggregate('startStock', 'avg', { plain: false }), // Average startStock
+//             ItemStockModel.aggregate('endStock', 'avg', { plain: false }) // Average endStock
+//         ]);
+//         return [averageStartStock, averageEndStock]
+//     }
 
-        // Save new Order        
-    }
+//     public async getStockTrends(): Promise<any> {
+//         const itemStocks = await ItemStockModel.findAll({
+//             attributes: ['recorded_at', 'startStock', 'endStock'],
+//             order: [['recorded_at', 'ASC']], // Order by date
+//         });
+//         return itemStocks
+//     }
 
-    public async getOrdersWebHook(json: any): Promise<boolean> {
-        try {
-            await firestore().collection('petpooja-webhook-test').doc().set(json);
-            return true;
-        } catch (error) {
-            console.log(error);
+//     public async getInventory(franchiseId: number): Promise<any> {
+//         const response = await axios.get(`${apiUrl}/inventory`, {
+//             headers: {
+//                 'Authorization': `Bearer ${apiKey}`
+//             }
+//         });
 
-            return false;
-        }
-    }
+//         // Save inventory to database, date wise, ( franchiseId )
+//     }
 
-    public async ordersCallback(json: any): Promise<boolean> {
-        try {
-            await firestore().collection('petpooja-order-callback-test').doc().set(json);
-            return true;
-        } catch (error) {
-            console.log(error);
+//     public async savePetPoojaOrder(franchiseId: number): Promise<any> {
 
-            return false;
-        }
-    }
-}
+//         // Save new Order        
+//     }
+
+//     public async getOrdersWebHook(json: any): Promise<boolean> {
+//         try {
+//             await firestore().collection('petpooja-webhook-test').doc().set(json);
+//             return true;
+//         } catch (error) {
+//             console.log(error);
+
+//             return false;
+//         }
+//     }
+
+//     public async ordersCallback(json: any): Promise<boolean> {
+//         try {
+//             await firestore().collection('petpooja-order-callback-test').doc().set(json);
+//             return true;
+//         } catch (error) {
+//             console.log(error);
+
+//             return false;
+//         }
+//     }
+// }

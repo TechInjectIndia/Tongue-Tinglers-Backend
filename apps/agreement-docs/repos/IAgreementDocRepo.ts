@@ -1,5 +1,7 @@
-import { Pagination } from "../../../interfaces";
-import { BaseAgreementDocs, ENTITY_TYPE_AGREEMENT, IBaseAgreementDocs } from "../../../interfaces/agreement-docs";
+
+
+import { Pagination } from "apps/common/models/common";
+import { BaseAgreementDocs, IBaseAgreementDocs } from "../interface/AgreementDocs";
 
 export interface IAgreementDocRepo {
     createAgreementDoc(payload: BaseAgreementDocs): Promise<IBaseAgreementDocs>
@@ -10,5 +12,5 @@ export interface IAgreementDocRepo {
 
     getAgreementDoc(entity_id: number, entity_type: string): Promise<IBaseAgreementDocs[]>
 
-    getAllAgreementDoc(page: number,limit: number): Promise<Pagination<IBaseAgreementDocs>>
+    getAllAgreementDoc(page: number, limit: number): Promise<Pagination<IBaseAgreementDocs>>
 }

@@ -1,4 +1,4 @@
-import {APIResponse} from "../models/ApiResponse";
+import {APIResponse} from "../models/Base";
 
 class HelperMethods {
 

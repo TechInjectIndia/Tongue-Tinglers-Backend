@@ -5,7 +5,7 @@ import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constant
 import { LeadRepo } from '../models/web-lead';
 import { RolesRepo } from '../../user/models/roles';
 import { LeadSource, LeadStatus } from '../../../interfaces';
-import { TLeadFilters, } from "../../../types";
+
 
 export default class WebLeadController {
     static async list(req: Request, res: Response, next: NextFunction): Promise<Response> {

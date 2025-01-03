@@ -1,9 +1,13 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { BUSINESS_TYPE, IOrganization, ORGANIZATION_TYPE } from "../../../interfaces/organization";
-import { AddressModel, UserModel } from "../../../database/schema";
-import {DocumentModel} from "../../../database/schema/documents/documentModel";
+
+
 import RepoProvider from "../../RepoProvider";
+import { IOrganization } from "interfaces/organization";
+import { BUSINESS_TYPE, ORGANIZATION_TYPE } from "../interface/organization";
+import { AddressModel } from "apps/address/models/AddressTable";
+import { DocumentModel } from "apps/documents/models/DocumentTable";
+import { UserModel } from "apps/user/models/UserTable";
  // Ensure this path is correct
 
 const { STRING, INTEGER, DATE, NOW, ENUM } = DataTypes;

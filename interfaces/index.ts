@@ -6,7 +6,7 @@ export * from "./reviews";
 export * from "./franchise";
 export * from "./products";
 export * from "./product_category";
-export * from "./orders";
+// export * from "./orders";
 export * from "./crm";
 export * from "./petpooja";
 export * from "./form-question";

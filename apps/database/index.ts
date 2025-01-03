@@ -4,6 +4,8 @@ import { AgreementDocModel } from "apps/agreement-docs/model/agreementDocModel";
 import { AreaModel } from "apps/area/models/AreaTable";
 import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
 import { CampaignQuestionModel } from "apps/campaign/models/CampaignQuestionModel";
+import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
+import { CartProductModel } from "apps/cart-products/model/CartTable";
 import { CommissionEntityMapTable } from "apps/commission/model/CommissionEntityMapTable";
 import { CommissionTable } from "apps/commission/model/CommmisionTable";
 import { handleError } from "apps/common/utils/HelperMethods";
@@ -16,14 +18,17 @@ import { IChecklistModel } from "apps/ichecklist/model/CheckListTable";
 import { AssignModel } from "apps/lead/models/AssignTable";
 import { LeadsModel } from "apps/lead/models/LeadTable";
 import { OptionsModel } from "apps/options/models/optionTable";
+import { OrderItemsModel } from "apps/order-items/models/OrderItemsTable";
+import { NotesModel } from "apps/order/models/NotesTable";
+import { OrderModel } from "apps/order/models/OrderTable";
 import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 import { PdiCheckpointModel } from "apps/pdi-checkpoint/model/PdiCheckPointTable";
+import { ProductOptionsModel } from "apps/product-options/models/productOptionTable";
+import { ProductModel } from "apps/product/model/productTable";
+import { ProductsCategoryModel } from "apps/products-category/models/ProductCategoryTable";
 import { QuestionModel } from "apps/questions/models/QuestionModel";
 import { RegionModel } from "apps/region/models/RegionTable";
 import { UserModel } from "apps/user/models/UserTable";
-import { CartDetailsModel } from "database/schema/cart_details/cartDetailsModel";
-import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
-
 
 // Initialize Models
 const models = {
@@ -44,7 +49,6 @@ const models = {
     PdiCheckPoints: PdiCheckpointModel.initModel(),
     IChecklistModel: IChecklistModel.initModel(),
     Variations: ProductOptionsModel.initModel(),
-
     Affiliate: AffiliateModel.initModel(),
     QuestionModel: QuestionModel.initModel(),
     CampaignQuestionModel: CampaignQuestionModel.initModel(),
@@ -52,6 +56,12 @@ const models = {
     CommissionEntityMap: CommissionEntityMapTable.initModel(),
     Commission: CommissionTable.initModel(),
     CartDetails: CartDetailsModel.initModel(),
+    ProductCategory: ProductsCategoryModel.initModel(),
+    Product: ProductModel.initModel(),
+    Order: OrderModel.initModel(),
+    Notes: NotesModel.initModel(),
+    OrderItem: OrderItemsModel.initModel(),
+    Cart: CartProductModel.initModel()
 };
 
 console.log(Object.keys(models).join(" "))

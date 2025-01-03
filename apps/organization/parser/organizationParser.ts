@@ -1,4 +1,4 @@
-import { ParsedOrganization } from "../interface/organization";
+import { OrganizationAddresses, ParsedOrganization } from "../interface/organization";
 
 const parseOrganization = (organization: any) => {
     const data: ParsedOrganization = {
@@ -28,4 +28,12 @@ const parseOrganization = (organization: any) => {
     return data;
 }
 
-export {parseOrganization}
+const parseOrganizationAddresses = (organization: any): OrganizationAddresses => {
+    const data: OrganizationAddresses = {
+        billingAddress: organization.billingAddress,
+        shippingAddress: organization.shippingAddresses
+    }
+    return data;
+}
+
+export {parseOrganization, parseOrganizationAddresses}

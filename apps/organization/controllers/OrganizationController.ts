@@ -266,4 +266,35 @@ export default class OrganizationController {
                 .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
+
+    static async getAddressOfOrganization(req: Request, res: Response, next: NextFunction){
+        try {
+            const franchiseId = parseInt(get(req.params, "id"));
+            if(!franchiseId) throw Error("missing id in params")
+                const organizationAddress = await new OrganizationRepo().getAddressOfOrganization(
+                    franchiseId
+                );
+                if (isEmpty(organizationAddress)) {
+                    return res
+                        .status(400)
+                        .send(sendResponse(RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.NOT_EXISTS));
+                }
+    
+                return res
+                    .status(200)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.SUCCESS,
+                            SUCCESS_MESSAGE.FETCHED,
+                            organizationAddress,
+                        ),
+                    );
+        } catch (error) {
+            console.error(error);
+            return res
+                .status(500)
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
+        }
+    }
 }

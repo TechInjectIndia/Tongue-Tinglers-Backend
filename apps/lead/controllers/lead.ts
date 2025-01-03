@@ -234,6 +234,23 @@ export default class LeadController {
                 { transaction },
             );
 
+            const mailDto = new LeadToProspectMail().getPayload(
+                {},
+                existingLead.email,
+            );
+            await sendMail(mailDto);
+
+            // try {
+                // send mail
+                // const mailDto = new LeadToProspectMail().getPayload(
+                //     {},
+                //     existingLead.email,
+                // );
+                // await sendMail(mailDto);
+            // } catch (emailError) {
+                // console.error("Error sending email:", emailError);
+            // }
+
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
                 emailVerified: true,
@@ -290,31 +307,6 @@ export default class LeadController {
 
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password?token=${token}`;
 
-            try {
-                // welcome mail
-                const mailDto = new LeadToProspectMail().getPayload(
-                    {},
-                    existingLead.email,
-                );
-                await sendMail(mailDto);
-                // const emailContent = `Hi Your Lead converted into Prospect Now Add Your Organisation using link: https://tonguetingler.vercel.app/organization-setup?prospectId=${prospect.id} using password:12345678`;
-                // const mailOptions = {
-                //     to: existingLead.email,
-                //     subject: EMAIL_HEADING.PROSPECT_GENERATED,
-                //     templateParams: {
-                //         heading: EMAIL_HEADING.PROSPECT_GENERATED,
-                //         description: emailContent,
-                //     },
-                // };
-
-                // await sendEmail(
-                //     mailOptions.to,
-                //     mailOptions.subject,
-                //     mailOptions.templateParams,
-                // );
-            } catch (emailError) {
-                console.error("Error sending email:", emailError);
-            }
             await transaction.commit(); // Commit the transaction
             return res
                 .status(200)

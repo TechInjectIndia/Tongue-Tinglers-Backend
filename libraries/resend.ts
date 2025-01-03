@@ -35,6 +35,14 @@ export const EMAIL_TEMPLATE = {
     PAYMENT_REMINDER: "paymentReminderTemplate",
     PAYMENT_REQUEST: "paymentRequest",
     REFERRAL_NOTIFICATION: "referralNotificationTemplate",
+
+    WELCOME: "welcome",
+    FINALIZE: "finalize",
+    SIGN_AGREEMENT: "signAgreement",
+    MAKE_PAYMENT: "makePayment",
+    PAYMENT_RECEIVED: "paymentReceived",
+    CONGRATULATIONS: "congratulations"
+
 };
 
 const defaultParams = {

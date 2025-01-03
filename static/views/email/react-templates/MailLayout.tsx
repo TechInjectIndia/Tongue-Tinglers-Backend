@@ -6,7 +6,7 @@ import {
     EMAIL_LOGO_URL,
     EMAIL_MAIL_LOGO,
     EMAIL_PHONE_LOGO,
-} from "./constants";
+} from "../constants";
 
 
 function MailLayout({ children }: any ) {

@@ -29,6 +29,7 @@ import { AdminRepo } from "apps/user/models/user";
 import { ContractRepo } from "apps/contracts/models/ContractRepo";
 import { TAddUser } from "types";
 import { CreateLeadMail } from "static/views/email/get-templates/CreateLeadMail";
+import { LeadToProspectMail } from "static/views/email/get-templates/LeadToProspectMail";
 
 export default class LeadController {
     static async frontEnd(req: Request, res: Response): Promise<Response> {
@@ -291,7 +292,7 @@ export default class LeadController {
 
             try {
                 // welcome mail
-                const mailDto = new CreateLeadMail().getPayload(
+                const mailDto = new LeadToProspectMail().getPayload(
                     {},
                     existingLead.email,
                 );

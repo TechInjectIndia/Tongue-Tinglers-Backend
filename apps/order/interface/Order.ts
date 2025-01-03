@@ -119,7 +119,7 @@ interface OrderParams {
 }
 
 interface OrderState {
-    cartId: number;
+    // cartId: number;
     userId: number;
     billingAddressId: number;
     shippingAddressId: number;

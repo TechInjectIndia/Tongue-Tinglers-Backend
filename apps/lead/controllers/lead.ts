@@ -28,7 +28,7 @@ import {
 import { AdminRepo } from "apps/user/models/user";
 import { ContractRepo } from "apps/contracts/models/ContractRepo";
 import { TAddUser } from "types";
-import { WelcomeMail } from "static/views/email/get-templates/WelcomeMail";
+import { CreateLeadMail } from "static/views/email/get-templates/CreateLeadMail";
 import { FinalizeDetailsMail } from "static/views/email/get-templates/FinalizeDetails";
 
 export default class LeadController {
@@ -470,7 +470,7 @@ export default class LeadController {
             }
 
             const newLead = await new LeadRepo().create(payload, user_id);
-            const mailDto = new WelcomeMail().getPayload({}, newLead.email);
+            const mailDto = new CreateLeadMail().getPayload({}, newLead.email);
             await sendMail(mailDto);
 
             // Check and create assignment if 'assign' object is provided in the request body

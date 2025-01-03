@@ -1,12 +1,12 @@
 import { DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO } from "../../../../apps/common/models/DTO";
-import Welcome from "../react-templates/Welcome";
+import Welcome from "../react-templates/CreateLead";
 import { IMail } from "../mail-class/IMailClass";
 import { Mail } from "../mail-class/MailClass";
 import { AllMailOptions, MailBodyOptions } from "../models/MailOptions";
 
-interface IWelcomeMail extends IMail<null> {}
+interface IEmail extends IMail<null> {}
 
-export class WelcomeMail extends Mail<null> implements IWelcomeMail {
+export class CreateLeadMail extends Mail<null> implements IEmail {
     validator(data: any): string | null {
         return null;
     }

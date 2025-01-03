@@ -3,7 +3,7 @@ import React from "react";
 
 import MailLayout from "./MailLayout";
 
-const Welcome = () => (
+const CreateLead = () => (
     <MailLayout>
         <div className="bg-white rounded-lg p-6">
             <div className="p-0">
@@ -41,4 +41,4 @@ const Welcome = () => (
     </MailLayout>
 );
 
-export default Welcome;
+export default CreateLead;

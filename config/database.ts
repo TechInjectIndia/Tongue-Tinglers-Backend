@@ -9,8 +9,21 @@ export const sequelize = new Sequelize(
     host: CONFIG.DB_HOST,
     dialect: "postgres",
     logging: false,
-  }
-);
+  });
+
+// export const sequelize  = new Sequelize(
+//     'postgresql://tt_owner:MEF2Rk7AhPdj@ep-lingering-snowflake-a5popb2a.us-east-2.aws.neon.tech/a',
+//     {
+//         dialect: 'postgres',
+//         protocol: 'postgres',
+//         dialectOptions: {
+//             ssl: {
+//                 require: true,
+//                 rejectUnauthorized: false, // Allow self-signed certificates
+//             },
+//         },
+//     }
+// );
 
 export const connectToDatabase = () => {
   sequelize

@@ -19,6 +19,29 @@ import {
 } from "../../../interfaces/organization";
 import {createDummyMaster} from "../utils";
 import {
+    createDummyMaster,
+    createDummyProducts,
+    getSampleAreas,
+    getSampleFranchiseModels,
+    getSampleProposals,
+    getSampleQuestions,
+    getSampleRegions
+} from "../utils";
+import { AreaRepo } from "../../area/models/AreaRepo";
+import { RegionRepo } from "../../region/models/RegionRepo";
+import { FranchiseModelRepo } from "../../franchise_model/models";
+import { ProposalModelRepo } from "../../proposal_model/models";
+import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from "constants/response-messages";
+import { AdminRepo } from "apps/user/models/user";
+import { TUser, USER_TYPE } from "apps/user/interface/user";
+import { UserModel } from "apps/user/models/UserTable";
+import { OrganizationRepo } from "apps/organization/models";
+import { sequelize } from "config";
+import { ProductsCategoryModel } from "apps/products-category/models/ProductCategoryTable";
+import { OptionsModel } from "apps/options/models/optionTable";
+import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
+import { ProductModel } from "apps/product/model/productTable";
+import { ProductOptionsModel } from "apps/product-options/models/productOptionTable";
     ERROR_MESSAGE,
     RESPONSE_TYPE,
     SUCCESS_MESSAGE
@@ -343,6 +366,106 @@ const {
         });
     }
 }))
+
+/**
+ * @swagger
+ * /api/admin/test-user/createEverything:
+ *   get:
+ *     summary: Create a new Root User (admin@tonguetingler.com, pass:123456)
+ *     tags: [AUTH]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: User created successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ */
+router.get('/createEverything', async (req, res) => {
+    const transaction = await sequelize.transaction();
+    try{
+        const dummyData = await createDummyProducts();
+
+        const categoryData = dummyData.category
+        const categoryCreated = await ProductsCategoryModel.create(categoryData)
+
+        const optionsData = dummyData.options
+        const optionsCreated = await OptionsModel.bulkCreate(optionsData)
+
+        const optionsValueData = dummyData.optionValues
+        const optionsValueCreated = await OptionsValueModel.bulkCreate(optionsValueData)
+
+        const productData = dummyData.product
+        let variationIds: number[] = []; // Array to store created option IDs
+
+        // Step 1: Create the product with a default empty array for `variationIds`
+        const createdProduct = await ProductModel.create(
+            {
+            name: productData.name,
+            slug: productData.slug,
+            description: productData.description,
+            MOQ: productData.MOQ,
+            category: productData.category,
+            type: productData.type,
+            status: productData.status,
+            images: productData.images,
+            vendorId: productData.vendorId,// Initialize with an empty array
+            tax_rate_id: productData.tax_rate_id,
+            createdBy: productData.createdBy
+        }
+    );
+    console.log('createdProduct: ', createdProduct);
+
+
+
+        // Step 2: Handle variations if provided
+        console.log('productData.variations: ', productData.variations);
+        if (productData.variations && Array.isArray(productData.variations)) {
+          const productOptions =  productData.variations.map((option) => ({
+            product_id: createdProduct.id, // Link the option to the created product
+            optionValueId: option.optionValueId,
+            price: option.price,
+            stock: option.stock,
+            status: option.status,
+            images: option.images,
+          }));
+
+          // Bulk create the product options
+          const createdOptions = await ProductOptionsModel.bulkCreate(productOptions, {
+              transaction,
+              returning: true, // Ensure the created options are returned
+            });
+
+          console.log('createdOptions: ', createdOptions);
+          variationIds = createdOptions.map((option) => option.id);
+          console.log('variationIds: ', variationIds);
+
+          // Update the product with the created option IDs
+        }
+
+        await createdProduct.addVariations(variationIds);
+        console.log('createdProductLast: ', createdProduct);
+
+        await transaction.commit();
+
+        return res.status(200).send(
+            sendResponse(RESPONSE_TYPE.SUCCESS, "Entities created successfully", {
+                category: categoryCreated,
+                options: optionsCreated,
+                optionValues: optionsValueCreated,
+                product: createdProduct,
+            })
+        );
+
+    }catch(err){
+        console.error("Error:", err);
+        return res.status(500).send({
+            message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+        });
+    }
+})
 
 /**
  * @swagger

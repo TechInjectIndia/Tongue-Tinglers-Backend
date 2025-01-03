@@ -1,17 +1,5 @@
 import { Op } from "sequelize";
 import { TListFiltersCampaigns } from "../../../types";
-import {
-    ICampaign,
-    IQuestion,
-    TCampaignList,
-    TPayloadCampaign,
-} from "../../../interfaces";
-import {
-    AreaModel,
-    CampaignAdModel, ProposalModel,
-    QuestionModel,
-    RegionModel
-} from "../../../database/schema";
 
 import IBaseRepo from "../controllers/controller/IController";
 import {
@@ -211,3 +199,4 @@ export class CampaignAdRepo
 }
 
 import {ProposalModelRepo} from "../../proposal_model/models";
+import {ProposalModel} from "../../proposal_model/models/ProposalModelTable";

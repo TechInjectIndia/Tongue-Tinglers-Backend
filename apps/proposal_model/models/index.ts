@@ -1,21 +1,9 @@
 import {Op} from "sequelize";
-
-import {
-    ProposalModels,
-    ProposalModelsList,
-    TPayloadProposalModel,
-} from "../../../interfaces";
-import {
-    TListFilters,
-} from "../../../types";
-import { ProposalModel } from "../../../database/schema";
-const { Op } = require("sequelize");
-
 import { ProposalModels, TPayloadProposalModel } from 'interfaces';
 import IBaseRepo from '../controllers/controller/IController';
 import { TListFilters } from 'apps/common/models/common';
-import { ProposalLeadModels } from './ProposalModelTable';
 import { ProposalModelsList } from '../interface/proposal';
+import {ProposalModel} from "./ProposalModelTable";
 
 export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters> {
     constructor() { }

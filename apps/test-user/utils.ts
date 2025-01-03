@@ -170,22 +170,22 @@ async function createDummyMaster(user_id: number) {
     const proposals = getSampleProposals();
 
     const qRepo = new QuestionRepo();
-    const questionsProm = Promise.all(questions.map(
+    const questionsProm = await Promise.all(questions.map(
         q => qRepo.create({createdBy: user_id, ...q}, user_id)));
 
     const aRepo = new AreaRepo();
-    const areasProm = Promise.all(areas.map(
+    const areasProm = await Promise.all(areas.map(
         a => aRepo.create({createdBy: user_id, ...a}))).then(_ => {
         const rRepo = new RegionRepo();
-        Promise.all(regions.map(
+       return Promise.all(regions.map(
             r => rRepo.create({createdBy: user_id, ...r})));
     });
 
     const fmRepo = new FranchiseModelRepo();
-    const franchiseModelsProm = Promise.all(franchiseModels.map(
+    const franchiseModelsProm = await Promise.all(franchiseModels.map(
         fm => fmRepo.create(fm, user_id))).then(_ => {
         const pRepo = new ProposalModelRepo();
-        Promise.all(proposals.map(p => pRepo.create(p)));
+        return Promise.all(proposals.map(p => pRepo.create(p)));
     });
 
     // Campaign creation logic
@@ -197,16 +197,13 @@ async function createDummyMaster(user_id: number) {
         regionId: 1,
         start: "2025-01-01",
         to: "2025-02-28",
-        proposalIds: [1, 2, 3,5],
+        proposalIds: [1, 2, 3, 4],
         affiliateId: null,
         createdBy: user_id,
     };
 
     const campaignRepo = new CampaignAdRepo();
-    const createCampaignProm = campaignRepo.create(campaignPayload);
-
-    return Promise.all(
-        [areasProm, franchiseModelsProm, questionsProm]).then(()=>createCampaignProm);
+    return campaignRepo.create(campaignPayload);
 }
 
 

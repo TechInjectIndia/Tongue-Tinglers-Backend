@@ -1,36 +1,24 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import {DataTypes, Model, Optional} from "sequelize";
 
-
-import { ICampaign } from "../../../interfaces";
-import RepoProvider from "../../../apps/RepoProvider";
-import { RegionModel } from "../franchise/RegionsModel";
-import { LeadsModel } from "../lead/lead.model";
-import { AffiliateModel } from "../lead/affiliateModels";
-import { ProposalModel } from "../lead/proposalModels";
-import {
-    OrganizationModel
-} from "../../../apps/organization/database/organization_schema";
-
-import { QuestionModel } from "apps/questions/models/QuestionModel";
+import {QuestionModel} from "apps/questions/models/QuestionModel";
 import RepoProvider from "apps/RepoProvider";
-
-import { CampaignQuestionModel } from "./CampaignQuestionModel";
-import { ICampaign } from "../interface/campaign";
-import { sequelize } from "config/database";
-import { LeadsModel } from "apps/lead/models/LeadTable";
-import { RegionModel } from "apps/region/models/RegionTable";
-import { AffiliateModel } from "apps/affiliate/models/affiliateModel";
-import { ProposalLeadModels } from "apps/proposal_model/models/ProposalModelTable";
-import { OrganizationModel } from "apps/organization/models/OrganizationTable";
-
-import { QuestionModel } from "./QuestionModel";
-import {CampaignProposalsModel} from "../lead/CampaignProposalsModel";
+import {CampaignQuestionModel} from "./CampaignQuestionModel";
+import {ICampaign} from "../interface/campaign";
+import {sequelize} from "config/database";
+import {LeadsModel} from "apps/lead/models/LeadTable";
+import {RegionModel} from "apps/region/models/RegionTable";
+import {AffiliateModel} from "apps/affiliate/models/affiliateModel";
+import {OrganizationModel} from "apps/organization/models/OrganizationTable";
+import {ProposalModel} from "../../proposal_model/models/ProposalModelTable";
+import {CampaignProposalsModel} from "./CampaignProposalsModel";
 
 
-const { STRING, INTEGER, DATE, NOW, JSONB } = DataTypes;
+
+const {STRING, INTEGER, DATE, NOW, JSONB} = DataTypes;
 
 interface CampaignCreationAttributes
-    extends Optional<ICampaign, "id" | "createdAt" | "updatedAt" | "deletedAt"> { }
+    extends Optional<ICampaign, "id" | "createdAt" | "updatedAt" | "deletedAt"> {
+}
 
 class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
     implements ICampaign {
@@ -87,7 +75,8 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
                     comment: "Description of the campaign",
                 },
                 questionList: {
-                    type: DataTypes.ARRAY(DataTypes.INTEGER), // Array of integers
+                    type: DataTypes.ARRAY(DataTypes.INTEGER), // Array of
+                                                              // integers
                     allowNull: false,
                     comment: "List of questions associated with the campaign",
                 },
@@ -227,4 +216,4 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
 
 }
 
-export { CampaignAdModel };
+export {CampaignAdModel};

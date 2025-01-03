@@ -3,9 +3,11 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { INTEGER } from "sequelize";
 import { ProposalTable } from "../interface/proposal";
 import { sequelize } from "config";
-import {CampaignAdModel} from "../campaign-ui/campaignAdModel";
-import {FranchiseModel} from "../franchise/franchiseModel";
-import {CampaignProposalsModel} from "./CampaignProposalsModel";
+import {CampaignAdModel} from "apps/campaign/models/CampaignModel";
+import {
+    CampaignProposalsModel
+} from "apps/campaign/models/CampaignProposalsModel";
+
 
 const { STRING, TEXT, DATE, JSONB, UUIDV4 } = DataTypes;
 

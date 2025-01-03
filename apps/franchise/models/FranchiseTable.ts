@@ -70,47 +70,53 @@ class FranchiseModel
 
     // Associations
     public static associate() {
-        this.hasMany(DocumentModel, {
+        FranchiseModel.hasMany(DocumentModel, {
             foreignKey: "entity_id",
             as: "franchiseDocuments",
             scope: { entity_type: "franchise" },
         });
 
         // I think we dont need this todo @Nitesh confirm!!!
-        this.belongsTo(RegionModel, {
+        FranchiseModel.belongsTo(RegionModel, {
             foreignKey: "regionId",
             as: "region",
         });
 
-        this.belongsTo(AddressModel, {
+        FranchiseModel.belongsTo(AddressModel, {
             foreignKey: "location",
             as: "address",
         });
-        this.belongsTo(OrganizationModel, {
+        FranchiseModel.belongsTo(OrganizationModel, {
             foreignKey: "organizationId",
             as: "organization",
         });
 
-        this.belongsTo(UserModel, {
+        FranchiseModel.belongsTo(UserModel, {
             foreignKey: "createdBy",
             as: "createdByUser",
         });
 
-        this.belongsTo(UserModel, {
+        FranchiseModel.belongsTo(UserModel, {
             foreignKey: "assignUser",
             as: "assignuser",
         });
 
         // Updated by a user
-        this.belongsTo(UserModel, {
+        FranchiseModel.belongsTo(UserModel, {
             foreignKey: "updatedBy",
             as: "updatedByUser",
         });
 
         // Deleted by a user (soft delete)
-        this.belongsTo(UserModel, {
+        FranchiseModel.belongsTo(UserModel, {
             foreignKey: "deletedBy",
             as: "deletedByUser",
+        });
+
+        DocumentModel.belongsTo(FranchiseModel, {
+            foreignKey: "entity_id",
+            as: "franchise",
+            scope: { entity_type: "franchise" },
         });
     }
 

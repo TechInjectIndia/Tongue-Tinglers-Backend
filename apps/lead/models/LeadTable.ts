@@ -1,36 +1,28 @@
-import { DataTypes, INTEGER, Model, Optional } from "sequelize";
+import {DataTypes, INTEGER, Model, Optional} from "sequelize";
+
+import RepoProvider from "../../RepoProvider";
+import {FollowDetailsModel} from "../../follow-details/model/followDetailModel";
 import {
-    Affiliate,
     ExtraFields,
-    FollowDetails,
-    FranchiseModels,
-    ILead,
-    ITrackable,
     LeadAddress,
     LeadSource,
     LeadStatus,
-    Note,
-    UserDetails,
-} from "../../../interfaces";
-import { sequelize } from "../../../config";
-import { UserModel } from "../user/user.model";
-import { CampaignAdModel } from "../campaign-ui/campaignAdModel";
-import RepoProvider from "../../../apps/RepoProvider";
+    LeadTable,
+    Note
+} from "../interface/lead";
+import {FollowDetails} from "apps/follow-details/interface/followDetails";
+import {UserModel} from "apps/user/models/UserTable";
+import {CampaignAdModel} from "apps/campaign/models/CampaignModel";
+import {sequelize} from "config";
 
-import RepoProvider from "../../RepoProvider";
-import { FollowDetailsModel } from "../../follow-details/model/followDetailModel";
-import { ExtraFields, ITrackable, LeadAddress, LeadSource, LeadStatus, LeadTable, Note } from "../interface/lead";
-import { FollowDetails } from "apps/follow-details/interface/followDetails";
-import { UserModel } from "apps/user/models/UserTable";
-import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
-import { sequelize } from "config";
-
-const { STRING, TEXT, DATE, JSONB, ENUM, NOW } = DataTypes;
+const {STRING, TEXT, DATE, JSONB, ENUM, NOW} = DataTypes;
 
 interface LeadCreationAttributes
-    extends Optional<LeadTable, "id" | "createdAt" | "updatedAt" | "deletedAt"> { }
+    extends Optional<LeadTable, "id" | "createdAt" | "updatedAt" | "deletedAt"> {
+}
 
-class LeadsModel extends Model<LeadTable, LeadCreationAttributes> implements LeadTable {
+class LeadsModel extends Model<LeadTable, LeadCreationAttributes>
+    implements LeadTable {
     status: LeadStatus;
     source: LeadSource;
     sourceInfo: string;
@@ -92,7 +84,8 @@ class LeadsModel extends Model<LeadTable, LeadCreationAttributes> implements Lea
         this.belongsToMany(FollowDetailsModel, {
             through: "followDetailsJoin", // Join table name
             foreignKey: "leadId", // Foreign key in the join table
-            otherKey: "follow_details_id", // Other foreign key in the join table
+            otherKey: "follow_details_id", // Other foreign key in the join
+                                           // table
             as: "followDetails", // Alias for the relationship
         });
     }
@@ -263,4 +256,4 @@ class LeadsModel extends Model<LeadTable, LeadCreationAttributes> implements Lea
     }
 }
 
-export { LeadsModel };
+export {LeadsModel};

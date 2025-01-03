@@ -1,9 +1,10 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
 import { CartDetails, BaseCartDetails } from "../../../interfaces/cart_details";
-import { CartProductModel } from "../cart-product/cartProductModel";
-import { UserModel } from "apps/user/models/UserTable";
+// import { CartProductModel } from "";
+
 import RepoProvider from "apps/RepoProvider";
+import { CartProductModel } from "apps/cart-products/model/CartTable";
 
 // Defining the interface for the creation attributes of CartDetails
 interface CartDetailsCreationAttributes extends Optional<CartDetails, "id"> {}

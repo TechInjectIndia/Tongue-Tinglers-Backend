@@ -1,5 +1,5 @@
+import { TUser } from "apps/user/interface/user";
 import { RESPONSE_TYPE } from "../constants";
-import { TUser } from "../types";
 
 export const sendResponse = (type: string, message: string, data?: any) => {
     return {

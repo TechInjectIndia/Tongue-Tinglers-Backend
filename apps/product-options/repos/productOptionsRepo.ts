@@ -1,8 +1,9 @@
 import { BaseProductOptions, Pagination, ProductOptions } from "../../../interfaces/product-options";
 import { IProductOptionsRepo } from "./IProductOptionsRepo";
-import {ProductOptionsModel} from "../../../database/schema/product-options/productOptionsModel";
+// import {ProductOptionsModel} from "../../../database/schema/product-options/productOptionsModel";
 import { ParsedProductOptions, parsedProductOptions } from "apps/product/interface/ProductOptions";
 import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
+import { ProductOptionsModel } from "../models/productOptionTable";
 
 export class ProductOptionRepo implements IProductOptionsRepo{
     async create(productOptions: BaseProductOptions): Promise<ProductOptions | null> {

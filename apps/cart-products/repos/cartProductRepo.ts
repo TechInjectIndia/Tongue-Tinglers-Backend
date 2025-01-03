@@ -1,4 +1,4 @@
-import { CartDetailsModel } from "database/schema/cart_details/cartDetailsModel";
+// import { CartDetailsModel } from "database/schema/cart_details/cartDetailsModel";
 import { Cart, CartProduct, ParseCart, ParsedCartProduct, UpdateQuantity } from "../interface/Cart";
 import { CartProductModel } from "../model/CartTable";
 import { ICartProductRepo } from "./ICartProductRepo";
@@ -10,6 +10,7 @@ import { Op } from "sequelize";
 import { parseCartProduct } from "../parser/cartProductParser";
 import { ProductModel } from "apps/product/model/productTable";
 import { ProductOptionsModel } from "apps/product-options/models/productOptionTable";
+import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
 
 export class CartProductRepo implements ICartProductRepo {
 

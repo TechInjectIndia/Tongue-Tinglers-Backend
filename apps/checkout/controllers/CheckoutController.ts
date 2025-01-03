@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { get } from "lodash";
 
-import { OrderStatus } from "../../../types";
-import { ParsedOrder, PAYMENT_TYPE, PresaleParsedOrder } from "apps/order/interface/Order";
+// import { OrderStatus } from "../../../types";
+import { OrderStatus, ParsedOrder, PAYMENT_TYPE, PresaleParsedOrder } from "apps/order/interface/Order";
 
 
 export default class CheckoutController {

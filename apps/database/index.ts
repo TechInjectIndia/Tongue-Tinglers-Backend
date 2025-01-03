@@ -4,6 +4,7 @@ import { AgreementDocModel } from "apps/agreement-docs/model/agreementDocModel";
 import { AreaModel } from "apps/area/models/AreaTable";
 import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
 import { CampaignQuestionModel } from "apps/campaign/models/CampaignQuestionModel";
+import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
 import { CartProductModel } from "apps/cart-products/model/CartTable";
 import { CommissionEntityMapTable } from "apps/commission/model/CommissionEntityMapTable";
 import { CommissionTable } from "apps/commission/model/CommmisionTable";
@@ -27,11 +28,7 @@ import { ProductModel } from "apps/product/model/productTable";
 import { ProductsCategoryModel } from "apps/products-category/models/ProductCategoryTable";
 import { QuestionModel } from "apps/questions/models/QuestionModel";
 import { RegionModel } from "apps/region/models/RegionTable";
-import { UserModel } from "apps/user/models/UserTable";;
-import { CartDetailsModel } from "database/schema/cart_details/cartDetailsModel";
-// import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
-// import { ProductModel } from "database/schema/product/productModel";
-
+import { UserModel } from "apps/user/models/UserTable";
 
 // Initialize Models
 const models = {

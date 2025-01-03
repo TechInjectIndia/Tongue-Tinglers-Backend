@@ -62,6 +62,15 @@ export enum OrderStatus {
     CANCELED = 'Canceled',
   }
 
+  //todo update
+export enum DeliveryStatus {
+    PENDING = 'PENDING',
+    SHIPPED = 'SHIPPED',
+    DELIVERED = 'DELIVERED',
+    RTO = 'RTO'
+
+  }
+
 interface ParsedOrder extends ParsedMeta, OrderPayload {
     id: number;
     status: OrderStatus;
@@ -78,10 +87,10 @@ interface ParsedOrder extends ParsedMeta, OrderPayload {
     shippingAddress: Address;
     totalShipping: number;
     anomalyArr: number[];
-    coupon: string;
+    coupon: string | null;
     items: ParsedOrderItem[];
     price: Record<string, PriceComponent>;
-    couponCodes:string[]
+    couponCodes: string[]
 
 }
 
@@ -90,7 +99,7 @@ interface PresaleParsedOrder extends OrderPayload {
     totalTax: number;
     cancelledItems: PreSaleParsedOrderItem[];
     totalDiscount: number;
-    coupon: string;
+    coupon: string | null;
     items: PreSaleParsedOrderItem[];
 }
 

@@ -1,8 +1,7 @@
-import { BaseModel, DeletionMetaData, UpdatedMetaData } from "../../common/models/base-models";
-import type{ IdTitle } from "../../product/models/Product";
+import {BaseMeta} from "../../common/models/Base";
 
 
-export interface Coupon extends BaseModel, UpdatedMetaData, DeletionMetaData {
+export interface Coupon extends BaseMeta {
     code: string;
     amount: number; // represents the amount which is to be deducted, percentage or absolute amount
     discountType: DISCOUNT_TYPE;
@@ -25,12 +24,12 @@ export interface Restriction {
     maxSpend: number | null;
     singleUse: boolean;
     excludeOutlet: boolean;
-    products: IdTitle[] | null;
-    excludeProducts: IdTitle[] | null;
-    categories: IdTitle[] | null;
-    excludeCategories: IdTitle[] | null;
-    users: IdTitle[] | null;
-    excludeUsers: IdTitle[] | null;
+    products: number;
+    excludeProducts: number| null;
+    categories: number | null;
+    excludeCategories: number | null;
+    users: number | null;
+    excludeUsers: number | null;
 }
 
 export enum COUPON_STATUS {

@@ -18,6 +18,7 @@ const getEmptyParsedOrder = () => {
         createdAt: null,
         updatedAt: null,
         deletedAt: null,
+        createdBy: 0
     };
 
     const obj: ParsedOrder = {
@@ -57,6 +58,7 @@ const getEmptyParsedOrder = () => {
         couponCodes: [],
         discount: {},
         price: {},
+        createdBy: 0
     };
 
     return obj;

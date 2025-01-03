@@ -1,6 +1,10 @@
-import { parsedProductOptions } from "../../../interfaces/product-options";
-import { ParsedProduct } from "../../../interfaces/products";
-import {parseCategory} from "../../products-category/parser/parseProductCategory"
+
+
+import {ParsedProduct} from "../interface/Product";
+import {parsedProductOptions} from "../interface/ProductOptions";
+import {
+    parseCategory
+} from "../../products-category/parser/parseProductCategory";
 const parseProduct = (product: any): ParsedProduct => {
     const variations = product.variations.map((productOption: any) => {
         return parsedProductOptions(productOption);
@@ -22,10 +26,11 @@ const parseProduct = (product: any): ParsedProduct => {
         createdAt: product.createdAt,
         updatedAt: product.updatedAt,
         deletedAt: product.deletedAt,
-        variations: variations 
-    
+        createdBy:product.createdBy,
+        variations: variations
+
     };
-    
+
     return data;
 }
 

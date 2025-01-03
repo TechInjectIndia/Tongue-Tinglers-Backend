@@ -276,6 +276,7 @@ export class OrderProvider implements IOrderProvider {
             createdAt: currUser.createdAt,
             updatedAt: currUser.updatedAt,
             deletedAt: currUser.deletedAt,
+            createdBy: currUser.createdBy,
         };
 
         const orderItems = await this.getOrderProcessCart(cart);
@@ -297,8 +298,8 @@ export class OrderProvider implements IOrderProvider {
             anomalyArr: [],
             coupon: "",
             items: orderItems,
-            updatedBy: { email: "", firstName: "", id: 0, lastName: "" },
-            deletedBy: { email: "", firstName: "", id: 0, lastName: "" },
+            updatedBy: {email: "", firstName: "", id: 0, lastName: ""},
+            deletedBy: {email: "", firstName: "", id: 0, lastName: ""},
             createdAt: new Date(),
             updatedAt: null,
             deletedAt: null,
@@ -307,6 +308,7 @@ export class OrderProvider implements IOrderProvider {
             couponCodes: [],
             discount: {},
             price: {},
+            createdBy: 0
         };
 
         // SET ORDER ITEMS

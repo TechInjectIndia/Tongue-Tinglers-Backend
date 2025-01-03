@@ -1,6 +1,6 @@
 import { PaymentLinkPayload } from "./apps/razorpay/models/Razorpay";
 
-// import './apps/database'
+import './apps/database'
 
 import dotenv from "dotenv";
 import sgMail from "@sendgrid/mail";
@@ -10,7 +10,7 @@ import express from "express";
 import ejs from "ejs";
 import cors from "cors";
 import router from "./routes";
-// import { connectToDatabase } from "./config";
+import { connectToDatabase } from "./config";
 import {WelcomeMail} from "./static/views/email/get-templates/WelcomeMail";
 
 // require("./database/schema");
@@ -25,7 +25,7 @@ const rateLimiter = new RateLimiterMemory({
     duration: 1, // Per second
 });
 import expressSanitizer from "express-sanitizer";
-import RepoProvider from "./apps/RepoProvider";
+// import RepoProvider from "./apps/RepoProvider";
 import { sendMail } from "libraries/resend";
 
 require("dotenv").config();
@@ -48,7 +48,7 @@ BigInt.prototype.toJSON = function () {
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Database connection
-// connectToDatabase();
+connectToDatabase();
 
 // List of urls that can make requests to backend
 const whitelist = ["http://localhost:3001", "http://localhost:3000", "*"];
@@ -112,7 +112,7 @@ server.get("/", async (_, res) => {
 
     res.send(resp);
 });
-// server.use("/api", router);
+server.use("/api", router);
 
 const PORT = CONFIG.PORT;
 try {

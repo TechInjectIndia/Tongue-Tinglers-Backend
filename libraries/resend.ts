@@ -1,10 +1,7 @@
 import { Resend } from "resend";
 import { CONFIG } from "../config";
-
 import ejs from "ejs";
-
 import path from "path";
-
 const resend = new Resend(CONFIG.RESEND_API_KEY);
 
 export const EMAIL_HEADING = {
@@ -41,8 +38,7 @@ export const EMAIL_TEMPLATE = {
     SIGN_AGREEMENT: "signAgreement",
     MAKE_PAYMENT: "makePayment",
     PAYMENT_RECEIVED: "paymentReceived",
-    CONGRATULATIONS: "congratulations"
-
+    CONGRATULATIONS: "congratulations",
 };
 
 const defaultParams = {
@@ -58,7 +54,7 @@ export const sendEmail = async (
     templateParams: {
         heading: string;
         description: string;
-    }
+    },
 ) => {
     const paramsData = templateParams
         ? { ...templateParams, ...defaultParams }
@@ -66,7 +62,7 @@ export const sendEmail = async (
     await ejs
         .renderFile(
             path.join(__dirname, "../static/views/email/index.ejs"),
-            paramsData
+            paramsData,
         )
         .then((result) => {
             resend.emails
@@ -93,7 +89,7 @@ export const sendEmailFromRequest = async (
     subject: string,
     body: string,
     files?: Express.Multer.File[], // Array of files
-    filePaths?: { path: string; name: string }[] // Array of file paths and names
+    filePaths?: { path: string; name: string }[], // Array of file paths and names
 ) => {
     try {
         // Prepare the email options
@@ -138,10 +134,10 @@ export const sendEmailFromRequest = async (
     }
 };
 
-export const getEmailTemplate = (template: string, params?: any):string => {
+export const getEmailTemplate = (template: string, params?: any): string => {
     const data = ejs.renderFile<string>(
         path.join(__dirname, `../static/views/email/${template}.ejs`),
-        params ?? {}
+        params ?? {},
     );
     return data;
 };

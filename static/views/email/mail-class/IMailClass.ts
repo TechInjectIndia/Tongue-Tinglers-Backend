@@ -1,6 +1,5 @@
 import { ReactElement } from "react";
-import { AllMailOptions } from "../models/Mail";
-import { MailBodyOptions } from "../models/MailOptions";
+import { AllMailOptions, MailBodyOptions } from "../models/MailOptions";
 import { DTO } from "../../../../apps/common/models/DTO";
 
 

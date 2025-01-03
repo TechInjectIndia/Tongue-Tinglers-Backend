@@ -12,6 +12,20 @@ export interface AllMailOptions {
     }[];
 }
 
+export interface ResendMailOptions extends AllMailOptions {
+    text?: string;
+
+    react: React.JSX.Element | null | undefined;
+    html: string | undefined;
+    to: string | string[];
+    subject: string;
+    attachments: {
+        content?: string | Buffer;
+        filename: string; // remove `false | undefined` to match `AllMailOptions`
+        path?: string;
+    }[];
+}
+
 export interface MailBodyOptions {
     react: ReactElement | null,
     html: HTMLElement | String | null,

@@ -10,4 +10,6 @@ export interface ICartProductRepo {
     updateQuantity(cartProduct: UpdateQuantity): Promise<CartProduct>;
 
     getCartById(id: number): Promise<ParsedCartProduct>;
+
+    clearUserCart(userId: number);
 }

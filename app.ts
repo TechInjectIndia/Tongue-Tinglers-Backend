@@ -11,7 +11,8 @@ import ejs from "ejs";
 import cors from "cors";
 import router from "./routes";
 // import { connectToDatabase } from "./config";
-import {WelcomeMail} from "./static/views/email/get-templates/WelcomeMail";
+// import {FinalizeDetailsMail} from "./static/views/email/get-templates/FinalizeDetails";
+import { SignAgreementMail } from "./static/views/email/get-templates/SignAgreement";
 
 // require("./database/schema");
 import helmet from "helmet";
@@ -107,7 +108,8 @@ server.get("/", async (_, res) => {
     let email: string = "harshdalal.techinject@gmail.com";
 
     // welcome mail
-    const mailDto = new WelcomeMail().getPayload({}, email);
+    // const mailDto = new FinalizeDetailsMail().getPayload({}, email);
+    const mailDto = new SignAgreementMail().getPayload({}, email);
     const resp = await sendMail(mailDto);
 
     res.send(resp);

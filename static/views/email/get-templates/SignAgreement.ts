@@ -1,17 +1,13 @@
-import {
-    getHandledErrorDTO,
-    getSuccessDTO,
-    getUnhandledErrorDTO,
-    type DTO,
-} from "../../common/models/DTO";
-import Journey from "../../templates/react-template/journey-forward/SignAgreement";
-import { MailBodyOptions, type IMail } from "../mail-class/IMailClass";
+
+import { DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/common/models/DTO";
+import { type IMail } from "../mail-class/IMailClass";
 import { Mail } from "../mail-class/MailClass";
-import { AllMailOptions } from "../models/Mail";
+import { AllMailOptions, MailBodyOptions } from "../models/MailOptions";
+import SignAgreement from "../react-templates/SignAgreement";
 
 interface IWelcomeMail extends IMail<null> {}
 
-export class SignAgreement extends Mail<null> implements IWelcomeMail {
+export class SignAgreementMail extends Mail<null> implements IWelcomeMail {
     validator(data: any): string | null {
         return null;
     }
@@ -21,7 +17,7 @@ export class SignAgreement extends Mail<null> implements IWelcomeMail {
     }
 
     getBody(): MailBodyOptions {
-        const react = Journey();
+        const react = SignAgreement();
         return {
             html: null,
             react: react,

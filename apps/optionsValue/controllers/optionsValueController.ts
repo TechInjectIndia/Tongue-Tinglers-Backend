@@ -1,5 +1,5 @@
 import { get } from "lodash";
-import { BaseOptionsValue } from "../../../interfaces/optionsValue";
+import { BaseOptionsValue } from "../interface/optionValue";
 import RepoProvider from "../../RepoProvider";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";

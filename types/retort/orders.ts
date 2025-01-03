@@ -1,4 +1,4 @@
-import {OrderItem} from "../../interfaces/order_items";
+import {OrderItem} from "../../apps/order-items/interface/orderItem";
 
 export type TRetortOrder = {
   id: number;

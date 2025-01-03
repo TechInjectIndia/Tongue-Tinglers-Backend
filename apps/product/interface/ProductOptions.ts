@@ -36,7 +36,7 @@ interface ProductOptionsList<T> {
 
 interface ParsedProductOptions {
     id: number;
-    product_id: number;
+    // product_id: number;
     option_value: ParsedOptionsValue;
     price: number;
     stock: number;

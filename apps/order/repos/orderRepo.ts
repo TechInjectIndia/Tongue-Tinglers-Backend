@@ -1,12 +1,13 @@
 
 import { IOrderRepo } from "./IOrderRepo";
-import { OrderModel } from "../../../database/schema/order/orderModel";
-import { NotesModel } from "../../../database/schema/order/notesModel";
+import { OrderModel } from "../models/OrderTable";
+import { NotesModel } from "../models/NotesTable";
 import { Op } from "sequelize";
 
-import { OrderItemModel } from "../../../database/schema/order-items/orderItemsModel";
-import { OrderItem } from "../interface/OrderItem";
+import { OrderItemsModel } from "../../order-items/models/OrderItemsTable";
+import { OrderItem } from "../../order-items/interface/orderItem";
 import { Notes, Order, OrderPagination, OrderPayload, OrderState, ParsedOrder, RPOrder } from "../interface/Order";
+import { parseOrder } from "../parser/parseOrder";
 
 export class OrderRepo implements IOrderRepo {
     async createOrder(order: OrderPayload): Promise<Order | null> {
@@ -18,7 +19,7 @@ export class OrderRepo implements IOrderRepo {
             if (orderItems && orderItems.length > 0) {
                 orderItemsCreated = await Promise.all(
                     orderItems.map(async (orderItem) => {
-                        const createdOrderItem = await OrderItemModel.create(orderItem);
+                        const createdOrderItem = await OrderItemsModel.create(orderItem);
                         return createdOrderItem.toJSON(); // Convert to plain object if needed
                     })
                 );
@@ -187,6 +188,19 @@ export class OrderRepo implements IOrderRepo {
 
     async proceedToPayment(state:OrderState): Promise<{rpOrder: RPOrder, parsedOrder:ParsedOrder}>{
         throw new Error("Method not implemented.");
+    }
+
+    async getOrdersByUser(userId: number): Promise<ParsedOrder[]> {
+        try {
+            const orders = await OrderModel.findAll({
+                where: { customer_details: userId },
+                include: [{ model: NotesModel, as: "noteses", through: { attributes: [] }, }]
+            });
+            return orders.map((order) => parseOrder(order));
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
     }
 
 }

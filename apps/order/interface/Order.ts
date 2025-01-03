@@ -1,7 +1,7 @@
 import { Address } from "apps/address/interface/Address";
 import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
 import { ParsedUser } from "apps/user/interface/user";
-import { BaseOrderItem, ParsedOrderItem, PreSaleParsedOrderItem } from "./OrderItem";
+import { BaseOrderItem, ParsedOrderItem, PreSaleParsedOrderItem } from "../../order-items/interface/orderItem";
 
 
 export enum PAYMENT_STATUS {

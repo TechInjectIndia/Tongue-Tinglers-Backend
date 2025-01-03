@@ -6,7 +6,7 @@ import { ProductOptionsModel } from "database/schema/product-options/productOpti
 import { ProductModel } from "database/schema/product/productModel";
 import { parseCartDetails } from "../parser/cartDetailsParser";
 import { ICartDetailRepo } from "./ICartDetailRepo";
-import { OptionsValueModel } from "apps/optionsValue/interface/OptionValueTable";
+import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { OptionsModel } from "apps/options/models/optionTable";
 
 

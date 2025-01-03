@@ -16,7 +16,7 @@ import {parseProduct} from "../parser/productParser"
 
 import { ProductsCategoryModel } from "../../../database/schema/product-category/productCategoryModel";
 import { UserModel } from "apps/user/models/UserTable";
-import { OptionsValueModel } from "apps/optionsValue/interface/OptionValueTable";
+import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { OptionsModel } from "apps/options/models/optionTable";
 
 export class ProductRepo implements IProductRepo {

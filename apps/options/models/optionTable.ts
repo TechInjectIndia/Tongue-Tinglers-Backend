@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { BaseOptions, Options } from "../interface/options";
-import { OptionsValueModel } from "apps/optionsValue/interface/OptionValueTable";
+import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
 

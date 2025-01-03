@@ -1,6 +1,6 @@
-import { BaseOptionsValue, OptionsValue } from "apps/order/interface/OptionsValues";
+import { BaseOptionsValue, OptionsValue } from "../interface/optionValue";
 import { IOptionsValueRepo } from "./IOptionsValueRepo";
-import { OptionsValueModel } from "../interface/OptionValueTable";
+import { OptionsValueModel } from "../models/OptionValueTable";
 import { OptionsModel } from "apps/options/models/optionTable";
 
 export class OptionsValueRepo implements IOptionsValueRepo {

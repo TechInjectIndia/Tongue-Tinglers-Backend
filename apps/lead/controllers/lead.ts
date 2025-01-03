@@ -22,7 +22,6 @@ import {
     createFirebaseUser,
     createPassword,
     EMAIL_HEADING,
-    sendEmail,
     sendMail,
     sendResponse,
 } from "libraries";
@@ -30,6 +29,7 @@ import { AdminRepo } from "apps/user/models/user";
 import { ContractRepo } from "apps/contracts/models/ContractRepo";
 import { TAddUser } from "types";
 import { WelcomeMail } from "static/views/email/get-templates/WelcomeMail";
+import { FinalizeDetailsMail } from "static/views/email/get-templates/FinalizeDetails";
 
 export default class LeadController {
     static async frontEnd(req: Request, res: Response): Promise<Response> {
@@ -292,7 +292,7 @@ export default class LeadController {
 
             try {
                 // welcome mail
-                const mailDto = new WelcomeMail().getPayload(
+                const mailDto = new FinalizeDetailsMail().getPayload(
                     {},
                     existingLead.email,
                 );
@@ -470,6 +470,8 @@ export default class LeadController {
             }
 
             const newLead = await new LeadRepo().create(payload, user_id);
+            const mailDto = new WelcomeMail().getPayload({}, newLead.email);
+            await sendMail(mailDto);
 
             // Check and create assignment if 'assign' object is provided in the request body
             if (assign != null) {

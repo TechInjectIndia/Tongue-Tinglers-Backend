@@ -52,41 +52,41 @@ const defaultParams = {
     phone: "+1234567890",
 };
 
-// export const sendEmail = async (
-//     to: string,
-//     subject: string,
-//     templateParams: {
-//         heading: string;
-//         description: string;
-//     },
-// ) => {
-//     const paramsData = templateParams
-//         ? { ...templateParams, ...defaultParams }
-//         : { ...defaultParams };
-//     await ejs
-//         .renderFile(
-//             path.join(__dirname, "../static/views/email/index.ejs"),
-//             paramsData,
-//         )
-//         .then((result) => {
-//             resend.emails
-//                 .send({
-//                     from: "Nitesh@techinject.co.in",
-//                     to,
-//                     subject,
-//                     html: result,
-//                 })
-//                 .then((result) => {
-//                     console.log(">>>>>>>> res", result);
-//                 })
-//                 .catch((err) => {
-//                     console.log(">>>>>>>>> err", err);
-//                 });
-//         })
-//         .catch((err) => {
-//             console.log("Error loading email", err);
-//         });
-// };
+export const sendEmail = async (
+    to: string,
+    subject: string,
+    templateParams: {
+        heading: string;
+        description: string;
+    },
+) => {
+    const paramsData = templateParams
+        ? { ...templateParams, ...defaultParams }
+        : { ...defaultParams };
+    await ejs
+        .renderFile(
+            path.join(__dirname, "../static/views/email/index.ejs"),
+            paramsData,
+        )
+        .then((result) => {
+            resend.emails
+                .send({
+                    from: "Nitesh@techinject.co.in",
+                    to,
+                    subject,
+                    html: result,
+                })
+                .then((result) => {
+                    console.log(">>>>>>>> res", result);
+                })
+                .catch((err) => {
+                    console.log(">>>>>>>>> err", err);
+                });
+        })
+        .catch((err) => {
+            console.log("Error loading email", err);
+        });
+};
 
 export const sendEmailFromRequest = async (
     to: string,

@@ -1,4 +1,3 @@
-
 import { IOrderRepo } from "./IOrderRepo";
 import { OrderModel } from "../models/OrderTable";
 import { NotesModel } from "../models/NotesTable";
@@ -6,8 +5,18 @@ import { Op } from "sequelize";
 
 import { OrderItemsModel } from "../../order-items/models/OrderItemsTable";
 import { OrderItem } from "../../order-items/interface/orderItem";
-import { Notes, Order, OrderPagination, OrderPayload, OrderState, ParsedOrder, RPOrder } from "../interface/Order";
+import {
+    Notes,
+    Order,
+    OrderPagination,
+    OrderPayload,
+    OrderState,
+    ParsedOrder,
+    RPOrder,
+} from "../interface/Order";
 import { parseOrder } from "../parser/parseOrder";
+import { OrderProvider } from "apps/order-provider/provider/OrderProvider";
+import { DTO } from "apps/DTO/DTO";
 
 export class OrderRepo implements IOrderRepo {
     async createOrder(order: OrderPayload): Promise<Order | null> {
@@ -35,15 +44,18 @@ export class OrderRepo implements IOrderRepo {
                 );
             }
 
-            const orderItemIds = orderItemsCreated.map((orderItem) => orderItem.id)
+            const orderItemIds = orderItemsCreated.map((orderItem) => orderItem.id);
             const noteIds = notesCreated.map((note) => note.id);
 
             // Create the order
-            const orderCreated = await OrderModel.create({
-                ...orderDetails, // Spread the remaining order details
-                // notes: noteIds, // Link notes by their IDs
-                createdAt: new Date(),
-            }, { include: [{ association: 'noteses' }] });
+            const orderCreated = await OrderModel.create(
+                {
+                    ...orderDetails, // Spread the remaining order details
+                    // notes: noteIds, // Link notes by their IDs
+                    createdAt: new Date(),
+                },
+                { include: [{ association: "noteses" }] }
+            );
 
             orderCreated.addNoteses(noteIds);
 
@@ -63,7 +75,7 @@ export class OrderRepo implements IOrderRepo {
 
             // Fetch the existing order to ensure it exists
             const existingOrder = await OrderModel.findByPk(orderId, {
-                include: [{ association: 'noteses' }, { association: 'orderItems' }]
+                include: [{ association: "noteses" }, { association: "orderItems" }],
             });
 
             if (!existingOrder) {
@@ -122,7 +134,7 @@ export class OrderRepo implements IOrderRepo {
     getOrderById(orderId: number): Promise<any> {
         try {
             return OrderModel.findByPk(orderId, {
-                include: [{ model: NotesModel, as: "noteses", through: { attributes: [] }, }],
+                include: [{ model: NotesModel, as: "noteses", through: { attributes: [] } }],
             });
         } catch (error) {
             console.log(error);
@@ -143,7 +155,7 @@ export class OrderRepo implements IOrderRepo {
                 where: {},
                 limit,
                 offset,
-                include: [{ model: NotesModel, as: "noteses", through: { attributes: [] }, }],
+                include: [{ model: NotesModel, as: "noteses", through: { attributes: [] } }],
             };
 
             // Adding search functionality
@@ -182,13 +194,15 @@ export class OrderRepo implements IOrderRepo {
         }
     }
 
-    async processOrder(state: OrderState): Promise<{rpOrder: RPOrder, parsedOrder:ParsedOrder}> {
-
-
-        throw new Error("Method not implemented.");
+    async processOrder(
+        state: OrderState
+    ): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>> {
+        return new OrderProvider().processOrder(state);
     }
 
-    async proceedToPayment(state:OrderState): Promise<{rpOrder: RPOrder, parsedOrder:ParsedOrder}>{
+    async proceedToPayment(
+        state: OrderState
+    ): Promise<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }> {
         throw new Error("Method not implemented.");
     }
 
@@ -196,7 +210,7 @@ export class OrderRepo implements IOrderRepo {
         try {
             const orders = await OrderModel.findAll({
                 where: { customer_details: userId },
-                include: [{ model: NotesModel, as: "noteses", through: { attributes: [] }, }]
+                include: [{ model: NotesModel, as: "noteses", through: { attributes: [] } }],
             });
             return orders.map((order) => parseOrder(order));
         } catch (error) {
@@ -204,5 +218,4 @@ export class OrderRepo implements IOrderRepo {
             return [];
         }
     }
-
 }

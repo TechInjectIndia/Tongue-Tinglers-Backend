@@ -14,10 +14,7 @@ import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/DTO/DTO";
 import { BaseCartProduct, Cart } from "apps/cart-products/interface/Cart";
 import { AdminRepo } from "apps/user/models/user";
 import { TUserWithPermission } from "types/admin/admin-user";
-import {
-    getCartItemPayableIncTax,
-    getCartItemTax,
-} from "../utils/order-utils";
+import { getCartItemPayableIncTax, getCartItemTax } from "../utils/order-utils";
 import { ParsedUser, USER_STATUS, USER_TYPE } from "apps/user/interface/user";
 import {
     DISCOUNT_COMP_TYPE,
@@ -35,8 +32,9 @@ import {
     HandleCouponValidateResult,
     WrapperValidateResult,
 } from "apps/common/models/CheckOutPageState";
-import {  COUPON_STATUS, DISCOUNT_TYPE } from "apps/coupons/models/Coupon";
+import { COUPON_STATUS, DISCOUNT_TYPE } from "apps/coupons/models/Coupon";
 import { ParsedProduct } from "interfaces";
+import { CartDetailRepo } from "apps/cart-details/repos/cartDetailRepo";
 
 export class OrderProvider implements IOrderProvider {
     async processOrder(
@@ -45,7 +43,7 @@ export class OrderProvider implements IOrderProvider {
         // Fetch user, cart, and addresses concurrently
         const [user, cart, billingAddress, shippingAddress] = await Promise.all([
             this.fetchUser(state.userId),
-            this.fetchCart(state.cartId),
+            this.fetchCart(state.userId),
             this.fetchAddress(state.billingAddressId),
             this.fetchAddress(state.shippingAddressId),
         ]);
@@ -217,16 +215,11 @@ export class OrderProvider implements IOrderProvider {
         return tax;
     }
 
-    
     private changeStateBasedOnCoupon(
         order: ParsedOrder,
         applyCouponRes: WrapperValidateResult | null
     ): DTO<ParsedOrder> {
-
-        order.total = this.calculateTotalPrice(
-            order
-        );
-
+        order.total = this.calculateTotalPrice(order);
 
         const totalDisc = this.getOrderTotalDiscAfterCoupon(order.items);
         order.coupon = applyCouponRes?.couponObj.code ?? "";
@@ -242,18 +235,15 @@ export class OrderProvider implements IOrderProvider {
                     value: 0,
                 };
             }
-            order.discount[DISCOUNT_COMP_TYPE.COUPON_DISCOUNT].value =
-                totalDisc;
+            order.discount[DISCOUNT_COMP_TYPE.COUPON_DISCOUNT].value = totalDisc;
         }
         return getSuccessDTO(order);
     }
 
-
     getOrderTotalDiscAfterCoupon(orderItems: ParsedOrderItem[]) {
         let discount: number = 0;
         orderItems.forEach((item) => {
-            discount +=
-                getCartItemPayableIncTax(item.prices, item.disc).disc * item.quantity;
+            discount += getCartItemPayableIncTax(item.prices, item.disc).disc * item.quantity;
         });
 
         return discount;
@@ -314,9 +304,9 @@ export class OrderProvider implements IOrderProvider {
             deletedAt: null,
             notes: [],
             orderItems: [],
-            couponCodes:[],
-            discount:{},
-            price:{}
+            couponCodes: [],
+            discount: {},
+            price: {},
         };
 
         // SET ORDER ITEMS
@@ -490,7 +480,6 @@ export class OrderProvider implements IOrderProvider {
         order: ParsedOrder,
         currUser: TUserWithPermission
     ): Promise<HandleCouponValidateResult | null> {
-
         const result = await this.handleCouponValidate(order, currUser);
 
         order = result.order;
@@ -584,10 +573,10 @@ export class OrderProvider implements IOrderProvider {
         return getSuccessDTO(existingAdmin);
     }
 
-    private async fetchCart(cartId: number): Promise<DTO<Cart>> {
-        // CartProductRepo()
-        // Fetch cart by cartId
-        throw new Error("fetchCart not implemented.");
+    private async fetchCart(userId: number): Promise<DTO<Cart>> {
+        const cart = await new CartDetailRepo().getCartDetailByUserId(userId);
+        if (!cart) return getUnhandledErrorDTO("Cart not found");
+        return getSuccessDTO(cart);
     }
 
     private async fetchAddress(addressId: number): Promise<DTO<Address>> {

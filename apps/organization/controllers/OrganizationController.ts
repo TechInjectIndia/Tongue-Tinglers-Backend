@@ -13,9 +13,10 @@ import {
     IOrganizationPayloadDataWithMeta,
     Organization,
 } from "../../../interfaces/organization";
-import {Pagination} from "../../../interfaces";
+
 import {ContractRepo} from "../../contracts/models/ContractRepo";
 import { ContractsPayload } from "apps/contracts/interface/Contract";
+import {Pagination} from "../../common/models/common";
 
 
 export default class OrganizationController {
@@ -280,7 +281,7 @@ export default class OrganizationController {
                         .send(sendResponse(RESPONSE_TYPE.ERROR,
                             ERROR_MESSAGE.NOT_EXISTS));
                 }
-    
+
                 return res
                     .status(200)
                     .send(

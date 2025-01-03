@@ -1,5 +1,9 @@
 import { BaseMeta } from "apps/common/models/Base"
-import { ParsedOptionsValue, parseOptionsValues } from "apps/order/interface/OptionsValues"
+import {
+    ParsedOptionsValue,
+    parseOptionsValues
+} from "apps/optionsValue/interface/optionValue";
+
 
 //todo rename to understand its received from frontend
 interface BaseProductOptions {

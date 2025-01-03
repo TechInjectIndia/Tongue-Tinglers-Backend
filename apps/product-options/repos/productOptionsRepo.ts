@@ -7,14 +7,14 @@ import {
     parsedProductOptions, ProductOptions
 } from "apps/product/interface/ProductOptions";
 import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
-import { ProductOptionsModel } from "../models/productOptionTable";
+import { ProductVariationsModel } from "../models/ProductVariationTable";
 import {Pagination} from "../../common/models/common";
 
 export class ProductOptionRepo implements IProductOptionsRepo{
     async create(productOptions: BaseProductOptions, createdBy:number): Promise<ProductOptions | null> {
         try {
 
-            return (await ProductOptionsModel.create({
+            return (await ProductVariationsModel.create({
                 optionValueId: productOptions.optionValueId,
                 price: productOptions.price,
                 stock: productOptions.stock,
@@ -35,7 +35,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
     async update(productOptions: ProductOptions): Promise<ProductOptions> {
         try {
             // Find the product by its primary key (ID)
-            const existingProductOption = await ProductOptionsModel.findByPk(productOptions.id)
+            const existingProductOption = await ProductVariationsModel.findByPk(productOptions.id)
             if (!existingProductOption) {
                 throw new Error(`Product with ID ${productOptions.id} not found`);
             }
@@ -53,7 +53,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
     async getById(id: number): Promise<ParsedProductOptions> {
         try {
             // Fetch product by primary key (ID)
-           const productOptions = (await ProductOptionsModel.findOne({
+           const productOptions = (await ProductVariationsModel.findOne({
             where:{
                 id: id
             },
@@ -82,7 +82,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
             // Find the product option by its ID
             const {id, price, updatedBy} = payload
             console.log(price);
-            const productOption = await ProductOptionsModel.findByPk(id);
+            const productOption = await ProductVariationsModel.findByPk(id);
 
             if (!productOption) {
                 throw new Error(`ProductOption with ID ${id} not found.`);
@@ -103,7 +103,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
             // Find the product option by its ID
             const {id, stock, updatedBy} = payload
             console.log(stock);
-            const productOption = await ProductOptionsModel.findByPk(id);
+            const productOption = await ProductVariationsModel.findByPk(id);
 
             if (!productOption) {
                 throw new Error(`ProductOption with ID ${id} not found.`);
@@ -131,7 +131,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
                 );
             }
 
-            const productOption = await ProductOptionsModel.findByPk(id);
+            const productOption = await ProductVariationsModel.findByPk(id);
 
             if (!productOption) {
                 throw new Error(`ProductOption with ID ${id} not found.`);
@@ -149,7 +149,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
 
     async getByProductId(id: number): Promise<ProductOptions[]> {
         try {
-            const productOptions = await ProductOptionsModel.findAll({
+            const productOptions = await ProductVariationsModel.findAll({
                 where: {
                     product_id: id,
                 },

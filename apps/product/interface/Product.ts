@@ -22,8 +22,6 @@ interface IProductTable extends Omit<BaseProduct,'variations'>, BaseMeta {
 
 }
 
-
-
 enum PRODUCT_STATUS {
     ACTIVE = "active",
     INACTIVE = "inactive",

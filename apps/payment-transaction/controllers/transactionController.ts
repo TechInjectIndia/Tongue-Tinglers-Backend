@@ -1,9 +1,10 @@
 import {Request, Response} from "express";
 import {get} from "lodash";
-import {Pagination} from "../../../interfaces";
+
 import {sendResponse} from "../../../libraries";
 import {RESPONSE_TYPE, SUCCESS_MESSAGE} from "../../../constants";
 import {TransactionRepo} from "../repos/TransactionRepo";
+import {Pagination} from "../../common/models/common";
 //
 // export const logModelAction = async <T extends Model<any, any>>(
 //     action: string,

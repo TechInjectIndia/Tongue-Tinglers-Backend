@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
-import { PRODUCT_CATEGORY_STATUS } from "../../../interfaces/products_category";
-import { PRODUCTS_TYPE } from "../../../interfaces";
+
+import {PRODUCT_CATEGORY_STATUS} from "../interface/Category";
+import {PRODUCTS_TYPE} from "../../product/interface/Product";
 
 const productsCategoryValidationSchema = Joi.object({
     name: Joi.string()
@@ -45,7 +46,7 @@ const productsCategoryValidationSchema = Joi.object({
             "any.only": `Type must be one of [${Object.values(PRODUCTS_TYPE).join(", ")}].`,
             "any.required": "Type is required.",
     }),
-     
+
 });
 
 const getAllProductsCategoryValidationSchema = Joi.object({
@@ -81,7 +82,7 @@ const productsCategoryUpdateValidationSchema = Joi.object({
         .messages({
             "string.base": "Description must be a string.",
             "string.max": "Description must not exceed 500 characters.",
-        }), 
+        }),
     slug: Joi.string()
     .required()
     .messages({

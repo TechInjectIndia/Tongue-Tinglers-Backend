@@ -1,4 +1,4 @@
-import {ParsedCategory} from "../../../interfaces/products_category"
+import {ParsedCategory} from "apps/products-category/interface/Category";
 
 const parseCategory = (category:any):ParsedCategory => {
     const data:ParsedCategory = {

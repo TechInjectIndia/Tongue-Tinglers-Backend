@@ -25,8 +25,8 @@ import {CommissionTable} from "apps/commission/model/CommmisionTable";
 import {AffiliateModel} from "apps/affiliate/models/affiliateModel";
 import {PdiCheckpointModel} from "apps/pdi-checkpoint/model/PdiCheckPointTable";
 import {
-    ProductOptionsModel
-} from "apps/product-options/models/productOptionTable";
+    ProductVariationsModel
+} from "../product-options/models/ProductVariationTable";
 import {FollowDetailsModel} from "apps/follow-details/model/followDetailModel";
 import {
     CommissionEntityMapTable
@@ -65,7 +65,7 @@ const m = [
     ProposalModel,
     CampaignProposalsModel,
     PdiCheckpointModel,
-    ProductOptionsModel,
+    ProductVariationsModel,
     AffiliateModel,
     FollowDetailsModel,
     CommissionEntityMapTable,
@@ -84,7 +84,6 @@ console.log(m)
 
 const models = {
     ProposalModel:ProposalModel.initModel(),
-
     AreaModel: AreaModel.initModel(),
     RegionModel: RegionModel.initModel(),
     AddressModel: AddressModel.initModel(),
@@ -97,12 +96,11 @@ const models = {
     Leads: LeadsModel.initModel(),
     ContractModel: ContractModel.initModel(),
     AssignModel: AssignModel.initModel(), //depends on Lead & User model
-
     OptionsModel: OptionsModel.initModel(),
     FranchiseLeadModel: FranchiseLeadModel.initModel(),
     PdiCheckPoints: PdiCheckpointModel.initModel(),
     IChecklistModel: IChecklistModel.initModel(),
-    Variations: ProductOptionsModel.initModel(),
+    Variations: ProductVariationsModel.initModel(),
     Affiliate: AffiliateModel.initModel(),
     QuestionModel: QuestionModel.initModel(),
     CampaignQuestionModel: CampaignQuestionModel.initModel(),

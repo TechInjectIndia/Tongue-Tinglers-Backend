@@ -33,8 +33,9 @@ import {
     WrapperValidateResult,
 } from "apps/common/models/CheckOutPageState";
 import { COUPON_STATUS, DISCOUNT_TYPE } from "apps/coupons/models/Coupon";
-import { ParsedProduct } from "interfaces";
+
 import { CartDetailRepo } from "apps/cart-details/repos/cartDetailRepo";
+import {ParsedProduct} from "../../product/interface/Product";
 
 export class OrderProvider implements IOrderProvider {
     async processOrder(

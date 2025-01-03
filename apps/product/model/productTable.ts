@@ -8,8 +8,8 @@ import {
 
 import RepoProvider from "apps/RepoProvider";
 import {
-    ProductOptionsModel
-} from "apps/product-options/models/productOptionTable";
+    ProductVariationsModel
+} from "../../product-options/models/ProductVariationTable";
 import {UserModel} from "apps/user/models/UserTable";
 import {CartProductModel} from "apps/cart-products/model/CartTable";
 
@@ -39,24 +39,24 @@ class ProductModel extends Model<IProductTable, ProductCreationAttributes>
     public readonly deletedAt!: Date | null;
 
     public addVariation!: (
-        option: ProductOptionsModel | number
+        option: ProductVariationsModel | number
     ) => Promise<void>;
     public addVariations!: (
-        options: Array<ProductOptionsModel | number>
+        options: Array<ProductVariationsModel | number>
     ) => Promise<void>;
     public setVariationses!: (
-        options: Array<ProductOptionsModel | number>
+        options: Array<ProductVariationsModel | number>
     ) => Promise<void>;
-    public getVariationses!: () => Promise<ProductOptionsModel[]>;
+    public getVariationses!: () => Promise<ProductVariationsModel[]>;
     public removeVariations!: (
-        option: ProductOptionsModel | number
+        option: ProductVariationsModel | number
     ) => Promise<void>;
     public removeVariationses!: (
-        options: Array<ProductOptionsModel | number>
+        options: Array<ProductVariationsModel | number>
     ) => Promise<void>;
 
     public static associate() {
-        ProductModel.belongsToMany(ProductOptionsModel, {
+        ProductModel.belongsToMany(ProductVariationsModel, {
             through: "productVariationsJoin", // Join table name
             foreignKey: "productId",
             otherKey: "productOptionId",

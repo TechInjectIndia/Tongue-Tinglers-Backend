@@ -1,8 +1,5 @@
 import { ParsedMeta } from "apps/common/models/Base";
 import { PreSaleParsedOrderItem } from "apps/order/interface/OrderItem";
-import { ParsedProduct } from "apps/product/interface/Product";
-import { ParsedProductOptions } from "apps/product/interface/ProductOptions";
-
 
 interface BaseOrderItem {
     product_id: number,

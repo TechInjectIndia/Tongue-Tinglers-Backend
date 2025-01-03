@@ -15,7 +15,7 @@ import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { Op } from "sequelize";
 import { parseCartProduct } from "../parser/cartProductParser";
 import { ProductModel } from "apps/product/model/productTable";
-import { ProductOptionsModel } from "apps/product-options/models/productOptionTable";
+import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
 import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
 
 export class CartProductRepo implements ICartProductRepo {
@@ -66,7 +66,7 @@ export class CartProductRepo implements ICartProductRepo {
                         as: "product", // Alias name if used in associations
                     },
                     {
-                        model: ProductOptionsModel, // Assuming you have defined an association
+                        model: ProductVariationsModel, // Assuming you have defined an association
                         as: "variations", // Alias name if used in associations
                         include: [
                             {
@@ -168,7 +168,7 @@ export class CartProductRepo implements ICartProductRepo {
                         as: "product", // Alias name if used in associations
                     },
                     {
-                        model: ProductOptionsModel, // Assuming you have defined an association
+                        model: ProductVariationsModel, // Assuming you have defined an association
                         as: "variations", // Alias name if used in associations
                         include: [
                             {

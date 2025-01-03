@@ -8,7 +8,7 @@ import RepoProvider from "apps/RepoProvider";
 interface ProductOptionsCreationAttributes
     extends Optional<ProductOptions, "id"> {}
 
-class ProductOptionsModel
+class ProductVariationsModel
     extends Model<ProductOptions, ProductOptionsCreationAttributes>
     implements BaseProductOptions
 {
@@ -24,14 +24,14 @@ class ProductOptionsModel
     deletedBy: number;
 
     public static associate() {
-        ProductOptionsModel.belongsTo(OptionsValueModel, {
+        ProductVariationsModel.belongsTo(OptionsValueModel, {
             as: "optionsValue",
             foreignKey: "optionValueId",
         });
     }
 
     public static initModel() {
-        ProductOptionsModel.init(
+        ProductVariationsModel.init(
             {
                 id: {
                     type: DataTypes.INTEGER,
@@ -104,11 +104,11 @@ class ProductOptionsModel
                 timestamps: true,
             }
         );
-        return ProductOptionsModel;
+        return ProductVariationsModel;
     }
 
     public static hook() {
-        ProductOptionsModel.addHook(
+        ProductVariationsModel.addHook(
             "afterCreate",
             async (instance, options) => {
                 await RepoProvider.LogRepo.logModelAction(
@@ -121,7 +121,7 @@ class ProductOptionsModel
         );
 
         // After Update Hook - Log the updated fields of the Variations
-        ProductOptionsModel.addHook(
+        ProductVariationsModel.addHook(
             "afterUpdate",
             async (instance, options) => {
                 // Now call logModelAction as Variations
@@ -135,7 +135,7 @@ class ProductOptionsModel
         );
 
         // After Destroy Hook - Log the deletion of the Variations
-        ProductOptionsModel.addHook(
+        ProductVariationsModel.addHook(
             "afterDestroy",
             async (instance, options) => {
                 await RepoProvider.LogRepo.logModelAction(
@@ -149,4 +149,4 @@ class ProductOptionsModel
     }
 }
 
-export { ProductOptionsModel };
+export { ProductVariationsModel };

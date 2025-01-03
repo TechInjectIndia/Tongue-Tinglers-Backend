@@ -1,25 +1,24 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import {DataTypes, Model, Optional} from "sequelize";
 
-
-
-import { QuestionModel } from "apps/questions/models/QuestionModel";
+import {QuestionModel} from "apps/questions/models/QuestionModel";
 import RepoProvider from "apps/RepoProvider";
+import {CampaignQuestionModel} from "./CampaignQuestionModel";
+import {ICampaign} from "../interface/campaign";
+import {sequelize} from "config/database";
+import {LeadsModel} from "apps/lead/models/LeadTable";
+import {RegionModel} from "apps/region/models/RegionTable";
+import {AffiliateModel} from "apps/affiliate/models/affiliateModel";
+import {OrganizationModel} from "apps/organization/models/OrganizationTable";
+import {ProposalModel} from "../../proposal_model/models/ProposalModelTable";
+import {CampaignProposalsModel} from "./CampaignProposalsModel";
 
-import { CampaignQuestionModel } from "./CampaignQuestionModel";
-import { ICampaign } from "../interface/campaign";
-import { sequelize } from "config/database";
-import { LeadsModel } from "apps/lead/models/LeadTable";
-import { RegionModel } from "apps/region/models/RegionTable";
-import { AffiliateModel } from "apps/affiliate/models/affiliateModel";
-import { ProposalLeadModels } from "apps/proposal_model/models/ProposalModelTable";
-import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 
 
-
-const { STRING, INTEGER, DATE, NOW, JSONB } = DataTypes;
+const {STRING, INTEGER, DATE, NOW, JSONB} = DataTypes;
 
 interface CampaignCreationAttributes
-    extends Optional<ICampaign, "id" | "createdAt" | "updatedAt" | "deletedAt"> { }
+    extends Optional<ICampaign, "id" | "createdAt" | "updatedAt" | "deletedAt"> {
+}
 
 class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
     implements ICampaign {
@@ -42,6 +41,7 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
     public readonly deletedAt!: Date | null;
 
     public setQuestions: (questions: Array<QuestionModel | number>) => Promise<void>;
+    public setProposals: (proposals: Array<ProposalModel | number>) => Promise<void>;
 
     public static initModel() {
         CampaignAdModel.init(
@@ -75,7 +75,8 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
                     comment: "Description of the campaign",
                 },
                 questionList: {
-                    type: DataTypes.ARRAY(DataTypes.INTEGER), // Array of integers
+                    type: DataTypes.ARRAY(DataTypes.INTEGER), // Array of
+                                                              // integers
                     allowNull: false,
                     comment: "List of questions associated with the campaign",
                 },
@@ -149,18 +150,22 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
             foreignKey: "campaignId",
             as: "campaign_ad",
         });
-        CampaignAdModel.hasOne(RegionModel, {
+
+        CampaignAdModel.belongsTo(RegionModel, {
             foreignKey: "regionId",
             as: "region",
         });
 
-        CampaignAdModel.hasOne(AffiliateModel, {
+        CampaignAdModel.belongsTo(AffiliateModel, {
             foreignKey: "affiliateId",
             as: "affiliate",
         });
 
-        CampaignAdModel.hasMany(ProposalLeadModels, {
-            foreignKey: "proposalIds",
+        // Many-to-Many association with ProposalModel
+        CampaignAdModel.belongsToMany(ProposalModel, {
+            through: CampaignProposalsModel, // Junction table
+            foreignKey: "campaignId",
+            otherKey: "proposalId",
             as: "proposals",
         });
 
@@ -175,8 +180,6 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
             otherKey: "questionId",
             as: "questions",
         });
-
-
     }
 
     public static hook() {
@@ -210,6 +213,7 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
             );
         });
     }
+
 }
 
-export { CampaignAdModel };
+export {CampaignAdModel};

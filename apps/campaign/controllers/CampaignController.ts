@@ -54,6 +54,7 @@ export default class CampaignController {
                     );
             }
 
+
             const campaign = await new CampaignAdRepo().create(payload);
             return res
                 .status(201)

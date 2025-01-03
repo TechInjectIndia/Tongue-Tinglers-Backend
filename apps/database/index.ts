@@ -1,37 +1,91 @@
-import { AddressModel } from "apps/address/models/AddressTable";
-import { AffiliateModel } from "apps/affiliate/models/affiliateModel";
-import { AgreementDocModel } from "apps/agreement-docs/model/agreementDocModel";
-import { AreaModel } from "apps/area/models/AreaTable";
-import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
-import { CampaignQuestionModel } from "apps/campaign/models/CampaignQuestionModel";
-import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
-import { CartProductModel } from "apps/cart-products/model/CartTable";
-import { CommissionEntityMapTable } from "apps/commission/model/CommissionEntityMapTable";
-import { CommissionTable } from "apps/commission/model/CommmisionTable";
-import { handleError } from "apps/common/utils/HelperMethods";
-import { ContractModel } from "apps/contracts/models/ContractTable";
-import { DocumentModel } from "apps/documents/models/DocumentTable";
-import { FollowDetailsModel } from "apps/follow-details/model/followDetailModel";
-import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
-import { FranchiseLeadModel } from "apps/franchise_model/models/FranchiseModelTable";
-import { IChecklistModel } from "apps/ichecklist/model/CheckListTable";
-import { AssignModel } from "apps/lead/models/AssignTable";
-import { LeadsModel } from "apps/lead/models/LeadTable";
-import { OptionsModel } from "apps/options/models/optionTable";
-import { OrderItemsModel } from "apps/order-items/models/OrderItemsTable";
-import { NotesModel } from "apps/order/models/NotesTable";
-import { OrderModel } from "apps/order/models/OrderTable";
-import { OrganizationModel } from "apps/organization/models/OrganizationTable";
-import { PdiCheckpointModel } from "apps/pdi-checkpoint/model/PdiCheckPointTable";
-import { ProductOptionsModel } from "apps/product-options/models/productOptionTable";
-import { ProductModel } from "apps/product/model/productTable";
-import { ProductsCategoryModel } from "apps/products-category/models/ProductCategoryTable";
-import { QuestionModel } from "apps/questions/models/QuestionModel";
 import { RegionModel } from "apps/region/models/RegionTable";
-import { UserModel } from "apps/user/models/UserTable";
+import {AgreementDocModel} from "apps/agreement-docs/model/agreementDocModel";
 
-// Initialize Models
+import {CampaignAdModel} from "apps/campaign/models/CampaignModel";
+import {AddressModel} from "apps/address/models/AddressTable";
+import {UserModel} from "apps/user/models/UserTable";
+import {DocumentModel} from "apps/documents/models/DocumentTable";
+import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
+import {LeadsModel} from "apps/lead/models/LeadTable";
+import {ContractModel} from "apps/contracts/models/ContractTable";
+import {IChecklistModel} from "apps/ichecklist/model/CheckListTable";
+import {CampaignQuestionModel} from "apps/campaign/models/CampaignQuestionModel";
+import {QuestionModel} from "apps/questions/models/QuestionModel";
+import {ProposalModel} from "apps/proposal_model/models/ProposalModelTable";
+import {
+    CampaignProposalsModel
+} from "apps/campaign/models/CampaignProposalsModel";
+import {
+    FranchiseLeadModel
+} from "apps/franchise_model/models/FranchiseModelTable";
+import {OptionsModel} from "apps/options/models/optionTable";
+import {AreaModel} from "apps/area/models/AreaTable";
+import {AssignModel} from "apps/lead/models/AssignTable";
+import {CommissionTable} from "apps/commission/model/CommmisionTable";
+import {AffiliateModel} from "apps/affiliate/models/affiliateModel";
+import {PdiCheckpointModel} from "apps/pdi-checkpoint/model/PdiCheckPointTable";
+import {
+    ProductOptionsModel
+} from "apps/product-options/models/productOptionTable";
+import {FollowDetailsModel} from "apps/follow-details/model/followDetailModel";
+import {
+    CommissionEntityMapTable
+} from "apps/commission/model/CommissionEntityMapTable";
+import {CartDetailsModel} from "apps/cart-details/models/CartDetailTable";
+import {
+    ProductsCategoryModel
+} from "apps/products-category/models/ProductCategoryTable";
+import {ProductModel} from "apps/product/model/productTable";
+import {OrderModel} from "apps/order/models/OrderTable";
+import {NotesModel} from "apps/order/models/NotesTable";
+import {OrderItemsModel} from "apps/order-items/models/OrderItemsTable";
+import {CartProductModel} from "apps/cart-products/model/CartTable";
+import {handleError} from "apps/common/utils/HelperMethods";
+import {ItemStockModel} from "../../database/schema/petpooja/stock";
+import {OrganizationModel} from "../organization/models/OrganizationTable";
+
+const m = [
+    RegionModel,
+    AddressModel,
+    UserModel,
+    DocumentModel,
+    OrganizationModel,
+    FranchiseModel,
+    CampaignAdModel,
+    AgreementDocModel,
+    LeadsModel,
+    ContractModel,
+    AssignModel,
+    AreaModel,
+    OptionsModel,
+    FranchiseLeadModel,
+    IChecklistModel,
+    CampaignQuestionModel,
+    QuestionModel,
+    ProposalModel,
+    CampaignProposalsModel,
+    PdiCheckpointModel,
+    ProductOptionsModel,
+    AffiliateModel,
+    FollowDetailsModel,
+    CommissionEntityMapTable,
+    CommissionTable,
+    CartDetailsModel,
+    ProductsCategoryModel,
+    ProductModel,
+    OrderModel,
+    NotesModel,
+    OrderItemsModel,
+    CartProductModel,
+    ItemStockModel
+];
+
+console.log(m)
+
 const models = {
+    ProposalModel:ProposalModel.initModel(),
+
+    AreaModel: AreaModel.initModel(),
     RegionModel: RegionModel.initModel(),
     AddressModel: AddressModel.initModel(),
     UserModel: UserModel.initModel(),
@@ -43,7 +97,7 @@ const models = {
     Leads: LeadsModel.initModel(),
     ContractModel: ContractModel.initModel(),
     AssignModel: AssignModel.initModel(), //depends on Lead & User model
-    AreaModel: AreaModel.initModel(),
+
     OptionsModel: OptionsModel.initModel(),
     FranchiseLeadModel: FranchiseLeadModel.initModel(),
     PdiCheckPoints: PdiCheckpointModel.initModel(),
@@ -61,67 +115,12 @@ const models = {
     Order: OrderModel.initModel(),
     Notes: NotesModel.initModel(),
     OrderItem: OrderItemsModel.initModel(),
-    Cart: CartProductModel.initModel()
+    Cart: CartProductModel.initModel(),
+    ItemStockModel: ItemStockModel.initModel(),
+    CampaignProposalsModel: CampaignProposalsModel.initModel()
 };
 
 console.log(Object.keys(models).join(" "))
-
-// Establish association with CampaignAdModel
-
-// CampaignAdModel.belongsToMany(questionModel, {
-//     through: 'CampaignQuestions',
-//     foreignKey: 'campaignId',
-//     otherKey: 'questionId',
-//     as: 'questions',
-// });
-
-// questionModel.belongsToMany(CampaignAdModel, {
-//     through: 'CampaignQuestions',
-//     foreignKey: 'questionId',
-//     otherKey: 'campaignId',
-//     as: 'campaigns',
-// });
-
-
-// Establish association with FranchiseLocationModel
-// FranchiseeModel.hasOne(addressmodel, {
-//     foreignKey: "franchiseeId",
-//     as: "franchiseLocation",
-// });
-
-// FranchiseLocationModel.belongsTo(FranchiseeModel, {
-//     foreignKey: "franchiseeId",
-//     as: "franchisee",
-// });
-// Establish association with FranchiseLocationModel
-
-// Establish association with SocialMediaDetailsFranchiseModel
-// FranchiseeModel.hasMany(SocialMediaDetailsFranchiseModel, {
-//     foreignKey: "franchiseeId",
-//     as: "socialMediaDetails",
-// });
-
-// SocialMediaDetailsFranchiseModel.belongsTo(FranchiseeModel, {
-//     foreignKey: "franchiseeId",
-//     as: "franchisee",
-// });
-// Establish association with SocialMediaDetailsFranchiseModel
-
-// UserModel.hasMany(UserAddressModel, { foreignKey: "userId", as: "address" });
-
-
-// Establish association with AssignModel
-
-// Establish association with AffiliateModel
-// AffiliateModel.hasMany(SocialMediaDetailsModel, {
-//     foreignKey: "affiliateId",
-//     as: "sm",
-// });
-// SocialMediaDetailsModel.belongsTo(AffiliateModel, {
-//     foreignKey: "affiliateId",
-//     as: "affiliate",
-// });
-// // Establish association with AffiliateModel
 
 
 let currentModel: string = null;

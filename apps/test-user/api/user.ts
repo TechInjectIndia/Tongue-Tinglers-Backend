@@ -22,6 +22,7 @@ import {
 } from "../../../interfaces/organization";
 import { QuestionRepo } from "../../questions/models";
 import {
+    createDummyMaster,
     getSampleAreas,
     getSampleFranchiseModels,
     getSampleProposals,
@@ -188,36 +189,6 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
     }
 }))
 
-async function createDummyMaster(user_id: number) {
-    const questions = getSampleQuestions();
-    const areas = getSampleAreas();
-    const regions = getSampleRegions();
-    const franchiseModels = getSampleFranchiseModels();
-    const proposals = getSampleProposals();
-
-    const qRepo = new QuestionRepo();
-    const questionsProm = Promise.all(questions.map(
-        q => qRepo.create({ createdBy: user_id, ...q }, user_id)));
-
-    const aRepo = new AreaRepo();
-    const areasProm = Promise.all(areas.map(
-        a => aRepo.create({ createdBy: user_id, ...a }))).then(_ => {
-            const rRepo = new RegionRepo();
-            Promise.all(regions.map(
-                r => rRepo.create({ createdBy: user_id, ...r })));
-        });
-
-    const fmRepo = new FranchiseModelRepo();
-    const franchiseModelsProm = Promise.all(franchiseModels.map(
-        fm => fmRepo.create(fm, user_id))).then(_ => {
-            const pRepo = new ProposalModelRepo();
-            Promise.all(proposals.map(p => pRepo.create(p)));
-        });
-
-    return Promise.all(
-        [areasProm, franchiseModelsProm, questionsProm]);
-}
-
 /**
  * @swagger
  * /api/admin/test-user/superOrg:
@@ -233,8 +204,7 @@ async function createDummyMaster(user_id: number) {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- */
-router.get("/superOrg", (async (req, res) => {
+ */router.get("/superOrg", (async (req, res) => {
     try {
 
         const payload = { ...req?.body, createdBy: 1 };
@@ -340,10 +310,7 @@ router.get("/superOrg", (async (req, res) => {
             }
             superFranOrg = await repo.create(TTOrgParams, admin.id);
         }
-
-        console.log(admin, superFranOrg)
-
-        await createDummyMaster(admin.id);
+        if(createSampleData) await createDummyMaster(admin.id);
 
         //todo @Nitesh uncomment
 
@@ -377,6 +344,45 @@ router.get("/superOrg", (async (req, res) => {
                     RESPONSE_TYPE.SUCCESS,
                     SUCCESS_MESSAGE.ADMIN_CREATED,
                     superFranOrg
+                )
+            );
+    }
+    catch (err) {
+        console.error("Error:", err);
+        return res.status(500).send({
+            message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+        });
+    }
+}))
+
+/**
+ * @swagger
+ * /api/admin/test-user/sampleData:
+ *   get:
+ *     summary: Run this after superOrg to create sample data
+ *     tags: [AUTH]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: User created successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ */router.get("/sampleData", (async (req, res) => {
+    try {
+        const email = 'admin@TongueTingler.com';
+        let admin: TUser = (await new Auth().getUserByEmail(
+            email
+        ));
+         await createDummyMaster(admin.id);
+        return res
+            .status(200)
+            .send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.ADMIN_CREATED
                 )
             );
     }

@@ -21,7 +21,7 @@ import {
 import {
     createFirebaseUser,
     createPassword,
-    EMAIL_HEADING,
+    EMAIL_HEADING, sendEmail,
     sendMail,
     sendResponse,
 } from "libraries";
@@ -32,8 +32,13 @@ import { CreateLeadMail } from "static/views/email/get-templates/CreateLeadMail"
 import { LeadToProspectMail } from "static/views/email/get-templates/LeadToProspectMail";
 
 export default class LeadController {
-    static async frontEnd(req: Request, res: Response): Promise<Response> {
+
+    static async frontEnd(
+        req: Request,
+        res: Response,
+    ): Promise<Response> {
         try {
+
             const whereVal = get(req.body, "email", "");
 
             const existingLead = await new LeadRepo().getLeadByAttr(
@@ -43,9 +48,7 @@ export default class LeadController {
             if (existingLead) {
                 return res
                     .status(400)
-                    .send(
-                        sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.EXISTS),
-                    );
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.EXISTS));
             }
 
             const payload = {
@@ -68,10 +71,9 @@ export default class LeadController {
                             ),
                         );
                 }
-                const existingassignedByUser =
-                    await new AdminRepo().checkIfUserExist(
-                        assign.assignedBy.id,
-                    );
+                const existingassignedByUser = await new AdminRepo().checkIfUserExist(
+                    assign.assignedBy.id,
+                );
                 if (!existingassignedByUser) {
                     return res
                         .status(400)
@@ -87,8 +89,9 @@ export default class LeadController {
             delete payload.assign;
 
             if (payload.referby) {
-                const existingReferral =
-                    await new AdminRepo().getByReferralCode(payload.referby);
+                const existingReferral = await new AdminRepo().getByReferralCode(
+                    payload.referby,
+                );
                 if (!existingReferral) {
                     return res
                         .status(404)
@@ -119,11 +122,7 @@ export default class LeadController {
             return res
                 .status(200)
                 .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CREATED,
-                        newLead,
-                    ),
+                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, newLead),
                 );
         } catch (err) {
             console.error(err);
@@ -133,6 +132,7 @@ export default class LeadController {
         }
     }
 
+
     static async convertLeadToProspect(
         req: Request,
         res: Response,
@@ -140,13 +140,12 @@ export default class LeadController {
     ): Promise<Response | void> {
         const transaction = await sequelize.transaction(); // Start a transaction
         try {
+
             const id = parseInt(get(req.body, "id"));
-            if (isNaN(id)) throw Error("Missing id or isNaN");
+            if (isNaN(id)) throw Error('Missing id or isNaN');
 
             // get contract
-            const existingContract = await new ContractRepo().get(id, {
-                transaction,
-            });
+            const existingContract = await new ContractRepo().get(id, { transaction });
             if (existingContract) {
                 await transaction.rollback();
                 return res
@@ -177,7 +176,7 @@ export default class LeadController {
             // }
 
             const user_id = parseInt(get(req, "user_id"));
-            if (isNaN(user_id)) throw Error("Missing user_id or isNaN");
+            if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
 
             const payload = {
                 firstName: existingLead.firstName,
@@ -192,7 +191,7 @@ export default class LeadController {
                 status: USER_STATUS.ACTIVE,
                 referBy: existingLead.referBy,
             };
-            console.log("payload: ", payload);
+            console.log('payload: ', payload);
 
             let templateId: "";
             const templates: any[] = await new ZohoSignRepo().getTemplates();
@@ -224,15 +223,11 @@ export default class LeadController {
                 additionalInfo: "",
                 signedDocs: [],
                 createdBy: user_id,
-                proposalData: undefined,
-                assignedUser: null,
+                proposalData: existingLead.proposalModalId,
+                assignedUser: null
             };
 
-            const prospect = await new ContractRepo().create(
-                prospectData,
-                user_id,
-                { transaction },
-            );
+            const prospect = await new ContractRepo().create(prospectData, user_id, {transaction});
 
             const mailDto = new LeadToProspectMail().getPayload(
                 {},
@@ -263,7 +258,7 @@ export default class LeadController {
                 await transaction.rollback();
                 return res
                     .status(400)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, firebaseUser?.uid));
+                    .send(sendResponse(firebaseUser.error, firebaseUser?.uid));
             }
 
             const token = jwt.sign(
@@ -298,23 +293,37 @@ export default class LeadController {
                 lastLoginAt: null,
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                deletedAt: null,
+                deletedAt: null
             };
 
-            const respo = await new AdminRepo().create(normalUser, {
-                transaction,
-            });
+            const respo = await new AdminRepo().create(normalUser, {transaction});
 
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password?token=${token}`;
 
+            try {
+                const emailContent = `Hi Your Lead converted into Prospect Now Add Your Organisation using link: https://tonguetingler.vercel.app/organization-setup?prospectId=${prospect.id} using password:12345678`;
+                const mailOptions = {
+                    to: existingLead.email,
+                    subject: EMAIL_HEADING.PROSPECT_GENERATED,
+                    templateParams: {
+                        heading: EMAIL_HEADING.PROSPECT_GENERATED,
+                        description: emailContent,
+                    },
+                };
+
+                await sendEmail(
+                    mailOptions.to,
+                    mailOptions.subject,
+                    mailOptions.templateParams,
+                );
+            } catch (emailError) {
+                console.error("Error sending email:", emailError);
+            }
             await transaction.commit(); // Commit the transaction
             return res
                 .status(200)
                 .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.PROSPECT_CREATED,
-                    ),
+                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.PROSPECT_CREATED),
                 );
         } catch (err) {
             console.error(err);
@@ -324,6 +333,7 @@ export default class LeadController {
                 .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
+
 
     static async assignLeadToAdminUser(
         req: Request,
@@ -339,12 +349,7 @@ export default class LeadController {
             if (isEmpty(existingLead)) {
                 return res
                     .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS,
-                        ),
-                    );
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
 
             const payload: any = {
@@ -354,10 +359,7 @@ export default class LeadController {
             };
 
             console.log("payloadpayloadpayloadpayload", payload);
-            const updatedLead = await new AssignRepo().createOrUpdate(
-                id,
-                payload,
-            );
+            const updatedLead = await new AssignRepo().createOrUpdate(id, payload);
 
             return res
                 .status(200)
@@ -384,7 +386,7 @@ export default class LeadController {
         try {
             const user_id = parseInt(get(req, "user_id"));
             if (!user_id) {
-                throw Error("Missing user_id or isNaN");
+                throw Error('Missing user_id or isNaN');
             }
             const whereVal = get(req.body, "email", "");
 
@@ -395,9 +397,7 @@ export default class LeadController {
             if (existingLead) {
                 return res
                     .status(400)
-                    .send(
-                        sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.EXISTS),
-                    );
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.EXISTS));
             }
 
             const payload = {
@@ -428,10 +428,9 @@ export default class LeadController {
                             ),
                         );
                 }
-                const existingassignedByUser =
-                    await new AdminRepo().checkIfUserExist(
-                        assign.assignedBy.id,
-                    );
+                const existingassignedByUser = await new AdminRepo().checkIfUserExist(
+                    assign.assignedBy.id,
+                );
                 if (!existingassignedByUser) {
                     return res
                         .status(400)
@@ -447,8 +446,9 @@ export default class LeadController {
             delete payload.assign;
 
             if (payload.referby) {
-                const existingReferral =
-                    await new AdminRepo().getByReferralCode(payload.referby);
+                const existingReferral = await new AdminRepo().getByReferralCode(
+                    payload.referby,
+                );
                 if (!existingReferral) {
                     return res
                         .status(404)
@@ -481,11 +481,7 @@ export default class LeadController {
             return res
                 .status(200)
                 .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CREATED,
-                        newLead,
-                    ),
+                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.CREATED, newLead),
                 );
         } catch (err) {
             console.error(err);
@@ -494,6 +490,7 @@ export default class LeadController {
                 .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
+
 
     static async list(
         req: Request,
@@ -566,15 +563,15 @@ export default class LeadController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const user_id = parseInt(get(req, "user_id"));
+            const user_id = parseInt(get(req, 'user_id'));
 
-            console.log("user_id", user_id);
-            if (isNaN(user_id)) throw Error("userId not passed or isNan");
+            console.log('user_id', user_id);
+            if (isNaN(user_id)) throw Error('userId not passed or isNan')
 
             // const user_name = get(req, 'user_name', '');
 
-            const id = parseInt(get(req.params, "id"));
-            if (isNaN(id)) throw Error("id not passed or isNan");
+            const id = parseInt(get(req.params, 'id'));
+            if (isNaN(id)) throw Error('id not passed or isNan')
 
             const payload = req.body;
 
@@ -590,12 +587,7 @@ export default class LeadController {
             if (isEmpty(existingLead)) {
                 return res
                     .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS,
-                        ),
-                    );
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
 
             // const updateLog: ITrackable = {
@@ -609,11 +601,16 @@ export default class LeadController {
             // const existingLogs = Array.isArray(existingLead.logs) ? existingLead.logs : [];
             // const updatedLogs = [...existingLogs, updateLog];
 
+
+
+
             const updatedLead = await new LeadRepo().update(id, {
                 ...payload,
                 updatedBy: user_id,
                 // logs: updatedLogs
             });
+
+
 
             return res
                 .status(200)
@@ -632,7 +629,10 @@ export default class LeadController {
         }
     }
 
-    static async get(req: Request, res: Response): Promise<Response> {
+    static async get(
+        req: Request,
+        res: Response,
+    ): Promise<Response> {
         try {
             const id = get(req.params, "id", "");
 
@@ -641,12 +641,7 @@ export default class LeadController {
             if (isEmpty(existingLead)) {
                 return res
                     .status(400)
-                    .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.NOT_EXISTS,
-                        ),
-                    );
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
             }
 
             return res
@@ -677,10 +672,7 @@ export default class LeadController {
                 return res
                     .status(400)
                     .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            "No IDs provided for deletion.",
-                        ),
+                        sendResponse(RESPONSE_TYPE.ERROR, "No IDs provided for deletion."),
                     );
             }
 

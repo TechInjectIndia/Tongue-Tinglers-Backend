@@ -1,8 +1,5 @@
-import * as express from "express";
-// import AdminController from "../controllers/user";
-import * as AdminValidation from "../validations/user";
 import AdminController from "../../user/controllers/user";
-import { Auth } from "../../auth/models";
+import {Auth} from "../../auth/models";
 import {
     checkFirebaseUser,
     createFirebaseUser,
@@ -20,28 +17,21 @@ import {
     IOrganizationPayloadData,
     ORGANIZATION_TYPE
 } from "../../../interfaces/organization";
-import { QuestionRepo } from "../../questions/models";
+import {createDummyMaster} from "../utils";
 import {
-    createDummyMaster,
-    getSampleAreas,
-    getSampleFranchiseModels,
-    getSampleProposals,
-    getSampleQuestions,
-    getSampleRegions
-} from "../utils";
-import { AreaRepo } from "../../area/models/AreaRepo";
-import { RegionRepo } from "../../region/models/RegionRepo";
-import { FranchiseModelRepo } from "../../franchise_model/models";
-import { ProposalModelRepo } from "../../proposal_model/models";
-import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from "constants/response-messages";
-import { AdminRepo } from "apps/user/models/user";
-import { TUser, USER_TYPE } from "apps/user/interface/user";
-import { UserModel } from "apps/user/models/UserTable";
-import { OrganizationRepo } from "apps/organization/models";
+    ERROR_MESSAGE,
+    RESPONSE_TYPE,
+    SUCCESS_MESSAGE
+} from "constants/response-messages";
+import {AdminRepo} from "apps/user/models/user";
+import {TUser, USER_TYPE} from "apps/user/interface/user";
+import {UserModel} from "apps/user/models/UserTable";
+import {OrganizationRepo} from "apps/organization/models";
+import express from "express";
+import {validateCreateAdminBody} from "../validations/user";
 
 const router = express.Router();
 
-const { validateCreateAdminBody } = AdminValidation;
 
 // const { addAdmin } = AdminController;
 const {
@@ -103,11 +93,10 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- */
-router.post("/create", validateCreateAdminBody, (async (req, res) => {
+ */router.post("/create", validateCreateAdminBody, (async (req, res) => {
     try {
 
-        const payload = { ...req?.body, createdBy: 1 };
+        const payload = {...req?.body, createdBy: 1};
 
         const existingAdmin = await new Auth().getUserByEmail(
             payload.email
@@ -207,7 +196,7 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
  */router.get("/superOrg", (async (req, res) => {
     try {
 
-        const payload = { ...req?.body, createdBy: 1 };
+        const payload = {...req?.body, createdBy: 1};
 
         const email = 'admin@TongueTingler.com';
         const password = '123456';
@@ -310,7 +299,7 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
             }
             superFranOrg = await repo.create(TTOrgParams, admin.id);
         }
-        if(createSampleData) await createDummyMaster(admin.id);
+        if (createSampleData) await createDummyMaster(admin.id);
 
         //todo @Nitesh uncomment
 
@@ -376,7 +365,7 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
         let admin: TUser = (await new Auth().getUserByEmail(
             email
         ));
-         await createDummyMaster(admin.id);
+        await createDummyMaster(admin.id);
         return res
             .status(200)
             .send(

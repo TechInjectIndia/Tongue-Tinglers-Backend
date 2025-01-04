@@ -16,8 +16,7 @@ export * from "./gallery";
 export * from "./pdiChecklist";
 export * from "./taxes";
 export * from "./stocks";
-export * from "./regions";
-export * from "./area";
+
 export * from "./vendor";
 export * from "./cart";
 export * from "./userAddress";

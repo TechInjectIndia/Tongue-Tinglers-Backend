@@ -312,6 +312,11 @@ export class ContractRepo {
         const response = await ContractModel.update(data, {
             where: { id },
         });
+
+        console.log("******")
+        console.log(response)
+        console.log("******")
+
         return response;
     }
 

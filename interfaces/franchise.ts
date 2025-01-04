@@ -1,9 +1,11 @@
 import { Address, BaseAddress } from "../types";
 
 import { BaseSocialMedia, parsedAffiliate, SocialMediaDetails } from "./leads";
-import { parsedRegion, ParsedUser } from ".";
+
 import { ParsedOrganization } from "./organization";
 import { BaseMeta, BaseMetaUsers, ParsedMeta } from "apps/common/models/Base";
+import {ParsedUser} from "./user";
+import {ParsedRegion} from "../apps/region/models/Region";
 
 interface BaseFranchise {
   pocName: string;
@@ -30,13 +32,13 @@ interface Franchise extends BaseFranchise, BaseMeta {
   sm: Array<number>;
 }
 
-interface parsedFranchise extends ParsedMeta {
+interface ParsedFranchise extends ParsedMeta {
   id: number;
   pocName: string;
   pocEmail: string;
   pocPhoneNumber: string;
   users: Array<ParsedUser>;
-  region: parsedRegion;
+  region: ParsedRegion;
   area: string;
   agreementIds: Array<string>;
   paymentIds: Array<string>;
@@ -61,5 +63,5 @@ export {
   FRANCHISE_STATUS,
   FranchiseDetails,
   Franchise,
-  parsedFranchise,
+  ParsedFranchise,
 };

@@ -1,4 +1,4 @@
-import { Franchise, FranchiseDetails, parsedFranchise } from "../../../interfaces";
+import { Franchise, FranchiseDetails, ParsedFranchise } from "../../../interfaces";
 
 export interface IFranchiseRepo {
     create(franchise: FranchiseDetails, userId: number, options?: { transaction?: any }): Promise<Franchise | null>;
@@ -7,7 +7,7 @@ export interface IFranchiseRepo {
 
     delete(franchise: Franchise): Promise<Franchise>;
 
-    getById(id: number): Promise<parsedFranchise>;
+    getById(id: number): Promise<ParsedFranchise>;
 
     getAll(page: number, limit: number, search: string, filters: object);
 

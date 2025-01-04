@@ -13,7 +13,7 @@ import RepoProvider from "../../RepoProvider";
 // import { Op } from "sequelize";
 // import { parseFranchise } from "../parser/franchiseParser";
 // import { getUserName } from "../../common/utils/commonUtils";
-import { Franchise, FranchiseDetails, parsedFranchise } from "../interface/Franchise";
+import { Franchise, FranchiseDetails, ParsedFranchise } from "../interface/Franchise";
 import { Pagination, TListFilters } from "apps/common/models/common";
 import { getUserName } from "apps/common/utils/commonUtils";
 import { Op } from "sequelize";
@@ -148,7 +148,7 @@ export class FranchiseRepo implements IFranchiseRepo {
     limit: number,
     search: string,
     filters: TListFilters
-  ): Promise<Pagination<parsedFranchise>> {
+  ): Promise<Pagination<ParsedFranchise>> {
     try {
       const offset = (page - 1) * limit;
 
@@ -219,7 +219,7 @@ export class FranchiseRepo implements IFranchiseRepo {
     }
   }
 
-  async getById(id: number): Promise<parsedFranchise> {
+  async getById(id: number): Promise<ParsedFranchise> {
     try {
       console.log(id);
 

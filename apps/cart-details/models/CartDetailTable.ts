@@ -39,6 +39,7 @@ class CartDetailsModel
         });
 
         UserModel.hasMany(CartDetailsModel, {as: 'cartUser', foreignKey: 'user_id'})
+        CartDetailsModel.belongsTo(UserModel, {as: 'users', foreignKey: 'user_id'})
     }
 
     public static initModel() {

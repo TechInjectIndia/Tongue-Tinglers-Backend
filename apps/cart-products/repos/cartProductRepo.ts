@@ -43,7 +43,7 @@ export class CartProductRepo implements ICartProductRepo {
                 include: { model: UserModel, as: "cartUser" }, // Prevent concurrent modifications
             });
 
-            console.log("userCart--->", userCart);
+            console.log("userCart got--->", userCart);
 
             if (created) {
                 console.log("New cart created for user ID:", cartProduct.user_id);
@@ -92,8 +92,8 @@ export class CartProductRepo implements ICartProductRepo {
 
             return {
                 id: userCart.id,
-                user_id: userCart.user_id,
-                carts: cartProductsWithDetails,
+                user: { id: 0, firstName: "test", lastName: "test", email: "wwe" },
+                cart: cartProductsWithDetails,
             };
         } catch (error) {
             console.error("Error during transaction:", error);

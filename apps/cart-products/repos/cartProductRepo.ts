@@ -39,8 +39,7 @@ export class CartProductRepo implements ICartProductRepo {
                 where: { user_id: cartProduct.user_id },
                 defaults: { user_id: cartProduct.user_id },
                 transaction,
-                lock: transaction.LOCK.UPDATE,
-                include: { model: UserModel, as: "cartUser" }, // Prevent concurrent modifications
+                include: { model: UserModel, as: "users" }, // Prevent concurrent modifications
             });
 
             console.log("userCart got--->", userCart);

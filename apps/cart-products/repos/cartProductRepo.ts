@@ -14,12 +14,12 @@ import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
 import RepoProvider from "apps/RepoProvider";
 import { ParsedCartDetail } from "apps/cart-details/interface/CartDetail";
 import { UserModel } from "apps/user/models/UserTable";
+import { parseTUser } from "apps/order-provider/utils/order-utils";
 
 export class CartProductRepo implements ICartProductRepo {
     async create(cartProduct: Cart): Promise<ParsedCartDetail | null> {
         const transaction = await CartProductModel.sequelize?.transaction();
         try {
-            console.log("Transaction started for creating cart products");
 
             // Step 1: Bulk create cart products
             const createdCartProducts = await CartProductModel.bulkCreate(
@@ -42,7 +42,8 @@ export class CartProductRepo implements ICartProductRepo {
                 include: { model: UserModel, as: "users" }, // Prevent concurrent modifications
             });
 
-            console.log("userCart got--->", userCart);
+            const user = parseTUser(userCart.toJSON());
+            console.log("userCart got--->", user);
 
             if (created) {
                 console.log("New cart created for user ID:", cartProduct.user_id);
@@ -91,7 +92,12 @@ export class CartProductRepo implements ICartProductRepo {
 
             return {
                 id: userCart.id,
-                user: { id: 0, firstName: "test", lastName: "test", email: "wwe" },
+                user: {
+                    id: user.id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                },
                 cart: cartProductsWithDetails,
             };
         } catch (error) {

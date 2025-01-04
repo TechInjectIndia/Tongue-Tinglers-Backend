@@ -38,11 +38,9 @@ const cartProductSchema = Joi.object({
 const createCartProductSchema = Joi.object({
     carts: Joi.array()
         .items(cartProductSchema)
-        .min(1)
         .required()
         .messages({
             'array.base': 'Cart products must be an array.',
-            'array.min': 'At least one cart product is required.',
             'any.required': 'Cart products are required.',
         }),
 });

@@ -15,8 +15,8 @@ export class PaymentReceivedMail extends Mail<null> implements IWelcomeMail {
         return null;
     }
 
-    getBody(): MailBodyOptions {
-        const react = PaymentReceived();
+    getBody(data: any): MailBodyOptions {
+        const react = PaymentReceived(data);
         return {
             html: null,
             react: react,
@@ -30,7 +30,7 @@ export class PaymentReceivedMail extends Mail<null> implements IWelcomeMail {
                 (typeof to === "string" && to.trim() !== "") ||
                 (Array.isArray(to) && to.length > 0)
             ) {
-                const body = this.getBody();
+                const body = this.getBody(data);
 
                 const returnData: AllMailOptions = {
                     to: to,

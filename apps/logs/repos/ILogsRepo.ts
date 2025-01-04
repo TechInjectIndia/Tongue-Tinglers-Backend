@@ -1,6 +1,6 @@
 import { Log } from "../models/Log";
-import { Pagination } from "../../../interfaces";
 import { Model } from "sequelize";
+import {Pagination} from "../../common/models/common";
 export interface ILogsRepo {
     getAll(
         page: number,

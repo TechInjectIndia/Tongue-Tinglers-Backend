@@ -1,7 +1,11 @@
 import { Response } from "express";
-import { TAssignLead, TQueryFilters } from '../../../../types';
+import {  TQueryFilters } from '../../../../types';
 import { AssignAttributes } from '../../../../interfaces';
-import { AssignModel } from "../../../../database/schema"; // Ensure this points to the correct assignment schema
+import {AssignModel} from "../../models/AssignTable";
+
+
+class TAssignLead {
+}
 
 /**
  * Interface for Assign Controller.

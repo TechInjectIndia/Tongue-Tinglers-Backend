@@ -1,4 +1,4 @@
-import {DataTypes, Model, Optional} from "sequelize";
+import {DataTypes, Model, Optional, Transaction} from "sequelize";
 import {sequelize} from "../../../config";
 import {
     IProductTable,
@@ -11,7 +11,7 @@ import {
     ProductVariationsModel
 } from "../../product-options/models/ProductVariationTable";
 import {UserModel} from "apps/user/models/UserTable";
-import {CartProductModel} from "apps/cart-products/model/CartTable";
+import {CartProductModel} from "../../cart-products/model/CartProductTable";
 
 
 interface ProductCreationAttributes
@@ -42,7 +42,8 @@ class ProductModel extends Model<IProductTable, ProductCreationAttributes>
         option: ProductVariationsModel | number
     ) => Promise<void>;
     public addVariations!: (
-        options: Array<ProductVariationsModel | number>
+        options: Array<ProductVariationsModel | number>,
+        // transaction: Transaction
     ) => Promise<void>;
     public setVariationses!: (
         options: Array<ProductVariationsModel | number>

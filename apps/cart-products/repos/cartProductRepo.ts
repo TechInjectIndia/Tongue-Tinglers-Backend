@@ -6,7 +6,7 @@ import {
     ParsedCartProduct,
     UpdateQuantity,
 } from "../interface/Cart";
-import { CartProductModel } from "../model/CartTable";
+import { CartProductModel } from "../model/CartProductTable";
 import { ICartProductRepo } from "./ICartProductRepo";
 // import { ProductModel } from "database/schema/product/productModel";
 // import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
@@ -19,59 +19,57 @@ import { ProductVariationsModel } from "../../product-options/models/ProductVari
 import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
 
 export class CartProductRepo implements ICartProductRepo {
+
     async create(cartProduct: Cart): Promise<ParseCart | null> {
         const transaction = await CartProductModel.sequelize?.transaction();
         try {
+            console.log("Transaction started for creating cart products");
+
             // Step 1: Bulk create cart products
             const createdCartProducts = await CartProductModel.bulkCreate(
                 cartProduct.carts.map((product) => ({
                     product_id: product.product_id,
-                    product_option_id: product.product_option_id, // todo @nitesh @sunil rename to option value id
+                    product_option_id: product.product_option_id,
                     quantity: product.quantity,
                 })),
-                { transaction, returning: true } // Return created rows
+                { transaction, returning: true }
             );
 
-            let cartProductIds: number[] = [];
-            cartProductIds = createdCartProducts.map((option) => option.id);
-            let payload = {
-                // cart_ids: cartProductIds,
-                user_id: cartProduct.user_id,
-            };
+            const cartProductIds = createdCartProducts.map((option) => option.id);
+            console.log("Created cart products with IDs:", cartProductIds);
 
-            const userExist = await CartDetailsModel.findOne({
-                where: {
-                    user_id: cartProduct.user_id,
-                },
+            // Step 2: Find or create cart details for the user
+            const [userCart, created] = await CartDetailsModel.findOrCreate({
+                where: { user_id: cartProduct.user_id },
+                defaults: { user_id: cartProduct.user_id },
+                transaction,
+                lock: transaction.LOCK.UPDATE, // Prevent concurrent modifications
             });
-            var createCartDetails = null;
-            if (!userExist) {
-                createCartDetails = await CartDetailsModel.create(payload, {
-                    transaction,
-                });
+
+            if (created) {
+                console.log("New cart created for user ID:", cartProduct.user_id);
             } else {
-                createCartDetails = userExist;
+                console.log("Existing cart found for user ID:", cartProduct.user_id);
             }
 
-            await createCartDetails.addCartProductses(cartProductIds);
-            // await organization.addShippingAddresses(shippingAddresses);
-            await transaction?.commit();
-            // Return the created cart products (optional)
+            // Step 3: Associate cart products with cart details
+            await userCart.addCartProducts(cartProductIds, { transaction });
 
+            // Step 4: Fetch cart products with details for the response
             const cartProductsWithDetails = await CartProductModel.findAll({
                 where: { id: { [Op.in]: cartProductIds } },
                 include: [
                     {
-                        model: ProductModel, // Assuming you have defined an association
-                        as: "product", // Alias name if used in associations
+                        model: ProductModel,
+                        as: "product",
                     },
                     {
-                        model: ProductVariationsModel, // Assuming you have defined an association
-                        as: "variations", // Alias name if used in associations
+                        model: ProductVariationsModel,
+                        as: "variations",
                         include: [
                             {
                                 model: OptionsValueModel,
-                                as: "optionsValue", // Include these fields from the User model
+                                as: "optionsValue",
                                 attributes: ["id", "name", "option_id"],
                                 include: [
                                     {
@@ -84,27 +82,31 @@ export class CartProductRepo implements ICartProductRepo {
                         ],
                     },
                 ],
-            }).then((cartProductData) => {
-                return cartProductData.map((cartProduct) => {
-                    return parseCartProduct(cartProduct);
-                });
-            });
+                transaction,
+            }).then((cartProductData) =>
+                cartProductData.map((cartProduct) =>
+                    parseCartProduct(cartProduct)
+                )
+            );
+
+            // Commit the transaction
+            await transaction?.commit();
+            console.log("Transaction committed successfully");
+
             return {
-                user_id: cartProduct.user_id, // Assuming `cartsts` comes from `createCartDetails`
+                user_id: cartProduct.user_id,
                 carts: cartProductsWithDetails,
             };
         } catch (error) {
-            console.log(error);
+            console.error("Error during transaction:", error);
 
-            // Step 8: Rollback transaction if it is still active
+            // Rollback the transaction on error
             if (transaction) {
                 try {
                     await transaction.rollback();
+                    console.log("Transaction rolled back successfully");
                 } catch (rollbackError) {
-                    console.error(
-                        "Error rolling back transaction:",
-                        rollbackError
-                    );
+                    console.error("Error rolling back transaction:", rollbackError);
                 }
             }
 

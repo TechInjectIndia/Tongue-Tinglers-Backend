@@ -230,20 +230,22 @@ function createDummyProducts(): {
     optionValues: BaseOptionsValue[]
 } {
 
+    let productImg = ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1W6Al9fAgm1wipabmRo5xOjVkbyJRohoFhQ&s']
+
     const variations: BaseProductOptions[] = [
         {
             optionValueId: 1, // Example option value ID (e.g., "Red")
             price: 699.99, // Price for this variation
             stock: 50, // Available stock for this variation
             status: PRODUCT_OPTIONS_STATUS.ACTIVE, // Active status
-            images: ["https://example.com/images/smartphone-x100-red.jpg"],
+            images: productImg,
         },
         {
             optionValueId: 2, // Example option value ID (e.g., "Blue")
             price: 699.99,
             stock: 30,
             status: PRODUCT_OPTIONS_STATUS.ACTIVE,
-            images: ["https://example.com/images/smartphone-x100-blue.jpg"],
+            images: productImg,
         },
 
     ]
@@ -284,13 +286,8 @@ function createDummyProducts(): {
         MOQ: 10, // Minimum Order Quantity
         category: 1, // Assuming category ID 5 corresponds to 'Electronics'
         type: PRODUCTS_TYPE.RETORT, // Example: PHYSICAL, DIGITAL
-        status: PRODUCT_STATUS.ACTIVE, // Example: ACTIVE, INACTIVE,
-                                       // DISCONTINUED
-        images: [
-            "https://example.com/images/smartphone-x100-front.jpg",
-            "https://example.com/images/smartphone-x100-back.jpg",
-            "https://example.com/images/smartphone-x100-side.jpg"
-        ],
+        status: PRODUCT_STATUS.ACTIVE, // Example: ACTIVE, INACTIVE DISCONTINUED
+        images: productImg,
         tax_rate_id: 1, // Assuming tax rate ID 3 corresponds to 18%
         vendorId: 1, // Example vendor ID
         variations
@@ -303,7 +300,6 @@ function createDummyProducts(): {
         product,
     }
 }
-
 
 export {
     getSampleQuestions,

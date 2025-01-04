@@ -85,7 +85,7 @@ class AreaModel extends Model<IArea, AreaCreationAttributes> implements IArea {
             },
             {
                 sequelize,
-                tableName: "Areas",
+                tableName: "areas",
             }
         );
         return AreaModel

@@ -5,7 +5,7 @@ import { CartDetails, BaseCartDetails } from "../../../interfaces/cart_details";
 
 import RepoProvider from "apps/RepoProvider";
 import { CartProductModel } from "../../cart-products/model/CartProductTable";
-import { UserModel } from "apps/user/models/UserTable";
+import {UserModel} from "../../user/models/UserTable";
 
 // Defining the interface for the creation attributes of CartDetails
 interface CartDetailsCreationAttributes extends Optional<CartDetails, "id"> {}

@@ -37,8 +37,9 @@ import {ProductModel} from "apps/product/model/productTable";
 import {
     ProductVariationsModel
 } from "../../product-options/models/ProductVariationTable";
-import express from "express";
+import express, {Request, Response} from "express";
 import {validateCreateAdminBody} from "../validations/user";
+import {resetSequenceAfterRollback} from "../../database/utils";
 
 
 const router = express.Router();
@@ -371,91 +372,7 @@ const {
  *       '401':
  *         description: Unauthorized
  */
-router.get('/createEverything', async (req, res) => {
-    const transaction = await sequelize.transaction();
-    try {
-        const dummyData = createDummyProducts();
-
-        const categoryData = dummyData.category
-        const categoryCreated = await ProductsCategoryModel.create(categoryData)
-
-        const optionsData = dummyData.options
-        const optionsCreated = await OptionsModel.bulkCreate(optionsData)
-
-        const optionsValueData = dummyData.optionValues
-        const optionsValueCreated = await OptionsValueModel.bulkCreate(
-            optionsValueData)
-
-        const productData = dummyData.product
-        let variationIds: number[] = []; // Array to store created option IDs
-
-        // Step 1: Create the product with a default empty array for
-        // `variationIds`
-        const createdProduct = await ProductModel.create(
-            {
-                name: productData.name,
-                slug: productData.slug,
-                description: productData.description,
-                MOQ: productData.MOQ,
-                category: productData.category,
-                type: productData.type,
-                status: productData.status,
-                images: productData.images,
-                vendorId: productData.vendorId,// Initialize with an empty array
-                tax_rate_id: productData.tax_rate_id,
-                createdBy: 1
-            }, {transaction}
-        );
-
-
-        // Step 2: Handle variations if provided
-
-        if (productData.variations && Array.isArray(productData.variations)) {
-            const productOptions = productData.variations.map((option) => ({
-                product_id: createdProduct.id, // Link the option to the created product
-                optionValueId: option.optionValueId,
-                price: option.price,
-                stock: option.stock,
-                status: option.status,
-                images: option.images,
-            }));
-
-
-
-            // Bulk create the product options
-            const createdOptions = await ProductVariationsModel.bulkCreate(
-                productOptions, {
-                    transaction,
-                    returning: true, // Ensure the created options are returned
-                });
-
-
-            variationIds = createdOptions.map((option) => option.id);
-            console.log('variationIds: ', variationIds);
-
-            // Update the product with the created option IDs
-            await createdProduct.addVariations(variationIds, transaction);
-        }
-        await transaction.commit();
-
-        return res.status(200).send(
-            sendResponse(RESPONSE_TYPE.SUCCESS, "Entities created successfully",
-                {
-                    category: categoryCreated,
-                    options: optionsCreated,
-                    optionValues: optionsValueCreated,
-                    product: createdProduct,
-                })
-        );
-
-    }
-    catch (err) {
-        console.error("Error:", err);
-        return res.status(500).send({
-            message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-        });
-    }
-})
+router.get('/createEverything', createProductWithAssociations)
 
 /**
  * @swagger
@@ -497,6 +414,121 @@ router.get('/createEverything', async (req, res) => {
 }))
 
 router.post("/prospect", validateCreateAdminBody, addProspectUser);
+
 // ====== Admins Routes Ends ======
+
+async function createProductWithAssociations(req: Request, res: Response) {
+    // const transaction = await sequelize.transaction();
+    const tableSequences = [
+        { tableName: 'products_categories', columnName: 'id' },
+        { tableName: 'options', columnName: 'id' },
+        { tableName: 'options_values', columnName: 'id' },
+        { tableName: 'products', columnName: 'id' },
+        { tableName: 'variations', columnName: 'id' },
+    ];
+
+    try {
+        console.log("Transaction started");
+
+        // Step 1: Generate dummy data
+        const dummyData = createDummyProducts();
+
+        // Step 2: Create category
+        const categoryCreated = await ProductsCategoryModel.create(
+            dummyData.category,
+            // { transaction }
+        );
+        console.log("Category created:", categoryCreated.id);
+
+        // Step 3: Bulk create options
+        const optionsCreated = await OptionsModel.bulkCreate(
+            dummyData.options,
+            // { transaction, returning: true }
+        );
+        console.log("Options created:", optionsCreated.map((o) => o.id));
+
+        // Step 4: Bulk create option values
+        const optionsValueData = dummyData.optionValues.map((value, index) => ({
+            ...value,
+            option_id: optionsCreated[index].id, // Ensure option_id corresponds to options
+        }));
+
+        const optionsValueCreated = await OptionsValueModel.bulkCreate(
+            optionsValueData,
+            // { transaction, returning: true }
+        );
+        console.log("Option values created:", optionsValueCreated.map((ov) => ov.id));
+
+        // Step 5: Create product
+        const productData = dummyData.product;
+        const createdProduct = await ProductModel.create(
+            {
+                ...productData,
+                category: categoryCreated.id,
+                createdBy: 1, // Assuming user ID is available in the request
+            },
+            // { transaction }
+        );
+        console.log("Product created:", createdProduct.id);
+
+        // Reload the product to ensure it is fully committed
+        // await createdProduct.reload({ transaction });
+
+        // Step 6: Create product variations
+        if (productData.variations && Array.isArray(productData.variations)) {
+            const productVariations = productData.variations.map((variation, index) => ({
+                product_id: createdProduct.id,
+                optionValueId: optionsValueCreated[index].id,
+                ...variation,
+            }));
+
+            const createdVariations = await ProductVariationsModel.bulkCreate(
+                productVariations,
+                // { transaction, returning: true }
+            );
+            console.log("Product variations created:", createdVariations.map((v) => v.id));
+
+            // Use mixin to associate variations
+            await createdProduct.addVariations(
+                createdVariations.map((v) => v.id),
+                // transaction
+            );
+        }
+
+        // Commit the transaction
+        // await transaction.commit();
+        console.log("Transaction committed successfully");
+
+        return res.status(200).send(
+            sendResponse(RESPONSE_TYPE.SUCCESS, "Entities created successfully", {
+                category: categoryCreated,
+                options: optionsCreated,
+                optionValues: optionsValueCreated,
+                product: createdProduct,
+            })
+        );
+    } catch (err) {
+        console.error("Error during transaction:", err);
+
+        // Rollback the transaction and reset sequences
+        // if (transaction) {
+        //     try {
+        //         await transaction.rollback();
+        //
+        //         // Reset sequences to 0 for tables involved in the transaction
+        //         await resetSequenceAfterRollback(tableSequences);
+        //
+        //         console.log("Transaction rolled back and sequences reset successfully.");
+        //     } catch (rollbackError) {
+        //         console.error("Error rolling back transaction:", rollbackError);
+        //     }
+        // }
+
+        return res.status(500).send({
+            message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+        });
+    }
+}
+
 
 export default router;

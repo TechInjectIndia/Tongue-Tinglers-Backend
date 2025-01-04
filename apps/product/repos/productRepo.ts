@@ -62,7 +62,8 @@ export class ProductRepo implements IProductRepo {
         // Update the product with the created option IDs
       }
 
-      await createdProduct.addVariations(variationIds, transaction);
+      await createdProduct.addVariations(variationIds);
+      // await createdProduct.addVariations(variationIds, transaction);
 
       // Commit the transaction
       await transaction.commit();

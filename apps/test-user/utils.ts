@@ -301,9 +301,6 @@ function createDummyProducts(): {
     }
 }
 
-
-
-
 export {
     getSampleQuestions,
     getSampleRegions,

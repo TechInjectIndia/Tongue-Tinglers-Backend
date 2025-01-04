@@ -1,7 +1,7 @@
 import React from "react";
 import MailLayout from "./MailLayout";
 
-const CreateLead = () => (
+const CreateLead = (data: any) => (
     <MailLayout>
         <div className="bg-white rounded-lg p-6">
             <div className="p-0">
@@ -16,14 +16,15 @@ const CreateLead = () => (
 
                 {/* Button */}
                 <div className="text-center">
-                    <button
+                    <a  href={data.btnLink}
                         className="border border-none cursor-pointer text-[16px] text-white py-3 px-6 w-fit mx-auto rounded"
                         style={{
                             background: "linear-gradient(to right, #dc322f, #ffcd32)",
+                            textDecoration:"none"
                         }}
                     >
                         What’s NEXT?
-                    </button>
+                    </a>
                 </div>
 
                 <p className="text-[17px] text-left mt-5 text-black leading-7">

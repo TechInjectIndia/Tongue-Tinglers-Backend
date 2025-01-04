@@ -107,7 +107,7 @@ export interface PartialContractsUpdate {
         from: Date;
     };
     templateId?: string | null;
-    assignUser?: number | null;
+    assignedUser?: number | null;
 }
 
 interface ContractTable extends ContractsPayload, BaseMeta{}

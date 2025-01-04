@@ -31,7 +31,7 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
     public password_token: string;
     public referralCode: string;
     public referBy: number;
-    public lastLoginAt: Date;
+    public lastLoginAt: Date|null;
     public updatedBy!: number;
     public deletedBy!: number;
     public role: number | null;
@@ -127,7 +127,7 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
                 },
                 lastLoginAt: {
                     type: DataTypes.DATE,
-                    allowNull: false,
+                    allowNull: true,
                     defaultValue: DataTypes.NOW,
                     field: "lastLoginAt",
                 },

@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
-import { get, isEmpty } from "lodash";
-import { Op } from "sequelize";
+import {NextFunction, Request, Response} from "express";
+import {get, isEmpty} from "lodash";
+import {Op} from "sequelize";
 import jwt from "jsonwebtoken";
 
 import {
@@ -8,12 +8,12 @@ import {
     SUCCESS_MESSAGE,
     ERROR_MESSAGE,
 } from "../../../constants";
-import { LeadRepo } from "../models/lead";
-import { AssignRepo } from "../models/AssignRepo";
+import {LeadRepo} from "../models/lead";
+import {AssignRepo} from "../models/AssignRepo";
 
-import { CONFIG, sequelize } from "config";
-import { TUser, USER_STATUS, USER_TYPE } from "apps/user/interface/user";
-import { ZohoSignRepo } from "apps/zoho-sign/models/zohosign";
+import {CONFIG, sequelize} from "config";
+import {TUser, USER_STATUS, USER_TYPE} from "apps/user/interface/user";
+import {ZohoSignRepo} from "apps/zoho-sign/models/zohosign";
 import {
     CONTRACT_STATUS,
     ContractsPayload,
@@ -25,11 +25,13 @@ import {
     sendMail,
     sendResponse,
 } from "libraries";
-import { AdminRepo } from "apps/user/models/user";
-import { ContractRepo } from "apps/contracts/models/ContractRepo";
-import { TAddUser } from "types";
-import { CreateLeadMail } from "static/views/email/get-templates/CreateLeadMail";
-import { LeadToProspectMail } from "static/views/email/get-templates/LeadToProspectMail";
+import {AdminRepo} from "apps/user/models/user";
+import {ContractRepo} from "apps/contracts/models/ContractRepo";
+import {TAddUser} from "types";
+import {CreateLeadMail} from "static/views/email/get-templates/CreateLeadMail";
+import {
+    LeadToProspectMail
+} from "static/views/email/get-templates/LeadToProspectMail";
 
 export default class LeadController {
 
@@ -55,7 +57,7 @@ export default class LeadController {
                 ...req.body,
                 createdBy: 1,
             };
-            const { assign } = payload;
+            const {assign} = payload;
 
             if (assign != null) {
                 const existingUser = await new AdminRepo().checkIfUserExist(
@@ -128,7 +130,7 @@ export default class LeadController {
             console.error(err);
             return res
                 .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
 
@@ -145,7 +147,7 @@ export default class LeadController {
             if (isNaN(id)) throw Error('Missing id or isNaN');
 
             // get contract
-            const existingContract = await new ContractRepo().get(id, { transaction });
+            const existingContract = await new ContractRepo().get(id);
             if (existingContract) {
                 await transaction.rollback();
                 return res
@@ -158,7 +160,7 @@ export default class LeadController {
                     );
             }
 
-            const existingLead = await new LeadRepo().get(id, { transaction });
+            const existingLead = await new LeadRepo().get(id);
             if (!existingLead) {
                 await transaction.rollback();
                 return res
@@ -170,10 +172,6 @@ export default class LeadController {
                         ),
                     );
             }
-
-            // if (existingLead.status === LeadStatus.CONVERTED) {
-            //     return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.ALREADY_CONVERTED));
-            // }
 
             const user_id = parseInt(get(req, "user_id"));
             if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
@@ -191,7 +189,7 @@ export default class LeadController {
                 status: USER_STATUS.ACTIVE,
                 referBy: existingLead.referBy,
             };
-            console.log('payload: ', payload);
+
 
             let templateId: "";
             const templates: any[] = await new ZohoSignRepo().getTemplates();
@@ -227,25 +225,6 @@ export default class LeadController {
                 assignedUser: null
             };
 
-            const prospect = await new ContractRepo().create(prospectData, user_id, {transaction});
-
-            const mailDto = new LeadToProspectMail().getPayload(
-                {},
-                existingLead.email,
-            );
-            await sendMail(mailDto);
-
-            // try {
-                // send mail
-                // const mailDto = new LeadToProspectMail().getPayload(
-                //     {},
-                //     existingLead.email,
-                // );
-                // await sendMail(mailDto);
-            // } catch (emailError) {
-                // console.error("Error sending email:", emailError);
-            // }
-
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
                 emailVerified: true,
@@ -262,9 +241,9 @@ export default class LeadController {
             }
 
             const token = jwt.sign(
-                { email: payload.email },
+                {email: payload.email},
                 CONFIG.ACCESS_TOKEN_SECRET,
-                { expiresIn: CONFIG.ACCESS_TOKEN_EXPIRATION },
+                {expiresIn: CONFIG.ACCESS_TOKEN_EXPIRATION},
             );
 
             const hashedPassword = await createPassword(payload.password);
@@ -296,30 +275,17 @@ export default class LeadController {
                 deletedAt: null
             };
 
-            const respo = await new AdminRepo().create(normalUser, {transaction});
+            await new AdminRepo().create(normalUser, {transaction});
+            const prospect = await new ContractRepo().create(prospectData, user_id, {transaction});
 
-            const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password?token=${token}`;
-
-            try {
-                const emailContent = `Hi Your Lead converted into Prospect Now Add Your Organisation using link: https://tonguetingler.vercel.app/organization-setup?prospectId=${prospect.id} using password:12345678`;
-                const mailOptions = {
-                    to: existingLead.email,
-                    subject: EMAIL_HEADING.PROSPECT_GENERATED,
-                    templateParams: {
-                        heading: EMAIL_HEADING.PROSPECT_GENERATED,
-                        description: emailContent,
-                    },
-                };
-
-                await sendEmail(
-                    mailOptions.to,
-                    mailOptions.subject,
-                    mailOptions.templateParams,
-                );
-            } catch (emailError) {
-                console.error("Error sending email:", emailError);
-            }
             await transaction.commit(); // Commit the transaction
+
+            // Mail
+            const mailDto = new LeadToProspectMail().getPayload(
+                {},
+                existingLead.email,
+            );
+            await sendMail(mailDto);
             return res
                 .status(200)
                 .send(
@@ -330,7 +296,7 @@ export default class LeadController {
             await transaction.rollback();
             return res
                 .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+                .send({message: err});
         }
     }
 
@@ -374,7 +340,7 @@ export default class LeadController {
             console.error(err);
             return res
                 .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
 
@@ -412,7 +378,7 @@ export default class LeadController {
                 //     timeline: new Date(),
                 // }],
             };
-            const { assign } = payload;
+            const {assign} = payload;
 
             if (assign != null) {
                 const existingUser = await new AdminRepo().checkIfUserExist(
@@ -487,7 +453,7 @@ export default class LeadController {
             console.error(err);
             return res
                 .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
 
@@ -553,7 +519,7 @@ export default class LeadController {
             console.error(err);
             return res
                 .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
 
@@ -602,14 +568,11 @@ export default class LeadController {
             // const updatedLogs = [...existingLogs, updateLog];
 
 
-
-
             const updatedLead = await new LeadRepo().update(id, {
                 ...payload,
                 updatedBy: user_id,
                 // logs: updatedLogs
             });
-
 
 
             return res
@@ -625,7 +588,7 @@ export default class LeadController {
             console.error(err);
             return res
                 .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
 
@@ -657,7 +620,7 @@ export default class LeadController {
             console.error(err);
             return res
                 .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
 
@@ -707,7 +670,7 @@ export default class LeadController {
             console.error(err);
             return res
                 .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
 

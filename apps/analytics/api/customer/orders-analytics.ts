@@ -1,6 +1,5 @@
 import * as express from "express";
 import * as AnalyticsValidation from "../../validations/orders-analytics";
-import OrdersAnalyticsController from "../../controllers/web/orders-analytics";
 
 const router = express.Router();
 

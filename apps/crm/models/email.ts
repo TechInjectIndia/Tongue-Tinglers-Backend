@@ -1,3 +1,5 @@
+import {EmailModel} from "../../../database/schema/crm";
+
 const { Op } = require("sequelize");
 import {
     TEmail,
@@ -7,7 +9,7 @@ import {
     TEditEmail,
     TAssignCampaign
 } from "../../../types";
-import { EmailModel } from "../../../database/schema";
+
 import IBaseRepo from '../controllers/controller/IEmailController';
 
 export class EmailRepo implements IBaseRepo<TEmail, TQueryFilters> {

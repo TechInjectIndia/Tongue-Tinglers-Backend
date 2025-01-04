@@ -3,7 +3,6 @@ import { get, isEmpty } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { FranchiseModelRepo } from '../models';
-import { ImageRepo } from '../models/ImageRepo';
 import { ExtraFieldRepo } from '../models/ExtraFieldRepo';
 
 export default class FranchiseModelController {

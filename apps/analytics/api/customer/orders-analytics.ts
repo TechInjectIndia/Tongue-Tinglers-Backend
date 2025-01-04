@@ -1,6 +1,6 @@
 import * as express from "express";
-import OrdersAnalyticsController from "../../controllers/orders-analytics";
 import * as AnalyticsValidation from "../../validations/orders-analytics";
+import OrdersAnalyticsController from "../../controllers/web/orders-analytics";
 
 const router = express.Router();
 
@@ -34,7 +34,7 @@ const {
  *       '401':
  *         description: Unauthorized
  */
-router.get("/", validateListAnalyticsQuery, OrdersAnalyticsController.getOrdersCount);
+router.get("/", validateListAnalyticsQuery, ()=>{});
 // ====== Analytics Orders Ends ======
 
 export default router;

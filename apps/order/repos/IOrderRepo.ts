@@ -1,6 +1,11 @@
 import { DTO } from "apps/DTO/DTO";
-import { BaseOrder, Order, OrderPayload } from "../../../interfaces/orders";
-import { OrderState, ParsedOrder, RPOrder } from "../interface/Order";
+import {
+    Order,
+    OrderPayload,
+    OrderState,
+    ParsedOrder,
+    RPOrder
+} from "../interface/Order";
 export interface IOrderRepo {
     createOrder(order: OrderPayload): Promise<Order | null>;
     updateOrder(order: any): Promise<any>;

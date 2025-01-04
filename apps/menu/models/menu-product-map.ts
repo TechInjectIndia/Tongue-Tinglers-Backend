@@ -1,9 +1,11 @@
+import {MenuProductsModel} from "../../../database/schema/menu/menu-product";
+
 const { Op } = require("sequelize");
 import {
     TMenuProduct,
     TMenuProductFilters,
 } from "../../../types/menu";
-import { MenuProductsModel } from "../../../database/schema";
+
 
 import IBaseRepo from '../controllers/controller/IMenuProductMapController';
 

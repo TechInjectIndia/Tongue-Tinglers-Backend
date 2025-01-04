@@ -1,4 +1,5 @@
-import { Pagination } from "../../../interfaces/products";
+import {Pagination} from "../../common/models/common";
+
 
 export interface ITransactionRepo {
     getAll(

@@ -1,10 +1,13 @@
+import {
+    MenuCategoryMapModel
+} from "../../../database/schema/menu/menu-category_map";
+
 const { Op } = require("sequelize");
 import {
     TMenuCategoryRelation,
     TMenuFilters,
     TPayloadMenuCategoryRelation,
 } from "../../../types/menu";
-import { MenuCategoryMapModel } from "../../../database/schema";
 
 import IBaseRepo from '../controllers/controller/IMenuCategoryMapController';
 

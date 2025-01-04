@@ -1,3 +1,4 @@
+import { ParsedCartDetail } from "apps/cart-details/interface/CartDetail";
 import {
     CartProduct,
     ParseCart,
@@ -7,7 +8,7 @@ import {
 
 
 export interface ICartProductRepo {
-    create(product:any): Promise<ParseCart | null>;
+    create(product:any): Promise<ParsedCartDetail | null>;
 
     update(product: CartProduct): Promise<CartProduct>;
 

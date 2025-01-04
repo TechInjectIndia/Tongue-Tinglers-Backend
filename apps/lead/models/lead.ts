@@ -298,7 +298,8 @@ export class LeadRepo {
     // Update lead information
     public async update(
         id: number,
-        data: LeadPayload
+        data: LeadPayload,
+        userId: number
     ): Promise<[affectedCount: number]> {
         let followDetailsIds: number[] = [];
         const lead = await LeadsModel.findByPk(id);
@@ -307,13 +308,13 @@ export class LeadRepo {
         }
         if (data.followDetails && Array.isArray(data.followDetails)) {
             for (const detail of data.followDetails) {
-                console.log('detail: ', detail);
                 if (detail.id) {
                     // If ID exists, update the record
                     const existingDetail = await FollowDetailsModel.findByPk(
                         detail.id
                     );
                     if (existingDetail) {
+                        detail.updatedBy = userId
                         await existingDetail.update(detail);
                     } else {
                         console.warn(
@@ -321,6 +322,7 @@ export class LeadRepo {
                         );
                     }
                 } else {
+                    detail.createdBy = userId
                     // If no ID, create a new record
                     const newDetail = await FollowDetailsModel.create(detail);
                     followDetailsIds.push(newDetail.id);

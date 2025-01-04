@@ -42,8 +42,9 @@ function getSampleQuestions(): TPayloadQuestion[] {
     return [
         {
             question: "Do you like programming?",
-            type: QuestionType.BOOLEAN,
+            type: QuestionType.MULTI_CHOICE,
             required: true,
+            options: sampleOptions,
             createdBy: 1,
         },
         {

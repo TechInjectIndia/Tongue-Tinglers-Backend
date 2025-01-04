@@ -546,6 +546,7 @@ export default class LeadController {
             if (isNaN(id)) throw Error('id not passed or isNan')
 
             const payload = req.body;
+            console.log('payload: ', payload);
 
             let getAttributes: any = ["*"];
             const whereName = "id";
@@ -580,7 +581,7 @@ export default class LeadController {
                 ...payload,
                 updatedBy: user_id,
                 // logs: updatedLogs
-            });
+            },user_id);
 
 
 

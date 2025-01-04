@@ -5,7 +5,7 @@ import { logRouter } from "../apps/logs/api/logrouter";
 import multer from "multer";
 
 const upload = multer({ storage: multer.memoryStorage() });
-import { sendEmail } from "../libraries";
+// import { sendEmail } from "../libraries";
 
 const router = Router();
 
@@ -166,12 +166,12 @@ router.use(`/zoho-sign`, zohoSignApiRouter);
 router.use("/logs", logRouter);
 router.use("/transaction", transactionRouter);
 
-router.use(`/etest`, () => {
-    sendEmail("jasskaranofficial@gmail.com", "subject", {
-        heading: "asd",
-        description: "qwe",
-    });
-});
+// router.use(`/etest`, () => {
+//     sendEmail("jasskaranofficial@gmail.com", "subject", {
+//         heading: "asd",
+//         description: "qwe",
+//     });
+// });
 
 router.use(`/health`, (_, res) => {
     return res.status(200).json({

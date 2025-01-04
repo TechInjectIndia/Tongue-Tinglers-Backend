@@ -5,6 +5,7 @@ import {
     EMAIL_TEMPLATE,
     getEmailTemplate,
     sendEmail,
+    sendMail,
     sendResponse,
 } from "../../../libraries";
 import {
@@ -18,10 +19,13 @@ import { TContractPayload } from "../../../types";
 import { ContractsPayload } from "../interface/Contract";
 import { CampaignAdRepo } from "apps/campaign/models";
 import { CONFIG, sequelize } from "config";
-import { FRANCHISE_STATUS, FranchiseDetails } from "apps/franchise/interface/Franchise";
+import {
+    FRANCHISE_STATUS,
+    FranchiseDetails,
+} from "apps/franchise/interface/Franchise";
 import RepoProvider from "apps/RepoProvider";
 import { COMMISSION_PAID_STATUS } from "apps/commission/model/CommissionEntityMapTable";
-
+import { PaymentReceivedMail } from "static/views/email/get-templates/PaymentReceivedMail";
 
 export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -42,7 +46,7 @@ export default class ContractController {
             newContract.createdBy = user_id;
             const contract = await new ContractRepo().create(
                 newContract,
-                user_id
+                user_id,
             );
             return res
                 .status(201)
@@ -50,8 +54,8 @@ export default class ContractController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.CREATED,
-                        contract
-                    )
+                        contract,
+                    ),
                 );
         } catch (error) {
             console.log(error);
@@ -102,8 +106,8 @@ export default class ContractController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        Products
-                    )
+                        Products,
+                    ),
                 );
         } catch (err) {
             console.log(err);
@@ -123,7 +127,7 @@ export default class ContractController {
                 return res
                     .status(404)
                     .send(
-                        sendResponse(RESPONSE_TYPE.ERROR, "Contract not found")
+                        sendResponse(RESPONSE_TYPE.ERROR, "Contract not found"),
                     );
             }
             return res
@@ -132,8 +136,8 @@ export default class ContractController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.FETCHED,
-                        contract
-                    )
+                        contract,
+                    ),
                 );
         } catch (error) {
             return res.status(500).send({
@@ -152,13 +156,13 @@ export default class ContractController {
                 return res
                     .status(404)
                     .send(
-                        sendResponse(RESPONSE_TYPE.ERROR, "Contract not found")
+                        sendResponse(RESPONSE_TYPE.ERROR, "Contract not found"),
                     );
             }
 
             const updatedContract = await new ContractRepo().update(
                 id,
-                req.body
+                req.body,
             );
             return res
                 .status(200)
@@ -166,8 +170,8 @@ export default class ContractController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
-                        updatedContract
-                    )
+                        updatedContract,
+                    ),
                 );
         } catch (error) {
             return res.status(500).send({
@@ -185,8 +189,8 @@ export default class ContractController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            "Invalid ids provided"
-                        )
+                            "Invalid ids provided",
+                        ),
                     );
             }
 
@@ -195,13 +199,19 @@ export default class ContractController {
                 return res
                     .status(404)
                     .send(
-                        sendResponse(RESPONSE_TYPE.ERROR, "Contracts not found")
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            "Contracts not found",
+                        ),
                     );
             }
             return res
                 .status(200)
                 .send(
-                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.DELETED)
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.DELETED,
+                    ),
                 );
         } catch (error) {
             return res.status(500).send({
@@ -225,8 +235,8 @@ export default class ContractController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            "An error occurred while fetching products."
-                        )
+                            "An error occurred while fetching products.",
+                        ),
                     );
             } else {
                 existingContract.organizationId = organizationId;
@@ -238,8 +248,8 @@ export default class ContractController {
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.ERROR,
-                        "An error occurred while fetching products."
-                    )
+                        "An error occurred while fetching products.",
+                    ),
                 );
         }
     }
@@ -258,11 +268,11 @@ export default class ContractController {
 
             const existingLead = await new LeadRepo().getLeadByAttr(
                 "id",
-                existingContract.leadId
+                existingContract.leadId,
             );
 
             const existingCampaign = await new CampaignAdRepo().get(
-                existingLead.campaignId.id
+                existingLead.campaignId.id,
             );
 
             const paymentId =
@@ -295,9 +305,11 @@ export default class ContractController {
                 paymentIds: [String(signId)],
                 status: FRANCHISE_STATUS.Active,
                 establishedDate: new Date(),
-                organizationId: existingContract.organizationId ? existingContract.organizationId.id : null,
+                organizationId: existingContract.organizationId
+                    ? existingContract.organizationId.id
+                    : null,
                 affiliateId: 0,
-                assignedUser: null
+                assignedUser: null,
             };
 
             console.log("franchise details");
@@ -306,7 +318,7 @@ export default class ContractController {
 
             const resData = await RepoProvider.franchise.create(
                 franchiseDetailsData,
-                user_id
+                user_id,
             );
             console.log("res", resData);
 
@@ -322,9 +334,8 @@ export default class ContractController {
                 });
             }
 
-            const result = await RepoProvider.commissionRepo.createMapEntities(
-                entries
-            );
+            const result =
+                await RepoProvider.commissionRepo.createMapEntities(entries);
 
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password`;
 
@@ -336,23 +347,30 @@ export default class ContractController {
                         leadEmail: existingLead.email,
                         leadPhone: existingLead.phoneNumber,
                         passwordCreateLink,
-                    }
-                );
-
-                const mailOptions = {
-                    to: existingLead.email,
-                    subject: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
-                    templateParams: {
-                        heading: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
-                        description: emailContent,
                     },
-                };
-
-                await sendEmail(
-                    mailOptions.to,
-                    mailOptions.subject,
-                    mailOptions.templateParams
                 );
+
+                // TODO @Harsh After franchise convert
+                const mailDto = new PaymentReceivedMail().getPayload(
+                    {},
+                    existingLead.email,
+                );
+                await sendMail(mailDto);
+
+                // const mailOptions = {
+                //     to: existingLead.email,
+                //     subject: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
+                //     templateParams: {
+                //         heading: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
+                //         description: emailContent,
+                //     },
+                // };
+
+                // await sendEmail(
+                //     mailOptions.to,
+                //     mailOptions.subject,
+                //     mailOptions.templateParams,
+                // );
             } catch (emailError) {
                 console.error("Error sending email:", emailError);
             }
@@ -362,8 +380,8 @@ export default class ContractController {
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FRANCHISE_CREATED
-                    )
+                        SUCCESS_MESSAGE.FRANCHISE_CREATED,
+                    ),
                 );
         } catch (err) {
             console.error(err);
@@ -377,7 +395,7 @@ export default class ContractController {
     static async updatePartialContract(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ) {
         try {
             const id = parseInt(get(req.params, "id"));
@@ -385,15 +403,18 @@ export default class ContractController {
             if (isNaN(id)) throw Error("Missing id or isNaN");
             let payload = req.body;
             const updatedContract =
-                await new ContractRepo().updatePartialContract(id, {...payload, updatedBy: user_id});
+                await new ContractRepo().updatePartialContract(id, {
+                    ...payload,
+                    updatedBy: user_id,
+                });
             return res
                 .status(200)
                 .send(
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
-                        updatedContract
-                    )
+                        updatedContract,
+                    ),
                 );
         } catch (error) {
             console.error(error);

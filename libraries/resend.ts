@@ -1,9 +1,10 @@
 import { Resend } from "resend";
 import { CONFIG } from "../config";
-
 import ejs from "ejs";
-
 import path from "path";
+import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/common/models/DTO";
+import { AllMailOptions } from "static/views/email/models/MailOptions";
+import MailProvider from "static/views/email/provider/MailProvider"
 
 const resend = new Resend(CONFIG.RESEND_API_KEY);
 
@@ -35,6 +36,13 @@ export const EMAIL_TEMPLATE = {
     PAYMENT_REMINDER: "paymentReminderTemplate",
     PAYMENT_REQUEST: "paymentRequest",
     REFERRAL_NOTIFICATION: "referralNotificationTemplate",
+
+    WELCOME: "welcome",
+    FINALIZE: "finalize",
+    SIGN_AGREEMENT: "signAgreement",
+    MAKE_PAYMENT: "makePayment",
+    PAYMENT_RECEIVED: "paymentReceived",
+    CONGRATULATIONS: "congratulations",
 };
 
 const defaultParams = {
@@ -50,7 +58,7 @@ export const sendEmail = async (
     templateParams: {
         heading: string;
         description: string;
-    }
+    },
 ) => {
     const paramsData = templateParams
         ? { ...templateParams, ...defaultParams }
@@ -58,7 +66,7 @@ export const sendEmail = async (
     await ejs
         .renderFile(
             path.join(__dirname, "../static/views/email/index.ejs"),
-            paramsData
+            paramsData,
         )
         .then((result) => {
             resend.emails
@@ -85,7 +93,7 @@ export const sendEmailFromRequest = async (
     subject: string,
     body: string,
     files?: Express.Multer.File[], // Array of files
-    filePaths?: { path: string; name: string }[] // Array of file paths and names
+    filePaths?: { path: string; name: string }[], // Array of file paths and names
 ) => {
     try {
         // Prepare the email options
@@ -130,10 +138,47 @@ export const sendEmailFromRequest = async (
     }
 };
 
-export const getEmailTemplate = (template: string, params?: any):string => {
+export const getEmailTemplate = (template: string, params?: any): string => {
     const data = ejs.renderFile<string>(
         path.join(__dirname, `../static/views/email/${template}.ejs`),
-        params ?? {}
+        params ?? {},
     );
     return data;
+};
+
+export const sendMail = async (mailOptionsDto: DTO<AllMailOptions>) => {
+    if (!mailOptionsDto.success) {
+        return getUnhandledErrorDTO(mailOptionsDto.message, mailOptionsDto.message);
+    }
+
+    const mailData = mailOptionsDto.data;
+    console.log(mailData);
+
+    try {
+        let res: DTO<boolean>;
+        if (mailData.react) {
+            console.log("react");
+
+            res = await MailProvider.getResendController().sendMail(mailData);
+        } else if (mailData.html) {
+            console.log("nodemailer");
+
+            // res = await MailProvider.getNodemailerController().sendMail(mailData);
+        } else {
+            return getUnhandledErrorDTO(
+                "Invalid mail options: neither 'react' nor 'html' provided."
+            );
+        }
+        return handleSendMailResponse(res);
+    } catch (error: any) {
+        return getUnhandledErrorDTO("internal Error", error.message);
+    }
+};
+
+const handleSendMailResponse = (res: DTO<boolean>) => {
+    if (res.success) {
+        return getSuccessDTO({ code: res.code, message: res.data });
+    } else {
+        return getSuccessDTO({ code: res.code, message: `${res.message}` });
+    }
 };

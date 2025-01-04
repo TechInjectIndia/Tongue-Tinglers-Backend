@@ -1,8 +1,12 @@
-import { ParsedProductOptions } from 'apps/product/interface/ProductOptions';
-import { BaseProductOptions, Pagination, ProductOptions, PRODUCT_OPTIONS_STATUS} from '../../../interfaces/product-options';
+import {
+    BaseProductOptions,
+    ParsedProductOptions, ProductOptions
+} from 'apps/product/interface/ProductOptions';
+import {Pagination} from "../../common/models/common";
+
 
 export interface IProductOptionsRepo {
-    create(productOptions: BaseProductOptions): Promise<ProductOptions | null>;
+    create(productOptions: BaseProductOptions, createdBy:number): Promise<ProductOptions | null>;
 
     update(productOptions: ProductOptions): Promise<ProductOptions>;
 

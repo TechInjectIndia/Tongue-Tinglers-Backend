@@ -1,7 +1,5 @@
 import { ParsedMeta } from "apps/common/models/Base";
-import { ParsedProduct } from "apps/product/interface/Product";
-import { ParsedProductOptions } from "apps/product/interface/ProductOptions";
-
+import { PreSaleParsedOrderItem } from "apps/order/interface/OrderItem";
 
 interface BaseOrderItem {
     product_id: number,
@@ -13,22 +11,6 @@ interface BaseOrderItem {
     points_discount: number,
     student_discount: number,
     type: ORDER_ITEM_TYPE
-}
-
-interface PriceComponent {
-}
-
-interface PreSaleParsedOrderItem {
-
-    product: ParsedProduct,
-    productOptionId: ParsedProductOptions,
-    quantity: number,
-    total_price: number,
-    totalTax: number,
-    prices: Array<PriceComponent>
-    disc: Array<PriceComponent>
-    type: ORDER_ITEM_TYPE
-    // order_items?: ParsedOrderItem[];
 }
 
 interface ParsedOrderItem extends PreSaleParsedOrderItem {
@@ -69,6 +51,5 @@ export {
     UpdatePointsDiscount,
     UpdateStudentDiscount,
     ParsedOrderItem,
-    PriceComponent,
     PreSaleParsedOrderItem
 }

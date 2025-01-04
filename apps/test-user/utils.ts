@@ -13,6 +13,23 @@ import {RegionRepo} from "../region/models/RegionRepo";
 import {FranchiseModelRepo} from "../franchise_model/models";
 import {ProposalModelRepo} from "../proposal_model/models";
 import {CampaignAdRepo} from "../campaign/models";
+import {
+    BaseProduct,
+    PRODUCT_STATUS,
+    PRODUCTS_TYPE
+} from "apps/product/interface/Product";
+import {
+    BaseProductsCategory,
+    CATEGORY_TYPE,
+    PRODUCT_CATEGORY_STATUS
+} from "apps/products-category/interface/Category";
+import {
+    BaseProductOptions,
+    PRODUCT_OPTIONS_STATUS
+} from "../product/interface/ProductOptions";
+import {BaseOptions} from "../options/interface/options";
+import {BaseOptionsValue} from "../optionsValue/interface/optionValue";
+
 
 function getSampleQuestions(): TPayloadQuestion[] {
 
@@ -177,7 +194,7 @@ async function createDummyMaster(user_id: number) {
     const areasProm = await Promise.all(areas.map(
         a => aRepo.create({createdBy: user_id, ...a}))).then(_ => {
         const rRepo = new RegionRepo();
-       return Promise.all(regions.map(
+        return Promise.all(regions.map(
             r => rRepo.create({createdBy: user_id, ...r})));
     });
 
@@ -206,6 +223,87 @@ async function createDummyMaster(user_id: number) {
     return campaignRepo.create(campaignPayload);
 }
 
+function createDummyProducts(): {
+    category: BaseProductsCategory,
+    product: BaseProduct,
+    options: BaseOptions[],
+    optionValues: BaseOptionsValue[]
+} {
+
+    const variations: BaseProductOptions[] = [
+        {
+            optionValueId: 1, // Example option value ID (e.g., "Red")
+            price: 699.99, // Price for this variation
+            stock: 50, // Available stock for this variation
+            status: PRODUCT_OPTIONS_STATUS.ACTIVE, // Active status
+            images: ["https://example.com/images/smartphone-x100-red.jpg"],
+        },
+        {
+            optionValueId: 2, // Example option value ID (e.g., "Blue")
+            price: 699.99,
+            stock: 30,
+            status: PRODUCT_OPTIONS_STATUS.ACTIVE,
+            images: ["https://example.com/images/smartphone-x100-blue.jpg"],
+        },
+
+    ]
+    const category: BaseProductsCategory = {
+        deletedBy: null,
+        updatedBy: null,
+        "name": "Non-Veg Main Course",
+        "description": "North Indian Main Course Items",
+        "slug": "non-veg-main-course",
+        "status": PRODUCT_CATEGORY_STATUS.ACTIVE,
+        "type": CATEGORY_TYPE.RETORT,
+        "createdBy": 1
+    }
+
+    const options: BaseOptions[] = [
+        {
+            "name": "Color"
+        },
+        {
+            "name": "Size"
+        }
+    ];
+    const optionValues: BaseOptionsValue[] = [
+        {
+            "option_id": 1,
+            "name": "Red"
+        },
+        {
+            "option_id": 2,
+            "name": "Large"
+        }
+    ]
+
+    const product: BaseProduct = {
+        name: "Smartphone X100",
+        slug: "smartphone-x100",
+        description: "The latest Smartphone X100 with advanced features and sleek design.",
+        MOQ: 10, // Minimum Order Quantity
+        category: 1, // Assuming category ID 5 corresponds to 'Electronics'
+        type: PRODUCTS_TYPE.RETORT, // Example: PHYSICAL, DIGITAL
+        status: PRODUCT_STATUS.ACTIVE, // Example: ACTIVE, INACTIVE,
+                                       // DISCONTINUED
+        images: [
+            "https://example.com/images/smartphone-x100-front.jpg",
+            "https://example.com/images/smartphone-x100-back.jpg",
+            "https://example.com/images/smartphone-x100-side.jpg"
+        ],
+        tax_rate_id: 1, // Assuming tax rate ID 3 corresponds to 18%
+        vendorId: 1, // Example vendor ID
+        variations
+    }
+
+    return {
+        category,
+        options,
+        optionValues,
+        product,
+    }
+}
+
 
 export {
     getSampleQuestions,
@@ -213,5 +311,6 @@ export {
     getSampleAreas,
     getSampleFranchiseModels,
     getSampleProposals,
-    createDummyMaster
+    createDummyMaster,
+    createDummyProducts
 }

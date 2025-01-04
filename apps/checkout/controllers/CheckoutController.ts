@@ -2,8 +2,15 @@ import { Request, Response } from "express";
 import { get } from "lodash";
 
 // import { OrderStatus } from "../../../types";
-import { OrderStatus, ParsedOrder, PAYMENT_TYPE, PresaleParsedOrder } from "apps/order/interface/Order";
+import {
+    DeliveryStatus,
+    OrderStatus,
+    ParsedOrder,
+    PAYMENT_TYPE,
+    PresaleParsedOrder
+} from "apps/order/interface/Order";
 import { CartDetailRepo } from "apps/cart-details/repos/cartDetailRepo";
+import {USER_STATUS, USER_TYPE} from "../../user/interface/user";
 
 
 export default class CheckoutController {
@@ -23,17 +30,33 @@ export default class CheckoutController {
         const shippingAddId = parseInt(get(req, "shippingAddId"));
         const billingAddId = parseInt(get(req, "billingAddId"));
         const order: ParsedOrder = {
+            couponCodes: [], discount: undefined, price: undefined,
             anomalyArr: [],
             cancelledItems: [],
             coupon: "code1",
-            createdAt: undefined,
-            createdBy: undefined,
-            customerDetails: undefined,
-            deletedAt: undefined,
-            deletedBy: undefined,
-            deliveryDetails: undefined,
-            deliveryStatus: "",
-            id: 0,
+            createdAt: new Date(),
+            createdBy: 1,
+            customerDetails: {
+                id: 1,
+                firstName: "Admin",
+                lastName: "Tongue Tingler",
+                email: "",
+                phoneNumber: "",
+                type: USER_TYPE.ADMIN,
+                status: USER_STATUS.ACTIVE,
+                role: 0,
+                createdBy: 1,
+                updatedBy: null,
+                deletedBy: null,
+                createdAt: new Date(),
+                updatedAt: null,
+                deletedAt: null
+            },
+            deletedAt: null,
+            deletedBy: null,
+            deliveryDetails: null,
+            deliveryStatus: DeliveryStatus.PENDING,
+            id: 1,
             items: [],
             notes: [],
             orderItems: [],
@@ -46,7 +69,7 @@ export default class CheckoutController {
             totalShipping: 100,
             totalTax: 500,
             updatedAt: new Date(),
-            updatedBy: "Nitesh" as any
+            updatedBy: 1
 
         };
         res.status(200).json(order);

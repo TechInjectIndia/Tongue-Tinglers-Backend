@@ -1,13 +1,13 @@
-import { BaseOrderItem, OrderItem, ParsedOrderItem } from "../../order-items/interface/orderItem";
-import {BaseOrder, Order, OrderPayload, ParsedOrder} from "../interface/Order"
-import { parsedProductOptions } from "../../../interfaces/product-options";
-import { parseOrderItem } from "../../order-items/parser/parseOrderItem";
-import { parseProduct } from "../../product/parser/productParser";
+import {ParsedOrder} from "../interface/Order"
+import {parseOrderItem} from "../../order-items/parser/parseOrderItem";
+import {PRICE_COMP_TYPE_CART, VALUE_TYPE} from "../interface/OrderItem";
+
 
 const parseOrder = (order: any): ParsedOrder => {
     const productVariations = order.order_items.map((orderItem: any) =>
         parseOrderItem(orderItem)
     );
+    console.log(order)
     const data: ParsedOrder = {
         id: order.id,
         orderItems: productVariations,
@@ -30,9 +30,19 @@ const parseOrder = (order: any): ParsedOrder => {
         totalDiscount: order.total_discount,
         totalShipping: order.total_shipping,
         totalTax: order.total_tax,
-        shippingAddress: undefined,
-        coupon: "",
-        items: []
+        shippingAddress:order.shippingAddress,
+        coupon: null,
+        items: [],
+        discount: {},
+        price: {total: {
+                type: PRICE_COMP_TYPE_CART.BASE_PRICE,
+                percent: 12,
+                taxPercent: 18,
+                value: 200,
+                tax: 36,
+                calc: VALUE_TYPE.PERCENTAGE
+            }},
+        couponCodes: [] // why do we need this ?
     };
 
     return data; // Return the result

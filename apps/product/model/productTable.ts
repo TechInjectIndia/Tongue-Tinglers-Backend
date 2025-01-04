@@ -1,25 +1,25 @@
-import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../../../config";
+import {DataTypes, Model, Optional} from "sequelize";
+import {sequelize} from "../../../config";
 import {
-    BaseProduct,
-    Product,
+    IProductTable,
     PRODUCT_STATUS,
     PRODUCTS_TYPE,
 } from "apps/product/interface/Product";
-// import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
+
 import RepoProvider from "apps/RepoProvider";
-import { ProductOptionsModel } from "apps/product-options/models/productOptionTable";
-import { UserModel } from "apps/user/models/UserTable";
-import { CartProductModel } from "apps/cart-products/model/CartTable";
-// import { ProductOptionsModel } from "../product-options/productOptionsModel";
-// import { ProductOptionsModel } from "";
+import {
+    ProductVariationsModel
+} from "../../product-options/models/ProductVariationTable";
+import {UserModel} from "apps/user/models/UserTable";
+import {CartProductModel} from "apps/cart-products/model/CartTable";
 
-interface ProductCreationAttributes extends Optional<Product, "id"> {}
 
-class ProductModel
-    extends Model<Product, ProductCreationAttributes>
-    implements BaseProduct
-{
+interface ProductCreationAttributes
+    extends Optional<IProductTable, "id" | "createdAt" | "createdBy" | "updatedAt" | "updatedBy" | "deletedBy" | "deletedAt"> {
+}
+
+class ProductModel extends Model<IProductTable, ProductCreationAttributes>
+    implements IProductTable {
     id: number;
     name: string;
     MOQ: number;
@@ -31,29 +31,32 @@ class ProductModel
     type: PRODUCTS_TYPE;
     tax_rate_id: number;
     vendorId: number;
-    createdBy: number;
-    updatedBy: number;
-    deletedBy: number;
+    public createdBy!: number;
+    public updatedBy!: number | null;
+    public deletedBy!: number | null;
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+    public readonly deletedAt!: Date | null;
 
     public addVariation!: (
-        option: ProductOptionsModel | number
+        option: ProductVariationsModel | number
     ) => Promise<void>;
     public addVariations!: (
-        options: Array<ProductOptionsModel | number>
+        options: Array<ProductVariationsModel | number>
     ) => Promise<void>;
     public setVariationses!: (
-        options: Array<ProductOptionsModel | number>
+        options: Array<ProductVariationsModel | number>
     ) => Promise<void>;
-    public getVariationses!: () => Promise<ProductOptionsModel[]>;
+    public getVariationses!: () => Promise<ProductVariationsModel[]>;
     public removeVariations!: (
-        option: ProductOptionsModel | number
+        option: ProductVariationsModel | number
     ) => Promise<void>;
     public removeVariationses!: (
-        options: Array<ProductOptionsModel | number>
+        options: Array<ProductVariationsModel | number>
     ) => Promise<void>;
 
     public static associate() {
-        ProductModel.belongsToMany(ProductOptionsModel, {
+        ProductModel.belongsToMany(ProductVariationsModel, {
             through: "productVariationsJoin", // Join table name
             foreignKey: "productId",
             otherKey: "productOptionId",
@@ -63,27 +66,30 @@ class ProductModel
         // ProductModel.belongsToMany(ProductOptionsModel, {
         //     through: "product_options_join", // Join table name
         //     foreignKey: "productId", // Foreign key in the join table
-        //     otherKey: "product_options_id", // Other foreign key in the join table
-        //     as: "variations", // Alias for the relationship
-        // });
+        //     otherKey: "product_options_id", // Other foreign key in the join
+        // table as: "variations", // Alias for the relationship });
 
         // ProductModel.hasMany(ProductOptionsModel, {
-        //     foreignKey: "product_id", // The foreign key in ProductOptionsModel
-        //     as: "product_Options", // Alias for the relationship
-        //   });
+        //     foreignKey: "product_id", // The foreign key in
+        // ProductOptionsModel as: "product_Options", // Alias for the
+        // relationship });
 
         //   ProductOptionsModel.belongsTo(ProductModel, {
         //     foreignKey: "product_id",
         //     as: "product", // Alias for the reverse relationship
         //   });
 
-        ProductModel.belongsTo(UserModel, {as: 'createdByUser', foreignKey: 'createdBy'})
-        ProductModel.belongsTo(UserModel, {as: 'updatedByUser', foreignKey: 'updatedBy'})
-        ProductModel.belongsTo(UserModel, {as: 'deletedByUser', foreignKey: 'deletedBy'})
+        ProductModel.belongsTo(UserModel,
+            {as: 'createdByUser', foreignKey: 'createdBy'})
+        ProductModel.belongsTo(UserModel,
+            {as: 'updatedByUser', foreignKey: 'updatedBy'})
+        ProductModel.belongsTo(UserModel,
+            {as: 'deletedByUser', foreignKey: 'deletedBy'})
 
         ProductModel.hasMany(CartProductModel, {
             foreignKey: 'product_id',
-            as: 'cartProducts'  // Alias to use if you want to reference CartProduct from Product
+            as: 'cartProducts'  // Alias to use if you want to reference
+                                // CartProduct from Product
         });
     }
 
@@ -211,6 +217,7 @@ class ProductModel
             );
         });
     }
+
 }
 
-export { ProductModel };
+export {ProductModel};

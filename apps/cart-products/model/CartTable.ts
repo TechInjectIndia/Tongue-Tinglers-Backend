@@ -3,7 +3,7 @@ import { sequelize } from "../../../config";
 import { BaseCartProduct, CartProduct } from "../interface/Cart";
 import RepoProvider from "apps/RepoProvider";
 import { ProductModel } from "apps/product/model/productTable";
-import { ProductOptionsModel } from "apps/product-options/models/productOptionTable";
+import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
 
 interface CartProductCreationAttributes extends Optional<CartProduct, "id"> {}
 
@@ -21,7 +21,7 @@ class CartProductModel
             foreignKey: 'product_id',  // Foreign key in CartProductModel
             as: 'product'  // Alias to use in the include
         });
-        CartProductModel.belongsTo(ProductOptionsModel, {
+        CartProductModel.belongsTo(ProductVariationsModel, {
             foreignKey: 'product_option_id',  // Foreign key in CartProductModel
             as: 'variations'  // Alias to use in the include
         });

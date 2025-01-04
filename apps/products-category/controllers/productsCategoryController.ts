@@ -1,13 +1,9 @@
 import {get} from "lodash";
-import {
-    BaseProductsCategory,
-    Pagination,
-    ProductsCategory
-} from '../../../interfaces/products_category'
 import RepoProvider from "../../RepoProvider";
 import {sendResponse} from "../../../libraries";
 import {RESPONSE_TYPE, SUCCESS_MESSAGE} from "../../../constants";
 import {Request, Response} from "express";
+import {ProductsCategory} from "../interface/Category";
 
 export default class ProductsCategoryController {
 
@@ -128,7 +124,7 @@ export default class ProductsCategoryController {
             const payload = req.body;
             payload.id = id;
             const user_id = get(req, "user_id", 0);
-        
+
             const productsCategory: ProductsCategory = await RepoProvider.productsCategoryRepo.updateProductsCategory(
                 payload);
             return res.status(200)

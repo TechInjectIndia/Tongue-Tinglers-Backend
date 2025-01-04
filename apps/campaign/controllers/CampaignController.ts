@@ -114,6 +114,7 @@ export default class CampaignController {
                         campaigns
                     )
                 );
+
         } catch (err) {
             console.error("Error:", err);
             return res.status(500).send({

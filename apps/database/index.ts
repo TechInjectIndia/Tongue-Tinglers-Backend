@@ -21,8 +21,7 @@ import { PdiCheckpointModel } from "apps/pdi-checkpoint/model/PdiCheckPointTable
 import { QuestionModel } from "apps/questions/models/QuestionModel";
 import { RegionModel } from "apps/region/models/RegionTable";
 import { UserModel } from "apps/user/models/UserTable";
-import { CartDetailsModel } from "database/schema/cart_details/cartDetailsModel";
-import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
+
 
 
 // Initialize Models
@@ -43,7 +42,7 @@ const models = {
     FranchiseLeadModel: FranchiseLeadModel.initModel(),
     PdiCheckPoints: PdiCheckpointModel.initModel(),
     IChecklistModel: IChecklistModel.initModel(),
-    Variations: ProductOptionsModel.initModel(),
+    // Variations: ProductOptionsModel.initModel(),
 
     Affiliate: AffiliateModel.initModel(),
     QuestionModel: QuestionModel.initModel(),
@@ -51,10 +50,10 @@ const models = {
     FollowDetailModel: FollowDetailsModel.initModel(),
     CommissionEntityMap: CommissionEntityMapTable.initModel(),
     Commission: CommissionTable.initModel(),
-    CartDetails: CartDetailsModel.initModel(),
+    // CartDetails: CartDetailsModel.initModel(),
 };
 
-console.log(Object.keys(models).join(" "))
+// console.log(Object.keys(models).join(" "))
 
 // Establish association with CampaignAdModel
 

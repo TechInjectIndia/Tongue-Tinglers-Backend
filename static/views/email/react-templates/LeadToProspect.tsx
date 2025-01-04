@@ -18,16 +18,16 @@ const LeadToProspect = (data: any) => (
 
                 {/* Button */}
                 <div className="text-center">
-                    <button
+                    <a
                         className="border border-none cursor-pointer text-[16px] text-white py-3 px-6 w-fit mx-auto rounded"
                         style={{
                             background:
                                 "linear-gradient(to right, #dc322f, #ffcd32)",
                         }}
-                        onClick={() => window.open(data.btnLink, "_blank")}
+                        href={data.btnLink}
                     >
                         SETUP YOUR ORGANIZATION
-                    </button>
+                    </a>
                 </div>
 
                 <p className="text-[17px] text-left mt-5 text-black leading-7">

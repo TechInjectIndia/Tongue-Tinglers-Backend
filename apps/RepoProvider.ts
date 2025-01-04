@@ -41,6 +41,8 @@ import { LogsRepo } from "./logs/repos/LogsRepo";
 import { ICommissionRepo } from "./commission/repositories/ICommissionRepo";
 import { PostgresCommissionRepo } from "./commission/repositories/PostgresCommissionRepo";
 import { OrderRepo } from './order/repos/orderRepo';
+import { IPreSaleOrderProvider } from './pre-sale-order/provider/IPreSaleOrderProvider';
+import { PreSaleOrderProvider } from './pre-sale-order/provider/PreSaleOrderProvider';
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -61,6 +63,7 @@ export default class RepoProvider {
   static _commissionRepo: ICommissionRepo;
   private static _documentRepo: IDocumentRepo;
   private static _agreementDocRepo: IAgreementDocRepo
+  private static _preSaleProvider:IPreSaleOrderProvider;
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -187,5 +190,12 @@ export default class RepoProvider {
       this._agreementDocRepo = new AgreementDocRepo();
     }
     return this._agreementDocRepo;
+  }
+
+  static get preSaleOrderProvider(){
+    if (!this._preSaleProvider) {
+      this._preSaleProvider = new PreSaleOrderProvider();
+    }
+    return this._preSaleProvider;
   }
 }

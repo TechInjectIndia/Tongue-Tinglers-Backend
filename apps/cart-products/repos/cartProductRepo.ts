@@ -1,11 +1,5 @@
 // import { CartDetailsModel } from "database/schema/cart_details/cartDetailsModel";
-import {
-    Cart,
-    CartProduct,
-    ParseCart,
-    ParsedCartProduct,
-    UpdateQuantity,
-} from "../interface/Cart";
+import { Cart, CartProduct, ParseCart, ParsedCartProduct, UpdateQuantity } from "../interface/Cart";
 import { CartProductModel } from "../model/CartProductTable";
 import { ICartProductRepo } from "./ICartProductRepo";
 // import { ProductModel } from "database/schema/product/productModel";
@@ -13,14 +7,16 @@ import { ICartProductRepo } from "./ICartProductRepo";
 import { OptionsModel } from "apps/options/models/optionTable";
 import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { Op } from "sequelize";
-import { parseCartProduct } from "../parser/cartProductParser";
+import { parseCartProduct, parseCartProductDetails } from "../parser/cartProductParser";
 import { ProductModel } from "apps/product/model/productTable";
 import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
 import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
+import RepoProvider from "apps/RepoProvider";
+import { ParsedCartDetail } from "apps/cart-details/interface/CartDetail";
+import { UserModel } from "apps/user/models/UserTable";
 
 export class CartProductRepo implements ICartProductRepo {
-
-    async create(cartProduct: Cart): Promise<ParseCart | null> {
+    async create(cartProduct: Cart): Promise<ParsedCartDetail | null> {
         const transaction = await CartProductModel.sequelize?.transaction();
         try {
             console.log("Transaction started for creating cart products");
@@ -43,8 +39,11 @@ export class CartProductRepo implements ICartProductRepo {
                 where: { user_id: cartProduct.user_id },
                 defaults: { user_id: cartProduct.user_id },
                 transaction,
-                lock: transaction.LOCK.UPDATE, // Prevent concurrent modifications
+                lock: transaction.LOCK.UPDATE,
+                include: { model: UserModel, as: "cartUser" }, // Prevent concurrent modifications
             });
+
+            console.log("userCart--->", userCart);
 
             if (created) {
                 console.log("New cart created for user ID:", cartProduct.user_id);
@@ -84,9 +83,7 @@ export class CartProductRepo implements ICartProductRepo {
                 ],
                 transaction,
             }).then((cartProductData) =>
-                cartProductData.map((cartProduct) =>
-                    parseCartProduct(cartProduct)
-                )
+                cartProductData.map((cartProduct) => parseCartProductDetails(cartProduct))
             );
 
             // Commit the transaction
@@ -94,7 +91,8 @@ export class CartProductRepo implements ICartProductRepo {
             console.log("Transaction committed successfully");
 
             return {
-                user_id: cartProduct.user_id,
+                id: userCart.id,
+                user_id: userCart.user_id,
                 carts: cartProductsWithDetails,
             };
         } catch (error) {

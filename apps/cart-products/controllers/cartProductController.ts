@@ -4,6 +4,7 @@ import RepoProvider from "../../RepoProvider";
 import {sendResponse} from "../../../libraries";
 import {RESPONSE_TYPE} from "../../../constants";
 import {Request, Response} from "express";
+import { ParsedCartDetail } from "apps/cart-details/interface/CartDetail";
 
 export default class CartProductController {
 
@@ -16,6 +17,9 @@ export default class CartProductController {
                 user_id: user_id,
             };
             const productDetails = await RepoProvider.cartProductRepo.create(product);
+             
+            RepoProvider.preSaleOrderProvider.getPreSaleOrder(productDetails)
+
             return res.status(201).send(
                 sendResponse(RESPONSE_TYPE.SUCCESS, 'Cart products created successfully.', productDetails)
             );

@@ -25,6 +25,9 @@ import {
 import { PaymentReceivedMail } from "static/views/email/get-templates/PaymentReceivedMail";
 
 import Razorpay from "razorpay";
+import {
+    MakePaymentMail
+} from "../../../static/views/email/get-templates/MakePaymentMail";
 
 const {
     validateWebhookSignature,
@@ -214,6 +217,9 @@ export default class PaymentsController {
 
             console.log("####", paymentLinkPayload);
 
+
+
+
             const link =
                 await RepoProvider.razorpayRepo.createPaymentLink(
                     paymentLinkPayload,
@@ -251,32 +257,42 @@ export default class PaymentsController {
                 CONTRACT_STATUS.ACTIVE,
             );
 
-            try {
-                const emailContent = getEmailTemplate(
-                    EMAIL_TEMPLATE.PAYMENT_REQUEST,
-                    {
-                        email: leadDetails.email,
-                        link: link.short_url,
-                    },
-                );
+            // try {
+            //     const emailContent = getEmailTemplate(
+            //         EMAIL_TEMPLATE.PAYMENT_REQUEST,
+            //         {
+            //             email: leadDetails.email,
+            //             link: link.short_url,
+            //         },
+            //     );
+            //
+            //     const mailOptions = {
+            //         to: leadDetails.email,
+            //         subject: EMAIL_HEADING.PAYMENT_REQUEST,
+            //         templateParams: {
+            //             heading: EMAIL_HEADING.PAYMENT_REQUEST,
+            //             description: emailContent,
+            //         },
+            //     };
+            //
+            //     await sendEmail(
+            //         mailOptions.to,
+            //         mailOptions.subject,
+            //         mailOptions.templateParams,
+            //     );
+            // } catch (emailError) {
+            //     console.error("Error sending email:", emailError);
+            // }
 
-                const mailOptions = {
-                    to: leadDetails.email,
-                    subject: EMAIL_HEADING.PAYMENT_REQUEST,
-                    templateParams: {
-                        heading: EMAIL_HEADING.PAYMENT_REQUEST,
-                        description: emailContent,
-                    },
-                };
 
-                await sendEmail(
-                    mailOptions.to,
-                    mailOptions.subject,
-                    mailOptions.templateParams,
-                );
-            } catch (emailError) {
-                console.error("Error sending email:", emailError);
-            }
+            // @Harsh After sign agreement mail
+            const mailDto = new MakePaymentMail().getPayload(
+                {
+                    btnLink: link.short_url
+                },
+                leadDetails.email,
+            );
+            await sendMail(mailDto);
 
             return res
                 .status(200)

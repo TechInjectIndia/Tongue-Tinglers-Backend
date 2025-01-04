@@ -35,12 +35,6 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
             signedDocs,
         );
 
-        // @Harsh After sign agreement mail
-        const mailDto = new MakePaymentMail().getPayload(
-            {},
-            res.leadId.email,
-        );
-        await sendMail(mailDto);
 
         console.log("Updated signedDocs:", res);
     }

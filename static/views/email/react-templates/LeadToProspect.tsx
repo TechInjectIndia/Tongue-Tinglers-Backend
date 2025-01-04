@@ -23,6 +23,7 @@ const LeadToProspect = (data: any) => (
                         style={{
                             background:
                                 "linear-gradient(to right, #dc322f, #ffcd32)",
+                            textDecoration: "none",
                         }}
                         href={data.btnLink}
                     >

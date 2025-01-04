@@ -5,24 +5,23 @@ import {
     TPayloadFranchiseModel,
     TPayloadProposalModel,
     TPayloadQuestion,
-    TPayloadRegion
+    TPayloadRegion,
 } from "../../interfaces";
-import {QuestionRepo} from "../questions/models";
-import {AreaRepo} from "../area/models/AreaRepo";
-import {RegionRepo} from "../region/models/RegionRepo";
-import {FranchiseModelRepo} from "../franchise_model/models";
-import {ProposalModelRepo} from "../proposal_model/models";
-import {CampaignAdRepo} from "../campaign/models";
+import { QuestionRepo } from "../questions/models";
+import { AreaRepo } from "../area/models/AreaRepo";
+import { RegionRepo } from "../region/models/RegionRepo";
+import { FranchiseModelRepo } from "../franchise_model/models";
+import { ProposalModelRepo } from "../proposal_model/models";
+import { CampaignAdRepo } from "../campaign/models";
 import { PRODUCT_STATUS, PRODUCTS_TYPE } from "apps/product/interface/Product";
 import { PRODUCT_CATEGORY_STATUS } from "apps/products-category/interface/Category";
 import { PRODUCT_OPTIONS_STATUS } from "apps/product/interface/ProductOptions";
 
 function getSampleQuestions(): TPayloadQuestion[] {
-
     const sampleOptions: IOptions[] = [
-        {label: "Option 1", value: "option1"},
-        {label: "Option 2", value: "option2"},
-        {label: "Option 3", value: "option3"},
+        { label: "Option 1", value: "option1" },
+        { label: "Option 2", value: "option2" },
+        { label: "Option 3", value: "option3" },
     ];
 
     return [
@@ -53,7 +52,8 @@ function getSampleQuestions(): TPayloadQuestion[] {
             createdBy: 2,
         },
         {
-            question: "How many years of experience do you have in software development?",
+            question:
+                "How many years of experience do you have in software development?",
             type: QuestionType.NUMBER,
             required: true,
             createdBy: 2,
@@ -63,20 +63,18 @@ function getSampleQuestions(): TPayloadQuestion[] {
 
 function getSampleAreas(): TPayloadArea[] {
     return [
-        {title: "Area 1A", createdBy: 1},
-        {title: "Area 1B", createdBy: 1},
-        {title: "Area 1C", createdBy: 1},
-        {title: "Area 2A", createdBy: 1},
-        {title: "Area 2B", createdBy: 1},
-        {title: "Area 2C", createdBy: 1},
-        {title: "Area 3A", createdBy: 1},
-        {title: "Area 3B", createdBy: 1},
+        { title: "Area 1A", createdBy: 1 },
+        { title: "Area 1B", createdBy: 1 },
+        { title: "Area 1C", createdBy: 1 },
+        { title: "Area 2A", createdBy: 1 },
+        { title: "Area 2B", createdBy: 1 },
+        { title: "Area 2C", createdBy: 1 },
+        { title: "Area 3A", createdBy: 1 },
+        { title: "Area 3B", createdBy: 1 },
     ];
 }
 
-
 function getSampleRegions(): TPayloadRegion[] {
-
     return [
         {
             title: "North Region",
@@ -87,9 +85,8 @@ function getSampleRegions(): TPayloadRegion[] {
             area: [4, 5, 6],
         },
         {
-
             title: "East Region",
-            area: [7, 8]
+            area: [7, 8],
         },
     ];
 }
@@ -98,7 +95,8 @@ function getSampleFranchiseModels(): TPayloadFranchiseModel[] {
     return [
         {
             title: "QSR (Quick Service Restaurant)",
-            description: "A compact and efficient setup for serving customers quickly, ideal for high-footfall areas.",
+            description:
+                "A compact and efficient setup for serving customers quickly, ideal for high-footfall areas.",
             reqArea: 500, // in square feet
             investment: 1500000, // in INR
             runningCost: 50000, // in INR per month
@@ -113,12 +111,16 @@ function getSampleFranchiseModels(): TPayloadFranchiseModel[] {
         },
         {
             title: "Cloud Kitchen",
-            description: "A delivery-only model, perfect for tapping into the growing demand for online food delivery.",
+            description:
+                "A delivery-only model, perfect for tapping into the growing demand for online food delivery.",
             reqArea: 300, // in square feet
             investment: 1000000, // in INR
             runningCost: 30000, // in INR per month
-            bestFor: ["Online-Only Operations", "Low-Rent Locations",
-                "Multiple Delivery Platforms"],
+            bestFor: [
+                "Online-Only Operations",
+                "Low-Rent Locations",
+                "Multiple Delivery Platforms",
+            ],
             inclusions: [
                 "Kitchen Equipment",
                 "Delivery Packaging",
@@ -131,36 +133,34 @@ function getSampleFranchiseModels(): TPayloadFranchiseModel[] {
 }
 
 function getSampleProposals(): TPayloadProposalModel[] {
-
-
     return [
         {
             title: "Basic QSR Proposal",
             prices: "1500000, 1800000, 2000000", // Basic, Standard, Premium
-                                                 // pricing tiers in INR
+            // pricing tiers in INR
             franchiseModel: 1, // QSR Model ID
-            createdBy: 1
+            createdBy: 1,
         },
         {
             title: "Advanced QSR Proposal",
             prices: "2000000, 2300000, 2500000", // Basic, Standard, Premium
-                                                 // pricing tiers in INR
+            // pricing tiers in INR
             franchiseModel: 1, // QSR Model ID
-            createdBy: 1
+            createdBy: 1,
         },
         {
             title: "Basic Cloud Kitchen Proposal",
             prices: "1000000, 1200000, 1400000", // Basic, Standard, Premium
-                                                 // pricing tiers in INR
+            // pricing tiers in INR
             franchiseModel: 2, // Cloud Kitchen Model ID
-            createdBy: 1
+            createdBy: 1,
         },
         {
             title: "Advanced Cloud Kitchen Proposal",
             prices: "1400000, 1600000, 1800000", // Basic, Standard, Premium
-                                                 // pricing tiers in INR
+            // pricing tiers in INR
             franchiseModel: 2, // Cloud Kitchen Model ID
-            createdBy: 1
+            createdBy: 1,
         },
     ];
 }
@@ -173,22 +173,28 @@ async function createDummyMaster(user_id: number) {
     const proposals = getSampleProposals();
 
     const qRepo = new QuestionRepo();
-    const questionsProm = await Promise.all(questions.map(
-        q => qRepo.create({createdBy: user_id, ...q}, user_id)));
+    const questionsProm = await Promise.all(
+        questions.map((q) =>
+            qRepo.create({ createdBy: user_id, ...q }, user_id)
+        )
+    );
 
     const aRepo = new AreaRepo();
-    const areasProm = await Promise.all(areas.map(
-        a => aRepo.create({createdBy: user_id, ...a}))).then(_ => {
+    const areasProm = await Promise.all(
+        areas.map((a) => aRepo.create({ createdBy: user_id, ...a }))
+    ).then((_) => {
         const rRepo = new RegionRepo();
-       return Promise.all(regions.map(
-            r => rRepo.create({createdBy: user_id, ...r})));
+        return Promise.all(
+            regions.map((r) => rRepo.create({ createdBy: user_id, ...r }))
+        );
     });
 
     const fmRepo = new FranchiseModelRepo();
-    const franchiseModelsProm = await Promise.all(franchiseModels.map(
-        fm => fmRepo.create(fm, user_id))).then(_ => {
+    const franchiseModelsProm = await Promise.all(
+        franchiseModels.map((fm) => fmRepo.create(fm, user_id))
+    ).then((_) => {
         const pRepo = new ProposalModelRepo();
-        return Promise.all(proposals.map(p => pRepo.create(p)));
+        return Promise.all(proposals.map((p) => pRepo.create(p)));
     });
 
     // Campaign creation logic
@@ -211,104 +217,141 @@ async function createDummyMaster(user_id: number) {
 
 async function createDummyProducts() {
     return {
-        "category": {
-            "name": "Electronics",
-            "description": "Devices and gadgets",
-            "slug": "electronics",
-            "status": PRODUCT_CATEGORY_STATUS.ACTIVE,
-            "type": null,
-            "createdBy": 1
-        },
-        "options": [
-            {
-                "name": "Color"
-            },
-            {
-                "name": "Size"
-            }
-        ],
-        "optionValues": [
-            {
-                "option_id": 1,
-                "name": "Red"
-            },
-            {
-                "option_id": 2,
-                "name": "Large"
-            }
-        ],
-        "product": {
+        category: {
+            name: "Fast Food",
+            description: "Delicious fast food items",
+            slug: "fast-food",
+            status: PRODUCT_CATEGORY_STATUS.ACTIVE, // Assuming PRODUCT_CATEGORY_STATUS.ACTIVE
+            type: null,
             createdBy: 1,
-            name: "Smartphone X100",
-            slug: "smartphone-x100",
-            description: "The latest Smartphone X100 with advanced features and sleek design.",
-            MOQ: 10, // Minimum Order Quantity
-            category: 1, // Assuming category ID 5 corresponds to 'Electronics'
-            type: PRODUCTS_TYPE.RETORT, // Example: PHYSICAL, DIGITAL
-            status: PRODUCT_STATUS.ACTIVE, // Example: ACTIVE, INACTIVE, DISCONTINUED
+        },
+        options: [
+            {
+                name: "Size",
+            },
+            {
+                name: "Spice Level",
+            },
+        ],
+        optionValues: [
+            {
+                option_id: 1,
+                name: "Small",
+            },
+            {
+                option_id: 1,
+                name: "Medium",
+            },
+            {
+                option_id: 1,
+                name: "Large",
+            },
+            {
+                option_id: 2,
+                name: "Mild",
+            },
+            {
+                option_id: 2,
+                name: "Spicy",
+            },
+            {
+                option_id: 2,
+                name: "Extra Spicy",
+            },
+        ],
+        product: {
+            createdBy: 1,
+            name: "Cheese Burger",
+            slug: "cheese-burger",
+            description:
+                "A mouthwatering cheese burger with fresh ingredients.",
+            MOQ: 5, // Minimum Order Quantity
+            category: 1, // Assuming category ID corresponds to 'Fast Food'
+            type: PRODUCTS_TYPE.RETORT, // Example type
+            status: PRODUCT_STATUS.ACTIVE, // Example status
             images: [
-                "https://example.com/images/smartphone-x100-front.jpg",
-                "https://example.com/images/smartphone-x100-back.jpg",
-                "https://example.com/images/smartphone-x100-side.jpg"
+                "https://example.com/images/cheese-burger-front.jpg",
+                "https://example.com/images/cheese-burger-side.jpg",
             ],
-            tax_rate_id: 1, // Assuming tax rate ID 3 corresponds to 18%
+            tax_rate_id: 1, // Assuming a valid tax rate ID
             vendorId: 1, // Example vendor ID
             variations: [
                 {
-                    optionValueId: 1, // Example option value ID (e.g., "Red")
-                    price: 699.99, // Price for this variation
-                    stock: 50, // Available stock for this variation
-                    status: PRODUCT_OPTIONS_STATUS.ACTIVE, // Active status
-                    images: ["https://example.com/images/smartphone-x100-red.jpg"], // Image URL specific to this variation
-                    createdBy: 1, // ID of the user who created this variation
-                    updatedBy: 1, // ID of the user who last updated this variation
-                    deletedBy: null // Null if not deleted
-                },
-                {
-                    optionValueId: 1, // Example option value ID (e.g., "Blue")
-                    price: 699.99,
-                    stock: 30,
-                    status: PRODUCT_OPTIONS_STATUS.ACTIVE,
-                    images: ["https://example.com/images/smartphone-x100-blue.jpg"],
+                    optionValueId: 1, // Small size
+                    price: 4.99,
+                    stock: 100,
+                    status: PRODUCT_OPTIONS_STATUS.ACTIVE, // Example status
+                    images: [
+                        "https://example.com/images/cheese-burger-small.jpg",
+                    ],
                     createdBy: 1,
                     updatedBy: 1,
-                    deletedBy: null
+                    deletedBy: null,
                 },
                 {
-                    optionValueId: 1, // Example option value ID (e.g., "Black")
-                    price: 699.99,
-                    stock: 20,
+                    optionValueId: 2, // Medium size
+                    price: 5.99,
+                    stock: 80,
                     status: PRODUCT_OPTIONS_STATUS.ACTIVE,
-                    images: ["https://example.com/images/smartphone-x100-black.jpg"],
+                    images: [
+                        "https://example.com/images/cheese-burger-medium.jpg",
+                    ],
                     createdBy: 1,
                     updatedBy: 1,
-                    deletedBy: null
+                    deletedBy: null,
                 },
                 {
-                    optionValueId: 1, // Example option value ID (e.g., "64GB")
-                    price: 749.99, // Higher price for more storage
+                    optionValueId: 3, // Large size
+                    price: 6.99,
+                    stock: 50,
+                    status: PRODUCT_OPTIONS_STATUS.ACTIVE,
+                    images: [
+                        "https://example.com/images/cheese-burger-large.jpg",
+                    ],
+                    createdBy: 1,
+                    updatedBy: 1,
+                    deletedBy: null,
+                },
+                {
+                    optionValueId: 4, // Mild spice level
+                    price: 4.99,
+                    stock: 70,
+                    status: PRODUCT_OPTIONS_STATUS.ACTIVE,
+                    images: [
+                        "https://example.com/images/cheese-burger-mild.jpg",
+                    ],
+                    createdBy: 1,
+                    updatedBy: 1,
+                    deletedBy: null,
+                },
+                {
+                    optionValueId: 5, // Spicy spice level
+                    price: 5.49,
+                    stock: 60,
+                    status: PRODUCT_OPTIONS_STATUS.ACTIVE,
+                    images: [
+                        "https://example.com/images/cheese-burger-spicy.jpg",
+                    ],
+                    createdBy: 1,
+                    updatedBy: 1,
+                    deletedBy: null,
+                },
+                {
+                    optionValueId: 6, // Extra Spicy spice level
+                    price: 5.99,
                     stock: 40,
                     status: PRODUCT_OPTIONS_STATUS.ACTIVE,
-                    images: ["https://example.com/images/smartphone-x100-64gb.jpg"],
+                    images: [
+                        "https://example.com/images/cheese-burger-extra-spicy.jpg",
+                    ],
                     createdBy: 1,
                     updatedBy: 1,
-                    deletedBy: null
+                    deletedBy: null,
                 },
-                {
-                    optionValueId: 1, // Example option value ID (e.g., "128GB")
-                    price: 849.99, // Higher price for more storage
-                    stock: 25,
-                    status: PRODUCT_OPTIONS_STATUS.ACTIVE,
-                    images: ["https://example.com/images/smartphone-x100-128gb.jpg"],
-                    createdBy: 1,
-                    updatedBy: 1,
-                    deletedBy: null
-                }
-            ]
-        }
-    }
+            ],
+        },
+    };
 }
-
 
 export {
     getSampleQuestions,
@@ -317,5 +360,5 @@ export {
     getSampleFranchiseModels,
     getSampleProposals,
     createDummyMaster,
-    createDummyProducts
-}
+    createDummyProducts,
+};

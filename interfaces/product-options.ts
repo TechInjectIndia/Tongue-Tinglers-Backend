@@ -8,7 +8,7 @@ interface BaseProductOptions {
     price: number
     stock: number
     status: PRODUCT_OPTIONS_STATUS
-    images: string,
+    images: string[],
     createdBy: number,
     updatedBy: number,
     deletedBy: number

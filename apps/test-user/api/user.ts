@@ -11,14 +11,13 @@ import {
     EMAIL_TEMPLATE,
     getEmailTemplate,
     sendEmail,
-    sendResponse
+    sendResponse,
 } from "../../../libraries";
-
 
 import {
     BUSINESS_TYPE,
     IOrganizationPayloadData,
-    ORGANIZATION_TYPE
+    ORGANIZATION_TYPE,
 } from "../../../interfaces/organization";
 import { QuestionRepo } from "../../questions/models";
 import {
@@ -28,13 +27,17 @@ import {
     getSampleFranchiseModels,
     getSampleProposals,
     getSampleQuestions,
-    getSampleRegions
+    getSampleRegions,
 } from "../utils";
 import { AreaRepo } from "../../area/models/AreaRepo";
 import { RegionRepo } from "../../region/models/RegionRepo";
 import { FranchiseModelRepo } from "../../franchise_model/models";
 import { ProposalModelRepo } from "../../proposal_model/models";
-import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from "constants/response-messages";
+import {
+    ERROR_MESSAGE,
+    RESPONSE_TYPE,
+    SUCCESS_MESSAGE,
+} from "constants/response-messages";
 import { AdminRepo } from "apps/user/models/user";
 import { TUser, USER_TYPE } from "apps/user/interface/user";
 import { UserModel } from "apps/user/models/UserTable";
@@ -45,6 +48,7 @@ import { OptionsModel } from "apps/options/models/optionTable";
 import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { ProductModel } from "apps/product/model/productTable";
 import { ProductOptionsModel } from "apps/product-options/models/productOptionTable";
+import { BaseProductOptions } from "interfaces/product-options";
 
 const router = express.Router();
 
@@ -111,14 +115,11 @@ const {
  *       '401':
  *         description: Unauthorized
  */
-router.post("/create", validateCreateAdminBody, (async (req, res) => {
+router.post("/create", validateCreateAdminBody, async (req, res) => {
     try {
-
         const payload = { ...req?.body, createdBy: 1 };
 
-        const existingAdmin = await new Auth().getUserByEmail(
-            payload.email
-        );
+        const existingAdmin = await new Auth().getUserByEmail(payload.email);
         if (existingAdmin) {
             return res
                 .status(400)
@@ -174,8 +175,7 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
                 mailOptions.subject,
                 mailOptions.templateParams
             );
-        }
-        catch (emailError) {
+        } catch (emailError) {
             console.error("Error sending email:", emailError);
         }
 
@@ -187,14 +187,13 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
                     SUCCESS_MESSAGE.ADMIN_CREATED
                 )
             );
-    }
-    catch (err) {
+    } catch (err) {
         console.error("Error:", err);
         return res.status(500).send({
             message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
         });
     }
-}))
+});
 
 /**
  * @swagger
@@ -211,14 +210,12 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- */router.get("/superOrg", (async (req, res) => {
+ */ router.get("/superOrg", async (req, res) => {
     try {
-
         const payload = { ...req?.body, createdBy: 1 };
 
-        const email = 'admin@TongueTingler.com';
-        const password = '123456';
-
+        const email = "admin@TongueTingler.com";
+        const password = "123456";
 
         const fbCheckUserRes = await checkFirebaseUser(email);
         let uid = null;
@@ -235,9 +232,13 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
             if (!fbCreateUserRes.success) {
                 return res
                     .status(400)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR,
-                        fbCreateUserRes.error ??
-                        'Failed to create user with Firebase auth'));
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            fbCreateUserRes.error ??
+                                "Failed to create user with Firebase auth"
+                        )
+                    );
             } else {
                 uid = fbCreateUserRes.uid;
             }
@@ -246,78 +247,78 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
         if (!uid) {
             return res
                 .status(400)
-                .send(sendResponse(RESPONSE_TYPE.ERROR, 'no uid'));
+                .send(sendResponse(RESPONSE_TYPE.ERROR, "no uid"));
         }
 
-        let admin: TUser = (await new Auth().getUserByEmail(
-            email
-        ));
+        let admin: TUser = await new Auth().getUserByEmail(email);
 
         if (!admin) {
             const hashedPassword = await createPassword(password);
 
-            admin = await new AdminRepo().create({
-                "firstName": "Root",
-                "lastName": "User",
-                "phoneNumber": "+918220735528",
-                nameForSearch: "",
-                referBy: undefined,
-                "type": USER_TYPE.ADMIN,
-                email,
-                "role": 0,
-                password: hashedPassword,
-                firebaseUid: uid
-            } as TUser).then(uModel => (uModel as UserModel).toJSON());
+            admin = await new AdminRepo()
+                .create({
+                    firstName: "Root",
+                    lastName: "User",
+                    phoneNumber: "+918220735528",
+                    nameForSearch: "",
+                    referBy: undefined,
+                    type: USER_TYPE.ADMIN,
+                    email,
+                    role: 0,
+                    password: hashedPassword,
+                    firebaseUid: uid,
+                } as TUser)
+                .then((uModel) => (uModel as UserModel).toJSON());
         }
 
         const repo = new OrganizationRepo();
-        let superFranOrg = await repo.getByRootUser(admin.id)
+        let superFranOrg = await repo.getByRootUser(admin.id);
         let createSampleData = false;
         if (!superFranOrg) {
             createSampleData = true;
             const TTOrgParams: IOrganizationPayloadData = {
-                "name": "Tongue Tinglers (Super)",
-                "contactPersonName": "Munawar Ahmed",
-                "contactNumber": "+918220735528",
-                "contactEmail": "admin@tonguetingler.com",
-                "pan": "BVKPM7409K",
-                "gst": "33BVKPM7409K1Z8",
-                "bankName": "Bank of India",
-                "bankAccountNumber": "823748272340",
-                "bankIFSCCode": "BKI00023",
-                "businessType": BUSINESS_TYPE.PROPRIETORSHIP,
-                "type": ORGANIZATION_TYPE.SUPER_FRANCHISE,
-                "billingAddress": {
-                    "street": "GROUND FLOOR, 123/76, Peters Road, Royapettah,",
-                    "city": "Chennai",
-                    "state": "Tamil Nadu",
-                    "postalCode": "600014",
-                    "country": "India",
-                    "phoneNumber": "918220735528",
-                    "firstName": "Munawar",
-                    "lastName": "Ahmed"
+                name: "Tongue Tinglers (Super)",
+                contactPersonName: "Munawar Ahmed",
+                contactNumber: "+918220735528",
+                contactEmail: "admin@tonguetingler.com",
+                pan: "BVKPM7409K",
+                gst: "33BVKPM7409K1Z8",
+                bankName: "Bank of India",
+                bankAccountNumber: "823748272340",
+                bankIFSCCode: "BKI00023",
+                businessType: BUSINESS_TYPE.PROPRIETORSHIP,
+                type: ORGANIZATION_TYPE.SUPER_FRANCHISE,
+                billingAddress: {
+                    street: "GROUND FLOOR, 123/76, Peters Road, Royapettah,",
+                    city: "Chennai",
+                    state: "Tamil Nadu",
+                    postalCode: "600014",
+                    country: "India",
+                    phoneNumber: "918220735528",
+                    firstName: "Munawar",
+                    lastName: "Ahmed",
                 },
-                "shippingAddress": [
+                shippingAddress: [
                     {
-                        "street": "GROUND FLOOR, 123/76, Peters Road, Royapettah,",
-                        "city": "Chennai",
-                        "state": "Tamil Nadu",
-                        "postalCode": "600014",
-                        "country": "India",
-                        "phoneNumber": "918220735528",
-                        "firstName": "Munawar",
-                        "lastName": "Ahmed"
-                    }
+                        street: "GROUND FLOOR, 123/76, Peters Road, Royapettah,",
+                        city: "Chennai",
+                        state: "Tamil Nadu",
+                        postalCode: "600014",
+                        country: "India",
+                        phoneNumber: "918220735528",
+                        firstName: "Munawar",
+                        lastName: "Ahmed",
+                    },
                 ],
                 masterFranchiseId: null,
                 rootUser: admin.id,
                 createdBy: 1,
                 updatedBy: null,
-                deletedBy: null
-            }
+                deletedBy: null,
+            };
             superFranOrg = await repo.create(TTOrgParams, admin.id);
         }
-        if(createSampleData) await createDummyMaster(admin.id);
+        if (createSampleData) await createDummyMaster(admin.id);
 
         //todo @Nitesh uncomment
 
@@ -353,14 +354,13 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
                     superFranOrg
                 )
             );
-    }
-    catch (err) {
+    } catch (err) {
         console.error("Error:", err);
         return res.status(500).send({
             message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
         });
     }
-}))
+});
 
 /**
  * @swagger
@@ -378,26 +378,29 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
  *       '401':
  *         description: Unauthorized
  */
-router.get('/createEverything', async (req, res) => {
+router.get("/createEverything", async (req, res) => {
     const transaction = await sequelize.transaction();
-    try{
+    try {
         const dummyData = await createDummyProducts();
 
-        const categoryData = dummyData.category
-        const categoryCreated = await ProductsCategoryModel.create(categoryData)
-        
-        const optionsData = dummyData.options
-        const optionsCreated = await OptionsModel.bulkCreate(optionsData)
+        const categoryData = dummyData.category;
+        const categoryCreated = await ProductsCategoryModel.create(
+            categoryData
+        );
 
-        const optionsValueData = dummyData.optionValues
-        const optionsValueCreated = await OptionsValueModel.bulkCreate(optionsValueData)
+        const optionsData = dummyData.options;
+        const optionsCreated = await OptionsModel.bulkCreate(optionsData);
 
-        const productData = dummyData.product
+        const optionsValueData = dummyData.optionValues;
+        const optionsValueCreated = await OptionsValueModel.bulkCreate(
+            optionsValueData
+        );
+
+        const productData = dummyData.product;
         let variationIds: number[] = []; // Array to store created option IDs
 
         // Step 1: Create the product with a default empty array for `variationIds`
-        const createdProduct = await ProductModel.create(
-            {
+        const createdProduct = await ProductModel.create({
             name: productData.name,
             slug: productData.slug,
             description: productData.description,
@@ -406,61 +409,51 @@ router.get('/createEverything', async (req, res) => {
             type: productData.type,
             status: productData.status,
             images: productData.images,
-            vendorId: productData.vendorId,// Initialize with an empty array
+            vendorId: productData.vendorId, // Initialize with an empty array
             tax_rate_id: productData.tax_rate_id,
-            createdBy: productData.createdBy
-        }
-    );
-    console.log('createdProduct: ', createdProduct);
-
-
-  
-        // Step 2: Handle variations if provided
-        console.log('productData.variations: ', productData.variations);
+            createdBy: productData.createdBy,
+        });
         if (productData.variations && Array.isArray(productData.variations)) {
-          const productOptions =  productData.variations.map((option) => ({
-            product_id: createdProduct.id, // Link the option to the created product
-            optionValueId: option.optionValueId,
-            price: option.price,
-            stock: option.stock,
-            status: option.status,
-            images: option.images,
-          }));
-  
-          // Bulk create the product options
-          const createdOptions = await ProductOptionsModel.bulkCreate(productOptions, {
-              transaction,
-              returning: true, // Ensure the created options are returned
-            });
-  
-          console.log('createdOptions: ', createdOptions);
-          variationIds = createdOptions.map((option) => option.id);
-          console.log('variationIds: ', variationIds);
-  
-          // Update the product with the created option IDs
+            const productOptions = await productData.variations.map(
+                (option) => ({
+                    product_id: createdProduct.id, // Link the option to the created product
+                    optionValueId: option.optionValueId,
+                    price: option.price,
+                    stock: option.stock,
+                    status: option.status,
+                    images: option.images,
+                })
+            );
+            const createdOptions = await ProductOptionsModel.bulkCreate(
+                productOptions
+            );
+
+            variationIds = await createdOptions.map((option) => option.id);
         }
-  
+
         await createdProduct.addVariations(variationIds);
-        console.log('createdProductLast: ', createdProduct);
 
         await transaction.commit();
 
         return res.status(200).send(
-            sendResponse(RESPONSE_TYPE.SUCCESS, "Entities created successfully", {
-                category: categoryCreated,
-                options: optionsCreated,
-                optionValues: optionsValueCreated,
-                product: createdProduct,
-            })
+            sendResponse(
+                RESPONSE_TYPE.SUCCESS,
+                "Entities created successfully",
+                {
+                    category: categoryCreated,
+                    options: optionsCreated,
+                    optionValues: optionsValueCreated,
+                    product: createdProduct,
+                }
+            )
         );
-
-    }catch(err){
+    } catch (err) {
         console.error("Error:", err);
         return res.status(500).send({
             message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
         });
     }
-})
+});
 
 /**
  * @swagger
@@ -477,13 +470,11 @@ router.get('/createEverything', async (req, res) => {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- */router.get("/sampleData", (async (req, res) => {
+ */ router.get("/sampleData", async (req, res) => {
     try {
-        const email = 'admin@TongueTingler.com';
-        let admin: TUser = (await new Auth().getUserByEmail(
-            email
-        ));
-         await createDummyMaster(admin.id);
+        const email = "admin@TongueTingler.com";
+        let admin: TUser = await new Auth().getUserByEmail(email);
+        await createDummyMaster(admin.id);
         return res
             .status(200)
             .send(
@@ -492,14 +483,13 @@ router.get('/createEverything', async (req, res) => {
                     SUCCESS_MESSAGE.ADMIN_CREATED
                 )
             );
-    }
-    catch (err) {
+    } catch (err) {
         console.error("Error:", err);
         return res.status(500).send({
             message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
         });
     }
-}))
+});
 
 router.post("/prospect", validateCreateAdminBody, addProspectUser);
 // ====== Admins Routes Ends ======

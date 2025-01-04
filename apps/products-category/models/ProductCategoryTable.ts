@@ -20,6 +20,7 @@ interface ProductsCategoryCreationAttributes
 class ProductsCategoryModel
     extends Model<ProductsCategory, ProductsCategoryCreationAttributes>
     implements BaseProductsCategory {
+    id: number;
     name: string;
     slug: string;
     description: string;

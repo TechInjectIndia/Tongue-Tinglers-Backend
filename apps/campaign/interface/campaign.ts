@@ -1,4 +1,6 @@
 import {BaseMeta} from "../../common/models/Base";
+import {ParsedOrganization} from "../../organization/interface/organization";
+import {ParsedRegion} from "../../region/models/Region";
 
 interface ICampaign extends BaseMeta {
     name: string;
@@ -14,7 +16,7 @@ interface ICampaign extends BaseMeta {
 
 type TCampaignList = {
     total: number,
-    data: ICampaign[]
+    data: ParsedCampaign[]
 }
 
 type TPayloadCampaign = {
@@ -39,6 +41,8 @@ interface ParsedCampaign {
     id: number;
     name: string;
     organizationId: number;
+    organization: ParsedOrganization;
+    region:ParsedRegion;
     regionId: number;
     description?: string;
     questionList: number[];

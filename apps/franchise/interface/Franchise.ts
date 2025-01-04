@@ -5,7 +5,7 @@ import { BaseSocialMedia, SocialMediaDetails } from "../../lead/interface/lead";
 import { ParsedOrganization } from "../../organization/interface/organization";
 
 
-import { parsedRegion } from "apps/region/models/Region";
+import { ParsedRegion } from "apps/region/models/Region";
 import { ParsedUser } from "apps/user/interface/user";
 import { MetaUser } from "interfaces";
 
@@ -36,13 +36,13 @@ interface Franchise extends BaseFranchise, BaseMeta {
     sm: Array<number>;
 }
 
-interface parsedFranchise extends ParsedMeta {
+interface ParsedFranchise extends ParsedMeta {
     id: number;
     pocName: string;
     pocEmail: string;
     pocPhoneNumber: string;
     users: Array<ParsedUser>;
-    region: parsedRegion;
+    region: ParsedRegion;
     area: string;
     agreementIds: Array<string>;
     paymentIds: Array<string>;
@@ -68,5 +68,5 @@ export {
     FRANCHISE_STATUS,
     FranchiseDetails,
     Franchise,
-    parsedFranchise,
+    ParsedFranchise,
 };

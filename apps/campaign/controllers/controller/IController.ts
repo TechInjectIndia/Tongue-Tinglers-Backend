@@ -1,6 +1,8 @@
-import { NextFunction, Response } from "express";
+
 import { TQueryFilters } from "../../../../types";
-import { TCampaignList, TPayloadCampaign } from "../../../../interfaces";
+import {TCampaignList, TPayloadCampaign} from "../../interface/campaign";
+
+
 
 interface IDynamicFormController<T, F extends TQueryFilters> {
     /**

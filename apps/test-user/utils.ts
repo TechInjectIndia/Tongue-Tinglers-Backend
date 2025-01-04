@@ -1,11 +1,10 @@
 import {
     IOptions,
     QuestionType,
-    TPayloadArea,
     TPayloadFranchiseModel,
     TPayloadProposalModel,
     TPayloadQuestion,
-    TPayloadRegion
+
 } from "../../interfaces";
 import {QuestionRepo} from "../questions/models";
 import {AreaRepo} from "../area/models/AreaRepo";
@@ -29,6 +28,8 @@ import {
 } from "../product/interface/ProductOptions";
 import {BaseOptions} from "../options/interface/options";
 import {BaseOptionsValue} from "../optionsValue/interface/optionValue";
+import {TPayloadArea} from "../area/interface/Area";
+import {TPayloadRegion} from "../region/models/Region";
 
 
 function getSampleQuestions(): TPayloadQuestion[] {

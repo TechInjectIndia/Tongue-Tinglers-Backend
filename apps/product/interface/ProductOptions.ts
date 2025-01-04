@@ -1,17 +1,17 @@
 import { BaseMeta } from "apps/common/models/Base"
-import { ParsedOptionsValue, parseOptionsValues } from "apps/order/interface/OptionsValues"
+import {
+    ParsedOptionsValue,
+    parseOptionsValues
+} from "apps/optionsValue/interface/optionValue";
 
+
+//todo rename to understand its received from frontend
 interface BaseProductOptions {
-    id: any
-    product_id: number
     optionValueId: number
     price: number
     stock: number
     status: PRODUCT_OPTIONS_STATUS
-    images: string,
-    createdBy: number,
-    updatedBy: number,
-    deletedBy: number
+    images: string[],
 }
 
 interface ProductOptions extends BaseMeta, BaseProductOptions {
@@ -36,7 +36,7 @@ interface ProductOptionsList<T> {
 
 interface ParsedProductOptions {
     id: number;
-    product_id: number;
+    // product_id: number;
     option_value: ParsedOptionsValue;
     price: number;
     stock: number;
@@ -44,10 +44,10 @@ interface ParsedProductOptions {
     images: string;
 }
 
-export const parsedProductOptions = (data: any) => {
+export const parsedProductOptions = (data: any):ParsedProductOptions => {
     return {
         id: data.id,
-        optionsValue: parseOptionsValues(data.optionsValue),
+        option_value: parseOptionsValues(data.optionsValue),
         price: data.price,
         stock: data.stock,
         status: data.status,

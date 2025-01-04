@@ -3,7 +3,7 @@ import {
     TProfile,
     TEditUserProfile,
 } from "../../../types/";
-import { UserModel } from "../../../database/schema";
+import { UserModel } from "../../user/models/UserTable";
 import { USER_TYPE } from '../../../interfaces';
 import IBaseRepo from '../controllers/controller/IProfileController';
 

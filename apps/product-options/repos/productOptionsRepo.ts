@@ -1,37 +1,45 @@
-import { BaseProductOptions, Pagination, ProductOptions } from "../../../interfaces/product-options";
+
 import { IProductOptionsRepo } from "./IProductOptionsRepo";
-import {ProductOptionsModel} from "../../../database/schema/product-options/productOptionsModel";
+
+import {
+    BaseProductOptions,
+    ParsedProductOptions,
+    parsedProductOptions, ProductOptions
+} from "apps/product/interface/ProductOptions";
+import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
+import { ProductVariationsModel } from "../models/ProductVariationTable";
+import {Pagination} from "../../common/models/common";
 
 export class ProductOptionRepo implements IProductOptionsRepo{
-    async create(productOptions: BaseProductOptions): Promise<ProductOptions | null> {
+    async create(productOptions: BaseProductOptions, createdBy:number): Promise<ProductOptions | null> {
         try {
-            return (await ProductOptionsModel.create({
-                product_id: productOptions.product_id,
+
+            return (await ProductVariationsModel.create({
                 optionValueId: productOptions.optionValueId,
                 price: productOptions.price,
                 stock: productOptions.stock,
                 images: productOptions.images,
                 status: productOptions.status,
-                createdBy: productOptions.createdBy,
-                updatedBy: productOptions.updatedBy,
-                deletedBy: productOptions.deletedBy,
+                updatedBy: null,
+                createdBy,
+                deletedBy: null,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 deletedAt: null
             })).toJSON();
         } catch (error) {
             console.log(error);
-            return null;  
+            return null;
         }
     }
     async update(productOptions: ProductOptions): Promise<ProductOptions> {
         try {
             // Find the product by its primary key (ID)
-            const existingProductOption = await ProductOptionsModel.findByPk(productOptions.id)
+            const existingProductOption = await ProductVariationsModel.findByPk(productOptions.id)
             if (!existingProductOption) {
                 throw new Error(`Product with ID ${productOptions.id} not found`);
             }
-            await existingProductOption.set(productOptions);
+            existingProductOption.set(productOptions);
             await existingProductOption.save();
             return existingProductOption.toJSON();
         } catch (error) {
@@ -42,16 +50,24 @@ export class ProductOptionRepo implements IProductOptionsRepo{
     delete(id: number): Promise<ProductOptions> {
         throw new Error("Method not implemented.");
     }
-    async getById(id: number): Promise<ProductOptions> {
+    async getById(id: number): Promise<ParsedProductOptions> {
         try {
             // Fetch product by primary key (ID)
-           const productOptions = (await ProductOptionsModel.findByPk(id)).toJSON();
+           const productOptions = (await ProductVariationsModel.findOne({
+            where:{
+                id: id
+            },
+            include:[{
+                model: OptionsValueModel,
+                as: "optionsValue"
+            }]
+           })).toJSON();
 
            if (!productOptions) {
                throw new Error(`Product with ID ${id} not found`);
            }
 
-           return productOptions;
+           return parsedProductOptions(productOptions);
        } catch (error) {
            console.log(error);
            return null;
@@ -60,13 +76,13 @@ export class ProductOptionRepo implements IProductOptionsRepo{
     getAll(page: number, limit: number, search: string, filters: object): Promise<Pagination<ProductOptions>> {
         throw new Error("Method not implemented.");
     }
-    
+
     async updatePrice(payload): Promise<ProductOptions> {
         try {
             // Find the product option by its ID
             const {id, price, updatedBy} = payload
             console.log(price);
-            const productOption = await ProductOptionsModel.findByPk(id);
+            const productOption = await ProductVariationsModel.findByPk(id);
 
             if (!productOption) {
                 throw new Error(`ProductOption with ID ${id} not found.`);
@@ -78,7 +94,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
             return productOption.toJSON();
         } catch (error) {
             console.log(error);
-            return null; 
+            return null;
         }
     }
 
@@ -87,7 +103,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
             // Find the product option by its ID
             const {id, stock, updatedBy} = payload
             console.log(stock);
-            const productOption = await ProductOptionsModel.findByPk(id);
+            const productOption = await ProductVariationsModel.findByPk(id);
 
             if (!productOption) {
                 throw new Error(`ProductOption with ID ${id} not found.`);
@@ -99,7 +115,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
             return productOption.toJSON();
         } catch (error) {
             console.log(error);
-            return null; 
+            return null;
         }
     }
 
@@ -115,7 +131,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
                 );
             }
 
-            const productOption = await ProductOptionsModel.findByPk(id);
+            const productOption = await ProductVariationsModel.findByPk(id);
 
             if (!productOption) {
                 throw new Error(`ProductOption with ID ${id} not found.`);
@@ -133,7 +149,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
 
     async getByProductId(id: number): Promise<ProductOptions[]> {
         try {
-            const productOptions = await ProductOptionsModel.findAll({
+            const productOptions = await ProductVariationsModel.findAll({
                 where: {
                     product_id: id,
                 },

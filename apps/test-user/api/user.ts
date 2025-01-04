@@ -1,8 +1,5 @@
-import * as express from "express";
-// import AdminController from "../controllers/user";
-import * as AdminValidation from "../validations/user";
 import AdminController from "../../user/controllers/user";
-import { Auth } from "../../auth/models";
+import {Auth} from "../../auth/models";
 import {
     checkFirebaseUser,
     createFirebaseUser,
@@ -20,27 +17,32 @@ import {
     IOrganizationPayloadData,
     ORGANIZATION_TYPE
 } from "../../../interfaces/organization";
-import { QuestionRepo } from "../../questions/models";
+import {createDummyMaster, createDummyProducts} from "../utils";
 import {
-    getSampleAreas,
-    getSampleFranchiseModels,
-    getSampleProposals,
-    getSampleQuestions,
-    getSampleRegions
-} from "../utils";
-import { AreaRepo } from "../../area/models/AreaRepo";
-import { RegionRepo } from "../../region/models/RegionRepo";
-import { FranchiseModelRepo } from "../../franchise_model/models";
-import { ProposalModelRepo } from "../../proposal_model/models";
-import { ERROR_MESSAGE, RESPONSE_TYPE, SUCCESS_MESSAGE } from "constants/response-messages";
-import { AdminRepo } from "apps/user/models/user";
-import { TUser, USER_TYPE } from "apps/user/interface/user";
-import { UserModel } from "apps/user/models/UserTable";
-import { OrganizationRepo } from "apps/organization/models";
+    ERROR_MESSAGE,
+    RESPONSE_TYPE,
+    SUCCESS_MESSAGE
+} from "constants/response-messages";
+import {AdminRepo} from "apps/user/models/user";
+import {TUser, USER_TYPE} from "apps/user/interface/user";
+import {UserModel} from "apps/user/models/UserTable";
+import {OrganizationRepo} from "apps/organization/models";
+import {sequelize} from "config";
+import {
+    ProductsCategoryModel
+} from "apps/products-category/models/ProductCategoryTable";
+import {OptionsModel} from "apps/options/models/optionTable";
+import {OptionsValueModel} from "apps/optionsValue/models/OptionValueTable";
+import {ProductModel} from "apps/product/model/productTable";
+import {
+    ProductVariationsModel
+} from "../../product-options/models/ProductVariationTable";
+import express from "express";
+import {validateCreateAdminBody} from "../validations/user";
+
 
 const router = express.Router();
 
-const { validateCreateAdminBody } = AdminValidation;
 
 // const { addAdmin } = AdminController;
 const {
@@ -102,11 +104,10 @@ const {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- */
-router.post("/create", validateCreateAdminBody, (async (req, res) => {
+ */router.post("/create", validateCreateAdminBody, (async (req, res) => {
     try {
 
-        const payload = { ...req?.body, createdBy: 1 };
+        const payload = {...req?.body, createdBy: 1};
 
         const existingAdmin = await new Auth().getUserByEmail(
             payload.email
@@ -188,36 +189,6 @@ router.post("/create", validateCreateAdminBody, (async (req, res) => {
     }
 }))
 
-async function createDummyMaster(user_id: number) {
-    const questions = getSampleQuestions();
-    const areas = getSampleAreas();
-    const regions = getSampleRegions();
-    const franchiseModels = getSampleFranchiseModels();
-    const proposals = getSampleProposals();
-
-    const qRepo = new QuestionRepo();
-    const questionsProm = Promise.all(questions.map(
-        q => qRepo.create({ createdBy: user_id, ...q }, user_id)));
-
-    const aRepo = new AreaRepo();
-    const areasProm = Promise.all(areas.map(
-        a => aRepo.create({ createdBy: user_id, ...a }))).then(_ => {
-            const rRepo = new RegionRepo();
-            Promise.all(regions.map(
-                r => rRepo.create({ createdBy: user_id, ...r })));
-        });
-
-    const fmRepo = new FranchiseModelRepo();
-    const franchiseModelsProm = Promise.all(franchiseModels.map(
-        fm => fmRepo.create(fm, user_id))).then(_ => {
-            const pRepo = new ProposalModelRepo();
-            Promise.all(proposals.map(p => pRepo.create(p)));
-        });
-
-    return Promise.all(
-        [areasProm, franchiseModelsProm, questionsProm]);
-}
-
 /**
  * @swagger
  * /api/admin/test-user/superOrg:
@@ -233,11 +204,10 @@ async function createDummyMaster(user_id: number) {
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- */
-router.get("/superOrg", (async (req, res) => {
+ */router.get("/superOrg", (async (req, res) => {
     try {
 
-        const payload = { ...req?.body, createdBy: 1 };
+        const payload = {...req?.body, createdBy: 1};
 
         const email = 'admin@TongueTingler.com';
         const password = '123456';
@@ -340,10 +310,7 @@ router.get("/superOrg", (async (req, res) => {
             }
             superFranOrg = await repo.create(TTOrgParams, admin.id);
         }
-
-        console.log(admin, superFranOrg)
-
-        await createDummyMaster(admin.id);
+        if (createSampleData) await createDummyMaster(admin.id);
 
         //todo @Nitesh uncomment
 
@@ -377,6 +344,147 @@ router.get("/superOrg", (async (req, res) => {
                     RESPONSE_TYPE.SUCCESS,
                     SUCCESS_MESSAGE.ADMIN_CREATED,
                     superFranOrg
+                )
+            );
+    }
+    catch (err) {
+        console.error("Error:", err);
+        return res.status(500).send({
+            message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+        });
+    }
+}))
+
+/**
+ * @swagger
+ * /api/admin/test-user/createEverything:
+ *   get:
+ *     summary: create product category & product options
+ *     tags: [AUTH]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: User created successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ */
+router.get('/createEverything', async (req, res) => {
+
+    try {
+        const dummyData = createDummyProducts();
+
+        const categoryData = dummyData.category
+        const categoryCreated = await ProductsCategoryModel.create(categoryData)
+
+        const optionsData = dummyData.options
+        const optionsCreated = await OptionsModel.bulkCreate(optionsData)
+
+        const optionsValueData = dummyData.optionValues
+        const optionsValueCreated = await OptionsValueModel.bulkCreate(
+            optionsValueData)
+
+        const productData = dummyData.product
+        let variationIds: number[] = []; // Array to store created option IDs
+
+        // Step 1: Create the product with a default empty array for
+        // `variationIds`
+        const createdProduct = await ProductModel.create(
+            {
+                name: productData.name,
+                slug: productData.slug,
+                description: productData.description,
+                MOQ: productData.MOQ,
+                category: productData.category,
+                type: productData.type,
+                status: productData.status,
+                images: productData.images,
+                vendorId: productData.vendorId,// Initialize with an empty array
+                tax_rate_id: productData.tax_rate_id,
+                createdBy: 1
+            }
+        );
+
+
+        // Step 2: Handle variations if provided
+
+        if (productData.variations && Array.isArray(productData.variations)) {
+            const productOptions = productData.variations.map((option) => ({
+                product_id: createdProduct.id, // Link the option to the created product
+                optionValueId: option.optionValueId,
+                price: option.price,
+                stock: option.stock,
+                status: option.status,
+                images: option.images,
+            }));
+
+
+
+            // Bulk create the product options
+            const createdOptions = await ProductVariationsModel.bulkCreate(
+                productOptions);
+
+
+            variationIds = createdOptions.map((option) => option.id);
+            console.log('variationIds: ', variationIds);
+
+            // Update the product with the created option IDs
+            await createdProduct.addVariations(variationIds);
+        }
+
+
+
+        console.log('createdProductLast: ', createdProduct);
+
+        return res.status(200).send(
+            sendResponse(RESPONSE_TYPE.SUCCESS, "Entities created successfully",
+                {
+                    category: categoryCreated,
+                    options: optionsCreated,
+                    optionValues: optionsValueCreated,
+                    product: createdProduct,
+                })
+        );
+
+    }
+    catch (err) {
+        console.error("Error:", err);
+        return res.status(500).send({
+            message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+        });
+    }
+})
+
+/**
+ * @swagger
+ * /api/admin/test-user/sampleData:
+ *   get:
+ *     summary: Run this after superOrg to create sample data
+ *     tags: [AUTH]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: User created successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ */router.get("/sampleData", (async (req, res) => {
+    try {
+        const email = 'admin@TongueTingler.com';
+        let admin: TUser = (await new Auth().getUserByEmail(
+            email
+        ));
+        await createDummyMaster(admin.id);
+        return res
+            .status(200)
+            .send(
+                sendResponse(
+                    RESPONSE_TYPE.SUCCESS,
+                    SUCCESS_MESSAGE.ADMIN_CREATED
                 )
             );
     }

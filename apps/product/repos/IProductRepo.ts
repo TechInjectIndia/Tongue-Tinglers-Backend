@@ -1,16 +1,22 @@
-import { ProductModel } from '../../../database/schema/product/productModel';
-import { BaseProduct, CHANGE_STATUS, Pagination, ParsedProduct, Product, PRODUCTS_TYPE} from '../../../interfaces/products';
+import {
+    BaseProduct,
+    CHANGE_STATUS,
+    IProductTable,
+    ParsedProduct
+} from "apps/product/interface/Product";
+import {Pagination} from "../../common/models/common";
+
 
 export interface IProductRepo {
-    create(product: BaseProduct): Promise<Product | null>;
+    create(product: BaseProduct, createdBy:number): Promise<IProductTable | null>;
 
-    update(product: Product): Promise<Product>;
+    update(product: IProductTable): Promise<IProductTable>;
 
-    delete(id: number): Promise<Product>;
+    delete(id: number): Promise<IProductTable>;
 
     getById(id: number): Promise<ParsedProduct | null> ;
 
     getAll(page: number, limit: number, search: string, filters: object): Promise<Pagination<ParsedProduct>>;
 
-    changeStatus(payload: CHANGE_STATUS): Promise<Product>;
+    changeStatus(payload: CHANGE_STATUS): Promise<IProductTable>;
 }

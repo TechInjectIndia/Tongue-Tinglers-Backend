@@ -1,4 +1,10 @@
-import { BaseCartProduct, Cart, CartProduct, ParseCart, ParsedCartProduct, UpdateQuantity } from "../../../interfaces/cart_products";
+import {
+    CartProduct,
+    ParseCart,
+    ParsedCartProduct,
+    UpdateQuantity
+} from "../interface/Cart";
+
 
 export interface ICartProductRepo {
     create(product:any): Promise<ParseCart | null>;
@@ -7,5 +13,10 @@ export interface ICartProductRepo {
 
     delete(id: number): Promise<CartProduct>;
 
+    //todo nitesh remove other UpdateQuantities
     updateQuantity(cartProduct: UpdateQuantity): Promise<CartProduct>;
+
+    getCartById(id: number): Promise<ParsedCartProduct>;
+
+    clearUserCart(userId: number);
 }

@@ -1,7 +1,7 @@
 import { Address } from "apps/address/interface/Address";
 import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
 import { ParsedUser } from "apps/user/interface/user";
-import { BaseOrderItem, ParsedOrderItem, PreSaleParsedOrderItem } from "./OrderItem";
+import { BaseOrderItem, IDiscComponent, ParsedOrderItem, PreSaleParsedOrderItem, PriceComponent } from "./OrderItem";
 
 
 export enum PAYMENT_STATUS {
@@ -62,6 +62,15 @@ export enum OrderStatus {
     CANCELED = 'Canceled',
   }
 
+  //todo update
+export enum DeliveryStatus {
+    PENDING = 'PENDING',
+    SHIPPED = 'SHIPPED',
+    DELIVERED = 'DELIVERED',
+    RTO = 'RTO'
+
+  }
+
 interface ParsedOrder extends ParsedMeta, OrderPayload {
     id: number;
     status: OrderStatus;
@@ -72,13 +81,16 @@ interface ParsedOrder extends ParsedMeta, OrderPayload {
     paymentType: PAYMENT_TYPE; //todo convert to enum
     paymentId: number;
     cancelledItems: ParsedOrderItem[];
+    discount: Record<string, IDiscComponent>;
     totalDiscount: number;
     deliveryDetails: any; //todo @nitesh convert to interface
     shippingAddress: Address;
     totalShipping: number;
     anomalyArr: number[];
-    coupon: string;
+    coupon: string | null;
     items: ParsedOrderItem[];
+    price: Record<string, PriceComponent>;
+    couponCodes: string[]
 
 }
 
@@ -87,7 +99,7 @@ interface PresaleParsedOrder extends OrderPayload {
     totalTax: number;
     cancelledItems: PreSaleParsedOrderItem[];
     totalDiscount: number;
-    coupon: string;
+    coupon: string | null;
     items: PreSaleParsedOrderItem[];
 }
 
@@ -120,6 +132,7 @@ interface OrderState {
     userId: number;
     billingAddressId: number;
     shippingAddressId: number;
+    paymentType:PAYMENT_TYPE
 }
 
 enum RP_ORDER_STATUS {
@@ -141,6 +154,7 @@ interface RPOrder {
     notes: string[];
     created_at: Date;
 }
+;
 
 export {
     BaseOrder,

@@ -6,7 +6,6 @@ interface APIResponse<T> {
     data: T | null;
 }
 
-
 interface BaseMetaUsers {
     createdBy: number;
     updatedBy: number | null;
@@ -21,14 +20,13 @@ interface BaseMeta extends BaseMetaUsers {
 }
 
 interface ParsedMeta {
-    createdBy: MetaUser;
-    updatedBy: MetaUser | null;
-    deletedBy: MetaUser | null;
+    createdBy: MetaUser | number;
+    updatedBy: MetaUser | number;
+    deletedBy: MetaUser | number;
     createdAt: Date;
     updatedAt: Date | null;
     deletedAt: Date | null;
 }
-
 
 export { BaseMeta, ParsedMeta, BaseMetaUsers };
 

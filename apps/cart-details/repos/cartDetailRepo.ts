@@ -1,14 +1,13 @@
 import { UserModel } from "apps/user/models/UserTable";
-import { CartProductModel } from "database/schema/cart-product/cartProductModel";
-import { CartDetailsModel } from "database/schema/cart_details/cartDetailsModel";
-
-import { ProductOptionsModel } from "database/schema/product-options/productOptionsModel";
-import { ProductModel } from "database/schema/product/productModel";
+// import { CartProductModel } from "database/schema/cart-product/cartProductModel";
 import { parseCartDetails } from "../parser/cartDetailsParser";
 import { ICartDetailRepo } from "./ICartDetailRepo";
-import { OptionsValueModel } from "apps/optionsValue/interface/OptionValueTable";
+import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { OptionsModel } from "apps/options/models/optionTable";
-
+import { ProductModel } from "apps/product/model/productTable";
+import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
+import { CartDetailsModel } from "../models/CartDetailTable";
+import { CartProductModel } from "apps/cart-products/model/CartTable";
 
 export class CartDetailRepo implements ICartDetailRepo {
     async getCartDetailByUserId(userId: number): Promise<any> {
@@ -27,7 +26,7 @@ export class CartDetailRepo implements ICartDetailRepo {
                                 attributes: ['id', 'name'] // Specify which fields to include for the product
                             },
                             {
-                                model: ProductOptionsModel,  // Assuming you have a ProductOptionsModel
+                                model: ProductVariationsModel,  // Assuming you have a ProductOptionsModel
                                 as: "variations",  // Alias for ProductOptions (ensure the association is correct)
                                 attributes: ['id', "product_id", "optionValueId", "price", "stock", "status", "images"], // Specify which fields to include for the product option
                                 include: [
@@ -53,7 +52,7 @@ export class CartDetailRepo implements ICartDetailRepo {
                         attributes: ['id','firstName', 'lastName', 'email']
                     }
                 ],
-                order: [['createdAt', 'DESC']], 
+                order: [['createdAt', 'DESC']],
             });
             const cartDetailsData = cartDetails.map((cartDetail) => {
                 return parseCartDetails(cartDetail)

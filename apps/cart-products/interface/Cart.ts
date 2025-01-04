@@ -1,12 +1,11 @@
-
+import {ParsedProduct} from "apps/product/interface/Product"
+import {ParsedProductOptions} from "apps/product/interface/ProductOptions"
 
 interface BaseCartProduct {
     product_id: number,
     product_option_id: number,
     quantity: number
 }
-
-
 
 interface CartProduct extends BaseCartProduct {
     id: number
@@ -23,6 +22,7 @@ interface Cart {
     user_id: number
     carts: Array<BaseCartProduct>
 }
+
 interface ParseCart {
     user_id: any
     carts: Array<ParsedCartProduct>
@@ -67,5 +67,6 @@ export {
     Cart,
     ParsedCartProduct,
     parsedVariations,
+    ParsedVariations,
     ParseCart
 }

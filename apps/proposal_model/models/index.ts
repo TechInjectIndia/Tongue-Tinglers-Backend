@@ -1,16 +1,15 @@
-const { Op } = require("sequelize");
-
+import {Op} from "sequelize";
 import { ProposalModels, TPayloadProposalModel } from 'interfaces';
 import IBaseRepo from '../controllers/controller/IController';
 import { TListFilters } from 'apps/common/models/common';
-import { ProposalLeadModels } from './ProposalModelTable';
 import { ProposalModelsList } from '../interface/proposal';
+import {ProposalModel} from "./ProposalModelTable";
 
 export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters> {
     constructor() { }
 
     public async get(id: number): Promise<ProposalModels | null> {
-        const data = await ProposalLeadModels.findOne({
+        const data = await ProposalModel.findOne({
             where: {
                 id,
             },
@@ -19,14 +18,14 @@ export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters
     }
 
     public async list(filters: TListFilters): Promise<ProposalModelsList> {
-        const total = await ProposalLeadModels.count({
+        const total = await ProposalModel.count({
             where: {
                 title: {
                     [Op.iLike]: `%${filters.search}%`,
                 },
             },
         });
-        const data = await ProposalLeadModels.findAll({
+        const data = await ProposalModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
             limit: filters.limit,
@@ -40,12 +39,12 @@ export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters
     }
 
     public async create(data: TPayloadProposalModel): Promise<ProposalModels> {
-        const response = await ProposalLeadModels.create(data);
+        const response = await ProposalModel.create(data);
         return response;
     }
 
     public async update(id: number, data: TPayloadProposalModel): Promise<[affectedCount: number]> {
-        return await ProposalLeadModels.update(data, {
+        return await ProposalModel.update(data, {
             where: {
                 id: id,
             },
@@ -53,7 +52,7 @@ export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters
     }
 
     public async delete(ids: number[]): Promise<number> {
-        const response = await ProposalLeadModels.destroy({
+        const response = await ProposalModel.destroy({
             where: {
                 id: ids,
             },

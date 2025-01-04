@@ -7,7 +7,8 @@ import {
     SUCCESS_MESSAGE,
 } from "../../../constants";
 import RepoProvider from "../../RepoProvider";
-import {Franchise, FranchiseDetails, Pagination} from "../../../interfaces";
+import {Franchise, FranchiseDetails} from "../../../interfaces";
+import {Pagination} from "../../common/models/common";
 
 export default class FranchiseController {
     static async createFranchise(req: Request, res: Response) {

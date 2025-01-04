@@ -1,8 +1,8 @@
-import { cart } from './../../../interfaces/user';
-import { parsedVariations } from '../../../interfaces/cart_products';
+import { parsedVariations } from "apps/cart-products/interface/Cart";
+import {ParsedCartDetail} from "../interface/CartDetail";
 
 const parseCartDetails = (cartDetail:any) => {
-    const data = {
+    const data:ParsedCartDetail = {
         id: cartDetail.id,
         user: cartDetail.users,
         cart: cartDetail.cartProductses.map((cart: any) => {

@@ -2,8 +2,9 @@
 import { Op } from "sequelize";
 import { IProductsCategoryRepo } from "./IProductsCategoryRepo";
 import { BaseProductsCategory, PRODUCT_CATEGORY_STATUS, ProductsCategory } from "../interface/Category";
-import { ProductsCategoryModel } from "database/schema/product-category/productCategoryModel";
+// import { ProductsCategoryModel } from "database/schema/product-category/productCategoryModel";
 import { Pagination } from "apps/common/models/common";
+import { ProductsCategoryModel } from "../models/ProductCategoryTable";
 
 export class ProductsCategoryRepo implements IProductsCategoryRepo {
     async createProductsCategory(category: BaseProductsCategory): Promise<ProductsCategory | null> {
@@ -13,6 +14,7 @@ export class ProductsCategoryRepo implements IProductsCategoryRepo {
                 slug: category.slug,
                 description: category.description,
                 status: category.status,
+                createdBy: category.createdBy,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 deletedAt: null,

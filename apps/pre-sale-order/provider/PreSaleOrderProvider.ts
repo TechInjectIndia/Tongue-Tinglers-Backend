@@ -1,13 +1,16 @@
-import { PresaleParsedOrder } from "../../../interfaces";
-import { BaseCartProduct, Cart } from "../../../interfaces/cart_products";
+import { PresaleParsedOrder } from "apps/order/interface/Order";
+import { IPreSaleOrderProvider } from "./IPreSaleOrderProvider";
+import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/DTO/DTO";
+
+import RepoProvider from "apps/RepoProvider";
 import {
-    BaseOrderItem,
+    ParsedCartDetail,
+    ParsedCartProductDetails
+} from "../../cart-details/interface/CartDetail";
+import {
     ORDER_ITEM_TYPE,
-    PreSaleParsedOrderItem,
-} from "../../../interfaces/order_items";
-import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "../../common/models/DTO";
-import RepoProvider from "../../RepoProvider";
-import { IPreSaleOrderProvider } from "../provider/IPreSaleOrderProvider";
+    PreSaleParsedOrderItem
+} from "../../order/interface/OrderItem";
 
 export class PreSaleOrderProvider implements IPreSaleOrderProvider {
     /**
@@ -15,10 +18,10 @@ export class PreSaleOrderProvider implements IPreSaleOrderProvider {
      * @param payload - The cart containing product information.
      * @returns A DTO containing the parsed pre-sale order or an error message.
      */
-    async getPreSaleOrder(payload: Cart): Promise<DTO<PresaleParsedOrder>> {
+    async getPreSaleOrder(payload: ParsedCartDetail): Promise<DTO<PresaleParsedOrder>> {
         // Process each cart item to get its corresponding pre-sale parsed order item.
         const preSaleOrderItemsRes = await Promise.all(
-            payload.carts.map((item) => this.getPreSaleParsedOrderItemByBaseCartProduct(item))
+            payload.cart.map((item) => this.getPreSaleParsedOrderItemByBaseCartProduct(item))
         );
 
         const preSaleOrderItems: PreSaleParsedOrderItem[] = [];
@@ -35,7 +38,7 @@ export class PreSaleOrderProvider implements IPreSaleOrderProvider {
             totalTax: this.getTotalTaxByPreSaleOrderItems(),
             cancelledItems: [], // Initialize with no cancelled items.
             totalDiscount: this.getTotalDiscountByPreSaleOrderItems(),
-            coupon: "", // Initialize with no coupon.
+            coupon: null, // Initialize with no coupon.
             items: preSaleOrderItems,
             notes: [], // Initialize with no notes.
             orderItems: this.getOrderItemsByPreSaleParsedOrderItems(preSaleOrderItems),
@@ -72,7 +75,7 @@ export class PreSaleOrderProvider implements IPreSaleOrderProvider {
     private getOrderItemsByPreSaleParsedOrderItems(items: PreSaleParsedOrderItem[]) {
         return items.map((item) => ({
             product_id: item.product.id,
-            product_option_id: item.productOptionId.id,
+            product_option_id: item.productOption.id,
             quantity: item.quantity,
             total_price: item.total_price,
             total_tax: item.totalTax,
@@ -98,11 +101,11 @@ export class PreSaleOrderProvider implements IPreSaleOrderProvider {
      * @returns A DTO containing the parsed pre-sale order item or an error message.
      */
     private async getPreSaleParsedOrderItemByBaseCartProduct(
-        cartProduct: BaseCartProduct
+        cartProduct: ParsedCartProductDetails
     ): Promise<DTO<PreSaleParsedOrderItem>> {
         // Fetch the product by ID.
-        const product = await RepoProvider.ProductRepo.getById(cartProduct.product_id);
-        if (!product) return getUnhandledErrorDTO(`Product not found: ${cartProduct.product_id}`);
+        const product = await RepoProvider.ProductRepo.getById(cartProduct.product.id);
+        if (!product) return getUnhandledErrorDTO(`Product not found: ${cartProduct.product.id}`);
 
         // Validate product variations.
         if (!product.variations) {
@@ -110,22 +113,22 @@ export class PreSaleOrderProvider implements IPreSaleOrderProvider {
         }
 
         // Find the specific variation by ID.
-        const variation = product.variations.find((p) => p.id === cartProduct.product_option_id);
+        const variation = product.variations.find((p) => p.id === cartProduct.variation.id);
         if (!variation) {
             return getUnhandledErrorDTO(
-                `${product.name} does not contain variation: ${cartProduct.product_option_id}`
+                `${product.name} does not contain variation: ${cartProduct.variation.id}`
             );
         }
 
         // Construct the pre-sale parsed order item.
         const preSaleParsedOrderItem: PreSaleParsedOrderItem = {
             product,
-            productOptionId: variation,
+            productOption: variation,
             quantity: cartProduct.quantity,
             total_price: cartProduct.quantity * variation.price,
             totalTax: 0,
-            prices: [],
-            disc: [],
+            prices: {},
+            disc: {},
             type: ORDER_ITEM_TYPE.RETORT,
         };
 

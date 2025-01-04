@@ -1,21 +1,18 @@
 import {get, isEmpty} from "lodash";
-import {BaseProduct, Pagination, ParsedProduct,Product} from "../../../interfaces";
 import RepoProvider from "../../RepoProvider";
 import {sendResponse} from "../../../libraries";
 import {ERROR_MESSAGE,RESPONSE_TYPE, SUCCESS_MESSAGE} from "../../../constants";
 import {Request, Response} from "express";
-import { ProductModel } from "../../../database/schema/product/productModel";
+import {Pagination} from "../../common/models/common";
+import {IProductTable, ParsedProduct} from "../interface/Product";
+// import { ProductModel } from "../../../database/schema/product/productModel";
 export default class ProductController {
     static async createProduct(req: Request, res: Response) {
         const payload: any = req?.body;
 
         const user_id = get(req, "user_id", null);
-        const product: BaseProduct = {
-            ...payload,
-            createdBy: user_id,
-        };
 
-        const productDetails = await RepoProvider.ProductRepo.create(product);
+        const productDetails = await RepoProvider.ProductRepo.create(payload, user_id);
         return res
             .status(200)
             .send(
@@ -111,14 +108,14 @@ export default class ProductController {
             const id = parseInt(req.params.id);
             if (!id || isNaN(id)) throw Error('Missing id or isNaN');
 
-            const payload: Product = req.body;
+            const payload: IProductTable = req.body;
             payload.id = id;
 
             const user_id = get(req, "user_id");
             if (!user_id || isNaN(user_id)) throw Error('Missing user_id or isNaN');
 
             payload.updatedBy = user_id;
-            const product: Product = await RepoProvider.ProductRepo.update(
+            const product: IProductTable = await RepoProvider.ProductRepo.update(
                 payload);
             return res
                 .status(200)
@@ -144,7 +141,7 @@ export default class ProductController {
         try {
             const id = parseInt(req.params.id, 0);
 
-            const product: Product | null = await RepoProvider.ProductRepo.delete(
+            const product: IProductTable | null = await RepoProvider.ProductRepo.delete(
                 id);
             return res
                 .status(200)
@@ -171,7 +168,7 @@ export default class ProductController {
             const id = parseInt(req.params.id, 0);
             const payload = req.body;
             payload.id = id;
-            const product: Product = await RepoProvider.ProductRepo.changeStatus(
+            const product: IProductTable = await RepoProvider.ProductRepo.changeStatus(
                 payload
             );
             return res

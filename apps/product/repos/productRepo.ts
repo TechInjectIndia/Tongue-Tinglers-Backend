@@ -1,26 +1,22 @@
-import {
-  BaseProduct,
-  CHANGE_STATUS,
-  Pagination,
-  Product,
-  PRODUCT_STATUS,
-  PRODUCTS_TYPE,
-} from "../../../interfaces/products";
+
 import { IProductRepo } from "./IProductRepo";
-import { ProductModel } from "../../../database/schema/product/productModel";
+// import { ProductModel } from "";
 import { Op } from "sequelize";
-import { ProductOptionsModel } from "../../../database/schema/product-options/productOptionsModel";
-import { ParsedProduct } from "../../../interfaces/products"
+
 
 import {parseProduct} from "../parser/productParser"
 
-import { ProductsCategoryModel } from "../../../database/schema/product-category/productCategoryModel";
 import { UserModel } from "apps/user/models/UserTable";
-import { OptionsValueModel } from "apps/optionsValue/interface/OptionValueTable";
+import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { OptionsModel } from "apps/options/models/optionTable";
+import { ProductModel } from "apps/product/model/productTable";
+import { ProductsCategoryModel } from "apps/products-category/models/ProductCategoryTable";
+import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
+import {BaseProduct, IProductTable, ParsedProduct,CHANGE_STATUS, PRODUCT_STATUS} from "apps/product/interface/Product";
+import {Pagination} from "../../common/models/common";
 
 export class ProductRepo implements IProductRepo {
-  async create(product: BaseProduct): Promise<Product | null> {
+  async create(product: BaseProduct, createdBy:number): Promise<IProductTable | null> {
     const transaction = await ProductModel.sequelize.transaction();
 
     try {
@@ -39,7 +35,7 @@ export class ProductRepo implements IProductRepo {
           images: product.images,
           vendorId: product.vendorId,// Initialize with an empty array
           tax_rate_id: product.tax_rate_id,
-          createdBy: product.createdBy
+          createdBy
         },
         { transaction }
       );
@@ -56,7 +52,7 @@ export class ProductRepo implements IProductRepo {
         }));
 
         // Bulk create the product options
-        const createdOptions = await ProductOptionsModel.bulkCreate(productOptions, {
+        const createdOptions = await ProductVariationsModel.bulkCreate(productOptions, {
           transaction,
           returning: true, // Ensure the created options are returned
         });
@@ -83,14 +79,14 @@ export class ProductRepo implements IProductRepo {
     }
   }
 
-  async update(product: Product): Promise<Product> {
+  async update(product: IProductTable): Promise<IProductTable> {
     try {
       // Find the product by its primary key (ID)
       const existingProduct = await ProductModel.findByPk(product.id, {
-        include: [{ model: ProductOptionsModel, as: "productOptions" }],
+        include: [{ model: ProductVariationsModel, as: "productOptions" }],
       });
       if (!existingProduct) {
-        throw new Error(`Product with ID ${product.id} not found`);
+        throw new Error(`IProductTable with ID ${product.id} not found`);
       }
       await existingProduct.update(product);
       return existingProduct.toJSON();
@@ -132,7 +128,7 @@ export class ProductRepo implements IProductRepo {
           order: [["createdAt", "DESC"]],
           include: [
             {
-              model: ProductOptionsModel, // Include the ProductOptions model
+              model: ProductVariationsModel, // Include the ProductOptions model
               as: "variations", // Alias used in the ProductModel association
               attributes: [
                 "id",
@@ -200,7 +196,7 @@ export class ProductRepo implements IProductRepo {
       const product = await ProductModel.findByPk(id,{
         include: [
           {
-            model: ProductOptionsModel, // Include the ProductOptions model
+            model: ProductVariationsModel, // Include the ProductOptions model
             as: "variations", // Alias used in the ProductModel association
             attributes: [
               "id",
@@ -257,11 +253,11 @@ export class ProductRepo implements IProductRepo {
     }
   }
 
-  async delete(id: number): Promise<Product> {
+  async delete(id: number): Promise<IProductTable> {
     try {
       const existingProduct = await ProductModel.findByPk(id);
       if (!existingProduct) {
-        throw new Error(`Product with ID ${id} not found`);
+        throw new Error(`IProductTable with ID ${id} not found`);
       }
 
       await existingProduct.update({ status: PRODUCT_STATUS.INACTIVE });
@@ -273,7 +269,7 @@ export class ProductRepo implements IProductRepo {
     }
   }
 
-  async changeStatus(payload: CHANGE_STATUS): Promise<Product> {
+  async changeStatus(payload: CHANGE_STATUS): Promise<IProductTable> {
     try {
       // Find the product by its primary key
       const { id, status } = payload;
@@ -290,7 +286,7 @@ export class ProductRepo implements IProductRepo {
       const product = await ProductModel.findByPk(id);
 
       if (!product) {
-        throw new Error(`Product with ID ${id} not found.`);
+        throw new Error(`IProductTable with ID ${id} not found.`);
       }
 
       // Update the status field

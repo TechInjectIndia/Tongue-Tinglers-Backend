@@ -4,6 +4,7 @@ import { AgreementDocModel } from "apps/agreement-docs/model/agreementDocModel";
 import { AreaModel } from "apps/area/models/AreaTable";
 import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
 import { CampaignQuestionModel } from "apps/campaign/models/CampaignQuestionModel";
+import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
 import { CommissionEntityMapTable } from "apps/commission/model/CommissionEntityMapTable";
 import { CommissionTable } from "apps/commission/model/CommmisionTable";
 import { handleError } from "apps/common/utils/HelperMethods";
@@ -18,6 +19,7 @@ import { LeadsModel } from "apps/lead/models/LeadTable";
 import { OptionsModel } from "apps/options/models/optionTable";
 import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 import { PdiCheckpointModel } from "apps/pdi-checkpoint/model/PdiCheckPointTable";
+import { ProposalModel } from "apps/proposal_model/models/ProposalModelTable";
 import { QuestionModel } from "apps/questions/models/QuestionModel";
 import { RegionModel } from "apps/region/models/RegionTable";
 import { UserModel } from "apps/user/models/UserTable";
@@ -26,6 +28,8 @@ import { UserModel } from "apps/user/models/UserTable";
 
 // Initialize Models
 const models = {
+    ProposalModel:ProposalModel.initModel(),
+    AreaModel: AreaModel.initModel(),
     RegionModel: RegionModel.initModel(),
     AddressModel: AddressModel.initModel(),
     UserModel: UserModel.initModel(),
@@ -37,12 +41,11 @@ const models = {
     Leads: LeadsModel.initModel(),
     ContractModel: ContractModel.initModel(),
     AssignModel: AssignModel.initModel(), //depends on Lead & User model
-    AreaModel: AreaModel.initModel(),
     OptionsModel: OptionsModel.initModel(),
     FranchiseLeadModel: FranchiseLeadModel.initModel(),
     PdiCheckPoints: PdiCheckpointModel.initModel(),
     IChecklistModel: IChecklistModel.initModel(),
-    // Variations: ProductOptionsModel.initModel(),
+    Variations: ProductOptionsModel.initModel(),
 
     Affiliate: AffiliateModel.initModel(),
     QuestionModel: QuestionModel.initModel(),
@@ -50,10 +53,10 @@ const models = {
     FollowDetailModel: FollowDetailsModel.initModel(),
     CommissionEntityMap: CommissionEntityMapTable.initModel(),
     Commission: CommissionTable.initModel(),
-    // CartDetails: CartDetailsModel.initModel(),
+    CartDetails: CartDetailsModel.initModel(),
 };
 
-// console.log(Object.keys(models).join(" "))
+console.log(Object.keys(models).join(" "))
 
 // Establish association with CampaignAdModel
 

@@ -1,21 +1,21 @@
 import { get } from "lodash";
-import { BaseProduct, Pagination, Product} from '../../../interfaces/products'
 import RepoProvider from "../../RepoProvider";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
 import { Request, Response } from "express";
-import { BaseProductOptions, ProductOptions, ProductOptionsList } from "../../../interfaces/product-options";
+
+import {
+    BaseProductOptions,
+    parsedProductOptions, ProductOptions
+} from "apps/product/interface/ProductOptions";
 
 export default class ProductOptionsController {
     static async createProductOptions(req: Request, res: Response) {
         try {
             const payload:any = req?.body;
             const user_id = get(req, "user_id", 0);
-            const productOptions: BaseProductOptions = {
-                ...payload,
-                createdBy: user_id,
-            };
-            const productOptionsDetails = await RepoProvider.productOptionsRepo.create(productOptions);
+
+            const productOptionsDetails = await RepoProvider.productOptionsRepo.create(payload, user_id);
             return res.status(200)
                     .send(
                         sendResponse(
@@ -24,7 +24,7 @@ export default class ProductOptionsController {
                             productOptionsDetails,
                         ),
                     );
-            
+
         } catch (error) {
             console.error(error);
             return res.status(500).send(
@@ -60,13 +60,13 @@ export default class ProductOptionsController {
     static async getProductOptionsById(req: Request, res: Response) {
         try {
             const id = parseInt(req.params.id, 0);
-            const productOptions: BaseProductOptions = await RepoProvider.productOptionsRepo.getById(id);
+            const productOptions = await RepoProvider.productOptionsRepo.getById(id);
             return res.status(200)
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.SUCCESS,
                             SUCCESS_MESSAGE.FETCHED,
-                            productOptions,
+                            parsedProductOptions(productOptions),
                         ),
                     );
         } catch (error) {

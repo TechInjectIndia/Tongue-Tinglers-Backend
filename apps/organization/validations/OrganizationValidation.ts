@@ -7,6 +7,7 @@ import {
 } from "../../../interfaces/organization";
 
 const addressSchema = Joi.object({
+    id: Joi.number().optional(),
     street: Joi.string().required(),
     city: Joi.string().required(),
     state: Joi.string().required(),
@@ -15,6 +16,9 @@ const addressSchema = Joi.object({
     phoneNumber: Joi.string().required(),
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
+    createdAt: Joi.string().optional(),
+    updatedAt: Joi.string().optional(),
+    deletedAt: Joi.optional(),
 });
 
 // Base Organization schema

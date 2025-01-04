@@ -43,6 +43,8 @@ import { PostgresCommissionRepo } from "./commission/repositories/PostgresCommis
 import { OrderRepo } from './order/repos/orderRepo';
 import { IPreSaleOrderProvider } from './pre-sale-order/provider/IPreSaleOrderProvider';
 import { PreSaleOrderProvider } from './pre-sale-order/provider/PreSaleOrderProvider';
+import { IItemCategoryRepo } from './item_category/repositories/IItemCategoryRepo';
+import { PostgresItemCategoryRepo } from './item_category/repositories/PostgresItemCategoryRepo';
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -63,7 +65,8 @@ export default class RepoProvider {
   static _commissionRepo: ICommissionRepo;
   private static _documentRepo: IDocumentRepo;
   private static _agreementDocRepo: IAgreementDocRepo
-  private static _preSaleProvider:IPreSaleOrderProvider;
+  private static _preSaleProvider: IPreSaleOrderProvider;
+  private static _itemCategoryRepo: IItemCategoryRepo;
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -192,10 +195,17 @@ export default class RepoProvider {
     return this._agreementDocRepo;
   }
 
-  static get preSaleOrderProvider(){
+  static get preSaleOrderProvider() {
     if (!this._preSaleProvider) {
       this._preSaleProvider = new PreSaleOrderProvider();
     }
     return this._preSaleProvider;
+  }
+
+  static get itemCategoryRepo() {
+    if (!this._itemCategoryRepo) {
+      this._itemCategoryRepo = new PostgresItemCategoryRepo();
+    }
+    return this._itemCategoryRepo;
   }
 }

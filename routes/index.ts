@@ -87,6 +87,7 @@ import {
 } from "../apps/payment-transaction/api/TransactionRouter";
 
 import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics"
+import { itemCategoryRouter } from "apps/item_category/routes/ItemCategoryRoutes";
 
 
 
@@ -112,7 +113,7 @@ router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 // router.use(`${ADMIN}/crm`, auth, campaignRouter);
 router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/question`, auth, questionRouter);
-router.use(`${ADMIN}/campaign-ad`,auth , campaignAdRouter);
+router.use(`${ADMIN}/campaign-ad`, auth, campaignAdRouter);
 
 router.use(`/campaign-ad`, campaignAdRouter);
 
@@ -149,7 +150,12 @@ router.use("/migration", migrationRouter);
 router.use("/document", auth, documentRouter);
 router.use(`${ADMIN}/agreement-docs`, agreementDocRouter);
 // router.use(`/pet-pooja`, petPoojaApiRouter);
-router.use(`/organization`,auth, organizationRouter);
+router.use(`/organization`, auth, organizationRouter);
+
+
+/* IMS */
+router.use(`${ADMIN}`, itemCategoryRouter);
+//////
 
 
 router.post(

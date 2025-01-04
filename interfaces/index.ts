@@ -61,6 +61,15 @@ interface DeletionMetaData {
     deletedAt: Date | null;
 }
 
+/* may be handled separately */
+interface PaginatedBaseResponse<T> {
+    totalData: number;
+    currentPage: number;
+    totalPages: number;
+    data: T[];
+}
+
+
 export {
     ITrackable,
     Note,
@@ -69,4 +78,5 @@ export {
     UpdatedMetaData,
     DeletionMetaData,
     BaseModelIdNumber,
+    PaginatedBaseResponse,
 };

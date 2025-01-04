@@ -39,7 +39,7 @@ import {ProductModel} from "apps/product/model/productTable";
 import {OrderModel} from "apps/order/models/OrderTable";
 import {NotesModel} from "apps/order/models/NotesTable";
 import {OrderItemsModel} from "apps/order-items/models/OrderItemsTable";
-import {CartProductModel} from "apps/cart-products/model/CartTable";
+import {CartProductModel} from "../cart-products/model/CartProductTable";
 import {handleError} from "apps/common/utils/HelperMethods";
 import {ItemStockModel} from "../../database/schema/petpooja/stock";
 import {OrganizationModel} from "../organization/models/OrganizationTable";

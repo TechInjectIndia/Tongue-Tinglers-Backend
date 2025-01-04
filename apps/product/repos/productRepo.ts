@@ -63,6 +63,7 @@ export class ProductRepo implements IProductRepo {
       }
 
       await createdProduct.addVariations(variationIds);
+      // await createdProduct.addVariations(variationIds, transaction);
 
       // Commit the transaction
       await transaction.commit();

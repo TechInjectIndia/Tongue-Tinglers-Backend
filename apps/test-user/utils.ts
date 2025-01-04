@@ -4,7 +4,6 @@ import {
     TPayloadFranchiseModel,
     TPayloadProposalModel,
     TPayloadQuestion,
-
 } from "../../interfaces";
 import {QuestionRepo} from "../questions/models";
 import {AreaRepo} from "../area/models/AreaRepo";
@@ -30,6 +29,7 @@ import {BaseOptions} from "../options/interface/options";
 import {BaseOptionsValue} from "../optionsValue/interface/optionValue";
 import {TPayloadArea} from "../area/interface/Area";
 import {TPayloadRegion} from "../region/models/Region";
+import {CampaignPayload} from "../campaign/interface/campaign";
 
 
 function getSampleQuestions(): TPayloadQuestion[] {
@@ -40,12 +40,22 @@ function getSampleQuestions(): TPayloadQuestion[] {
         {label: "Option 3", value: "option3"},
     ];
 
+    const boolOptions: IOptions[] = [{
+        label: "Yes",
+        value: "Yes"
+    },
+        {
+            label: "No",
+            value: "No"
+        }
+
+    ];
+
     return [
         {
             question: "Do you like programming?",
-            type: QuestionType.MULTI_CHOICE,
+            type: QuestionType.BOOLEAN,
             required: true,
-            options: sampleOptions,
             createdBy: 1,
         },
         {
@@ -208,21 +218,21 @@ async function createDummyMaster(user_id: number) {
     });
 
     // Campaign creation logic
-    const campaignPayload = {
+    const campaignPayload: CampaignPayload = {
         name: "Punjab 24-25 Q1",
         description: "Campaign in Punjabi 2025 Quarter 1",
         questionList: [5, 4, 3, 2, 1],
         organizationId: 1,
         regionId: 1,
-        start: "2025-01-01",
-        to: "2025-02-28",
+        start: new Date("2025-01-01"),
+        to: new Date("2025-02-28"),
         proposalIds: [1, 2, 3, 4],
         affiliateId: null,
-        createdBy: user_id,
+
     };
 
     const campaignRepo = new CampaignAdRepo();
-    return campaignRepo.create(campaignPayload);
+    return campaignRepo.create(campaignPayload, 1);
 }
 
 function createDummyProducts(): {

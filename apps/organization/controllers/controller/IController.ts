@@ -1,5 +1,9 @@
 import { TQueryFilters } from "../../../../types";
-import { TCampaignList, TPayloadCampaign } from "../../../../interfaces";
+import {
+    TCampaignList,
+    TPayloadCampaign
+} from "../../../campaign/interface/campaign";
+
 
 interface IDynamicFormController<T, P, F extends TQueryFilters> {
   /**

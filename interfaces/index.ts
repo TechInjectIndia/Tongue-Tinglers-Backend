@@ -10,7 +10,6 @@ export * from "./product_category";
 export * from "./crm";
 export * from "./petpooja";
 export * from "./form-question";
-export * from "./campaign";
 export * from "./file";
 export * from "./gallery";
 export * from "./pdiChecklist";

@@ -27,7 +27,6 @@ import {AdminRepo} from "apps/user/models/user";
 import {TUser, USER_TYPE} from "apps/user/interface/user";
 import {UserModel} from "apps/user/models/UserTable";
 import {OrganizationRepo} from "apps/organization/models";
-import {sequelize} from "config";
 import {
     ProductsCategoryModel
 } from "apps/products-category/models/ProductCategoryTable";
@@ -39,20 +38,9 @@ import {
 } from "../../product-options/models/ProductVariationTable";
 import express, {Request, Response} from "express";
 import {validateCreateAdminBody} from "../validations/user";
-import {resetSequenceAfterRollback} from "../../database/utils";
-
-
 const router = express.Router();
 
-
-// const { addAdmin } = AdminController;
 const {
-    getAdmins,
-    getAllUsers,
-    addAdmin,
-    editAdmin,
-    deleteAdmin,
-    getAdmin,
     addProspectUser,
 } = AdminController;
 
@@ -420,11 +408,11 @@ router.post("/prospect", validateCreateAdminBody, addProspectUser);
 async function createProductWithAssociations(req: Request, res: Response) {
     // const transaction = await sequelize.transaction();
     const tableSequences = [
-        { tableName: 'products_categories', columnName: 'id' },
-        { tableName: 'options', columnName: 'id' },
-        { tableName: 'options_values', columnName: 'id' },
-        { tableName: 'products', columnName: 'id' },
-        { tableName: 'variations', columnName: 'id' },
+        {tableName: 'products_categories', columnName: 'id'},
+        {tableName: 'options', columnName: 'id'},
+        {tableName: 'options_values', columnName: 'id'},
+        {tableName: 'products', columnName: 'id'},
+        {tableName: 'variations', columnName: 'id'},
     ];
 
     try {
@@ -450,14 +438,16 @@ async function createProductWithAssociations(req: Request, res: Response) {
         // Step 4: Bulk create option values
         const optionsValueData = dummyData.optionValues.map((value, index) => ({
             ...value,
-            option_id: optionsCreated[index].id, // Ensure option_id corresponds to options
+            option_id: optionsCreated[index].id, // Ensure option_id
+                                                 // corresponds to options
         }));
 
         const optionsValueCreated = await OptionsValueModel.bulkCreate(
             optionsValueData,
             // { transaction, returning: true }
         );
-        console.log("Option values created:", optionsValueCreated.map((ov) => ov.id));
+        console.log("Option values created:",
+            optionsValueCreated.map((ov) => ov.id));
 
         // Step 5: Create product
         const productData = dummyData.product;
@@ -476,17 +466,19 @@ async function createProductWithAssociations(req: Request, res: Response) {
 
         // Step 6: Create product variations
         if (productData.variations && Array.isArray(productData.variations)) {
-            const productVariations = productData.variations.map((variation, index) => ({
-                product_id: createdProduct.id,
-                optionValueId: optionsValueCreated[index].id,
-                ...variation,
-            }));
+            const productVariations = productData.variations.map(
+                (variation, index) => ({
+                    product_id: createdProduct.id,
+                    optionValueId: optionsValueCreated[index].id,
+                    ...variation,
+                }));
 
             const createdVariations = await ProductVariationsModel.bulkCreate(
                 productVariations,
                 // { transaction, returning: true }
             );
-            console.log("Product variations created:", createdVariations.map((v) => v.id));
+            console.log("Product variations created:",
+                createdVariations.map((v) => v.id));
 
             // Use mixin to associate variations
             await createdProduct.addVariations(
@@ -500,14 +492,16 @@ async function createProductWithAssociations(req: Request, res: Response) {
         console.log("Transaction committed successfully");
 
         return res.status(200).send(
-            sendResponse(RESPONSE_TYPE.SUCCESS, "Entities created successfully", {
-                category: categoryCreated,
-                options: optionsCreated,
-                optionValues: optionsValueCreated,
-                product: createdProduct,
-            })
+            sendResponse(RESPONSE_TYPE.SUCCESS, "Entities created successfully",
+                {
+                    category: categoryCreated,
+                    options: optionsCreated,
+                    optionValues: optionsValueCreated,
+                    product: createdProduct,
+                })
         );
-    } catch (err) {
+    }
+    catch (err) {
         console.error("Error during transaction:", err);
 
         // Rollback the transaction and reset sequences
@@ -515,14 +509,11 @@ async function createProductWithAssociations(req: Request, res: Response) {
         //     try {
         //         await transaction.rollback();
         //
-        //         // Reset sequences to 0 for tables involved in the transaction
-        //         await resetSequenceAfterRollback(tableSequences);
-        //
-        //         console.log("Transaction rolled back and sequences reset successfully.");
-        //     } catch (rollbackError) {
-        //         console.error("Error rolling back transaction:", rollbackError);
-        //     }
-        // }
+        //         // Reset sequences to 0 for tables involved in the
+        // transaction await resetSequenceAfterRollback(tableSequences);
+        // console.log("Transaction rolled back and sequences reset
+        // successfully."); } catch (rollbackError) { console.error("Error
+        // rolling back transaction:", rollbackError); } }
 
         return res.status(500).send({
             message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,

@@ -1,6 +1,10 @@
-import { NextFunction, Response } from "express";
+
 import { TQueryFilters } from "../../../../types";
-import { TCampaignSubmisisonsList, TPayloadCampaignSubmisisons } from "../../../../interfaces";
+import {
+    TCampaignSubmissionsList,
+    TPayloadCampaignSubmissions
+} from "../../interface/campaign";
+
 
 interface IDynamicFormController<T, F extends TQueryFilters> {
     /**
@@ -8,7 +12,7 @@ interface IDynamicFormController<T, F extends TQueryFilters> {
      * @param filters - Filtering options for the dynamic form questions.
      * @returns Promise resolving to a list of dynamic form questions.
      */
-    list(filters: F): Promise<TCampaignSubmisisonsList>;
+    list(filters: F): Promise<TCampaignSubmissionsList>;
 
     /**
      * Get a specific dynamic form question by ID for a user.
@@ -22,7 +26,7 @@ interface IDynamicFormController<T, F extends TQueryFilters> {
      * @param payload - The data to create the dynamic form question.
      * @returns Promise resolving to the created dynamic form question.
      */
-    save(payload: TPayloadCampaignSubmisisons): Promise<T>;
+    save(payload: TPayloadCampaignSubmissions): Promise<T>;
 
     /**
      * Update an existing dynamic form question for a user.
@@ -30,7 +34,7 @@ interface IDynamicFormController<T, F extends TQueryFilters> {
      * @param payload - The data to update the dynamic form question.
      * @returns Promise resolving to the affected count.
      */
-    update(id: number, payload: TPayloadCampaignSubmisisons): Promise<[affectedCount: number]>;
+    update(id: number, payload: TPayloadCampaignSubmissions): Promise<[affectedCount: number]>;
 
     /**
      * Delete dynamic form questions by IDs for a user.

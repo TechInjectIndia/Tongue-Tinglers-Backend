@@ -418,7 +418,7 @@ router.post("/prospect", validateCreateAdminBody, addProspectUser);
 // ====== Admins Routes Ends ======
 
 async function createProductWithAssociations(req: Request, res: Response) {
-    const transaction = await sequelize.transaction();
+    // const transaction = await sequelize.transaction();
     const tableSequences = [
         { tableName: 'products_categories', columnName: 'id' },
         { tableName: 'options', columnName: 'id' },
@@ -436,14 +436,14 @@ async function createProductWithAssociations(req: Request, res: Response) {
         // Step 2: Create category
         const categoryCreated = await ProductsCategoryModel.create(
             dummyData.category,
-            { transaction }
+            // { transaction }
         );
         console.log("Category created:", categoryCreated.id);
 
         // Step 3: Bulk create options
         const optionsCreated = await OptionsModel.bulkCreate(
             dummyData.options,
-            { transaction, returning: true }
+            // { transaction, returning: true }
         );
         console.log("Options created:", optionsCreated.map((o) => o.id));
 
@@ -455,7 +455,7 @@ async function createProductWithAssociations(req: Request, res: Response) {
 
         const optionsValueCreated = await OptionsValueModel.bulkCreate(
             optionsValueData,
-            { transaction, returning: true }
+            // { transaction, returning: true }
         );
         console.log("Option values created:", optionsValueCreated.map((ov) => ov.id));
 
@@ -467,12 +467,12 @@ async function createProductWithAssociations(req: Request, res: Response) {
                 category: categoryCreated.id,
                 createdBy: 1, // Assuming user ID is available in the request
             },
-            { transaction }
+            // { transaction }
         );
         console.log("Product created:", createdProduct.id);
 
         // Reload the product to ensure it is fully committed
-        await createdProduct.reload({ transaction });
+        // await createdProduct.reload({ transaction });
 
         // Step 6: Create product variations
         if (productData.variations && Array.isArray(productData.variations)) {
@@ -484,19 +484,19 @@ async function createProductWithAssociations(req: Request, res: Response) {
 
             const createdVariations = await ProductVariationsModel.bulkCreate(
                 productVariations,
-                { transaction, returning: true }
+                // { transaction, returning: true }
             );
             console.log("Product variations created:", createdVariations.map((v) => v.id));
 
             // Use mixin to associate variations
             await createdProduct.addVariations(
                 createdVariations.map((v) => v.id),
-                transaction
+                // transaction
             );
         }
 
         // Commit the transaction
-        await transaction.commit();
+        // await transaction.commit();
         console.log("Transaction committed successfully");
 
         return res.status(200).send(
@@ -511,18 +511,18 @@ async function createProductWithAssociations(req: Request, res: Response) {
         console.error("Error during transaction:", err);
 
         // Rollback the transaction and reset sequences
-        if (transaction) {
-            try {
-                await transaction.rollback();
-
-                // Reset sequences to 0 for tables involved in the transaction
-                await resetSequenceAfterRollback(tableSequences);
-
-                console.log("Transaction rolled back and sequences reset successfully.");
-            } catch (rollbackError) {
-                console.error("Error rolling back transaction:", rollbackError);
-            }
-        }
+        // if (transaction) {
+        //     try {
+        //         await transaction.rollback();
+        //
+        //         // Reset sequences to 0 for tables involved in the transaction
+        //         await resetSequenceAfterRollback(tableSequences);
+        //
+        //         console.log("Transaction rolled back and sequences reset successfully.");
+        //     } catch (rollbackError) {
+        //         console.error("Error rolling back transaction:", rollbackError);
+        //     }
+        // }
 
         return res.status(500).send({
             message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,

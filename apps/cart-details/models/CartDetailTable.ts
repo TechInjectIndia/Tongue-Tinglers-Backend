@@ -5,6 +5,7 @@ import { CartDetails, BaseCartDetails } from "../../../interfaces/cart_details";
 
 import RepoProvider from "apps/RepoProvider";
 import { CartProductModel } from "../../cart-products/model/CartProductTable";
+import {UserModel} from "../../user/models/UserTable";
 
 // Defining the interface for the creation attributes of CartDetails
 interface CartDetailsCreationAttributes extends Optional<CartDetails, "id"> {}
@@ -36,8 +37,8 @@ class CartDetailsModel
             as: "cartProducts", // Alias for the relationship
         });
 
-        // UserModel.hasMany(CartDetailsModel, {as: 'cartUser', foreignKey: 'user_id'})
-        // CartDetailsModel.belongsTo(UserModel, {as: 'users', foreignKey: 'user_id'})
+        UserModel.hasMany(CartDetailsModel, {as: 'cartUser', foreignKey: 'user_id'})
+
     }
 
     public static initModel() {

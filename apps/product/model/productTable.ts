@@ -43,7 +43,7 @@ class ProductModel extends Model<IProductTable, ProductCreationAttributes>
     ) => Promise<void>;
     public addVariations!: (
         options: Array<ProductVariationsModel | number>,
-        transaction: Transaction
+        // transaction: Transaction
     ) => Promise<void>;
     public setVariationses!: (
         options: Array<ProductVariationsModel | number>

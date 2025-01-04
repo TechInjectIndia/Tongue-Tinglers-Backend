@@ -1,10 +1,10 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import {DataTypes, Model, Optional, Transaction} from "sequelize";
 import { sequelize } from "../../../config";
 import { CartDetails, BaseCartDetails } from "../../../interfaces/cart_details";
 // import { CartProductModel } from "";
 
 import RepoProvider from "apps/RepoProvider";
-import { CartProductModel } from "apps/cart-products/model/CartTable";
+import { CartProductModel } from "../../cart-products/model/CartProductTable";
 
 // Defining the interface for the creation attributes of CartDetails
 interface CartDetailsCreationAttributes extends Optional<CartDetails, "id"> {}
@@ -13,15 +13,15 @@ class CartDetailsModel
     extends Model<CartDetails, CartDetailsCreationAttributes>
     implements BaseCartDetails
 {
+    public id!: number;
     user_id: number;
 
     // Mixin methods for managing cart products
     public addCartProducts!: (
-        cartProducts: CartProductModel | number
+        cartProducts: Array<CartProductModel | number>,
+        options?: { transaction?: Transaction }
     ) => Promise<void>;
-    public addCartProductses!: (
-        cartProductses: Array<CartProductModel | number>
-    ) => Promise<void>;
+
     public setCartProducts!: (
         cartProducts: Array<CartProductModel | number>
     ) => Promise<void>;
@@ -33,7 +33,7 @@ class CartDetailsModel
             through: "cartProductsJoin", // Join table name
             foreignKey: "cartDetailId", // Foreign key in the join table
             otherKey: "cartProductsId", // Other foreign key in the join table
-            as: "cartProductses", // Alias for the relationship
+            as: "cartProducts", // Alias for the relationship
         });
 
         // UserModel.hasMany(CartDetailsModel, {as: 'cartUser', foreignKey: 'user_id'})

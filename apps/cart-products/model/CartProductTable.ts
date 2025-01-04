@@ -19,11 +19,11 @@ class CartProductModel
     public static associate() {
         CartProductModel.belongsTo(ProductModel, {
             foreignKey: 'product_id',  // Foreign key in CartProductModel
-            as: 'product'  // Alias to use in the include
+            as: 'product'  // Alias to use in include
         });
         CartProductModel.belongsTo(ProductVariationsModel, {
             foreignKey: 'product_option_id',  // Foreign key in CartProductModel
-            as: 'variations'  // Alias to use in the include
+            as: 'variations'  // Alias to use in include
         });
     }
 

@@ -372,7 +372,7 @@ const {
  *         description: Unauthorized
  */
 router.get('/createEverything', async (req, res) => {
-
+    const transaction = await sequelize.transaction();
     try {
         const dummyData = createDummyProducts();
 
@@ -404,7 +404,7 @@ router.get('/createEverything', async (req, res) => {
                 vendorId: productData.vendorId,// Initialize with an empty array
                 tax_rate_id: productData.tax_rate_id,
                 createdBy: 1
-            }
+            }, {transaction}
         );
 
 
@@ -424,19 +424,19 @@ router.get('/createEverything', async (req, res) => {
 
             // Bulk create the product options
             const createdOptions = await ProductVariationsModel.bulkCreate(
-                productOptions);
+                productOptions, {
+                    transaction,
+                    returning: true, // Ensure the created options are returned
+                });
 
 
             variationIds = createdOptions.map((option) => option.id);
             console.log('variationIds: ', variationIds);
 
             // Update the product with the created option IDs
-            await createdProduct.addVariations(variationIds);
+            await createdProduct.addVariations(variationIds, transaction);
         }
-
-
-
-        console.log('createdProductLast: ', createdProduct);
+        await transaction.commit();
 
         return res.status(200).send(
             sendResponse(RESPONSE_TYPE.SUCCESS, "Entities created successfully",

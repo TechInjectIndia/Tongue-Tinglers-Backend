@@ -7,7 +7,7 @@ import { OptionsModel } from "apps/options/models/optionTable";
 import { ProductModel } from "apps/product/model/productTable";
 import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
 import { CartDetailsModel } from "../models/CartDetailTable";
-import { CartProductModel } from "apps/cart-products/model/CartTable";
+import { CartProductModel } from "../../cart-products/model/CartProductTable";
 
 export class CartDetailRepo implements ICartDetailRepo {
     async getCartDetailByUserId(userId: number): Promise<any> {

@@ -282,7 +282,9 @@ export default class LeadController {
 
             // Mail
             const mailDto = new LeadToProspectMail().getPayload(
-                {},
+                {                    
+                    btnLink: `https://tonguetingler.vercel.app/organization-setup?prospectId=${prospect.id}`,
+                },
                 existingLead.email,
             );
             await sendMail(mailDto);

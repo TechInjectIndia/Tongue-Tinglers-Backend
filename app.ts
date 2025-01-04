@@ -28,6 +28,7 @@ const rateLimiter = new RateLimiterMemory({
 import expressSanitizer from "express-sanitizer";
 // import RepoProvider from "./apps/RepoProvider";
 import { sendMail } from "libraries/resend";
+import { LeadToProspectMail } from "static/views/email/get-templates/LeadToProspectMail";
 
 require("dotenv").config();
 
@@ -109,7 +110,7 @@ server.get("/", async (_, res) => {
 
     // welcome mail
     // const mailDto = new FinalizeDetailsMail().getPayload({}, email);
-    const mailDto = new SignAgreementMail().getPayload({}, email);
+    const mailDto = new LeadToProspectMail().getPayload({}, email);
     const resp = await sendMail(mailDto);
 
     res.send(resp);

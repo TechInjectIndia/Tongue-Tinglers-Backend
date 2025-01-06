@@ -88,6 +88,7 @@ import {
 
 import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics"
 import { itemCategoryRouter } from "apps/item_category/routes/ItemCategoryRoutes";
+import { itemUnitRouter } from "apps/item_unit/routes/ItemUnitRoutes";
 
 
 
@@ -155,6 +156,7 @@ router.use(`/organization`, auth, organizationRouter);
 
 /* IMS */
 router.use(`${ADMIN}`, itemCategoryRouter);
+router.use(`${ADMIN}`, itemUnitRouter);
 //////
 
 

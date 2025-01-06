@@ -4,7 +4,6 @@ import {
     validateCreateIChecklistBody,
     validateDeleteMultipleIdsBody,
     validateEditChecklistBody,
-    validateEditCheckpointParams,
     validateListChecklistQuery,
 } from "../validations/iChecklistValidation";
 import PdiChecklistController from "../controllers/IChecklist";

@@ -53,6 +53,8 @@ import { IFactoryGateRepo } from './factory_gates/repositories/IFactoryGateRepo'
 import { PostgresFactoryGateRepo } from './factory_gates/repositories/PostgresFactoryGateRepo';
 import { IStorageLocationRepo } from './storage_locations/repositories/IStorageLocationRepo';
 import { PostgresStorageLocationRepo } from './storage_locations/repositories/PostgresStorageLocationRepo';
+import { IRawMaterialRepo } from './raw_material/repositories/IRawMaterialRepo';
+import { PostgresRawMaterialRepo } from './raw_material/repositories/PostgresRawMaterialRepo';
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -79,6 +81,7 @@ export default class RepoProvider {
   private static _supplierRepo: ISupplierRepo;
   private static _factoryGateRepo: IFactoryGateRepo;
   private static _storageLocationsRepo: IStorageLocationRepo;
+  private static _rawMaterialRepo: IRawMaterialRepo;
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -247,5 +250,12 @@ export default class RepoProvider {
       this._storageLocationsRepo = new PostgresStorageLocationRepo();
     }
     return this._storageLocationsRepo;
+  }
+
+  static get rawMaterialRepo() {
+    if (!this._rawMaterialRepo) {
+      this._rawMaterialRepo = new PostgresRawMaterialRepo();
+    }
+    return this._rawMaterialRepo;
   }
 }

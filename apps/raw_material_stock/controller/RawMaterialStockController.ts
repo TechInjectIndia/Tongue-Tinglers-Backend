@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { RepoProvider } from "../../../core/RepoProvider";
 import { get, pick } from "lodash";
-import { ICreateRawMaterialStock, IReceiveRawMaterialStock } from "../models/IRawMaterialStock";
+import { IReceiveRawMaterialStock } from "../models/IRawMaterialStock";
+import RepoProvider from "apps/RepoProvider";
 
 export class RawMaterialStockController {
 
@@ -18,6 +18,7 @@ export class RawMaterialStockController {
 
     static async receiveStock(req: Request, res: Response, next: NextFunction) {
 
+        const user_id = get(req, "user_id", 1);
         const payload = pick(req.body, ["rawMaterialId", "qty",
             "supplierId",
             "unitCost",
@@ -26,7 +27,7 @@ export class RawMaterialStockController {
 
         ]) as IReceiveRawMaterialStock;
 
-        payload.createdById = 1;
+        payload.createdBy = user_id;
 
 
         const result = await RepoProvider.rawMaterialStockRepo.receiveStock(payload);
@@ -46,9 +47,9 @@ export class RawMaterialStockController {
         }
         res.status(200).send(result);
     }
-    
+
     static async getStockIn(req: Request, res: Response, next: NextFunction) {
-        const result = await RepoProvider.rawMaterialStockRepo.getStockIn(1,1000);
+        const result = await RepoProvider.rawMaterialStockRepo.getStockIn(1, 1000);
         if (!result.success) {
             res.status(500).send(result);
             return;

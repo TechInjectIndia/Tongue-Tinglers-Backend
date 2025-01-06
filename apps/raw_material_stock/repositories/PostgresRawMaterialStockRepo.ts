@@ -113,11 +113,11 @@ export class PostgresRawMaterialStockRepo implements IRawMaterialStockRepo {
                     totalStock: result.getDataValue('totalStock'),
                     assignedStock: result.getDataValue('assignedStock'),
                     createdAt: result.getDataValue('createdAt'),
-                    createdById: result.getDataValue('createdById'),
+                    createdBy: result.getDataValue('createdBy'),
                     updatedAt: result.getDataValue('updatedAt'),
-                    updatedById: result.getDataValue('updatedById'),
+                    updatedBy: result.getDataValue('updatedBy'),
                     deletedAt: result.getDataValue('deletedAt'),
-                    deletedById: result.getDataValue('deletedById'),
+                    deletedBy: result.getDataValue('deletedBy'),
                 }
             );
         } catch (error) {
@@ -175,11 +175,11 @@ export class PostgresRawMaterialStockRepo implements IRawMaterialStockRepo {
                     factoryGate: item.FactoryGateTable.getDataValue('name'),
                     qty: item.getDataValue('qty'),
                     createdAt: item.getDataValue('createdAt'),
-                    createdById: item.getDataValue('createdById'),
+                    createdBy: item.getDataValue('createdBy'),
                     updatedAt: item.getDataValue('updatedAt'),
-                    updatedById: item.getDataValue('updatedById'),
+                    updatedBy: item.getDataValue('updatedBy'),
                     deletedAt: item.getDataValue('deletedAt'),
-                    deletedById: item.getDataValue('deletedById'),
+                    deletedBy: item.getDataValue('deletedBy'),
                 });
             }
 

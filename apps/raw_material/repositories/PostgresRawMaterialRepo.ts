@@ -11,6 +11,7 @@ import { APIResponse } from "apps/common/models/Base";
 import { sequelize } from "config";
 import { handleError, HelperMethods } from "apps/common/utils/HelperMethods";
 import { PaginatedBaseResponse } from "interfaces";
+import { RawMaterialStockTable } from "apps/raw_material_stock/database/RawMaterialStockTable";
 
 export class PostgresRawMaterialRepo implements IRawMaterialRepo {
 

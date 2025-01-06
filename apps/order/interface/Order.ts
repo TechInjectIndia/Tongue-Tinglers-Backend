@@ -128,10 +128,9 @@ interface OrderParams {
 }
 
 interface OrderState {
-    cartId: number;
     userId: number;
-    billingAddressId: number;
-    shippingAddressId: number;
+    billingAddressId: number | null;
+    shippingAddressId: number | null;
     paymentType:PAYMENT_TYPE
 }
 

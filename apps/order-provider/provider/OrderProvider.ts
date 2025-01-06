@@ -35,7 +35,7 @@ import {
 import { COUPON_STATUS, DISCOUNT_TYPE } from "apps/coupons/models/Coupon";
 
 import { CartDetailRepo } from "apps/cart-details/repos/cartDetailRepo";
-import {ParsedProduct} from "../../product/interface/Product";
+import { ParsedProduct } from "../../product/interface/Product";
 
 export class OrderProvider implements IOrderProvider {
     async processOrder(
@@ -257,8 +257,8 @@ export class OrderProvider implements IOrderProvider {
     private async prepareOrder(
         currUser: TUserWithPermission,
         cart: Cart,
-        billingAddressObj: Address,
-        shippingAddressObj: Address,
+        billingAddressObj: Address|null,
+        shippingAddressObj: Address|null,
         paymentData: PAYMENT_TYPE
     ): Promise<ParsedOrder> {
         // initialise Order instance
@@ -299,8 +299,8 @@ export class OrderProvider implements IOrderProvider {
             anomalyArr: [],
             coupon: "",
             items: orderItems,
-            updatedBy: {email: "", firstName: "", id: 0, lastName: ""},
-            deletedBy: {email: "", firstName: "", id: 0, lastName: ""},
+            updatedBy: { email: "", firstName: "", id: 0, lastName: "" },
+            deletedBy: { email: "", firstName: "", id: 0, lastName: "" },
             createdAt: new Date(),
             updatedAt: null,
             deletedAt: null,
@@ -309,7 +309,7 @@ export class OrderProvider implements IOrderProvider {
             couponCodes: [],
             discount: {},
             price: {},
-            createdBy: 0
+            createdBy: 0,
         };
 
         // SET ORDER ITEMS
@@ -525,7 +525,7 @@ export class OrderProvider implements IOrderProvider {
                 deletedAt: undefined,
                 createdBy: 0,
                 updatedBy: 0,
-                deletedBy: 0
+                deletedBy: 0,
             },
             issues: {},
             hasAppliedCouponMap: false,
@@ -584,12 +584,16 @@ export class OrderProvider implements IOrderProvider {
     }
 
     private async fetchCart(userId: number): Promise<DTO<Cart>> {
+        
         const cart = await new CartDetailRepo().getCartDetailByUserId(userId);
         if (!cart) return getUnhandledErrorDTO("Cart not found");
+        console.log(cart);
+        
         return getSuccessDTO(cart);
     }
 
-    private async fetchAddress(addressId: number): Promise<DTO<Address>> {
+    private async fetchAddress(addressId: number | null): Promise<DTO<Address | null>> {
+        if (!addressId) return getSuccessDTO(null);
         // Fetch address by addressId
         const userAddress = await new AddressRepo().findById(addressId);
 

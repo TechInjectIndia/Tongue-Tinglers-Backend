@@ -17,7 +17,7 @@ export class CartDetailRepo implements ICartDetailRepo {
                 include: [
                     {
                         model: CartProductModel,
-                        as: 'cartProductses', // Alias defined in the association
+                        as: 'cartProducts', // Alias defined in the association
                         attributes: ['id', 'product_id', 'product_option_id', 'quantity', 'createdAt'],
                         include: [
                             {

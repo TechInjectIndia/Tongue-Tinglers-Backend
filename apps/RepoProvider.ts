@@ -13,7 +13,6 @@ import {
 import IAddress from "./address/controllers/IAddressController";
 import { AddressRepo } from "./address/repositories/AddressRepo";
 import IRegionRepo from "./region/controllers/controller/IRegionController";
-import { SocialMediaDetails } from "../interfaces";
 import { RegionRepo } from "./region/models/RegionRepo";
 import ISocialMediaDetailsRepo from "./affiliate/controllers/controller/ISocialMediaController";
 import { SocialMediaDetailsRepo } from "./affiliate/models/smDetailsRepo";
@@ -44,6 +43,7 @@ import { OrderRepo } from './order/repos/orderRepo';
 import { IPreSaleOrderProvider } from './pre-sale-order/provider/IPreSaleOrderProvider';
 import { PreSaleOrderProvider } from './pre-sale-order/provider/PreSaleOrderProvider';
 import {IRegion} from "./region/models/Region";
+import {SocialMediaDetails} from "./lead/interface/lead";
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;

@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
-import { IPdiChecklistStatus } from '../../../interfaces';
 
 // Schema for PDI Checklist creation
 const createIChecklistBody = Joi.object().keys({
@@ -91,20 +90,19 @@ export const validateCreateIChecklistBody = (req: Request, res: Response, next: 
 export const validateEditChecklistBody = (req: Request, res: Response, next: NextFunction) => {
     validateReq(req, res, next, editChecklistBody, 'body');
   };
-  
+
   // Middleware for validating Area parameters
   export const validateEditCheckpointParams = (req: Request, res: Response, next: NextFunction) => {
     validateReq(req, res, next, editChecklistParams, 'params');
   };
-  
+
   // Middleware for validating Area listing query parameters
   export const validateListChecklistQuery = (req: Request, res: Response, next: NextFunction) => {
     validateReq(req, res, next, listChecklistQuery, 'query');
   };
-  
+
   // Middleware for validating multiple Area IDs for deletion
   export const validateDeleteMultipleIdsBody = (req: Request, res: Response, next: NextFunction) => {
     validateReq(req, res, next, editMultipleIdsBody, 'body');
   };
 
-  

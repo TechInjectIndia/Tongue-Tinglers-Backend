@@ -1,10 +1,4 @@
-import {
-    IOptions,
-    QuestionType,
-    TPayloadFranchiseModel,
-    TPayloadProposalModel,
-    TPayloadQuestion,
-} from "../../interfaces";
+
 import {QuestionRepo} from "../questions/models";
 import {AreaRepo} from "../area/models/AreaRepo";
 import {RegionRepo} from "../region/models/RegionRepo";
@@ -30,6 +24,14 @@ import {BaseOptionsValue} from "../optionsValue/interface/optionValue";
 import {TPayloadArea} from "../area/interface/Area";
 import {TPayloadRegion} from "../region/models/Region";
 import {CampaignPayload} from "../campaign/interface/campaign";
+import {
+    IOptions,
+    QuestionType,
+    TPayloadQuestion
+} from "../questions/interface/Question";
+import {
+    TPayloadFranchiseModel
+} from "../franchise_model/interface/franchiseModel";
 
 
 function getSampleQuestions(): TPayloadQuestion[] {
@@ -156,7 +158,7 @@ function getSampleFranchiseModels(): TPayloadFranchiseModel[] {
     ];
 }
 
-function getSampleProposals(): TPayloadProposalModel[] {
+function getSampleProposals(): any[] {
 
 
     return [

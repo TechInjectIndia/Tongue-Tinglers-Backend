@@ -2,8 +2,8 @@ import { BaseMeta } from "apps/common/models/Base";
 import { Note } from "../../lead/interface/lead";
 import { ParsedLead } from "apps/lead/interface/lead";
 import { ParsedOrganization } from "../../organization/interface/organization";
-import { ParsedUser } from "apps/user/interface/user";
-import { MetaUser } from "interfaces";
+import {MetaUser, ParsedUser} from "apps/user/interface/user";
+
 enum CONTRACT_PAYMENT_STATUS {
     PENDING = "pending",
     SUCCESS = "success",
@@ -150,5 +150,5 @@ export {
     SIGN_STATUS,
     ContractTable,
     ParsedContract,
-    
+
 };

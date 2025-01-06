@@ -41,7 +41,7 @@ import {NotesModel} from "apps/order/models/NotesTable";
 import {OrderItemsModel} from "apps/order-items/models/OrderItemsTable";
 import {CartProductModel} from "../cart-products/model/CartProductTable";
 import {handleError} from "apps/common/utils/HelperMethods";
-import {ItemStockModel} from "../../database/schema/petpooja/stock";
+import {ItemStockModel} from "../pet-pooja/models/stock";
 import {OrganizationModel} from "../organization/models/OrganizationTable";
 
 const m = [

@@ -16,8 +16,8 @@ import {
 } from "../../../constants";
 import { AdminRepo } from "../models/user";
 import { Auth } from "../../auth/models";
-import { USER_TYPE } from "../../../interfaces";
 import RepoProvider from "../../RepoProvider";
+import {USER_TYPE} from "../interface/user";
 
 export default class AdminController {
     static async getAllUsers(req: Request, res: Response, next: NextFunction) {

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
-import { IPdiChecklistStatus } from '../../../interfaces';
+import {IPdiChecklistStatus} from "../interface/PdiCheckList";
 
 // Schema for PDI Checklist creation
 const createPdiChecklistBody = Joi.object().keys({

@@ -79,7 +79,9 @@ const m = [
     NotesModel,
     OrderItemsModel,
     CartProductModel,
-    ItemStockModel
+    ItemStockModel,
+    RawMaterialModal,
+    RawMaterialStockTable,
 ];
 
 console.log(m)
@@ -118,8 +120,8 @@ const models = {
     Cart: CartProductModel.initModel(),
     ItemStockModel: ItemStockModel.initModel(),
     CampaignProposalsModel: CampaignProposalsModel.initModel(),
-    // RawMaterialModel: RawMaterialModal.initModel(),
-    // RawMaterialStockModel: RawMaterialStockTable.initModel(),
+    RawMaterialModel: RawMaterialModal.initModel(),
+    RawMaterialStockModel: RawMaterialStockTable.initModel(),
 };
 
 console.log(Object.keys(models).join(" "))
@@ -131,6 +133,8 @@ try {
     // Initialize Associations
     Object.keys(models).forEach((modelName) => {
         currentModel = modelName;
+
+        console.log("Doing for", currentModel.toString());
 
         if (models[modelName].associate) {
             models[modelName].associate();

@@ -47,6 +47,8 @@ import { IItemCategoryRepo } from './item_category/repositories/IItemCategoryRep
 import { PostgresItemCategoryRepo } from './item_category/repositories/PostgresItemCategoryRepo';
 import { IItemUnitRepo } from './item_unit/repositories/IItemUnitRepo';
 import { PostgresItemUnitRepo } from './item_unit/repositories/PostgresItemUnitRepo';
+import { ISupplierRepo } from './supplier/repositories/ISupplierRepo';
+import { PostgresSupplierRepo } from './supplier/repositories/PostgresSupplierRepo';
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -70,6 +72,7 @@ export default class RepoProvider {
   private static _preSaleProvider: IPreSaleOrderProvider;
   private static _itemCategoryRepo: IItemCategoryRepo;
   private static _itemUnitRepo: IItemUnitRepo;
+  private static _supplierRepo: ISupplierRepo;
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -217,5 +220,12 @@ export default class RepoProvider {
       this._itemUnitRepo = new PostgresItemUnitRepo();
     }
     return this._itemUnitRepo;
+  }
+  
+  static get supplierRepo() {
+    if (!this._supplierRepo) {
+      this._supplierRepo = new PostgresSupplierRepo();
+    }
+    return this._supplierRepo;
   }
 }

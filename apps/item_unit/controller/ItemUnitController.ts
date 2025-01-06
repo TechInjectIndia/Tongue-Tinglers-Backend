@@ -30,7 +30,7 @@ export class ItemUnitController {
         const id = Number(get(req.params, "id"));
         const payload = {
             ...req.body,
-            updatedById: user_id,
+            updatedBy: user_id,
         };
 
         const result = await RepoProvider.itemUnitRepo.update(id, payload);

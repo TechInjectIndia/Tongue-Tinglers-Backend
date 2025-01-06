@@ -1,21 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 import { get, pick } from "lodash";
-import { ITEM_CATEGORY_STAUS } from "../models/ItemCategoryMisc";
-import { ICreateItemCategory } from "../models/IItemCategory";
+import { SUPPLIER_STAUS } from "../models/SupplierMisc";
+import { ICreateSupplier, ISupplier } from "../models/ISupplier";
 import RepoProvider from "apps/RepoProvider";
 
-export class ItemCategoryController {
+export class SupplierController {
 
     static async create(req: Request, res: Response, next: NextFunction) {
 
         const user_id = get(req, "user_id");
-
-        const payload = pick(req.body, ["name", "status",]) as ICreateItemCategory;
-        payload.status = ITEM_CATEGORY_STAUS.ACTIVE;
+        const payload = pick(req.body, ["name", "email", "phone",]) as ISupplier;
+        payload.name = payload.name.trim().toLowerCase();
+        payload.status = SUPPLIER_STAUS.ACTIVE;
         payload.createdBy = user_id;
-        payload.name = payload.name.toLowerCase();
 
-        const result = await RepoProvider.itemCategoryRepo.create(payload);
+        const result = await RepoProvider.supplierRepo.create(payload);
         if (!result.success) {
             res.status(500).send(result);
             return;
@@ -25,15 +24,15 @@ export class ItemCategoryController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
 
-        const user_id = get(req, "user_id",);
-
+        const user_id = get(req, "user_id");
         const id = Number(get(req.params, "id"));
         const payload = {
             ...req.body,
             updatedBy: user_id,
         };
+        payload.name = payload.name.trim().toLowerCase();
 
-        const result = await RepoProvider.itemCategoryRepo.update(id, payload);
+        const result = await RepoProvider.supplierRepo.update(id, payload);
         if (!result.success) {
             res.status(500).send(result);
             return;
@@ -44,7 +43,7 @@ export class ItemCategoryController {
     static async delete(req: Request, res: Response, next: NextFunction) {
         const ids: any = pick(req.body, "ids");
 
-        const result = await RepoProvider.itemCategoryRepo.delete(ids, 1);
+        const result = await RepoProvider.supplierRepo.delete(ids, 1);
         if (!result.success) {
             res.status(500).send(result);
             return;
@@ -54,7 +53,7 @@ export class ItemCategoryController {
 
     static async getAll(req: Request, res: Response, next: NextFunction) {
 
-        const result = await RepoProvider.itemCategoryRepo.getAll(1, 100);
+        const result = await RepoProvider.supplierRepo.getAll(1, 100);
         if (!result.success) {
             res.status(500).send(result);
             return;
@@ -64,7 +63,7 @@ export class ItemCategoryController {
 
     static async getById(req: Request, res: Response, next: NextFunction) {
         const id = get(req.params, "id");
-        const result = await RepoProvider.itemCategoryRepo.getById(Number(id));
+        const result = await RepoProvider.supplierRepo.getById(Number(id));
         if (!result.success) {
             res.status(500).send(result);
             return;
@@ -74,7 +73,7 @@ export class ItemCategoryController {
 
     static async search(req: Request, res: Response, next: NextFunction) {
         const text = get(req.query, "text") as string;
-        const result = await RepoProvider.itemCategoryRepo.search(text);
+        const result = await RepoProvider.supplierRepo.search(text);
         if (!result.success) {
             res.status(500).send(result);
             return;

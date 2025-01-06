@@ -25,7 +25,7 @@ export class ItemCategoryController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
 
-        const user_id = get(req, "user_id", 1);
+        const user_id = get(req, "user_id",);
 
         const id = Number(get(req.params, "id"));
         const payload = {

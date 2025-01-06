@@ -555,7 +555,7 @@ export class OrderProvider implements IOrderProvider {
             product: product,
             productOption: cartItem.variation.optionsValue,
             quantity: cartItem.quantity,
-            total_price: 0,
+            total_price: cartItem.variation.price,
             totalTax: 0,
             prices: {
                 [PRICE_COMP_TYPE.BASE_PRICE]: priceCom,

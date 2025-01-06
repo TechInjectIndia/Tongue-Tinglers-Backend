@@ -76,7 +76,7 @@ export interface TransactionDetails{
     UserDetails: number;
     reason: string;
     date: Date;
-  };
+}
 
 export interface ContractsPayload {
     status: CONTRACT_STATUS

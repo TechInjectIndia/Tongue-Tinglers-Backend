@@ -2,6 +2,7 @@ import { OrderStatus, ParsedOrder, PAYMENT_TYPE, PresaleParsedOrder } from "apps
 import { IDiscComponent, PriceComponent } from "apps/order/interface/OrderItem";
 import { MetaUser, ParsedUser, TUser, USER_STATUS, USER_TYPE } from "apps/user/interface/user";
 import { json } from "sequelize";
+import {UserModel} from "../../user/models/UserTable";
 
 const getEmptyParsedOrder = () => {
     const metaObj: MetaUser = { email: "", firstName: "", id: 0, lastName: "" };
@@ -85,7 +86,8 @@ const getCartItemTax = (
     );
 };
 
-function parseTUser<T extends TUser>(obj: any): T {
+function parseIncludedUserModel(obj: any): UserModel {
+    console.log(JSON.stringify(obj));
     const json = obj.users;
     return {
         ...json,
@@ -93,7 +95,7 @@ function parseTUser<T extends TUser>(obj: any): T {
         createdAt: new Date(json.createdAt),
         updatedAt: new Date(json.updatedAt),
         deletedAt: json.deletedAt ? new Date(json.deletedAt) : null,
-    } as T;
+    }
 }
 
 const getEmptyPreSaleOrder=()=>{
@@ -111,4 +113,4 @@ const getEmptyPreSaleOrder=()=>{
     return preSaleParsedOrder
 }
 
-export { getEmptyParsedOrder, getCartItemPayableIncTax, getCartItemTax, parseTUser , getEmptyPreSaleOrder};
+export { getEmptyParsedOrder, getCartItemPayableIncTax, getCartItemTax, parseIncludedUserModel , getEmptyPreSaleOrder};

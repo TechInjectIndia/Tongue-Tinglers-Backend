@@ -91,6 +91,7 @@ import { itemCategoryRouter } from "apps/item_category/routes/ItemCategoryRoutes
 import { itemUnitRouter } from "apps/item_unit/routes/ItemUnitRoutes";
 import { supplierRouter } from "apps/supplier/routes/SupplierRoutes";
 import { factoryGatesRouter } from "apps/factory_gates/routes/FactoryGateRoutes";
+import { storageLocationRouter } from "apps/storage_locations/routes/StorageLocationRoutes";
 
 
 
@@ -161,6 +162,8 @@ router.use(`${ADMIN}`, itemCategoryRouter);
 router.use(`${ADMIN}`, itemUnitRouter);
 router.use(`${ADMIN}`, supplierRouter);
 router.use(`${ADMIN}`, factoryGatesRouter);
+router.use(`${ADMIN}`, storageLocationRouter);
+
 //////
 
 

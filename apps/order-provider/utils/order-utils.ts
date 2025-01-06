@@ -1,6 +1,7 @@
-import { OrderStatus, ParsedOrder, PAYMENT_TYPE } from "apps/order/interface/Order";
+import { OrderStatus, ParsedOrder, PAYMENT_TYPE, PresaleParsedOrder } from "apps/order/interface/Order";
 import { IDiscComponent, PriceComponent } from "apps/order/interface/OrderItem";
-import { MetaUser, ParsedUser, USER_STATUS, USER_TYPE } from "apps/user/interface/user";
+import { MetaUser, ParsedUser, TUser, USER_STATUS, USER_TYPE } from "apps/user/interface/user";
+import { json } from "sequelize";
 
 const getEmptyParsedOrder = () => {
     const metaObj: MetaUser = { email: "", firstName: "", id: 0, lastName: "" };
@@ -18,7 +19,7 @@ const getEmptyParsedOrder = () => {
         createdAt: null,
         updatedAt: null,
         deletedAt: null,
-        createdBy: 0
+        createdBy: 0,
     };
 
     const obj: ParsedOrder = {
@@ -58,7 +59,7 @@ const getEmptyParsedOrder = () => {
         couponCodes: [],
         discount: {},
         price: {},
-        createdBy: 0
+        createdBy: 0,
     };
 
     return obj;
@@ -84,4 +85,30 @@ const getCartItemTax = (
     );
 };
 
-export { getEmptyParsedOrder, getCartItemPayableIncTax, getCartItemTax };
+function parseTUser<T extends TUser>(obj: any): T {
+    const json = obj.users;
+    return {
+        ...json,
+        lastLoginAt: new Date(json.lastLoginAt),
+        createdAt: new Date(json.createdAt),
+        updatedAt: new Date(json.updatedAt),
+        deletedAt: json.deletedAt ? new Date(json.deletedAt) : null,
+    } as T;
+}
+
+const getEmptyPreSaleOrder=()=>{
+    const preSaleParsedOrder: PresaleParsedOrder = {
+        total: 0,
+        totalTax: 0,
+        cancelledItems: [], // Initialize with no cancelled items.
+        totalDiscount: 0,
+        coupon: null, // Initialize with no coupon.
+        items: [],
+        notes: [], // Initialize with no notes.
+        orderItems: [],
+    };
+
+    return preSaleParsedOrder
+}
+
+export { getEmptyParsedOrder, getCartItemPayableIncTax, getCartItemTax, parseTUser , getEmptyPreSaleOrder};

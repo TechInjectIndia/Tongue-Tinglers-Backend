@@ -1,13 +1,15 @@
-import {get} from "lodash";
+import { get } from "lodash";
 
 import RepoProvider from "../../RepoProvider";
-import {sendResponse} from "../../../libraries";
-import {RESPONSE_TYPE} from "../../../constants";
-import {Request, Response} from "express";
+import { sendResponse } from "../../../libraries";
+import { RESPONSE_TYPE } from "../../../constants";
+import { Request, Response } from "express";
 import { ParsedCartDetail } from "apps/cart-details/interface/CartDetail";
+import { DTO, getSuccessDTO } from "apps/DTO/DTO";
+import { PresaleParsedOrder } from "apps/order/interface/Order";
+import { getEmptyPreSaleOrder } from "apps/order-provider/utils/order-utils";
 
 export default class CartProductController {
-
     static async createCartProduct(req: Request, res: Response) {
         try {
             const payload: any = req?.body;
@@ -17,17 +19,30 @@ export default class CartProductController {
                 user_id: user_id,
             };
             const productDetails = await RepoProvider.cartProductRepo.create(product);
-             
-            RepoProvider.preSaleOrderProvider.getPreSaleOrder(productDetails)
+            let preSaleRes :DTO<PresaleParsedOrder>=getSuccessDTO(getEmptyPreSaleOrder()) 
+            
+            if (productDetails.cart.length > 0) {
+                 preSaleRes = await RepoProvider.preSaleOrderProvider.getPreSaleOrder(
+                    productDetails
+                );
+            }
 
-            return res.status(201).send(
-                sendResponse(RESPONSE_TYPE.SUCCESS, 'Cart products created successfully.', productDetails)
-            );
+            return res
+                .status(201)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        "Cart products created successfully.",
+                        preSaleRes.data
+                    )
+                );
         } catch (error) {
             console.error(error);
-            return res.status(500).send(
-                sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while fetching products.'),
-            );
+            return res
+                .status(500)
+                .send(
+                    sendResponse(RESPONSE_TYPE.ERROR, "An error occurred while fetching products.")
+                );
         }
     }
 
@@ -35,16 +50,24 @@ export default class CartProductController {
         try {
             const id = parseInt(req.params.id, 0);
             const payload: any = req?.body;
-            payload.id = id
+            payload.id = id;
             const productDetails = await RepoProvider.cartProductRepo.updateQuantity(payload);
-            return res.status(201).send(
-                sendResponse(RESPONSE_TYPE.SUCCESS, 'Cart products updated successfully.', productDetails)
-            );
+            return res
+                .status(201)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        "Cart products updated successfully.",
+                        productDetails
+                    )
+                );
         } catch (error) {
             console.error(error);
-            return res.status(500).send(
-                sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while fetching products.'),
-            );
+            return res
+                .status(500)
+                .send(
+                    sendResponse(RESPONSE_TYPE.ERROR, "An error occurred while fetching products.")
+                );
         }
     }
 
@@ -52,14 +75,22 @@ export default class CartProductController {
         try {
             const id = parseInt(req.params.id, 0);
             const productDetails = await RepoProvider.cartProductRepo.delete(id);
-            return res.status(201).send(
-                sendResponse(RESPONSE_TYPE.SUCCESS, 'Cart products deleted successfully.', productDetails)
-            );
+            return res
+                .status(201)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        "Cart products deleted successfully.",
+                        productDetails
+                    )
+                );
         } catch (error) {
             console.error(error);
-            return res.status(500).send(
-                sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while fetching products.'),
-            );
+            return res
+                .status(500)
+                .send(
+                    sendResponse(RESPONSE_TYPE.ERROR, "An error occurred while fetching products.")
+                );
         }
     }
 
@@ -67,15 +98,22 @@ export default class CartProductController {
         try {
             const id = parseInt(req.params.id);
             const productDetails = await RepoProvider.cartProductRepo.getCartById(id);
-            return res.status(201).send(
-                sendResponse(RESPONSE_TYPE.SUCCESS, 'Cart products fetched successfully.', productDetails)
-            );
+            return res
+                .status(201)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        "Cart products fetched successfully.",
+                        productDetails
+                    )
+                );
         } catch (error) {
             console.error(error);
-            return res.status(500).send(
-                sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while fetching products.'),
-            );
+            return res
+                .status(500)
+                .send(
+                    sendResponse(RESPONSE_TYPE.ERROR, "An error occurred while fetching products.")
+                );
         }
     }
-
 }

@@ -1,16 +1,9 @@
-import { ParsedMeta } from "apps/common/models/Base";
+import {BaseMeta, ParsedMeta} from "apps/common/models/Base";
 import { FollowDetails } from "../apps/follow-details/interface/followDetails";
-
-import type {
-    UpdatedMetaData,
-    BaseModel,
-    DeletionMetaData,
-    ITrackable,
-    Note,
-    UserDetails,
-    ParsedCampaign,
-    MetaUser,
-} from "../interfaces";
+import {UserDetails} from "./index";
+import {ITrackable, Note} from "../apps/lead/interface/lead";
+import {MetaUser} from "../apps/user/interface/user";
+import {ParsedCampaign} from "../apps/campaign/interface/campaign";
 
 enum followStatus {
     FOLLOWED_UP = "followed-up",
@@ -53,7 +46,7 @@ interface AssignAttributes {
     assignedDate: Date;
 }
 
-interface ILead extends UpdatedMetaData, BaseModel, DeletionMetaData {
+interface ILead extends BaseMeta {
     assignedUser: number;
     campaignId?: number;
     status: LeadStatus;

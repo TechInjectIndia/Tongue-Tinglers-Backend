@@ -3,7 +3,7 @@ import {DataTypes, Model, Optional, Transaction} from "sequelize";
 import {QuestionModel} from "apps/questions/models/QuestionModel";
 import RepoProvider from "apps/RepoProvider";
 import {CampaignQuestionModel} from "./CampaignQuestionModel";
-import {ICampaign} from "../interface/campaign";
+import {CampaignPayload, ICampaign} from "../interface/campaign";
 import {sequelize} from "config/database";
 import {LeadsModel} from "apps/lead/models/LeadTable";
 import {RegionModel} from "apps/region/models/RegionTable";
@@ -20,6 +20,7 @@ interface CampaignCreationAttributes
 
 class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
     implements ICampaign {
+
     public id!: number;
     public name!: string;
     public organizationId!: number;
@@ -75,8 +76,7 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
                     comment: "Description of the campaign",
                 },
                 questionList: {
-                    type: DataTypes.ARRAY(DataTypes.INTEGER), // Array of
-                                                              // integers
+                    type: DataTypes.ARRAY(DataTypes.INTEGER), // Array of// integers
                     allowNull: false,
                     comment: "List of questions associated with the campaign",
                 },

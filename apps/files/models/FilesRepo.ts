@@ -1,20 +1,16 @@
-import { uploadFileToFirebase, getAllFilesFromFirebase, deleteFileFromFirebase } from '../../../libraries'; // Adjust import path as necessary
-
-import { Op } from "sequelize";
-import {
-    ICampaignSubmisisons,
-} from "../../../interfaces";
-import { FileModel } from './FileTable';
+import {deleteFileFromFirebase, uploadFileToFirebase} from '../../../libraries'; // Adjust import path as necessary
+import {Op} from "sequelize";
+import {FileModel} from './FileTable';
 
 export class FilesRepo {
     public async searchFiles(name?: string, message?: string): Promise<any[]> {
         const searchConditions: any = {};
 
         if (name) {
-            searchConditions.name = { [Op.iLike]: `%${name}%` };
+            searchConditions.name = {[Op.iLike]: `%${name}%`};
         }
         if (message) {
-            searchConditions.message = { [Op.iLike]: `%${message}%` };
+            searchConditions.message = {[Op.iLike]: `%${message}%`};
         }
 
         if (!name && !message) {
@@ -26,7 +22,8 @@ export class FilesRepo {
                 where: searchConditions,
             });
             return files;
-        } catch (error) {
+        }
+        catch (error) {
             console.error('Error searching files:', error);
             throw new Error('Failed to search files.');
         }
@@ -80,9 +77,10 @@ export class FilesRepo {
         const urlArray = await uploadFileToFirebase(file, destinationPath);
         const url = urlArray[0];
 
-        // Check if the file already exists in the database by name or other identifier
+        // Check if the file already exists in the database by name or other
+        // identifier
         const existingFile = await FileModel.findOne({
-            where: { name: fileInfo.name },
+            where: {name: fileInfo.name},
         });
 
 
@@ -92,13 +90,15 @@ export class FilesRepo {
             recommended: fileInfo.recommended,
             // url: url || existingFile.url,
             updatedAt: new Date(),
-        }, { where: { id: id } });
+        }, {where: {id: id}});
 
         return updatedFile;
     }
 
-    // Uploads a file to Firebase Storage and saves the file data in the database
-    public async uploadFile(file: any, destinationPath: string): Promise<string> {
+    // Uploads a file to Firebase Storage and saves the file data in the
+    // database
+    public async uploadFile(file: any,
+        destinationPath: string): Promise<string> {
         const urlArray = await uploadFileToFirebase(file, destinationPath);
         const url = urlArray[0];
 
@@ -114,7 +114,7 @@ export class FilesRepo {
 
     // Retrieve uploaded files (List files from Firebase and the database)
     public async getFiles(prefix: string = ''): Promise<any> {
-        // const files = await getAllFilesFromFirebase(prefix); 
+        // const files = await getAllFilesFromFirebase(prefix);
 
         const dbFiles = await FileModel.findAll();
 
@@ -124,6 +124,6 @@ export class FilesRepo {
     // Delete a file by its name in Firebase and the database
     public async deleteFile(fileName: string): Promise<void> {
         await deleteFileFromFirebase(fileName);
-        await FileModel.destroy({ where: { name: fileName } });
+        await FileModel.destroy({where: {name: fileName}});
     }
 }

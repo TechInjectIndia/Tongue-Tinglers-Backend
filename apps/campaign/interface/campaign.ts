@@ -2,16 +2,11 @@ import {BaseMeta} from "../../common/models/Base";
 import {ParsedOrganization} from "../../organization/interface/organization";
 import {ParsedRegion} from "../../region/models/Region";
 
-interface ICampaign extends BaseMeta {
-    name: string;
-    organizationId: number;
-    regionId: number;
-    description?: string;
-    questionList: number[];
-    affiliateId?: number
-    proposalIds: number[];
-    start: Date;
-    to: Date;
+import {IQuestion} from "../../questions/interface/Question";
+import {ParsedProposal} from "../../proposal_model/interface/proposal";
+
+interface ICampaign extends BaseMeta, CampaignPayload {
+
 }
 
 type TCampaignList = {
@@ -19,17 +14,7 @@ type TCampaignList = {
     data: ParsedCampaign[]
 }
 
-type TPayloadCampaign = {
-    name: string;
-    region?: string;
-    organizationId: number;
-    description?: string;
-    questionList: number[];
-    createdBy: number;
-    proposalIds: number[];
-}
-
-interface ICampaignSubmisisons {
+interface ICampaignSubmissions {
     id: number;
     campaignId: number;
     response: string;
@@ -37,25 +22,43 @@ interface ICampaignSubmisisons {
     updatedAt: Date;
 }
 
-interface ParsedCampaign {
-    id: number;
+type TPayloadCampaignSubmissions = {
+    campaignId: number;
+    response: string;
+}
+
+type TCampaignSubmissionsList = {
+    total: number,
+    data: ICampaignSubmissions[]
+}
+
+
+
+export interface CampaignPayload {
     name: string;
-    organizationId: number;
-    organization: ParsedOrganization;
-    region:ParsedRegion;
-    regionId: number;
     description?: string;
-    questionList: number[];
-    affiliateId?: number
-    proposalIds: number[];
+    questionList: number[]; // Array of question IDs
+    organizationId: number;
+    regionId: number;
     start: Date;
     to: Date;
+    proposalIds: number[];
+    affiliateId?: number | null;
+}
+
+interface ParsedCampaign extends CampaignPayload {
+    id: number;
+    questions: IQuestion[];
+    proposals: ParsedProposal[];
+    region: ParsedRegion;
+    organization:ParsedOrganization;
 }
 
 export {
     ICampaign,
     TCampaignList,
-    TPayloadCampaign,
-    ICampaignSubmisisons,
-    ParsedCampaign
+    ICampaignSubmissions,
+    ParsedCampaign,
+    TPayloadCampaignSubmissions,
+    TCampaignSubmissionsList
 }

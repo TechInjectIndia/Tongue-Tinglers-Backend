@@ -4,16 +4,20 @@ import {TListFiltersCampaigns} from "../../../types";
 import IBaseRepo from "../controllers/controller/IController";
 import {OrganizationModel} from "../../organization/models/OrganizationTable";
 import {
+    CampaignPayload,
     ICampaign,
     ParsedCampaign,
-    TCampaignList,
-    TPayloadCampaign
+    TCampaignList
 } from "../interface/campaign";
 import {CampaignAdModel} from "./CampaignModel";
 import {RegionModel} from "apps/region/models/RegionTable";
 import {AreaModel} from "apps/area/models/AreaTable";
 import {QuestionModel} from "apps/questions/models/QuestionModel";
 import {ProposalModel} from "../../proposal_model/models/ProposalModelTable";
+import {
+    FranchiseLeadModel
+} from "../../franchise_model/models/FranchiseModelTable";
+import {handleError} from "../../common/utils/HelperMethods";
 
 export class CampaignAdRepo
     implements IBaseRepo<ParsedCampaign, TListFiltersCampaigns> {
@@ -52,15 +56,21 @@ export class CampaignAdRepo
                 {
                     model: ProposalModel,
                     as: "proposals",
+                    include: [
+                        {
+                            model: FranchiseLeadModel,
+                            as: "franchiseModelObj",
+
+                        },
+                    ],
                 },
                 {
                     model: QuestionModel,
                     as: "questions",
-                    attributes: ["id", "question", "type"],
                 },
             ],
         });
-        return campaign.toJSON() as unknown as ParsedCampaign;
+        return campaign as unknown as ParsedCampaign;
     }
 
     public async list(filters: TListFiltersCampaigns): Promise<TCampaignList> {
@@ -124,11 +134,17 @@ export class CampaignAdRepo
                 {
                     model: ProposalModel,
                     as: "proposals",
+                    include: [
+                        {
+                            model: FranchiseLeadModel,
+                            as: "franchiseModelObj",
+
+                        },
+                    ],
                 },
                 {
                     model: QuestionModel,
                     as: "questions",
-                    attributes: ["id", "question", "type"],
                 },
             ],
         });
@@ -139,25 +155,7 @@ export class CampaignAdRepo
         };
     }
 
-    // public async create(data: TPayloadCampaign): Promise<ParsedCampaign> {
-    //
-    //     const { proposalIds, questionList, ...campaignData } = data;
-    //
-    //     // Create the campaign
-    //
-    //     const response = await CampaignAdModel.create(data);
-    //
-    //     // Associate questions if question IDs are provided
-    //     if (questionList && questionList.length > 0) {
-    //         await response.setQuestions(questionList);
-    //     }
-    //
-    //     if (proposalIds && proposalIds.length > 0) {
-    //         await response.setProposals(proposalIds); // Associate proposals
-    // with the campaign }   return response;  }
-
-
-    public async create(data: TPayloadCampaign): Promise<ParsedCampaign> {
+    public async create(data: CampaignPayload, createdBy: number): Promise<ParsedCampaign> {
 
         const transaction: Transaction = await CampaignAdModel.sequelize.transaction();
 
@@ -165,8 +163,10 @@ export class CampaignAdRepo
             const {proposalIds, questionList, ...campaignData} = data;
 
             // Step 1: Create the campaign within the transaction
-            const createdCampaign = await CampaignAdModel.create(campaignData,
+            const createdCampaign = await CampaignAdModel.create(
+                {createdBy, ...data},
                 {transaction});
+
 
             // Step 2: Associate questions if provided
             if (questionList && questionList.length > 0) {
@@ -202,14 +202,22 @@ export class CampaignAdRepo
                     {
                         model: ProposalModel,
                         as: "proposals",
+                        include: [
+                            {
+                                model: FranchiseLeadModel,
+                                as: "franchiseModelObj",
+                            },
+                        ],
                     },
                     {
                         model: QuestionModel,
                         as: "questions",
-                        attributes: ["id", "question", "type"],
+
                     },
                 ],
             });
+
+            console.log('fetchedCampaign',fetchedCampaign);
 
             if (!fetchedCampaign) {
                 throw new Error(
@@ -219,6 +227,7 @@ export class CampaignAdRepo
             return fetchedCampaign.toJSON() as unknown as ParsedCampaign;
         }
         catch (err) {
+            handleError(err)
             // Rollback the transaction in case of an error
             if (transaction) {
                 await transaction.rollback();
@@ -230,7 +239,7 @@ export class CampaignAdRepo
 
 
     public async update(id: number,
-        data: TPayloadCampaign): Promise<[affectedCount: number]> {
+        data: CampaignPayload): Promise<[affectedCount: number]> {
         // Update a campaign by its ID
         return await CampaignAdModel.update(data, {
             where: {

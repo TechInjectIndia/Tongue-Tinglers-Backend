@@ -121,6 +121,9 @@ export default class LeadController {
                 await new AssignRepo().create(assignPayload);
             }
 
+            const mailDto = new CreateLeadMail().getPayload({}, newLead.email);
+            await sendMail(mailDto);
+
             return res
                 .status(200)
                 .send(
@@ -282,7 +285,7 @@ export default class LeadController {
 
             // Mail
             const mailDto = new LeadToProspectMail().getPayload(
-                {                    
+                {
                     btnLink: `https://tonguetingler.vercel.app/organization-setup?prospectId=${prospect.id}`,
                 },
                 existingLead.email,

@@ -20,7 +20,6 @@ export default class CampaignController {
 
             const user_id = get(req, "user_id");
 
-
             const payload = { ...req.body, createdBy: user_id };
 
             const orgExist = new OrganizationRepo().get(payload.organizationId)

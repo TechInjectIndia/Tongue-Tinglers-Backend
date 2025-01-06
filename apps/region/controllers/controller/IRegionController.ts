@@ -1,6 +1,7 @@
-import { NextFunction, Response } from "express";
-import { TQueryFilters } from "../../../../types"; // Adjust the import path as necessary
-import { TRegionList, TPayloadRegion } from "../../../../interfaces"; // Ensure these types are defined in your interfaces
+
+import {TPayloadRegion, TRegionList} from "apps/region/models/Region";
+import {TQueryFilters} from "../../../../types"; // Adjust the import path as necessary
+
 
 interface IRegionController<T, F extends TQueryFilters> {
     /**
@@ -30,7 +31,7 @@ interface IRegionController<T, F extends TQueryFilters> {
      * @param payload - The data to update the region.
      * @returns Promise resolving to the affected count.
      */
-    update(id: number, payload: TPayloadRegion): Promise<[affectedCount: number]>; 
+    update(id: number, payload: TPayloadRegion): Promise<[affectedCount: number]>;
 
     /**
      * Delete regions by IDs.

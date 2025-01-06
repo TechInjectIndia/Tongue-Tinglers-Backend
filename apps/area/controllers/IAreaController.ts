@@ -1,5 +1,6 @@
-import { TQueryFilters } from "../../../types"; // Adjust the import path as necessary
-import { TAreaList, TPayloadArea } from "../../../interfaces"; // Ensure these types are defined in your interfaces
+import { TQueryFilters } from "../../../types";
+import {TAreaList, TPayloadArea} from "../interface/Area"; // Adjust the import path as necessary
+
 
 interface IAreaController<T, F extends TQueryFilters> {
     /**

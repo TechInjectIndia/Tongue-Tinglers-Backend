@@ -1,8 +1,9 @@
-import { parsedFranchise } from "../interface/Franchise";
+
 import { parseUserToMetaUser } from "apps/user/parser/user-parser";
+import {ParsedFranchise} from "../interface/Franchise";
 
 const parseFranchise = (franchise: any) => {
-  const data: parsedFranchise = {
+  const data: ParsedFranchise = {
     pocName: franchise.pocName,
     pocEmail: franchise.pocEmail,
     pocPhoneNumber: franchise.pocPhoneNumber,

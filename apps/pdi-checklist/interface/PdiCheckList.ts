@@ -40,6 +40,7 @@ type TPdiChecklistPayload = {
 
 interface IPdiChecklist {
     id: number,
+    title: string,
     franchiseeId: number,
     checklistName: string,
     pdiDate: Date,

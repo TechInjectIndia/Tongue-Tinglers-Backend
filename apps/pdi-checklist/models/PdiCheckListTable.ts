@@ -7,6 +7,7 @@ interface PdiChecklistCreationAttributes extends Optional<IPdiChecklist, 'id'> {
 
 class PdiChecklistModel extends Model<IPdiChecklist, PdiChecklistCreationAttributes> implements IPdiChecklist {
     public id!: number;
+    public title: string;
     public franchiseeId!: number;
     public checklistName!: string;
     public pdiDate!: Date;
@@ -22,6 +23,10 @@ PdiChecklistModel.init(
             primaryKey: true,
             allowNull: false,
             autoIncrement: true,
+        },
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false,
         },
         franchiseeId: {
             type: DataTypes.INTEGER,

@@ -8,7 +8,7 @@ export class ItemUnitController {
 
     static async create(req: Request, res: Response, next: NextFunction) {
 
-        const user_id = get(req, "user_id", 1);
+        const user_id = get(req, "user_id");
 
         const payload = pick(req.body, ["name", "status",]) as IItemUnit;
         payload.status = ITEM_UNIT_STAUS.ACTIVE;
@@ -25,7 +25,7 @@ export class ItemUnitController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
 
-        const user_id = get(req, "user_id", 1);
+        const user_id = get(req, "user_id");
 
         const id = Number(get(req.params, "id"));
         const payload = {

@@ -1,10 +1,10 @@
 import { APIResponse } from "apps/common/models/Base";
-import { RawMaterialTable } from "../database/RawMaterialTable";
+import { RawMaterialModal } from "../database/RawMaterialTable";
 import { ICreateRawMaterial, IRawMaterialDetails } from "../models/IRawMaterial";
 import { PaginatedBaseResponse } from "interfaces";
 
 export interface IRawMaterialRepo {
-    create(payload: ICreateRawMaterial): Promise<APIResponse<RawMaterialTable | null>>;
+    create(payload: ICreateRawMaterial): Promise<APIResponse<RawMaterialModal | null>>;
 
     update(id: number, payload: ICreateRawMaterial): Promise<APIResponse<void>>;
 

@@ -1,48 +1,50 @@
 import { RegionModel } from "apps/region/models/RegionTable";
-import {AgreementDocModel} from "apps/agreement-docs/model/agreementDocModel";
+import { AgreementDocModel } from "apps/agreement-docs/model/agreementDocModel";
 
-import {CampaignAdModel} from "apps/campaign/models/CampaignModel";
-import {AddressModel} from "apps/address/models/AddressTable";
-import {UserModel} from "apps/user/models/UserTable";
-import {DocumentModel} from "apps/documents/models/DocumentTable";
-import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
-import {LeadsModel} from "apps/lead/models/LeadTable";
-import {ContractModel} from "apps/contracts/models/ContractTable";
-import {IChecklistModel} from "apps/ichecklist/model/CheckListTable";
-import {CampaignQuestionModel} from "apps/campaign/models/CampaignQuestionModel";
-import {QuestionModel} from "apps/questions/models/QuestionModel";
-import {ProposalModel} from "apps/proposal_model/models/ProposalModelTable";
+import { CampaignAdModel } from "apps/campaign/models/CampaignModel";
+import { AddressModel } from "apps/address/models/AddressTable";
+import { UserModel } from "apps/user/models/UserTable";
+import { DocumentModel } from "apps/documents/models/DocumentTable";
+import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
+import { LeadsModel } from "apps/lead/models/LeadTable";
+import { ContractModel } from "apps/contracts/models/ContractTable";
+import { IChecklistModel } from "apps/ichecklist/model/CheckListTable";
+import { CampaignQuestionModel } from "apps/campaign/models/CampaignQuestionModel";
+import { QuestionModel } from "apps/questions/models/QuestionModel";
+import { ProposalModel } from "apps/proposal_model/models/ProposalModelTable";
 import {
     CampaignProposalsModel
 } from "apps/campaign/models/CampaignProposalsModel";
 import {
     FranchiseLeadModel
 } from "apps/franchise_model/models/FranchiseModelTable";
-import {OptionsModel} from "apps/options/models/optionTable";
-import {AreaModel} from "apps/area/models/AreaTable";
-import {AssignModel} from "apps/lead/models/AssignTable";
-import {CommissionTable} from "apps/commission/model/CommmisionTable";
-import {AffiliateModel} from "apps/affiliate/models/affiliateModel";
-import {PdiCheckpointModel} from "apps/pdi-checkpoint/model/PdiCheckPointTable";
+import { OptionsModel } from "apps/options/models/optionTable";
+import { AreaModel } from "apps/area/models/AreaTable";
+import { AssignModel } from "apps/lead/models/AssignTable";
+import { CommissionTable } from "apps/commission/model/CommmisionTable";
+import { AffiliateModel } from "apps/affiliate/models/affiliateModel";
+import { PdiCheckpointModel } from "apps/pdi-checkpoint/model/PdiCheckPointTable";
 import {
     ProductVariationsModel
 } from "../product-options/models/ProductVariationTable";
-import {FollowDetailsModel} from "apps/follow-details/model/followDetailModel";
+import { FollowDetailsModel } from "apps/follow-details/model/followDetailModel";
 import {
     CommissionEntityMapTable
 } from "apps/commission/model/CommissionEntityMapTable";
-import {CartDetailsModel} from "apps/cart-details/models/CartDetailTable";
+import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
 import {
     ProductsCategoryModel
 } from "apps/products-category/models/ProductCategoryTable";
-import {ProductModel} from "apps/product/model/productTable";
-import {OrderModel} from "apps/order/models/OrderTable";
-import {NotesModel} from "apps/order/models/NotesTable";
-import {OrderItemsModel} from "apps/order-items/models/OrderItemsTable";
-import {CartProductModel} from "../cart-products/model/CartProductTable";
-import {handleError} from "apps/common/utils/HelperMethods";
-import {ItemStockModel} from "../../database/schema/petpooja/stock";
-import {OrganizationModel} from "../organization/models/OrganizationTable";
+import { ProductModel } from "apps/product/model/productTable";
+import { OrderModel } from "apps/order/models/OrderTable";
+import { NotesModel } from "apps/order/models/NotesTable";
+import { OrderItemsModel } from "apps/order-items/models/OrderItemsTable";
+import { CartProductModel } from "../cart-products/model/CartProductTable";
+import { handleError } from "apps/common/utils/HelperMethods";
+import { ItemStockModel } from "../../database/schema/petpooja/stock";
+import { OrganizationModel } from "../organization/models/OrganizationTable";
+import { RawMaterialModal } from "apps/raw_material/database/RawMaterialTable";
+import { RawMaterialStockTable } from "apps/raw_material_stock/database/RawMaterialStockTable";
 
 const m = [
     RegionModel,
@@ -83,7 +85,7 @@ const m = [
 console.log(m)
 
 const models = {
-    ProposalModel:ProposalModel.initModel(),
+    ProposalModel: ProposalModel.initModel(),
     AreaModel: AreaModel.initModel(),
     RegionModel: RegionModel.initModel(),
     AddressModel: AddressModel.initModel(),
@@ -115,7 +117,9 @@ const models = {
     OrderItem: OrderItemsModel.initModel(),
     Cart: CartProductModel.initModel(),
     ItemStockModel: ItemStockModel.initModel(),
-    CampaignProposalsModel: CampaignProposalsModel.initModel()
+    CampaignProposalsModel: CampaignProposalsModel.initModel(),
+    RawMaterialModel: RawMaterialModal.initModel(),
+    RawMaterialStockModel: RawMaterialStockTable.initModel(),
 };
 
 console.log(Object.keys(models).join(" "))

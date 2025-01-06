@@ -1,6 +1,6 @@
 import { ItemCategoryTable } from "../../item_category/database/ItemCategoryTable";
 import { ItemUnitTable } from "../../item_unit/database/ItemUnitTable";
-import { RawMaterialTable } from "../database/RawMaterialTable";
+import { RawMaterialModal } from "../database/RawMaterialTable";
 import { ICreateRawMaterial, ICreateRawMaterialPrice, IRawMaterial, IRawMaterialDetails, IRawMaterialPriceDetails } from "../models/IRawMaterial";
 import { RAW_MATERIAL_STAUS } from "../models/RawMaterialMisc";
 import { IRawMaterialRepo } from "./IRawMaterialRepo";
@@ -15,12 +15,12 @@ import { RawMaterialStockTable } from "apps/raw_material_stock/database/RawMater
 
 export class PostgresRawMaterialRepo implements IRawMaterialRepo {
 
-    async create(payload: ICreateRawMaterial,): Promise<APIResponse<RawMaterialTable | null>> {
+    async create(payload: ICreateRawMaterial,): Promise<APIResponse<RawMaterialModal | null>> {
         try {
 
             const transaction = await sequelize.transaction();
 
-            const savedRawMaterial = await RawMaterialTable.create(payload, {
+            const savedRawMaterial = await RawMaterialModal.create(payload, {
                 transaction: transaction,
             });
 
@@ -82,7 +82,7 @@ export class PostgresRawMaterialRepo implements IRawMaterialRepo {
 
             const transaction = await sequelize.transaction();
 
-            await RawMaterialTable.update(payload, {
+            await RawMaterialModal.update(payload, {
                 where: {
                     id: id
                 },
@@ -138,7 +138,7 @@ export class PostgresRawMaterialRepo implements IRawMaterialRepo {
     async getAll(page: number, pageSize: number): Promise<APIResponse<PaginatedBaseResponse<IRawMaterialDetails> | null>> {
         try {
             const offset = (page - 1) * pageSize;
-            const { count, rows } = await RawMaterialTable.findAndCountAll({
+            const { count, rows } = await RawMaterialModal.findAndCountAll({
                 limit: pageSize,
                 offset: offset,
                 order: [['createdAt', 'DESC']],
@@ -227,7 +227,7 @@ export class PostgresRawMaterialRepo implements IRawMaterialRepo {
 
     async getById(id: number): Promise<APIResponse<IRawMaterialDetails | null>> {
         try {
-            const result = await RawMaterialTable.findByPk(id, {
+            const result = await RawMaterialModal.findByPk(id, {
                 include: [
                     {
                         model: RawMaterialPriceTable,
@@ -300,7 +300,7 @@ export class PostgresRawMaterialRepo implements IRawMaterialRepo {
     async delete(ids: number[], deletedById: number): Promise<APIResponse<null>> {
         try {
             const transaction = await sequelize.transaction();
-            await RawMaterialTable.update({
+            await RawMaterialModal.update({
                 status: RAW_MATERIAL_STAUS.DELETED,
                 deletedBy: deletedById,
             }, {

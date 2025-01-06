@@ -1,7 +1,7 @@
 import { IRawMaterialStockRepo } from "./IRawMaterialStockRepo";
 import { IRawMaterialStockDetails, IRawMaterialStockInDetails, IReceiveRawMaterialStock } from "../models/IRawMaterialStock";
 import { RawMaterialStockTable } from "../database/RawMaterialStockTable";
-import { RawMaterialTable } from "../../raw_material/database/RawMaterialTable";
+import { RawMaterialModal } from "../../raw_material/database/RawMaterialTable";
 import { RawMaterialStockInTable } from "../database/RawMaterialStockInTable";
 import { SupplierTable } from "../../supplier/database/SupplierTable";
 import { FactoryGateTable } from "../../factory_gates/database/FactoryGateTable";
@@ -47,7 +47,7 @@ export class PostgresRawMaterialStockRepo implements IRawMaterialStockRepo {
                 offset: offset,
                 order: [['createdAt', 'DESC']],
                 include: [{
-                    model: RawMaterialTable,
+                    model: RawMaterialModal,
                     attributes: ['name', 'msq'],
                     required: true,
                 }],
@@ -62,9 +62,9 @@ export class PostgresRawMaterialStockRepo implements IRawMaterialStockRepo {
                     id: item.getDataValue('id'),
                     rawMaterialId: item.getDataValue('rawMaterialId'),
                     //@ts-ignore
-                    rawMaterialName: item.RawMaterialTable.getDataValue('name'),
+                    rawMaterialName: item.RawMaterialModal.getDataValue('name'),
                     //@ts-ignore
-                    msq: item.RawMaterialTable.getDataValue('msq'),
+                    msq: item.RawMaterialModal.getDataValue('msq'),
                     totalStock: item.getDataValue('totalStock'),
                     assignedStock: item.getDataValue('assignedStock'),
                     createdAt: item.getDataValue('createdAt'),
@@ -93,7 +93,7 @@ export class PostgresRawMaterialStockRepo implements IRawMaterialStockRepo {
         try {
             const result = await RawMaterialStockTable.findByPk(id, {
                 include: [{
-                    model: RawMaterialTable,
+                    model: RawMaterialModal,
                     attributes: ['name'],
                 }],
             });
@@ -107,9 +107,9 @@ export class PostgresRawMaterialStockRepo implements IRawMaterialStockRepo {
                     id: result.getDataValue('id'),
                     rawMaterialId: result.getDataValue('rawMaterialId'),
                     //@ts-ignore
-                    rawMaterialName: result.RawMaterialTable.getDataValue('name'),
+                    rawMaterialName: result.RawMaterialModal.getDataValue('name'),
                     //@ts-ignore
-                    msq: result.RawMaterialTable.getDataValue('msq'),
+                    msq: result.RawMaterialModal.getDataValue('msq'),
                     totalStock: result.getDataValue('totalStock'),
                     assignedStock: result.getDataValue('assignedStock'),
                     createdAt: result.getDataValue('createdAt'),
@@ -135,7 +135,7 @@ export class PostgresRawMaterialStockRepo implements IRawMaterialStockRepo {
                 order: [['createdAt', 'DESC']],
                 include: [
                     {
-                        model: RawMaterialTable,
+                        model: RawMaterialModal,
                         attributes: ['name',],
                     },
                     {
@@ -162,7 +162,7 @@ export class PostgresRawMaterialStockRepo implements IRawMaterialStockRepo {
                     id: item.getDataValue('id'),
                     rawMaterialId: item.getDataValue('rawMaterialId'),
                     //@ts-ignore
-                    rawMaterial: item.RawMaterialTable.getDataValue('name'),
+                    rawMaterial: item.RawMaterialModal.getDataValue('name'),
                     supplierId: item.getDataValue('supplierId'),
                     //@ts-ignore
                     supplier: item.SupplierTable.getDataValue('name'),

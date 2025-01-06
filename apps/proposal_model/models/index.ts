@@ -1,14 +1,17 @@
 import {Op} from "sequelize";
-import { ProposalModels, TPayloadProposalModel } from 'interfaces';
 import IBaseRepo from '../controllers/controller/IController';
 import { TListFilters } from 'apps/common/models/common';
-import { ProposalModelsList } from '../interface/proposal';
+import {
+    ProposalModelsList,
+    ProposalPayload,
+    ProposalTable
+} from '../interface/proposal';
 import {ProposalModel} from "./ProposalModelTable";
 
-export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters> {
+export class ProposalModelRepo implements IBaseRepo<ProposalTable, TListFilters> {
     constructor() { }
 
-    public async get(id: number): Promise<ProposalModels | null> {
+    public async get(id: number): Promise<ProposalTable | null> {
         const data = await ProposalModel.findOne({
             where: {
                 id,
@@ -38,12 +41,12 @@ export class ProposalModelRepo implements IBaseRepo<ProposalModels, TListFilters
         return { total, data };
     }
 
-    public async create(data: TPayloadProposalModel): Promise<ProposalModels> {
+    public async create(data: ProposalPayload): Promise<ProposalTable> {
         const response = await ProposalModel.create(data);
         return response;
     }
 
-    public async update(id: number, data: TPayloadProposalModel): Promise<[affectedCount: number]> {
+    public async update(id: number, data: ProposalPayload): Promise<[affectedCount: number]> {
         return await ProposalModel.update(data, {
             where: {
                 id: id,

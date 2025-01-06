@@ -12,11 +12,6 @@ import {
 } from "../../../libraries";
 
 
-import {
-    BUSINESS_TYPE,
-    IOrganizationPayloadData,
-    ORGANIZATION_TYPE
-} from "../../../interfaces/organization";
 import {createDummyMaster, createDummyProducts} from "../utils";
 import {
     ERROR_MESSAGE,
@@ -38,6 +33,10 @@ import {
 } from "../../product-options/models/ProductVariationTable";
 import express, {Request, Response} from "express";
 import {validateCreateAdminBody} from "../validations/user";
+import {
+    BUSINESS_TYPE,
+    IOrganizationPayloadData, ORGANIZATION_TYPE
+} from "../../organization/interface/organization";
 const router = express.Router();
 
 const {

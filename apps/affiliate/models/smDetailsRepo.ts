@@ -1,10 +1,8 @@
 // Adjust import based on your structure
 import { SocialMediaDetailsModel } from "apps/lead/models/smDetailsTable";
-import {
-    BaseSocialMedia,
-    SocialMediaDetails,
-} from "../../../interfaces";
+
 import IBaseRepo from "../controllers/controller/ISocialMediaController";
+import {BaseSocialMedia, SocialMediaDetails} from "../../lead/interface/lead";
 
 export class SocialMediaDetailsRepo implements IBaseRepo<SocialMediaDetails> {
     constructor() {

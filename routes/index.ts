@@ -27,7 +27,6 @@ import leadRouter from "../apps/lead/api/lead-router";
 import webLeadRouter from "../apps/lead/api/web-lead";
 
 import followUpsRouter from "../apps/lead/api/followups";
-import profileRouter from "../apps/user/api/profile";
 import settingsRouter from "../apps/user/api/settings";
 import paymentsRouter from "../apps/payments/api";
 
@@ -54,7 +53,6 @@ import pdiCheckPointRouter from "../apps/pdi-checkpoint/api/pdiCheckpoint";
 
 import PdiRouter from "../apps/pdi/api/pdiApi";
 import quickActionEmailRouter from "../apps/quick-actions/api/email";
-import quickActionWhatsappRouter from "../apps/quick-actions/api/whatsapp";
 import regionRouter from "../apps/region/api/index";
 import areaRouter from "../apps/area/api/index";
 
@@ -95,8 +93,6 @@ router.use(`${ADMIN}/users`, auth, adminUsersRouter);
 // router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
 // router.use(`${ADMIN}/roles`, auth, rolesRouter);
 
-
-router.use(`${ADMIN}/profile`, auth, profileRouter);
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
 router.use(`/payments`, paymentsRouter); // dont add auth to this url
 
@@ -124,7 +120,6 @@ router.use(`${ADMIN}/checkpoint`, auth, pdiCheckPointRouter);
 router.use(`${ADMIN}/checklist`, auth, IChecklistRouter);
 router.use(`${ADMIN}/pdi`, auth, PdiRouter);
 router.use(`${ADMIN}/quick-actions/email`, auth, quickActionEmailRouter);
-router.use(`${ADMIN}/quick-actions/whatsapp`, auth, quickActionWhatsappRouter);
 router.use(`${ADMIN}/region`, auth, regionRouter);
 router.use(`${ADMIN}/area`, auth, areaRouter);
 router.use(`${ADMIN}/contracts`, auth, contractsRouter);// dont add auth to this url

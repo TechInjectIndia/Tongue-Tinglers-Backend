@@ -1,8 +1,9 @@
 import { Op } from "sequelize";
 
 import IBaseRepo from '../controllers/controller/IAssignController';
-import { AssignAttributes } from "interfaces/leads";
+
 import { AssignModel } from "./AssignTable";
+import {AssignAttributes} from "../interface/lead";
 
 export class AssignRepo implements IBaseRepo<AssignAttributes, any> {
     constructor() { }

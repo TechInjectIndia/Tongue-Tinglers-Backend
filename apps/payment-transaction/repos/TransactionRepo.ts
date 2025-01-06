@@ -1,10 +1,8 @@
 import { Op } from "sequelize";
 
 import { ITransactionRepo } from "./ITransactionRepo";
-import {
-    TransactionModel,
-} from "../../../database/schema/payment-transaction/PaymentTransactionModel";
-import {TransactionFilter} from "../interface/transaction"
+
+import {TransactionFilter, TransactionModel} from "../interface/transaction"
 import {Pagination} from "../../common/models/common";
 class TransactionRepo implements ITransactionRepo {
     async getAll(

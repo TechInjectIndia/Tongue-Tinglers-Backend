@@ -118,8 +118,8 @@ const models = {
     Cart: CartProductModel.initModel(),
     ItemStockModel: ItemStockModel.initModel(),
     CampaignProposalsModel: CampaignProposalsModel.initModel(),
-    RawMaterialModel: RawMaterialModal.initModel(),
-    RawMaterialStockModel: RawMaterialStockTable.initModel(),
+    // RawMaterialModel: RawMaterialModal.initModel(),
+    // RawMaterialStockModel: RawMaterialStockTable.initModel(),
 };
 
 console.log(Object.keys(models).join(" "))

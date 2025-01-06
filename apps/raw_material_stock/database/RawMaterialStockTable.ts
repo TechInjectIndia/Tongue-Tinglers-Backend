@@ -8,7 +8,7 @@ class RawMaterialStockTable extends Model<IRawMaterialStock, ICreateRawMaterialS
 
 
 
-    static initModel() {
+    public static initModel() {
         RawMaterialStockTable.init(
             {
                 id: {
@@ -60,7 +60,7 @@ class RawMaterialStockTable extends Model<IRawMaterialStock, ICreateRawMaterialS
         );
     }
 
-    static associate() {
+    public static associate() {
         RawMaterialModal.hasMany(RawMaterialStockTable, {
             foreignKey: 'rawMaterialId',
         });

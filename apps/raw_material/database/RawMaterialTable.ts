@@ -11,7 +11,7 @@ import { SupplierTable } from 'apps/supplier/database/SupplierTable';
 class RawMaterialModal extends Model<IRawMaterial, ICreateRawMaterial> {
 
 
-    static initModel() {
+    public static initModel() {
 
         RawMaterialModal.init(
             {
@@ -78,7 +78,7 @@ class RawMaterialModal extends Model<IRawMaterial, ICreateRawMaterial> {
         );
     }
 
-    static associate() {
+    public static associate() {
         /* association with ItemUnit */
 
         ItemUnitTable.hasMany(this, {

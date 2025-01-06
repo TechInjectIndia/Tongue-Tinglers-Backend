@@ -3,8 +3,14 @@ import { BaseMeta } from "apps/common/models/Base";
 import { FollowDetails, ParsedFollowDetails } from "apps/follow-details/interface/followDetails";
 import { ParsedFranchiseModels } from "apps/franchise_model/interface/franchiseModel";
 import { ParsedProposal } from "apps/proposal_model/interface/proposal";
-import { ParsedUser } from "apps/user/interface/user";
-import { MetaUser } from "interfaces";
+import { MetaUser } from "apps/user/interface/user";
+
+
+interface AssignAttributes {
+    assignedTo: number;
+    assignedBy: number;
+    assignedDate: Date;
+}
 
 
 interface LeadAddress {
@@ -159,7 +165,7 @@ export type TLeadsList = {
     total: number;
     data: ParsedLead[];
   };
-  
+
 export interface TLeadFilters {
 offset: number;
 limit: number;
@@ -175,4 +181,4 @@ dateRange: {
 };
 }
 
-export { Note, LeadStatus, LeadSource, BaseSocialMedia, ITrackable, LeadAddress, SocialMediaDetails, ExtraFields, extraFieldTypes, socialMediaEnumsPlatform }
+export { Note,AssignAttributes, LeadStatus, LeadSource, BaseSocialMedia, ITrackable, LeadAddress, SocialMediaDetails, ExtraFields, extraFieldTypes, socialMediaEnumsPlatform }

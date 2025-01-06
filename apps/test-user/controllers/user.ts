@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { get, isEmpty } from "lodash";
 import { sendResponse, createPassword, createFirebaseUser } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
 import { AdminRepo } from '../models/user';
 import { Auth } from '../../auth/models';
-import { USER_TYPE } from '../../../interfaces';
 
 export default class AdminController {
     static async addAdmin(req: Request, res: Response, next: NextFunction) {

@@ -12,11 +12,6 @@ import {
 } from "../../../libraries";
 
 
-import {
-    BUSINESS_TYPE,
-    IOrganizationPayloadData,
-    ORGANIZATION_TYPE
-} from "../../../interfaces/organization";
 import {createDummyMaster, createDummyProducts} from "../utils";
 import {
     ERROR_MESSAGE,
@@ -41,6 +36,10 @@ import {validateCreateAdminBody} from "../validations/user";
 import config from "src/config/config";
 import { exec } from "child_process";
 import { sequelize } from "config";
+import {
+    BUSINESS_TYPE,
+    IOrganizationPayloadData, ORGANIZATION_TYPE
+} from "../../organization/interface/organization";
 const router = express.Router();
 
 const {

@@ -1,13 +1,12 @@
-export interface IPdiList {
+export interface ICheckList {
     id:number,
-    checkpoints: checkPointsValue[]
-    prospectId: number;
+    title:string,
+    checkPoints: Array<number>,
+    franchiseModelId: number;
     createdBy?:number;
-    createdAt:Date;
     updatedBy:number|null;
-    updatedAt:Date;
     deletedAt:Date|null;
-    deletedBy:number|null;
+    deletedBy:Date|null;
 }
 
 export interface checkPointsValue {
@@ -15,17 +14,18 @@ export interface checkPointsValue {
     value: boolean
 }
 
-export type TIPdiListList = {
+export type TICheckListList = {
     total: number,
-    data: IPdiList[]
+    data: ICheckList[]
 }
 
-export type TIPdiListPayload = {
-    checkpoints: checkPointsValue[],
-    prospectId: number;
+export type TICheckListPayload = {
+    title:string,
+    checkPoints: Array<number>,
+    franchiseModelId: number;
 };
 
-export type TListFiltersIPdiList = {
+export type TListFiltersICheckListt = {
     offset: number;
     limit: number;
     search?: string;
@@ -33,6 +33,7 @@ export type TListFiltersIPdiList = {
     trashOnly?: string;
     filters?: {
         id?: number;
+        title?: string;
         createdBy?: number;
         [key: string]: any;
     };

@@ -7,8 +7,8 @@ import {
     SUCCESS_MESSAGE,
 } from "../../../constants";
 import RepoProvider from "../../RepoProvider";
-import {Franchise, FranchiseDetails} from "../../../interfaces";
 import {Pagination} from "../../common/models/common";
+import {FranchiseDetails, ParsedFranchise} from "../interface/Franchise";
 
 export default class FranchiseController {
     static async createFranchise(req: Request, res: Response) {
@@ -96,7 +96,7 @@ console.log("****");
                     );
                 }
             }
-            const Franchise: Pagination<Franchise> = await RepoProvider.franchise.getAll(
+            const Franchise: Pagination<ParsedFranchise> = await RepoProvider.franchise.getAll(
                 page, limit, search, filterObj);
             return res.status(200)
                 .send(

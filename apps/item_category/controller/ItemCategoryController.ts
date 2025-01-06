@@ -8,7 +8,7 @@ export class ItemCategoryController {
 
     static async create(req: Request, res: Response, next: NextFunction) {
 
-        const user_id = get(req, "user_id",);
+        const user_id = get(req, "user_id");
 
         const payload = pick(req.body, ["name", "status",]) as ICreateItemCategory;
         payload.status = ITEM_CATEGORY_STAUS.ACTIVE;
@@ -25,7 +25,7 @@ export class ItemCategoryController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
 
-        const user_id = get(req, "user_id",);
+        const user_id = get(req, "user_id", 1);
 
         const id = Number(get(req.params, "id"));
         const payload = {

@@ -31,7 +31,7 @@ export class ItemCategoryValidations {
             }
         }
 
-        const { error } = ItemCategorySchema.create.validate(req.body);
+        const { error } = ItemCategorySchema.update.validate(req.body);
 
         if (error) {
             return res.status(400).json(HelperMethods.getErrorResponse(error.details[0].message));

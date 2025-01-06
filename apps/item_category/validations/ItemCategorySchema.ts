@@ -1,9 +1,18 @@
 import Joi from "@hapi/joi";
+import { ITEM_CATEGORY_STAUS } from "../models/ItemCategoryMisc";
+
 
 export class ItemCategorySchema {
+
     static create =
         Joi.object({
-            name: Joi.string().min(3, "Name must be at least 3 characters long").max(20, "Name must be up to 20 characters long"),
+            name: Joi.string().min(3).max(20).required(),
+        });
+
+    static update =
+        Joi.object({
+            name: Joi.string().min(3).max(20).required(),
+            status: Joi.string().valid(ITEM_CATEGORY_STAUS.ACTIVE, ITEM_CATEGORY_STAUS.INACTIVE, ITEM_CATEGORY_STAUS.DELETED).required(),
         });
 
 }

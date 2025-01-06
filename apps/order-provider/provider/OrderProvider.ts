@@ -36,6 +36,7 @@ import { COUPON_STATUS, DISCOUNT_TYPE } from "apps/coupons/models/Coupon";
 
 import { CartDetailRepo } from "apps/cart-details/repos/cartDetailRepo";
 import { ParsedProduct } from "../../product/interface/Product";
+import { ParsedCartProductDetails } from "apps/cart-details/interface/CartDetail";
 
 export class OrderProvider implements IOrderProvider {
     async processOrder(
@@ -256,9 +257,9 @@ export class OrderProvider implements IOrderProvider {
 
     private async prepareOrder(
         currUser: TUserWithPermission,
-        cart: Cart,
-        billingAddressObj: Address|null,
-        shippingAddressObj: Address|null,
+        cart: ParsedCartProductDetails[],
+        billingAddressObj: Address | null,
+        shippingAddressObj: Address | null,
         paymentData: PAYMENT_TYPE
     ): Promise<ParsedOrder> {
         // initialise Order instance
@@ -490,10 +491,10 @@ export class OrderProvider implements IOrderProvider {
         return result;
     }
 
-    private async getOrderProcessCart(cart: {
-        carts: BaseCartProduct[];
-    }): Promise<ParsedOrderItem[]> {
-        const orderItems = await Promise.all(cart.carts.map((c) => this.getOrderItemByCartItem(c)));
+    private async getOrderProcessCart(
+        carts: ParsedCartProductDetails[]
+    ): Promise<ParsedOrderItem[]> {
+        const orderItems = await Promise.all(carts.map((c) => this.getOrderItemByCartItem(c)));
         return orderItems;
     }
 
@@ -534,20 +535,31 @@ export class OrderProvider implements IOrderProvider {
         };
     };
 
-    private async getOrderItemByCartItem(cartItem: BaseCartProduct): Promise<ParsedOrderItem> {
-        const [product, productOption] = await Promise.all([
-            new ProductRepo().getById(cartItem.product_id),
-            new ProductOptionRepo().getById(cartItem.product_option_id),
-        ]);
+    private async getOrderItemByCartItem(
+        cartItem: ParsedCartProductDetails
+    ): Promise<ParsedOrderItem> {
+        const product = await new ProductRepo().getById(cartItem.product.id);
 
+        const priceCom: PriceComponent = {
+            type: PRICE_COMP_TYPE_CART.BASE_PRICE,
+            percent: 0,
+            taxPercent: 0,
+            value: cartItem.variation.price,
+            tax: 0,
+            calc: VALUE_TYPE.ABSOLUTE,
+        };
+
+        // cartItem.variation.price
         const objItem: ParsedOrderItem = {
             id: 0,
             product: product,
-            productOption: productOption,
+            productOption: cartItem.variation.optionsValue,
             quantity: cartItem.quantity,
             total_price: 0,
             totalTax: 0,
-            prices: {},
+            prices: {
+                [PRICE_COMP_TYPE.BASE_PRICE]: priceCom,
+            },
             disc: {},
             type: ORDER_ITEM_TYPE.RETORT,
             totalDiscount: 0,
@@ -583,13 +595,12 @@ export class OrderProvider implements IOrderProvider {
         return getSuccessDTO(existingAdmin);
     }
 
-    private async fetchCart(userId: number): Promise<DTO<Cart>> {
-        
+    private async fetchCart(userId: number): Promise<DTO<ParsedCartProductDetails[]>> {
         const cart = await new CartDetailRepo().getCartDetailByUserId(userId);
         if (!cart) return getUnhandledErrorDTO("Cart not found");
-        console.log(cart);
-        
-        return getSuccessDTO(cart);
+        console.log("got", cart);
+
+        return getSuccessDTO(cart.cart);
     }
 
     private async fetchAddress(addressId: number | null): Promise<DTO<Address | null>> {

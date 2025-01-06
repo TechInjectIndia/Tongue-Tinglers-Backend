@@ -1,3 +1,5 @@
+import type{ ParsedCartDetail } from "../interface/CartDetail";
+
 export interface ICartDetailRepo {
-    getCartDetailByUserId(userId: number): Promise<any>;
+    getCartDetailByUserId(userId: number): Promise<ParsedCartDetail>;
 }

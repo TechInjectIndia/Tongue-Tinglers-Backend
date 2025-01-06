@@ -38,6 +38,9 @@ import {
 } from "../../product-options/models/ProductVariationTable";
 import express, {Request, Response} from "express";
 import {validateCreateAdminBody} from "../validations/user";
+import config from "src/config/config";
+import { exec } from "child_process";
+import { sequelize } from "config";
 const router = express.Router();
 
 const {
@@ -364,6 +367,24 @@ router.get('/createEverything', createProductWithAssociations)
 
 /**
  * @swagger
+ * /api/admin/test-user/resetDatabase:
+ *   get:
+ *     summary: create product category & product options
+ *     tags: [AUTH]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: User created successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ */
+router.get('/resetDatabase', resetDatabase)
+
+/**
+ * @swagger
  * /api/admin/test-user/sampleData:
  *   get:
  *     summary: Run this after superOrg to create sample data
@@ -519,6 +540,36 @@ async function createProductWithAssociations(req: Request, res: Response) {
             message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
         });
     }
+}
+
+
+async function resetDatabase() {
+    const {development} = config;
+    
+    try{    
+        const dropCreateCommand = `PGPASSWORD=${development.password} psql -h ${development.host} -U ${development.username} -c "DROP DATABASE IF EXISTS ${development.database};" -c "CREATE DATABASE ${development.database};"`
+        console.log('Dropping and creating the database...');
+        await new Promise<void>((resolve, reject)=>{
+            exec(dropCreateCommand, (error, stdout, stderr)=>{
+                if(error){
+                    reject(`Error: ${stderr}`);
+                }else{
+                    console.log(stdout);
+                    resolve();
+                }
+            })
+        })
+        console.log('Synchronizing models...');
+        await sequelize.sync({ force: true }); // `force: true` drops existing tables and recreates them
+        console.log('Database and tables created successfully.');
+        // Optional: Initialize data (if needed)
+        console.log('Seeding initial data...');
+    }catch(error){
+        console.error('Error resetting database:', error);
+    }finally {
+        await sequelize.close(); // Close the connection
+    }
+   
 }
 
 

@@ -9,14 +9,14 @@ import {
     SUCCESS_MESSAGE,
 } from "../../../constants"; // Adjust this import path as necessary
 import {OrganizationRepo} from "../models";
-import {
-    IOrganizationPayloadDataWithMeta,
-    Organization,
-} from "../../../interfaces/organization";
 
 import {ContractRepo} from "../../contracts/models/ContractRepo";
 import { ContractsPayload } from "apps/contracts/interface/Contract";
 import {Pagination} from "../../common/models/common";
+import {
+    IOrganizationPayloadDataWithMeta,
+    Organization
+} from "../interface/organization";
 
 
 export default class OrganizationController {

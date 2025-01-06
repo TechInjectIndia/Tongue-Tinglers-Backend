@@ -1,5 +1,4 @@
-import { ICheckList, TICheckListList, TICheckListPayload, TListFiltersICheckListt } from '../../../../interfaces/ichecklist';
-import { IPdiList, TIPdiListList, TIPdiListPayload } from '../../../../interfaces/pdi';
+import { IPdiList, TIPdiListList, TIPdiListPayload } from 'apps/pdi-checklist/interface/Pdi';
 import { TListFilters } from '../../../../types';
 
 /**

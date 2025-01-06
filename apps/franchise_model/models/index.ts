@@ -1,9 +1,10 @@
-const { Op } = require("sequelize");
 import {
     FranchiseModels,
-    FranchiseModelsList,
-    TPayloadFranchiseModel,
-} from "../../../interfaces";
+    FranchiseModelsList, TPayloadFranchiseModel
+} from "../interface/franchiseModel";
+
+const { Op } = require("sequelize");
+
 import { TListFilters } from "../../../types";
 
 import { getUserName } from "../../common/utils/commonUtils";

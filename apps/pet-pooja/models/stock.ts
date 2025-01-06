@@ -1,9 +1,10 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../../config";
-import { IItemStockAttributes } from '../../../interfaces';
 
-import RepoProvider from "../../../apps/RepoProvider";
-import {UserModel} from "../../../apps/user/models/UserTable";
+
+import {IItemStockAttributes} from "../interfaces/PetPooja";
+import {UserModel} from "../../user/models/UserTable";
+import RepoProvider from "../../RepoProvider";
 
 // Define the ItemStock creation attributes interface
 interface ItemStockCreationAttributes extends Optional<IItemStockAttributes, 'recorded_at'> { }

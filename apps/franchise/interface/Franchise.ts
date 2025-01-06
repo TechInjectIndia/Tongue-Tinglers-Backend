@@ -6,8 +6,7 @@ import { ParsedOrganization } from "../../organization/interface/organization";
 
 
 import { ParsedRegion } from "apps/region/models/Region";
-import { ParsedUser } from "apps/user/interface/user";
-import { MetaUser } from "interfaces";
+import {MetaUser, ParsedUser} from "apps/user/interface/user";
 
 
 interface BaseFranchise {

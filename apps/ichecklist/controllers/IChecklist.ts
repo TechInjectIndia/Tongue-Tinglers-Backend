@@ -19,10 +19,10 @@ class PdiChecklistController {
 
             console.log(newChecklist)
             //
-            // return res.status(200).json({
-            //     message: "PDI Checklist created successfully",
-            //     data: newChecklist,
-            // });
+            return res.status(200).json({
+                message: "PDI Checklist created successfully",
+                data: newChecklist,
+            });
         } catch (error) {
             console.error(error);
             return res.status(400).json({ message: "Invalid request body" });

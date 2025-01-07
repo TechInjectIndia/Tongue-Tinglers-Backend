@@ -10,7 +10,7 @@ import { ParseFranchiseModel } from "apps/franchise_model/parser/franchiseModelP
 
 
 const parseLead = (lead: any): ParsedLead => {
-    let followDetailsLogs=null;
+    let followDetailsLogs=[];
     if (!lead) return null;
     if((lead.followDetails && Array.isArray(lead.followDetails)) && (lead.followDetails.length > 0)){
         followDetailsLogs = lead.followDetails.flatMap(detail => detail.logs);

@@ -1,11 +1,12 @@
 import { Op } from "sequelize";
-import { ICheckList, TICheckListList, TICheckListPayload, TListFiltersICheckListt } from "../interface/IChecklist";
+import { ICheckList, ParsedChecklist, TICheckListList, TICheckListPayload, TListFiltersICheckListt } from "../interface/IChecklist";
 import { IChecklistModel } from "./CheckListTable";
 import { UserModel } from "apps/user/models/UserTable";
 import { getUserName } from "apps/common/utils/commonUtils";
 import {
     FranchiseLeadModel
 } from "../../franchise_model/models/FranchiseModelTable";
+import { parseChecklist } from "../parser/checklistParser";
 
 export class PdiChecklistRepo {
     constructor() { }
@@ -32,19 +33,17 @@ export class PdiChecklistRepo {
     }
 
     // Get PDI Checklist by ID
-    public async get(id: number): Promise<ICheckList | null> {
+    public async get(id: number): Promise<ParsedChecklist | null> {
         const data = await IChecklistModel.findOne({
             where: { id },
             include : [
                 {
                     model: UserModel,
                     as: "createdByUser",
-                    attributes: ["id", "firstName", "lastName"],
                 },
                 {
                     model: UserModel,
                     as: "updatedByUser",
-                    attributes: ["id", "firstName", "lastName"],
                 },
                 {
                     model: FranchiseLeadModel,
@@ -53,8 +52,7 @@ export class PdiChecklistRepo {
             ],
         });
 
-        console.log(data)
-        return data as ICheckList | null;
+        return parseChecklist(data); 
     }
 
     // List PDI Checklists with filters
@@ -97,7 +95,9 @@ export class PdiChecklistRepo {
             ],
         });
 
-        return { total, data } as TICheckListList;
+        const parsedData = data.map((checklist) => parseChecklist(checklist));
+
+        return { total, data: parsedData };
     }
 
     // Update PDI Checklist information
@@ -131,11 +131,30 @@ export class PdiChecklistRepo {
         return deletedCount;
     }
 
-    public async getChecklistByFranchiseId(franchiseModelId: number): Promise<ICheckList[]> {
+    public async getChecklistByFranchiseId(franchiseModelId: number): Promise<ParsedChecklist[]> {
         const data = await IChecklistModel.findAll({
-            where: { franchiseModelId }
+            where: { franchiseModelId },
+            include : [
+                {
+                    model: UserModel,
+                    as: "createdByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
+                }, {
+                    model: UserModel,
+                    as: "deletedByUser",
+                },
+                {
+                    model: FranchiseLeadModel,
+                    as: "franchiseModal",
+                },
+            ],
         });
-        return data as ICheckList[] | null;
+
+        const parsedData = data.map((checklist) => parseChecklist(checklist));
+        return parsedData;
     }
 }
 

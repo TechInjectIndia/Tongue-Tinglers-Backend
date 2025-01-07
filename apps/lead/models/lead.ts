@@ -13,6 +13,8 @@ import { getUserName } from "apps/common/utils/commonUtils";
 import { AssignModel } from "./AssignTable";
 import { createLeadsResponse } from "libraries";
 import { LogModel } from "apps/logs/models/LogsTable";
+import { ProposalModel } from "apps/proposal_model/models/ProposalModelTable";
+import { FranchiseLeadModel } from "apps/franchise_model/models/FranchiseModelTable";
 
 export class LeadRepo {
     constructor() { }
@@ -88,6 +90,16 @@ export class LeadRepo {
                         },
                     ],
                 },
+                {
+                    model: ProposalModel,
+                    as: 'proposalModal',
+                    include: [
+                        {
+                            model: FranchiseLeadModel,
+                            as: 'franchiseModelObj',
+                        }
+                    ]
+                }
             ],
             transaction,
         });

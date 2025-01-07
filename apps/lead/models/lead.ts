@@ -12,6 +12,7 @@ import { Pagination, TListFilters, TListFiltersAreas } from "apps/common/models/
 import { getUserName } from "apps/common/utils/commonUtils";
 import { AssignModel } from "./AssignTable";
 import { createLeadsResponse } from "libraries";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 export class LeadRepo {
     constructor() { }
@@ -51,6 +52,11 @@ export class LeadRepo {
                     as: "assignee",
                 },
                 {
+                    model: LogModel,
+                    as: "logs",
+                    where: { model: "Leads" }, // Ensure you're filtering logs specific to "Leads"
+                  },
+                {
                     model: FollowDetailsModel,
                     as: "followDetails",
                     through: { attributes: [] },
@@ -74,6 +80,11 @@ export class LeadRepo {
                                 "lastName",
                                 "email",
                             ],
+                        },
+                        {
+                            model: LogModel,
+                            as: "logs",
+                            where: { model: "Follow Details" }, // Ensure you're filtering logs specific to "Leads"
                         },
                     ],
                 },

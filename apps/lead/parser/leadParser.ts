@@ -58,6 +58,7 @@ const parseLead = (lead: any): ParsedLead => {
         status: lead.status,
         source: lead.source,
         sourceInfo: lead.sourceInfo,
+        logs: lead.logs
     };
     return data;
 };

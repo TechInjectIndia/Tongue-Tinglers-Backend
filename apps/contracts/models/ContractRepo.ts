@@ -189,7 +189,11 @@ export class ContractRepo {
             },{
                 model: UserModel,
                 as: "assignuser"
-            }],
+            },
+                {
+                    model: OrganizationModel,
+                    as: 'organization',
+                }],
         });
         return data ? parseContract(data) : null;
     }
@@ -211,9 +215,19 @@ export class ContractRepo {
             },{
                 model: UserModel,
                 as: "assignuser"
-            }],
+            },
+                {
+                    model: OrganizationModel,
+                    as: 'organization',
+                }
+                ],
             transaction,
         });
+
+        console.log("******")
+        console.log(data)
+        console.log("******")
+
         return data ? parseContract(data) : null;
     }
 
@@ -223,7 +237,6 @@ export class ContractRepo {
         const validStatuses = Object.values(CONTRACT_STATUS).filter(
             (status) => status === filters.filters?.status
         );
-        console.log(validStatuses);
 
         if (
             filters?.filters.status &&
@@ -277,10 +290,12 @@ export class ContractRepo {
             where.templateId = filters.filters.zohoTemplate; // Assuming assignee is identified by an ID
         }
 
-        console.log(where);
+
         const total = await ContractModel.count({
             where: where,
         });
+
+
         const data = await ContractModel.findAll({
             order: [filters?.sorting],
             offset: filters.offset,
@@ -301,7 +316,10 @@ export class ContractRepo {
                 as: "assignuser"
             }],
         });
+
+
         const parsedData: ParsedContract[] = await Promise.all(data.map((contract) => parseContract(contract)));
+
         return { total, data: parsedData }
     }
 

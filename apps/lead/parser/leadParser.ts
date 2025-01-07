@@ -37,11 +37,11 @@ const parseLead = (lead: any): ParsedLead => {
             : [],
         marketing: lead.marketing,
         other: lead.other,
-        proposalModalId: lead.proposalModalId
-            ? ParseProposal(lead.proposalModalId)
+        proposalModalId: lead.proposalModal
+            ? ParseProposal(lead.proposalModal)
             : null,
-        assignedUser: lead.assignedUser
-            ? parseUserToMetaUser(lead.assignedUser)
+        assignedUser: lead.assignee
+            ? parseUserToMetaUser(lead.assignee)
             : null,
         franchiseModals: lead.franchiseModals
             ? lead.franchiseModals.map((modal: ParsedFranchiseModels) =>

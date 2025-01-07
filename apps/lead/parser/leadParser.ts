@@ -10,9 +10,11 @@ import { ParseFranchiseModel } from "apps/franchise_model/parser/franchiseModelP
 
 
 const parseLead = (lead: any): ParsedLead => {
+    let followDetailsLogs=null;
     if (!lead) return null;
-
-    const followDetailsLogs = lead.followDetails.flatMap(detail => detail.logs);
+    if((lead.followDetails && Array.isArray(lead.followDetails)) && (lead.followDetails.length > 0)){
+        followDetailsLogs = lead.followDetails.flatMap(detail => detail.logs);
+    }
     const data: ParsedLead = {
         id: lead.id,
         firstName: lead.firstName,
@@ -58,7 +60,7 @@ const parseLead = (lead: any): ParsedLead => {
         status: lead.status,
         source: lead.source,
         sourceInfo: lead.sourceInfo,
-        logs: sortingLogs(lead.logs, followDetailsLogs)
+        logs: lead.logs ? sortingLogs(lead.logs, followDetailsLogs) : null
     };
     return data;
 };

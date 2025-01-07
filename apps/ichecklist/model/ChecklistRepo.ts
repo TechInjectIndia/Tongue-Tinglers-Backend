@@ -3,6 +3,9 @@ import { ICheckList, TICheckListList, TICheckListPayload, TListFiltersICheckList
 import { IChecklistModel } from "./CheckListTable";
 import { UserModel } from "apps/user/models/UserTable";
 import { getUserName } from "apps/common/utils/commonUtils";
+import {
+    FranchiseLeadModel
+} from "../../franchise_model/models/FranchiseModelTable";
 
 export class PdiChecklistRepo {
     constructor() { }
@@ -31,8 +34,26 @@ export class PdiChecklistRepo {
     // Get PDI Checklist by ID
     public async get(id: number): Promise<ICheckList | null> {
         const data = await IChecklistModel.findOne({
-            where: { id }
+            where: { id },
+            include : [
+                {
+                    model: UserModel,
+                    as: "createdByUser",
+                    attributes: ["id", "firstName", "lastName"],
+                },
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
+                    attributes: ["id", "firstName", "lastName"],
+                },
+                {
+                    model: FranchiseLeadModel,
+                    as: "franchiseModal",
+                },
+            ],
         });
+
+        console.log(data)
         return data as ICheckList | null;
     }
 
@@ -43,7 +64,9 @@ export class PdiChecklistRepo {
                 title: {
                     [Op.iLike]: `%${filters.search}%`,
                 },
+
             },
+
         });
 
         const data = await IChecklistModel.findAll({
@@ -55,6 +78,23 @@ export class PdiChecklistRepo {
                     [Op.iLike]: `%${filters.search}%`,
                 },
             },
+            include : [
+                {
+                    model: UserModel,
+                    as: "createdByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
+                }, {
+                    model: UserModel,
+                    as: "deletedByUser",
+                },
+                {
+                    model: FranchiseLeadModel,
+                    as: "franchiseModal",
+                },
+            ],
         });
 
         return { total, data } as TICheckListList;

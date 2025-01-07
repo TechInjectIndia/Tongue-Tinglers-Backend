@@ -118,9 +118,6 @@ const models = {
     CampaignProposalsModel: CampaignProposalsModel.initModel()
 };
 
-console.log(Object.keys(models).join(" "))
-
-
 let currentModel: string = null;
 
 try {

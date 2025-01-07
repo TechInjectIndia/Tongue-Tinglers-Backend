@@ -271,6 +271,36 @@ export class LeadRepo {
             }
         }
         console.log(where);
+        include.push( {
+            model: UserModel,
+            as: "assignee",
+        },{
+            model: FollowDetailsModel,
+            as: "followDetails",
+            through: { attributes: [] },
+            include: [
+                {
+                    model: UserModel,
+                    as: "created",
+                    attributes: [
+                        "id",
+                        "firstName",
+                        "lastName",
+                        "email",
+                    ],
+                },
+                {
+                    model: UserModel,
+                    as: "followed",
+                    attributes: [
+                        "id",
+                        "firstName",
+                        "lastName",
+                        "email",
+                    ],
+                },
+            ],
+        },)
         const total = await LeadsModel.count({
             where: where,
             include: include,

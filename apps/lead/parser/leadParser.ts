@@ -10,9 +10,9 @@ import { ParseFranchiseModel } from "apps/franchise_model/parser/franchiseModelP
 
 
 const parseLead = (lead: any): ParsedLead => {
-    console.log("lead: ", lead);
     if (!lead) return null;
 
+    const followDetailsLogs = lead.followDetails.flatMap(detail => detail.logs);
     const data: ParsedLead = {
         id: lead.id,
         firstName: lead.firstName,
@@ -58,9 +58,18 @@ const parseLead = (lead: any): ParsedLead => {
         status: lead.status,
         source: lead.source,
         sourceInfo: lead.sourceInfo,
-        logs: lead.logs
+        logs: sortingLogs(lead.logs, followDetailsLogs)
     };
     return data;
 };
 
 export { parseLead };
+
+function sortingLogs(leadsLogs, followDetailsLog){
+    const mergedLogs = [...leadsLogs, ...followDetailsLog].sort((a, b) => {
+        const dateA = new Date(a.timestamp).getTime();
+        const dateB = new Date(b.timestamp).getTime();
+        return dateA - dateB;
+    });
+    return mergedLogs
+}

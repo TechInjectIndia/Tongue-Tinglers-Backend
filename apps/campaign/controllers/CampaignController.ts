@@ -35,7 +35,7 @@ export default class CampaignController {
                     );
             }
 
-            const regionExist = await new RegionRepo().get(payload.region);
+            const regionExist = await new RegionRepo().get(payload.regionId);
             if(!regionExist){
                 return res
                     .status(200)

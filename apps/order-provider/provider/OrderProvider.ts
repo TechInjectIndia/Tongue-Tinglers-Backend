@@ -37,6 +37,10 @@ import { COUPON_STATUS, DISCOUNT_TYPE } from "apps/coupons/models/Coupon";
 import { CartDetailRepo } from "apps/cart-details/repos/cartDetailRepo";
 import { ParsedProduct } from "../../product/interface/Product";
 import { ParsedCartProductDetails } from "apps/cart-details/interface/CartDetail";
+import { getUid } from "apps/common/utils/commonUtils";
+import { CURRENCY_TYPE, RPOrderParams } from "apps/razorpay/models/RPModels";
+import { Orders } from "node_modules/razorpay/dist/types/orders";
+import { RazorpayProvider } from "apps/razorpay/repositories/razorpay/RazorpayProvider";
 
 export class OrderProvider implements IOrderProvider {
     async processOrder(
@@ -68,9 +72,12 @@ export class OrderProvider implements IOrderProvider {
         this.calculateOrder(order, user.data);
 
         // Transform the order into RPOrder and ParsedOrder
-        const rpOrder: RPOrder = this.transformToRPOrder(order);
+        const rpOrder = await this.transformToRPOrder(order);
 
-        return getSuccessDTO({ rpOrder: rpOrder, parsedOrder: order });
+
+        if (!rpOrder.success) return getUnhandledErrorDTO("Failed to create RP Order")
+
+        return getSuccessDTO({ rpOrder: rpOrder.data, parsedOrder: order });
     }
 
     ///////////////////////////PRIVATE METHODS////////////////////////////////////
@@ -568,21 +575,57 @@ export class OrderProvider implements IOrderProvider {
         return objItem;
     }
 
-    private transformToRPOrder(order: ParsedOrder): RPOrder {
-        const rpOrder: RPOrder = {
-            id: String(order.id),
-            amount: order.total,
-            amount_paid: order.total,
-            amount_due: 0,
-            currency: "INR",
-            receipt: "zero",
-            offer_id: "zero",
-            status: RP_ORDER_STATUS.PAID,
-            attempts: 1,
-            notes: [],
-            created_at: new Date(),
-        };
-        return rpOrder;
+    private async transformToRPOrder(order: ParsedOrder): Promise<DTO<RPOrder>> {
+        // STEP 1: create order in payment
+        const response = await this.createOrder(order);
+
+        return response;
+    }
+
+    private async createOrder(order: ParsedOrder): Promise<DTO<RPOrder>> {
+        try {
+            const body: RPOrderParams = {
+                currency: CURRENCY_TYPE.INR,
+                receipt: order.id.toString(),
+                amount: Number(order.total.toFixed(2)),
+                notes: [order.id.toFixed(2)],
+            };
+
+            const resJson = await this.createOrderReq(body);
+            if (!resJson) return getUnhandledErrorDTO("payment order failed");
+            return getSuccessDTO(resJson) as DTO<RPOrder>;
+        } catch (error: any) {
+            return getUnhandledErrorDTO(error.message);
+        }
+    }
+
+    private async createOrderReq(orderData: RPOrderParams) {
+        try {
+            // match amount and host
+            const id = orderData?.notes?.[0];
+
+            // console.log("_*after check*_*_**", remoteOrder);
+
+            // _*_*_*_*_*_*_*_*_*_* MAIN _*_*_*_*_*_*_*_*_*_*
+
+            orderData.amount = Number((Number(orderData.amount) * 100).toFixed(2));
+            let result: DTO<Orders.RazorpayOrder>;
+            // console.log('here key',RP_ID_PROD);
+
+            const rpInstance = RazorpayProvider.getRazorpayInstance();
+
+            // todo rajinder access keys from env later
+
+            const order: Orders.RazorpayOrder = await rpInstance.orders.create(
+                orderData as unknown as Orders.RazorpayOrderCreateRequestBody
+            );
+
+            return order;
+        } catch (e: any) {
+            console.log(e);
+
+            return getUnhandledErrorDTO(e.message);
+        }
     }
 
     // Mock methods to fetch data (replace with actual implementations)

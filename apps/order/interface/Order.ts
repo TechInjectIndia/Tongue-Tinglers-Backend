@@ -140,6 +140,10 @@ enum RP_ORDER_STATUS {
     ATTEMPTED = "attempted",
 }
 
+export enum ORDER_CURRENCY {
+    INR = "INR",
+}
+
 interface RPOrder {
     id: string;
     amount: number;

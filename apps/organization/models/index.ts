@@ -1,7 +1,6 @@
 import {Op} from "sequelize";
 import {TListFilters} from "../../../types";
 
-import IBaseRepo from "../controllers/controller/IController";
 
 import {OrganizationModel} from "../models/OrganizationTable";
 import RepoProvider from "../../RepoProvider";
@@ -11,8 +10,7 @@ import { AddressModel } from "apps/address/models/AddressTable";
 import { UserModel } from "apps/user/models/UserTable";
 import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
 
-export class OrganizationRepo
-    implements IBaseRepo<IOrganizationPayloadDataWithMeta, ParsedOrganization, TListFilters> {
+export class OrganizationRepo{
     constructor() {
     }
 

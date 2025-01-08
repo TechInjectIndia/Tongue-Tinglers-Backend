@@ -4,7 +4,7 @@ import {
     TEditUserProfile,
 } from "../../../types/";
 import { UserModel } from "../../user/models/UserTable";
-import { USER_TYPE } from '../../../interfaces';
+import { USER_TYPE } from '../../user/interface/user';
 import IBaseRepo from '../controllers/controller/IProfileController';
 
 export class ProfileRepo implements IBaseRepo<TProfile> {

@@ -2,7 +2,7 @@ const { Op } = require("sequelize");
 import {
     TListFilters,
 } from "../../../types";
-import { Franchise } from "../../../interfaces";
+import { Franchise } from "../../franchise/interface/Franchise";
 import IBaseRepo from "../controllers/IFranchiseController";
 
 export class FranchiseRepo implements IBaseRepo<Franchise, Franchise, TListFilters> {

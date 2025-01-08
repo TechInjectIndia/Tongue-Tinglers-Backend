@@ -1,6 +1,6 @@
 import { Response } from "express";
 import {  TQueryFilters } from '../../../../types';
-import { AssignAttributes } from '../../../../interfaces';
+import { AssignAttributes } from '../../interface/lead';
 import {AssignModel} from "../../models/AssignTable";
 
 

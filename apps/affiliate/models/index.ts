@@ -1,13 +1,12 @@
 import {Op} from "sequelize";
 
-import IBaseRepo from '../controllers/controller/IController';
 import {Affiliate, ParsedAffiliate} from "../interface/affiliate";
 import { TListFilters } from "apps/common/models/common";
 import { AffiliateModel } from "./affiliateModel";
 import { UserModel } from "apps/user/models/UserTable";
 import { SocialMediaDetailsModel } from "apps/lead/models/smDetailsTable";
 
-export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
+export class AffiliateRepo {
     constructor() { }
 
     public async get(id: number): Promise<Affiliate | null> {

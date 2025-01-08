@@ -31,14 +31,14 @@ class RegionModel extends Model<IRegion, RegionCreationAttributes>
     public addAreas!: (
         options: Array<AreaModel | number>,
     ) => Promise<void>;
-    public setAreases!: (
+    public setAreas!: (
         options: Array<AreaModel | number>
     ) => Promise<void>;
-    public getAreases!: () => Promise<AreaModel[]>;
-    public removeAreas!: (
+    public getAreas!: () => Promise<AreaModel[]>;
+    public removeArea!: (
         option: AreaModel | number
     ) => Promise<void>;
-    public removeAreases!: (
+    public removeAreas!: (
         options: Array<AreaModel | number>
     ) => Promise<void>;
 

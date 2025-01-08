@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
+import { QuickActionsStatus } from "../interface/Files";
 
 // Validation schema for file upload
 const fileUploadSchema = Joi.object({
@@ -36,6 +37,13 @@ const fileUploadSchema = Joi.object({
         "string.base": "Subject must be a string.",
         "string.empty": "Subject cannot be empty.",
         "any.required": "Subject is required.",
+    }),
+    status: Joi.string()
+    .valid(...Object.values(QuickActionsStatus))
+    .messages({
+      "any.only": `Status must be one of: ${Object.values(QuickActionsStatus).join(
+        ", "
+      )}.`,
     }),
 });
 

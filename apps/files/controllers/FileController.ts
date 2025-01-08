@@ -10,15 +10,18 @@ export default class FilesController {
         try {
 
             const id = parseInt(get(req.params, "id")); // Assuming the file ID is passed as a URL parameter
+            const userId = parseInt(get(req, "user_id"));
+            if (isNaN(userId)) throw Error('Missing user_id or isNaN');
             const fileDetails = req.body;
     
             // Build the update information
             const fileInfo = {
                 message: fileDetails.message || '',
                 name: fileDetails.name || '',
-                recommended: fileDetails.recommended || false,
+                status: fileDetails.status || 'active',
                 subject: fileDetails.subject,
-                url: fileDetails.files
+                url: fileDetails.files,
+                updatedBy: userId
             };
             
             let result = await new FilesRepo().update(id, fileInfo);
@@ -53,14 +56,18 @@ export default class FilesController {
 
     static async uploadFile(req: Request, res: Response) {
         try {
+            const userId = parseInt(get(req, "user_id"));
+            console.log('userId: ', userId);
+            if (isNaN(userId)) throw Error('Missing user_id or isNaN');
             let fileDetails = req.body;
             let result: any
             const fileInfo = {
                 message: fileDetails.message || '',
                 name: fileDetails.name || '',
-                recommended: fileDetails.recommended || false,
+                status: fileDetails.status || 'active',
                 subject: fileDetails.subject,
-                url: fileDetails.files
+                url: fileDetails.files,
+                createdBy: userId
             };
             result = await new FilesRepo().create(fileInfo);
             return res.status(200).send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPLOADED, { result }));

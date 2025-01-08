@@ -44,6 +44,7 @@ import {handleError} from "apps/common/utils/HelperMethods";
 import {ItemStockModel} from "../pet-pooja/models/stock";
 import {OrganizationModel} from "../organization/models/OrganizationTable";
 import { PdiModel } from "apps/pdi/model/PdiTable";
+import { FileModel } from "apps/files/models/FileTable";
 
 const m = [
     RegionModel,
@@ -118,6 +119,7 @@ const models = {
     ItemStockModel: ItemStockModel.initModel(),
     CampaignProposalsModel: CampaignProposalsModel.initModel(),
     PDI: PdiModel.initModel(),
+    File: FileModel.initModel()
 };
 
 let currentModel: string = null;

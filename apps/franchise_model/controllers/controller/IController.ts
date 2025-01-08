@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { TPayloadFranchiseModel, FranchiseModels, FranchiseModelsList } from '../../../../interfaces';
+import { TPayloadFranchiseModel, FranchiseModels, FranchiseModelsList } from '../../interface/franchiseModel';
 import { TQueryFilters } from '../../../../types';
 
 /**

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
-import { USER_STATUS } from "../../../interfaces";
+import { USER_STATUS } from "../interface/user";
 
 // Validation for listing Customers
 const listCustomerQuery = Joi.object().keys({

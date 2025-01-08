@@ -8,7 +8,7 @@ import {
     TPayloadVendor,
     TVendorFilters,
     IVendorAttributes,
-} from "../../../../interfaces";
+} from "../../interfaces/Vendors";
 
 /**
  * Interface for Vendor Controller.

@@ -1,4 +1,4 @@
-import { TPayloadFranchiseModel } from "../../../../interfaces";
+import { TPayloadFranchiseModel } from "../../interface/franchiseModel";
 import { TQueryFilters } from "../../../../types";
 
 /**

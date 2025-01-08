@@ -266,10 +266,21 @@ export default class ContractController {
             // get contract
             const existingContract = await new ContractRepo().get(id);
 
+
             const existingLead = await new LeadRepo().getLeadByAttr(
                 "id",
-                existingContract.leadId,
+                existingContract.leadId.id,
             );
+
+            const exist = await  RepoProvider.franchise.exists(existingLead.email);
+            console.log(exist)
+
+            if (exist) {
+                return res.status(400).send({
+                    message: "Franchise already exists",
+                });
+            }
+
 
             const existingCampaign = await new CampaignAdRepo().get(
                 existingLead.campaignId.id,
@@ -288,6 +299,9 @@ export default class ContractController {
                           existingContract.signedDocs.length - 1
                       ].docId
                     : null;
+
+
+
 
             const franchiseDetailsData: FranchiseDetails = {
                 location: address,
@@ -350,7 +364,7 @@ export default class ContractController {
                     },
                 );
 
-                // TODO @Harsh After franchise convert
+            //     // TODO @Harsh After franchise convert
                 const mailDto = new PaymentReceivedMail().getPayload(
                     {},
                     existingLead.email,

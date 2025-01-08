@@ -43,6 +43,7 @@ import {CartProductModel} from "../cart-products/model/CartProductTable";
 import {handleError} from "apps/common/utils/HelperMethods";
 import {ItemStockModel} from "../pet-pooja/models/stock";
 import {OrganizationModel} from "../organization/models/OrganizationTable";
+import {TokenModel} from "../zoho-sign/models/TokenModel";
 
 const m = [
     RegionModel,
@@ -115,7 +116,8 @@ const models = {
     OrderItem: OrderItemsModel.initModel(),
     Cart: CartProductModel.initModel(),
     ItemStockModel: ItemStockModel.initModel(),
-    CampaignProposalsModel: CampaignProposalsModel.initModel()
+    CampaignProposalsModel: CampaignProposalsModel.initModel(),
+
 };
 
 let currentModel: string = null;

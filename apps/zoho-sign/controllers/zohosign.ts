@@ -193,13 +193,14 @@ export default class ZohoSignController {
             if (!contractDetails) {
                 return res.status(401).send("No contract found");
             }
-
-            const getTemplate = await new ZohoSignRepo().getTemplateFields(
-                templateId as number
-            );
-            if (!getTemplate) {
-                return res.status(401).send("No template found");
-            }
+            console.log(contractDetails)
+            //
+            // const getTemplate = await new ZohoSignRepo().getTemplateFields(
+            //     templateId
+            // );
+            // if (!getTemplate) {
+            //     return res.status(401).send("No template found");
+            // }
 
             const jsonData = {
                 templates: {
@@ -214,48 +215,48 @@ export default class ZohoSignController {
                 },
             };
 
-            if (getTemplate?.docs) {
-                const docFields = getTemplate.docs;
-                prefilledValues = JSON.parse(prefilledValues);
+            // if (getTemplate?.docs) {
+            //     const docFields = getTemplate.docs;
+            //     prefilledValues = JSON.parse(prefilledValues);
+            //
+            //     docFields.forEach((doc) => {
+            //         const fields = doc.fields || [];
+            //
+            //         fields.forEach((field) => {
+            //             const fieldLabel = field.field_label;
+            //             const fieldValue = prefilledValues[fieldLabel] || "";
+            //
+            //             if (field.field_category === "textfield") {
+            //                 jsonData.templates.field_data.field_text_data[
+            //                     fieldLabel
+            //                 ] = fieldValue;
+            //             }
+            //         });
+            //     });
+            // }
+            // if (getTemplate.actions.length > 0) {
+            //     getTemplate.actions.forEach((action) => {
+            //         jsonData.templates.actions.push({
+            //             recipient_name: recipientName,
+            //             recipient_email: recipientEmail,
+            //             action_id: action.action_id,
+            //             action_type: action.action_type,
+            //             signing_order: 1,
+            //             verify_recipient: "false",
+            //             private_notes: "",
+            //         });
+            //     });
+            // }
 
-                docFields.forEach((doc) => {
-                    const fields = doc.fields || [];
-
-                    fields.forEach((field) => {
-                        const fieldLabel = field.field_label;
-                        const fieldValue = prefilledValues[fieldLabel] || "";
-
-                        if (field.field_category === "textfield") {
-                            jsonData.templates.field_data.field_text_data[
-                                fieldLabel
-                            ] = fieldValue;
-                        }
-                    });
-                });
-            }
-            if (getTemplate.actions.length > 0) {
-                getTemplate.actions.forEach((action) => {
-                    jsonData.templates.actions.push({
-                        recipient_name: recipientName,
-                        recipient_email: recipientEmail,
-                        action_id: action.action_id,
-                        action_type: action.action_type,
-                        signing_order: 1,
-                        verify_recipient: "false",
-                        private_notes: "",
-                    });
-                });
-            }
-
-            let data = new FormData();
-            data.append("data", JSON.stringify(jsonData));
-
-            const sendDocument =
-                await new ZohoSignRepo().sendDocumentUsingTemplate(
-                    templateId,
-                    data
-                );
-            if (sendDocument) {
+            // let data = new FormData();
+            // data.append("data", JSON.stringify(jsonData));
+            //
+            // const sendDocument =
+            //     await new ZohoSignRepo().sendDocumentUsingTemplate(
+            //         templateId,
+            //         data
+            //     );
+            // if (sendDocument) {
                 // const currentSignedDocs = Array.isArray(contractDetails.signedDocs) ?
                 //     [...contractDetails.signedDocs] : [];
 
@@ -267,10 +268,13 @@ export default class ZohoSignController {
                 // currentSignedDocs.push(contractSignDocPayload);
                 // await new ContractRepo().updateContractDoc(contractId, currentSignedDocs);
 
+            if(true){
+
+
                 return res.status(200).send({
                     success: true,
                     message: "Document sent successfully",
-                    data: sendDocument,
+                    data: null,
                 });
             } else {
                 return res.status(500).json({

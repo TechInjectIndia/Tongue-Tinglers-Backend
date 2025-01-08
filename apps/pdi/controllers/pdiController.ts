@@ -109,6 +109,9 @@ class PdiChecklistController {
             if(!id || isNaN(id)) throw Error('Missing id or isNaN');
 
             const checkpoint = await new PdiChecklistRepo().findByPk(id);
+
+            console.log("*****")
+
             if (!checkpoint) {
                 return res.status(404).json({ message: "PDI Checkpoint not found" });
             }

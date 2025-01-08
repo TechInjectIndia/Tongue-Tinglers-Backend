@@ -117,7 +117,7 @@ const models = {
     Cart: CartProductModel.initModel(),
     ItemStockModel: ItemStockModel.initModel(),
     CampaignProposalsModel: CampaignProposalsModel.initModel(),
-    PDI: PdiModel.initModel()
+    PDI: PdiModel.initModel(),
 };
 
 let currentModel: string = null;

@@ -1,12 +1,18 @@
-import { Op } from "sequelize";
-import { ICheckList, ParsedChecklist, TICheckListList, TICheckListPayload, TListFiltersICheckListt } from "../interface/IChecklist";
-import { IChecklistModel } from "./CheckListTable";
-import { UserModel } from "apps/user/models/UserTable";
-import { getUserName } from "apps/common/utils/commonUtils";
+import {Op} from "sequelize";
+import {
+    ICheckList,
+    ParsedChecklist,
+    TICheckListList,
+    TICheckListPayload,
+    TListFiltersICheckListt
+} from "../interface/IChecklist";
+import {IChecklistModel} from "./CheckListTable";
+import {UserModel} from "apps/user/models/UserTable";
+import {getUserName} from "apps/common/utils/commonUtils";
 import {
     FranchiseLeadModel
 } from "../../franchise_model/models/FranchiseModelTable";
-import { parseChecklist } from "../parser/checklistParser";
+import {parseChecklist} from "../parser/checklistParser";
 
 export class PdiChecklistRepo {
     constructor() { }
@@ -52,7 +58,7 @@ export class PdiChecklistRepo {
             ],
         });
 
-        return parseChecklist(data); 
+        return parseChecklist(data);
     }
 
     // List PDI Checklists with filters
@@ -131,8 +137,8 @@ export class PdiChecklistRepo {
         return deletedCount;
     }
 
-    public async getChecklistByFranchiseId(franchiseModelId: number): Promise<ParsedChecklist[]> {
-        const data = await IChecklistModel.findAll({
+    public async getChecklistByFranchiseId(franchiseModelId: number): Promise<ParsedChecklist> {
+        const data = await IChecklistModel.findOne({
             where: { franchiseModelId },
             include : [
                 {
@@ -153,8 +159,7 @@ export class PdiChecklistRepo {
             ],
         });
 
-        const parsedData = data.map((checklist) => parseChecklist(checklist));
-        return parsedData;
+        return parseChecklist(data);
     }
 }
 

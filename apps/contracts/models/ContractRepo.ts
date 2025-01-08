@@ -224,9 +224,6 @@ export class ContractRepo {
             transaction,
         });
 
-        console.log("******")
-        console.log(data)
-        console.log("******")
 
         return data ? parseContract(data) : null;
     }

@@ -5,9 +5,9 @@ import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE } from "../../../constants";
 import { Request, Response } from "express";
 import { ParsedCartDetail } from "apps/cart-details/interface/CartDetail";
-import { DTO, getSuccessDTO } from "apps/DTO/DTO";
 import { PresaleParsedOrder } from "apps/order/interface/Order";
 import { getEmptyPreSaleOrder } from "apps/order-provider/utils/order-utils";
+import { DTO, getSuccessDTO } from "apps/common/models/DTO";
 
 export default class CartProductController {
     static async createCartProduct(req: Request, res: Response) {

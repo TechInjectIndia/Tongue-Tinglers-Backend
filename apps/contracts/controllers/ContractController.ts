@@ -26,6 +26,7 @@ import {
 import RepoProvider from "apps/RepoProvider";
 import { COMMISSION_PAID_STATUS } from "apps/commission/model/CommissionEntityMapTable";
 import { PaymentReceivedMail } from "static/views/email/get-templates/PaymentReceivedMail";
+import { getSuccessDTO } from "apps/common/models/DTO";
 
 export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -277,6 +278,7 @@ export default class ContractController {
 
             if (exist) {
                 return res.status(400).send({
+                    // getSuccessDTO,
                     message: "Franchise already exists",
                 });
             }

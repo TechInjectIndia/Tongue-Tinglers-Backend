@@ -1,4 +1,5 @@
-import { DTO } from "apps/DTO/DTO";
+
+import { DTO } from "apps/common/models/DTO";
 import {
     Order,
     OrderPayload,

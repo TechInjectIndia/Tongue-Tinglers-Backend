@@ -26,6 +26,7 @@ import {
 import RepoProvider from "apps/RepoProvider";
 import { COMMISSION_PAID_STATUS } from "apps/commission/model/CommissionEntityMapTable";
 import { PaymentReceivedMail } from "static/views/email/get-templates/PaymentReceivedMail";
+import { getHandledErrorDTO, getSuccessDTO } from "apps/common/models/DTO";
 
 export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -256,60 +257,44 @@ export default class ContractController {
 
     static async convert(req: Request, res: Response, next: NextFunction) {
         const transaction = await sequelize.transaction(); // Start a transaction
-
         try {
             const id = get(req.body, "id", 0);
             const user_id = parseInt(get(req, "user_id"));
             const address = get(req.body, "address", null);
             const mappings = get(req.body, "mappings", []);
-
-            // get contract
+    
+            // Fetch related data
             const existingContract = await new ContractRepo().get(id);
-
-
+            if (!existingContract) throw new Error("Contract not found");
+    
             const existingLead = await new LeadRepo().getLeadByAttr(
                 "id",
-                existingContract.leadId.id,
+                existingContract.leadId?.id
             );
-
-            const exist = await  RepoProvider.franchise.exists(existingLead.email);
-            console.log(exist)
-
-            if (exist) {
-                return res.status(400).send({
-                    message: "Franchise already exists",
-                });
+            if (!existingLead) throw new Error("Lead not found");
+    
+            const franchiseExists = await RepoProvider.franchise.exists(existingLead.email);
+            if (franchiseExists) {
+                return res.status(200).send(
+                    sendResponse(RESPONSE_TYPE.ERROR, SUCCESS_MESSAGE.FRANCHISE_EXISTS)
+                );
             }
-
-
-            const existingCampaign = await new CampaignAdRepo().get(
-                existingLead.campaignId.id,
-            );
-
-            const paymentId =
-                existingContract.payment && existingContract.payment.length > 0
-                    ? existingContract.payment[
-                          existingContract.payment.length - 1
-                      ].paymentId
-                    : null;
-            const signId =
-                existingContract.signedDocs &&
-                existingContract.signedDocs.length > 0
-                    ? existingContract.signedDocs[
-                          existingContract.signedDocs.length - 1
-                      ].docId
-                    : null;
-
-
-
-
+    
+            const existingCampaign = await new CampaignAdRepo().get(existingLead.campaignId?.id);
+            if (!existingCampaign) throw new Error("Campaign not found");
+    
+            // Extract payment and signed document IDs
+            const paymentId = existingContract.payment?.slice(-1)?.[0]?.paymentId || null;
+            const signId = existingContract.signedDocs?.slice(-1)?.[0]?.docId || null;
+    
+            // Prepare franchise details
             const franchiseDetailsData: FranchiseDetails = {
                 location: address,
                 sm: [],
-                createdBy: 1,
+                createdBy: user_id,
                 updatedBy: null,
                 deletedBy: null,
-                pocName: existingLead.firstName + " " + existingLead.lastName,
+                pocName: `${existingLead.firstName} ${existingLead.lastName}`,
                 pocEmail: existingLead.email,
                 pocPhoneNumber: existingLead.phoneNumber,
                 users: [],
@@ -319,92 +304,58 @@ export default class ContractController {
                 paymentIds: [String(signId)],
                 status: FRANCHISE_STATUS.Active,
                 establishedDate: new Date(),
-                organizationId: existingContract.organizationId
-                    ? existingContract.organizationId.id
-                    : null,
+                organizationId: existingContract.organizationId?.id || null,
                 affiliateId: 0,
                 assignedUser: null,
             };
-
-            console.log("franchise details");
-            console.log(franchiseDetailsData);
-            console.log("_____");
-
-            const resData = await RepoProvider.franchise.create(
-                franchiseDetailsData,
-                user_id,
-            );
-            console.log("res", resData);
-
-            const entries: any[] = [];
-
-            for (const commission of mappings) {
-                entries.push({
-                    createdBy: 1,
-                    franchiseId: resData.id,
-                    commissionId: commission.commissionId,
-                    organizationId: commission.organizationId,
-                    status: COMMISSION_PAID_STATUS.PENDING,
-                });
-            }
-
-            const result =
-                await RepoProvider.commissionRepo.createMapEntities(entries);
-
+    
+            console.log("Franchise Details:", franchiseDetailsData);
+    
+            // Create franchise
+            const franchise = await RepoProvider.franchise.create(franchiseDetailsData, user_id);
+    
+            // Prepare commission mapping entries
+            const commissionEntries = mappings.map((commission: any) => ({
+                createdBy: user_id,
+                franchiseId: franchise.id,
+                commissionId: commission.commissionId,
+                organizationId: commission.organizationId,
+                status: COMMISSION_PAID_STATUS.PENDING,
+            }));
+    
+            // Create commission mappings
+            await RepoProvider.commissionRepo.createMapEntities(commissionEntries);
+    
+            // Send email notification
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password`;
-
+    
             try {
-                const emailContent = await getEmailTemplate(
-                    EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED,
-                    {
-                        leadName: `${existingLead.firstName} ${existingLead.lastName}`,
-                        leadEmail: existingLead.email,
-                        leadPhone: existingLead.phoneNumber,
-                        passwordCreateLink,
-                    },
-                );
-
-            //     // TODO @Harsh After franchise convert
-                const mailDto = new PaymentReceivedMail().getPayload(
-                    {},
-                    existingLead.email,
-                );
+                const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
+                    leadName: `${existingLead.firstName} ${existingLead.lastName}`,
+                    leadEmail: existingLead.email,
+                    leadPhone: existingLead.phoneNumber,
+                    passwordCreateLink,
+                });
+    
+                const mailDto = new PaymentReceivedMail().getPayload({}, existingLead.email);
                 await sendMail(mailDto);
-
-                // const mailOptions = {
-                //     to: existingLead.email,
-                //     subject: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
-                //     templateParams: {
-                //         heading: EMAIL_HEADING.NEW_FRANCHISE_CREATED,
-                //         description: emailContent,
-                //     },
-                // };
-
-                // await sendEmail(
-                //     mailOptions.to,
-                //     mailOptions.subject,
-                //     mailOptions.templateParams,
-                // );
             } catch (emailError) {
-                console.error("Error sending email:", emailError);
+                console.error("Email Error:", emailError);
+                throw new Error(`Error sending email: ${emailError.message}`);
             }
-
-            return res
-                .status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FRANCHISE_CREATED,
-                    ),
-                );
-        } catch (err) {
-            console.error(err);
+    
+            // Commit the transaction and send success response
+            await transaction.commit();
+            return res.status(200).send(
+                sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FRANCHISE_CREATED)
+            );
+        } catch (error) {
+            console.error("Error in convert function:", error);
             await transaction.rollback();
-            return res
-                .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+            return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
+    
 
     static async updatePartialContract(
         req: Request,

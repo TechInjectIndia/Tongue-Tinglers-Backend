@@ -1,6 +1,5 @@
 import { PresaleParsedOrder } from "apps/order/interface/Order";
 import { IPreSaleOrderProvider } from "./IPreSaleOrderProvider";
-import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/DTO/DTO";
 
 import RepoProvider from "apps/RepoProvider";
 import {
@@ -11,6 +10,7 @@ import {
     ORDER_ITEM_TYPE,
     PreSaleParsedOrderItem
 } from "../../order/interface/OrderItem";
+import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/common/models/DTO";
 
 export class PreSaleOrderProvider implements IPreSaleOrderProvider {
     /**

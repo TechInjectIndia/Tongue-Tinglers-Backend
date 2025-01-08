@@ -174,34 +174,35 @@ export default class ZohoSignController {
     }
 
     // Send document to franchise using template
-    static async sendDocumentUsingTemplate(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) {
+    static async sendDocumentUsingTemplate(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const templateId = get(req.body, "templateId", "");
             const contractId = get(req.body, "contractId", "");
             const recipientName = get(req.body, "recipientName", "");
             const notes = get(req.body, "notes", "");
             const recipientEmail = get(req.body, "recipientEmail", "");
-            let prefilledValues = get(req.body, "prefilledValues", "");
-
-            const contractDetails = await new ContractRepo().get(
-                contractId as number
-            );
-            if (!contractDetails) {
-                return res.status(401).send("No contract found");
+            const prefilledValues = JSON.parse(get(req.body, "prefilledValues", "{}"));
+    
+            if (!templateId || !contractId || !recipientName || !recipientEmail) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Missing required fields: templateId, contractId, recipientName, or recipientEmail.",
+                });
             }
-            console.log(contractDetails)
-            //
-            // const getTemplate = await new ZohoSignRepo().getTemplateFields(
-            //     templateId
-            // );
-            // if (!getTemplate) {
-            //     return res.status(401).send("No template found");
-            // }
-
+    
+            // Fetch contract details
+            const contractDetails = await new ContractRepo().get(Number(contractId));
+            if (!contractDetails) {
+                return res.status(404).json({ success: false, message: "No contract found." });
+            }
+    
+            // Fetch template details
+            const templateDetails = await new ZohoSignRepo().getTemplateFields(templateId);
+            if (!templateDetails) {
+                return res.status(404).json({ success: false, message: "No template found." });
+            }
+    
+            // Initialize the JSON payload
             const jsonData = {
                 templates: {
                     field_data: {
@@ -211,87 +212,72 @@ export default class ZohoSignController {
                         field_radio_data: {},
                     },
                     actions: [],
-                    notes: notes,
+                    notes,
                 },
             };
-
-            // if (getTemplate?.docs) {
-            //     const docFields = getTemplate.docs;
-            //     prefilledValues = JSON.parse(prefilledValues);
-            //
-            //     docFields.forEach((doc) => {
-            //         const fields = doc.fields || [];
-            //
-            //         fields.forEach((field) => {
-            //             const fieldLabel = field.field_label;
-            //             const fieldValue = prefilledValues[fieldLabel] || "";
-            //
-            //             if (field.field_category === "textfield") {
-            //                 jsonData.templates.field_data.field_text_data[
-            //                     fieldLabel
-            //                 ] = fieldValue;
-            //             }
-            //         });
-            //     });
-            // }
-            // if (getTemplate.actions.length > 0) {
-            //     getTemplate.actions.forEach((action) => {
-            //         jsonData.templates.actions.push({
-            //             recipient_name: recipientName,
-            //             recipient_email: recipientEmail,
-            //             action_id: action.action_id,
-            //             action_type: action.action_type,
-            //             signing_order: 1,
-            //             verify_recipient: "false",
-            //             private_notes: "",
-            //         });
-            //     });
-            // }
-
-            // let data = new FormData();
-            // data.append("data", JSON.stringify(jsonData));
-            //
-            // const sendDocument =
-            //     await new ZohoSignRepo().sendDocumentUsingTemplate(
-            //         templateId,
-            //         data
-            //     );
-            // if (sendDocument) {
-                // const currentSignedDocs = Array.isArray(contractDetails.signedDocs) ?
-                //     [...contractDetails.signedDocs] : [];
-
-                // const contractSignDocPayload = {
-                //     ...contractDetails.signedDocs[0],
-                //     docId: sendDocument?.requests.request_id,
-                // };
-
-                // currentSignedDocs.push(contractSignDocPayload);
-                // await new ContractRepo().updateContractDoc(contractId, currentSignedDocs);
-
-            if(true){
-
-
-                return res.status(200).send({
-                    success: true,
-                    message: "Document sent successfully",
-                    data: null,
-                });
-            } else {
+    
+            // Populate field data from the template
+            if (templateDetails?.docs) {
+                for (const doc of templateDetails.docs) {
+                    for (const field of doc.fields || []) {
+                        if (field.field_category === "textfield" && prefilledValues[field.field_label]) {
+                            jsonData.templates.field_data.field_text_data[field.field_label] = prefilledValues[field.field_label];
+                        }
+                    }
+                }
+            }
+    
+            // Populate actions from the template
+            if (templateDetails.actions.length > 0) {
+                for (const action of templateDetails.actions) {
+                    jsonData.templates.actions.push({
+                        recipient_name: recipientName,
+                        recipient_email: recipientEmail,
+                        action_id: action.action_id,
+                        action_type: action.action_type,
+                        signing_order: 1,
+                        verify_recipient: "false",
+                        private_notes: "",
+                    });
+                }
+            }
+    
+            // Create form data for the API request
+            const formData = new FormData();
+            formData.append("data", JSON.stringify(jsonData));
+    
+            // Send document using the template
+            const sendDocumentResponse = await new ZohoSignRepo().sendDocumentUsingTemplate(templateId, formData);
+            if (!sendDocumentResponse) {
                 return res.status(500).json({
                     success: false,
-                    message: "Failed to send document",
-                    data: {},
+                    message: "Failed to send document.",
                 });
             }
+    
+            // Update signed documents in the contract
+            const currentSignedDocs = Array.isArray(contractDetails.signedDocs) ? [...contractDetails.signedDocs] : [];
+            currentSignedDocs.push({
+                ...contractDetails.signedDocs[0],
+                docId: sendDocumentResponse?.requests?.request_id,
+            });
+    
+            await new ContractRepo().updateContractDoc(contractId, currentSignedDocs);
+    
+            return res.status(200).json({
+                success: true,
+                message: "Document sent successfully.",
+                data: null,
+            });
         } catch (error) {
+            console.error("Error in sendDocumentUsingTemplate:", error);
             return res.status(500).json({
                 success: false,
-                message:
-                    error?.response?.data?.message ||
-                    "An error occurred while sending the document",
+                message: error?.response?.data?.message || "An error occurred while sending the document.",
             });
         }
     }
+    
 
     // Get all the templates
     static async getTemplates(req: Request, res: Response, next: NextFunction) {

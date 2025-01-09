@@ -45,6 +45,7 @@ import {ItemStockModel} from "../pet-pooja/models/stock";
 import {OrganizationModel} from "../organization/models/OrganizationTable";
 import { PdiModel } from "apps/pdi/model/PdiTable";
 import { FileModel } from "apps/files/models/FileTable";
+import { PendingOrderModel } from "apps/pending-orders/models/PendingOrderTable";
 
 const m = [
     RegionModel,
@@ -119,7 +120,8 @@ const models = {
     ItemStockModel: ItemStockModel.initModel(),
     CampaignProposalsModel: CampaignProposalsModel.initModel(),
     PDI: PdiModel.initModel(),
-    File: FileModel.initModel()
+    File: FileModel.initModel(),
+    PendingOrder: PendingOrderModel.initModel()
 };
 
 let currentModel: string = null;

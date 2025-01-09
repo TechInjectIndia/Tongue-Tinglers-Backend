@@ -153,7 +153,7 @@ class PendingOrderModel
             },
             {
                 sequelize,
-                tableName: "PendingOrders",
+                tableName: "pending_orders",
                 timestamps: true, // Add `createdAt` and `updatedAt`
             },
         );

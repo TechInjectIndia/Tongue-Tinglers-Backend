@@ -20,7 +20,7 @@ export default class FilesController {
                 name: fileDetails.name || '',
                 status: fileDetails.status || 'active',
                 subject: fileDetails.subject,
-                url: fileDetails.files,
+                url: fileDetails.url,
                 updatedBy: userId
             };
             
@@ -66,7 +66,7 @@ export default class FilesController {
                 name: fileDetails.name || '',
                 status: fileDetails.status || 'active',
                 subject: fileDetails.subject,
-                url: fileDetails.files,
+                url: fileDetails.url,
                 createdBy: userId
             };
             result = await new FilesRepo().create(fileInfo);

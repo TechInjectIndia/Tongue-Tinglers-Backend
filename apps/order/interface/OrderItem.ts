@@ -50,7 +50,7 @@ export enum VALUE_TYPE {
 	ABSOLUTE = "absolute",
 	PERCENTAGE = "percentage",
 }
-``
+
 
 export interface IDiscComponent {
 	percent: number;    // valuePercent

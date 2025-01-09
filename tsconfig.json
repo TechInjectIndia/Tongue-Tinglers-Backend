@@ -16,7 +16,8 @@
     ],
    "baseUrl": "./",
     "paths": {
-      "*": ["*"]
+      "*": ["*"],
+      "apps": ["./apps"],
     }
   },
   "downlevelIteration": true,

@@ -1,14 +1,19 @@
 module.exports = {
-    apps: [
-        {
-            name: 'my-app',
-            script: './build/app.js', // Your Express.js entry file
-            env: {
-                NEW_RELIC_HOME: './newrelic.js', // Set the New Relic config file path
-            },
-        },
-    ],
+  apps: [{
+    name: 'express-typescript-app',
+    script: 'build/app.js',  // Pointing to the compiled JS file
+    node_args: '-r module-alias/register',  // If using module-alias
+    instances: 1,
+    autorestart: true,
+    watch: false,
+    max_memory_restart: '1G',
+    env: {
+      NODE_ENV: 'development',
+      PORT: 3000
+    },
+    env_production: {
+      NODE_ENV: 'production',
+      PORT: 3000
+    }
+  }]
 };
-
-const l = require('./newrelic.js')
-console.log(l)

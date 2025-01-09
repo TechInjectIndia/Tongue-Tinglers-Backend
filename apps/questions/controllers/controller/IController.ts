@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
 import { TQueryFilters } from "../../../../types";
-import { TQuestionList, TPayloadQuestion } from "../../../../interfaces";
+import { TQuestionList, TPayloadQuestion } from "../../interface/Question";
 
 interface IDynamicFormController<T, F extends TQueryFilters> {
     /**

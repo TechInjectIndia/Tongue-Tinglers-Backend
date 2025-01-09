@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
 import { CONTRACT_PAYMENT_STATUS, CONTRACT_STATUS } from "../interface/Contract";
+import {join} from "lodash";
 // Schema for UserDetails
 const USER_DETAILS_SCHEMA = Joi.object().keys({
     id: Joi.string().required()
@@ -107,7 +108,7 @@ const editContractBody = Joi.object().keys({
         .messages({
             "any.only": "Status must be one of the predefined values.",
         }),
-    proposalData: Joi.object().allow(null).optional(),
+    proposalData: Joi.number().allow(null).optional(),
     terminationDetails: terminationDetailsSchema.allow(null).optional(),
     payment: Joi.array().allow(null).optional(),
     amount: Joi.number().optional(),
@@ -116,7 +117,7 @@ const editContractBody = Joi.object().keys({
     validity: Joi.object().optional(),
     additionalInfo: Joi.string().allow(null, "").optional(),
     signedDocs: Joi.array().items(signedDocsSchema).optional(),
-    organizationId: Joi.number().allow(null).optional(),
+    notes: Joi.any().allow(null).optional()
 });
 
 const partialContractsUpdateSchema = Joi.object({

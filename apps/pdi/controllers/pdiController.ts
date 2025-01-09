@@ -10,12 +10,15 @@ class PdiChecklistController {
     static async create(req: Request, res: Response) {
         try {
             const user_id = parseInt(get(req, "user_id"));
-            if(!user_id || isNaN(user_id)) throw Error('Missing user_id or isNaN');
-
+            if (!user_id || isNaN(user_id)) throw new Error('Missing or invalid user_id');
+    
             const payload = { ...req.body, createdBy: user_id };
-
+    
+            if (!payload.checkpoints || !Array.isArray(payload.checkpoints)) {
+                throw new Error('Invalid checkpoints data');
+            }
+    
             const newChecklist = await new PdiChecklistRepo().create(payload);
-
             return res.status(200).json({
                 message: "PDI Checklist created successfully",
                 data: newChecklist,
@@ -109,6 +112,9 @@ class PdiChecklistController {
             if(!id || isNaN(id)) throw Error('Missing id or isNaN');
 
             const checkpoint = await new PdiChecklistRepo().findByPk(id);
+
+            console.log("*****")
+
             if (!checkpoint) {
                 return res.status(404).json({ message: "PDI Checkpoint not found" });
             }

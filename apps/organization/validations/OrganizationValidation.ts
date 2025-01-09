@@ -40,7 +40,7 @@ const createOrganizationBody = Joi.object({
     billingAddress: addressSchema.required(),
     shippingAddress: Joi.array().items(addressSchema).required(),
     prospectId: Joi.number().optional(),
-    user: Joi.any()
+    rootUser: Joi.any()
 
 });
 

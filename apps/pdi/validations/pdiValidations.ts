@@ -9,13 +9,17 @@ const checkPointsData = Joi.object().keys({
 });
 // Schema for PDI Checklist creation
 const createIChecklistBody = Joi.object().keys({
-    checkpoints: Joi.array().items(checkPointsData).required(),
+    checkpoints: Joi.array().items(checkPointsData).required().messages({
+      'array.base': 'Checkpoints must be an array.',
+      'array.includes': 'Each checkpoint must be a valid object.',
+      'any.required': 'Checkpoints are required.',
+  }),
     prospectId: Joi.number().required()
     .messages({
         'number.base': 'Prospect must be a number.',
         'any.required': 'Prospect is required.',
     }),
-});
+}).strict();
 
 
 

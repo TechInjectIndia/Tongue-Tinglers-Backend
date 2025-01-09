@@ -212,6 +212,7 @@ export class FranchiseRepo implements IFranchiseRepo {
       const res = await FranchiseModel.findOne({
         where: { pocEmail: email },
       });
+        console.log(res)
       return !!res;
     } catch (e) {
       console.log(e);

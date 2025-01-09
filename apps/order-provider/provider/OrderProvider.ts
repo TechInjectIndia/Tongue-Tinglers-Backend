@@ -10,7 +10,6 @@ import {
 import { Address } from "apps/address/interface/Address";
 import { IOrderProvider } from "./IOrderProvider";
 import { AddressRepo } from "apps/address/repositories/AddressRepo";
-import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/DTO/DTO";
 import { BaseCartProduct, Cart } from "apps/cart-products/interface/Cart";
 import { AdminRepo } from "apps/user/models/user";
 import { TUserWithPermission } from "types/admin/admin-user";
@@ -35,12 +34,13 @@ import {
 import { COUPON_STATUS, DISCOUNT_TYPE } from "apps/coupons/models/Coupon";
 
 import { CartDetailRepo } from "apps/cart-details/repos/cartDetailRepo";
-import { ParsedProduct } from "../../product/interface/Product";
 import { ParsedCartProductDetails } from "apps/cart-details/interface/CartDetail";
 import { getUid } from "apps/common/utils/commonUtils";
 import { CURRENCY_TYPE, RPOrderParams } from "apps/razorpay/models/RPModels";
 import { Orders } from "node_modules/razorpay/dist/types/orders";
 import { RazorpayProvider } from "apps/razorpay/repositories/razorpay/RazorpayProvider";
+import {ParsedProduct} from "../../product/interface/Product";
+import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/common/models/DTO";
 
 export class OrderProvider implements IOrderProvider {
     async processOrder(

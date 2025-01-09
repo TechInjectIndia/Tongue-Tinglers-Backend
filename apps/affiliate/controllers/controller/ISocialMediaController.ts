@@ -1,6 +1,7 @@
 import {
-    BaseSocialMedia, SocialMediaDetails,
-} from "../../../../interfaces";
+    BaseSocialMedia,
+    SocialMediaDetails
+} from "../../../lead/interface/lead";
 
 
 interface ISocialMediaDetailsRepo<T> {

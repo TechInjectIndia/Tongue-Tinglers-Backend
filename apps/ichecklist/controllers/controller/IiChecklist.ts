@@ -1,4 +1,4 @@
-import { ICheckList, TICheckListList, TICheckListPayload, TListFiltersICheckListt } from '../../../../interfaces/ichecklist';
+import { ICheckList, TICheckListList, TICheckListPayload, TListFiltersICheckListt } from '../../interface/IChecklist';
 import { TListFilters } from '../../../../types';
 
 /**

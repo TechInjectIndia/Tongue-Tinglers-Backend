@@ -39,6 +39,8 @@ class TokenModel extends Model<TToken, TokenCreationAttributes> implements TToke
     }
 }
 
+
+
 TokenModel.init({
     id: {
         type: INTEGER,

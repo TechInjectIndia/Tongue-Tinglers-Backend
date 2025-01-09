@@ -8,6 +8,7 @@ export interface TToken {
 }
 
 export type TemplateType = {
+    templateId: string;
 };
 
 export type DocumentData = Record<string, any>;

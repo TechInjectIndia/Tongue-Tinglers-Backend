@@ -10,9 +10,11 @@ import { ParseFranchiseModel } from "apps/franchise_model/parser/franchiseModelP
 
 
 const parseLead = (lead: any): ParsedLead => {
-    console.log("lead: ", lead);
+    let followDetailsLogs=[];
     if (!lead) return null;
-
+    if((lead.followDetails && Array.isArray(lead.followDetails)) && (lead.followDetails.length > 0)){
+        followDetailsLogs = lead.followDetails.flatMap(detail => detail.logs);
+    }
     const data: ParsedLead = {
         id: lead.id,
         firstName: lead.firstName,
@@ -35,11 +37,11 @@ const parseLead = (lead: any): ParsedLead => {
             : [],
         marketing: lead.marketing,
         other: lead.other,
-        proposalModalId: lead.proposalModalId
-            ? ParseProposal(lead.proposalModalId)
+        proposalModalId: lead.proposalModal
+            ? ParseProposal(lead.proposalModal)
             : null,
-        assignedUser: lead.assignedUser
-            ? parseUserToMetaUser(lead.assignedUser)
+        assignedUser: lead.assignee
+            ? parseUserToMetaUser(lead.assignee)
             : null,
         franchiseModals: lead.franchiseModals
             ? lead.franchiseModals.map((modal: ParsedFranchiseModels) =>
@@ -58,8 +60,18 @@ const parseLead = (lead: any): ParsedLead => {
         status: lead.status,
         source: lead.source,
         sourceInfo: lead.sourceInfo,
+        logs: lead.logs ? sortingLogs(lead.logs, followDetailsLogs) : null
     };
     return data;
 };
 
 export { parseLead };
+
+function sortingLogs(leadsLogs, followDetailsLog){
+    const mergedLogs = [...leadsLogs, ...followDetailsLog].sort((a, b) => {
+        const dateA = new Date(a.timestamp).getTime();
+        const dateB = new Date(b.timestamp).getTime();
+        return dateA - dateB;
+    });
+    return mergedLogs
+}

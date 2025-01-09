@@ -12,6 +12,9 @@ import { Pagination, TListFilters, TListFiltersAreas } from "apps/common/models/
 import { getUserName } from "apps/common/utils/commonUtils";
 import { AssignModel } from "./AssignTable";
 import { createLeadsResponse } from "libraries";
+import { LogModel } from "apps/logs/models/LogsTable";
+import { ProposalModel } from "apps/proposal_model/models/ProposalModelTable";
+import { FranchiseLeadModel } from "apps/franchise_model/models/FranchiseModelTable";
 
 export class LeadRepo {
     constructor() { }
@@ -51,6 +54,11 @@ export class LeadRepo {
                     as: "assignee",
                 },
                 {
+                    model: LogModel,
+                    as: "logs",
+                    where: { model: "Leads" }, // Ensure you're filtering logs specific to "Leads"
+                  },
+                {
                     model: FollowDetailsModel,
                     as: "followDetails",
                     through: { attributes: [] },
@@ -75,8 +83,23 @@ export class LeadRepo {
                                 "email",
                             ],
                         },
+                        {
+                            model: LogModel,
+                            as: "logs",
+                            where: { model: "Follow Details" }, // Ensure you're filtering logs specific to "Leads"
+                        },
                     ],
                 },
+                {
+                    model: ProposalModel,
+                    as: 'proposalModal',
+                    include: [
+                        {
+                            model: FranchiseLeadModel,
+                            as: 'franchiseModelObj',
+                        }
+                    ]
+                }
             ],
             transaction,
         });
@@ -248,6 +271,36 @@ export class LeadRepo {
             }
         }
         console.log(where);
+        include.push( {
+            model: UserModel,
+            as: "assignee",
+        },{
+            model: FollowDetailsModel,
+            as: "followDetails",
+            through: { attributes: [] },
+            include: [
+                {
+                    model: UserModel,
+                    as: "created",
+                    attributes: [
+                        "id",
+                        "firstName",
+                        "lastName",
+                        "email",
+                    ],
+                },
+                {
+                    model: UserModel,
+                    as: "followed",
+                    attributes: [
+                        "id",
+                        "firstName",
+                        "lastName",
+                        "email",
+                    ],
+                },
+            ],
+        },)
         const total = await LeadsModel.count({
             where: where,
             include: include,

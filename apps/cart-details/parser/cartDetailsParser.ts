@@ -2,10 +2,11 @@ import { parsedVariations } from "apps/cart-products/interface/Cart";
 import {ParsedCartDetail} from "../interface/CartDetail";
 
 const parseCartDetails = (cartDetail:any) => {
+    
     const data:ParsedCartDetail = {
         id: cartDetail.id,
         user: cartDetail.users,
-        cart: cartDetail.cartProductses.map((cart: any) => {
+        cart: cartDetail.cartProducts.map((cart: any) => {
             return {
                 id: cart.id,
                 product: cart.product,
@@ -14,6 +15,8 @@ const parseCartDetails = (cartDetail:any) => {
             }
         })
     }
+
+    
 
     return data;
 }

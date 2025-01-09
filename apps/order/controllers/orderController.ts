@@ -98,7 +98,9 @@ export default class OrderController {
 
     static async processOrder(req: any, res: any) {
         try {
+            console.log('called');
             const payload: any = req?.body;
+            
             const order = await RepoProvider.orderRepo.processOrder(payload);
             return res.status(200)
                 .send(

@@ -34,6 +34,11 @@ import {
 import { COUPON_STATUS, DISCOUNT_TYPE } from "apps/coupons/models/Coupon";
 
 import { CartDetailRepo } from "apps/cart-details/repos/cartDetailRepo";
+import { ParsedCartProductDetails } from "apps/cart-details/interface/CartDetail";
+import { getUid } from "apps/common/utils/commonUtils";
+import { CURRENCY_TYPE, RPOrderParams } from "apps/razorpay/models/RPModels";
+import { Orders } from "node_modules/razorpay/dist/types/orders";
+import { RazorpayProvider } from "apps/razorpay/repositories/razorpay/RazorpayProvider";
 import {ParsedProduct} from "../../product/interface/Product";
 import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/common/models/DTO";
 
@@ -67,9 +72,12 @@ export class OrderProvider implements IOrderProvider {
         this.calculateOrder(order, user.data);
 
         // Transform the order into RPOrder and ParsedOrder
-        const rpOrder: RPOrder = this.transformToRPOrder(order);
+        const rpOrder = await this.transformToRPOrder(order);
 
-        return getSuccessDTO({ rpOrder: rpOrder, parsedOrder: order });
+
+        if (!rpOrder.success) return getUnhandledErrorDTO("Failed to create RP Order")
+
+        return getSuccessDTO({ rpOrder: rpOrder.data, parsedOrder: order });
     }
 
     ///////////////////////////PRIVATE METHODS////////////////////////////////////
@@ -256,9 +264,9 @@ export class OrderProvider implements IOrderProvider {
 
     private async prepareOrder(
         currUser: TUserWithPermission,
-        cart: Cart,
-        billingAddressObj: Address,
-        shippingAddressObj: Address,
+        cart: ParsedCartProductDetails[],
+        billingAddressObj: Address | null,
+        shippingAddressObj: Address | null,
         paymentData: PAYMENT_TYPE
     ): Promise<ParsedOrder> {
         // initialise Order instance
@@ -299,8 +307,8 @@ export class OrderProvider implements IOrderProvider {
             anomalyArr: [],
             coupon: "",
             items: orderItems,
-            updatedBy: {email: "", firstName: "", id: 0, lastName: ""},
-            deletedBy: {email: "", firstName: "", id: 0, lastName: ""},
+            updatedBy: { email: "", firstName: "", id: 0, lastName: "" },
+            deletedBy: { email: "", firstName: "", id: 0, lastName: "" },
             createdAt: new Date(),
             updatedAt: null,
             deletedAt: null,
@@ -309,7 +317,7 @@ export class OrderProvider implements IOrderProvider {
             couponCodes: [],
             discount: {},
             price: {},
-            createdBy: 0
+            createdBy: 0,
         };
 
         // SET ORDER ITEMS
@@ -490,10 +498,10 @@ export class OrderProvider implements IOrderProvider {
         return result;
     }
 
-    private async getOrderProcessCart(cart: {
-        carts: BaseCartProduct[];
-    }): Promise<ParsedOrderItem[]> {
-        const orderItems = await Promise.all(cart.carts.map((c) => this.getOrderItemByCartItem(c)));
+    private async getOrderProcessCart(
+        carts: ParsedCartProductDetails[]
+    ): Promise<ParsedOrderItem[]> {
+        const orderItems = await Promise.all(carts.map((c) => this.getOrderItemByCartItem(c)));
         return orderItems;
     }
 
@@ -525,7 +533,7 @@ export class OrderProvider implements IOrderProvider {
                 deletedAt: undefined,
                 createdBy: 0,
                 updatedBy: 0,
-                deletedBy: 0
+                deletedBy: 0,
             },
             issues: {},
             hasAppliedCouponMap: false,
@@ -534,20 +542,31 @@ export class OrderProvider implements IOrderProvider {
         };
     };
 
-    private async getOrderItemByCartItem(cartItem: BaseCartProduct): Promise<ParsedOrderItem> {
-        const [product, productOption] = await Promise.all([
-            new ProductRepo().getById(cartItem.product_id),
-            new ProductOptionRepo().getById(cartItem.product_option_id),
-        ]);
+    private async getOrderItemByCartItem(
+        cartItem: ParsedCartProductDetails
+    ): Promise<ParsedOrderItem> {
+        const product = await new ProductRepo().getById(cartItem.product.id);
 
+        const priceCom: PriceComponent = {
+            type: PRICE_COMP_TYPE_CART.BASE_PRICE,
+            percent: 0,
+            taxPercent: 0,
+            value: cartItem.variation.price,
+            tax: 0,
+            calc: VALUE_TYPE.ABSOLUTE,
+        };
+
+        // cartItem.variation.price
         const objItem: ParsedOrderItem = {
             id: 0,
             product: product,
-            productOption: productOption,
+            productOption: cartItem.variation.optionsValue,
             quantity: cartItem.quantity,
-            total_price: 0,
+            total_price: cartItem.variation.price,
             totalTax: 0,
-            prices: {},
+            prices: {
+                [PRICE_COMP_TYPE.BASE_PRICE]: priceCom,
+            },
             disc: {},
             type: ORDER_ITEM_TYPE.RETORT,
             totalDiscount: 0,
@@ -556,21 +575,57 @@ export class OrderProvider implements IOrderProvider {
         return objItem;
     }
 
-    private transformToRPOrder(order: ParsedOrder): RPOrder {
-        const rpOrder: RPOrder = {
-            id: String(order.id),
-            amount: order.total,
-            amount_paid: order.total,
-            amount_due: 0,
-            currency: "INR",
-            receipt: "zero",
-            offer_id: "zero",
-            status: RP_ORDER_STATUS.PAID,
-            attempts: 1,
-            notes: [],
-            created_at: new Date(),
-        };
-        return rpOrder;
+    private async transformToRPOrder(order: ParsedOrder): Promise<DTO<RPOrder>> {
+        // STEP 1: create order in payment
+        const response = await this.createOrder(order);
+
+        return response;
+    }
+
+    private async createOrder(order: ParsedOrder): Promise<DTO<RPOrder>> {
+        try {
+            const body: RPOrderParams = {
+                currency: CURRENCY_TYPE.INR,
+                receipt: order.id.toString(),
+                amount: Number(order.total.toFixed(2)),
+                notes: [order.id.toFixed(2)],
+            };
+
+            const resJson = await this.createOrderReq(body);
+            if (!resJson) return getUnhandledErrorDTO("payment order failed");
+            return getSuccessDTO(resJson) as DTO<RPOrder>;
+        } catch (error: any) {
+            return getUnhandledErrorDTO(error.message);
+        }
+    }
+
+    private async createOrderReq(orderData: RPOrderParams) {
+        try {
+            // match amount and host
+            const id = orderData?.notes?.[0];
+
+            // console.log("_*after check*_*_**", remoteOrder);
+
+            // _*_*_*_*_*_*_*_*_*_* MAIN _*_*_*_*_*_*_*_*_*_*
+
+            orderData.amount = Number((Number(orderData.amount) * 100).toFixed(2));
+            let result: DTO<Orders.RazorpayOrder>;
+            // console.log('here key',RP_ID_PROD);
+
+            const rpInstance = RazorpayProvider.getRazorpayInstance();
+
+            // todo rajinder access keys from env later
+
+            const order: Orders.RazorpayOrder = await rpInstance.orders.create(
+                orderData as unknown as Orders.RazorpayOrderCreateRequestBody
+            );
+
+            return order;
+        } catch (e: any) {
+            console.log(e);
+
+            return getUnhandledErrorDTO(e.message);
+        }
     }
 
     // Mock methods to fetch data (replace with actual implementations)
@@ -583,13 +638,16 @@ export class OrderProvider implements IOrderProvider {
         return getSuccessDTO(existingAdmin);
     }
 
-    private async fetchCart(userId: number): Promise<DTO<Cart>> {
+    private async fetchCart(userId: number): Promise<DTO<ParsedCartProductDetails[]>> {
         const cart = await new CartDetailRepo().getCartDetailByUserId(userId);
         if (!cart) return getUnhandledErrorDTO("Cart not found");
-        return getSuccessDTO(cart);
+        console.log("got", cart);
+
+        return getSuccessDTO(cart.cart);
     }
 
-    private async fetchAddress(addressId: number): Promise<DTO<Address>> {
+    private async fetchAddress(addressId: number | null): Promise<DTO<Address | null>> {
+        if (!addressId) return getSuccessDTO(null);
         // Fetch address by addressId
         const userAddress = await new AddressRepo().findById(addressId);
 

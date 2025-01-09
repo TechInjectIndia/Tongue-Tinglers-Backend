@@ -36,6 +36,8 @@ import { COUPON_STATUS, DISCOUNT_TYPE } from "apps/coupons/models/Coupon";
 import { CartDetailRepo } from "apps/cart-details/repos/cartDetailRepo";
 import {ParsedProduct} from "../../product/interface/Product";
 import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/common/models/DTO";
+import { PendingOrderRepo } from "apps/pending-orders/repos/PendingOrderRepo";
+import { PendingOrderPayload } from "apps/pending-orders/interface/PendingOrder";
 
 export class OrderProvider implements IOrderProvider {
     async processOrder(
@@ -175,6 +177,9 @@ export class OrderProvider implements IOrderProvider {
 
         order.totalDiscount = this.calcTotalDiscount(order);
 
+        const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order);
+        const createPendingOrder = await new PendingOrderRepo().create(pendingOrderData)
+        
         return order;
     }
 

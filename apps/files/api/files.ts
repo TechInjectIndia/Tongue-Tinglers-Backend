@@ -122,7 +122,7 @@ router.post('/', upload.array('files'), validateFileUpload, FilesController.uplo
  *       '401':
  *         description: Unauthorized
  */
-router.put('/:id', upload.array('files'), FilesController.updateFile);
+router.put('/:id', upload.array('files'), validateFileUpload, FilesController.updateFile);
 
 /**
  * @swagger

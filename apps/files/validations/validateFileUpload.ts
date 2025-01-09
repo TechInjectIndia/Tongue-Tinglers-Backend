@@ -5,14 +5,14 @@ import { QuickActionsStatus } from "../interface/Files";
 
 // Validation schema for file upload
 const fileUploadSchema = Joi.object({
-    files: Joi.array()
+    url: Joi.array()
         .items(
             Joi.string()
         )
         .optional()
         .messages({
-            'array.base': 'Files are required.',
-            'array.empty': 'Files cannot be empty.',
+            'array.base': 'Url are required.',
+            'array.empty': 'Url cannot be empty.',
         }),
     name: Joi.string()
     .trim()

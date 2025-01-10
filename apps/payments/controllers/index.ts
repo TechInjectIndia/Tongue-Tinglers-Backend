@@ -83,7 +83,7 @@ export default class PaymentsController {
                 await new ContractRepo().updatePaymentStatus(
                     contractDetails.id,
                     contractDetails.payment as unknown as ContractPaymentDetails[],
-                    CONTRACT_STATUS.ACTIVE,
+                    CONTRACT_STATUS.PAYMENT_RECEIVED,
                 );
 
                 // Send payment received email after success

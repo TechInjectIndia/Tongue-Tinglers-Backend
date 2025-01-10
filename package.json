@@ -1,5 +1,5 @@
 {
-  "name": "Tongue Tingler",
+  "name": "tongue-tingler-api",
   "version": "0.0.0",
   "private": true,
   "engines": {
@@ -19,7 +19,7 @@
     "freshDev": "ts-node-dev --cache-directory clear --watch -r tsconfig-paths/register ./app.ts",
     "lint": "git diff --cached --name-only --diff-filter=d | grep '.ts$' | xargs eslint",
     "lint:fix": "npm run lint -- --fix",
-    "build": "tsc && npm run copy",
+    "build": "tsc && npm run copy && tsc-alias",
     "copy": "node --max-old-space-size=4096 copy.js",
     "tsc-w": "tsc -w"
   },
@@ -106,6 +106,7 @@
     "@types/sequelize": "^4.28.20",
     "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.10",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.2"
   },

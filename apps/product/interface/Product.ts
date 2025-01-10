@@ -30,6 +30,7 @@ enum PRODUCT_STATUS {
 enum PRODUCTS_TYPE {
     RETORT = "retort",
     PACKAGING = "packaging",
+    SAMPLEKIT = "sample-kit",
 }
 
 

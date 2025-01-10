@@ -85,8 +85,8 @@ class PdiChecklistController {
             const updateData = req.body;
             delete updateData.id;
 
-            const user_id = parseInt(get(req.params, "user_id"));
-            if (isNaN(id)) throw Error('Missing user_id or isNaN');
+            const user_id = parseInt(get(req, "user_id"));
+            if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
 
             // Use the repo to find the Checkpoint by ID
             const checkpoint = await new PdiChecklistRepo().findByPk(id);
@@ -95,7 +95,7 @@ class PdiChecklistController {
             }
 
             // Update the Checkpoint in the repo
-            const updatedCheckpoint = await new PdiChecklistRepo().update(id as number, { ...updateData, updatedBy: user_id }, user_id);
+            const updatedCheckpoint = await new PdiChecklistRepo().update(id, { ...updateData, updatedBy: user_id }, user_id);
 
             return res.status(200).json({
                 message: "PDI Checkpoint updated successfully",

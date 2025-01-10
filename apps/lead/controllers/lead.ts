@@ -143,10 +143,10 @@ export default class LeadController {
         try {
             const id = parseInt(get(req.body, "id"));
             const user_id = parseInt(get(req, "user_id"));
-    
+
             if (isNaN(id)) throw new Error("Invalid or missing 'id'");
             if (isNaN(user_id)) throw new Error("Invalid or missing 'user_id'");
-    
+
             // Check if the contract already exists
             const existingContract = await new ContractRepo().get(id);
             if (existingContract) {
@@ -157,7 +157,7 @@ export default class LeadController {
                         sendResponse(RESPONSE_TYPE.ERROR, `Prospect ${ERROR_MESSAGE.EXISTS}`)
                     );
             }
-    
+
             // Fetch the lead
             const existingLead = await new LeadRepo().get(id);
             if (!existingLead) {
@@ -168,7 +168,7 @@ export default class LeadController {
                         sendResponse(RESPONSE_TYPE.ERROR, `Lead ${ERROR_MESSAGE.NOT_EXISTS}`)
                     );
             }
-    
+
             // Prepare user payload
             const payload = {
                 firstName: existingLead.firstName,
@@ -183,11 +183,11 @@ export default class LeadController {
                 status: USER_STATUS.ACTIVE,
                 referBy: existingLead.referBy,
             };
-    
+
             // Retrieve template ID
             const templates = await new ZohoSignRepo().getTemplates();
             const templateId = templates?.[0]?.templateId || "";
-    
+
             // Prepare prospect data
             const prospectData: ContractsPayload = {
                 organizationId: null,
@@ -207,7 +207,7 @@ export default class LeadController {
                 proposalData: existingLead.proposalModalId,
                 assignedUser: null,
             };
-    
+
             // Create Firebase user
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
@@ -216,14 +216,14 @@ export default class LeadController {
                 password: payload.password,
                 disabled: false,
             });
-    
+
             if (!firebaseUser?.success) {
                 await transaction.rollback();
                 return res
                     .status(400)
                     .send(sendResponse(RESPONSE_TYPE.ERROR, firebaseUser.error));
             }
-    
+
             // Create user in the database
             const hashedPassword = await createPassword(payload.password);
             const user: TUser = {
@@ -252,24 +252,24 @@ export default class LeadController {
                 updatedAt: new Date(),
                 deletedAt: null,
             };
-    
+
             await new AdminRepo().create(user, { transaction });
-    
+
             // Create prospect
             const prospect = await new ContractRepo().create(prospectData, user_id, { transaction });
-    
+
             // Commit the transaction
             await transaction.commit();
-    
+
             // Send email notification
             const mailDto = new LeadToProspectMail().getPayload(
                 {
-                    btnLink: `https://tonguetingler.vercel.app/organization-setup?prospectId=${prospect.id}`,
+                    btnLink: `https://tonguetingler.com/organization-setup?prospectId=${prospect.id}`,
                 },
                 existingLead.email
             );
             await sendMail(mailDto);
-    
+
             return res
                 .status(200)
                 .send(
@@ -281,7 +281,7 @@ export default class LeadController {
             return res.status(500).send({ message: error.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
-    
+
 
     static async assignLeadToAdminUser(
         req: Request,

@@ -356,6 +356,12 @@ export class LeadRepo {
     ): Promise<[affectedCount: number]> {
         let followDetailsIds: number[] = [];
         const lead = await LeadsModel.findByPk(id);
+
+        console.log("******")
+        console.log(lead)
+        console.log("******")
+
+
         if (!lead) {
             throw new Error("Lead not found");
         }

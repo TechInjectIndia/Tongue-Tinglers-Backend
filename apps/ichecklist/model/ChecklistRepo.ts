@@ -19,7 +19,23 @@ export class PdiChecklistRepo {
 
     // Find a PDI Checklist by primary key
     public async findByPk(id: number): Promise<ICheckList | null> {
-        const data = await IChecklistModel.findByPk(id); // Assuming your model is called PdiChecklistModel
+        const data = await IChecklistModel.findOne({
+            where: { id },
+            include: [
+                {
+                    model: UserModel,
+                    as: "createdByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
+                },
+                {
+                    model: FranchiseLeadModel,
+                    as: "franchiseModal",
+                },
+            ],
+        }); // Assuming your model is called PdiChecklistModel
         return data as ICheckList | null;
     }
 

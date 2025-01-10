@@ -109,14 +109,7 @@ server.use(cors(corsOptions)); // Purpose: Provides a middleware for enabling
 server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");
 server.get("/", async (_, res) => {
-    let email: string = "harshdalal.techinject@gmail.com";
-
-    // welcome mail
-    // const mailDto = new FinalizeDetailsMail().getPayload({}, email);
-    const mailDto = new LeadToProspectMail().getPayload({}, email);
-    const resp = await sendMail(mailDto);
-
-    res.send(resp);
+    res.send("Tongue tingler ")
 });
 server.use("/api", router);
 

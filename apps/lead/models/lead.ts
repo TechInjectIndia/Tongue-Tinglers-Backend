@@ -357,9 +357,7 @@ export class LeadRepo {
         let followDetailsIds: number[] = [];
         const lead = await LeadsModel.findByPk(id);
 
-        console.log("******")
-        console.log(lead)
-        console.log("******")
+
 
 
         if (!lead) {

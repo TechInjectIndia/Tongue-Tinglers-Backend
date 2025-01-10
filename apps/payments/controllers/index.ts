@@ -88,10 +88,13 @@ export default class PaymentsController {
 
                 // Send payment received email after success
 
+                console.log("status");
+                console.log(status);
                 if(status === 'paid' || status==="order.paid" ||status ==="Paid"){
                 const mailDto = new PaymentReceivedMail().getPayload({}, contractDetails.leadId.email);
                 await sendMail(mailDto);
                 }
+
 
                 return res.status(200).send({ message: "Webhook processed successfully" });
             } else {

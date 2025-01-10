@@ -29,6 +29,7 @@ const rateLimiter = new RateLimiterMemory({
 });
 
 import './apps/database/index'
+import {loggerMiddleware} from "./apps/logger/middlewares/loggerMiddleware";
 
 
 declare global {
@@ -69,7 +70,7 @@ const corsOptions = {
 
 export const server = express();
 
-// server.use(loggerMiddleware);
+server.use(loggerMiddleware);
 
 server.use(async (req, res, next) => {
     // Purpose: A more flexible rate limiter than express-rate-limit, suitable

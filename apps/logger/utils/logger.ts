@@ -1,7 +1,8 @@
 import { createLogger, format, transports, } from "winston";
 import path from "path";
 import fs from "fs";
-import { folderPath } from "../../../path";
+const folderPath = require('../../../path.config');
+
 const winston = require('winston');
 require('winston-daily-rotate-file')
 
@@ -79,7 +80,7 @@ const logger = createLogger({
                 format.json()
             ),
         }),
-        
+
         // Also log to console
         new transports.Console({
             format: format.combine(

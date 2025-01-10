@@ -70,4 +70,18 @@ export class PendingOrderRepo implements IPendingOrderRepo {
         };
         return pendingOrderPayload;
     }
+
+    async deleteAllPendingOrderByOrderId(orderId:number){
+        try{
+            const pendingOrder = await PendingOrderModel.destroy({
+                where: {
+                    orderId: orderId
+                }
+            });
+            return pendingOrder;
+        }catch(error){
+            console.log(error);
+            return null;
+        }
+    }
 }

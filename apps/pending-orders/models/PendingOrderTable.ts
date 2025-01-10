@@ -58,11 +58,11 @@ class PendingOrderModel
                 },
                 totalTax: {
                     type: DataTypes.FLOAT,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 deliveryStatus: {
                     type: DataTypes.STRING,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 customerDetails: {
                     type: DataTypes.JSON, // Store complex objects as JSON
@@ -74,7 +74,7 @@ class PendingOrderModel
                 },
                 paymentId: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 cancelledItems: {
                     type: DataTypes.JSON, // Store array of objects as JSON
@@ -86,7 +86,7 @@ class PendingOrderModel
                 },
                 totalDiscount: {
                     type: DataTypes.FLOAT,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 deliveryDetails: {
                     type: DataTypes.JSON,
@@ -94,11 +94,11 @@ class PendingOrderModel
                 },
                 shippingAddress: {
                     type: DataTypes.JSON,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 totalShipping: {
                     type: DataTypes.FLOAT,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 anomalyArr: {
                     type: DataTypes.JSON,

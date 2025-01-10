@@ -2,4 +2,8 @@ import { ParsedPendingOrder, PendingOrder, PendingOrderPayload } from "../interf
 
 export interface IPendingOrderRepo {
     create(payload: PendingOrderPayload): Promise<any | null>
+
+    deleteAllPendingOrderByOrderId(orderId:number): Promise<any | null>
+
+    
 }

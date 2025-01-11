@@ -5,21 +5,21 @@ const SampleKitOrder = (data: any) => (
     <MailLayout>
         <div className="bg-white rounded-lg p-6">
             <div className="p-0">
-                <p className="text-[20px] mt-0 text-center text-[#e38b2a] uppercase font-bold leading-normal">
+                <p className="text-[18px] mt-0 text-center text-[#e38b2a] uppercase font-bold leading-normal">
                     Thank you for ORDERING YOUR KIT
                 </p>
 
-                <p className="text-[17px] text-left mt-5 text-black leading-7">
+                <p className="text-[16px] text-left mt-5 text-black leading-7">
                     It is not just a kit but a promise.
                     <br />
                     Your order marks the beginning of an exciting journey
                 </p>
-
+                <br />
                 {/* Button */}
                 <div className="text-center">
                     <a
                         href={data.btnLink}
-                        className="border border-none cursor-pointer text-[16px] text-white py-3 px-6 w-fit mx-auto rounded"
+                        className="border border-none cursor-pointer text-[15px] text-white py-3 px-6 w-fit mx-auto rounded"
                         style={{
                             background:
                                 "linear-gradient(to right, #dc322f, #ffcd32)",
@@ -29,6 +29,7 @@ const SampleKitOrder = (data: any) => (
                         ORDER DETAILS
                     </a>
                 </div>
+                <br />
                 <div className="flex justify-center items-center mt-5 w-full">
                     <img
                         src=""
@@ -57,7 +58,7 @@ const SampleKitOrder = (data: any) => (
                     </ul>
                 </div>
 
-                <p className="text-[17px] text-left mt-5 text-black leading-7">
+                <p className="text-[16px] text-left mt-5 text-black leading-7">
                     Our team is processing your order and will have it
                     dispatched shortly. You’ll receive a notification with
                     tracking details once your sample kit is on its way. Thank

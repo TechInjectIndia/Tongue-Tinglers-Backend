@@ -1,5 +1,9 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { PendingOrder, PendingOrderPayload } from "../interface/PendingOrder";
+import {
+    AnomalyOrderItem,
+    PendingOrder,
+    PendingOrderPayload
+} from "../interface/PendingOrder";
 import { OrderStatus, PAYMENT_TYPE } from "apps/order/interface/Order";
 import { ParsedUser } from "apps/user/interface/user";
 import {
@@ -36,6 +40,7 @@ class PendingOrderModel
     items: ParsedOrderItem[];
     price: Record<string, PriceComponent>;
     couponCodes: string[];
+    anomalies: AnomalyOrderItem[];
 
     public static initModel() {
         PendingOrderModel.init(
@@ -114,6 +119,11 @@ class PendingOrderModel
                     allowNull: true,
                 },
                 items: {
+                    type: DataTypes.JSON,
+                    allowNull: false,
+                },
+                // todo @Sumeet handle the relation here
+                anomalies: {
                     type: DataTypes.JSON,
                     allowNull: false,
                 },

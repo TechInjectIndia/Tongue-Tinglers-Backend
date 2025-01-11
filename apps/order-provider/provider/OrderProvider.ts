@@ -42,12 +42,14 @@ import { RazorpayProvider } from "apps/razorpay/repositories/razorpay/RazorpayPr
 import { ParsedProduct } from "../../product/interface/Product";
 import {
     DTO,
+    getHandledErrorDTO,
     getSuccessDTO,
     getUnhandledErrorDTO,
 } from "apps/common/models/DTO";
 import { PendingOrderRepo } from "apps/pending-orders/repos/PendingOrderRepo";
 import { PendingOrderPayload } from "apps/pending-orders/interface/PendingOrder";
 import { runAtomicFetch } from "../../common/utils/atomic-fetch/atomic-fetch";
+import RepoProvider from "../../RepoProvider";
 export class OrderProvider implements IOrderProvider {
     async processOrder(
         state: OrderState,
@@ -103,25 +105,27 @@ export class OrderProvider implements IOrderProvider {
         return getSuccessDTO({ rpOrder: rpOrderRes.data, parsedOrder: order });
     }
 
-    async processPostOrder(paymentOrderId: string): Promise<DTO<null>> {
+    async processPostOrder(paymentOrderId: string, paymentId:string): Promise<DTO<null>> {
         // revalidate the payment with razorpay
 
-        /**
-         * DB Transaction
-         * 1. get pending Order from db
-         * 2. check if already not processed
-         * 3. process Stock
-         * 4. clear cart
-         * 5. save payment in the paymentsTable
-         * 6. assigning new id, and save to orders table
-         * 7. update the pending order
-         */
+        const validationRes = await this.verifyFromRazorpay(paymentId);
+        if (!validationRes)
+            return getHandledErrorDTO(
+                `revalidation failed for: ${paymentOrderId}`,
+            );
+
+        const processRes =
+            await RepoProvider.orderRepo.processPostOrderTransaction(
+                paymentOrderId,
+            );
+
+        if (!processRes.success)
+            return getHandledErrorDTO(processRes.message, processRes);
+        const res = processRes.data;
 
         // perform post OrderTasks with run atomic fetch
-
-        // if already is processed right now....
-        if (true) {
-            // this.performPostPaymentTasks(order)
+        if (!res.alreadyProcessed && res.order) {
+            await this.performPostPaymentTasks(res.order);
         }
 
         return getSuccessDTO(null);
@@ -784,5 +788,16 @@ export class OrderProvider implements IOrderProvider {
         //     send mail functions
 
         throw new Error("method not implemented");
+    }
+
+    private async verifyFromRazorpay(paymentId: string) {
+        const res =
+            await RepoProvider.razorpayRepo.getTransaction(paymentId)
+
+        if (res.success && res.data.status && res.data.status === "captured") {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -1,7 +1,7 @@
 import { IOrderRepo } from "./IOrderRepo";
 import { OrderModel } from "../models/OrderTable";
 import { NotesModel } from "../models/NotesTable";
-import { Op, Transaction } from "sequelize";
+import { Op, Sequelize, Transaction, where } from "sequelize";
 
 import { OrderItemsModel } from "../../order-items/models/OrderItemsTable";
 import { OrderItem } from "../../order-items/interface/orderItem";
@@ -27,9 +27,18 @@ import { handleError } from "../../common/utils/HelperMethods";
 import { sequelize } from "../../../config";
 import { PendingOrderModel } from "../../pending-orders/models/PendingOrderTable";
 import { ProcessPostOrderResult } from "../interface/ProcessPostOrderResult";
+import { CartDetailsModel } from "../../cart-details/models/CartDetailTable";
+import cartDetailApi from "../../cart-details/api/cartDetailApi";
+import RepoProvider from "../../RepoProvider";
+import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
+import { ProductOptions } from "../../product/interface/ProductOptions";
+import { PendingOrder } from "../../pending-orders/interface/PendingOrder";
 
 export class OrderRepo implements IOrderRepo {
-    async createOrder(order: OrderPayload): Promise<Order | null> {
+    private async createOrder(
+        transaction: Transaction,
+        order: OrderPayload,
+    ): Promise<Order | null> {
         try {
             let notesCreated: Notes[] = [];
             let orderItemsCreated: any[] = [];
@@ -67,10 +76,13 @@ export class OrderRepo implements IOrderRepo {
                     // notes: noteIds, // Link notes by their IDs
                     createdAt: new Date(),
                 },
-                { include: [{ association: "noteses" }] },
+                { include: [{ association: "noteses" }], transaction },
             );
 
             orderCreated.addNoteses(noteIds);
+
+            // todo @Sumeet add the anomalies here;
+            orderCreated.addAnomalyOrderItems([]);
 
             return orderCreated.toJSON();
         } catch (error) {
@@ -260,7 +272,7 @@ export class OrderRepo implements IOrderRepo {
         try {
             const transaction = await sequelize.transaction();
 
-            //     validate already processedOrder
+            //  validate already processedOrder
             const validationRes = await this.validateAlreadyProcessedOrder(
                 transaction,
                 paymentOrderId,
@@ -268,25 +280,33 @@ export class OrderRepo implements IOrderRepo {
 
             if (
                 !validationRes.success ||
-                !validationRes.data.pendingOrder ||
+                !validationRes.data.order ||
                 validationRes.data.alreadyProcessed
             ) {
                 return validationRes;
             }
 
-            //     Process the Order
+            //     Process the Order NOW!
 
-            //     process Stock
+            const result = validationRes.data;
 
-            //     save order
+            const p1 = this.processStock(transaction, result.order);
 
-            //     update pendingOrder
+            const p2 = this.createOrderAndUpdatePendingOrder(
+                transaction,
+                result.order,
+            );
 
-            //     save payment
+            const p3 = this.clearCart(
+                transaction,
+                result.order.customerDetails.id,
+            );
 
-            //     clear cart
+            await Promise.all([p1, p2, p3]);
 
             await transaction.commit();
+
+            return getSuccessDTO(result);
         } catch (error: any) {
             handleError(error);
 
@@ -294,8 +314,6 @@ export class OrderRepo implements IOrderRepo {
                 `${error.message ?? ""}: error in process order transaction`,
             );
         }
-
-        return getSuccessDTO(null);
     }
 
     //     Private Functions:
@@ -305,7 +323,7 @@ export class OrderRepo implements IOrderRepo {
         paymentOrderId: string,
     ): Promise<DTO<ProcessPostOrderResult>> {
         const res: ProcessPostOrderResult = {
-            pendingOrder: null,
+            order: null,
             alreadyProcessed: false,
         };
 
@@ -326,7 +344,7 @@ export class OrderRepo implements IOrderRepo {
             );
         }
 
-        res.pendingOrder = pendingOrder;
+        res.order = pendingOrder;
 
         // validate already processed case
         if (pendingOrder.status === OrderStatus.PROCESSED) {
@@ -340,5 +358,85 @@ export class OrderRepo implements IOrderRepo {
         return getSuccessDTO(res);
     }
 
-    private clearCart(transaction: Transaction, userId: number) {}
+    private getStockIds(order: PendingOrder): number[] {
+        return order.items.map((item) => item.id);
+    }
+    private async processStock(transaction: Transaction, order: PendingOrder) {
+        const stocksMap = await this.getStocksMap(
+            transaction,
+            this.getStockIds(order),
+        );
+
+        //     decrement stock
+        for (const item of order.items) {
+            const stockOption = stocksMap.get(item.id);
+            if (!stockOption || stockOption.stock < item.quantity) {
+                // todo @sumeet: handle the stock anomaly against this
+                // anomaly case;
+
+                const anomalyQty = item.quantity - (stockOption?.stock ?? 0);
+                order.anomalies.push({
+                    id: item.id,
+                    quantity: anomalyQty,
+                });
+            } else {
+                stockOption.stock -= item.quantity;
+                stocksMap.set(item.id, stockOption);
+            }
+        }
+
+        // perform write operations
+        const promises: Promise<void>[] = [];
+
+        Array.from(stocksMap).forEach(([id, option]) => {
+            const promise = ProductVariationsModel.update(
+                { stock: option.stock },
+                { where: { id }, transaction },
+            ).then(() => {});
+
+            promises.push(promise);
+        });
+
+        await Promise.all(promises);
+    }
+
+    /**
+     * this is supposed to update the id after it is saved in the db, since it works with reference, so outside the scope we need the incremental id
+     * @param transaction
+     * @param order
+     * @private
+     */
+    private async createOrderAndUpdatePendingOrder(
+        transaction: Transaction,
+        order: PendingOrder,
+    ) {
+        //     save order in order table
+        //     update in pendingOrder table
+        //     save payment in paymentTable
+    }
+
+    private async getStocksMap(
+        transaction: Transaction,
+        ids: number[],
+    ): Promise<Map<number, ProductOptions>> {
+        const options = (
+            await ProductVariationsModel.findAll(
+                // Fields to update
+                {
+                    where: { id: { [Op.in]: ids } }, // Match any ID in the array
+                    transaction,
+                },
+            )
+        ).map((model) => model.toJSON());
+
+        const result: Map<number, ProductOptions> = new Map(
+            options.map((option) => [option.id, option]),
+        );
+
+        return result;
+    }
+
+    private async clearCart(transaction: Transaction, userId: number) {
+        // todo @Nitesh clear cart here with transaction!
+    }
 }

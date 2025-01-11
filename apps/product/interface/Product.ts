@@ -12,7 +12,6 @@ interface BaseProduct {
     type: PRODUCTS_TYPE;
     status: PRODUCT_STATUS;
     images: Array<string>;
-    // variationIds: Array<number>,
     tax_rate_id: number;
     vendorId: number;
     variations: Array<BaseProductOptions> | null;
@@ -30,7 +29,7 @@ enum PRODUCT_STATUS {
 enum PRODUCTS_TYPE {
     RETORT = "retort",
     PACKAGING = "packaging",
-    SAMPLEKIT = "sample-kit",
+    SAMPLE_KIT= "sample-kit"
 }
 
 

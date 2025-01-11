@@ -39,10 +39,11 @@ import { getUid } from "apps/common/utils/commonUtils";
 import { CURRENCY_TYPE, RPOrderParams } from "apps/razorpay/models/RPModels";
 import { Orders } from "node_modules/razorpay/dist/types/orders";
 import { RazorpayProvider } from "apps/razorpay/repositories/razorpay/RazorpayProvider";
-import {ParsedProduct} from "../../product/interface/Product";
+import { ParsedProduct } from "../../product/interface/Product";
 import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/common/models/DTO";
 import { PendingOrderRepo } from "apps/pending-orders/repos/PendingOrderRepo";
 import { PendingOrderPayload } from "apps/pending-orders/interface/PendingOrder";
+import { RPOrderTable } from "apps/rp-order/models/RPOrderTable";
 
 export class OrderProvider implements IOrderProvider {
     async processOrder(
@@ -76,8 +77,18 @@ export class OrderProvider implements IOrderProvider {
         // Transform the order into RPOrder and ParsedOrder
         const rpOrder = await this.transformToRPOrder(order);
 
+        const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order);
+        const createPendingOrder = await new PendingOrderRepo().create(pendingOrderData);
 
-        if (!rpOrder.success) return getUnhandledErrorDTO("Failed to create RP Order")
+        if (rpOrder.success) {
+            console.log(rpOrder.success)
+            console.log(rpOrder.data);
+            
+            const aa = await RPOrderTable.create(rpOrder.data);
+            console.log(aa);
+        }
+
+        if (!rpOrder.success) return getUnhandledErrorDTO("Failed to create RP Order");
 
         return getSuccessDTO({ rpOrder: rpOrder.data, parsedOrder: order });
     }
@@ -190,9 +201,6 @@ export class OrderProvider implements IOrderProvider {
 
         order.totalDiscount = this.calcTotalDiscount(order);
 
-        const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order);
-        const createPendingOrder = await new PendingOrderRepo().create(pendingOrderData)
-        
         return order;
     }
 

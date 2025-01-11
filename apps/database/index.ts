@@ -46,6 +46,8 @@ import {OrganizationModel} from "../organization/models/OrganizationTable";
 import { PdiModel } from "apps/pdi/model/PdiTable";
 import { FileModel } from "apps/files/models/FileTable";
 import { PendingOrderModel } from "apps/pending-orders/models/PendingOrderTable";
+import { RPOrderTable } from "apps/rp-order/models/RPOrderTable";
+
 
 const m = [
     RegionModel,
@@ -80,7 +82,9 @@ const m = [
     NotesModel,
     OrderItemsModel,
     CartProductModel,
-    ItemStockModel
+    ItemStockModel,
+    RPOrderTable
+    
 ];
 
 console.log(m)
@@ -121,7 +125,8 @@ const models = {
     CampaignProposalsModel: CampaignProposalsModel.initModel(),
     PDI: PdiModel.initModel(),
     File: FileModel.initModel(),
-    PendingOrder: PendingOrderModel.initModel()
+    PendingOrder: PendingOrderModel.initModel(),
+    RPOrderTable:RPOrderTable.initModel()
 };
 
 let currentModel: string = null;

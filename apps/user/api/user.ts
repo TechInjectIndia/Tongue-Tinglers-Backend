@@ -16,7 +16,7 @@ const {
   validateEditMultipleIdsBody,
 } = AdminValidation;
 
-const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAdminFirebaseUid, updateType } = AdminController;
+const { getAdmins, getAllUsers,addGuest, addAdmin, editAdmin, deleteAdmin, getAdmin,getAdminFirebaseUid, updateType } = AdminController;
 
 // ====== Admins Routes Start ======
 /**
@@ -268,7 +268,7 @@ const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAd
  *         description: User not found
  */
 adminUserRouter.post("/create", hasPermission('admin', 'create'), validateCreateAdminBody, addAdmin);
-guestUserRouter.post ("/create", validateGuestBody, addAdmin);
+guestUserRouter.post ("/create", validateGuestBody, addGuest);
 adminUserRouter.get("/list", hasPermission('admin', 'read'), validateListAdminQuery, getAdmins);
 adminUserRouter.get("/list-all", hasPermission('admin', 'read'), validateListAdminQuery, getAllUsers);
 adminUserRouter.get("/get/:id", hasPermission('admin', 'read'), validateEditAdminParams, getAdmin);

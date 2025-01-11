@@ -32,6 +32,8 @@ import {CreateLeadMail} from "static/views/email/get-templates/CreateLeadMail";
 import {
     LeadToProspectMail
 } from "static/views/email/get-templates/LeadToProspectMail";
+import RepoProvider from "../../RepoProvider";
+import {parseLead} from "../parser/leadParser";
 
 export default class LeadController {
 
@@ -557,6 +559,7 @@ export default class LeadController {
                 // logs: updatedLogs
             },user_id);
 
+            const finalLead = await new  LeadRepo().getLeadByAttr("id",id)
 
             return res
                 .status(200)
@@ -564,7 +567,7 @@ export default class LeadController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
-                        updatedLead,
+                        finalLead,
                     ),
                 );
         } catch (err) {

@@ -82,6 +82,11 @@ export class OrderProvider implements IOrderProvider {
 
     ///////////////////////////PRIVATE METHODS////////////////////////////////////
 
+    /**
+     * this is going to have promise but works synchronous for future proofing
+     * @param order
+     * @param currUser
+     */
     async calculateOrder(order: ParsedOrder, currUser: TUserWithPermission): Promise<ParsedOrder> {
         // calculate Order
 

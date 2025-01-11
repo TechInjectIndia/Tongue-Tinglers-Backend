@@ -40,7 +40,7 @@ const createAdminBody = Joi.object().keys({
             'string.email': 'Please provide a valid email address.',
             'any.required': 'Email is required.'
         }),
-    password: Joi.string().min(8).required()
+    password: Joi.string().min(6).required()
         .messages({
             'string.min': 'Password must be at least 8 characters long.',
             'any.required': 'Password is required.'
@@ -81,7 +81,7 @@ const createGuestBody = Joi.object().keys({
             'string.email': 'Please provide a valid email address.',
             'any.required': 'Email is required.'
         }),
-    password: Joi.string().min(8).required()
+    password: Joi.string().min(6).required()
         .messages({
             'string.min': 'Password must be at least 8 characters long.',
             'any.required': 'Password is required.'
@@ -205,7 +205,7 @@ export const validateGuestBody = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, createAdminBody, "body");
+) => validateReq(req, res, next, createGuestBody, "body");
 
 export const validateEditAdminParams = async (
     req: Request,

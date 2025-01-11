@@ -24,7 +24,24 @@ class RegionModel extends Model<IRegion, RegionCreationAttributes>
     public readonly updatedAt!: Date;
     public readonly deletedAt!: Date | null;
 
-    public addAreas!: (areas: Array<AreaModel | number>) => Promise<void>;
+    // public addAreas!: (areas: Array<AreaModel | number>) => Promise<void>;
+    public addArea!: (
+        option: AreaModel | number
+    ) => Promise<void>;
+    public addAreas!: (
+        options: Array<AreaModel | number>,
+    ) => Promise<void>;
+    public setAreas!: (
+        options: Array<AreaModel | number>
+    ) => Promise<void>;
+    public getAreas!: () => Promise<AreaModel[]>;
+    public removeArea!: (
+        option: AreaModel | number
+    ) => Promise<void>;
+    public removeAreas!: (
+        options: Array<AreaModel | number>
+    ) => Promise<void>;
+
 
     public static initModel() {
         RegionModel.init(

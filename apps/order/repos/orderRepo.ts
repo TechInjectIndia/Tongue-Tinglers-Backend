@@ -16,7 +16,7 @@ import {
 } from "../interface/Order";
 import { parseOrder } from "../parser/parseOrder";
 import { OrderProvider } from "apps/order-provider/provider/OrderProvider";
-import { DTO } from "apps/DTO/DTO";
+import { DTO } from "apps/common/models/DTO";
 
 export class OrderRepo implements IOrderRepo {
     async createOrder(order: OrderPayload): Promise<Order | null> {

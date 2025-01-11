@@ -1,4 +1,9 @@
-import { Franchise, FranchiseDetails, ParsedFranchise } from "../../../interfaces";
+import {
+    Franchise,
+    FranchiseDetails,
+    ParsedFranchise
+} from "../interface/Franchise";
+
 
 export interface IFranchiseRepo {
     create(franchise: FranchiseDetails, userId: number, options?: { transaction?: any }): Promise<Franchise | null>;

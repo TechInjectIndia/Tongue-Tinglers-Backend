@@ -8,16 +8,17 @@ import { ProductModel } from "apps/product/model/productTable";
 import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
 import { CartDetailsModel } from "../models/CartDetailTable";
 import { CartProductModel } from "../../cart-products/model/CartProductTable";
+import { ParsedCartDetail } from "../interface/CartDetail";
 
 export class CartDetailRepo implements ICartDetailRepo {
-    async getCartDetailByUserId(userId: number): Promise<any> {
+    async getCartDetailByUserId(userId: number): Promise<ParsedCartDetail> {
         try {
             const cartDetails = await CartDetailsModel.findAll({
                 where: { user_id: userId }, // Filter by user_id
                 include: [
                     {
                         model: CartProductModel,
-                        as: 'cartProductses', // Alias defined in the association
+                        as: 'cartProducts', // Alias defined in the association
                         attributes: ['id', 'product_id', 'product_option_id', 'quantity', 'createdAt'],
                         include: [
                             {
@@ -54,10 +55,13 @@ export class CartDetailRepo implements ICartDetailRepo {
                 ],
                 order: [['createdAt', 'DESC']],
             });
+
+            
             const cartDetailsData = cartDetails.map((cartDetail) => {
                 return parseCartDetails(cartDetail)
             })
-            return cartDetailsData
+            
+            return cartDetailsData[0]
         } catch (error) {
             console.log(error);
             return null;

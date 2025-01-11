@@ -3,6 +3,7 @@ import { FollowDetails, followStatus } from "../interface/followDetails";
 import { UserModel } from "apps/user/models/UserTable";
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 interface FollowDetailsCreationAttributes extends Optional<FollowDetails, "id"> { }
 
@@ -23,6 +24,12 @@ class FollowDetailsModel extends Model<FollowDetails> implements FollowDetailsCr
         this.belongsTo(UserModel, { as: "created", foreignKey: "createdBy" });
         this.belongsTo(UserModel, { as: "updated", foreignKey: "updatedBy" });
         this.belongsTo(UserModel, { as: "followed", foreignKey: "followedBy" });
+        FollowDetailsModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs",             // Alias for the association
+          });
 
     }
 

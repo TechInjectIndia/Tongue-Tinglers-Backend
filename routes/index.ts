@@ -12,7 +12,7 @@ const router = Router();
 const ADMIN = "/admin";
 const FRANCHISE = "/franchise";
 const CUSTOMER = "/customer";
-const GUEST = "/guest";
+
 const ORDERS = '/v1/orders';
 
 import { auth } from "../middlewares/auth";
@@ -21,7 +21,7 @@ import authRouter from "../apps/auth/api";
 router.use(`/auth`, authRouter);
 
 
-import adminUsersRouter from "../apps/user/api/user";
+import {adminUserRouter,guestUserRouter} from "../apps/user/api/user";
 
 import leadRouter from "../apps/lead/api/lead-router";
 import webLeadRouter from "../apps/lead/api/web-lead";
@@ -75,10 +75,9 @@ import cartDetailRouter from "../apps/cart-details/api/cartDetailApi";
 import orderItemRouter from "../apps/order-items/api/orderItemApi";
 import productsCategoryRouter
     from "../apps/products-category/api/productsCategoryApi";
-// import OrderRouter from "../apps/order/api/orderApi";
+import OrderRouter from "../apps/order/api/orderApi";
 import documentRouter from "../apps/documents/api/documentApi";
 import agreementDocRouter from "../apps/agreement-docs/api/agreementDocApi"
-// import petPoojaApiRouter from "../apps/pet-pooja/api/petpooja";
 import zohoSignApiRouter from "../apps/zoho-sign/api/zohosign";
 import {
     transactionRouter,
@@ -89,7 +88,8 @@ import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics"
 
 
 // ====== Admin routes ======
-router.use(`${ADMIN}/users`, auth, adminUsersRouter);
+router.use(`${ADMIN}/users`, auth, adminUserRouter);
+router.use(`/users`, guestUserRouter);
 // router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
 // router.use(`${ADMIN}/roles`, auth, rolesRouter);
 
@@ -137,14 +137,16 @@ router.use(`${ADMIN}/product-options`, auth, productOptionsRouter);
 router.use(`${ADMIN}/products-category`, auth, productsCategoryRouter);
 router.use("/cart-detail", auth, cartDetailRouter);
 router.use("/order-items", auth, orderItemRouter);
-// router.use("/order", auth, OrderRouter);
-router.use(ORDERS, auth, OrderV1Routes);
+router.use(`${ADMIN}/order`, auth, OrderRouter);
+// router.use(ORDERS, auth, OrderV1Routes);
 router.use(`/cart`, auth, cartProductRouter);
 router.use("/migration", migrationRouter);
 router.use("/document", auth, documentRouter);
 router.use(`${ADMIN}/agreement-docs`, agreementDocRouter);
 // router.use(`/pet-pooja`, petPoojaApiRouter);
 router.use(`/organization`,auth, organizationRouter);
+router.use(`${ADMIN}/products-category`, auth, OrderV1Routes);
+
 
 
 router.post(

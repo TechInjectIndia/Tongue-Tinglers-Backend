@@ -37,7 +37,7 @@ type TCampaignSubmissionsList = {
 export interface CampaignPayload {
     name: string;
     description?: string;
-    questionList: number[]; // Array of question IDs
+    questionList?: number[]; // Array of question IDs
     organizationId: number;
     regionId: number;
     start: Date;

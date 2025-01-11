@@ -113,6 +113,8 @@ export default class RegionController {
             const user_id = get(req, "user_id", "");
             const { area = null } = { ...req.body };
 
+            console.log(area)
+
             if (!Array.isArray(area)) {
                 return res.status(400).send({
                     message: 'Area must be an array.',

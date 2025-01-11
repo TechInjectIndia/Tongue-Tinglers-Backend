@@ -85,14 +85,14 @@ class PdiModel extends Model<IPdiList, PDICreationAttributes>
 
     public static associate() {
         //todo check if we need this!
-        IChecklistModel.belongsTo(PdiCheckpointModel, {
-            foreignKey: 'id', as:
-                'checkpoint', constraints: true
-        })
-        IChecklistModel.hasMany(PdiCheckpointModel, {
-            foreignKey: 'checkPoints', as:
-                'checkpoint'
-        })
+        // IChecklistModel.belongsTo(PdiCheckpointModel, {
+        //     foreignKey: 'id', as:
+        //         'checkpoint', constraints: true
+        // })
+        // IChecklistModel.hasMany(PdiCheckpointModel, {
+        //     foreignKey: 'checkPoints', as:
+        //         'checkpoint'
+        // })
     }
 }
 export { PdiModel };

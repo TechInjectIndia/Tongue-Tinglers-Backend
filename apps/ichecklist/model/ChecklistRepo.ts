@@ -1,15 +1,41 @@
-import { Op } from "sequelize";
-import { ICheckList, TICheckListList, TICheckListPayload, TListFiltersICheckListt } from "../interface/IChecklist";
-import { IChecklistModel } from "./CheckListTable";
-import { UserModel } from "apps/user/models/UserTable";
-import { getUserName } from "apps/common/utils/commonUtils";
+import {Op} from "sequelize";
+import {
+    ICheckList,
+    ParsedChecklist,
+    TICheckListList,
+    TICheckListPayload,
+    TListFiltersICheckListt
+} from "../interface/IChecklist";
+import {IChecklistModel} from "./CheckListTable";
+import {UserModel} from "apps/user/models/UserTable";
+import {getUserName} from "apps/common/utils/commonUtils";
+import {
+    FranchiseLeadModel
+} from "../../franchise_model/models/FranchiseModelTable";
+import {parseChecklist} from "../parser/checklistParser";
 
 export class PdiChecklistRepo {
     constructor() { }
 
     // Find a PDI Checklist by primary key
     public async findByPk(id: number): Promise<ICheckList | null> {
-        const data = await IChecklistModel.findByPk(id); // Assuming your model is called PdiChecklistModel
+        const data = await IChecklistModel.findOne({
+            where: { id },
+            include: [
+                {
+                    model: UserModel,
+                    as: "createdByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
+                },
+                {
+                    model: FranchiseLeadModel,
+                    as: "franchiseModal",
+                },
+            ],
+        }); // Assuming your model is called PdiChecklistModel
         return data as ICheckList | null;
     }
 
@@ -29,11 +55,26 @@ export class PdiChecklistRepo {
     }
 
     // Get PDI Checklist by ID
-    public async get(id: number): Promise<ICheckList | null> {
+    public async get(id: number): Promise<ParsedChecklist | null> {
         const data = await IChecklistModel.findOne({
-            where: { id }
+            where: { id },
+            include : [
+                {
+                    model: UserModel,
+                    as: "createdByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
+                },
+                {
+                    model: FranchiseLeadModel,
+                    as: "franchiseModal",
+                },
+            ],
         });
-        return data as ICheckList | null;
+
+        return parseChecklist(data);
     }
 
     // List PDI Checklists with filters
@@ -43,7 +84,9 @@ export class PdiChecklistRepo {
                 title: {
                     [Op.iLike]: `%${filters.search}%`,
                 },
+
             },
+
         });
 
         const data = await IChecklistModel.findAll({
@@ -55,9 +98,28 @@ export class PdiChecklistRepo {
                     [Op.iLike]: `%${filters.search}%`,
                 },
             },
+            include : [
+                {
+                    model: UserModel,
+                    as: "createdByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
+                }, {
+                    model: UserModel,
+                    as: "deletedByUser",
+                },
+                {
+                    model: FranchiseLeadModel,
+                    as: "franchiseModal",
+                },
+            ],
         });
 
-        return { total, data } as TICheckListList;
+        const parsedData = data.map((checklist) => parseChecklist(checklist));
+
+        return { total, data: parsedData };
     }
 
     // Update PDI Checklist information
@@ -91,11 +153,29 @@ export class PdiChecklistRepo {
         return deletedCount;
     }
 
-    public async getChecklistByFranchiseId(franchiseModelId: number): Promise<ICheckList[]> {
-        const data = await IChecklistModel.findAll({
-            where: { franchiseModelId }
+    public async getChecklistByFranchiseId(franchiseModelId: number): Promise<ParsedChecklist> {
+        const data = await IChecklistModel.findOne({
+            where: { franchiseModelId },
+            include : [
+                {
+                    model: UserModel,
+                    as: "createdByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
+                }, {
+                    model: UserModel,
+                    as: "deletedByUser",
+                },
+                {
+                    model: FranchiseLeadModel,
+                    as: "franchiseModal",
+                },
+            ],
         });
-        return data as ICheckList[] | null;
+
+        return parseChecklist(data);
     }
 }
 

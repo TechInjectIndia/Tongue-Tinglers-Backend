@@ -16,7 +16,11 @@ class PdiCheckpointController {
             const user_id = parseInt(get(req, 'user_id'));
             const payload = { ...req.body, createdBy: user_id };
 
+            console.log(payload);
+
             const newCheckpoint = await new PdiCheckpointRepo().create(payload, user_id);
+
+            console.log(newCheckpoint);
 
             return res.status(200).json({
                 message: "PDI Checkpoint created successfully",

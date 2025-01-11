@@ -140,6 +140,8 @@ enum COMMISSION_ENTITIES {
 enum COMMISSION_PAID_STATUS {
     PENDING = 'pending',
     PAID = 'paid',
+    HOLD = 'hold'
+    
 }
 
 type OrganizationCommissions = {

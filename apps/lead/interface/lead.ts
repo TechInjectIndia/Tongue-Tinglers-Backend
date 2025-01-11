@@ -159,6 +159,7 @@ export interface ParsedLead {
     updatedBy: MetaUser | null;
     deletedAt: Date | null;
     deletedBy: MetaUser | null;
+    logs: any[] | null;
 }
 
 export type TLeadsList = {

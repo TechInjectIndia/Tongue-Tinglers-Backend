@@ -70,6 +70,8 @@ export class CampaignAdRepo
                 },
             ],
         });
+
+        console.log(campaign?.toJSON());
         return campaign as unknown as ParsedCampaign;
     }
 
@@ -240,7 +242,13 @@ export class CampaignAdRepo
 
     public async update(id: number,
         data: CampaignPayload): Promise<[affectedCount: number]> {
-        // Update a campaign by its ID
+        const transaction: Transaction = await CampaignAdModel.sequelize.transaction();
+        const campaign = await CampaignAdModel.findByPk(id,{transaction});
+        await  campaign.removeProposals(campaign.toJSON().proposalIds,{transaction});
+        await campaign.removeQuestions(campaign.toJSON().questionList,{transaction});
+        await  campaign.setQuestions(data.questionList,{transaction});
+        await  campaign.setProposals(data.proposalIds, {transaction})
+        await transaction.commit();
         return await CampaignAdModel.update(data, {
             where: {
                 id,

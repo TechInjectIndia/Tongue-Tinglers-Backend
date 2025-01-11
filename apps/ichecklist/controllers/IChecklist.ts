@@ -3,6 +3,7 @@ import { PdiChecklistRepo } from "../model/ChecklistRepo"; // Adjust the import 
 import { get } from "lodash";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
+import pdiCheckpoint from "../../pdi-checkpoint/api/pdiCheckpoint";
 
 
 class PdiChecklistController {
@@ -13,8 +14,11 @@ class PdiChecklistController {
             if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
 
             const payload = { ...req.body, createdBy: user_id };
+
             const newChecklist = await new PdiChecklistRepo().create(payload, user_id);
 
+            console.log(newChecklist)
+            //
             return res.status(200).json({
                 message: "PDI Checklist created successfully",
                 data: newChecklist,
@@ -44,6 +48,7 @@ class PdiChecklistController {
             if (createdBy) filters["createdBy"] = createdBy;
 
 
+
             console.log("Nitesh");
             
 
@@ -55,6 +60,8 @@ class PdiChecklistController {
                 trashOnly: trashOnly as string,
                 filters
             });
+
+
 
             return res
                 .status(200)
@@ -82,8 +89,8 @@ class PdiChecklistController {
             const updateData = req.body;
             delete updateData.id;
 
-            const user_id = parseInt(get(req.params, "user_id"));
-            if (isNaN(id)) throw Error('Missing user_id or isNaN');
+            const user_id = parseInt(get(req, "user_id"));
+            if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
 
             // Use the repo to find the Checkpoint by ID
             const checkpoint = await new PdiChecklistRepo().findByPk(id);
@@ -92,7 +99,7 @@ class PdiChecklistController {
             }
 
             // Update the Checkpoint in the repo
-            const updatedCheckpoint = await new PdiChecklistRepo().update(id as number, { ...updateData, updatedBy: user_id }, user_id);
+            const updatedCheckpoint = await new PdiChecklistRepo().update(id, { ...updateData, updatedBy: user_id }, user_id);
 
             return res.status(200).json({
                 message: "PDI Checkpoint updated successfully",

@@ -1,17 +1,18 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
+import { QuickActionsStatus } from "../interface/Files";
 
 // Validation schema for file upload
 const fileUploadSchema = Joi.object({
-    files: Joi.array()
+    url: Joi.array()
         .items(
             Joi.string()
         )
         .optional()
         .messages({
-            'array.base': 'Files are required.',
-            'array.empty': 'Files cannot be empty.',
+            'array.base': 'Url are required.',
+            'array.empty': 'Url cannot be empty.',
         }),
     name: Joi.string()
     .trim()
@@ -36,6 +37,13 @@ const fileUploadSchema = Joi.object({
         "string.base": "Subject must be a string.",
         "string.empty": "Subject cannot be empty.",
         "any.required": "Subject is required.",
+    }),
+    status: Joi.string()
+    .valid(...Object.values(QuickActionsStatus))
+    .messages({
+      "any.only": `Status must be one of: ${Object.values(QuickActionsStatus).join(
+        ", "
+      )}.`,
     }),
 });
 

@@ -1,3 +1,6 @@
+import { ParsedFranchiseModels } from "apps/franchise_model/interface/franchiseModel";
+import { MetaUser } from "apps/user/interface/user";
+
 export interface ICheckList {
     id:number,
     title:string,
@@ -16,7 +19,7 @@ export interface checkPointsValue {
 
 export type TICheckListList = {
     total: number,
-    data: ICheckList[]
+    data: ParsedChecklist[]
 }
 
 export type TICheckListPayload = {
@@ -38,3 +41,17 @@ export type TListFiltersICheckListt = {
         [key: string]: any;
     };
 };
+
+export interface ParsedChecklist {
+    id:number,
+    title:string,
+    checkPoints: Array<number>,
+    franchiseModelId: ParsedFranchiseModels;
+    createdBy?:MetaUser;
+    updatedBy:MetaUser| null;
+    deletedBy:MetaUser | null;
+    createdAt:Date;
+    updatedAt:Date;
+    deletedAt:Date | null;
+}
+

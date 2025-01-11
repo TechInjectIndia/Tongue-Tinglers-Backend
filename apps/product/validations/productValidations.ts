@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
+import { PRODUCTS_TYPE } from "../interface/Product";
 
 const productValidationSchema = Joi.object({
   name: Joi.string().required().messages({
@@ -24,7 +25,7 @@ const productValidationSchema = Joi.object({
   slug: Joi.string().required().messages({
     "string.empty": "Slug is required",
   }),
-  type: Joi.string().valid("retort", "packaging").required().messages({
+  type: Joi.string().valid(...Object.values(PRODUCTS_TYPE)).required().messages({
     "any.only": 'Type must be either "retort" or "packaging"',
   }),
   status:Joi.string().valid("active", "inactive").required().messages({
@@ -128,7 +129,7 @@ const productUpdateValidationSchema = Joi.object({
   slug: Joi.string().required().messages({
     "string.empty": "Slug is required",
   }),
-  type: Joi.string().valid("retort", "packaging").required().messages({
+  type: Joi.string().valid(...Object.values(PRODUCTS_TYPE)).required().messages({
     "any.only": 'Type must be either "retort" or "packaging"',
   }),
   variationIds: Joi.array().items(Joi.number().integer()).required().messages({

@@ -192,7 +192,7 @@ export default class AdminController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.ERROR,
-                            ERROR_MESSAGE.ADMIN_EXISTS
+                            ERROR_MESSAGE.USER_EXISTS
                         )
                     );
             }

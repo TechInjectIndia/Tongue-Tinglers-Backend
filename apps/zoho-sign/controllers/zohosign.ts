@@ -8,7 +8,7 @@ import fs from "fs";
 import crypto from "crypto";
 import { jsonData } from "../../../types";
 import { ContractRepo } from "apps/contracts/models/ContractRepo";
-import { SignDoc } from "apps/contracts/interface/Contract";
+import {CONTRACT_STATUS, SignDoc} from "apps/contracts/interface/Contract";
 
 
 const { ZOHO_WEBHOOK_SECRET } = process.env;

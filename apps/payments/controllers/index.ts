@@ -46,52 +46,66 @@ export default class PaymentsController {
         console.log(body.payload);
         console.log(body.payload.payment_link);
 
-        console.log(CONFIG.RP_WEBHOOK_SECRET);
+        try {
+            // Validate the webhook signature
+            const isVerified = validateWebhookSignature(
+                JSON.stringify(body),
+                webhookSignature,
+                CONFIG.RP_WEBHOOK_SECRET,
+            );
+            if (!isVerified) {
+                console.log("Webhook not verified");
+                return res.status(400).send({ message: "Webhook not verified" });
+            }
 
-        const isVerified = validateWebhookSignature(
-            JSON.stringify(body),
-            webhookSignature,
-            CONFIG.RP_WEBHOOK_SECRET,
-        );
-        if (isVerified) {
-            if (
-                body.payload &&
-                body.payload.payment_link &&
-                body.payload.payment_link.entity
-            ) {
+            if (body.payload && body.payload.payment_link && body.payload.payment_link.entity) {
                 const paymentId = body.payload.payment_link.entity.id;
                 const status = body.payload.payment_link.entity.status;
-                const contractDetails =
-                    await new ContractRepo().getContractByPaymentId(
-                        paymentId as string,
-                    );
-                if (contractDetails) {
-                    const paymentDetails: ContractPaymentDetails = {
-                        paymentId: paymentId,
-                        amount: 0,
-                        date: new Date(),
-                        status: status,
-                        additionalInfo: "",
-                    };
-                    contractDetails.payment.push(paymentDetails);
-                    await new ContractRepo().updatePaymentStatus(
-                        contractDetails.id,
-                        contractDetails.payment as unknown as ContractPaymentDetails[],
-                        CONTRACT_STATUS.ACTIVE,
-                    );
 
-                    // TODO @Harsh After Success Payment
-                    const mailDto = new PaymentReceivedMail().getPayload(
-                        {},
-                        contractDetails.leadId.email,
-                    );
-                    await sendMail(mailDto);
+                // Get contract details by paymentId
+                const contractDetails = await new ContractRepo().getContractByPaymentId(paymentId as string);
+                if (!contractDetails) {
+                    console.log("Contract not found for paymentId:", paymentId);
+                    return res.status(404).send({ message: "Contract not found" });
                 }
+
+                // Update contract payment details
+                const paymentDetails: ContractPaymentDetails = {
+                    paymentId: paymentId,
+                    amount: 0,  // Assuming amount is not present in the payload, you can modify if needed
+                    date: new Date(),
+                    status: status,
+                    additionalInfo: "",
+                };
+                contractDetails.payment.push(paymentDetails);
+
+                // Update payment status
+                await new ContractRepo().updatePaymentStatus(
+                    contractDetails.id,
+                    contractDetails.payment as unknown as ContractPaymentDetails[],
+                    CONTRACT_STATUS.PAYMENT_RECEIVED,
+                );
+
+                // Send payment received email after success
+
+                console.log("status");
+                console.log(status);
+                if(status === 'paid' || status==="order.paid" ||status ==="Paid"){
+                const mailDto = new PaymentReceivedMail().getPayload({}, contractDetails.leadId.email);
+                await sendMail(mailDto);
+                }
+
+
+                return res.status(200).send({ message: "Webhook processed successfully" });
+            } else {
+                console.log("Invalid payload structure", body);
+                return res.status(200).send({ message: "Invalid payload structure" });
             }
-            return res.status(200).send({ message: "Webhook Done" });
-        } else {
-            console.log("Webhook not verified");
-            return res.status(200).send({ message: "Webhook not verified" });
+        } catch (error) {
+            console.error("Error processing webhook:", error);
+
+            // In case of any error, send a generic error message
+            return res.status(200).send({ message: "Internal Server Error" });
         }
     }
 

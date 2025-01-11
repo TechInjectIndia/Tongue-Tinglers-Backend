@@ -41,6 +41,8 @@ import { Orders } from "node_modules/razorpay/dist/types/orders";
 import { RazorpayProvider } from "apps/razorpay/repositories/razorpay/RazorpayProvider";
 import {ParsedProduct} from "../../product/interface/Product";
 import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/common/models/DTO";
+import { PendingOrderRepo } from "apps/pending-orders/repos/PendingOrderRepo";
+import { PendingOrderPayload } from "apps/pending-orders/interface/PendingOrder";
 
 export class OrderProvider implements IOrderProvider {
     async processOrder(
@@ -188,6 +190,9 @@ export class OrderProvider implements IOrderProvider {
 
         order.totalDiscount = this.calcTotalDiscount(order);
 
+        const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order);
+        const createPendingOrder = await new PendingOrderRepo().create(pendingOrderData)
+        
         return order;
     }
 

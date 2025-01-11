@@ -16,7 +16,13 @@ import {
 } from "../interface/Order";
 import { parseOrder } from "../parser/parseOrder";
 import { OrderProvider } from "apps/order-provider/provider/OrderProvider";
-import { DTO } from "apps/common/models/DTO";
+import {
+    DTO,
+    getSuccessDTO,
+    getUnhandledErrorDTO,
+} from "apps/common/models/DTO";
+import { handleError } from "../../common/utils/HelperMethods";
+import { sequelize } from "../../../config";
 
 export class OrderRepo implements IOrderRepo {
     async createOrder(order: OrderPayload): Promise<Order | null> {
@@ -28,9 +34,10 @@ export class OrderRepo implements IOrderRepo {
             if (orderItems && orderItems.length > 0) {
                 orderItemsCreated = await Promise.all(
                     orderItems.map(async (orderItem) => {
-                        const createdOrderItem = await OrderItemsModel.create(orderItem);
+                        const createdOrderItem =
+                            await OrderItemsModel.create(orderItem);
                         return createdOrderItem.toJSON(); // Convert to plain object if needed
-                    })
+                    }),
                 );
             }
 
@@ -40,11 +47,13 @@ export class OrderRepo implements IOrderRepo {
                     notes.map(async (note) => {
                         const createdNote = await NotesModel.create(note);
                         return createdNote.toJSON(); // Convert to plain object if needed
-                    })
+                    }),
                 );
             }
 
-            const orderItemIds = orderItemsCreated.map((orderItem) => orderItem.id);
+            const orderItemIds = orderItemsCreated.map(
+                (orderItem) => orderItem.id,
+            );
             const noteIds = notesCreated.map((note) => note.id);
 
             // Create the order
@@ -54,7 +63,7 @@ export class OrderRepo implements IOrderRepo {
                     // notes: noteIds, // Link notes by their IDs
                     createdAt: new Date(),
                 },
-                { include: [{ association: "noteses" }] }
+                { include: [{ association: "noteses" }] },
             );
 
             orderCreated.addNoteses(noteIds);
@@ -75,7 +84,10 @@ export class OrderRepo implements IOrderRepo {
 
             // Fetch the existing order to ensure it exists
             const existingOrder = await OrderModel.findByPk(orderId, {
-                include: [{ association: "noteses" }, { association: "orderItems" }],
+                include: [
+                    { association: "noteses" },
+                    { association: "orderItems" },
+                ],
             });
 
             if (!existingOrder) {
@@ -134,7 +146,13 @@ export class OrderRepo implements IOrderRepo {
     getOrderById(orderId: number): Promise<any> {
         try {
             return OrderModel.findByPk(orderId, {
-                include: [{ model: NotesModel, as: "noteses", through: { attributes: [] } }],
+                include: [
+                    {
+                        model: NotesModel,
+                        as: "noteses",
+                        through: { attributes: [] },
+                    },
+                ],
             });
         } catch (error) {
             console.log(error);
@@ -145,7 +163,7 @@ export class OrderRepo implements IOrderRepo {
         page: number,
         limit: number,
         search: string,
-        filters: Record<string, any>
+        filters: Record<string, any>,
     ): Promise<OrderPagination<OrderModel>> {
         try {
             const offset = (page - 1) * limit;
@@ -155,7 +173,13 @@ export class OrderRepo implements IOrderRepo {
                 where: {},
                 limit,
                 offset,
-                include: [{ model: NotesModel, as: "noteses", through: { attributes: [] } }],
+                include: [
+                    {
+                        model: NotesModel,
+                        as: "noteses",
+                        through: { attributes: [] },
+                    },
+                ],
             };
 
             // Adding search functionality
@@ -178,7 +202,8 @@ export class OrderRepo implements IOrderRepo {
             }
 
             // Fetch data with total count
-            const { rows, count: total } = await OrderModel.findAndCountAll(query);
+            const { rows, count: total } =
+                await OrderModel.findAndCountAll(query);
 
             // Returning paginated result
             return {
@@ -195,13 +220,13 @@ export class OrderRepo implements IOrderRepo {
     }
 
     async processOrder(
-        state: OrderState
+        state: OrderState,
     ): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>> {
         return new OrderProvider().processOrder(state);
     }
 
     async proceedToPayment(
-        state: OrderState
+        state: OrderState,
     ): Promise<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }> {
         throw new Error("Method not implemented.");
     }
@@ -210,12 +235,44 @@ export class OrderRepo implements IOrderRepo {
         try {
             const orders = await OrderModel.findAll({
                 where: { customer_details: userId },
-                include: [{ model: NotesModel, as: "noteses", through: { attributes: [] } }],
+                include: [
+                    {
+                        model: NotesModel,
+                        as: "noteses",
+                        through: { attributes: [] },
+                    },
+                ],
             });
             return orders.map((order) => parseOrder(order));
         } catch (error) {
             console.log(error);
             return [];
         }
+    }
+
+    async processPostOrderTransaction(
+        paymentOrderId: string,
+    ): Promise<DTO<null>> {
+        try {
+            const transaction = await sequelize.transaction();
+
+            //     validate already processedOrder
+        } catch (error: any) {
+            handleError(error);
+
+            return getUnhandledErrorDTO(
+                `${error.message ?? ""}: error in process order transaction`,
+            );
+        }
+
+        return getSuccessDTO(null);
+    }
+
+    //     Private Functions:
+
+    private validateAlreadyProcessedOrder(paymentOrderId: string) {
+        //     get pending Order
+        //     validate
+        //     return
     }
 }

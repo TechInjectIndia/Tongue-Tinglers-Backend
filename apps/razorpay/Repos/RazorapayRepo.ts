@@ -64,6 +64,10 @@ export class RazorpayRepo implements IRazorpayRepo {
       const webhookSignature = req.headers["x-razorpay-signature"] as string;
       const body = req.body;
 
+
+      if(!webhookSignature){
+          return res.status(200).send({ message: "Webhook Signature doesn't exist" });
+      }
       // Validate webhook signature
       const isVerified = validateWebhookSignature(
         JSON.stringify(body),

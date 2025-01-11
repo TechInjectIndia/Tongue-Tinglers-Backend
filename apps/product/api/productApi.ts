@@ -4,7 +4,7 @@ import { validateCreateProduct, validateProductList, validateProductById, valida
 
 const router = express.Router();
 
-const {createProduct, getAllProducts, getProductById, updateProduct, deleteProduct, updateStatus}  = ProductController;
+const {createProduct, getAllProducts, getProductById, updateProduct, deleteProduct, updateStatus, getAllProductBySampleKit}  = ProductController;
 
 /**
  * @swagger
@@ -216,5 +216,6 @@ router.get('/:id', validateProductById, getProductById);
 router.put('/update/:id',validateProductById, validateUpdateProduct, updateProduct);
 router.put('/delete/:id', validateDeleteProduct, deleteProduct);
 router.put('/update-status/:id',validateChangeProductStatus ,updateStatus);
+router.get('/getAllProductBySamplekit/sample-kit', getAllProductBySampleKit)
 
 export default router;

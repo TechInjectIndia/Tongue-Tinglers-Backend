@@ -1,7 +1,7 @@
 import { IOrderRepo } from "./IOrderRepo";
 import { OrderModel } from "../models/OrderTable";
 import { NotesModel } from "../models/NotesTable";
-import { Op } from "sequelize";
+import { Op, Transaction } from "sequelize";
 
 import { OrderItemsModel } from "../../order-items/models/OrderItemsTable";
 import { OrderItem } from "../../order-items/interface/orderItem";
@@ -11,6 +11,7 @@ import {
     OrderPagination,
     OrderPayload,
     OrderState,
+    OrderStatus,
     ParsedOrder,
     RPOrder,
 } from "../interface/Order";
@@ -18,11 +19,14 @@ import { parseOrder } from "../parser/parseOrder";
 import { OrderProvider } from "apps/order-provider/provider/OrderProvider";
 import {
     DTO,
+    getHandledErrorDTO,
     getSuccessDTO,
     getUnhandledErrorDTO,
 } from "apps/common/models/DTO";
 import { handleError } from "../../common/utils/HelperMethods";
 import { sequelize } from "../../../config";
+import { PendingOrderModel } from "../../pending-orders/models/PendingOrderTable";
+import { ProcessPostOrderResult } from "../interface/ProcessPostOrderResult";
 
 export class OrderRepo implements IOrderRepo {
     async createOrder(order: OrderPayload): Promise<Order | null> {
@@ -252,11 +256,37 @@ export class OrderRepo implements IOrderRepo {
 
     async processPostOrderTransaction(
         paymentOrderId: string,
-    ): Promise<DTO<null>> {
+    ): Promise<DTO<ProcessPostOrderResult>> {
         try {
             const transaction = await sequelize.transaction();
 
             //     validate already processedOrder
+            const validationRes = await this.validateAlreadyProcessedOrder(
+                transaction,
+                paymentOrderId,
+            );
+
+            if (
+                !validationRes.success ||
+                !validationRes.data.pendingOrder ||
+                validationRes.data.alreadyProcessed
+            ) {
+                return validationRes;
+            }
+
+            //     Process the Order
+
+            //     process Stock
+
+            //     save order
+
+            //     update pendingOrder
+
+            //     save payment
+
+            //     clear cart
+
+            await transaction.commit();
         } catch (error: any) {
             handleError(error);
 
@@ -270,9 +300,45 @@ export class OrderRepo implements IOrderRepo {
 
     //     Private Functions:
 
-    private validateAlreadyProcessedOrder(paymentOrderId: string) {
+    private async validateAlreadyProcessedOrder(
+        transaction: Transaction,
+        paymentOrderId: string,
+    ): Promise<DTO<ProcessPostOrderResult>> {
+        const res: ProcessPostOrderResult = {
+            pendingOrder: null,
+            alreadyProcessed: false,
+        };
+
         //     get pending Order
-        //     validate
-        //     return
+        const pendingOrder = (
+            await PendingOrderModel.findOne({
+                where: {
+                    paymentOrderId,
+                },
+                transaction,
+            })
+        ).toJSON();
+
+        if (!pendingOrder) {
+            return getSuccessDTO(
+                res,
+                `Pending order not found for: paymentOrderId ${paymentOrderId}`,
+            );
+        }
+
+        res.pendingOrder = pendingOrder;
+
+        // validate already processed case
+        if (pendingOrder.status === OrderStatus.PROCESSED) {
+            res.alreadyProcessed = true;
+            return getSuccessDTO(
+                res,
+                `Pending order:${pendingOrder.id},  for: paymentOrderId ${paymentOrderId} is Already processed`,
+            );
+        }
+
+        return getSuccessDTO(res);
     }
+
+    private clearCart(transaction: Transaction, userId: number) {}
 }

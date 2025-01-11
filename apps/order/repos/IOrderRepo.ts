@@ -7,6 +7,7 @@ import {
     ParsedOrder,
     RPOrder
 } from "../interface/Order";
+import {ProcessPostOrderResult} from "../interface/ProcessPostOrderResult";
 export interface IOrderRepo {
     createOrder(order: OrderPayload): Promise<Order | null>;
     updateOrder(order: any): Promise<any>;
@@ -17,5 +18,5 @@ export interface IOrderRepo {
     proceedToPayment(state: OrderState): Promise<{rpOrder: RPOrder, parsedOrder:ParsedOrder}>;
     getOrdersByUser(userId: number): Promise<ParsedOrder[]>
 
-    processPostOrderTransaction(paymentOrderId:string):Promise<DTO<null>>;
+    processPostOrderTransaction(paymentOrderId:string):Promise<DTO<ProcessPostOrderResult>>;
 }

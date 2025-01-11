@@ -268,7 +268,7 @@ const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAd
  *         description: User not found
  */
 adminUserRouter.post("/create", hasPermission('admin', 'create'), validateCreateAdminBody, addAdmin);
-guestUserRouter.post ("/create", hasPermission('admin', 'create'), validateGuestBody, addAdmin);
+guestUserRouter.post ("/create", validateGuestBody, addAdmin);
 adminUserRouter.get("/list", hasPermission('admin', 'read'), validateListAdminQuery, getAdmins);
 adminUserRouter.get("/list-all", hasPermission('admin', 'read'), validateListAdminQuery, getAllUsers);
 adminUserRouter.get("/get/:id", hasPermission('admin', 'read'), validateEditAdminParams, getAdmin);

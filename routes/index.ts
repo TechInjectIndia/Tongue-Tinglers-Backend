@@ -78,7 +78,6 @@ import productsCategoryRouter
 import OrderRouter from "../apps/order/api/orderApi";
 import documentRouter from "../apps/documents/api/documentApi";
 import agreementDocRouter from "../apps/agreement-docs/api/agreementDocApi"
-// import petPoojaApiRouter from "../apps/pet-pooja/api/petpooja";
 import zohoSignApiRouter from "../apps/zoho-sign/api/zohosign";
 import {
     transactionRouter,
@@ -90,7 +89,7 @@ import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics"
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUserRouter);
-router.use(`/users`, auth, guestUserRouter);
+router.use(`/users`, guestUserRouter);
 // router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
 // router.use(`${ADMIN}/roles`, auth, rolesRouter);
 

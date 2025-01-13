@@ -1,4 +1,4 @@
-import { TPayloadProposalModel, ProposalModelsList } from '../../../../interfaces';
+import { ProposalModelsList, ProposalPayload } from '../../interface/proposal';
 import { TQueryFilters } from '../../../../types';
 
 /**
@@ -26,7 +26,7 @@ interface IProposalModelsController<T, F extends TQueryFilters> {
      * @param payload - The data to create the ProposalModels.
      * @returns Promise resolving to the created ProposalModels.
      */
-    create(payload: TPayloadProposalModel): Promise<T>;
+    create(payload: ProposalPayload): Promise<T>;
 
     /**
      * Update an existing ProposalModels for a user.
@@ -35,7 +35,7 @@ interface IProposalModelsController<T, F extends TQueryFilters> {
      * @param payload - The data to update the ProposalModels.
      * @returns Promise resolving to the affected count.
      */
-    update(id: number, payload: TPayloadProposalModel): Promise<[affectedCount: number]>;
+    update(id: number, payload: ProposalPayload): Promise<[affectedCount: number]>;
 
     /**
      * Delete ProposalModelses by IDs for a user.

@@ -1,4 +1,5 @@
 import { BaseMeta } from "apps/common/models/Base";
+import {IArea} from "../../area/interface/Area";
 
 
 interface IRegion extends BaseMeta {
@@ -23,14 +24,13 @@ interface TPayloadRegionArea {
     areaId: number;
 }
 
-
-interface parsedRegion {
-
+export interface ParsedRegion extends IRegion{
+    areas: IArea[];
 }
+
 
 export {
     IRegion,
     TPayloadRegion,
     TRegionList,
-    parsedRegion
 }

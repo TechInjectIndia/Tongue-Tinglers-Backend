@@ -1,15 +1,27 @@
+import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
+import { MetaUser } from "apps/user/interface/user";
 
-interface FileAttributes {
-    id: number;
+export interface QuickActionsFilesPayload {
     name: string;
     message: string;
     subject: string;
-    url: string[];
-    recommended: boolean;
-    createdAt?: Date;
-    updatedAt?: Date;
+    url: Array<string>;
+    status: QuickActionsStatus;
 }
 
-export {
-    FileAttributes
+export interface QuickActionsTable extends QuickActionsFilesPayload, BaseMeta {
+}
+
+export interface ParsedQuickActionsFiles extends ParsedMeta{
+    id: number;
+    name: string;
+    subject: string;
+    message: string;
+    url: Array<string>;
+    status: QuickActionsStatus;
+}
+
+export enum QuickActionsStatus {
+    Active = "active",
+    Inactive = "inactive"
 }

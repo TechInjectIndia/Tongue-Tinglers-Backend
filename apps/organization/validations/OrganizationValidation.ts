@@ -1,10 +1,8 @@
 import {NextFunction, Request, Response} from "express";
 import Joi from "@hapi/joi";
 import {validateReq} from "../../../libraries";
-import {
-    BUSINESS_TYPE,
-    ORGANIZATION_TYPE,
-} from "../../../interfaces/organization";
+import {BUSINESS_TYPE, ORGANIZATION_TYPE} from "../interface/organization";
+
 
 const addressSchema = Joi.object({
     id: Joi.number().optional(),
@@ -42,7 +40,7 @@ const createOrganizationBody = Joi.object({
     billingAddress: addressSchema.required(),
     shippingAddress: Joi.array().items(addressSchema).required(),
     prospectId: Joi.number().optional(),
-    user: Joi.any()
+    rootUser: Joi.any()
 
 });
 

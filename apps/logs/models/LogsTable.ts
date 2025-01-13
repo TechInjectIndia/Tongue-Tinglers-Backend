@@ -66,6 +66,7 @@
 // models/log.model.ts
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../../../config";
+import { LeadsModel } from "apps/lead/models/LeadTable";
 
 class LogModel extends Model {
   public action!: string; // The action (e.g., 'create', 'update', 'delete')
@@ -115,4 +116,10 @@ LogModel.init(
   }
 );
 
+// LogModel.belongsTo(LeadsModel, {
+//   foreignKey: "recordId",
+//   targetKey: "id",
+//   constraints: false,
+//   as: "lead",
+// });
 export { LogModel };

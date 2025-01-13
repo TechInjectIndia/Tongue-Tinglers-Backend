@@ -35,7 +35,6 @@ class FranchiseLeadModel
             as: "others",
         });
 
-
         ExtraFieldsModel.belongsTo(FranchiseLeadModel, {
             foreignKey: "franchiseModelId",
             as: "franchiseModel",

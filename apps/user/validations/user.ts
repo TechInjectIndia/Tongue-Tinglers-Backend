@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
-import { USER_STATUS } from "../../../interfaces";
+import {USER_STATUS, USER_TYPE} from "../interface/user";
 
 // Validation for listing admins
 const listAdminQuery = Joi.object().keys({
@@ -40,7 +40,7 @@ const createAdminBody = Joi.object().keys({
             'string.email': 'Please provide a valid email address.',
             'any.required': 'Email is required.'
         }),
-    password: Joi.string().min(8).required()
+    password: Joi.string().min(6).required()
         .messages({
             'string.min': 'Password must be at least 8 characters long.',
             'any.required': 'Password is required.'
@@ -66,6 +66,50 @@ const createAdminBody = Joi.object().keys({
         'any.required': 'Type is required.'
     }),
 });
+
+const createGuestBody = Joi.object().keys({
+    firstName: Joi.string().required()
+        .messages({
+            'any.required': 'First name is required.'
+        }),
+    lastName: Joi.string().required()
+        .messages({
+            'any.required': 'Last name is required.'
+        }),
+    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required()
+        .messages({
+            'string.email': 'Please provide a valid email address.',
+            'any.required': 'Email is required.'
+        }),
+    password: Joi.string().min(6).required()
+        .messages({
+            'string.min': 'Password must be at least 8 characters long.',
+            'any.required': 'Password is required.'
+        }),
+    phoneNumber: Joi.string().pattern(/^\+\d{1,3}\d{9,}$/).required()
+        .messages({
+            'string.pattern.base': 'Phone number must be in international format (e.g., +1234567890).',
+            'any.required': 'Phone number is required.'
+        }),
+    status: Joi.string().valid(...Object.values(USER_STATUS)).required()
+        .messages({
+            'any.only': `Status must be one of: ${Object.values(USER_STATUS).join(', ')}.`,
+            'any.required': 'Status is required.'
+        }),
+    role: Joi.number().integer().required()
+        .messages({
+            'number.base': 'Role must be a number.',
+            'any.required': 'Role is required.'
+        }),
+    type: Joi.string()
+        .valid(...Object.values(USER_TYPE.GUEST))
+        .required()
+        .messages({
+            'any.only': `Type must be one of ${Object.values(USER_TYPE.GUEST).join(', ')}.`,
+            'any.required': 'Type is required.',
+        }),
+});
+
 
 // Validation for editing admin params
 const editAdminParams = Joi.object().keys({
@@ -156,6 +200,12 @@ export const validateCreateAdminBody = async (
     res: Response,
     next: NextFunction
 ) => validateReq(req, res, next, createAdminBody, "body");
+
+export const validateGuestBody = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, createGuestBody, "body");
 
 export const validateEditAdminParams = async (
     req: Request,

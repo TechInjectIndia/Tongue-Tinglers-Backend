@@ -1,6 +1,8 @@
 import { CONTRACT_PAYMENT_STATUS, CONTRACT_STATUS, ContractPaymentDetails } from "apps/contracts/interface/Contract";
 import { ContractRepo } from "apps/contracts/models/ContractRepo";
-import { TransactionModel } from "database/schema/payment-transaction/PaymentTransactionModel";
+import {
+    TransactionModel
+} from "../../payment-transaction/interface/transaction";
 
 
 async function parseAndSaveEvent(eventPayload: any) {
@@ -92,7 +94,7 @@ async function parseAndSaveEvent(eventPayload: any) {
 
 
     console.log(transactionData);
-    
+
 
 
     if (transactionData.description && transactionData.description.includes("#")) {

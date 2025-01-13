@@ -14,6 +14,8 @@ import {FollowDetails} from "apps/follow-details/interface/followDetails";
 import {UserModel} from "apps/user/models/UserTable";
 import {CampaignAdModel} from "apps/campaign/models/CampaignModel";
 import {sequelize} from "config";
+import { LogModel } from "apps/logs/models/LogsTable";
+import { ProposalModel } from "apps/proposal_model/models/ProposalModelTable";
 
 const {STRING, TEXT, DATE, JSONB, ENUM, NOW} = DataTypes;
 
@@ -88,6 +90,17 @@ class LeadsModel extends Model<LeadTable, LeadCreationAttributes>
                                            // table
             as: "followDetails", // Alias for the relationship
         });
+        LeadsModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs",             // Alias for the association
+          });
+
+        LeadsModel.belongsTo(ProposalModel, {
+            foreignKey: "proposalModalId",
+            as: "proposalModal",
+        })
     }
 
     public static initModel() {

@@ -11,6 +11,7 @@ import {
 import RepoProvider from "../../RepoProvider";
 import { OrganizationRepo } from "../../organization/models";
 import { CampaignAdRepo } from "../models";
+import {RegionRepo} from "../../region/models/RegionRepo";
 
 
 export default class CampaignController {
@@ -20,8 +21,7 @@ export default class CampaignController {
 
             const user_id = get(req, "user_id");
 
-
-            const payload = { ...req.body, createdBy: user_id };
+            const payload = { ...req.body };
 
             const orgExist = new OrganizationRepo().get(payload.organizationId)
             if (!orgExist) {
@@ -30,15 +30,22 @@ export default class CampaignController {
                     .send(
                         sendResponse(
                             RESPONSE_TYPE.SUCCESS,
-                            `Organization ${ERROR_MESSAGE.NOT_EXISTS}`
+                            `Organization not listed ${payload.organizationId} ${ERROR_MESSAGE.NOT_EXISTS}`
                         )
                     );
             }
 
-            // const regionExist = await new RegionRepo().get(payload.region);
-            // if(!regionExist){
-
-            // }
+            const regionExist = await new RegionRepo().get(payload.regionId);
+            if(!regionExist){
+                return res
+                    .status(200)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.SUCCESS,
+                            `Region not listed ${payload.region} ${ERROR_MESSAGE.NOT_EXISTS}`
+                        )
+                    );
+            }
 
             const campaignExist = await new CampaignAdRepo().getByName(
                 payload.name
@@ -55,7 +62,7 @@ export default class CampaignController {
             }
 
 
-            const campaign = await new CampaignAdRepo().create(payload);
+            const campaign = await new CampaignAdRepo().create(payload, user_id);
             return res
                 .status(201)
                 .send(

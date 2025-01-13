@@ -127,9 +127,6 @@ const models = {
     // RawMaterialStockModel: RawMaterialStockTable.initModel(),
 };
 
-console.log(Object.keys(models).join(" "))
-
-
 let currentModel: string = null;
 
 try {

@@ -4,6 +4,7 @@ import { sequelize } from "../../../config";
 import RepoProvider from "../../../apps/RepoProvider";
 import { ICheckList } from "../interface/IChecklist";
 import { FranchiseLeadModel } from "apps/franchise_model/models/FranchiseModelTable";
+import {UserModel} from "../../user/models/UserTable";
 
 // Define the optional attributes for creation
 interface IChecklistCreationAttributes extends Optional<ICheckList, "id"> { }
@@ -20,9 +21,24 @@ class IChecklistModel
     deletedAt: Date | null;
     deletedBy: Date | null;
 
-    // public static associate() {
-
-    // }
+    public static associate() {
+        IChecklistModel.belongsTo( FranchiseLeadModel, {
+            foreignKey: "franchiseModelId",
+            as: "franchiseModal",
+        });
+        IChecklistModel.belongsTo(UserModel,{
+            foreignKey:"createdBy",
+            as:"createdByUser"
+        })
+        IChecklistModel.belongsTo(UserModel,{
+            foreignKey:"updatedBy",
+            as:"updatedByUser"
+        })
+        IChecklistModel.belongsTo(UserModel,{
+            foreignKey:"deletedBy",
+            as:"deletedByUser"
+        })
+    }
 
     public static initModel() {
         IChecklistModel.init(
@@ -47,10 +63,10 @@ class IChecklistModel
                 },
                 franchiseModelId: {
                     type: DataTypes.INTEGER,
-                    references: {
-                        model: FranchiseLeadModel,
-                        key: "id",
-                    },
+                    // references: {
+                    //     model: FranchiseLeadModel,
+                    //     key: "id",
+                    // },
                     allowNull: true,
                 },
                 createdBy: {
@@ -72,7 +88,7 @@ class IChecklistModel
             },
             {
                 sequelize,
-                tableName: "pdi_checklists",
+                tableName: "checklists",
                 timestamps: true,
             }
         );

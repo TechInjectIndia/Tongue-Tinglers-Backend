@@ -28,6 +28,7 @@ interface ParsedFollowDetails {
     description: string | null;
     status: followStatus;
     reminder: Date | null;
+    logs: any[] | null;
     createdBy: ParsedUser;
     updatedBy: ParsedUser | null;
     deletedBy: ParsedUser | null;

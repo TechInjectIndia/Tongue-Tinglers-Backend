@@ -1,5 +1,5 @@
 {
-  "name": "Tongue Tingler",
+  "name": "tongue-tingler-api",
   "version": "0.0.0",
   "private": true,
   "engines": {
@@ -7,10 +7,9 @@
   },
   "scripts": {
     "seed": "sequelize-cli db:seed:all",
-    "start": "ts-node -r tsconfig-paths/register ./app.ts",
-    "start:pm2": "pm2 start ./app.ts --interpreter ts-node --name TongueTingler",
-    "stop:pm2": "pm2 stop TongueTingler",
-    "restart:pm2": "pm2 restart TongueTingler",
+    "start": " forever start -c \"ts-node -r tsconfig-paths/register\" --minUptime 1000 --spinSleepTime 1000 ./app.ts\n",
+    "stop": "forever stopall",
+    "restart": "forver restartall",
     "delete:pm2": "pm2 delete TongueTingler",
     "logs:pm2": "pm2 logs TongueTingler",
     "repl": "ts-node -r tsconfig-paths/register",
@@ -20,7 +19,7 @@
     "freshDev": "ts-node-dev --cache-directory clear --watch -r tsconfig-paths/register ./app.ts",
     "lint": "git diff --cached --name-only --diff-filter=d | grep '.ts$' | xargs eslint",
     "lint:fix": "npm run lint -- --fix",
-    "build": "tsc && npm run copy",
+    "build": "tsc && npm run copy && tsc-alias",
     "copy": "node --max-old-space-size=4096 copy.js",
     "tsc-w": "tsc -w"
   },
@@ -52,6 +51,7 @@
     "jsdom": "^25.0.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
+    "module-alias": "^2.2.3",
     "moment": "^2.30.1",
     "multer": "^1.4.5-lts.1",
     "newrelic": "^12.8.1",
@@ -71,6 +71,7 @@
     "swagger-ui-express": "^5.0.1",
     "ts-node-dev": "^2.0.0",
     "twilio": "^5.3.4",
+    "uuid": "^11.0.4",
     "winston": "^3.15.0",
     "winston-daily-rotate-file": "^5.0.0",
     "xss-clean": "^0.1.4"
@@ -105,7 +106,11 @@
     "@types/sequelize": "^4.28.20",
     "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.10",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.2"
+  },
+  "_moduleAliases": {
+    "apps": "build/apps"
   }
 }

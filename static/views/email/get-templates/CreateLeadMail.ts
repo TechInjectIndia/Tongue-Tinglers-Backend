@@ -2,7 +2,7 @@ import { DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO } from "..
 import { type IMail } from "../mail-class/IMailClass";
 import { Mail } from "../mail-class/MailClass";
 import { AllMailOptions, MailBodyOptions } from "../models/MailOptions";
-import Finalize from "../react-templates/CreateLead";
+import CreateLead from "../react-templates/CreateLead";
 
 interface IEmail extends IMail<null> {}
 
@@ -15,8 +15,8 @@ export class CreateLeadMail extends Mail<null> implements IEmail {
         return null;
     }
 
-    getBody(): MailBodyOptions {
-        const react = Finalize();
+    getBody(data: any): MailBodyOptions {
+        const react = CreateLead(data);
         return {
             html: null,
             react: react,
@@ -30,7 +30,7 @@ export class CreateLeadMail extends Mail<null> implements IEmail {
                 (typeof to === "string" && to.trim() !== "") ||
                 (Array.isArray(to) && to.length > 0)
             ) {
-                const body = this.getBody();
+                const body = this.getBody(data);
 
                 const returnData: AllMailOptions = {
                     to: to,

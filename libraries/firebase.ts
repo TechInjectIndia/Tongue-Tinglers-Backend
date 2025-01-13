@@ -11,7 +11,7 @@ type TFirebaseUser = {
 };
 
 const serviceAccount: ServiceAccount = serviceAccountJson as ServiceAccount;
-console.log(CONFIG.BUCKET_URL);
+console.log('firebase bucket',CONFIG.BUCKET_URL);
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),

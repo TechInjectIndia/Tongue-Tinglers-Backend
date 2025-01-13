@@ -12,6 +12,7 @@ interface BaseProductsCategory extends BaseMetaUsers {
 enum CATEGORY_TYPE {
     RETORT = "retort",
     PACKAGING = "packaging",
+    SAMPLE_KIT= "sample-kit"
 }
 
 enum PRODUCT_CATEGORY_STATUS {

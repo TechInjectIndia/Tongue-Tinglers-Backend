@@ -1,11 +1,9 @@
 import {DataTypes, Model, Optional, Transaction} from "sequelize";
 import { sequelize } from "../../../config";
-import { CartDetails, BaseCartDetails } from "../../../interfaces/cart_details";
-// import { CartProductModel } from "";
-
 import RepoProvider from "apps/RepoProvider";
 import { CartProductModel } from "../../cart-products/model/CartProductTable";
 import {UserModel} from "../../user/models/UserTable";
+import {BaseCartDetails, CartDetails} from "../interface/CartDetail";
 
 // Defining the interface for the creation attributes of CartDetails
 interface CartDetailsCreationAttributes extends Optional<CartDetails, "id"> {}
@@ -23,7 +21,7 @@ class CartDetailsModel
         options?: { transaction?: Transaction }
     ) => Promise<void>;
 
-   
+
     public setCartProducts!: (
         cartProducts: Array<CartProductModel | number>
     ) => Promise<void>;

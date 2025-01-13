@@ -7,6 +7,9 @@ import {CampaignAdModel} from "apps/campaign/models/CampaignModel";
 import {
     CampaignProposalsModel
 } from "apps/campaign/models/CampaignProposalsModel";
+import {
+    FranchiseLeadModel
+} from "../../franchise_model/models/FranchiseModelTable";
 
 
 const { STRING, TEXT, DATE, JSONB, UUIDV4 } = DataTypes;
@@ -89,13 +92,19 @@ class ProposalModel extends Model<ProposalTable, ProposalCreationAttributes>
         return ProposalModel;
     }
     public static associate() {
+
         // Many-to-Many association with CampaignAdModel
         ProposalModel.belongsToMany(CampaignAdModel, {
             through: CampaignProposalsModel, // Junction table
             foreignKey: "proposalId",
             otherKey: "campaignId",
-            as: "campaigns",
+            as: "franchiseModels",
         });
+
+        ProposalModel.belongsTo(FranchiseLeadModel,{
+            foreignKey: "franchiseModel",
+            as: "franchiseModelObj",
+        })
     }
 }
 

@@ -12,22 +12,16 @@ import {
 } from "../../../libraries";
 
 
-import {
-    BUSINESS_TYPE,
-    IOrganizationPayloadData,
-    ORGANIZATION_TYPE
-} from "../../../interfaces/organization";
-import {createDummyMaster, createDummyProducts} from "../utils";
+import {createDummyLeads, createDummyMaster, createDummyProducts} from "../utils";
 import {
     ERROR_MESSAGE,
     RESPONSE_TYPE,
     SUCCESS_MESSAGE
 } from "constants/response-messages";
 import {AdminRepo} from "apps/user/models/user";
-import {TUser, USER_TYPE} from "apps/user/interface/user";
+import {TUser, USER_STATUS, USER_TYPE} from "apps/user/interface/user";
 import {UserModel} from "apps/user/models/UserTable";
 import {OrganizationRepo} from "apps/organization/models";
-import {sequelize} from "config";
 import {
     ProductsCategoryModel
 } from "apps/products-category/models/ProductCategoryTable";
@@ -39,20 +33,19 @@ import {
 } from "../../product-options/models/ProductVariationTable";
 import express, {Request, Response} from "express";
 import {validateCreateAdminBody} from "../validations/user";
-import {resetSequenceAfterRollback} from "../../database/utils";
-
-
+import config from "src/config/config";
+import { exec } from "child_process";
+import { sequelize } from "config";
+import {
+    BUSINESS_TYPE,
+    IOrganizationPayloadData, ORGANIZATION_TYPE
+} from "../../organization/interface/organization";
+import { Sequelize } from "sequelize";
+import { extraFieldTypes, LeadAddress, LeadPayload, LeadSource, LeadStatus } from "apps/lead/interface/lead";
+import { LeadRepo } from "apps/lead/models/lead";
 const router = express.Router();
 
-
-// const { addAdmin } = AdminController;
 const {
-    getAdmins,
-    getAllUsers,
-    addAdmin,
-    editAdmin,
-    deleteAdmin,
-    getAdmin,
     addProspectUser,
 } = AdminController;
 
@@ -376,6 +369,24 @@ router.get('/createEverything', createProductWithAssociations)
 
 /**
  * @swagger
+ * /api/admin/test-user/resetDatabase:
+ *   get:
+ *     summary: Create a new Root User (admin1@tonguetingler.com, pass:123456)
+ *     tags: [AUTH]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: User created successfully
+ *       '400':
+ *         description: Invalid request body
+ *       '401':
+ *         description: Unauthorized
+ */
+router.get('/resetDatabase', resetDatabase)
+
+/**
+ * @swagger
  * /api/admin/test-user/sampleData:
  *   get:
  *     summary: Run this after superOrg to create sample data
@@ -420,11 +431,11 @@ router.post("/prospect", validateCreateAdminBody, addProspectUser);
 async function createProductWithAssociations(req: Request, res: Response) {
     // const transaction = await sequelize.transaction();
     const tableSequences = [
-        { tableName: 'products_categories', columnName: 'id' },
-        { tableName: 'options', columnName: 'id' },
-        { tableName: 'options_values', columnName: 'id' },
-        { tableName: 'products', columnName: 'id' },
-        { tableName: 'variations', columnName: 'id' },
+        {tableName: 'products_categories', columnName: 'id'},
+        {tableName: 'options', columnName: 'id'},
+        {tableName: 'options_values', columnName: 'id'},
+        {tableName: 'products', columnName: 'id'},
+        {tableName: 'variations', columnName: 'id'},
     ];
 
     try {
@@ -450,14 +461,16 @@ async function createProductWithAssociations(req: Request, res: Response) {
         // Step 4: Bulk create option values
         const optionsValueData = dummyData.optionValues.map((value, index) => ({
             ...value,
-            option_id: optionsCreated[index].id, // Ensure option_id corresponds to options
+            option_id: optionsCreated[index].id, // Ensure option_id
+                                                 // corresponds to options
         }));
 
         const optionsValueCreated = await OptionsValueModel.bulkCreate(
             optionsValueData,
             // { transaction, returning: true }
         );
-        console.log("Option values created:", optionsValueCreated.map((ov) => ov.id));
+        console.log("Option values created:",
+            optionsValueCreated.map((ov) => ov.id));
 
         // Step 5: Create product
         const productData = dummyData.product;
@@ -476,17 +489,19 @@ async function createProductWithAssociations(req: Request, res: Response) {
 
         // Step 6: Create product variations
         if (productData.variations && Array.isArray(productData.variations)) {
-            const productVariations = productData.variations.map((variation, index) => ({
-                product_id: createdProduct.id,
-                optionValueId: optionsValueCreated[index].id,
-                ...variation,
-            }));
+            const productVariations = productData.variations.map(
+                (variation, index) => ({
+                    product_id: createdProduct.id,
+                    optionValueId: optionsValueCreated[index].id,
+                    ...variation,
+                }));
 
             const createdVariations = await ProductVariationsModel.bulkCreate(
                 productVariations,
                 // { transaction, returning: true }
             );
-            console.log("Product variations created:", createdVariations.map((v) => v.id));
+            console.log("Product variations created:",
+                createdVariations.map((v) => v.id));
 
             // Use mixin to associate variations
             await createdProduct.addVariations(
@@ -499,15 +514,14 @@ async function createProductWithAssociations(req: Request, res: Response) {
         // await transaction.commit();
         console.log("Transaction committed successfully");
 
-        return res.status(200).send(
-            sendResponse(RESPONSE_TYPE.SUCCESS, "Entities created successfully", {
-                category: categoryCreated,
-                options: optionsCreated,
-                optionValues: optionsValueCreated,
-                product: createdProduct,
-            })
-        );
-    } catch (err) {
+        return {
+            category: categoryCreated,
+            options: optionsCreated,
+            optionValues: optionsValueCreated,
+            product: createdProduct,
+        }
+    }
+    catch (err) {
         console.error("Error during transaction:", err);
 
         // Rollback the transaction and reset sequences
@@ -515,18 +529,242 @@ async function createProductWithAssociations(req: Request, res: Response) {
         //     try {
         //         await transaction.rollback();
         //
-        //         // Reset sequences to 0 for tables involved in the transaction
-        //         await resetSequenceAfterRollback(tableSequences);
-        //
-        //         console.log("Transaction rolled back and sequences reset successfully.");
-        //     } catch (rollbackError) {
-        //         console.error("Error rolling back transaction:", rollbackError);
-        //     }
-        // }
+        //         // Reset sequences to 0 for tables involved in the
+        // transaction await resetSequenceAfterRollback(tableSequences);
+        // console.log("Transaction rolled back and sequences reset
+        // successfully."); } catch (rollbackError) { console.error("Error
+        // rolling back transaction:", rollbackError); } }
 
         return res.status(500).send({
             message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
         });
+    }
+}
+
+
+async function resetDatabase(req, res) {
+    const {development} = config;
+    const adminConnection = new Sequelize('postgres', development.username, development.password, {
+        host: development.host,
+        dialect: 'postgres',
+    });
+    
+    try{  
+        console.log('Terminating existing connections...');
+        await adminConnection.query(`
+            SELECT pg_terminate_backend(pg_stat_activity.pid)
+            FROM pg_stat_activity
+            WHERE pg_stat_activity.datname = '${config.development.database}'
+              AND pid <> pg_backend_pid();
+        `);
+
+        console.log('Dropping database...');
+        await adminConnection.query(`DROP DATABASE IF EXISTS ${development.database};`); 
+        console.log('Creating database...');
+        await adminConnection.query(`CREATE DATABASE ${development.database};`);
+        console.log('Database dropped and created programmatically.');
+        // Reconnect Sequelize to the new database
+        await sequelize.sync({ force: true });
+        console.log('Models synchronized.');
+        console.log('Database and tables created successfully.');
+        // Optional: Initialize data (if needed)
+        console.log('Seeding initial data...');
+        const createUserOrOrganization = await createSuperOrgHandler(req, res)
+        const createdDummyProduct = await createProductWithAssociations(req, res)
+        const createLead = await createDummyLead(1)
+
+        return res
+        .status(200)
+        .send(
+            sendResponse(
+                RESPONSE_TYPE.SUCCESS,
+                SUCCESS_MESSAGE.ADMIN_CREATED,
+                {createUserOrOrganization}
+            )
+        );
+
+    }catch(error){
+        console.error('Error resetting database:', error);
+    }finally {
+        await adminConnection.close();
+        await sequelize.close();
+    }
+   
+}
+
+async function createSuperOrgHandler(req, res){
+    try {
+        const payload = { ...req?.body, createdBy: 1 };
+        const email = "admin1@tonguetingler.com";
+        const password = "123456";
+
+        // Check Firebase user
+        const fbCheckUserRes = await checkFirebaseUser(email);
+        let uid = null;
+        if (fbCheckUserRes.success) {
+            uid = fbCheckUserRes.uid;
+        } else {
+            const fbCreateUserRes = await createFirebaseUser({
+                email,
+                emailVerified: true,
+                phoneNumber: null,
+                password,
+                disabled: false,
+            });
+            if (!fbCreateUserRes.success) {
+                return res.status(400).send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        fbCreateUserRes.error ?? "Failed to create user with Firebase auth"
+                    )
+                );
+            } else {
+                uid = fbCreateUserRes.uid;
+            }
+        }
+
+        if (!uid) {
+            return res.status(400).send(sendResponse(RESPONSE_TYPE.ERROR, "No UID"));
+        }
+
+        // Fetch or create admin user
+        let admin = await new Auth().getUserByEmail(email);
+        if (!admin) {
+            const hashedPassword = await createPassword(password);
+
+            const data:TUser={
+                "firstName": "Root",
+                "lastName": "User",
+                "phoneNumber": "+918220735528",
+                nameForSearch: "",
+                referBy: undefined,
+                "type": USER_TYPE.ADMIN,
+                email,
+                "role": 0,
+                password: hashedPassword,
+                firebaseUid: uid,
+                createdBy: 0,
+                profilePhoto: "",
+                status: USER_STATUS.ACTIVE,
+                cart: "",
+                access_token: "",
+                password_token: "",
+                referralCode: "",
+                refresh_token: "",
+                updatedBy: 0,
+                deletedBy: 0,
+                lastLoginAt: undefined,
+                createdAt: undefined,
+                updatedAt: undefined,
+                deletedAt: undefined
+            }
+            admin = await new AdminRepo()
+                .create(data)
+                .then((uModel) => uModel);
+        }
+
+        // Fetch or create organization
+        const repo = new OrganizationRepo();
+        let superFranOrg = await repo.getByRootUser(admin.id);
+        let createSampleData = false;
+
+        if (!superFranOrg) {
+            createSampleData = true;
+            const TTOrgParams = {
+                name: "Tongue Tinglers (Super)",
+                contactPersonName: "Munawar Ahmed",
+                contactNumber: "+918220735528",
+                contactEmail: "admin@tonguetingler.com",
+                pan: "BVKPM7409K",
+                gst: "33BVKPM7409K1Z8",
+                bankName: "Bank of India",
+                bankAccountNumber: "823748272340",
+                bankIFSCCode: "BKI00023",
+                businessType: BUSINESS_TYPE.PROPRIETORSHIP,
+                type: ORGANIZATION_TYPE.SUPER_FRANCHISE,
+                billingAddress: {
+                    street: "GROUND FLOOR, 123/76, Peters Road, Royapettah,",
+                    city: "Chennai",
+                    state: "Tamil Nadu",
+                    postalCode: "600014",
+                    country: "India",
+                    phoneNumber: "918220735528",
+                    firstName: "Munawar",
+                    lastName: "Ahmed",
+                },
+                shippingAddress: [
+                    {
+                        street: "GROUND FLOOR, 123/76, Peters Road, Royapettah,",
+                        city: "Chennai",
+                        state: "Tamil Nadu",
+                        postalCode: "600014",
+                        country: "India",
+                        phoneNumber: "918220735528",
+                        firstName: "Munawar",
+                        lastName: "Ahmed",
+                    },
+                ],
+                masterFranchiseId: null,
+                rootUser: admin.id,
+                createdBy: 1,
+                updatedBy: null,
+                deletedBy: null,
+            };
+
+            superFranOrg = await repo.create(TTOrgParams, admin.id);
+        }
+        let campaignCreated = null
+        if (createSampleData) {campaignCreated = await createDummyMaster(admin.id);}
+
+        if(campaignCreated){
+            console.log("campaignCreated: ",campaignCreated)
+            // await createDummyLead(admin.id)
+        }
+
+        // Uncomment to send email notifications
+        // const emailContent = await getEmailTemplate(
+        //     EMAIL_TEMPLATE.WELCOME_ADMIN_USER,
+        //     {
+        //         email: payload.email,
+        //         link: "some-link",
+        //     }
+        // );
+
+        // const mailOptions = {
+        //     to: payload.email,
+        //     subject: EMAIL_HEADING.WELCOME_ADMIN_USER,
+        //     templateParams: {
+        //         heading: EMAIL_HEADING.WELCOME_ADMIN_USER,
+        //         description: emailContent,
+        //     },
+        // };
+
+        // await sendEmail(
+        //     mailOptions.to,
+        //     mailOptions.subject,
+        //     mailOptions.templateParams
+        // );
+
+        return superFranOrg
+    } catch (err) {
+        console.error("Error:", err);
+        return res.status(500).send({
+            message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+        });
+    }
+};
+
+async function createDummyLead(userId: number){
+    try{
+        const leadData = createDummyLeads();
+        const payload = {
+            ...leadData,
+            createdBy: userId
+        }
+        const leadCreated = await LeadRepo.prototype.create(payload, userId)
+        return leadCreated
+    }catch(error){
+        console.error("Error:", error);
     }
 }
 

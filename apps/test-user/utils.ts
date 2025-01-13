@@ -1,12 +1,4 @@
-import {
-    IOptions,
-    QuestionType,
-    TPayloadArea,
-    TPayloadFranchiseModel,
-    TPayloadProposalModel,
-    TPayloadQuestion,
-    TPayloadRegion
-} from "../../interfaces";
+
 import {QuestionRepo} from "../questions/models";
 import {AreaRepo} from "../area/models/AreaRepo";
 import {RegionRepo} from "../region/models/RegionRepo";
@@ -29,6 +21,18 @@ import {
 } from "../product/interface/ProductOptions";
 import {BaseOptions} from "../options/interface/options";
 import {BaseOptionsValue} from "../optionsValue/interface/optionValue";
+import {TPayloadArea} from "../area/interface/Area";
+import {TPayloadRegion} from "../region/models/Region";
+import {CampaignPayload} from "../campaign/interface/campaign";
+import {
+    IOptions,
+    QuestionType,
+    TPayloadQuestion
+} from "../questions/interface/Question";
+import {
+    TPayloadFranchiseModel
+} from "../franchise_model/interface/franchiseModel";
+import { extraFieldTypes, LeadAddress, LeadPayload, LeadSource, LeadStatus } from "apps/lead/interface/lead";
 
 
 function getSampleQuestions(): TPayloadQuestion[] {
@@ -39,12 +43,22 @@ function getSampleQuestions(): TPayloadQuestion[] {
         {label: "Option 3", value: "option3"},
     ];
 
+    const boolOptions: IOptions[] = [{
+        label: "Yes",
+        value: "Yes"
+    },
+        {
+            label: "No",
+            value: "No"
+        }
+
+    ];
+
     return [
         {
             question: "Do you like programming?",
-            type: QuestionType.MULTI_CHOICE,
+            type: QuestionType.BOOLEAN,
             required: true,
-            options: sampleOptions,
             createdBy: 1,
         },
         {
@@ -145,7 +159,7 @@ function getSampleFranchiseModels(): TPayloadFranchiseModel[] {
     ];
 }
 
-function getSampleProposals(): TPayloadProposalModel[] {
+function getSampleProposals(): any[] {
 
 
     return [
@@ -207,21 +221,21 @@ async function createDummyMaster(user_id: number) {
     });
 
     // Campaign creation logic
-    const campaignPayload = {
+    const campaignPayload: CampaignPayload = {
         name: "Punjab 24-25 Q1",
         description: "Campaign in Punjabi 2025 Quarter 1",
         questionList: [5, 4, 3, 2, 1],
         organizationId: 1,
         regionId: 1,
-        start: "2025-01-01",
-        to: "2025-02-28",
+        start: new Date("2025-01-01"),
+        to: new Date("2025-02-28"),
         proposalIds: [1, 2, 3, 4],
         affiliateId: null,
-        createdBy: user_id,
+
     };
 
     const campaignRepo = new CampaignAdRepo();
-    return campaignRepo.create(campaignPayload);
+    return campaignRepo.create(campaignPayload, 1);
 }
 
 function createDummyProducts(): {
@@ -302,6 +316,76 @@ function createDummyProducts(): {
     }
 }
 
+function createDummyLeads() {
+    const leadAddress: LeadAddress = {
+        address: "123 Main Street",
+        city: "Mumbai",
+        state: "Maharashtra",
+        zipCode: "400001",
+        country: "India",
+        PAN: "ABCDE1234F"
+    };
+
+    const leadData: LeadPayload = {
+        additionalInfo: "Interested in our premium services.",
+        email: "john.doe@example.com",
+        firstName: "John",
+        lastName: "Doe",
+        phoneNumber: "+919876543210",
+        status: LeadStatus.NEW,
+        address: leadAddress,
+        source: LeadSource.ADMIN,
+        sourceInfo: "Lead created manually by admin.",
+        campaignId: 1,
+        referBy: null,
+        notes: [],
+        proposalModalId: null,
+        amount: 50000,
+        franchiseModals: [],
+        affiliate: [],
+        marketing: [],
+        other: [
+            {
+                key: "What is your favorite programming language?", value: "Java",
+                id: 0,
+                title: "",
+                type: extraFieldTypes.STRING,
+                franchiseModelId: 0
+            },
+            {
+                key: "Choose your preferred database", value: "option2",
+                id: 0,
+                title: "",
+                type: extraFieldTypes.STRING,
+                franchiseModelId: 0
+            },
+            {
+                key: "Select the technologies you are familiar with:", value: "option2",
+                id: 0,
+                title: "",
+                type: extraFieldTypes.STRING,
+                franchiseModelId: 0
+            },
+            {
+                key: "How many years of experience do you have in software development?", value: "4",
+                id: 0,
+                title: "",
+                type: extraFieldTypes.STRING,
+                franchiseModelId: 0
+            },
+            {
+                key: "Do you like programming?", value: "Yes",
+                id: 0,
+                title: "",
+                type: extraFieldTypes.STRING,
+                franchiseModelId: 0
+            },
+        ],
+        assignedUser: null
+    };
+    return leadData
+}
+
 export {
     getSampleQuestions,
     getSampleRegions,
@@ -309,5 +393,6 @@ export {
     getSampleFranchiseModels,
     getSampleProposals,
     createDummyMaster,
-    createDummyProducts
+    createDummyProducts,
+    createDummyLeads
 }

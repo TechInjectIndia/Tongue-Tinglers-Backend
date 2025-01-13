@@ -9,6 +9,7 @@ const parseFollowDetails = (detail: any):ParsedFollowDetails => {
         notes: detail.notes,
         status: detail.status,
         reminder: detail.reminder,
+        logs: detail.logs,
         createdBy: detail.createdBy,
         updatedBy: detail.updatedBy,
         deletedBy: detail.deletedBy,

@@ -32,6 +32,8 @@ import {CreateLeadMail} from "static/views/email/get-templates/CreateLeadMail";
 import {
     LeadToProspectMail
 } from "static/views/email/get-templates/LeadToProspectMail";
+import RepoProvider from "../../RepoProvider";
+import {parseLead} from "../parser/leadParser";
 
 export default class LeadController {
 
@@ -121,6 +123,9 @@ export default class LeadController {
                 await new AssignRepo().create(assignPayload);
             }
 
+            const mailDto = new CreateLeadMail().getPayload({}, newLead.email);
+            await sendMail(mailDto);
+
             return res
                 .status(200)
                 .send(
@@ -135,47 +140,38 @@ export default class LeadController {
     }
 
 
-    static async convertLeadToProspect(
-        req: Request,
-        res: Response,
-        next: NextFunction,
-    ): Promise<Response | void> {
+    static async convertLeadToProspect(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const transaction = await sequelize.transaction(); // Start a transaction
         try {
-
             const id = parseInt(get(req.body, "id"));
-            if (isNaN(id)) throw Error('Missing id or isNaN');
+            const user_id = parseInt(get(req, "user_id"));
 
-            // get contract
+            if (isNaN(id)) throw new Error("Invalid or missing 'id'");
+            if (isNaN(user_id)) throw new Error("Invalid or missing 'user_id'");
+
+            // Check if the contract already exists
             const existingContract = await new ContractRepo().get(id);
             if (existingContract) {
-                await transaction.rollback();
+                await transaction.commit();
                 return res
                     .status(400)
                     .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            `Prospect ${ERROR_MESSAGE.EXISTS}`,
-                        ),
+                        sendResponse(RESPONSE_TYPE.ERROR, `Prospect ${ERROR_MESSAGE.EXISTS}`)
                     );
             }
 
+            // Fetch the lead
             const existingLead = await new LeadRepo().get(id);
             if (!existingLead) {
                 await transaction.rollback();
                 return res
                     .status(400)
                     .send(
-                        sendResponse(
-                            RESPONSE_TYPE.ERROR,
-                            `Lead ${ERROR_MESSAGE.NOT_EXISTS}`,
-                        ),
+                        sendResponse(RESPONSE_TYPE.ERROR, `Lead ${ERROR_MESSAGE.NOT_EXISTS}`)
                     );
             }
 
-            const user_id = parseInt(get(req, "user_id"));
-            if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
-
+            // Prepare user payload
             const payload = {
                 firstName: existingLead.firstName,
                 lastName: existingLead.lastName,
@@ -190,41 +186,31 @@ export default class LeadController {
                 referBy: existingLead.referBy,
             };
 
+            // Retrieve template ID
+            const templates = await new ZohoSignRepo().getTemplates();
+            const templateId = templates?.[0]?.templateId || "";
 
-            let templateId: "";
-            const templates: any[] = await new ZohoSignRepo().getTemplates();
-
-            if (
-                templates &&
-                Array.isArray(templates) &&
-                templates.length > 0 &&
-                templates[0].templateId
-            ) {
-                templateId = templates[0].templateId;
-            }
-
+            // Prepare prospect data
             const prospectData: ContractsPayload = {
                 organizationId: null,
                 status: CONTRACT_STATUS.ACTIVE,
                 terminationDetails: null,
                 payment: null,
                 leadId: id,
-                templateId: templateId,
+                templateId,
                 amount: existingLead.amount,
                 signedDate: null,
                 dueDate: new Date(),
-                validity: {
-                    to: new Date(),
-                    from: new Date(),
-                },
+                validity: { to: new Date(), from: new Date() },
                 notes: null,
                 additionalInfo: "",
                 signedDocs: [],
                 createdBy: user_id,
                 proposalData: existingLead.proposalModalId,
-                assignedUser: null
+                assignedUser: null,
             };
 
+            // Create Firebase user
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
                 emailVerified: true,
@@ -237,18 +223,12 @@ export default class LeadController {
                 await transaction.rollback();
                 return res
                     .status(400)
-                    .send(sendResponse(firebaseUser.error, firebaseUser?.uid));
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, firebaseUser.error));
             }
 
-            const token = jwt.sign(
-                {email: payload.email},
-                CONFIG.ACCESS_TOKEN_SECRET,
-                {expiresIn: CONFIG.ACCESS_TOKEN_EXPIRATION},
-            );
-
+            // Create user in the database
             const hashedPassword = await createPassword(payload.password);
-
-            let normalUser: TUser = {
+            const user: TUser = {
                 firebaseUid: firebaseUser.uid,
                 password: hashedPassword,
                 firstName: payload.firstName,
@@ -256,12 +236,12 @@ export default class LeadController {
                 nameForSearch: payload.nameForSearch,
                 email: payload.email,
                 phoneNumber: payload.phoneNumber,
-                type: USER_TYPE.PROSPECT,
-                role: 0,
-                referBy: null,
+                type: payload.type,
+                role: payload.role,
+                referBy: payload.referBy,
                 createdBy: user_id,
                 profilePhoto: "",
-                status: USER_STATUS.ACTIVE,
+                status: payload.status,
                 cart: "",
                 access_token: "",
                 password_token: "",
@@ -272,33 +252,35 @@ export default class LeadController {
                 lastLoginAt: null,
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                deletedAt: null
+                deletedAt: null,
             };
 
-            await new AdminRepo().create(normalUser, {transaction});
-            const prospect = await new ContractRepo().create(prospectData, user_id, {transaction});
+            await new AdminRepo().create(user, { transaction });
 
-            await transaction.commit(); // Commit the transaction
+            // Create prospect
+            const prospect = await new ContractRepo().create(prospectData, user_id, { transaction });
 
-            // Mail
+            // Commit the transaction
+            await transaction.commit();
+
+            // Send email notification
             const mailDto = new LeadToProspectMail().getPayload(
-                {                    
-                    btnLink: `https://tonguetingler.vercel.app/organization-setup?prospectId=${prospect.id}`,
+                {
+                    btnLink: `https://tonguetingler.com/organization-setup?prospectId=${prospect.id}`,
                 },
-                existingLead.email,
+                existingLead.email
             );
             await sendMail(mailDto);
+
             return res
                 .status(200)
                 .send(
-                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.PROSPECT_CREATED),
+                    sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.PROSPECT_CREATED)
                 );
-        } catch (err) {
-            console.error(err);
+        } catch (error) {
+            console.error("Error in convertLeadToProspect:", error);
             await transaction.rollback();
-            return res
-                .status(500)
-                .send({message: err});
+            return res.status(500).send({ message: error.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
 
@@ -577,6 +559,7 @@ export default class LeadController {
                 // logs: updatedLogs
             },user_id);
 
+            const finalLead = await new  LeadRepo().getLeadByAttr("id",id)
 
             return res
                 .status(200)
@@ -584,7 +567,7 @@ export default class LeadController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         SUCCESS_MESSAGE.UPDATED,
-                        updatedLead,
+                        finalLead,
                     ),
                 );
         } catch (err) {

@@ -127,6 +127,11 @@ export class ZohoSignRepo implements IBaseRepo<TemplateType> {
                 };
 
                 const response = await axios.request(config);
+                console.log("w3e45r67")
+
+                console.log(response.data);
+
+                console.log("456789")
                 return response.data;
             } catch (error) {
                 console.log(error);

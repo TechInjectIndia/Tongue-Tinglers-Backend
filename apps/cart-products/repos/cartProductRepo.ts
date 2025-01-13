@@ -14,12 +14,12 @@ import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
 import RepoProvider from "apps/RepoProvider";
 import { ParsedCartDetail } from "apps/cart-details/interface/CartDetail";
 import { UserModel } from "apps/user/models/UserTable";
+import { parseIncludedUserModel } from "apps/order-provider/utils/order-utils";
 
 export class CartProductRepo implements ICartProductRepo {
     async create(cartProduct: Cart): Promise<ParsedCartDetail | null> {
         const transaction = await CartProductModel.sequelize?.transaction();
         try {
-            console.log("Transaction started for creating cart products");
 
             // Step 1: Bulk create cart products
             const createdCartProducts = await CartProductModel.bulkCreate(
@@ -39,16 +39,24 @@ export class CartProductRepo implements ICartProductRepo {
                 where: { user_id: cartProduct.user_id },
                 defaults: { user_id: cartProduct.user_id },
                 transaction,
-                include: { model: UserModel, as: "users" }, // Prevent concurrent modifications
             });
-
-            console.log("userCart got--->", userCart);
 
             if (created) {
                 console.log("New cart created for user ID:", cartProduct.user_id);
             } else {
                 console.log("Existing cart found for user ID:", cartProduct.user_id);
             }
+
+            // Explicitly fetch the userCart with associations if needed
+            const userCartWithAssociations = await CartDetailsModel.findOne({
+                where: { id: userCart.id },
+                include: { model: UserModel, as: "users" },
+                transaction,
+            });
+
+            const user = parseIncludedUserModel(userCartWithAssociations?.toJSON());
+            console.log("userCart got--->", user);
+
 
             // Step 3: Associate cart products with cart details
             await userCart.addCartProducts(cartProductIds, { transaction });
@@ -91,7 +99,12 @@ export class CartProductRepo implements ICartProductRepo {
 
             return {
                 id: userCart.id,
-                user: { id: 0, firstName: "test", lastName: "test", email: "wwe" },
+                user: {
+                    id: user.id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                },
                 cart: cartProductsWithDetails,
             };
         } catch (error) {

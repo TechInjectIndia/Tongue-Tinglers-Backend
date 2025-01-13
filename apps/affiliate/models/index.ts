@@ -1,14 +1,12 @@
 import {Op} from "sequelize";
 
-import IBaseRepo from '../controllers/controller/IController';
-import { Affiliate } from "../interface/affiliate";
+import {Affiliate, ParsedAffiliate} from "../interface/affiliate";
 import { TListFilters } from "apps/common/models/common";
 import { AffiliateModel } from "./affiliateModel";
 import { UserModel } from "apps/user/models/UserTable";
 import { SocialMediaDetailsModel } from "apps/lead/models/smDetailsTable";
-import { AffiliatesList, TPayloadAffiliate } from "interfaces";
 
-export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
+export class AffiliateRepo {
     constructor() { }
 
     public async get(id: number): Promise<Affiliate | null> {
@@ -24,7 +22,7 @@ export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
         return data;
     }
 
-    public async list(filters: TListFilters): Promise<AffiliatesList> {
+    public async list(filters: TListFilters): Promise<any> {
         const whereCondition: any = {}; // Initialize where condition
 
         // Apply search filter
@@ -34,10 +32,10 @@ export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
                 { codes: { [Op.iLike]: `%${filters.search}%` } }, // Search by codes (if serialized as a string)
             ];
         }
-        
+
         const total = await AffiliateModel.count({
             where: whereCondition,
-           
+
         });
         const data = await AffiliateModel.findAll({
             where: whereCondition,
@@ -49,12 +47,12 @@ export class AffiliateRepo implements IBaseRepo<Affiliate, TListFilters> {
         return { total, data };
     }
 
-    public async create(data: TPayloadAffiliate): Promise<Affiliate> {
+    public async create(data: Affiliate): Promise<Affiliate> {
         const response = await AffiliateModel.create(data);
         return response.dataValues;
     }
 
-    public async update(id: number, data: TPayloadAffiliate): Promise<[affectedCount: number]> {
+    public async update(id: number, data: Affiliate): Promise<[affectedCount: number]> {
         return await AffiliateModel.update(data, {
             where: {
                 id: id,

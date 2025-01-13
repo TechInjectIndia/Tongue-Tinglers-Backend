@@ -128,10 +128,9 @@ interface OrderParams {
 }
 
 interface OrderState {
-    cartId: number;
     userId: number;
-    billingAddressId: number;
-    shippingAddressId: number;
+    billingAddressId: number | null;
+    shippingAddressId: number | null;
     paymentType:PAYMENT_TYPE
 }
 
@@ -139,6 +138,10 @@ enum RP_ORDER_STATUS {
     PAID = "paid",
     CREATED = "created",
     ATTEMPTED = "attempted",
+}
+
+export enum ORDER_CURRENCY {
+    INR = "INR",
 }
 
 interface RPOrder {

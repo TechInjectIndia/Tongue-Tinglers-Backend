@@ -8,7 +8,7 @@ import fs from "fs";
 import crypto from "crypto";
 import { jsonData } from "../../../types";
 import { ContractRepo } from "apps/contracts/models/ContractRepo";
-import { SignDoc } from "apps/contracts/interface/Contract";
+import {CONTRACT_STATUS, SignDoc} from "apps/contracts/interface/Contract";
 
 
 const { ZOHO_WEBHOOK_SECRET } = process.env;
@@ -228,7 +228,7 @@ export default class ZohoSignController {
                         if (field.field_category === "textfield") {
                             jsonData.templates.field_data.field_text_data[
                                 fieldLabel
-                            ] = fieldValue;
+                                ] = fieldValue;
                         }
                     });
                 });
@@ -266,6 +266,10 @@ export default class ZohoSignController {
 
                 // currentSignedDocs.push(contractSignDocPayload);
                 // await new ContractRepo().updateContractDoc(contractId, currentSignedDocs);
+
+                console.log("2w3e4r5678")
+                console.log(sendDocument)
+                console.log("2w3e4r5678")
 
                 return res.status(200).send({
                     success: true,

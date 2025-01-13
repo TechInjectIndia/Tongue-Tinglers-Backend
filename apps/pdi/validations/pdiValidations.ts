@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
-import { IPdiChecklistStatus } from '../../../interfaces';
 
 
 const checkPointsData = Joi.object().keys({
@@ -10,13 +9,17 @@ const checkPointsData = Joi.object().keys({
 });
 // Schema for PDI Checklist creation
 const createIChecklistBody = Joi.object().keys({
-    checkpoints: Joi.array().items(checkPointsData).required(),
+    checkpoints: Joi.array().items(checkPointsData).required().messages({
+      'array.base': 'Checkpoints must be an array.',
+      'array.includes': 'Each checkpoint must be a valid object.',
+      'any.required': 'Checkpoints are required.',
+  }),
     prospectId: Joi.number().required()
     .messages({
         'number.base': 'Prospect must be a number.',
         'any.required': 'Prospect is required.',
     }),
-});
+}).strict();
 
 
 
@@ -102,19 +105,18 @@ export const validateCreateIChecklistBody = (req: Request, res: Response, next: 
 export const validateEditChecklistBody = (req: Request, res: Response, next: NextFunction) => {
     validateReq(req, res, next, editChecklistBody, 'body');
   };
-  
+
   // Middleware for validating Area parameters
   export const validateEditCheckpointParams = (req: Request, res: Response, next: NextFunction) => {
     validateReq(req, res, next, editChecklistParams, 'params');
   };
-  
+
   // Middleware for validating Area listing query parameters
   export const validateListChecklistQuery = (req: Request, res: Response, next: NextFunction) => {
     validateReq(req, res, next, listChecklistQuery, 'query');
   };
-  
+
   // Middleware for validating multiple Area IDs for deletion
   export const validateDeleteMultipleIdsBody = (req: Request, res: Response, next: NextFunction) => {
     validateReq(req, res, next, editMultipleIdsBody, 'body');
   };
-  

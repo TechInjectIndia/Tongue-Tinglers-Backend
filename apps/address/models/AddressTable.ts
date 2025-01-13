@@ -38,7 +38,6 @@ class AddressModel
                 sequelize,
                 tableName: "addresses",
                 timestamps: true,
-                paranoid: true,
             }
         );
         return AddressModel;

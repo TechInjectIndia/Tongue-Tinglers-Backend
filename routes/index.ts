@@ -130,7 +130,7 @@ router.use(`${ADMIN}/web-lead`, webLeadRouter); // dont add auth to this url
 // router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
 router.use(`${ADMIN}/commission`, auth, commissionRouter);
-router.use(`${ADMIN}/product`, auth, productRouter);
+router.use(`${ADMIN}/product`, productRouter);
 router.use(`${ADMIN}/options`, auth, optionsRouter);
 router.use(`${ADMIN}/options-values`, auth, optionsValuesRouter);
 router.use(`${ADMIN}/product-options`, auth, productOptionsRouter);
@@ -163,12 +163,6 @@ router.use(`/zoho-sign`, zohoSignApiRouter);
 router.use("/logs", logRouter);
 router.use("/transaction", transactionRouter);
 
-// router.use(`/etest`, () => {
-//     sendEmail("jasskaranofficial@gmail.com", "subject", {
-//         heading: "asd",
-//         description: "qwe",
-//     });
-// });
 
 router.use(`/health`, (_, res) => {
     return res.status(200).json({

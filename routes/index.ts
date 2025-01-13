@@ -85,7 +85,7 @@ import {
 } from "../apps/payment-transaction/api/TransactionRouter";
 
 import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics"
-
+import B2CUserAddressRouter from "../apps/b2c-users-address/api/B2CUserAddressApi";
 
 
 // ====== Admin routes ======
@@ -146,6 +146,7 @@ router.use(`${ADMIN}/agreement-docs`, agreementDocRouter);
 // router.use(`/pet-pooja`, petPoojaApiRouter);
 router.use(`/organization`,auth, organizationRouter);
 router.use(`${ADMIN}/products-category`, auth, OrderV1Routes);
+router.use(`/b2c-users`, auth, B2CUserAddressRouter);
 
 
 

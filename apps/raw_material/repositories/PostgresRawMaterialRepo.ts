@@ -1,5 +1,5 @@
 import { ItemCategoryTable } from "../../item_category/database/ItemCategoryTable";
-import { ItemUnitTable } from "../../item_unit/database/ItemUnitTable";
+import { ItemUnitModel } from "../../item_unit/database/ItemUnitTable";
 import { RawMaterialModal } from "../database/RawMaterialTable";
 import { ICreateRawMaterial, ICreateRawMaterialPrice, IRawMaterial, IRawMaterialDetails, IRawMaterialPriceDetails } from "../models/IRawMaterial";
 import { RAW_MATERIAL_STAUS } from "../models/RawMaterialMisc";
@@ -147,7 +147,7 @@ export class PostgresRawMaterialRepo implements IRawMaterialRepo {
                 },
                 include: [
                     {
-                        model: ItemUnitTable,
+                        model: ItemUnitModel,
                         attributes: ['name'],
                     },
                     {
@@ -197,7 +197,7 @@ export class PostgresRawMaterialRepo implements IRawMaterialRepo {
                     msq: item.getDataValue('msq'),
                     status: item.getDataValue('status'),
                     //@ts-ignore
-                    unitName: item.ItemUnitTable.getDataValue('name'),
+                    unitName: item.ItemUnitModel.getDataValue('name'),
                     //@ts-ignore
                     categoryName: item.ItemCategoryTable.getDataValue('name'),
 
@@ -239,7 +239,7 @@ export class PostgresRawMaterialRepo implements IRawMaterialRepo {
                         ]
                     },
                     {
-                        model: ItemUnitTable,
+                        model: ItemUnitModel,
                         attributes: ['name'],
                     },
                     {
@@ -274,7 +274,7 @@ export class PostgresRawMaterialRepo implements IRawMaterialRepo {
                 msq: result.getDataValue('msq'),
                 status: result.getDataValue('status'),
                 //@ts-ignore
-                unitName: result.ItemUnitTable.getDataValue('name'),
+                unitName: result.ItemUnitModel.getDataValue('name'),
                 //@ts-ignore
                 categoryName: result.ItemCategoryTable.getDataValue('name'),
 

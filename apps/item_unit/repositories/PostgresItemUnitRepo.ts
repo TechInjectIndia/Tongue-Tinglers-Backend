@@ -1,5 +1,5 @@
 import { APIResponse } from "apps/common/models/Base";
-import { ItemUnitTable } from "../database/ItemUnitTable";
+import { ItemUnitModel } from "../database/ItemUnitTable";
 import { ICreateItemUnit } from "../models/IItemUnit";
 import { ITEM_UNIT_STAUS } from "../models/ItemUnitMisc";
 import { IItemUnitRepo } from "./IItemUnitRepo";
@@ -10,9 +10,9 @@ import { PaginatedBaseResponse } from "interfaces";
 
 export class PostgresItemUnitRepo implements IItemUnitRepo {
 
-    async create(payload: ICreateItemUnit): Promise<APIResponse<ItemUnitTable | null>> {
+    async create(payload: ICreateItemUnit): Promise<APIResponse<ItemUnitModel | null>> {
         try {
-            const result = await ItemUnitTable.create(payload);
+            const result = await ItemUnitModel.create(payload);
             return HelperMethods.getSuccessResponse(result);
         } catch (error) {
             handleError(error);
@@ -25,7 +25,7 @@ export class PostgresItemUnitRepo implements IItemUnitRepo {
 
     async update(id: number, payload: ICreateItemUnit): Promise<APIResponse<null>> {
         try {
-            await ItemUnitTable.update(payload, {
+            await ItemUnitModel.update(payload, {
                 where: {
                     id: id
                 }
@@ -40,10 +40,10 @@ export class PostgresItemUnitRepo implements IItemUnitRepo {
         }
     }
 
-    async getAll(page: number, pageSize: number): Promise<APIResponse<PaginatedBaseResponse<ItemUnitTable> | null>> {
+    async getAll(page: number, pageSize: number): Promise<APIResponse<PaginatedBaseResponse<ItemUnitModel> | null>> {
         try {
             const offset = (page - 1) * pageSize;
-            const { count, rows } = await ItemUnitTable.findAndCountAll({
+            const { count, rows } = await ItemUnitModel.findAndCountAll({
                 limit: pageSize,
                 offset: offset,
                 order: [['createdAt', 'DESC']],
@@ -66,9 +66,9 @@ export class PostgresItemUnitRepo implements IItemUnitRepo {
         }
     }
 
-    async getById(id: number): Promise<APIResponse<ItemUnitTable | null>> {
+    async getById(id: number): Promise<APIResponse<ItemUnitModel | null>> {
         try {
-            const result = await ItemUnitTable.findByPk(id);
+            const result = await ItemUnitModel.findByPk(id);
             return HelperMethods.getSuccessResponse(result);
         } catch (error) {
             handleError(error);
@@ -79,7 +79,7 @@ export class PostgresItemUnitRepo implements IItemUnitRepo {
     async delete(ids: number[], deletedById: number): Promise<APIResponse<null>> {
         try {
             const transaction = await sequelize.transaction();
-            await ItemUnitTable.update({
+            await ItemUnitModel.update({
                 status: ITEM_UNIT_STAUS.DELETED,
                 deletedBy: deletedById,
             }, {

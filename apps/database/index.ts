@@ -45,6 +45,7 @@ import { ItemStockModel } from "../../database/schema/petpooja/stock";
 import { OrganizationModel } from "../organization/models/OrganizationTable";
 import { RawMaterialModal } from "apps/raw_material/database/RawMaterialTable";
 import { RawMaterialStockTable } from "apps/raw_material_stock/database/RawMaterialStockTable";
+import { ItemUnitModel } from "apps/item_unit/database/ItemUnitTable";
 
 const m = [
     RegionModel,
@@ -80,6 +81,7 @@ const m = [
     OrderItemsModel,
     CartProductModel,
     ItemStockModel,
+    ItemUnitModel,
     RawMaterialModal,
     RawMaterialStockTable,
 ];
@@ -120,8 +122,9 @@ const models = {
     Cart: CartProductModel.initModel(),
     ItemStockModel: ItemStockModel.initModel(),
     CampaignProposalsModel: CampaignProposalsModel.initModel(),
+    // ItemUnitModel: ItemUnitModel.initModel(),
     RawMaterialModel: RawMaterialModal.initModel(),
-    RawMaterialStockModel: RawMaterialStockTable.initModel(),
+    // RawMaterialStockModel: RawMaterialStockTable.initModel(),
 };
 
 console.log(Object.keys(models).join(" "))
@@ -134,7 +137,7 @@ try {
     Object.keys(models).forEach((modelName) => {
         currentModel = modelName;
 
-        console.log("Doing for", currentModel.toString());
+        console.log("found", models[modelName]);
 
         if (models[modelName].associate) {
             models[modelName].associate();

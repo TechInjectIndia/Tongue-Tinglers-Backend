@@ -1,11 +1,11 @@
 import { DataTypes, Model } from 'sequelize';
 import { IRawMaterial, ICreateRawMaterial } from '../models/IRawMaterial';
 import { RAW_MATERIAL_STAUS } from '../models/RawMaterialMisc';
-import { sequelize } from 'config';
-import { ItemUnitTable } from 'apps/item_unit/database/ItemUnitTable';
+import { ItemUnitModel } from 'apps/item_unit/database/ItemUnitTable';
 import { ItemCategoryTable } from 'apps/item_category/database/ItemCategoryTable';
 import { RawMaterialPriceTable } from './RawMaterialPriceTable';
 import { SupplierTable } from 'apps/supplier/database/SupplierTable';
+import { sequelize } from '../../../config/database';
 
 
 class RawMaterialModal extends Model<IRawMaterial, ICreateRawMaterial> {
@@ -76,44 +76,45 @@ class RawMaterialModal extends Model<IRawMaterial, ICreateRawMaterial> {
                 paranoid: true,
             },
         );
+        return RawMaterialModal;
     }
 
     static associate() {
         /* association with ItemUnit */
 
-        ItemUnitTable.hasMany(this, {
-            foreignKey: 'unitId',
-        });
+        // ItemUnitModel.hasMany(this, {
+        //     foreignKey: 'unitId',
+        // });
 
 
-        this.belongsTo(ItemUnitTable, {
-            foreignKey: 'unitId',
-        });
+        // this.belongsTo(ItemUnitModel, {
+        //     foreignKey: 'unitId',
+        // });
 
 
-        /* association with Item Category */
-        ItemCategoryTable.hasMany(this, {
-            foreignKey: 'categoryId',
-        });
+        // /* association with Item Category */
+        // ItemCategoryTable.hasMany(this, {
+        //     foreignKey: 'categoryId',
+        // });
 
-        this.belongsTo(ItemCategoryTable, {
-            foreignKey: 'categoryId',
-        });
+        // this.belongsTo(ItemCategoryTable, {
+        //     foreignKey: 'categoryId',
+        // });
 
-        /* association with Price */
-        this.hasMany(RawMaterialPriceTable, {
-            foreignKey: 'rawMaterialId',
-        });
-        RawMaterialPriceTable.belongsTo(this, {
-            foreignKey: 'rawMaterialId',
-        });
+        // /* association with Price */
+        // this.hasMany(RawMaterialPriceTable, {
+        //     foreignKey: 'rawMaterialId',
+        // });
+        // RawMaterialPriceTable.belongsTo(this, {
+        //     foreignKey: 'rawMaterialId',
+        // });
 
-        SupplierTable.hasMany(RawMaterialPriceTable, {
-            foreignKey: 'supplierId',
-        });
-        RawMaterialPriceTable.belongsTo(SupplierTable, {
-            foreignKey: 'supplierId',
-        });
+        // SupplierTable.hasMany(RawMaterialPriceTable, {
+        //     foreignKey: 'supplierId',
+        // });
+        // RawMaterialPriceTable.belongsTo(SupplierTable, {
+        //     foreignKey: 'supplierId',
+        // });
     }
 }
 

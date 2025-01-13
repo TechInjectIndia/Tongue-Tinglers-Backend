@@ -56,6 +56,8 @@ import { IRawMaterialRepo } from './raw_material/repositories/IRawMaterialRepo';
 import { PostgresRawMaterialRepo } from './raw_material/repositories/PostgresRawMaterialRepo';
 import { IRawMaterialStockRepo } from './raw_material_stock/repositories/IRawMaterialStockRepo';
 import { PostgresRawMaterialStockRepo } from './raw_material_stock/repositories/PostgresRawMaterialStockRepo';
+import { IRegion } from './region/models/Region';
+import { SocialMediaDetails } from './lead/interface/lead';
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;

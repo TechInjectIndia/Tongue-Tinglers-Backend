@@ -4,8 +4,7 @@ import { ICreateSupplier, ISupplier } from "../models/ISupplier";
 import { SUPPLIER_STAUS } from "../models/SupplierMisc";
 import { ISupplierRepo } from "./ISupplierRepo";
 import { Op, UniqueConstraintError } from "sequelize";
-import { APIResponse } from "apps/common/models/Base";
-import { PaginatedBaseResponse } from "interfaces";
+import { APIResponse, PaginatedBaseResponse } from "apps/common/models/Base";
 import { sequelize } from "config";
 
 export class PostgresSupplierRepo implements ISupplierRepo {

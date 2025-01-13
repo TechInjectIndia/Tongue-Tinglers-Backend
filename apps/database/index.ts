@@ -41,11 +41,11 @@ import { NotesModel } from "apps/order/models/NotesTable";
 import { OrderItemsModel } from "apps/order-items/models/OrderItemsTable";
 import { CartProductModel } from "../cart-products/model/CartProductTable";
 import { handleError } from "apps/common/utils/HelperMethods";
-import { ItemStockModel } from "../../database/schema/petpooja/stock";
 import { OrganizationModel } from "../organization/models/OrganizationTable";
 import { RawMaterialModal } from "apps/raw_material/database/RawMaterialTable";
 import { RawMaterialStockTable } from "apps/raw_material_stock/database/RawMaterialStockTable";
 import { ItemUnitModel } from "apps/item_unit/database/ItemUnitTable";
+import { ItemStockModel } from "apps/pet-pooja/models/stock";
 
 const m = [
     RegionModel,

@@ -28,12 +28,12 @@ interface IAtomicFetchProvider<P> {
      * @param executionStatus
      * @param paymentVerificationMethod
      */
-    updateMetaFlag(
-        orderId: string,
-        property: P,
-        executionStatus: boolean,
-        paymentVerificationMethod: PAYMENT_VERIFICATION_METHODS,
-    ): Promise<DTO<null>>;
+    // updateMetaFlag(
+    //     orderId: string,
+    //     property: P,
+    //     executionStatus: boolean,
+    //     paymentVerificationMethod: PAYMENT_VERIFICATION_METHODS,
+    // ): Promise<DTO<null>>;
 }
 
 export { IAtomicFetchProvider };

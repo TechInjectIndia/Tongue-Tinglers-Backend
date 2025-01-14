@@ -1,24 +1,43 @@
 
 import { DTO } from "apps/common/models/DTO";
 import {
-    Order,
+    Order, OrderPagination,
     OrderPayload,
     OrderState,
     ParsedOrder,
     RPOrder
 } from "../interface/Order";
 import {ProcessPostOrderResult} from "../interface/ProcessPostOrderResult";
+import {Transaction} from "sequelize";
+import {OrderModel} from "../models/OrderTable";
 export interface IOrderRepo {
     // createOrder(order: OrderPayload): Promise<Order | null>;
-    updateOrder(order: any): Promise<any>;
-    createOrder(order: OrderPayload): Promise<Order | null>;
-    updateOrder(order: any): Promise<ParsedOrder | null>
+    createOrder(
+        transaction: Transaction,
+        order: OrderPayload,
+    ): Promise<Order | null>
+    // updateOrder(order: any): Promise<any>;
+    // createOrder(order: OrderPayload): Promise<Order | null>
+    updateOrder(order: any): Promise<ParsedOrder | null>;
     deleteOrder(orderId: number): Promise<any>;
+
+    getAllOrders(
+        page: number,
+        limit: number,
+        search: string,
+        filters: Record<string, any>,
+    ): Promise<OrderPagination<OrderModel>>;
+
+    processOrder(
+        state: OrderState,
+    ): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>>
+
     getOrderById(orderId: number): Promise<Order>;
     getAllOrders(page: number, limit: number, search: string, filters: object): Promise<any>;
-    processOrder(state: OrderState):Promise<DTO<{rpOrder: RPOrder, parsedOrder:ParsedOrder}>>;
-    proceedToPayment(state: OrderState): Promise<DTO<boolean>>
+
     getOrdersByUser(userId: number): Promise<ParsedOrder[]>
+
+    proceedToPayment(state: OrderState): Promise<DTO<boolean>>
 
     /**
      * DB Transaction

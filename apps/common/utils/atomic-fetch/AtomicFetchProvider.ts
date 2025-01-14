@@ -8,12 +8,12 @@ class AtomicFetchProvider implements IAtomicFetchProvider<any> {
     ): Promise<DTO<boolean | null>> {
         throw new Error("Method not implemented.");
     }
-    updateMetaFlag(
-        orderId: string,
-        property: any,
-        executionStatus: boolean,
-        paymentVerificationMethod: PAYMENT_VERIFICATION_METHODS,
-    ): Promise<DTO<null>> {
-        throw new Error("Method not implemented.");
-    }
+    // updateMetaFlag(
+    //     orderId: string,
+    //     property: any,
+    //     executionStatus: boolean,
+    //     paymentVerificationMethod: PAYMENT_VERIFICATION_METHODS,
+    // ): Promise<DTO<null>> {
+    //     throw new Error("Method not implemented.");
+    // }
 }

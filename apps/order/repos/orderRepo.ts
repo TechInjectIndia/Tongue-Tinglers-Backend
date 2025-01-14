@@ -36,7 +36,7 @@ import { PendingOrder } from "../../pending-orders/interface/PendingOrder";
 import {PendingOrderRepo} from "../../pending-orders/repos/PendingOrderRepo";
 
 export class OrderRepo implements IOrderRepo {
-    private async createOrder(
+    async createOrder(
         transaction: Transaction,
         order: OrderPayload,
     ): Promise<Order | null> {
@@ -247,10 +247,10 @@ export class OrderRepo implements IOrderRepo {
             const order = await new OrderProvider().processOrder(state);
             console.log('here');
 
-            const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order);
-            console.log(pendingOrderData);
+            // const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order);
+            // console.log(pendingOrderData);
 
-            await new PendingOrderRepo().create(pendingOrderData);
+            // await new PendingOrderRepo().create(pendingOrderData);
             return getSuccessDTO(true);
         } catch (err) {
             return getUnhandledErrorDTO(err.message);

@@ -50,6 +50,7 @@ export class PendingOrderRepo implements IPendingOrderRepo {
     async createPendigOrderPayload(order:ParsedOrder, paymentOrderId:string){
         const pendingOrderPayload: PendingOrderPayload = {
             orderId: order.id,
+            anomalies:[],
             anomalyArr: order.anomalyArr ? order.anomalyArr : [],
             cancelledItems: order.cancelledItems ? order.cancelledItems : [],
             coupon: order.coupon ? order.coupon : null,

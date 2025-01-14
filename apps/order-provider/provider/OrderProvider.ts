@@ -49,7 +49,10 @@ import {
 
 
 import { PendingOrderRepo } from "apps/pending-orders/repos/PendingOrderRepo";
-import { PendingOrderPayload } from "apps/pending-orders/interface/PendingOrder";
+import {
+    PendingOrder,
+    PendingOrderPayload
+} from "apps/pending-orders/interface/PendingOrder";
 import { runAtomicFetch } from "../../common/utils/atomic-fetch/atomic-fetch";
 import RepoProvider from "../../RepoProvider";
 export class OrderProvider implements IOrderProvider {
@@ -757,7 +760,7 @@ export class OrderProvider implements IOrderProvider {
 
     //     Process Post Order private functions
 
-    private async performPostPaymentTasks(order: Order): Promise<void> {
+    private async performPostPaymentTasks(order: PendingOrder): Promise<void> {
         // todo @Nitesh add more tasks here!!
         const p1 = this.sendOrderMailAtomic(order);
 
@@ -765,7 +768,7 @@ export class OrderProvider implements IOrderProvider {
     }
 
     private async sendOrderMailAtomic(
-        order: Order,
+        order: PendingOrder,
         // paymentVerificationMethod: PAYMENT_VERIFICATION_METHODS,
     ) {
         // const orderMetaField = ORDER_META_FIELDS.CONFIRMATION_MAIL;
@@ -791,7 +794,7 @@ export class OrderProvider implements IOrderProvider {
     }
 
     // todo @Nitesh add mailing function here.
-    private async sendOrderMail(order: Order): Promise<boolean> {
+    private async sendOrderMail(order: PendingOrder): Promise<boolean> {
         //     send mail functions
 
         throw new Error("method not implemented");

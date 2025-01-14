@@ -53,6 +53,12 @@ import { IStorageLocationRepo } from './inventory/storage_locations/repositories
 import { PostgresStorageLocationRepo } from './inventory/storage_locations/repositories/PostgresStorageLocationRepo';
 import { IFactoryGateRepo } from './inventory/factory_gates/repositories/IFactoryGateRepo';
 import { PostgresFactoryGateRepo } from './inventory/factory_gates/repositories/PostgresFactoryGateRepo';
+import { IRawMaterialRepo } from './inventory/raw_material/repositories/IRawMaterialRepo';
+import { PostgresRawMaterialRepo } from './inventory/raw_material/repositories/PostgresRawMaterialRepo';
+import { ISupplierRepo } from './inventory/supplier/repositories/ISupplierRepo';
+import { PostgresSupplierRepo } from './inventory/supplier/repositories/PostgresSupplierRepo';
+import { IRawMaterialStockRepo } from './inventory/raw_material_stock/repositories/IRawMaterialStockRepo';
+import { PostgresRawMaterialStockRepo } from './inventory/raw_material_stock/repositories/PostgresRawMaterialStockRepo';
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -78,6 +84,9 @@ export default class RepoProvider {
   private static _itemUnitRepo: IItemUnitRepo;
   private static _storageLocationRepo: IStorageLocationRepo;
   private static _factoryGateRepo: IFactoryGateRepo;
+  private static _rawMaterialRepo: IRawMaterialRepo;
+  private static _supplierRepo: ISupplierRepo;
+  private static _rawMaterialStockRepo: IRawMaterialStockRepo;
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -241,5 +250,27 @@ export default class RepoProvider {
     return this._factoryGateRepo;
   }
 
+  static get rawMaterialRepo() {
+    if (!this._rawMaterialRepo) {
+      this._rawMaterialRepo = new PostgresRawMaterialRepo();
+    }
+    return this._rawMaterialRepo;
+  }
+
+
+
+  static get supplierRepo() {
+    if (!this._supplierRepo) {
+      this._supplierRepo = new PostgresSupplierRepo();
+    }
+    return this._supplierRepo;
+  }
+
+  static get rawMaterialStockRepo() {
+    if (!this._rawMaterialStockRepo) {
+      this._rawMaterialStockRepo = new PostgresRawMaterialStockRepo();
+    }
+    return this._rawMaterialStockRepo;
+  }
 
 }

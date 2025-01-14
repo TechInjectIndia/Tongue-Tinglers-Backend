@@ -83,5 +83,16 @@ class SupplierTable extends Model<ISupplier, ICreateSupplier> {
         return SupplierTable;
     }
 
+    public static associate() {
+        /* association with Address */
+        AddressModel.hasMany(SupplierTable, {
+            foreignKey: 'addressId',
+        });
+        SupplierTable.belongsTo(AddressModel, {
+            foreignKey: 'addressId',
+            as: "address",
+        });
+    }
+
 }
 export { SupplierTable };

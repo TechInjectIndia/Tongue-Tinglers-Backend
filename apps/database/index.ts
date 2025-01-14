@@ -43,6 +43,19 @@ import { CartProductModel } from "../cart-products/model/CartProductTable";
 import { handleError } from "apps/common/utils/HelperMethods";
 import { OrganizationModel } from "../organization/models/OrganizationTable";
 import { ItemStockModel } from "apps/pet-pooja/models/stock";
+import { ItemUnitTable } from "apps/inventory/item_unit/database/ItemUnitTable";
+import { ItemCategoryTable } from "apps/inventory/item_category/database/ItemCategoryTable";
+import { StorageLocationTable } from "apps/inventory/storage_locations/database/StorageLocationTable";
+import { FactoryGateTable } from "apps/inventory/factory_gates/database/FactoryGateTable";
+import { PurchaseInvoiceTable } from "apps/inventory/purchase_invoice/database/PurchaseInvoiceTable";
+import { RawMaterialTable } from "apps/inventory/raw_material/database/RawMaterialTable";
+import { RawMaterialPriceTable } from "apps/inventory/raw_material/database/RawMaterialPriceTable";
+import { SupplierTable } from "apps/inventory/supplier/database/SupplierTable";
+import { RawMaterialStockTable } from "apps/inventory/raw_material_stock/database/RawMaterialStockTable";
+import { RawMaterialStockInTable } from "apps/inventory/raw_material_stock/database/RawMaterialStockInTable";
+import { RawMaterialHoldTable } from "apps/inventory/raw_material_stock/database/RawMaterialHoldTable";
+import { RawMaterialRejectionTable } from "apps/inventory/raw_material_stock/database/RawMaterialRejectionTable";
+import { DebitNoteTable } from "apps/inventory/debit_note/database/DebitNoteTable";
 
 const m = [
     RegionModel,
@@ -78,6 +91,7 @@ const m = [
     OrderItemsModel,
     CartProductModel,
     ItemStockModel,
+
 ];
 
 console.log(m)
@@ -116,6 +130,25 @@ const models = {
     Cart: CartProductModel.initModel(),
     ItemStockModel: ItemStockModel.initModel(),
     CampaignProposalsModel: CampaignProposalsModel.initModel(),
+
+    /* inventory */
+
+
+    FactoryGateModel: FactoryGateTable.initModel(),
+    StorageLocationModel: StorageLocationTable.initModel(),
+    ItemUnitModel: ItemUnitTable.initModel(),
+    ItemCategoryModel: ItemCategoryTable.initModel(),
+    SupplierModel: SupplierTable.initModel(),
+    RawMaterialPrice: RawMaterialPriceTable.initModel(),
+    RawMaterialHold: RawMaterialHoldTable.initModel(),
+    RawMaterialRejected: RawMaterialRejectionTable.initModel(),
+    RawMaterialStockIn: RawMaterialStockInTable.initModel(),
+    RawMaterialStock: RawMaterialStockTable.initModel(),
+    RawMaterialModel: RawMaterialTable.initModel(),
+    DebitNoteModel: DebitNoteTable.initModel(),
+    PurchaseInvoiceModel: PurchaseInvoiceTable.initModel(),
+
+
 };
 
 let currentModel: string = null;
@@ -124,7 +157,6 @@ try {
     // Initialize Associations
     Object.keys(models).forEach((modelName) => {
         currentModel = modelName;
-
         console.log("found", models[modelName]);
 
         if (models[modelName].associate) {

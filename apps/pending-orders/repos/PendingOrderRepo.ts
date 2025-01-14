@@ -3,6 +3,7 @@ import { ParsedPendingOrder, PendingOrder, PendingOrderPayload } from "../interf
 import { PendingOrderModel } from "../models/PendingOrderTable";
 import { IPendingOrderRepo } from "./IPendingOrderRepo";
 import { UserModel } from "apps/user/models/UserTable";
+import {ParsedOrder} from "../../order/interface/Order";
 
 export class PendingOrderRepo implements IPendingOrderRepo {
     async create(payload: PendingOrderPayload): Promise<any | null> {
@@ -42,11 +43,11 @@ export class PendingOrderRepo implements IPendingOrderRepo {
             return pendingOrderCreated;
         }catch(error){
             console.log(error);
-            return null; 
+            return null;
         }
     }
 
-    async createPendigOrderPayload(order:any){
+    async createPendigOrderPayload(order:ParsedOrder, paymentOrderId:string){
         const pendingOrderPayload: PendingOrderPayload = {
             orderId: order.id,
             anomalyArr: order.anomalyArr ? order.anomalyArr : [],
@@ -66,7 +67,8 @@ export class PendingOrderRepo implements IPendingOrderRepo {
             total: order.total ? order.total : null,
             totalDiscount: order.totalDiscount ? order.totalDiscount : null,
             totalShipping: order.totalShipping ? order.totalShipping : null,
-            totalTax: order.totalTax ? order.totalTax : null
+            totalTax: order.totalTax ? order.totalTax : null,
+            paymentOrderId,
         };
         return pendingOrderPayload;
     }

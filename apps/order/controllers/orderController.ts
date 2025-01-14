@@ -15,7 +15,9 @@ export default class OrderController {
                     element.createdBy = user_id
                 })
             }
-            const order = await RepoProvider.orderRepo.createOrder(payload);
+            // const order = await RepoProvider.orderRepo.createOrder(payload);
+            // todo @Nitesh handle this the create order function is not be exposed... it runs in transaction
+            const order = null
             return res.status(200)
                 .send(
                     sendResponse(
@@ -100,7 +102,7 @@ export default class OrderController {
         try {
             console.log('called');
             const payload: any = req?.body;
-            
+
             const order = await RepoProvider.orderRepo.processOrder(payload);
             return res.status(200)
                 .send(

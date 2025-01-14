@@ -48,6 +48,9 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     public removeOrderItems!: (note: OrderItemsModel | number) => Promise<void>;
     public removeOrderItemses!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
 
+    // todo
+    public addAnomalyOrderItems:(anomalies:Array<any|number>)=>Promise<void>;
+
     public static associate(){
         OrderModel.belongsToMany(NotesModel, {
             through: "order_notes_join", // Join table name

@@ -83,7 +83,8 @@ export const parseAndSavePendingOrderToOrder = async (pendingOrder: PendingOrder
             couponCodes,
         } = pendingOrder;
 
-        items = JSON.parse(items as unknown as string);
+        console.log(pendingOrder)
+
 
         // Create the order object that will be saved in the database
         const orderData:BaseOrder = {

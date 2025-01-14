@@ -101,7 +101,10 @@ export default class PaymentsController {
             }
             else if(body.payload && body.payload.order  && body.payload.order.entity &&
                 body.payload.order.entity.status === "paid"){
+                console.log("i am here ")
                 const rpResponse = await RPOrderTable.findByPk(body.payload.order.entity.id);
+                console.log("i am here 1")
+                console.log(rpResponse)
                 if(rpResponse){
                     try {
                         const pendingOrderRes = await PendingOrderModel.findOne({
@@ -120,12 +123,10 @@ export default class PaymentsController {
                 }
             }
             else {
-                console.dir(body,{depth:null});
                 return res.status(200).send({ message: "Invalid payload structure" });
             }
         } catch (error) {
             console.error("Error processing webhook:", error);
-
             // In case of any error, send a generic error message
             return res.status(200).send({ message: "Internal Server Error" });
         }

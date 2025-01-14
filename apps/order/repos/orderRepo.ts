@@ -182,13 +182,13 @@ export class OrderRepo implements IOrderRepo {
                 where: {},
                 limit,
                 offset,
-                include: [
-                    {
-                        model: NotesModel,
-                        as: "notes",
-                        through: { attributes: [] },
-                    },
-                ],
+                // include: [
+                //     {
+                //         model: NotesModel,
+                //         as: "notes",
+                //         through: { attributes: [] },
+                //     },
+                // ],
             };
 
             // Adding search functionality

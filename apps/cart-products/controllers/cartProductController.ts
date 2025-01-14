@@ -49,9 +49,9 @@ export default class CartProductController {
     static async updateQuantity(req: Request, res: Response) {
         try {
             const id = parseInt(req.params.id, 0);
+            const user_id = get(req, "user_id", 0);
             const payload: any = req?.body;
-            payload.id = id;
-            const productDetails = await RepoProvider.cartProductRepo.updateQuantity(payload);
+            const productDetails = await RepoProvider.cartProductRepo.updateQuantity(payload,user_id);
             return res
                 .status(201)
                 .send(

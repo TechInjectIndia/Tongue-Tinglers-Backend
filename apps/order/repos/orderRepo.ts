@@ -33,6 +33,7 @@ import RepoProvider from "../../RepoProvider";
 import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
 import { ProductOptions } from "../../product/interface/ProductOptions";
 import { PendingOrder } from "../../pending-orders/interface/PendingOrder";
+import {PendingOrderRepo} from "../../pending-orders/repos/PendingOrderRepo";
 
 export class OrderRepo implements IOrderRepo {
     private async createOrder(
@@ -241,10 +242,19 @@ export class OrderRepo implements IOrderRepo {
         return new OrderProvider().processOrder(state);
     }
 
-    async proceedToPayment(
-        state: OrderState,
-    ): Promise<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }> {
-        throw new Error("Method not implemented.");
+    async proceedToPayment(state: OrderState): Promise<DTO<boolean>> {
+        try {
+            const order = await new OrderProvider().processOrder(state);
+            console.log('here');
+
+            const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order);
+            console.log(pendingOrderData);
+
+            await new PendingOrderRepo().create(pendingOrderData);
+            return getSuccessDTO(true);
+        } catch (err) {
+            return getUnhandledErrorDTO(err.message);
+        }
     }
 
     async getOrdersByUser(userId: number): Promise<ParsedOrder[]> {

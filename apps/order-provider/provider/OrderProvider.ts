@@ -44,8 +44,10 @@ import {
     DTO,
     getHandledErrorDTO,
     getSuccessDTO,
-    getUnhandledErrorDTO,
+    getUnhandledErrorDTO
 } from "apps/common/models/DTO";
+
+
 import { PendingOrderRepo } from "apps/pending-orders/repos/PendingOrderRepo";
 import { PendingOrderPayload } from "apps/pending-orders/interface/PendingOrder";
 import { runAtomicFetch } from "../../common/utils/atomic-fetch/atomic-fetch";
@@ -71,6 +73,8 @@ export class OrderProvider implements IOrderProvider {
         if (!shippingAddress.success)
             return getUnhandledErrorDTO("shippingAddress not found");
 
+        console.log("shippppp", shippingAddress);
+
         // Prepare the order using the fetched data
         const order = await this.prepareOrder(
             user.data,
@@ -79,6 +83,8 @@ export class OrderProvider implements IOrderProvider {
             shippingAddress.data,
             state.paymentType,
         );
+
+        console.log("order--------->", order);
 
         // calculate Order
         this.calculateOrder(order, user.data);
@@ -373,8 +379,9 @@ export class OrderProvider implements IOrderProvider {
             paymentId: 0,
             cancelledItems: [],
             totalDiscount: 0,
-            deliveryDetails: shippingAddressObj,
-            shippingAddress: billingAddressObj,
+            deliveryDetails: null,
+            shippingAddress: shippingAddressObj,
+            billingAddress: billingAddressObj,
             totalShipping: 0,
             anomalyArr: [],
             coupon: "",
@@ -642,7 +649,7 @@ export class OrderProvider implements IOrderProvider {
 
         // cartItem.variation.price
         const objItem: ParsedOrderItem = {
-            id: 0,
+            id: cartItem.id,
             product: product,
             productOption: cartItem.variation.optionsValue,
             quantity: cartItem.quantity,

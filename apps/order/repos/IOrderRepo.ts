@@ -15,7 +15,7 @@ export interface IOrderRepo {
     getOrderById(orderId: number): Promise<Order>;
     getAllOrders(page: number, limit: number, search: string, filters: object): Promise<any>;
     processOrder(state: OrderState):Promise<DTO<{rpOrder: RPOrder, parsedOrder:ParsedOrder}>>;
-    proceedToPayment(state: OrderState): Promise<{rpOrder: RPOrder, parsedOrder:ParsedOrder}>;
+    proceedToPayment(state: OrderState): Promise<DTO<boolean>> 
     getOrdersByUser(userId: number): Promise<ParsedOrder[]>
 
     /**

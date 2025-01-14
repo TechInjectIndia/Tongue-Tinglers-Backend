@@ -46,6 +46,7 @@ const createCartProductSchema = Joi.object({
 });
 
 const updateCartProductQuantitySchema = Joi.object({
+    id:Joi.number().allow(null),
     product_id: Joi.number()
         .integer()
         .positive()

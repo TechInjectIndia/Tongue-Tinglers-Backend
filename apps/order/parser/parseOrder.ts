@@ -31,6 +31,7 @@ const parseOrder = (order: any): ParsedOrder => {
         totalShipping: order.total_shipping,
         totalTax: order.total_tax,
         shippingAddress:order.shippingAddress,
+        billingAddress:order.billingAddress,
         coupon: null,
         items: [],
         discount: {},

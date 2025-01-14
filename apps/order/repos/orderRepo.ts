@@ -236,9 +236,9 @@ export class OrderRepo implements IOrderRepo {
     async proceedToPayment(state: OrderState): Promise<DTO<boolean>> {
         try {
             const order = await new OrderProvider().processOrder(state);
-            const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order.data.parsedOrder, order.data.rpOrder.id);
-            await new PendingOrderRepo().create(pendingOrderData)
-            await RPOrderTable.create(order.data.rpOrder);
+            // const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order.data.parsedOrder, order.data.rpOrder.id);
+            // await new PendingOrderRepo().create(pendingOrderData)
+            // await RPOrderTable.create(order.data.rpOrder);
             return getSuccessDTO(true);
         } catch (err) {
             return getUnhandledErrorDTO(err.message);

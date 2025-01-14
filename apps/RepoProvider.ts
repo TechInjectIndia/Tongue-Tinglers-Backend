@@ -44,6 +44,9 @@ import { IPreSaleOrderProvider } from './pre-sale-order/provider/IPreSaleOrderPr
 import { PreSaleOrderProvider } from './pre-sale-order/provider/PreSaleOrderProvider';
 import { IRegion } from './region/models/Region';
 import { SocialMediaDetails } from './lead/interface/lead';
+import { IItemCategory } from './inventory/item_category/models/IItemCategory';
+import { IItemCategoryRepo } from './inventory/item_category/repositories/IItemCategoryRepo';
+import { PostgresItemCategoryRepo } from './inventory/item_category/repositories/PostgresItemCategoryRepo';
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -65,6 +68,7 @@ export default class RepoProvider {
   private static _documentRepo: IDocumentRepo;
   private static _agreementDocRepo: IAgreementDocRepo
   private static _preSaleProvider: IPreSaleOrderProvider;
+  private static _itemCategoryRepo: IItemCategoryRepo;
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -199,5 +203,13 @@ export default class RepoProvider {
     }
     return this._preSaleProvider;
   }
+
+  static get itemCategoryRepo() {
+    if (!this._itemCategoryRepo) {
+      this._itemCategoryRepo = new PostgresItemCategoryRepo();
+    }
+    return this._itemCategoryRepo;
+  }
+
 
 }

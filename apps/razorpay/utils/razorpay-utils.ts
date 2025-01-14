@@ -8,7 +8,9 @@ import {
 async function parseAndSaveEvent(eventPayload: any) {
     const { event, payload } = eventPayload;
 
+    console.log("Hello")
     console.dir(payload,{depth:null});
+
 
     interface FailedPayload {
         error_description: string | null;

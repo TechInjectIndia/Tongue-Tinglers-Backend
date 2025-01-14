@@ -58,7 +58,7 @@ export class OrderRepo implements IOrderRepo {
                 { include: [{ association: "noteses" }] }
             );
 
-            orderCreated.addNoteses(noteIds);
+            orderCreated.addNotes(noteIds);
 
             return orderCreated.toJSON();
         } catch (error) {
@@ -67,7 +67,7 @@ export class OrderRepo implements IOrderRepo {
         }
     }
 
-    async updateOrder(order: any): Promise<Order | null> {
+    async updateOrder(order: any): Promise<ParsedOrder | null> {
         try {
             const orderId = order.id;
             let notesUpdated: Notes[] = [];
@@ -123,7 +123,7 @@ export class OrderRepo implements IOrderRepo {
             //     await existingOrder.setNoteses(noteIds);
             // }
 
-            return existingOrder.toJSON();
+            return parseOrder(existingOrder.toJSON());
         } catch (error) {
             console.log(error);
             return null;
@@ -205,10 +205,10 @@ export class OrderRepo implements IOrderRepo {
         try {
             const order = await new OrderProvider().processOrder(state);
             console.log('here');
-            
+
             const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order);
             console.log(pendingOrderData);
-            
+
             await new PendingOrderRepo().create(pendingOrderData);
             return getSuccessDTO(true);
         } catch (err) {

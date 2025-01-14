@@ -1,0 +1,6 @@
+enum DEBIT_NOTE_STATUS {
+    PAID = "PAID",
+    UNPAID = "UNPAID",
+}
+
+export { DEBIT_NOTE_STATUS };

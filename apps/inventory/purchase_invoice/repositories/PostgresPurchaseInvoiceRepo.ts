@@ -16,6 +16,8 @@ import { RawMaterialTable } from "../../raw_material/database/RawMaterialTable";
 import { APIResponse, PaginatedBaseResponse } from "apps/common/models/Base";
 import { sequelize } from "config/database";
 import { handleError, HelperMethods } from "apps/common/utils/HelperMethods";
+import { ICreateDebitNote } from "apps/inventory/debit_note/models/IDebitNote";
+import { DebitNoteTable } from "apps/inventory/debit_note/database/DebitNoteTable";
 
 export class PostgresPurchaseInvoiceRepo implements IPurchaseInvoiceRepo {
 

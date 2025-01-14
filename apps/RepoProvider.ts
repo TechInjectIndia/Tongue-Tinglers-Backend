@@ -61,6 +61,8 @@ import { IRawMaterialStockRepo } from './inventory/raw_material_stock/repositori
 import { PostgresRawMaterialStockRepo } from './inventory/raw_material_stock/repositories/PostgresRawMaterialStockRepo';
 import { IPurchaseInvoiceRepo } from './inventory/purchase_invoice/repositories/IPurchaseInvoiceRepo';
 import { PostgresPurchaseInvoiceRepo } from './inventory/purchase_invoice/repositories/PostgresPurchaseInvoiceRepo';
+import { IDebitNoteRepo } from './inventory/debit_note/repositories/IDebitNoteRepo';
+import { PostgresDebitNoteRepo } from './inventory/debit_note/repositories/PostgresDebitNoteRepo';
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -90,6 +92,7 @@ export default class RepoProvider {
   private static _supplierRepo: ISupplierRepo;
   private static _rawMaterialStockRepo: IRawMaterialStockRepo;
   private static _purchaseInvoiceRepo: IPurchaseInvoiceRepo;
+  private static _debitNoteRepo: IDebitNoteRepo;
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -281,6 +284,13 @@ export default class RepoProvider {
       this._purchaseInvoiceRepo = new PostgresPurchaseInvoiceRepo();
     }
     return this._purchaseInvoiceRepo;
+  }
+
+  static get debitNoteRepo() {
+    if (!this._debitNoteRepo) {
+      this._debitNoteRepo = new PostgresDebitNoteRepo();
+    }
+    return this._debitNoteRepo;
   }
 
 }

@@ -164,6 +164,66 @@ export const validateCreateOrder = (
     next: NextFunction
 ) => validateReq(req, res, next, orderValidationSchema, "body");
 
+
+
+const orderUpdateParamSchema = Joi.object({
+
+    id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Order ID must be a number.",
+            "number.integer": "Order ID must be an integer.",
+            "number.positive": "Order ID must be a positive number.",
+            "any.required": "Order ID is required.",
+        }),
+
+});
+
+export const validateUpdateOrderParam = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, orderUpdateParamSchema, "params");
+
+const orderUpdateBodySchema = Joi.object({
+
+    status: Joi.string()
+        .messages({
+            "string.base": "Status must be a string.",
+            "any.required": "Status is required.",
+        }).allow(null),
+    note: Joi.object({
+        isNew: Joi.boolean()
+            .messages({
+                "boolean.base": "Note isNew must be a boolean.",
+                "any.required": "Note isNew is required.",
+            }).required(),
+        notes: Joi.string()
+            .messages({
+                "string.base": "Note notes must be a string.",
+                "any.required": "Note notes is required.",
+            }).required(),
+        createdBy: Joi.number()
+            .integer()
+            .positive()
+            .messages({
+                "number.base": "Note createdBy must be a number.",
+                "number.integer": "Note createdBy must be an integer.",
+                "number.positive": "Note createdBy must be a positive number.",
+            }).required(),
+    }).allow(null),
+
+});
+
+export const validateUpdateOrderBody = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => validateReq(req, res, next, orderUpdateBodySchema, "body");
+
+
 export const validateGetOrderById = (
     req: Request,
     res: Response,
@@ -177,4 +237,3 @@ export const validateGetAllOrder = (
 ) => validateReq(req, res, next, getAllOrdersValidationSchema, "query");
 
 
-  

@@ -60,16 +60,16 @@ export enum OrderStatus {
     PROCESSED = 'Processed',
     PENDING = 'Pending',
     CANCELED = 'Canceled',
-  }
+}
 
-  //todo update
+//todo update
 export enum DeliveryStatus {
     PENDING = 'PENDING',
     SHIPPED = 'SHIPPED',
     DELIVERED = 'DELIVERED',
     RTO = 'RTO'
 
-  }
+}
 
 interface ParsedOrder extends ParsedMeta, OrderPayload {
     id: number;
@@ -109,6 +109,13 @@ interface OrderPayload {
     orderItems: BaseOrderItem[];
 }
 
+interface IOrderUpdate {
+    id: number;
+    status: OrderStatus;
+    note: Notes | null;
+    updatedBy: number;
+}
+
 interface Order extends BaseMeta, BaseOrder {
     id: number;
 }
@@ -132,7 +139,7 @@ interface OrderState {
     userId: number;
     billingAddressId: number | null;
     shippingAddressId: number | null;
-    paymentType:PAYMENT_TYPE
+    paymentType: PAYMENT_TYPE
 }
 
 enum RP_ORDER_STATUS {
@@ -172,5 +179,6 @@ export {
     OrderParams,
     OrderState,
     RPOrder,
-    RP_ORDER_STATUS
+    RP_ORDER_STATUS,
+    IOrderUpdate,
 }

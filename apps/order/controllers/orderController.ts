@@ -2,15 +2,16 @@ import { get } from "lodash";
 import RepoProvider from "../../RepoProvider";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
+import { IOrderUpdate } from "../interface/Order";
 
 export default class OrderController {
     static async createOrder(req: any, res: any) {
         try {
-            const payload:any = req?.body;
+            const payload: any = req?.body;
             const user_id = get(req, "user_id", 0);
             payload.createdBy = user_id
-            if(payload.notes && payload.notes.length > 0){
-                payload.notes.map((element)=> {
+            if (payload.notes && payload.notes.length > 0) {
+                payload.notes.map((element) => {
                     element.isNew = false
                     element.createdBy = user_id
                 })
@@ -34,8 +35,16 @@ export default class OrderController {
 
     static async updateOrder(req: any, res: any) {
         try {
-            const payload: any = req?.body;
-            payload.id = get(req, "params.id", 0);
+
+            const user_id = get(req, "user_id");
+
+            const payload: IOrderUpdate = {
+                id: Number(req.params.id),
+                status: req.body.status,
+                updatedBy: user_id,
+                note: req.body.note,
+            };
+
             const order = await RepoProvider.orderRepo.updateOrder(payload);
             return res.status(200)
                 .send(
@@ -100,7 +109,7 @@ export default class OrderController {
         try {
             console.log('called');
             const payload: any = req?.body;
-            
+
             const order = await RepoProvider.orderRepo.processOrder(payload);
             return res.status(200)
                 .send(
@@ -118,8 +127,8 @@ export default class OrderController {
         }
     }
 
-    static async proceedToPayment(req: any, res: any){
-        try{
+    static async proceedToPayment(req: any, res: any) {
+        try {
             const payload: any = req?.body;
             const order = await RepoProvider.orderRepo.proceedToPayment(payload);
             return res.status(200)
@@ -130,7 +139,7 @@ export default class OrderController {
                         order,
                     ),
                 );
-        }catch(error){
+        } catch (error) {
             console.error(error);
             return res.status(500).send(
                 sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while updating orders.'),
@@ -138,8 +147,8 @@ export default class OrderController {
         }
     }
 
-    static async getOrdersByUserId(req: any, res: any){
-        try{
+    static async getOrdersByUserId(req: any, res: any) {
+        try {
             const user_id = parseInt(get(req, "user_id"));
             const orders = await RepoProvider.orderRepo.getOrdersByUser(user_id);
             return res.status(200)
@@ -150,7 +159,7 @@ export default class OrderController {
                         orders,
                     ),
                 );
-        }catch(error){
+        } catch (error) {
             console.error(error);
             return res.status(500).send(
                 sendResponse(RESPONSE_TYPE.ERROR, 'An error occurred while fetching orders.'),

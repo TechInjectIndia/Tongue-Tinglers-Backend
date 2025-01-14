@@ -4,6 +4,8 @@ import {
     validateCreateOrder,
     validateGetAllOrder,
     validateGetOrderById,
+    validateUpdateOrderBody,
+    validateUpdateOrderParam,
 } from "../validations/orderValidation";
 const {
     createOrder,
@@ -12,10 +14,12 @@ const {
     processOrder,
     proceedToPayment,
     getOrdersByUserId,
+    updateOrder,
 } = OrderController;
 const router = express.Router();
 
 router.post("/create", validateCreateOrder, createOrder);
+router.post("/update/:id", validateUpdateOrderParam, validateUpdateOrderBody, updateOrder);
 router.get("/:id", validateGetAllOrder, getOrderById);
 router.get("/getAll/list", validateGetOrderById, getAllOrders);
 // router.get('/:id', validateGetProductsCategoryById,getProductsCategoryById);

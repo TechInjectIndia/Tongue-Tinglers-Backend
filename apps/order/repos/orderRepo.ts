@@ -6,6 +6,7 @@ import { Op } from "sequelize";
 import { OrderItemsModel } from "../../order-items/models/OrderItemsTable";
 import { OrderItem } from "../../order-items/interface/orderItem";
 import {
+    IOrderUpdate,
     Notes,
     Order,
     OrderPagination,
@@ -16,8 +17,9 @@ import {
 } from "../interface/Order";
 import { parseOrder } from "../parser/parseOrder";
 import { OrderProvider } from "apps/order-provider/provider/OrderProvider";
-import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/common/models/DTO";
+import { DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/common/models/DTO";
 import { PendingOrderRepo } from "apps/pending-orders/repos/PendingOrderRepo";
+import { sequelize } from "config/database";
 
 export class OrderRepo implements IOrderRepo {
     async createOrder(order: OrderPayload): Promise<Order | null> {
@@ -67,65 +69,43 @@ export class OrderRepo implements IOrderRepo {
         }
     }
 
-    async updateOrder(order: any): Promise<ParsedOrder | null> {
+    async updateOrder(order: IOrderUpdate): Promise<DTO<ParsedOrder | null>> {
         try {
-            const orderId = order.id;
-            let notesUpdated: Notes[] = [];
-            let orderItemsUpdated: OrderItem[] = [];
-            const { notes, order_items, ...orderDetails } = order;
 
-            // Fetch the existing order to ensure it exists
-            const existingOrder = await OrderModel.findByPk(orderId, {
-                include: [{ association: "noteses" }, { association: "orderItems" }],
-            });
+            const orderId = order.id;
+
+            /* Fetch the existing order to ensure it exists */
+            const existingOrder = await OrderModel.findByPk(orderId);
 
             if (!existingOrder) {
-                throw new Error(`Order with ID ${orderId} not found.`);
+                return getHandledErrorDTO("Order not found");
             }
 
-            // Update order items if provided
-            // if (order_items && order_items.length > 0) {
-            //     // Delete existing order items if necessary (optional based on your business logic)
-            //     await OrderItemModel.destroy({ where: { id: orderId } });
+            /* transaction */
+            // const transaction = await sequelize.transaction();
 
-            //     // Add new or updated order items
-            //     orderItemsUpdated = await Promise.all(
-            //         order_items.map(async (orderItem) => {
-            //             const createdOrderItem = await OrderItemModel.create({ ...orderItem, orderId });
-            //             return createdOrderItem.toJSON();
-            //         })
-            //     );
-            // }
+            if (order.status) {
+                /* Update the order details */
+                await existingOrder.update({
+                    status: order.status,
+                    updatedBy: order.updatedBy,
+                    updatedAt: new Date(),
+                }, {
+                    // transaction: transaction,
+                });
+            }
 
-            // // Update notes if provided
-            // if (notes && notes.length > 0) {
-            //     // Delete existing notes if necessary (optional based on your business logic)
-            //     await NotesModel.destroy({ where: { order_id: orderId } });
+            if (order.note) {
+                await existingOrder.addNote({
+                    isNew: order.note.isNew,
+                    notes: order.note.notes,
+                    createdBy: order.note.createdBy,
+                } as any);
+            }
 
-            //     // Add new or updated notes
-            //     notesUpdated = await Promise.all(
-            //         notes.map(async (note) => {
-            //             const createdNote = await NotesModel.create({ ...note, orderId });
-            //             return createdNote.toJSON();
-            //         })
-            //     );
-            // }
-
-            // Update the order details
-            await existingOrder.update({
-                ...orderDetails, // Spread the updated order details
-                updatedAt: new Date(),
-            });
-
-            // Update associations if necessary
-            // const noteIds = notesUpdated.map((note) => note.id);
-            // if (noteIds.length > 0) {
-            //     await existingOrder.setNoteses(noteIds);
-            // }
-
-            return parseOrder(existingOrder.toJSON());
+            return getSuccessDTO(parseOrder(existingOrder.toJSON()));
         } catch (error) {
-            console.log(error);
+
             return null;
         }
     }

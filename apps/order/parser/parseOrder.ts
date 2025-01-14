@@ -92,20 +92,20 @@ export const parseAndSavePendingOrderToOrder = async (pendingOrder: PendingOrder
             customer_details: customerDetails.id,
             deletedBy: 1,
             delivery_details: {},
-            updatedBy: 1,
+            updatedBy: null,
             status,
             item_count: items.length, // Assuming items contain the order items
             total,
-            total_tax: totalTax,
-            delivery_status: deliveryStatus,
+            total_tax: 0,
+            delivery_status: null,
             payment_id: paymentId,
-            payment_type: paymentType,
-            total_discount: totalDiscount,
-            total_shipping: totalShipping,
+            payment_type: null,
+            total_discount: null,
+            total_shipping: null,
             franchise_id: null, // Replace with logic if necessary
             billingAddress: shippingAddress, // Assuming billingAddress is the same as shippingAddress for simplicity
             shippingAddress: shippingAddress,
-            anomalyArr,
+            anomalyArr:null,
             prices: JSON.stringify(price), // Converting price to JSON string if it's an object
             discount_prices: JSON.stringify(discount), // Assuming discount is an object
             order_type: ORDER_TYPE.RM_ORDER, // Assuming order type is RM_ORDER

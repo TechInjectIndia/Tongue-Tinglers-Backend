@@ -6,7 +6,7 @@ export class StorageLocationSchema {
         Joi.object({
             name: Joi.string().min(3,),
             description: Joi.string().optional().allow(null),
-            type: Joi.string().valid([STORAGE_LOCATION_TYPE.RACK, STORAGE_LOCATION_TYPE.SHELF,
+            type: Joi.string().valid(...[STORAGE_LOCATION_TYPE.RACK, STORAGE_LOCATION_TYPE.SHELF,
             STORAGE_LOCATION_TYPE.FLOOR,
 
             ], {

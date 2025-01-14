@@ -98,18 +98,7 @@ export class OrderProvider implements IOrderProvider {
         if (!rpOrderRes.success)
             return getUnhandledErrorDTO("Failed to create RP Order");
 
-        const rpOrder = rpOrderRes.data;
-
-        // assigning rpOrder id to order and saving to DB
-        const pendingOrderData =
-            await new PendingOrderRepo().createPendigOrderPayload(
-                order,
-                rpOrder.id,
-            );
-
-        const createPendingOrder = await new PendingOrderRepo().create(
-            pendingOrderData,
-        );
+       
 
         return getSuccessDTO({ rpOrder: rpOrderRes.data, parsedOrder: order });
     }

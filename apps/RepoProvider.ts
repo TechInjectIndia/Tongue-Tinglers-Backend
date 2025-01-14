@@ -49,6 +49,8 @@ import { IItemCategoryRepo } from './inventory/item_category/repositories/IItemC
 import { PostgresItemCategoryRepo } from './inventory/item_category/repositories/PostgresItemCategoryRepo';
 import { IItemUnitRepo } from './inventory/item_unit/repositories/IItemUnitRepo';
 import { PostgresItemUnitRepo } from './inventory/item_unit/repositories/PostgresItemUnitRepo';
+import { IStorageLocationRepo } from './inventory/storage_locations/repositories/IStorageLocationRepo';
+import { PostgresStorageLocationRepo } from './inventory/storage_locations/repositories/PostgresStorageLocationRepo';
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -72,6 +74,7 @@ export default class RepoProvider {
   private static _preSaleProvider: IPreSaleOrderProvider;
   private static _itemCategoryRepo: IItemCategoryRepo;
   private static _itemUnitRepo: IItemUnitRepo;
+  private static _storageLocationRepo: IStorageLocationRepo;
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -219,6 +222,13 @@ export default class RepoProvider {
       this._itemUnitRepo = new PostgresItemUnitRepo();
     }
     return this._itemUnitRepo;
+  }
+
+  static get storageLocationRepo() {
+    if (!this._storageLocationRepo) {
+      this._storageLocationRepo = new PostgresStorageLocationRepo();
+    }
+    return this._storageLocationRepo;
   }
 
 

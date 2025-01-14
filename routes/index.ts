@@ -103,6 +103,7 @@ router.use(`/users`, guestUserRouter);
 // router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
 // router.use(`${ADMIN}/roles`, auth, rolesRouter);
 
+import optionRouter from 'apps/optionsValue/api/optionsValueApi'
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
 router.use(`/payments`, paymentsRouter); // dont add auth to this url
 
@@ -159,6 +160,7 @@ router.use(`/organization`, auth, organizationRouter);
 router.use(`/organization`,auth, organizationRouter);
 router.use(`${ADMIN}/products-category`, auth, OrderV1Routes);
 router.use(`/b2c-users`, auth, B2CUserAddressRouter);
+router.use('/options',optionRouter)
 
 /* IMS */
 router.use(`${ADMIN}`, auth, itemCategoryRouter);

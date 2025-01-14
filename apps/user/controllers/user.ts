@@ -101,6 +101,7 @@ export default class AdminController {
             const existingAdmin = await new Auth().getUserByEmail(
                 payload.email
             );
+            console.log(existingAdmin)
             if (existingAdmin) {
                 return res
                     .status(400)
@@ -115,7 +116,7 @@ export default class AdminController {
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
                 emailVerified: true,
-                phoneNumber: null,
+                phoneNumber: payload.phoneNumber,
                 password: payload.password,
                 disabled: false,
             });

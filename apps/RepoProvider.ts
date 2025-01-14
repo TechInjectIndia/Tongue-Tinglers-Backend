@@ -59,6 +59,8 @@ import { ISupplierRepo } from './inventory/supplier/repositories/ISupplierRepo';
 import { PostgresSupplierRepo } from './inventory/supplier/repositories/PostgresSupplierRepo';
 import { IRawMaterialStockRepo } from './inventory/raw_material_stock/repositories/IRawMaterialStockRepo';
 import { PostgresRawMaterialStockRepo } from './inventory/raw_material_stock/repositories/PostgresRawMaterialStockRepo';
+import { IPurchaseInvoiceRepo } from './inventory/purchase_invoice/repositories/IPurchaseInvoiceRepo';
+import { PostgresPurchaseInvoiceRepo } from './inventory/purchase_invoice/repositories/PostgresPurchaseInvoiceRepo';
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -87,6 +89,7 @@ export default class RepoProvider {
   private static _rawMaterialRepo: IRawMaterialRepo;
   private static _supplierRepo: ISupplierRepo;
   private static _rawMaterialStockRepo: IRawMaterialStockRepo;
+  private static _purchaseInvoiceRepo: IPurchaseInvoiceRepo;
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -271,6 +274,13 @@ export default class RepoProvider {
       this._rawMaterialStockRepo = new PostgresRawMaterialStockRepo();
     }
     return this._rawMaterialStockRepo;
+  }
+
+  static get purchaseInvoiceRepo() {
+    if (!this._purchaseInvoiceRepo) {
+      this._purchaseInvoiceRepo = new PostgresPurchaseInvoiceRepo();
+    }
+    return this._purchaseInvoiceRepo;
   }
 
 }

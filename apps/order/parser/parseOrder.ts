@@ -2,7 +2,6 @@ import {BaseOrder, Order, ORDER_TYPE, ParsedOrder} from "../interface/Order"
 import {parseOrderItem} from "../../order-items/parser/parseOrderItem";
 import {
     BaseOrderItem,
-    ORDER_ITEM_TYPE,
     PRICE_COMP_TYPE_CART,
     VALUE_TYPE
 } from "../interface/OrderItem";
@@ -61,7 +60,7 @@ const parseOrder = (order: any): ParsedOrder => {
 export const parseAndSavePendingOrderToOrder = async (pendingOrder: PendingOrder): Promise<any> => {
     try {
         // Extract relevant data from PendingOrder
-        const {
+        let {
             orderId,
             status,
             total,
@@ -84,12 +83,14 @@ export const parseAndSavePendingOrderToOrder = async (pendingOrder: PendingOrder
             couponCodes,
         } = pendingOrder;
 
+        items = JSON.parse(items as unknown as string);
+
         // Create the order object that will be saved in the database
         const orderData:BaseOrder = {
             cancelled_items: [],
             customer_details: customerDetails.id,
             deletedBy: 1,
-            delivery_details: undefined,
+            delivery_details: {},
             updatedBy: 1,
             status,
             item_count: items.length, // Assuming items contain the order items
@@ -110,23 +111,28 @@ export const parseAndSavePendingOrderToOrder = async (pendingOrder: PendingOrder
             createdBy: customerDetails.id // Assuming the `createdBy` field comes from the customer
         };
 
-        const orderItems:BaseOrderItem[] = pendingOrder.items.map((pr)=>{
-            return {
-                product_id: pr.product.id,
-                product_option_id: pr.productOption.id,
-                quantity: pr.quantity,
-                total_price: pr.total_price,
-                total_tax: pr.totalTax,
-                coupon_discount: 0,
-                points_discount: 0,
-                student_discount: 0,
-                type: pr.type
-            }
-        });
 
-        const response = await  OrderItemsModel.bulkCreate(orderItems);
-        const orderInstance = await OrderModel.create(orderData);
-        await orderInstance.addOrderItems(response)
+        console.log("345678");
+        console.log(orderData);
+        console.log("456r7t8y9ui0")
+
+        // const orderItems:BaseOrderItem[] = pendingOrder.items.map((pr)=>{
+        //     return {
+        //         product_id: pr.product.id,
+        //         product_option_id: pr.productOption.id,
+        //         quantity: pr.quantity,
+        //         total_price: pr.total_price,
+        //         total_tax: pr.totalTax,
+        //         coupon_discount: 0,
+        //         points_discount: 0,
+        //         student_discount: 0,
+        //         type: pr.type
+        //     }
+        // });
+        //
+        // const response = await  OrderItemsModel.bulkCreate(orderItems);
+        // const orderInstance = await OrderModel.create(orderData);
+        // await orderInstance.addOrderItems(response)
 
     } catch (error) {
         console.error("Error parsing pending order to order:", error);

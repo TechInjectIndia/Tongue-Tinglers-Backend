@@ -84,6 +84,15 @@ import {
 } from "../apps/payment-transaction/api/TransactionRouter";
 
 import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics"
+import { itemCategoryRouter } from "apps/inventory/item_category/routes/ItemCategoryRoutes";
+import { itemUnitRouter } from "apps/inventory/item_unit/routes/ItemUnitRoutes";
+import { supplierRouter } from "apps/inventory/supplier/routes/SupplierRoutes";
+import { factoryGatesRouter } from "apps/inventory/factory_gates/routes/FactoryGateRoutes";
+import { storageLocationRouter } from "apps/inventory/storage_locations/routes/StorageLocationRoutes";
+import { rawMaterialRouter } from "apps/inventory/raw_material/routes/RawMaterialRoutes";
+import { rawMaterialStockRouter } from "apps/inventory/raw_material_stock/routes/RawMaterialStockRoutes";
+import { purchaseInvoicesRouter } from "apps/inventory/purchase_invoice/routes/PurchaseInvoiceRoutes";
+import { debitNoteRouter } from "apps/inventory/debit_note/routes/DebitNoteRoutes";
 
 
 
@@ -148,13 +157,15 @@ router.use(`/organization`, auth, organizationRouter);
 
 
 /* IMS */
-// router.use(`${ADMIN}`, itemCategoryRouter);
-// router.use(`${ADMIN}`, itemUnitRouter);
-// router.use(`${ADMIN}`, supplierRouter);
-// router.use(`${ADMIN}`, factoryGatesRouter);
-// router.use(`${ADMIN}`, storageLocationRouter);
-// router.use(`${ADMIN}`, rawMaterialRouter);
-// router.use(`${ADMIN}`, rawMaterialStockRouter);
+router.use(`${ADMIN}`, itemCategoryRouter);
+router.use(`${ADMIN}`, itemUnitRouter);
+router.use(`${ADMIN}`, supplierRouter);
+router.use(`${ADMIN}`, factoryGatesRouter);
+router.use(`${ADMIN}`, storageLocationRouter);
+router.use(`${ADMIN}`, rawMaterialRouter);
+router.use(`${ADMIN}`, rawMaterialStockRouter);
+router.use(`${ADMIN}`, purchaseInvoicesRouter);
+router.use(`${ADMIN}`, debitNoteRouter);
 
 //////
 

@@ -14,4 +14,4 @@ debitNoteRouter.get(apiInitialPath + "/", DebitNoteValidations.validateGetAll, D
 
 debitNoteRouter.get(apiInitialPath + "/:id", DebitNoteValidations.validateGetById, DebitNoteController.getByPurchasInvoiceId);
 
-export { debitNoteRouter as DebitNoteRouter };
+export { debitNoteRouter };

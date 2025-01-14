@@ -102,8 +102,9 @@ export default class PaymentsController {
             else if(body.payload && body.payload.order  && body.payload.order.entity &&
                 body.payload.order.entity.status === "paid"){
                 console.log("i am here ")
-                const rpResponse = await RPOrderTable.findByPk(body.payload.order.entity.id);
+                const rpResponse = await RPOrderTable.findOne({where:{id:body.payload.order.entity.id}});
                 console.log("i am here 1")
+                console.log(body.payload.order.entity.id)
                 console.log(rpResponse)
                 if(rpResponse){
                     try {

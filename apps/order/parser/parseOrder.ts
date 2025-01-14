@@ -132,7 +132,7 @@ export const parseAndSavePendingOrderToOrder = async (pendingOrder: PendingOrder
         // });
         //
         // const response = await  OrderItemsModel.bulkCreate(orderItems);
-        // const orderInstance = await OrderModel.create(orderData);
+        const orderInstance = await OrderModel.create(orderData);
         // await orderInstance.addOrderItems(response)
 
     } catch (error) {

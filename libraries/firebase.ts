@@ -50,7 +50,7 @@ export const verifyFirebaseToken = async (idToken: string) => {
 export const createFirebaseUser = async (user: TFirebaseUser) => {
     try {
         // so we can use many number on same account
-        delete user.phoneNumber;
+        // delete user.phoneNumber;
         const {uid} = await admin.auth().createUser(user);
         return { success: true, uid };
     } catch (err) {

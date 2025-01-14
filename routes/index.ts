@@ -21,7 +21,7 @@ import authRouter from "../apps/auth/api";
 router.use(`/auth`, authRouter);
 
 
-import {adminUserRouter,guestUserRouter} from "../apps/user/api/user";
+import { adminUserRouter, guestUserRouter } from "../apps/user/api/user";
 
 import leadRouter from "../apps/lead/api/lead-router";
 import webLeadRouter from "../apps/lead/api/web-lead";
@@ -84,6 +84,16 @@ import {
 } from "../apps/payment-transaction/api/TransactionRouter";
 
 import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics"
+import { itemCategoryRouter } from "apps/inventory/item_category/routes/ItemCategoryRoutes";
+import { itemUnitRouter } from "apps/inventory/item_unit/routes/ItemUnitRoutes";
+import { supplierRouter } from "apps/inventory/supplier/routes/SupplierRoutes";
+import { factoryGatesRouter } from "apps/inventory/factory_gates/routes/FactoryGateRoutes";
+import { storageLocationRouter } from "apps/inventory/storage_locations/routes/StorageLocationRoutes";
+import { rawMaterialRouter } from "apps/inventory/raw_material/routes/RawMaterialRoutes";
+import { rawMaterialStockRouter } from "apps/inventory/raw_material_stock/routes/RawMaterialStockRoutes";
+import { purchaseInvoicesRouter } from "apps/inventory/purchase_invoice/routes/PurchaseInvoiceRoutes";
+import { debitNoteRouter } from "apps/inventory/debit_note/routes/DebitNoteRoutes";
+
 import B2CUserAddressRouter from "../apps/b2c-users-address/api/B2CUserAddressApi";
 
 
@@ -108,7 +118,7 @@ router.use(`${ADMIN}/followup`, auth, followUpsRouter);
 // router.use(`${ADMIN}/crm`, auth, campaignRouter);
 router.use(`${ADMIN}/test-user`, testUsersRouter); // for testing only
 router.use(`${ADMIN}/question`, auth, questionRouter);
-router.use(`${ADMIN}/campaign-ad`,auth , campaignAdRouter);
+router.use(`${ADMIN}/campaign-ad`, auth, campaignAdRouter);
 
 router.use(`/campaign-ad`, campaignAdRouter);
 
@@ -144,10 +154,24 @@ router.use("/migration", migrationRouter);
 router.use("/document", auth, documentRouter);
 router.use(`${ADMIN}/agreement-docs`, agreementDocRouter);
 // router.use(`/pet-pooja`, petPoojaApiRouter);
+router.use(`/organization`, auth, organizationRouter);
+
 router.use(`/organization`,auth, organizationRouter);
 router.use(`${ADMIN}/products-category`, auth, OrderV1Routes);
 router.use(`/b2c-users`, auth, B2CUserAddressRouter);
 
+/* IMS */
+router.use(`${ADMIN}`, auth, itemCategoryRouter);
+router.use(`${ADMIN}`, auth, itemUnitRouter);
+router.use(`${ADMIN}`, auth, supplierRouter);
+router.use(`${ADMIN}`, auth, factoryGatesRouter);
+router.use(`${ADMIN}`, auth, storageLocationRouter);
+router.use(`${ADMIN}`, auth, rawMaterialRouter);
+router.use(`${ADMIN}`, auth, rawMaterialStockRouter);
+router.use(`${ADMIN}`, auth, purchaseInvoicesRouter);
+router.use(`${ADMIN}`, auth, debitNoteRouter);
+
+//////
 
 
 

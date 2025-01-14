@@ -39,7 +39,7 @@ import { getUid } from "apps/common/utils/commonUtils";
 import { CURRENCY_TYPE, RPOrderParams } from "apps/razorpay/models/RPModels";
 import { Orders } from "node_modules/razorpay/dist/types/orders";
 import { RazorpayProvider } from "apps/razorpay/repositories/razorpay/RazorpayProvider";
-import {ParsedProduct} from "../../product/interface/Product";
+import { ParsedProduct } from "../../product/interface/Product";
 import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/common/models/DTO";
 import { PendingOrderRepo } from "apps/pending-orders/repos/PendingOrderRepo";
 import { PendingOrderPayload } from "apps/pending-orders/interface/PendingOrder";
@@ -61,6 +61,8 @@ export class OrderProvider implements IOrderProvider {
         if (!billingAddress.success) return getUnhandledErrorDTO("billingAddress not found");
         if (!shippingAddress.success) return getUnhandledErrorDTO("shippingAddress not found");
 
+        console.log("shippppp", shippingAddress);
+
         // Prepare the order using the fetched data
         const order = await this.prepareOrder(
             user.data,
@@ -70,14 +72,15 @@ export class OrderProvider implements IOrderProvider {
             state.paymentType
         );
 
+        console.log("order--------->", order);
+
         // calculate Order
         this.calculateOrder(order, user.data);
 
         // Transform the order into RPOrder and ParsedOrder
         const rpOrder = await this.transformToRPOrder(order);
 
-
-        if (!rpOrder.success) return getUnhandledErrorDTO("Failed to create RP Order")
+        if (!rpOrder.success) return getUnhandledErrorDTO("Failed to create RP Order");
 
         return getSuccessDTO({ rpOrder: rpOrder.data, parsedOrder: order });
     }
@@ -190,9 +193,9 @@ export class OrderProvider implements IOrderProvider {
 
         order.totalDiscount = this.calcTotalDiscount(order);
 
-        const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order);
-        const createPendingOrder = await new PendingOrderRepo().create(pendingOrderData)
-        
+        // const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order);
+        // const createPendingOrder = await new PendingOrderRepo().create(pendingOrderData)
+
         return order;
     }
 
@@ -311,8 +314,9 @@ export class OrderProvider implements IOrderProvider {
             paymentId: 0,
             cancelledItems: [],
             totalDiscount: 0,
-            deliveryDetails: shippingAddressObj,
-            shippingAddress: billingAddressObj,
+            deliveryDetails: null,
+            shippingAddress: shippingAddressObj,
+            billingAddress: billingAddressObj,
             totalShipping: 0,
             anomalyArr: [],
             coupon: "",
@@ -568,7 +572,7 @@ export class OrderProvider implements IOrderProvider {
 
         // cartItem.variation.price
         const objItem: ParsedOrderItem = {
-            id: 0,
+            id: cartItem.id,
             product: product,
             productOption: cartItem.variation.optionsValue,
             quantity: cartItem.quantity,

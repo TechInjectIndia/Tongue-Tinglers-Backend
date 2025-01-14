@@ -15,7 +15,7 @@ export interface ICartProductRepo {
     delete(id: number): Promise<CartProduct>;
 
     //todo nitesh remove other UpdateQuantities
-    updateQuantity(cartProduct: UpdateQuantity): Promise<CartProduct>;
+    updateQuantity(cartProduct: UpdateQuantity,user_id:number): Promise<CartProduct>;
 
     getCartById(id: number): Promise<ParsedCartProduct>;
 

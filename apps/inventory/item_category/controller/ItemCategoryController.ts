@@ -31,7 +31,7 @@ export class ItemCategoryController {
 
         const payload = {
             ...req.body,
-            updatedById: Number(userId),
+            updatedBy: Number(userId),
         };
 
         const result = await RepoProvider.itemCategoryRepo.update(id, payload);

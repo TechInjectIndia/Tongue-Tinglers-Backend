@@ -32,7 +32,7 @@ export class RawMaterialController {
 
         const payload = {
             ...req.body,
-            updatedById: Number(userId),
+            updatedBy: Number(userId),
         };
 
         const result = await RepoProvider.rawMaterialRepo.update(id, payload);

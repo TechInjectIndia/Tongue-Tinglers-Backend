@@ -17,7 +17,7 @@ export class SupplierController {
         payload.address.id = null;
         payload.name = payload.name.trim().toLowerCase();
         payload.status = SUPPLIER_STAUS.ACTIVE;
-        payload.createdById = user_id;
+        payload.createdBy = user_id;
 
         const result = await RepoProvider.supplierRepo.create(payload);
         if (!result.success) {
@@ -34,7 +34,7 @@ export class SupplierController {
         const id = Number(get(req.params, "id"));
         const payload = {
             ...req.body,
-            updatedById: user_id,
+            updatedBy: user_id,
         };
         payload.name = payload.name.trim().toLowerCase();
 

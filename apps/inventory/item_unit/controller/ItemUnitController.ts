@@ -33,7 +33,7 @@ export class ItemUnitController {
 
         const payload = {
             ...req.body,
-            updatedById: Number(userId),
+            updatedBy: Number(userId),
         };
 
         const result = await RepoProvider.itemUnitRepo.update(id, payload);

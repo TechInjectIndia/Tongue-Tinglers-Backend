@@ -29,7 +29,7 @@ export class StorageLocationController {
         const userId = get(req, "user_id", );
         const payload = {
             ...req.body,
-            updatedById: userId,
+            updatedBy: userId,
         };
 
         const result = await RepoProvider.storageLocationRepo.update(id, payload);

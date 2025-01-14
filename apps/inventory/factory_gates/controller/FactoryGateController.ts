@@ -30,7 +30,7 @@ export class FactoryGateController {
 
         const payload = {
             ...req.body,
-            updatedById: Number(userId),
+            updatedBy: Number(userId),
         };
 
         const result = await RepoProvider.factoryGateRepo.update(id, payload);

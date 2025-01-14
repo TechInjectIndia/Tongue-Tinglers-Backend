@@ -46,10 +46,6 @@ import {
     getSuccessDTO,
     getUnhandledErrorDTO
 } from "apps/common/models/DTO";
-
-
-import { PendingOrderRepo } from "apps/pending-orders/repos/PendingOrderRepo";
-import { PendingOrderPayload } from "apps/pending-orders/interface/PendingOrder";
 import { runAtomicFetch } from "../../common/utils/atomic-fetch/atomic-fetch";
 import RepoProvider from "../../RepoProvider";
 export class OrderProvider implements IOrderProvider {
@@ -97,17 +93,7 @@ export class OrderProvider implements IOrderProvider {
 
         const rpOrder = rpOrderRes.data;
 
-        // assigning rpOrder id to order and saving to DB
-        const pendingOrderData =
-            await new PendingOrderRepo().createPendigOrderPayload(
-                order,
-                rpOrder.id,
-            );
-
-        const createPendingOrder = await new PendingOrderRepo().create(
-            pendingOrderData,
-        );
-
+        
         return getSuccessDTO({ rpOrder: rpOrderRes.data, parsedOrder: order });
     }
 

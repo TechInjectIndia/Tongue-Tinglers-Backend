@@ -80,6 +80,8 @@ import {DebitNoteTable} from "../inventory/debit_note/database/DebitNoteTable";
 import {
     PurchaseInvoiceTable
 } from "../inventory/purchase_invoice/database/PurchaseInvoiceTable";
+import { RPOrderTable } from "apps/rp-order/models/RPOrderTable";
+
 
 const m = [
     RegionModel,
@@ -115,7 +117,8 @@ const m = [
     OrderItemsModel,
     CartProductModel,
     ItemStockModel,
-
+    RPOrderTable
+    
 ];
 
 console.log(m)
@@ -176,7 +179,8 @@ const models = {
     PDI: PdiModel.initModel(),
     File: FileModel.initModel(),
     PendingOrder: PendingOrderModel.initModel(),
-    B2CUserAddress: B2CUserAddressModel.initModel()
+    B2CUserAddress: B2CUserAddressModel.initModel(),
+    RPOrderTable:RPOrderTable.initModel()
 };
 
 let currentModel: string = null;

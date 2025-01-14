@@ -80,7 +80,7 @@ export class OrderRepo implements IOrderRepo {
                 { include: [{ association: "noteses" }], transaction },
             );
 
-            orderCreated.addNoteses(noteIds);
+            orderCreated.addNotes(noteIds);
 
             // todo @Sumeet add the anomalies here;
             orderCreated.addAnomalyOrderItems([]);
@@ -92,7 +92,7 @@ export class OrderRepo implements IOrderRepo {
         }
     }
 
-    async updateOrder(order: any): Promise<Order | null> {
+    async updateOrder(order: any): Promise<ParsedOrder | null> {
         try {
             const orderId = order.id;
             let notesUpdated: Notes[] = [];
@@ -151,7 +151,7 @@ export class OrderRepo implements IOrderRepo {
             //     await existingOrder.setNoteses(noteIds);
             // }
 
-            return existingOrder.toJSON();
+            return parseOrder(existingOrder.toJSON());
         } catch (error) {
             console.log(error);
             return null;

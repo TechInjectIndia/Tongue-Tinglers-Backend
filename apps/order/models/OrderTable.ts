@@ -33,12 +33,12 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     deletedBy!: number | null;
 
     // Mixin methods for managing notes
-    public addNotes!: (note: NotesModel | number) => Promise<void>;
-    public addNoteses!: (notes: Array<NotesModel | number>) => Promise<void>;
-    public setNoteses!: (notes: Array<NotesModel | number>) => Promise<void>;
-    public getNoteses!: () => Promise<NotesModel[]>;
-    public removeNotes!: (note: NotesModel | number) => Promise<void>;
-    public removeNoteses!: (notes: Array<NotesModel | number>) => Promise<void>;
+    public addNote!: (note: NotesModel | number) => Promise<void>;
+    public addNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
+
+    public getNotes!: () => Promise<NotesModel[]>;
+    public removeNote!: (note: NotesModel | number) => Promise<void>;
+    public removeNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
 
     // Mixin methods for managing notes
     public addOrderItem!: (note: OrderItemsModel | number) => Promise<void>;
@@ -56,7 +56,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
             through: "order_notes_join", // Join table name
             foreignKey: "orderId", // Foreign key in the join table
             otherKey: "notes_id", // Other foreign key in the join table
-            as: "noteses", // Alias for the relationship
+            as: "notes", // Alias for the relationship
         });
 
         OrderModel.belongsToMany(OrderItemsModel, {

@@ -84,7 +84,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     allowNull: false,
                 },
                 total: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 anomalyArr: {

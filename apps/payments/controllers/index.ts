@@ -111,8 +111,6 @@ export default class PaymentsController {
                         });
                         if (pendingOrderRes) {
                             const response = await parseAndSavePendingOrderToOrder(pendingOrderRes.toJSON());
-                            console.log("Here")
-                            console.log(response)
                         } else {
                             console.log('No pending order found for the provided paymentId');
                         }

@@ -25,7 +25,7 @@ export class ProductRepo implements IProductRepo {
         product: BaseProduct,
         createdBy: number,
     ): Promise<IProductTable | null> {
-        const transaction = await ProductModel.sequelize.transaction();
+        // const transaction = await ProductModel.sequelize.transaction();
 
         try {
             let variationIds: number[] = []; // Array to store created option IDs
@@ -45,7 +45,7 @@ export class ProductRepo implements IProductRepo {
                     tax_rate_id: product.tax_rate_id,
                     createdBy,
                 },
-                { transaction },
+                // { transaction },
             );
 
             // Step 2: Handle variations if provided
@@ -63,7 +63,7 @@ export class ProductRepo implements IProductRepo {
                 const createdOptions = await ProductVariationsModel.bulkCreate(
                     productOptions,
                     {
-                        transaction,
+                        // transaction,
                         returning: true, // Ensure the created options are returned
                     },
                 );
@@ -77,7 +77,7 @@ export class ProductRepo implements IProductRepo {
             // await createdProduct.addVariations(variationIds, transaction);
 
             // Commit the transaction
-            await transaction.commit();
+            // await transaction.commit();
 
             // Return the created product
             return createdProduct.toJSON();
@@ -85,7 +85,7 @@ export class ProductRepo implements IProductRepo {
             console.error("Error creating product:", error);
 
             // Rollback the transaction in case of error
-            await transaction.rollback();
+            // await transaction.rollback();
 
             return null;
         }

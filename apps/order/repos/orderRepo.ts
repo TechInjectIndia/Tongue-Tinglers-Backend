@@ -16,7 +16,8 @@ import {
 } from "../interface/Order";
 import { parseOrder } from "../parser/parseOrder";
 import { OrderProvider } from "apps/order-provider/provider/OrderProvider";
-import { DTO } from "apps/common/models/DTO";
+import { DTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/common/models/DTO";
+import { PendingOrderRepo } from "apps/pending-orders/repos/PendingOrderRepo";
 
 export class OrderRepo implements IOrderRepo {
     async createOrder(order: OrderPayload): Promise<Order | null> {
@@ -200,10 +201,19 @@ export class OrderRepo implements IOrderRepo {
         return new OrderProvider().processOrder(state);
     }
 
-    async proceedToPayment(
-        state: OrderState
-    ): Promise<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }> {
-        throw new Error("Method not implemented.");
+    async proceedToPayment(state: OrderState): Promise<DTO<boolean>> {
+        try {
+            const order = await new OrderProvider().processOrder(state);
+            console.log('here');
+            
+            const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order);
+            console.log(pendingOrderData);
+            
+            await new PendingOrderRepo().create(pendingOrderData);
+            return getSuccessDTO(true);
+        } catch (err) {
+            return getUnhandledErrorDTO(err.message);
+        }
     }
 
     async getOrdersByUser(userId: number): Promise<ParsedOrder[]> {

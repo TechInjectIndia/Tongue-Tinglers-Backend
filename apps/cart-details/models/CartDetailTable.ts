@@ -22,6 +22,12 @@ class CartDetailsModel
     ) => Promise<void>;
 
 
+    public removeCartProducts!: (
+        cartProducts: Array<CartProductModel | number>,
+        options?: { transaction?: Transaction }
+    ) => Promise<void>;
+
+
     public setCartProducts!: (
         cartProducts: Array<CartProductModel | number>
     ) => Promise<void>;

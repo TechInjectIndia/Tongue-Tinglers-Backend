@@ -1,5 +1,9 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { PendingOrder, PendingOrderPayload } from "../interface/PendingOrder";
+import {
+    AnomalyOrderItem,
+    PendingOrder,
+    PendingOrderPayload
+} from "../interface/PendingOrder";
 import { OrderStatus, PAYMENT_TYPE } from "apps/order/interface/Order";
 import { ParsedUser } from "apps/user/interface/user";
 import {
@@ -24,6 +28,7 @@ class PendingOrderModel
     customerDetails: ParsedUser;
     paymentType: PAYMENT_TYPE; //todo convert to enum
     paymentId: number;
+    paymentOrderId: string;
     cancelledItems: ParsedOrderItem[];
     discount: Record<string, IDiscComponent>;
     totalDiscount: number;
@@ -35,6 +40,7 @@ class PendingOrderModel
     items: ParsedOrderItem[];
     price: Record<string, PriceComponent>;
     couponCodes: string[];
+    anomalies: AnomalyOrderItem[]|null;
 
     public static initModel() {
         PendingOrderModel.init(
@@ -76,6 +82,10 @@ class PendingOrderModel
                     type: DataTypes.INTEGER,
                     allowNull: true,
                 },
+                paymentOrderId: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
                 cancelledItems: {
                     type: DataTypes.JSON, // Store array of objects as JSON
                     allowNull: false,
@@ -111,6 +121,10 @@ class PendingOrderModel
                 items: {
                     type: DataTypes.JSON,
                     allowNull: false,
+                },
+                anomalies: {
+                    type: DataTypes.JSON,
+                    allowNull: true,
                 },
                 price: {
                     type: DataTypes.JSON,
@@ -161,4 +175,4 @@ class PendingOrderModel
     }
 }
 
-export {PendingOrderModel}
+export { PendingOrderModel };

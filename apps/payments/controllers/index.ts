@@ -42,9 +42,6 @@ export default class PaymentsController {
     static async callback(req: Request, res: Response, next: NextFunction) {
         const webhookSignature = req.headers["x-razorpay-signature"];
         const body = req.body;
-        console.log("Payment Razorpay payload", body);
-        console.log(body.payload);
-        console.log(body.payload.payment_link);
 
         try {
             // Validate the webhook signature
@@ -59,6 +56,11 @@ export default class PaymentsController {
             }
 
             if (body.payload && body.payload.payment_link && body.payload.payment_link.entity) {
+
+                console.log("Nit 1s")
+                console.dir(body,{depth:null});
+
+
                 const paymentId = body.payload.payment_link.entity.id;
                 const status = body.payload.payment_link.entity.status;
 
@@ -98,6 +100,9 @@ export default class PaymentsController {
 
                 return res.status(200).send({ message: "Webhook processed successfully" });
             } else {
+
+                console.log("Nitesh 2")
+                console.dir(body,{depth:null});
                 console.log("Invalid payload structure", body);
                 return res.status(200).send({ message: "Invalid payload structure" });
             }

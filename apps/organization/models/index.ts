@@ -402,5 +402,107 @@ export class OrganizationRepo{
         }
     }
 
+    public async getOrgDetails(userId: number): Promise<ParsedOrganization> {
+        try {
+            let organizationDetail = await OrganizationModel.findOne({
+                where: {
+                    rootUser: userId
+                },
+                include: [
+                    {
+                        model: AddressModel,
+                        as: "billingAddress", // Include billing address
+                    },
+                    {
+                        model: UserModel,
+                        as: "user", // Include root user
+                    },
+                    {
+                        model: AddressModel,
+                        as: "shippingAddresses", // The alias defined above
+                        through: {attributes: []},
+                    },
+                    {
+                        model: OrganizationModel,
+                        as: "masterFranchise",
+                        attributes: ["id", "name"], // Include master franchise (if
+                                                    // applicable)
+                    },
+                    {
+                        model: UserModel,
+                        as: "createdByUser", // Include createdByUser
+                    },
+                    {
+                        model: UserModel,
+                        as: "updatedByUser", // Include updatedByUser
+                    },
+                    {
+                        model: UserModel,
+                        as: "deletedByUser", // Include deletedByUser
+                    },
+                ],
+            })
+    
+            if(organizationDetail){
+                return parseOrganization(organizationDetail)
+            }
 
+            const franchiseDetail = await FranchiseModel.findOne({
+                where: {
+                    users:{
+                        [Op.contains]: [userId]
+                    }
+                }
+            })
+
+            if(franchiseDetail){
+                organizationDetail = await OrganizationModel.findOne({
+                    where: {
+                        id: franchiseDetail.organizationId
+                    },
+                    include: [
+                        {
+                            model: AddressModel,
+                            as: "billingAddress", // Include billing address
+                        },
+                        {
+                            model: UserModel,
+                            as: "user", // Include root user
+                        },
+                        {
+                            model: AddressModel,
+                            as: "shippingAddresses", // The alias defined above
+                            through: {attributes: []},
+                        },
+                        {
+                            model: OrganizationModel,
+                            as: "masterFranchise",
+                            attributes: ["id", "name"], // Include master franchise (if
+                                                        // applicable)
+                        },
+                        {
+                            model: UserModel,
+                            as: "createdByUser", // Include createdByUser
+                        },
+                        {
+                            model: UserModel,
+                            as: "updatedByUser", // Include updatedByUser
+                        },
+                        {
+                            model: UserModel,
+                            as: "deletedByUser", // Include deletedByUser
+                        },
+                    ],
+                })
+
+                if(organizationDetail){
+                    return parseOrganization(organizationDetail)
+                }
+            }
+            return null
+        }catch(error){
+            console.log(error)
+            return null
+        }
+    }
 }

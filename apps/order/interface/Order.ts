@@ -85,6 +85,7 @@ interface ParsedOrder extends ParsedMeta, OrderPayload {
     totalDiscount: number;
     deliveryDetails: any; //todo @nitesh convert to interface
     shippingAddress: Address;
+    billingAddress: Address;
     totalShipping: number;
     anomalyArr: number[];
     coupon: string | null;

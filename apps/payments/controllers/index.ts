@@ -28,6 +28,10 @@ import Razorpay from "razorpay";
 import {
     MakePaymentMail
 } from "../../../static/views/email/get-templates/MakePaymentMail";
+import {RPOrderTable} from "../../rp-order/models/RPOrderTable";
+import {PendingOrderRepo} from "../../pending-orders/repos/PendingOrderRepo";
+import {PendingOrderModel} from "../../pending-orders/models/PendingOrderTable";
+import {where} from "sequelize";
 
 const {
     validateWebhookSignature,
@@ -54,11 +58,6 @@ export default class PaymentsController {
                 console.log("Webhook not verified");
                 return res.status(400).send({ message: "Webhook not verified" });
             }
-
-            console.log("*****")
-            console.log(body.payload.order)
-            console.log("*****")
-
 
             if (body.payload && body.payload.payment_link && body.payload.payment_link.entity) {
                 const paymentId = body.payload.payment_link.entity.id;
@@ -102,8 +101,22 @@ export default class PaymentsController {
             }
             else if(body.payload && body.payload.order  && body.payload.order.entity &&
                 body.payload.order.entity.status === "paid"){
-                console.log("status");
-                console.log(body.payload.order.entity)
+                const rpResponse = (await RPOrderTable.findByPk(body.payload.order.entity.id)).toJSON();
+                if(rpResponse){
+                    try {
+                        const pendingOrderRes = await PendingOrderModel.findOne({
+                            where: { paymentId: rpResponse.id }  // 'paymentId' is the column you're filtering by
+                        });
+                        if (pendingOrderRes) {
+                            console.log(pendingOrderRes);  // Example: process the found order
+                        } else {
+                            console.log('No pending order found for the provided paymentId');
+                        }
+                    } catch (error) {
+                        console.error('Error retrieving pending order:', error);
+                    }
+
+                }
             }
             else {
                 console.dir(body,{depth:null});

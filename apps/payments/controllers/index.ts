@@ -95,8 +95,9 @@ export default class PaymentsController {
 
                 return res.status(200).send({ message: "Webhook processed successfully" });
             }
-            else if(body.payload && body.payload.order && body.payload.order && body.payload.order.entity &&
+            else if(body.payload && body.payload.order  && body.payload.order.entity &&
                 body.payload.order.entity.status === "paid"){
+                console.log("status");
                 console.log(body.payload.order.entity)
             }
             else {

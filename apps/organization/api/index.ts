@@ -40,4 +40,6 @@ router.put("/updateAddress/:id", validateOrganizationAddressPayloadSchema, Organ
 
 router.get("/getAddress/:id", OrganizationController.getAddressOfOrganization);
 
+router.get("/getOrgDetails/:id", OrganizationController.getOrgDetails);
+
 export default router;

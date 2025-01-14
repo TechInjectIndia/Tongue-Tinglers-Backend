@@ -35,27 +35,51 @@ import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
 import {
     ProductsCategoryModel
 } from "apps/products-category/models/ProductCategoryTable";
-import { ProductModel } from "apps/product/model/productTable";
-import { OrderModel } from "apps/order/models/OrderTable";
-import { NotesModel } from "apps/order/models/NotesTable";
-import { OrderItemsModel } from "apps/order-items/models/OrderItemsTable";
-import { CartProductModel } from "../cart-products/model/CartProductTable";
-import { handleError } from "apps/common/utils/HelperMethods";
-import { OrganizationModel } from "../organization/models/OrganizationTable";
-import { ItemStockModel } from "apps/pet-pooja/models/stock";
-import { ItemUnitTable } from "apps/inventory/item_unit/database/ItemUnitTable";
-import { ItemCategoryTable } from "apps/inventory/item_category/database/ItemCategoryTable";
-import { StorageLocationTable } from "apps/inventory/storage_locations/database/StorageLocationTable";
-import { FactoryGateTable } from "apps/inventory/factory_gates/database/FactoryGateTable";
-import { PurchaseInvoiceTable } from "apps/inventory/purchase_invoice/database/PurchaseInvoiceTable";
-import { RawMaterialTable } from "apps/inventory/raw_material/database/RawMaterialTable";
-import { RawMaterialPriceTable } from "apps/inventory/raw_material/database/RawMaterialPriceTable";
-import { SupplierTable } from "apps/inventory/supplier/database/SupplierTable";
-import { RawMaterialStockTable } from "apps/inventory/raw_material_stock/database/RawMaterialStockTable";
-import { RawMaterialStockInTable } from "apps/inventory/raw_material_stock/database/RawMaterialStockInTable";
-import { RawMaterialHoldTable } from "apps/inventory/raw_material_stock/database/RawMaterialHoldTable";
-import { RawMaterialRejectionTable } from "apps/inventory/raw_material_stock/database/RawMaterialRejectionTable";
-import { DebitNoteTable } from "apps/inventory/debit_note/database/DebitNoteTable";
+import {ProductModel} from "apps/product/model/productTable";
+import {OrderModel} from "apps/order/models/OrderTable";
+import {NotesModel} from "apps/order/models/NotesTable";
+import {OrderItemsModel} from "apps/order-items/models/OrderItemsTable";
+import {CartProductModel} from "../cart-products/model/CartProductTable";
+import {handleError} from "apps/common/utils/HelperMethods";
+import {ItemStockModel} from "../pet-pooja/models/stock";
+import {OrganizationModel} from "../organization/models/OrganizationTable";
+import { PdiModel } from "apps/pdi/model/PdiTable";
+import { FileModel } from "apps/files/models/FileTable";
+import { PendingOrderModel } from "apps/pending-orders/models/PendingOrderTable";
+import { B2CUserAddressModel } from "apps/b2c-users-address/models/B2CUserAddressTable";
+import {
+    FactoryGateTable
+} from "../inventory/factory_gates/database/FactoryGateTable";
+import {
+    StorageLocationTable
+} from "../inventory/storage_locations/database/StorageLocationTable";
+import {ItemUnitTable} from "../inventory/item_unit/database/ItemUnitTable";
+import {
+    ItemCategoryTable
+} from "../inventory/item_category/database/ItemCategoryTable";
+import {SupplierTable} from "../inventory/supplier/database/SupplierTable";
+import {
+    RawMaterialPriceTable
+} from "../inventory/raw_material/database/RawMaterialPriceTable";
+import {
+    RawMaterialHoldTable
+} from "../inventory/raw_material_stock/database/RawMaterialHoldTable";
+import {
+    RawMaterialRejectionTable
+} from "../inventory/raw_material_stock/database/RawMaterialRejectionTable";
+import {
+    RawMaterialStockInTable
+} from "../inventory/raw_material_stock/database/RawMaterialStockInTable";
+import {
+    RawMaterialStockTable
+} from "../inventory/raw_material_stock/database/RawMaterialStockTable";
+import {
+    RawMaterialTable
+} from "../inventory/raw_material/database/RawMaterialTable";
+import {DebitNoteTable} from "../inventory/debit_note/database/DebitNoteTable";
+import {
+    PurchaseInvoiceTable
+} from "../inventory/purchase_invoice/database/PurchaseInvoiceTable";
 
 const m = [
     RegionModel,
@@ -149,6 +173,10 @@ const models = {
     PurchaseInvoiceModel: PurchaseInvoiceTable.initModel(),
 
 
+    PDI: PdiModel.initModel(),
+    File: FileModel.initModel(),
+    PendingOrder: PendingOrderModel.initModel(),
+    B2CUserAddress: B2CUserAddressModel.initModel()
 };
 
 let currentModel: string = null;
@@ -157,7 +185,6 @@ try {
     // Initialize Associations
     Object.keys(models).forEach((modelName) => {
         currentModel = modelName;
-        console.log("found", models[modelName]);
 
         if (models[modelName].associate) {
             models[modelName].associate();

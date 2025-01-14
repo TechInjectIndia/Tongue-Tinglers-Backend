@@ -94,6 +94,7 @@ import { rawMaterialStockRouter } from "apps/inventory/raw_material_stock/routes
 import { purchaseInvoicesRouter } from "apps/inventory/purchase_invoice/routes/PurchaseInvoiceRoutes";
 import { debitNoteRouter } from "apps/inventory/debit_note/routes/DebitNoteRoutes";
 
+import B2CUserAddressRouter from "../apps/b2c-users-address/api/B2CUserAddressApi";
 
 
 // ====== Admin routes ======
@@ -139,7 +140,7 @@ router.use(`${ADMIN}/web-lead`, webLeadRouter); // dont add auth to this url
 // router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
 router.use(`${ADMIN}/commission`, auth, commissionRouter);
-router.use(`${ADMIN}/product`, auth, productRouter);
+router.use(`${ADMIN}/product`, productRouter);
 router.use(`${ADMIN}/options`, auth, optionsRouter);
 router.use(`${ADMIN}/options-values`, auth, optionsValuesRouter);
 router.use(`${ADMIN}/product-options`, auth, productOptionsRouter);
@@ -155,6 +156,9 @@ router.use(`${ADMIN}/agreement-docs`, agreementDocRouter);
 // router.use(`/pet-pooja`, petPoojaApiRouter);
 router.use(`/organization`, auth, organizationRouter);
 
+router.use(`/organization`,auth, organizationRouter);
+router.use(`${ADMIN}/products-category`, auth, OrderV1Routes);
+router.use(`/b2c-users`, auth, B2CUserAddressRouter);
 
 /* IMS */
 router.use(`${ADMIN}`, auth, itemCategoryRouter);
@@ -184,12 +188,6 @@ router.use(`/zoho-sign`, zohoSignApiRouter);
 router.use("/logs", logRouter);
 router.use("/transaction", transactionRouter);
 
-// router.use(`/etest`, () => {
-//     sendEmail("jasskaranofficial@gmail.com", "subject", {
-//         heading: "asd",
-//         description: "qwe",
-//     });
-// });
 
 router.use(`/health`, (_, res) => {
     return res.status(200).json({

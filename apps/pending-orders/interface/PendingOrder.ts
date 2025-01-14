@@ -22,7 +22,7 @@ interface PendingOrderPayload {
     deliveryStatus: string;
     customerDetails: ParsedUser;
     paymentType: PAYMENT_TYPE; //todo convert to enum
-    paymentId: number;
+    paymentId: string;
     paymentOrderId: string;
     cancelledItems: ParsedOrderItem[];
     discount: Record<string, IDiscComponent>;

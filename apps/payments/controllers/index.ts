@@ -32,6 +32,7 @@ import {RPOrderTable} from "../../rp-order/models/RPOrderTable";
 import {PendingOrderRepo} from "../../pending-orders/repos/PendingOrderRepo";
 import {PendingOrderModel} from "../../pending-orders/models/PendingOrderTable";
 import {where} from "sequelize";
+import {OrderModel} from "../../order/models/OrderTable";
 
 const {
     validateWebhookSignature,
@@ -101,21 +102,15 @@ export default class PaymentsController {
             }
             else if(body.payload && body.payload.order  && body.payload.order.entity &&
                 body.payload.order.entity.status === "paid"){
-
-                console.log(body.payload.order.entity);
-                console.log("i am here ")
                 const rpResponse = await RPOrderTable.findOne({where:{id:body.payload.order.entity.id}});
-                console.log("i am here 1")
-                console.log(body.payload.order.entity.id)
-                console.log(rpResponse)
                 if(rpResponse){
                     try {
                         const pendingOrderRes = await PendingOrderModel.findOne({
                             where: { paymentId: rpResponse.id }  // 'paymentId' is the column you're filtering by
                         });
                         if (pendingOrderRes) {
-                            console.log("pending order found");
-                            console.log(pendingOrderRes);  // Example: process the found order
+                            const response = await OrderModel.create(pendingOrderRes);
+                            console.log("Here")
                         } else {
                             console.log('No pending order found for the provided paymentId');
                         }

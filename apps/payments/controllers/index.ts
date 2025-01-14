@@ -101,13 +101,14 @@ export default class PaymentsController {
             }
             else if(body.payload && body.payload.order  && body.payload.order.entity &&
                 body.payload.order.entity.status === "paid"){
-                const rpResponse = (await RPOrderTable.findByPk(body.payload.order.entity.id)).toJSON();
+                const rpResponse = await RPOrderTable.findByPk(body.payload.order.entity.id);
                 if(rpResponse){
                     try {
                         const pendingOrderRes = await PendingOrderModel.findOne({
                             where: { paymentId: rpResponse.id }  // 'paymentId' is the column you're filtering by
                         });
                         if (pendingOrderRes) {
+                            console.log("pending order found");
                             console.log(pendingOrderRes);  // Example: process the found order
                         } else {
                             console.log('No pending order found for the provided paymentId');

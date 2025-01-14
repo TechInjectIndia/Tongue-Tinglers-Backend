@@ -31,7 +31,7 @@ export class ItemUnitValidations {
             }
         }
 
-        const {error} = ItemUnitSchema.create.validate(req.body);
+        const { error } = ItemUnitSchema.update.validate(req.body);
 
         if (error) {
             return res.status(400).json(HelperMethods.getErrorResponse(error.details[0].message));

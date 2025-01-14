@@ -28,7 +28,7 @@ export class PostgresRawMaterialRepo implements IRawMaterialRepo {
                 totalStock: 0,
                 assignedStock: 0,
             };
-            stockPayload.createdById = payload.createdBy;
+            stockPayload.createdBy = payload.createdBy;
 
             /* create raw material stock */
             await RawMaterialStockTable.create(stockPayload, {

@@ -31,7 +31,7 @@ export class RawMaterialValidations {
             }
         }
 
-        const { error } = RawMaterialSchema.create.validate(req.body);
+        const { error } = RawMaterialSchema.update.validate(req.body);
 
         if (error) {
             return res.status(400).json(HelperMethods.getErrorResponse(error.details[0].message));

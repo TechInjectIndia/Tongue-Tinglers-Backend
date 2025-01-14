@@ -157,15 +157,15 @@ router.use(`/organization`, auth, organizationRouter);
 
 
 /* IMS */
-router.use(`${ADMIN}`, itemCategoryRouter);
-router.use(`${ADMIN}`, itemUnitRouter);
-router.use(`${ADMIN}`, supplierRouter);
-router.use(`${ADMIN}`, factoryGatesRouter);
-router.use(`${ADMIN}`, storageLocationRouter);
-router.use(`${ADMIN}`, rawMaterialRouter);
-router.use(`${ADMIN}`, rawMaterialStockRouter);
-router.use(`${ADMIN}`, purchaseInvoicesRouter);
-router.use(`${ADMIN}`, debitNoteRouter);
+router.use(`${ADMIN}`, auth, itemCategoryRouter);
+router.use(`${ADMIN}`, auth, itemUnitRouter);
+router.use(`${ADMIN}`, auth, supplierRouter);
+router.use(`${ADMIN}`, auth, factoryGatesRouter);
+router.use(`${ADMIN}`, auth, storageLocationRouter);
+router.use(`${ADMIN}`, auth, rawMaterialRouter);
+router.use(`${ADMIN}`, auth, rawMaterialStockRouter);
+router.use(`${ADMIN}`, auth, purchaseInvoicesRouter);
+router.use(`${ADMIN}`, auth, debitNoteRouter);
 
 //////
 

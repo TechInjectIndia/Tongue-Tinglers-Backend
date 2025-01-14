@@ -31,7 +31,7 @@ export class StorageLocationValidations {
             }
         }
 
-        const { error } = StorageLocationSchema.createSchema.validate(req.body);
+        const { error } = StorageLocationSchema.updateSchema.validate(req.body);
         if (error) {
             return res.status(400).json(HelperMethods.getErrorResponse(error.details[0].message));
         }

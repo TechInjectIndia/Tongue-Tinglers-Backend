@@ -31,7 +31,7 @@ export class FactoryGateValidations {
             }
         }
 
-        const { error } = FactoryGateSchema.createSchema.validate(req.body);
+        const { error } = FactoryGateSchema.updateSchema.validate(req.body);
 
         if (error) {
             return res.status(400).json(HelperMethods.getErrorResponse(error.details[0].message));

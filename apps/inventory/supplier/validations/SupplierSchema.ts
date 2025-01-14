@@ -9,7 +9,7 @@ export class SupplierSchema {
         state: Joi.string().min(3,).max(80,),
         postalCode: Joi.string().min(3,).max(80,),
         country: Joi.string().min(3,).max(80,),
-        phoneNumber: Joi.string().min(3,).max(80,),
+        phoneNumber: Joi.string().allow(""),
         firstName: Joi.string().optional().allow(""),
         lastName: Joi.string().optional().allow(""),
     });

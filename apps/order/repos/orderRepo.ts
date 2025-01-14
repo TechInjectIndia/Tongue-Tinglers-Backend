@@ -185,7 +185,7 @@ export class OrderRepo implements IOrderRepo {
                 include: [
                     {
                         model: NotesModel,
-                        as: "noteses",
+                        as: "notes",
                         through: { attributes: [] },
                     },
                 ],

@@ -55,6 +55,11 @@ export default class PaymentsController {
                 return res.status(400).send({ message: "Webhook not verified" });
             }
 
+            console.log("*****")
+            console.log(body.payload.order)
+            console.log("*****")
+
+
             if (body.payload && body.payload.payment_link && body.payload.payment_link.entity) {
                 const paymentId = body.payload.payment_link.entity.id;
                 const status = body.payload.payment_link.entity.status;

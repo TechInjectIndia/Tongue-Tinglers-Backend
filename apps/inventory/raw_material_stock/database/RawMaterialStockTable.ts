@@ -14,12 +14,12 @@ class RawMaterialStockTable extends Model<IRawMaterialStock, ICreateRawMaterialS
         RawMaterialStockTable.init(
             {
                 id: {
-                    type: DataTypes.BIGINT,
+                    type: DataTypes.INTEGER,
                     autoIncrement: true,
                     primaryKey: true,
                 },
                 rawMaterialId: {
-                    type: DataTypes.BIGINT,
+                    type: DataTypes.INTEGER,
                     allowNull: false,
                 },
                 totalStock: {
@@ -33,7 +33,7 @@ class RawMaterialStockTable extends Model<IRawMaterialStock, ICreateRawMaterialS
 
 
                 createdBy: {
-                    type: DataTypes.BIGINT,
+                    type: DataTypes.INTEGER,
                     allowNull: false,
                 },
                 createdAt: {
@@ -41,13 +41,13 @@ class RawMaterialStockTable extends Model<IRawMaterialStock, ICreateRawMaterialS
                     allowNull: false,
                 },
                 updatedBy: {
-                    type: DataTypes.BIGINT,
+                    type: DataTypes.INTEGER,
                 },
                 updatedAt: {
                     type: DataTypes.DATE,
                 },
                 deletedBy: {
-                    type: DataTypes.BIGINT,
+                    type: DataTypes.INTEGER,
                 },
                 deletedAt: {
                     type: DataTypes.DATE,

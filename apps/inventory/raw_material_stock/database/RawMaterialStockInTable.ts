@@ -20,21 +20,21 @@ class RawMaterialStockInTable extends Model<IRawMaterialStockIn, ICreateRawMater
         RawMaterialStockInTable.init(
             {
                 id: {
-                    type: DataTypes.BIGINT,
+                    type: DataTypes.INTEGER,
                     autoIncrement: true,
                     primaryKey: true,
                 },
                 rawMaterialId: {
-                    type: DataTypes.BIGINT,
+                    type: DataTypes.INTEGER,
                     allowNull: false,
                 },
                 supplierId: {
-                    type: DataTypes.BIGINT,
+                    type: DataTypes.INTEGER,
                     allowNull: false,
                 },
 
                 purchaseInvoiceId: {
-                    type: DataTypes.BIGINT,
+                    type: DataTypes.INTEGER,
                     allowNull: false,
                 },
 
@@ -47,16 +47,16 @@ class RawMaterialStockInTable extends Model<IRawMaterialStockIn, ICreateRawMater
                     allowNull: false,
                 },
                 factoryGateId: {
-                    type: DataTypes.BIGINT,
+                    type: DataTypes.INTEGER,
                     allowNull: false,
                 },
                 storageLocationId: {
-                    type: DataTypes.BIGINT,
+                    type: DataTypes.INTEGER,
                     allowNull: true,
                 },
 
                 createdBy: {
-                    type: DataTypes.BIGINT,
+                    type: DataTypes.INTEGER,
                     allowNull: false,
                 },
                 createdAt: {
@@ -64,13 +64,13 @@ class RawMaterialStockInTable extends Model<IRawMaterialStockIn, ICreateRawMater
                     allowNull: false,
                 },
                 updatedBy: {
-                    type: DataTypes.BIGINT,
+                    type: DataTypes.INTEGER,
                 },
                 updatedAt: {
                     type: DataTypes.DATE,
                 },
                 deletedBy: {
-                    type: DataTypes.BIGINT,
+                    type: DataTypes.INTEGER,
                 },
                 deletedAt: {
                     type: DataTypes.DATE,

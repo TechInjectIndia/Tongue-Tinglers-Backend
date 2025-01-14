@@ -51,6 +51,8 @@ import { IItemUnitRepo } from './inventory/item_unit/repositories/IItemUnitRepo'
 import { PostgresItemUnitRepo } from './inventory/item_unit/repositories/PostgresItemUnitRepo';
 import { IStorageLocationRepo } from './inventory/storage_locations/repositories/IStorageLocationRepo';
 import { PostgresStorageLocationRepo } from './inventory/storage_locations/repositories/PostgresStorageLocationRepo';
+import { IFactoryGateRepo } from './inventory/factory_gates/repositories/IFactoryGateRepo';
+import { PostgresFactoryGateRepo } from './inventory/factory_gates/repositories/PostgresFactoryGateRepo';
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -75,6 +77,7 @@ export default class RepoProvider {
   private static _itemCategoryRepo: IItemCategoryRepo;
   private static _itemUnitRepo: IItemUnitRepo;
   private static _storageLocationRepo: IStorageLocationRepo;
+  private static _factoryGateRepo: IFactoryGateRepo;
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -229,6 +232,13 @@ export default class RepoProvider {
       this._storageLocationRepo = new PostgresStorageLocationRepo();
     }
     return this._storageLocationRepo;
+  }
+
+  static get factoryGateRepo() {
+    if (!this._factoryGateRepo) {
+      this._factoryGateRepo = new PostgresFactoryGateRepo();
+    }
+    return this._factoryGateRepo;
   }
 
 

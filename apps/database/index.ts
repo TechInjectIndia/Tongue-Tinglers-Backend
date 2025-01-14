@@ -42,9 +42,6 @@ import { OrderItemsModel } from "apps/order-items/models/OrderItemsTable";
 import { CartProductModel } from "../cart-products/model/CartProductTable";
 import { handleError } from "apps/common/utils/HelperMethods";
 import { OrganizationModel } from "../organization/models/OrganizationTable";
-import { RawMaterialModal } from "apps/raw_material/database/RawMaterialTable";
-import { RawMaterialStockTable } from "apps/raw_material_stock/database/RawMaterialStockTable";
-import { ItemUnitModel } from "apps/item_unit/database/ItemUnitTable";
 import { ItemStockModel } from "apps/pet-pooja/models/stock";
 
 const m = [
@@ -81,9 +78,6 @@ const m = [
     OrderItemsModel,
     CartProductModel,
     ItemStockModel,
-    ItemUnitModel,
-    RawMaterialModal,
-    RawMaterialStockTable,
 ];
 
 console.log(m)
@@ -122,9 +116,6 @@ const models = {
     Cart: CartProductModel.initModel(),
     ItemStockModel: ItemStockModel.initModel(),
     CampaignProposalsModel: CampaignProposalsModel.initModel(),
-    // ItemUnitModel: ItemUnitModel.initModel(),
-    RawMaterialModel: RawMaterialModal.initModel(),
-    // RawMaterialStockModel: RawMaterialStockTable.initModel(),
 };
 
 let currentModel: string = null;

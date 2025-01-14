@@ -42,20 +42,6 @@ import { PostgresCommissionRepo } from "./commission/repositories/PostgresCommis
 import { OrderRepo } from './order/repos/orderRepo';
 import { IPreSaleOrderProvider } from './pre-sale-order/provider/IPreSaleOrderProvider';
 import { PreSaleOrderProvider } from './pre-sale-order/provider/PreSaleOrderProvider';
-import { IItemCategoryRepo } from './item_category/repositories/IItemCategoryRepo';
-import { PostgresItemCategoryRepo } from './item_category/repositories/PostgresItemCategoryRepo';
-import { IItemUnitRepo } from './item_unit/repositories/IItemUnitRepo';
-import { PostgresItemUnitRepo } from './item_unit/repositories/PostgresItemUnitRepo';
-import { ISupplierRepo } from './supplier/repositories/ISupplierRepo';
-import { PostgresSupplierRepo } from './supplier/repositories/PostgresSupplierRepo';
-import { IFactoryGateRepo } from './factory_gates/repositories/IFactoryGateRepo';
-import { PostgresFactoryGateRepo } from './factory_gates/repositories/PostgresFactoryGateRepo';
-import { IStorageLocationRepo } from './storage_locations/repositories/IStorageLocationRepo';
-import { PostgresStorageLocationRepo } from './storage_locations/repositories/PostgresStorageLocationRepo';
-import { IRawMaterialRepo } from './raw_material/repositories/IRawMaterialRepo';
-import { PostgresRawMaterialRepo } from './raw_material/repositories/PostgresRawMaterialRepo';
-import { IRawMaterialStockRepo } from './raw_material_stock/repositories/IRawMaterialStockRepo';
-import { PostgresRawMaterialStockRepo } from './raw_material_stock/repositories/PostgresRawMaterialStockRepo';
 import { IRegion } from './region/models/Region';
 import { SocialMediaDetails } from './lead/interface/lead';
 
@@ -79,13 +65,6 @@ export default class RepoProvider {
   private static _documentRepo: IDocumentRepo;
   private static _agreementDocRepo: IAgreementDocRepo
   private static _preSaleProvider: IPreSaleOrderProvider;
-  private static _itemCategoryRepo: IItemCategoryRepo;
-  private static _itemUnitRepo: IItemUnitRepo;
-  private static _supplierRepo: ISupplierRepo;
-  private static _factoryGateRepo: IFactoryGateRepo;
-  private static _storageLocationsRepo: IStorageLocationRepo;
-  private static _rawMaterialRepo: IRawMaterialRepo;
-  private static _rawMaterialStockRepo: IRawMaterialStockRepo;
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -221,52 +200,4 @@ export default class RepoProvider {
     return this._preSaleProvider;
   }
 
-  static get itemCategoryRepo() {
-    if (!this._itemCategoryRepo) {
-      this._itemCategoryRepo = new PostgresItemCategoryRepo();
-    }
-    return this._itemCategoryRepo;
-  }
-
-  static get itemUnitRepo() {
-    if (!this._itemUnitRepo) {
-      this._itemUnitRepo = new PostgresItemUnitRepo();
-    }
-    return this._itemUnitRepo;
-  }
-
-  static get supplierRepo() {
-    if (!this._supplierRepo) {
-      this._supplierRepo = new PostgresSupplierRepo();
-    }
-    return this._supplierRepo;
-  }
-
-  static get factoryGateRepo() {
-    if (!this._factoryGateRepo) {
-      this._factoryGateRepo = new PostgresFactoryGateRepo();
-    }
-    return this._factoryGateRepo;
-  }
-
-  static get storageLocationRepo() {
-    if (!this._storageLocationsRepo) {
-      this._storageLocationsRepo = new PostgresStorageLocationRepo();
-    }
-    return this._storageLocationsRepo;
-  }
-
-  static get rawMaterialRepo() {
-    if (!this._rawMaterialRepo) {
-      this._rawMaterialRepo = new PostgresRawMaterialRepo();
-    }
-    return this._rawMaterialRepo;
-  }
-
-  static get rawMaterialStockRepo() {
-    if (!this._rawMaterialStockRepo) {
-      this._rawMaterialStockRepo = new PostgresRawMaterialStockRepo();
-    }
-    return this._rawMaterialStockRepo;
-  }
 }

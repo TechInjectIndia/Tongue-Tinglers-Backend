@@ -236,21 +236,14 @@ export class OrderRepo implements IOrderRepo {
     async proceedToPayment(state: OrderState): Promise<DTO<boolean>> {
         try {
             const order = await new OrderProvider().processOrder(state);
-            console.log("here");
-
-            // const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order);
-            // console.log(pendingOrderData);
-            const rpSaveData = await RPOrderTable.create(order.data.rpOrder);
-
-            console.log(rpSaveData);
-
-            // await new PendingOrderRepo().create(pendingOrderData);
+            const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order.data.parsedOrder, order.data.rpOrder.id);
+            await new PendingOrderRepo().create(pendingOrderData)
+            await RPOrderTable.create(order.data.rpOrder);
             return getSuccessDTO(true);
         } catch (err) {
             return getUnhandledErrorDTO(err.message);
         }
     }
-
     async getOrdersByUser(userId: number): Promise<ParsedOrder[]> {
         try {
             const orders = await OrderModel.findAll({
@@ -258,7 +251,7 @@ export class OrderRepo implements IOrderRepo {
                 include: [
                     {
                         model: NotesModel,
-                        as: "noteses",
+                        as: "notes",
                         through: { attributes: [] },
                     },
                 ],
@@ -352,7 +345,6 @@ export class OrderRepo implements IOrderRepo {
                 `Pending order:${pendingOrder.id},  for: paymentOrderId ${paymentOrderId} is Already processed`
             );
         }
-
         return getSuccessDTO(res);
     }
 

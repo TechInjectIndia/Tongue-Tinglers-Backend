@@ -56,11 +56,6 @@ export default class PaymentsController {
             }
 
             if (body.payload && body.payload.payment_link && body.payload.payment_link.entity) {
-
-                console.log("Nit 1s")
-                console.dir(body,{depth:null});
-
-
                 const paymentId = body.payload.payment_link.entity.id;
                 const status = body.payload.payment_link.entity.status;
 
@@ -99,11 +94,13 @@ export default class PaymentsController {
 
 
                 return res.status(200).send({ message: "Webhook processed successfully" });
-            } else {
-
-                console.log("Nitesh 2")
+            }
+            else if(body.payload && body.payload.order && body.payload.order && body.payload.order.entity &&
+                body.payload.order.entity.status === "paid"){
+                console.log(body.payload.order.entity)
+            }
+            else {
                 console.dir(body,{depth:null});
-                console.log("Invalid payload structure", body);
                 return res.status(200).send({ message: "Invalid payload structure" });
             }
         } catch (error) {

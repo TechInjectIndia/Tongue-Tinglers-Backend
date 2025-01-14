@@ -20,6 +20,9 @@ export default class ProductsCategoryController {
                 ...payload,
                 createdBy: user_id,
             };
+
+            console.log(product);
+
             const productsCategoryDetails = await RepoProvider.productsCategoryRepo.createProductsCategory(
                 product);
             return res.status(200)

@@ -352,7 +352,7 @@ export class ProductRepo implements IProductRepo {
                     offset,
                     limit,
                     where: {
-                        type: PRODUCTS_TYPE.SAMPLEKIT,
+                        type: PRODUCTS_TYPE.SAMPLE_KIT,
                     },
                     include: [
                         {

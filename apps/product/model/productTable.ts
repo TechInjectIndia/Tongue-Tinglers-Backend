@@ -151,7 +151,7 @@ class ProductModel
                     type: DataTypes.ENUM(
                         PRODUCTS_TYPE.PACKAGING,
                         PRODUCTS_TYPE.RETORT,
-                        PRODUCTS_TYPE.SAMPLEKIT,
+                        PRODUCTS_TYPE.SAMPLE_KIT,
                     ),
                     allowNull: false,
                 },

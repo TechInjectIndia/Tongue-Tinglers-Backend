@@ -12,7 +12,7 @@ const router = Router();
 const ADMIN = "/admin";
 const FRANCHISE = "/franchise";
 const CUSTOMER = "/customer";
-const GUEST = "/guest";
+
 const ORDERS = '/v1/orders';
 
 import { auth } from "../middlewares/auth";
@@ -21,7 +21,7 @@ import authRouter from "../apps/auth/api";
 router.use(`/auth`, authRouter);
 
 
-import adminUsersRouter from "../apps/user/api/user";
+import {adminUserRouter,guestUserRouter} from "../apps/user/api/user";
 
 import leadRouter from "../apps/lead/api/lead-router";
 import webLeadRouter from "../apps/lead/api/web-lead";
@@ -78,18 +78,18 @@ import productsCategoryRouter
 import OrderRouter from "../apps/order/api/orderApi";
 import documentRouter from "../apps/documents/api/documentApi";
 import agreementDocRouter from "../apps/agreement-docs/api/agreementDocApi"
-// import petPoojaApiRouter from "../apps/pet-pooja/api/petpooja";
 import zohoSignApiRouter from "../apps/zoho-sign/api/zohosign";
 import {
     transactionRouter,
 } from "../apps/payment-transaction/api/TransactionRouter";
 
 import leadsAnalyticsRouter from "../apps/analytics/api/admin/lead-analytics"
-
+import B2CUserAddressRouter from "../apps/b2c-users-address/api/B2CUserAddressApi";
 
 
 // ====== Admin routes ======
-router.use(`${ADMIN}/users`, auth, adminUsersRouter);
+router.use(`${ADMIN}/users`, auth, adminUserRouter);
+router.use(`/users`, guestUserRouter);
 // router.use(`${ADMIN}/permissions`, auth, permissionsRouter);
 // router.use(`${ADMIN}/roles`, auth, rolesRouter);
 
@@ -130,7 +130,7 @@ router.use(`${ADMIN}/web-lead`, webLeadRouter); // dont add auth to this url
 // router.use(`${ADMIN}/shipping-history`, auth, shippingHistory);
 router.use(`${ADMIN}/franchise`, auth, frachiseRouter);
 router.use(`${ADMIN}/commission`, auth, commissionRouter);
-router.use(`${ADMIN}/product`, auth, productRouter);
+router.use(`${ADMIN}/product`, productRouter);
 router.use(`${ADMIN}/options`, auth, optionsRouter);
 router.use(`${ADMIN}/options-values`, auth, optionsValuesRouter);
 router.use(`${ADMIN}/product-options`, auth, productOptionsRouter);
@@ -146,6 +146,7 @@ router.use(`${ADMIN}/agreement-docs`, agreementDocRouter);
 // router.use(`/pet-pooja`, petPoojaApiRouter);
 router.use(`/organization`,auth, organizationRouter);
 router.use(`${ADMIN}/products-category`, auth, OrderV1Routes);
+router.use(`/b2c-users`, auth, B2CUserAddressRouter);
 
 
 
@@ -163,12 +164,6 @@ router.use(`/zoho-sign`, zohoSignApiRouter);
 router.use("/logs", logRouter);
 router.use("/transaction", transactionRouter);
 
-// router.use(`/etest`, () => {
-//     sendEmail("jasskaranofficial@gmail.com", "subject", {
-//         heading: "asd",
-//         description: "qwe",
-//     });
-// });
 
 router.use(`/health`, (_, res) => {
     return res.status(200).json({

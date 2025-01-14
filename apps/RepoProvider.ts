@@ -42,8 +42,27 @@ import { PostgresCommissionRepo } from "./commission/repositories/PostgresCommis
 import { OrderRepo } from './order/repos/orderRepo';
 import { IPreSaleOrderProvider } from './pre-sale-order/provider/IPreSaleOrderProvider';
 import { PreSaleOrderProvider } from './pre-sale-order/provider/PreSaleOrderProvider';
-import {IRegion} from "./region/models/Region";
-import {SocialMediaDetails} from "./lead/interface/lead";
+import { IRegion } from './region/models/Region';
+import { SocialMediaDetails } from './lead/interface/lead';
+import { IItemCategory } from './inventory/item_category/models/IItemCategory';
+import { IItemCategoryRepo } from './inventory/item_category/repositories/IItemCategoryRepo';
+import { PostgresItemCategoryRepo } from './inventory/item_category/repositories/PostgresItemCategoryRepo';
+import { IItemUnitRepo } from './inventory/item_unit/repositories/IItemUnitRepo';
+import { PostgresItemUnitRepo } from './inventory/item_unit/repositories/PostgresItemUnitRepo';
+import { IStorageLocationRepo } from './inventory/storage_locations/repositories/IStorageLocationRepo';
+import { PostgresStorageLocationRepo } from './inventory/storage_locations/repositories/PostgresStorageLocationRepo';
+import { IFactoryGateRepo } from './inventory/factory_gates/repositories/IFactoryGateRepo';
+import { PostgresFactoryGateRepo } from './inventory/factory_gates/repositories/PostgresFactoryGateRepo';
+import { IRawMaterialRepo } from './inventory/raw_material/repositories/IRawMaterialRepo';
+import { PostgresRawMaterialRepo } from './inventory/raw_material/repositories/PostgresRawMaterialRepo';
+import { ISupplierRepo } from './inventory/supplier/repositories/ISupplierRepo';
+import { PostgresSupplierRepo } from './inventory/supplier/repositories/PostgresSupplierRepo';
+import { IRawMaterialStockRepo } from './inventory/raw_material_stock/repositories/IRawMaterialStockRepo';
+import { PostgresRawMaterialStockRepo } from './inventory/raw_material_stock/repositories/PostgresRawMaterialStockRepo';
+import { IPurchaseInvoiceRepo } from './inventory/purchase_invoice/repositories/IPurchaseInvoiceRepo';
+import { PostgresPurchaseInvoiceRepo } from './inventory/purchase_invoice/repositories/PostgresPurchaseInvoiceRepo';
+import { IDebitNoteRepo } from './inventory/debit_note/repositories/IDebitNoteRepo';
+import { PostgresDebitNoteRepo } from './inventory/debit_note/repositories/PostgresDebitNoteRepo';
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -64,7 +83,16 @@ export default class RepoProvider {
   static _commissionRepo: ICommissionRepo;
   private static _documentRepo: IDocumentRepo;
   private static _agreementDocRepo: IAgreementDocRepo
-  private static _preSaleProvider:IPreSaleOrderProvider;
+  private static _preSaleProvider: IPreSaleOrderProvider;
+  private static _itemCategoryRepo: IItemCategoryRepo;
+  private static _itemUnitRepo: IItemUnitRepo;
+  private static _storageLocationRepo: IStorageLocationRepo;
+  private static _factoryGateRepo: IFactoryGateRepo;
+  private static _rawMaterialRepo: IRawMaterialRepo;
+  private static _supplierRepo: ISupplierRepo;
+  private static _rawMaterialStockRepo: IRawMaterialStockRepo;
+  private static _purchaseInvoiceRepo: IPurchaseInvoiceRepo;
+  private static _debitNoteRepo: IDebitNoteRepo;
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -193,10 +221,76 @@ export default class RepoProvider {
     return this._agreementDocRepo;
   }
 
-  static get preSaleOrderProvider(){
+  static get preSaleOrderProvider() {
     if (!this._preSaleProvider) {
       this._preSaleProvider = new PreSaleOrderProvider();
     }
     return this._preSaleProvider;
   }
+
+  static get itemCategoryRepo() {
+    if (!this._itemCategoryRepo) {
+      this._itemCategoryRepo = new PostgresItemCategoryRepo();
+    }
+    return this._itemCategoryRepo;
+  }
+
+  static get itemUnitRepo() {
+    if (!this._itemUnitRepo) {
+      this._itemUnitRepo = new PostgresItemUnitRepo();
+    }
+    return this._itemUnitRepo;
+  }
+
+  static get storageLocationRepo() {
+    if (!this._storageLocationRepo) {
+      this._storageLocationRepo = new PostgresStorageLocationRepo();
+    }
+    return this._storageLocationRepo;
+  }
+
+  static get factoryGateRepo() {
+    if (!this._factoryGateRepo) {
+      this._factoryGateRepo = new PostgresFactoryGateRepo();
+    }
+    return this._factoryGateRepo;
+  }
+
+  static get rawMaterialRepo() {
+    if (!this._rawMaterialRepo) {
+      this._rawMaterialRepo = new PostgresRawMaterialRepo();
+    }
+    return this._rawMaterialRepo;
+  }
+
+
+
+  static get supplierRepo() {
+    if (!this._supplierRepo) {
+      this._supplierRepo = new PostgresSupplierRepo();
+    }
+    return this._supplierRepo;
+  }
+
+  static get rawMaterialStockRepo() {
+    if (!this._rawMaterialStockRepo) {
+      this._rawMaterialStockRepo = new PostgresRawMaterialStockRepo();
+    }
+    return this._rawMaterialStockRepo;
+  }
+
+  static get purchaseInvoiceRepo() {
+    if (!this._purchaseInvoiceRepo) {
+      this._purchaseInvoiceRepo = new PostgresPurchaseInvoiceRepo();
+    }
+    return this._purchaseInvoiceRepo;
+  }
+
+  static get debitNoteRepo() {
+    if (!this._debitNoteRepo) {
+      this._debitNoteRepo = new PostgresDebitNoteRepo();
+    }
+    return this._debitNoteRepo;
+  }
+
 }

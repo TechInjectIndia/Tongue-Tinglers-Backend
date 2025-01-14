@@ -40,7 +40,7 @@ class PendingOrderModel
     items: ParsedOrderItem[];
     price: Record<string, PriceComponent>;
     couponCodes: string[];
-    anomalies: AnomalyOrderItem[];
+    anomalies: AnomalyOrderItem[]|null;
 
     public static initModel() {
         PendingOrderModel.init(
@@ -122,10 +122,9 @@ class PendingOrderModel
                     type: DataTypes.JSON,
                     allowNull: false,
                 },
-                // todo @Sumeet handle the relation here
                 anomalies: {
                     type: DataTypes.JSON,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 price: {
                     type: DataTypes.JSON,

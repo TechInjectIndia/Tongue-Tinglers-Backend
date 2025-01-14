@@ -33,6 +33,7 @@ import {PendingOrderRepo} from "../../pending-orders/repos/PendingOrderRepo";
 import {PendingOrderModel} from "../../pending-orders/models/PendingOrderTable";
 import {where} from "sequelize";
 import {OrderModel} from "../../order/models/OrderTable";
+import {parseAndSavePendingOrderToOrder} from "../../order/parser/parseOrder";
 
 const {
     validateWebhookSignature,
@@ -109,8 +110,9 @@ export default class PaymentsController {
                             where: { paymentId: rpResponse.id }  // 'paymentId' is the column you're filtering by
                         });
                         if (pendingOrderRes) {
-                            const response = await OrderModel.create(pendingOrderRes);
+                            const response = await parseAndSavePendingOrderToOrder(pendingOrderRes.toJSON());
                             console.log("Here")
+                            console.log(response)
                         } else {
                             console.log('No pending order found for the provided paymentId');
                         }

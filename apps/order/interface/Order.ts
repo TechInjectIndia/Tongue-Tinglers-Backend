@@ -39,7 +39,7 @@ interface BaseOrder {
     // notes: number[];
     customer_details: number;
     payment_type: string;
-    payment_id: number | null;
+    payment_id: string | null;
     cancelled_items: number[];
     total_discount: number;
     delivery_details: any | null;

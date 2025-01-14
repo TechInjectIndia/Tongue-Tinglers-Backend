@@ -105,6 +105,7 @@ export default class PaymentsController {
                 body.payload.order.entity.status === "paid"){
                 const rpResponse = await RPOrderTable.findOne({where:{id:body.payload.order.entity.id}});
                 if(rpResponse){
+                    // @TODO @rajinder sir this is temporary
                     try {
                         const pendingOrderRes = await PendingOrderModel.findOne({
                             where: { paymentId: rpResponse.id }  // 'paymentId' is the column you're filtering by

@@ -124,7 +124,6 @@ export const parseAndSavePendingOrderToOrder = async (pendingOrder: PendingOrder
             }
         });
 
-        console.log(orderItems);
         //
         const response = await  OrderItemsModel.bulkCreate(orderItems);
         const orderInstance = await OrderModel.create(orderData);

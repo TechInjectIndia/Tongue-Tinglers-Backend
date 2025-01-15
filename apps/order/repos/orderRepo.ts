@@ -72,13 +72,13 @@ export class OrderRepo implements IOrderRepo {
                     // notes: noteIds, // Link notes by their IDs
                     createdAt: new Date(),
                 },
-                { include: [{ association: "noteses" }], transaction }
+                // { include: [{ association: "notes" }], transaction }
             );
 
-            orderCreated.addNotes(noteIds);
-
-            // todo @Sumeet add the anomalies here;
-            orderCreated.addAnomalyOrderItems([]);
+            // orderCreated.addNotes(noteIds);
+            //
+            // // todo @Sumeet add the anomalies here;
+            // orderCreated.addAnomalyOrderItems([]);
 
             return orderCreated.toJSON();
         } catch (error) {

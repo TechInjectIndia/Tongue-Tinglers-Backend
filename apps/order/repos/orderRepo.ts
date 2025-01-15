@@ -233,13 +233,14 @@ export class OrderRepo implements IOrderRepo {
         return new OrderProvider().processOrder(state);
     }
 
-    async proceedToPayment(state: OrderState): Promise<DTO<boolean>> {
+    async proceedToPayment(state: OrderState): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>> {
         try {
             const order = await new OrderProvider().processOrder(state);
-            // const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order.data.parsedOrder, order.data.rpOrder.id);
-            // await new PendingOrderRepo().create(pendingOrderData)
-            // await RPOrderTable.create(order.data.rpOrder);
-            return getSuccessDTO(true);
+            const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order.data.parsedOrder, order.data.rpOrder.id);
+            await new PendingOrderRepo().create(pendingOrderData)
+            await RPOrderTable.create(order.data.rpOrder);
+            
+            return order;
         } catch (err) {
             return getUnhandledErrorDTO(err.message);
         }

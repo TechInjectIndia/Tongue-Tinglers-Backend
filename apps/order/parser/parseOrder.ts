@@ -8,16 +8,69 @@ import {
 import {PendingOrder} from "../../pending-orders/interface/PendingOrder";
 import {OrderModel} from "../models/OrderTable";
 import {OrderItemsModel} from "../../order-items/models/OrderItemsTable";
+import { parseUserToMetaUser } from "apps/user/parser/user-parser";
+import { UserModel } from "apps/user/models/UserTable";
+import { ParsedUser } from "apps/user/interface/user";
 
 
-const parseOrder = (order: any): ParsedOrder => {
-    const productVariations = order.orderItems.map((orderItem: any) =>{
-            // console.log(parseOrderItem(orderItem));
-        }
-        // parseOrderItem(orderItem)
+// const parseOrder = (order: any): ParsedOrder => {
+//     console.log('order.orderItems: ', order.orderItems);
+//     const productVariations = order.orderItems.map((orderItem: any) =>{
+//             console.log(">>>>>>>parseOrderItem>>>>>>>>>>>",parseOrderItem(orderItem));
+//             parseOrderItem(orderItem)
+//         }
+//     );
+
+// console.log("productVariations: ",productVariations)
+
+//     const data: ParsedOrder = {
+//         anomalyArr: [],
+//         billingAddress: undefined,
+//         cancelledItems: [],
+//         coupon: "",
+//         couponCodes: [],
+//         createdAt: order.created_at,
+//         createdBy: order.createdBy,
+//         customerDetails: order.customerDetails,
+//         deletedAt: order.deletedAt,
+//         deletedBy: order.deletedBy,
+//         deliveryDetails: null,
+//         deliveryStatus: "",
+//         discount: null,
+//         id: 0,
+//         items: [],
+//         notes: [],
+//         orderItems: productVariations,
+//         paymentId: 0,
+//         paymentType: null,
+//         price: order.price,
+//         shippingAddress: order.shippingAddress,
+//         status: order.status,
+//         total: 0,
+//         totalDiscount: 0,
+//         totalShipping: 0,
+//         totalTax: 0,
+//         updatedAt: order.updatedAt,
+//         updatedBy: order.updatedBy
+
+//     };
+
+//     return data; // Return the result
+// };
+
+
+const parseOrder = async (order: any): Promise<ParsedOrder> => {
+    // console.log('order.orderItems: ', order.orderItems);
+    const customerDetails = await UserModel.findOne(({where: {id: order.customer_details},attributes:['id', 'firstName', 'lastName','email']}))
+    console.log('customerDetails: ', customerDetails);
+    // Use await inside map to ensure promises are resolved
+    const productVariations = await Promise.all(
+        order.orderItems.map(async (orderItem: any) => {// Await the parseOrderItem result
+            return await parseOrderItem(orderItem); // Ensure to return the parsed item
+        })
     );
 
-
+    
 
     const data: ParsedOrder = {
         anomalyArr: [],
@@ -27,7 +80,7 @@ const parseOrder = (order: any): ParsedOrder => {
         couponCodes: [],
         createdAt: order.created_at,
         createdBy: order.createdBy,
-        customerDetails: order.customerDetails,
+        customerDetails: customerDetails as unknown as ParsedUser,
         deletedAt: order.deletedAt,
         deletedBy: order.deletedBy,
         deliveryDetails: null,
@@ -36,7 +89,7 @@ const parseOrder = (order: any): ParsedOrder => {
         id: order.id,
         items: [],
         notes: [],
-        orderItems: [],
+        orderItems: productVariations, // Now populated with the resolved values
         paymentId: 0,
         paymentType: null,
         price: order.price,
@@ -47,8 +100,7 @@ const parseOrder = (order: any): ParsedOrder => {
         totalShipping: 0,
         totalTax: 0,
         updatedAt: order.updatedAt,
-        updatedBy: order.updatedBy
-
+        updatedBy: order.updatedBy,
     };
 
     return data; // Return the result

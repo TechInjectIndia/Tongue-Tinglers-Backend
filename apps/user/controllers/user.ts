@@ -101,6 +101,7 @@ export default class AdminController {
             const existingAdmin = await new Auth().getUserByEmail(
                 payload.email
             );
+            console.log(existingAdmin)
             if (existingAdmin) {
                 return res
                     .status(400)
@@ -115,7 +116,7 @@ export default class AdminController {
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
                 emailVerified: true,
-                phoneNumber: null,
+                phoneNumber: payload.phoneNumber,
                 password: payload.password,
                 disabled: false,
             });
@@ -177,6 +178,102 @@ export default class AdminController {
             });
         }
     }
+
+    static async addGuest(req: Request, res: Response, next: NextFunction) {
+        try {
+
+            console.log("Hello")
+            const payload = { ...req?.body, createdBy: 1 };
+
+            console.log(payload);
+
+            const existingAdmin = await new Auth().getUserByEmail(
+                payload.email
+            );
+
+            console.log(existingAdmin)
+
+            if (existingAdmin) {
+                return res
+                    .status(400)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            ERROR_MESSAGE.USER_EXISTS
+                        )
+                    );
+            }
+
+            const firebaseUser = await createFirebaseUser({
+                email: payload.email,
+                emailVerified: true,
+                phoneNumber: payload.phoneNumber,
+                password: payload.password,
+                disabled: false,
+            });
+
+            console.log(firebaseUser)
+
+            if (!firebaseUser?.success) {
+                return res
+                    .status(400)
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, firebaseUser.error));
+            }
+
+            const hashedPassword = await createPassword(payload.password);
+            const response = await new AdminRepo().create({
+                ...payload,
+                password: hashedPassword,
+                firebaseUid: firebaseUser.uid,
+            });
+
+            console.log(response)
+
+            try {
+                const emailContent = await getEmailTemplate(
+                    EMAIL_TEMPLATE.WELCOME_ADMIN_USER,
+                    {
+                        email: payload.email,
+                        link: "some-link",
+                    }
+                );
+
+                const mailOptions = {
+                    to: payload.email,
+                    subject: EMAIL_HEADING.WELCOME_ADMIN_USER,
+                    templateParams: {
+                        heading: EMAIL_HEADING.WELCOME_ADMIN_USER,
+                        description: emailContent,
+                    },
+                };
+
+                await sendEmail(
+                    mailOptions.to,
+                    mailOptions.subject,
+                    mailOptions.templateParams
+                );
+            }
+            catch (emailError) {
+                console.error("Error sending email:", emailError);
+            }
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.ADMIN_CREATED
+                    )
+                );
+        }
+        catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
 
     static async updateType(req: Request, res: Response, next: NextFunction) {
         try {

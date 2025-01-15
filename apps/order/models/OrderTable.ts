@@ -17,7 +17,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     customer_details!: number;
     delivery_details!: number;
     delivery_status!: string;
-    payment_id!: number;
+    payment_id!: string;
     payment_type!: string;
     total_discount!: number;
     total_shipping!: number;
@@ -33,12 +33,12 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     deletedBy!: number | null;
 
     // Mixin methods for managing notes
-    public addNotes!: (note: NotesModel | number) => Promise<void>;
-    public addNoteses!: (notes: Array<NotesModel | number>) => Promise<void>;
-    public setNoteses!: (notes: Array<NotesModel | number>) => Promise<void>;
-    public getNoteses!: () => Promise<NotesModel[]>;
-    public removeNotes!: (note: NotesModel | number) => Promise<void>;
-    public removeNoteses!: (notes: Array<NotesModel | number>) => Promise<void>;
+    // public addNote!: (note: NotesModel | number) => Promise<void>;
+    // public addNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
+    //
+    // public getNotes!: () => Promise<NotesModel[]>;
+    // public removeNote!: (note: NotesModel | number) => Promise<void>;
+    // public removeNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
 
     // Mixin methods for managing notes
     public addOrderItem!: (note: OrderItemsModel | number) => Promise<void>;
@@ -48,14 +48,17 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     public removeOrderItems!: (note: OrderItemsModel | number) => Promise<void>;
     public removeOrderItemses!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
 
+    // todo
+    public addAnomalyOrderItems:(anomalies:Array<any|number>)=>Promise<void>;
+
     public static associate(){
-        OrderModel.belongsToMany(NotesModel, {
-            through: "order_notes_join", // Join table name
-            foreignKey: "orderId", // Foreign key in the join table
-            otherKey: "notes_id", // Other foreign key in the join table
-            as: "noteses", // Alias for the relationship
-        });
-        
+        // OrderModel.belongsToMany(NotesModel, {
+        //     through: "order_notes_join", // Join table name
+        //     foreignKey: "orderId", // Foreign key in the join table
+        //     otherKey: "notes_id", // Other foreign key in the join table
+        //     as: "notes", // Alias for the relationship
+        // });
+
         OrderModel.belongsToMany(OrderItemsModel, {
             through: "order_items_join", // Join table name
             foreignKey: "orderId", // Foreign key in the join table
@@ -81,32 +84,32 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     allowNull: false,
                 },
                 total: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 anomalyArr: {
                     type: DataTypes.ARRAY(DataTypes.INTEGER),
-                    allowNull: false,
+                    allowNull: true,
                 },
                 cancelled_items: {
                     type: DataTypes.ARRAY(DataTypes.INTEGER),
-                    allowNull: false,
+                    allowNull: true,
                 },
                 customer_details: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 delivery_details: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 delivery_status: {
                     type: DataTypes.STRING,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 franchise_id: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 billingAddress:{
                     type: DataTypes.JSONB,
@@ -117,24 +120,24 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     allowNull: true,
                 },
                 payment_id: {
-                    type: DataTypes.INTEGER,
-                    allowNull: false,
+                    type: DataTypes.STRING,
+                    allowNull: true,
                 },
                 payment_type: {
                     type: DataTypes.STRING,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 total_discount: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 total_shipping: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 total_tax: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 prices: {
                     type: DataTypes.JSONB,
@@ -203,7 +206,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     options
                 );
             });
-    
+
             // After Update Hook - Log the updated fields of the Order
             OrderModel.addHook("afterUpdate", async (instance, options) => {
                 // Now call logModelAction as before
@@ -214,7 +217,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     options
                 );
             });
-    
+
             // After Destroy Hook - Log the deletion of the Order
             OrderModel.addHook("afterDestroy", async (instance, options) => {
                 await RepoProvider.LogRepo.logModelAction(

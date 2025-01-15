@@ -2,8 +2,10 @@ import * as express from "express";
 import AdminController from "../controllers/user";
 import * as AdminValidation from "../validations/user";
 import { hasPermission } from '../../../middlewares';
+import {validateGuestBody} from "../validations/user";
 
-const router = express.Router();
+const adminUserRouter = express.Router();
+const guestUserRouter = express.Router();
 
 const {
   validateListAdminQuery,
@@ -14,7 +16,7 @@ const {
   validateEditMultipleIdsBody,
 } = AdminValidation;
 
-const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAdminFirebaseUid, updateType } = AdminController;
+const { getAdmins, getAllUsers,addGuest, addAdmin, editAdmin, deleteAdmin, getAdmin,getAdminFirebaseUid, updateType } = AdminController;
 
 // ====== Admins Routes Start ======
 /**
@@ -60,7 +62,7 @@ const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAd
  *                default: active
  *              role:
  *                type: number
- *                default: 0 
+ *                default: 0
  *     responses:
  *       '200':
  *         description: User created successfully
@@ -68,7 +70,7 @@ const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAd
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/users/list-all?size={size}&skip={skip}:
  *   get:
  *     summary: Get all Users
@@ -97,7 +99,7 @@ const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAd
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/users/list?size={size}&skip={skip}:
  *   get:
  *     summary: Get admin Users
@@ -126,7 +128,7 @@ const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAd
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
+ *
  * /api/admin/users/get/{id}:
  *   get:
  *     summary: Get a User by ID
@@ -153,7 +155,7 @@ const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAd
  *         description: Unauthorized
  *       '404':
  *         description: User not found
- * 
+ *
  * /api/admin/users/update/{id}:
  *   put:
  *     summary: Update a User
@@ -194,7 +196,7 @@ const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAd
  *                default: active
  *              role:
  *                type: number
- *                default: 0 
+ *                default: 0
  *     responses:
  *       '200':
  *         description: User updated successfully
@@ -204,7 +206,7 @@ const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAd
  *         description: Unauthorized
  *       '404':
  *         description: User not found
- * 
+ *
  * /api/admin/users/delete:
  *   delete:
  *     summary: Delete a User
@@ -230,7 +232,7 @@ const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAd
  *         description: Unauthorized
  *       '404':
  *         description: User not found
- * 
+ *
  * /api/admin/users/update-type/{id}:
  *   put:
  *     summary: Update a Type
@@ -265,14 +267,15 @@ const { getAdmins, getAllUsers, addAdmin, editAdmin, deleteAdmin, getAdmin,getAd
  *       '404':
  *         description: User not found
  */
-router.post("/create", hasPermission('admin', 'create'), validateCreateAdminBody, addAdmin);
-router.get("/list", hasPermission('admin', 'read'), validateListAdminQuery, getAdmins);
-router.get("/list-all", hasPermission('admin', 'read'), validateListAdminQuery, getAllUsers);
-router.get("/get/:id", hasPermission('admin', 'read'), validateEditAdminParams, getAdmin);
-router.get("/get-firebase/:id", hasPermission('admin', 'read'), validateEditAdminParams, getAdminFirebaseUid);
-router.put("/update/:id", hasPermission('admin', 'update'), validateEditAdminParams, validateEditAdminBody, editAdmin);
-router.put("/update-type/:id", hasPermission('admin', 'update'), validateEditAdminParams, validateUpdateType, updateType);
-router.delete("/delete", hasPermission('admin', 'delete'), validateEditMultipleIdsBody, deleteAdmin); // Soft delete single or multiple
+adminUserRouter.post("/create", hasPermission('admin', 'create'), validateCreateAdminBody, addAdmin);
+guestUserRouter.post ("/create", validateGuestBody, addGuest);
+adminUserRouter.get("/list", hasPermission('admin', 'read'), validateListAdminQuery, getAdmins);
+adminUserRouter.get("/list-all", hasPermission('admin', 'read'), validateListAdminQuery, getAllUsers);
+adminUserRouter.get("/get/:id", hasPermission('admin', 'read'), validateEditAdminParams, getAdmin);
+adminUserRouter.get("/get-firebase/:id", hasPermission('admin', 'read'), validateEditAdminParams, getAdminFirebaseUid);
+adminUserRouter.put("/update/:id", hasPermission('admin', 'update'), validateEditAdminParams, validateEditAdminBody, editAdmin);
+adminUserRouter.put("/update-type/:id", hasPermission('admin', 'update'), validateEditAdminParams, validateUpdateType, updateType);
+adminUserRouter.delete("/delete", hasPermission('admin', 'delete'), validateEditMultipleIdsBody, deleteAdmin); // Soft delete single or multiple
 // ====== Admins Routes Ends ======
 
-export default router;
+export {adminUserRouter,guestUserRouter};

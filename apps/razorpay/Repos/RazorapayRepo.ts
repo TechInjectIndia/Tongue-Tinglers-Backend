@@ -6,6 +6,13 @@ import { PaymentLinks } from "razorpay/dist/types/paymentLink";
 import Razorpay from "razorpay";
 import { validateWebhookSignature } from "razorpay/dist/utils/razorpay-utils";
 import { parseAndSaveEvent } from "../utils/razorpay-utils";
+import {
+    DTO,
+    getSuccessDTO,
+    getUnhandledErrorDTO
+} from "../../common/models/DTO";
+import {handleError} from "../../common/utils/HelperMethods";
+import {Payments} from "razorpay/dist/types/payments";
 
 export class RazorpayRepo implements IRazorpayRepo {
   private readonly razorpay: Razorpay;
@@ -58,12 +65,25 @@ export class RazorpayRepo implements IRazorpayRepo {
       throw new Error(`Error generating refund: ${error.message}`);
     }
   }
+    async getTransaction(paymentId: string): Promise<DTO<Payments.RazorpayPayment>> {
+        try {
+            const payment = await this.razorpay.payments.fetch(paymentId);
+            return getSuccessDTO(payment);
+        } catch (error: any) {
+            handleError(error, null);
+            return getUnhandledErrorDTO( `${error.message ?? ""}: payment not found against id: ${paymentId}`,)
+        }
+    }
 
   async callback(req: Request, res: Response): Promise<Response> {
     try {
       const webhookSignature = req.headers["x-razorpay-signature"] as string;
       const body = req.body;
 
+
+      if(!webhookSignature){
+          return res.status(200).send({ message: "Webhook Signature doesn't exist" });
+      }
       // Validate webhook signature
       const isVerified = validateWebhookSignature(
         JSON.stringify(body),

@@ -39,7 +39,7 @@ interface BaseOrder {
     // notes: number[];
     customer_details: number;
     payment_type: string;
-    payment_id: number | null;
+    payment_id: string | null;
     cancelled_items: number[];
     total_discount: number;
     delivery_details: any | null;
@@ -85,6 +85,7 @@ interface ParsedOrder extends ParsedMeta, OrderPayload {
     totalDiscount: number;
     deliveryDetails: any; //todo @nitesh convert to interface
     shippingAddress: Address;
+    billingAddress: Address;
     totalShipping: number;
     anomalyArr: number[];
     coupon: string | null;

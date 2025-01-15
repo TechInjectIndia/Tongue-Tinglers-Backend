@@ -11,7 +11,7 @@ type TFirebaseUser = {
 };
 
 const serviceAccount: ServiceAccount = serviceAccountJson as ServiceAccount;
-console.log(CONFIG.BUCKET_URL);
+console.log('firebase bucket',CONFIG.BUCKET_URL);
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -50,7 +50,7 @@ export const verifyFirebaseToken = async (idToken: string) => {
 export const createFirebaseUser = async (user: TFirebaseUser) => {
     try {
         // so we can use many number on same account
-        delete user.phoneNumber;
+        // delete user.phoneNumber;
         const {uid} = await admin.auth().createUser(user);
         return { success: true, uid };
     } catch (err) {

@@ -19,4 +19,6 @@ export interface IProductRepo {
     getAll(page: number, limit: number, search: string, filters: object): Promise<Pagination<ParsedProduct>>;
 
     changeStatus(payload: CHANGE_STATUS): Promise<IProductTable>;
+
+    getAllProductBySamplekit(page: number,limit: number): Promise<Pagination<ParsedProduct>>
 }

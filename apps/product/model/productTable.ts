@@ -1,5 +1,5 @@
-import {DataTypes, Model, Optional, Transaction} from "sequelize";
-import {sequelize} from "../../../config";
+import { DataTypes, Model, Optional, Transaction } from "sequelize";
+import { sequelize } from "../../../config";
 import {
     IProductTable,
     PRODUCT_STATUS,
@@ -7,19 +7,26 @@ import {
 } from "apps/product/interface/Product";
 
 import RepoProvider from "apps/RepoProvider";
-import {
-    ProductVariationsModel
-} from "../../product-options/models/ProductVariationTable";
-import {UserModel} from "apps/user/models/UserTable";
-import {CartProductModel} from "../../cart-products/model/CartProductTable";
-
+import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
+import { UserModel } from "apps/user/models/UserTable";
+import { CartProductModel } from "../../cart-products/model/CartProductTable";
 
 interface ProductCreationAttributes
-    extends Optional<IProductTable, "id" | "createdAt" | "createdBy" | "updatedAt" | "updatedBy" | "deletedBy" | "deletedAt"> {
-}
+    extends Optional<
+        IProductTable,
+        | "id"
+        | "createdAt"
+        | "createdBy"
+        | "updatedAt"
+        | "updatedBy"
+        | "deletedBy"
+        | "deletedAt"
+    > {}
 
-class ProductModel extends Model<IProductTable, ProductCreationAttributes>
-    implements IProductTable {
+class ProductModel
+    extends Model<IProductTable, ProductCreationAttributes>
+    implements IProductTable
+{
     id: number;
     name: string;
     MOQ: number;
@@ -39,21 +46,21 @@ class ProductModel extends Model<IProductTable, ProductCreationAttributes>
     public readonly deletedAt!: Date | null;
 
     public addVariation!: (
-        option: ProductVariationsModel | number
+        option: ProductVariationsModel | number,
     ) => Promise<void>;
     public addVariations!: (
         options: Array<ProductVariationsModel | number>,
         // transaction: Transaction
     ) => Promise<void>;
     public setVariationses!: (
-        options: Array<ProductVariationsModel | number>
+        options: Array<ProductVariationsModel | number>,
     ) => Promise<void>;
     public getVariationses!: () => Promise<ProductVariationsModel[]>;
     public removeVariations!: (
-        option: ProductVariationsModel | number
+        option: ProductVariationsModel | number,
     ) => Promise<void>;
     public removeVariationses!: (
-        options: Array<ProductVariationsModel | number>
+        options: Array<ProductVariationsModel | number>,
     ) => Promise<void>;
 
     public static associate() {
@@ -80,17 +87,23 @@ class ProductModel extends Model<IProductTable, ProductCreationAttributes>
         //     as: "product", // Alias for the reverse relationship
         //   });
 
-        ProductModel.belongsTo(UserModel,
-            {as: 'createdByUser', foreignKey: 'createdBy'})
-        ProductModel.belongsTo(UserModel,
-            {as: 'updatedByUser', foreignKey: 'updatedBy'})
-        ProductModel.belongsTo(UserModel,
-            {as: 'deletedByUser', foreignKey: 'deletedBy'})
+        ProductModel.belongsTo(UserModel, {
+            as: "createdByUser",
+            foreignKey: "createdBy",
+        });
+        ProductModel.belongsTo(UserModel, {
+            as: "updatedByUser",
+            foreignKey: "updatedBy",
+        });
+        ProductModel.belongsTo(UserModel, {
+            as: "deletedByUser",
+            foreignKey: "deletedBy",
+        });
 
         ProductModel.hasMany(CartProductModel, {
-            foreignKey: 'product_id',
-            as: 'cartProducts'  // Alias to use if you want to reference
-                                // CartProduct from Product
+            foreignKey: "product_id",
+            as: "cartProducts", // Alias to use if you want to reference
+            // CartProduct from Product
         });
     }
 
@@ -129,13 +142,17 @@ class ProductModel extends Model<IProductTable, ProductCreationAttributes>
                 status: {
                     type: DataTypes.ENUM(
                         PRODUCT_STATUS.ACTIVE,
-                        PRODUCT_STATUS.INACTIVE
+                        PRODUCT_STATUS.INACTIVE,
                     ),
                     defaultValue: PRODUCT_STATUS.ACTIVE,
                     allowNull: false,
                 },
                 type: {
-                    type: DataTypes.ENUM("retort", "packaging"),
+                    type: DataTypes.ENUM(
+                        PRODUCTS_TYPE.PACKAGING,
+                        PRODUCTS_TYPE.RETORT,
+                        PRODUCTS_TYPE.SAMPLE_KIT,
+                    ),
                     allowNull: false,
                 },
                 tax_rate_id: {
@@ -182,7 +199,7 @@ class ProductModel extends Model<IProductTable, ProductCreationAttributes>
                 modelName: "Product",
                 tableName: "products",
                 timestamps: true,
-            }
+            },
         );
         return ProductModel;
     }
@@ -193,7 +210,7 @@ class ProductModel extends Model<IProductTable, ProductCreationAttributes>
                 "create",
                 "Product",
                 instance,
-                options
+                options,
             );
         });
 
@@ -204,7 +221,7 @@ class ProductModel extends Model<IProductTable, ProductCreationAttributes>
                 "update",
                 "Product",
                 instance,
-                options
+                options,
             );
         });
 
@@ -214,11 +231,10 @@ class ProductModel extends Model<IProductTable, ProductCreationAttributes>
                 "delete",
                 "Product",
                 instance,
-                options
+                options,
             );
         });
     }
-
 }
 
-export {ProductModel};
+export { ProductModel };

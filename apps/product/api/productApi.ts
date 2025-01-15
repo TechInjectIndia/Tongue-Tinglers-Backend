@@ -1,10 +1,11 @@
 import * as express from 'express';
 import ProductController from '../controllers/productController';
 import { validateCreateProduct, validateProductList, validateProductById, validateUpdateProduct, validateDeleteProduct, validateChangeProductStatus } from "../validations/productValidations";
+import {auth} from "../../../middlewares";
 
 const router = express.Router();
 
-const {createProduct, getAllProducts, getProductById, updateProduct, deleteProduct, updateStatus}  = ProductController;
+const {createProduct, getAllProducts, getProductById, updateProduct, deleteProduct, updateStatus, getAllProductBySampleKit}  = ProductController;
 
 /**
  * @swagger
@@ -210,11 +211,12 @@ const {createProduct, getAllProducts, getProductById, updateProduct, deleteProdu
  */
 
 
-router.post('/create', validateCreateProduct, createProduct);
+router.post('/create', auth, validateCreateProduct, createProduct);
 router.get('/list',validateProductList ,getAllProducts);
 router.get('/:id', validateProductById, getProductById);
-router.put('/update/:id',validateProductById, validateUpdateProduct, updateProduct);
-router.put('/delete/:id', validateDeleteProduct, deleteProduct);
-router.put('/update-status/:id',validateChangeProductStatus ,updateStatus);
+router.put('/update/:id',auth,validateProductById, validateUpdateProduct, updateProduct);
+router.put('/delete/:id',auth,validateDeleteProduct, deleteProduct);
+router.put('/update-status/:id',auth,validateChangeProductStatus ,updateStatus);
+router.get('/getAllProductBySamplekit/sample-kit', getAllProductBySampleKit)
 
 export default router;

@@ -74,7 +74,7 @@ const parseOrder = async (order: any): Promise<ParsedOrder> => {
 
     const data: ParsedOrder = {
         anomalyArr: [],
-        billingAddress: undefined,
+        billingAddress: order.billingAddress,
         cancelledItems: [],
         coupon: "",
         couponCodes: [],
@@ -86,7 +86,7 @@ const parseOrder = async (order: any): Promise<ParsedOrder> => {
         deliveryDetails: null,
         deliveryStatus: "",
         discount: null,
-        id: 0,
+        id: order.id,
         items: [],
         notes: [],
         orderItems: productVariations, // Now populated with the resolved values
@@ -95,7 +95,7 @@ const parseOrder = async (order: any): Promise<ParsedOrder> => {
         price: order.price,
         shippingAddress: order.shippingAddress,
         status: order.status,
-        total: 0,
+        total: order.total,
         totalDiscount: 0,
         totalShipping: 0,
         totalTax: 0,

@@ -12,7 +12,7 @@ import {OrderItemsModel} from "../../order-items/models/OrderItemsTable";
 
 const parseOrder = (order: any): ParsedOrder => {
     const productVariations = order.orderItems.map((orderItem: any) =>{
-            console.log(parseOrderItem(orderItem));
+            // console.log(parseOrderItem(orderItem));
         }
         // parseOrderItem(orderItem)
     );

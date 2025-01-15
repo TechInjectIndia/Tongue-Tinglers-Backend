@@ -29,6 +29,13 @@ const rateLimiter = new RateLimiterMemory({
 });
 
 import './apps/database/index'
+import {loggerMiddleware} from "./apps/logger/middlewares/loggerMiddleware";
+import {
+    PendingOrderModel
+} from "./apps/pending-orders/models/PendingOrderTable";
+import {parseAndSavePendingOrderToOrder} from "./apps/order/parser/parseOrder";
+import {OrderRepo} from "./apps/order/repos/orderRepo";
+import RepoProvider from "./apps/RepoProvider";
 
 
 declare global {
@@ -108,15 +115,19 @@ server.use(cors(corsOptions)); // Purpose: Provides a middleware for enabling
                                // various
 server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");
+
+server.get("/a", async (_, res) => {
+
+    console.log("Hello")
+    const dd = await  PendingOrderModel.findOne({where:{id:1}});
+    console.log(dd.toJSON());
+    const resp = await  parseAndSavePendingOrderToOrder(dd.toJSON())
+    res.send(resp)
+});
+
 server.get("/", async (_, res) => {
-    let email: string = "harshdalal.techinject@gmail.com";
-
-    // welcome mail
-    // const mailDto = new FinalizeDetailsMail().getPayload({}, email);
-    const mailDto = new LeadToProspectMail().getPayload({}, email);
-    const resp = await sendMail(mailDto);
-
-    res.send(resp);
+    const resp = await  RepoProvider.orderRepo.getAllOrders(100,100,'',{})
+    res.send(resp)
 });
 server.use("/api", router);
 

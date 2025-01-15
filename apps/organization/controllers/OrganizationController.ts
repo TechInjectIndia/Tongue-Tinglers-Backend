@@ -297,4 +297,33 @@ export default class OrganizationController {
                 .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
+
+    static async getOrgDetails(req: Request, res: Response, next: NextFunction) {
+        try {
+            const id = parseInt(get(req.params, "id"));
+            if(!id) throw Error("missing id in params")
+            const organization = await new OrganizationRepo().getOrgDetails(id);
+            if (isEmpty(organization)) {
+                return res
+                    .status(400)
+                    .send(sendResponse(RESPONSE_TYPE.ERROR,
+                        ERROR_MESSAGE.NOT_EXISTS));
+            }
+
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        organization,
+                    ),
+                );
+        } catch (error) {
+            console.error(error);
+            return res
+                .status(500)
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
+        }
+    }
 }

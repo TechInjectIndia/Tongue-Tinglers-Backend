@@ -13,17 +13,18 @@ export class ProductsCategoryRepo implements IProductsCategoryRepo {
                 name: category.name,
                 slug: category.slug,
                 description: category.description,
+                type: category.type,
                 status: category.status,
                 createdBy: category.createdBy,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 deletedAt: null,
             })
-            
+
             return newCategory.toJSON();
         } catch (error) {
             console.log(error);
-            return null; 
+            return null;
         }
     }
 
@@ -118,7 +119,7 @@ export class ProductsCategoryRepo implements IProductsCategoryRepo {
             return existingProductsCategory.toJSON();
         } catch (error) {
             console.log(error);
-            return null;  
+            return null;
         }
     }
 

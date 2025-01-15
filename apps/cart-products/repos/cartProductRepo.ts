@@ -20,7 +20,6 @@ export class CartProductRepo implements ICartProductRepo {
     async create(cartProduct: Cart): Promise<ParsedCartDetail | null> {
         const transaction = await CartProductModel.sequelize?.transaction();
         try {
-
             // Step 1: Bulk create cart products
             const createdCartProducts = await CartProductModel.bulkCreate(
                 cartProduct.carts.map((product) => ({
@@ -56,7 +55,6 @@ export class CartProductRepo implements ICartProductRepo {
 
             const user = parseIncludedUserModel(userCartWithAssociations?.toJSON());
             console.log("userCart got--->", user);
-
 
             // Step 3: Associate cart products with cart details
             await userCart.addCartProducts(cartProductIds, { transaction });
@@ -145,23 +143,35 @@ export class CartProductRepo implements ICartProductRepo {
         }
     }
 
-    async updateQuantity(quantityUpdate: UpdateQuantity): Promise<CartProduct> {
+    async updateQuantity(quantityUpdate: UpdateQuantity, user_id: number): Promise<CartProduct> {
         try {
+            console.log('quantityUpdate',quantityUpdate.id);
+            
             const existingCartProduct = await CartProductModel.findOne({
                 where: {
-                    id: quantityUpdate.id,
-                    product_id: quantityUpdate.product_id,
-                    product_option_id: quantityUpdate.product_option_id,
+                    id: quantityUpdate.id
                 },
             });
+            console.log('existingCartProduct -- >',existingCartProduct);
+            
 
             if (!existingCartProduct) {
-                throw new Error(`Cart not found`);
+                const cart: Cart = {
+                    user_id: user_id,
+                    carts: [
+                        {
+                            product_id: quantityUpdate.product_id,
+                            product_option_id: quantityUpdate.product_option_id,
+                            quantity: quantityUpdate.quantity,
+                        },
+                    ],
+                };
+                await this.create(cart);
+            } else {
+                await existingCartProduct.update({
+                    quantity: quantityUpdate.quantity,
+                });
             }
-
-            await existingCartProduct.update({
-                quantity: quantityUpdate.quantity,
-            });
 
             return existingCartProduct.toJSON();
         } catch (error) {

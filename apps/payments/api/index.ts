@@ -226,6 +226,8 @@ const {
 // ====== Payments Starts ======
 router.post("/generate-link", validateGenerateLinkBody, PaymentsController.generatePaymentLink);
 router.get("/fetch-payment/:paymentId", PaymentsController.fetchPayment);
+
+// @TODO @rajinder sir this is payment callback
 router.post("/callback", PaymentsController.callback);
 // ====== Payments Ends ======
 

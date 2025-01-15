@@ -62,7 +62,7 @@ class ProductsCategoryModel
             },
             type: {
                 type: DataTypes.ENUM(CATEGORY_TYPE.RETORT,
-                    CATEGORY_TYPE.PACKAGING),
+                    CATEGORY_TYPE.PACKAGING,CATEGORY_TYPE.SAMPLE_KIT),
             },
             createdBy: {
                 type: DataTypes.INTEGER,

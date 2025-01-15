@@ -101,13 +101,7 @@ const createGuestBody = Joi.object().keys({
             'number.base': 'Role must be a number.',
             'any.required': 'Role is required.'
         }),
-    type: Joi.string()
-        .valid(...Object.values(USER_TYPE.GUEST))
-        .required()
-        .messages({
-            'any.only': `Type must be one of ${Object.values(USER_TYPE.GUEST).join(', ')}.`,
-            'any.required': 'Type is required.',
-        }),
+    type: Joi.any()
 });
 
 

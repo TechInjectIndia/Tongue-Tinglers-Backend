@@ -36,7 +36,7 @@ import { PendingOrder } from "../../pending-orders/interface/PendingOrder";
 import { PendingOrderRepo } from "../../pending-orders/repos/PendingOrderRepo";
 import { RPOrderTable } from "apps/rp-order/models/RPOrderTable";
 
-export class OrderRepo  {
+export class OrderRepo implements  IOrderRepo{
     async createOrder(transaction: Transaction, order: OrderPayload): Promise<Order | null> {
         try {
             let notesCreated: Notes[] = [];
@@ -251,7 +251,7 @@ export class OrderRepo  {
             const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order.data.parsedOrder, order.data.rpOrder.id);
             await new PendingOrderRepo().create(pendingOrderData)
             await RPOrderTable.create(order.data.rpOrder);
-            
+
             return order;
         } catch (err) {
             return getUnhandledErrorDTO(err.message);

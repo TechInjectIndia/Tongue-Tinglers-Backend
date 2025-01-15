@@ -25,8 +25,8 @@ export interface IOrderRepo {
         page: number,
         limit: number,
         search: string,
-        filters: Record<string, any>,
-    ): Promise<OrderPagination<OrderModel>>;
+        filters: Record<string, any>
+    ): Promise<OrderPagination<ParsedOrder>>;
 
     processOrder(
         state: OrderState,

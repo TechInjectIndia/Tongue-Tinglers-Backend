@@ -97,9 +97,9 @@ export class OrderProvider implements IOrderProvider {
         const rpOrderRes = await this.transformToRPOrder(order);
 
 
-        const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order, rpOrderRes.data.id);
-        await new PendingOrderRepo().create(pendingOrderData)
-        await RPOrderTable.create(rpOrderRes.data);
+        // const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order, rpOrderRes.data.id);
+        // await new PendingOrderRepo().create(pendingOrderData)
+        // await RPOrderTable.create(rpOrderRes.data);
 
         console.log("RP order--------->", rpOrderRes.data);
 

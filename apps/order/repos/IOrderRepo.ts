@@ -37,7 +37,7 @@ export interface IOrderRepo {
 
     getOrdersByUser(userId: number): Promise<ParsedOrder[]>
 
-    proceedToPayment(state: OrderState): Promise<DTO<boolean>>
+    proceedToPayment(state: OrderState): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>>
 
     /**
      * DB Transaction

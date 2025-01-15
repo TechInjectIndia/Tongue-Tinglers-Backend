@@ -221,13 +221,10 @@ export class OrderRepo implements  IOrderRepo{
                 ],
             });
 
-            let finals=rows.map((d)=>{
-                parseOrder(d.toJSON());
-            })
-
+            const finals = await Promise.all(rows.map((d) => parseOrder(d.toJSON())));
             // Returning paginated result
             return {
-                data: rows as unknown as ParsedOrder[], // Corrected from "order" to "rows"
+                data: finals, // Corrected from "order" to "rows"
                 total,
                 page,
                 limit,
@@ -269,7 +266,7 @@ export class OrderRepo implements  IOrderRepo{
                     },
                 ],
             });
-            return orders.map((order) => parseOrder(order));
+            return await Promise.all(orders.map((order) => parseOrder(order)));
         } catch (error) {
             console.log(error);
             return [];

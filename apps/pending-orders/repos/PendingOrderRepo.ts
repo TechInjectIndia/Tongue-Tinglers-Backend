@@ -2,16 +2,19 @@ import {PendingOrderPayload} from "../interface/PendingOrder";
 import {PendingOrderModel} from "../models/PendingOrderTable";
 import {IPendingOrderRepo} from "./IPendingOrderRepo";
 import {UserModel} from "apps/user/models/UserTable";
-import {ParsedOrder} from "../../order/interface/Order";
+import {Order, OrderPayload, ParsedOrder} from "../../order/interface/Order";
+import {DTO, getSuccessDTO} from "../../common/models/DTO";
+import {parseOrder} from "../../order/parser/parseOrder";
 
 export class PendingOrderRepo implements IPendingOrderRepo {
-    async create(payload: PendingOrderPayload): Promise<any | null> {
+    async create(payload: OrderPayload) : Promise<DTO<ParsedOrder>> {
         try{
-            const user = await UserModel.findByPk(payload.customerDetails.id);
+            const user = await UserModel.findByPk(payload.customer_details);
             if(!user){
-                throw new Error(`User with ID ${payload.customerDetails.id} not found.`);
+                throw new Error(`User with ID ${payload.customer_details} not found.`);
             }
-            return await PendingOrderModel.create(payload);
+            const res =  await PendingOrderModel.create(payload);
+            return res? getSuccessDTO(parseOrder(res.toJSON())):get;
         }catch(error){
             console.log(error);
             return null;

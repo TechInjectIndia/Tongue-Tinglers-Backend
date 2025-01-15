@@ -33,12 +33,12 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     deletedBy!: number | null;
 
     // Mixin methods for managing notes
-    public addNote!: (note: NotesModel | number) => Promise<void>;
-    public addNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
-
-    public getNotes!: () => Promise<NotesModel[]>;
-    public removeNote!: (note: NotesModel | number) => Promise<void>;
-    public removeNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
+    // public addNote!: (note: NotesModel | number) => Promise<void>;
+    // public addNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
+    //
+    // public getNotes!: () => Promise<NotesModel[]>;
+    // public removeNote!: (note: NotesModel | number) => Promise<void>;
+    // public removeNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
 
     // Mixin methods for managing notes
     public addOrderItem!: (note: OrderItemsModel | number) => Promise<void>;

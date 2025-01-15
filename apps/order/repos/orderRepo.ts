@@ -36,7 +36,7 @@ import { PendingOrder } from "../../pending-orders/interface/PendingOrder";
 import { PendingOrderRepo } from "../../pending-orders/repos/PendingOrderRepo";
 import { RPOrderTable } from "apps/rp-order/models/RPOrderTable";
 
-export class OrderRepo implements IOrderRepo {
+export class OrderRepo  {
     async createOrder(transaction: Transaction, order: OrderPayload): Promise<Order | null> {
         try {
             let notesCreated: Notes[] = [];
@@ -53,14 +53,14 @@ export class OrderRepo implements IOrderRepo {
             }
 
             // Create notes if provided
-            if (notes && notes.length > 0) {
-                notesCreated = await Promise.all(
-                    notes.map(async (note) => {
-                        const createdNote = await NotesModel.create(note);
-                        return createdNote.toJSON(); // Convert to plain object if needed
-                    })
-                );
-            }
+            // if (notes && notes.length > 0) {
+            //     notesCreated = await Promise.all(
+            //         notes.map(async (note) => {
+            //             const createdNote = await NotesModel.create(note);
+            //             return createdNote.toJSON(); // Convert to plain object if needed
+            //         })
+            //     );
+            // }
 
             const orderItemIds = orderItemsCreated.map((orderItem) => orderItem.id);
             const noteIds = notesCreated.map((note) => note.id);
@@ -173,7 +173,7 @@ export class OrderRepo implements IOrderRepo {
         limit: number,
         search: string,
         filters: Record<string, any>
-    ): Promise<OrderPagination<OrderModel>> {
+    ): Promise<OrderPagination<ParsedOrder>> {
         try {
             const offset = (page - 1) * limit;
 
@@ -211,11 +211,23 @@ export class OrderRepo implements IOrderRepo {
             }
 
             // Fetch data with total count
-            const { rows, count: total } = await OrderModel.findAndCountAll(query);
+            let { rows, count: total } = await OrderModel.findAndCountAll({
+                include: [
+                    {
+                        model: OrderItemsModel,
+                        through: { attributes: [] }, // Exclude the join table from the results
+                        as: "orderItems", // Use the alias defined in the association
+                    },
+                ],
+            });
+
+            let finals=rows.map((d)=>{
+                parseOrder(d.toJSON());
+            })
 
             // Returning paginated result
             return {
-                data: rows, // Corrected from "order" to "rows"
+                data: rows as unknown as ParsedOrder[], // Corrected from "order" to "rows"
                 total,
                 page,
                 limit,

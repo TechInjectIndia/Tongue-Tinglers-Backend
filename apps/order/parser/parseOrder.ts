@@ -11,46 +11,44 @@ import {OrderItemsModel} from "../../order-items/models/OrderItemsTable";
 
 
 const parseOrder = (order: any): ParsedOrder => {
-    const productVariations = order.order_items.map((orderItem: any) =>
-        parseOrderItem(orderItem)
+    const productVariations = order.orderItems.map((orderItem: any) =>{
+            console.log(parseOrderItem(orderItem));
+        }
+        // parseOrderItem(orderItem)
     );
-    console.log(order)
+
+
+
     const data: ParsedOrder = {
-        id: order.id,
-        orderItems: productVariations,
-        status: order.status,
-        total: order.total,
-        anomalyArr: order.anomalyArr,
-        cancelledItems: order.cancelled_items,
-        paymentId: order.payment_id,
+        anomalyArr: [],
+        billingAddress: undefined,
+        cancelledItems: [],
+        coupon: "",
+        couponCodes: [],
+        createdAt: order.created_at,
         createdBy: order.createdBy,
-        updatedBy: order.updatedBy,
-        deletedBy: order.deletedBy,
-        createdAt: order.createdAt,
-        updatedAt: order.updatedAt,
+        customerDetails: order.customerDetails,
         deletedAt: order.deletedAt,
-        customerDetails: order.customer_details,
-        deliveryDetails: order.delivery_details,
-        deliveryStatus: order.delivery_status,
-        notes: order.notes,
-        paymentType: order.payment_type,
-        totalDiscount: order.total_discount,
-        totalShipping: order.total_shipping,
-        totalTax: order.total_tax,
-        shippingAddress:order.shippingAddress,
-        billingAddress:order.billingAddress,
-        coupon: null,
+        deletedBy: order.deletedBy,
+        deliveryDetails: null,
+        deliveryStatus: "",
+        discount: null,
+        id: 0,
         items: [],
-        discount: {},
-        price: {total: {
-                type: PRICE_COMP_TYPE_CART.BASE_PRICE,
-                percent: 12,
-                taxPercent: 18,
-                value: 200,
-                tax: 36,
-                calc: VALUE_TYPE.PERCENTAGE
-            }},
-        couponCodes: [] // why do we need this ?
+        notes: [],
+        orderItems: [],
+        paymentId: 0,
+        paymentType: null,
+        price: order.price,
+        shippingAddress: order.shippingAddress,
+        status: order.status,
+        total: 0,
+        totalDiscount: 0,
+        totalShipping: 0,
+        totalTax: 0,
+        updatedAt: order.updatedAt,
+        updatedBy: order.updatedBy
+
     };
 
     return data; // Return the result

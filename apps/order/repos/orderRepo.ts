@@ -36,7 +36,7 @@ import { PendingOrder } from "../../pending-orders/interface/PendingOrder";
 import { PendingOrderRepo } from "../../pending-orders/repos/PendingOrderRepo";
 import { RPOrderTable } from "apps/rp-order/models/RPOrderTable";
 
-export class OrderRepo implements  IOrderRepo{
+export class OrderRepo implements IOrderRepo {
     async createOrder(transaction: Transaction, order: OrderPayload): Promise<Order | null> {
         try {
             let notesCreated: Notes[] = [];
@@ -71,7 +71,7 @@ export class OrderRepo implements  IOrderRepo{
                     ...orderDetails, // Spread the remaining order details
                     // notes: noteIds, // Link notes by their IDs
                     createdAt: new Date(),
-                },
+                }
                 // { include: [{ association: "notes" }], transaction }
             );
 
@@ -152,17 +152,26 @@ export class OrderRepo implements  IOrderRepo{
     deleteOrder(orderId: number): Promise<any> {
         throw new Error("Method not implemented.");
     }
-    getOrderById(orderId: number): Promise<any> {
+    async getOrderById(orderId: number): Promise<any> {
         try {
-            return OrderModel.findByPk(orderId, {
+            const order = await OrderModel.findByPk(orderId, {
+                // include: [
+                //     {
+                //         model: NotesModel,
+                //         as: "noteses",
+                //         through: { attributes: [] },
+                //     },
+                // ],
                 include: [
                     {
-                        model: NotesModel,
-                        as: "noteses",
-                        through: { attributes: [] },
+                        model: OrderItemsModel,
+                        through: { attributes: [] }, // Exclude the join table from the results
+                        as: "orderItems", // Use the alias defined in the association
                     },
                 ],
             });
+
+            return parseOrder(order.toJSON());
         } catch (error) {
             console.log(error);
             return null;
@@ -242,11 +251,16 @@ export class OrderRepo implements  IOrderRepo{
         return new OrderProvider().processOrder(state);
     }
 
-    async proceedToPayment(state: OrderState): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>> {
+    async proceedToPayment(
+        state: OrderState
+    ): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>> {
         try {
             const order = await new OrderProvider().processOrder(state);
-            const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order.data.parsedOrder, order.data.rpOrder.id);
-            await new PendingOrderRepo().create(pendingOrderData)
+            const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(
+                order.data.parsedOrder,
+                order.data.rpOrder.id
+            );
+            await new PendingOrderRepo().create(pendingOrderData);
             await RPOrderTable.create(order.data.rpOrder);
 
             return order;

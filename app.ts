@@ -36,6 +36,7 @@ import {
 import {parseAndSavePendingOrderToOrder} from "./apps/order/parser/parseOrder";
 import {OrderRepo} from "./apps/order/repos/orderRepo";
 import RepoProvider from "./apps/RepoProvider";
+import leadCron from "apps/lead/cron/leadCron";
 
 
 declare global {

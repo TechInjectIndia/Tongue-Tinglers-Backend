@@ -17,7 +17,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     customer_details!: number;
     delivery_details!: number;
     delivery_status!: string;
-    payment_id!: number;
+    payment_id!: string;
     payment_type!: string;
     total_discount!: number;
     total_shipping!: number;
@@ -84,32 +84,32 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     allowNull: false,
                 },
                 total: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 anomalyArr: {
                     type: DataTypes.ARRAY(DataTypes.INTEGER),
-                    allowNull: false,
+                    allowNull: true,
                 },
                 cancelled_items: {
                     type: DataTypes.ARRAY(DataTypes.INTEGER),
-                    allowNull: false,
+                    allowNull: true,
                 },
                 customer_details: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 delivery_details: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 delivery_status: {
                     type: DataTypes.STRING,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 franchise_id: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 billingAddress:{
                     type: DataTypes.JSONB,
@@ -120,24 +120,24 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     allowNull: true,
                 },
                 payment_id: {
-                    type: DataTypes.INTEGER,
-                    allowNull: false,
+                    type: DataTypes.STRING,
+                    allowNull: true,
                 },
                 payment_type: {
                     type: DataTypes.STRING,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 total_discount: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 total_shipping: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 total_tax: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 prices: {
                     type: DataTypes.JSONB,

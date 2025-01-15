@@ -55,6 +55,7 @@ import {
 } from "apps/pending-orders/interface/PendingOrder";
 import { runAtomicFetch } from "../../common/utils/atomic-fetch/atomic-fetch";
 import RepoProvider from "../../RepoProvider";
+import {RPOrderTable} from "../../rp-order/models/RPOrderTable";
 export class OrderProvider implements IOrderProvider {
     async processOrder(
         state: OrderState,
@@ -95,24 +96,15 @@ export class OrderProvider implements IOrderProvider {
         // Transform the order into RPOrder and ParsedOrder
         const rpOrderRes = await this.transformToRPOrder(order);
 
+
+        const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order, rpOrderRes.data.id);
+        await new PendingOrderRepo().create(pendingOrderData)
+        await RPOrderTable.create(rpOrderRes.data);
+
+        console.log("RP order--------->", rpOrderRes.data);
+
         if (!rpOrderRes.success)
             return getUnhandledErrorDTO("Failed to create RP Order");
-
-        const rpOrder = rpOrderRes.data;
-
-        // assigning rpOrder id to order and saving to DB
-        const pendingOrderData =
-            await new PendingOrderRepo().createPendigOrderPayload(
-                order,
-                rpOrder.id,
-            );
-
-
-
-        const createPendingOrder = await new PendingOrderRepo().create(
-            pendingOrderData,
-        );
-
 
         return getSuccessDTO({ rpOrder: rpOrderRes.data, parsedOrder: order });
     }

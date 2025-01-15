@@ -44,23 +44,23 @@ class OrderItemsModel
                     allowNull: false,
                 },
                 total_price: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 total_tax: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 coupon_discount: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 points_discount: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 student_discount: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 type: {

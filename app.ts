@@ -30,6 +30,11 @@ const rateLimiter = new RateLimiterMemory({
 
 import './apps/database/index'
 import {loggerMiddleware} from "./apps/logger/middlewares/loggerMiddleware";
+import {
+    PendingOrderModel
+} from "./apps/pending-orders/models/PendingOrderTable";
+import {parseAndSavePendingOrderToOrder} from "./apps/order/parser/parseOrder";
+import {OrderRepo} from "./apps/order/repos/orderRepo";
 
 
 declare global {

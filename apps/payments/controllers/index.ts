@@ -28,6 +28,12 @@ import Razorpay from "razorpay";
 import {
     MakePaymentMail
 } from "../../../static/views/email/get-templates/MakePaymentMail";
+import {RPOrderTable} from "../../rp-order/models/RPOrderTable";
+import {PendingOrderRepo} from "../../pending-orders/repos/PendingOrderRepo";
+import {PendingOrderModel} from "../../pending-orders/models/PendingOrderTable";
+import {where} from "sequelize";
+import {OrderModel} from "../../order/models/OrderTable";
+import {parseAndSavePendingOrderToOrder} from "../../order/parser/parseOrder";
 
 const {
     validateWebhookSignature,
@@ -56,11 +62,6 @@ export default class PaymentsController {
             }
 
             if (body.payload && body.payload.payment_link && body.payload.payment_link.entity) {
-
-                console.log("Nit 1s")
-                console.dir(body,{depth:null});
-
-
                 const paymentId = body.payload.payment_link.entity.id;
                 const status = body.payload.payment_link.entity.status;
 
@@ -99,16 +100,32 @@ export default class PaymentsController {
 
 
                 return res.status(200).send({ message: "Webhook processed successfully" });
-            } else {
+            }
+            else if(body.payload && body.payload.order  && body.payload.order.entity &&
+                body.payload.order.entity.status === "paid"){
+                const rpResponse = await RPOrderTable.findOne({where:{id:body.payload.order.entity.id}});
+                if(rpResponse){
+                    // @TODO @rajinder sir this is temporary
+                    try {
+                        const pendingOrderRes = await PendingOrderModel.findOne({
+                            where: { paymentId: rpResponse.id }  // 'paymentId' is the column you're filtering by
+                        });
+                        if (pendingOrderRes) {
+                            const response = await parseAndSavePendingOrderToOrder(pendingOrderRes.toJSON());
+                        } else {
+                            console.log('No pending order found for the provided paymentId');
+                        }
+                    } catch (error) {
+                        console.error('Error retrieving pending order:', error);
+                    }
 
-                console.log("Nitesh 2")
-                console.dir(body,{depth:null});
-                console.log("Invalid payload structure", body);
+                }
+            }
+            else {
                 return res.status(200).send({ message: "Invalid payload structure" });
             }
         } catch (error) {
             console.error("Error processing webhook:", error);
-
             // In case of any error, send a generic error message
             return res.status(200).send({ message: "Internal Server Error" });
         }

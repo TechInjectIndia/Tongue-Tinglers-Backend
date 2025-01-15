@@ -33,13 +33,11 @@ import RepoProvider from "../../RepoProvider";
 import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
 import { ProductOptions } from "../../product/interface/ProductOptions";
 import { PendingOrder } from "../../pending-orders/interface/PendingOrder";
-import {PendingOrderRepo} from "../../pending-orders/repos/PendingOrderRepo";
+import { PendingOrderRepo } from "../../pending-orders/repos/PendingOrderRepo";
+import { RPOrderTable } from "apps/rp-order/models/RPOrderTable";
 
 export class OrderRepo implements IOrderRepo {
-    async createOrder(
-        transaction: Transaction,
-        order: OrderPayload,
-    ): Promise<Order | null> {
+    async createOrder(transaction: Transaction, order: OrderPayload): Promise<Order | null> {
         try {
             let notesCreated: Notes[] = [];
             let orderItemsCreated: any[] = [];
@@ -48,10 +46,9 @@ export class OrderRepo implements IOrderRepo {
             if (orderItems && orderItems.length > 0) {
                 orderItemsCreated = await Promise.all(
                     orderItems.map(async (orderItem) => {
-                        const createdOrderItem =
-                            await OrderItemsModel.create(orderItem);
+                        const createdOrderItem = await OrderItemsModel.create(orderItem);
                         return createdOrderItem.toJSON(); // Convert to plain object if needed
-                    }),
+                    })
                 );
             }
 
@@ -61,13 +58,11 @@ export class OrderRepo implements IOrderRepo {
                     notes.map(async (note) => {
                         const createdNote = await NotesModel.create(note);
                         return createdNote.toJSON(); // Convert to plain object if needed
-                    }),
+                    })
                 );
             }
 
-            const orderItemIds = orderItemsCreated.map(
-                (orderItem) => orderItem.id,
-            );
+            const orderItemIds = orderItemsCreated.map((orderItem) => orderItem.id);
             const noteIds = notesCreated.map((note) => note.id);
 
             // Create the order
@@ -77,7 +72,7 @@ export class OrderRepo implements IOrderRepo {
                     // notes: noteIds, // Link notes by their IDs
                     createdAt: new Date(),
                 },
-                { include: [{ association: "noteses" }], transaction },
+                { include: [{ association: "noteses" }], transaction }
             );
 
             orderCreated.addNotes(noteIds);
@@ -101,10 +96,7 @@ export class OrderRepo implements IOrderRepo {
 
             // Fetch the existing order to ensure it exists
             const existingOrder = await OrderModel.findByPk(orderId, {
-                include: [
-                    { association: "noteses" },
-                    { association: "orderItems" },
-                ],
+                include: [{ association: "noteses" }, { association: "orderItems" }],
             });
 
             if (!existingOrder) {
@@ -180,7 +172,7 @@ export class OrderRepo implements IOrderRepo {
         page: number,
         limit: number,
         search: string,
-        filters: Record<string, any>,
+        filters: Record<string, any>
     ): Promise<OrderPagination<OrderModel>> {
         try {
             const offset = (page - 1) * limit;
@@ -190,13 +182,13 @@ export class OrderRepo implements IOrderRepo {
                 where: {},
                 limit,
                 offset,
-                include: [
-                    {
-                        model: NotesModel,
-                        as: "noteses",
-                        through: { attributes: [] },
-                    },
-                ],
+                // include: [
+                //     {
+                //         model: NotesModel,
+                //         as: "notes",
+                //         through: { attributes: [] },
+                //     },
+                // ],
             };
 
             // Adding search functionality
@@ -219,8 +211,7 @@ export class OrderRepo implements IOrderRepo {
             }
 
             // Fetch data with total count
-            const { rows, count: total } =
-                await OrderModel.findAndCountAll(query);
+            const { rows, count: total } = await OrderModel.findAndCountAll(query);
 
             // Returning paginated result
             return {
@@ -237,7 +228,7 @@ export class OrderRepo implements IOrderRepo {
     }
 
     async processOrder(
-        state: OrderState,
+        state: OrderState
     ): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>> {
         return new OrderProvider().processOrder(state);
     }
@@ -245,18 +236,14 @@ export class OrderRepo implements IOrderRepo {
     async proceedToPayment(state: OrderState): Promise<DTO<boolean>> {
         try {
             const order = await new OrderProvider().processOrder(state);
-            console.log('here');
-
-            // const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order);
-            // console.log(pendingOrderData);
-
-            // await new PendingOrderRepo().create(pendingOrderData);
+            // const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order.data.parsedOrder, order.data.rpOrder.id);
+            // await new PendingOrderRepo().create(pendingOrderData)
+            // await RPOrderTable.create(order.data.rpOrder);
             return getSuccessDTO(true);
         } catch (err) {
             return getUnhandledErrorDTO(err.message);
         }
     }
-
     async getOrdersByUser(userId: number): Promise<ParsedOrder[]> {
         try {
             const orders = await OrderModel.findAll({
@@ -264,7 +251,7 @@ export class OrderRepo implements IOrderRepo {
                 include: [
                     {
                         model: NotesModel,
-                        as: "noteses",
+                        as: "notes",
                         through: { attributes: [] },
                     },
                 ],
@@ -277,7 +264,7 @@ export class OrderRepo implements IOrderRepo {
     }
 
     async processPostOrderTransaction(
-        paymentOrderId: string,
+        paymentOrderId: string
     ): Promise<DTO<ProcessPostOrderResult>> {
         try {
             const transaction = await sequelize.transaction();
@@ -285,7 +272,7 @@ export class OrderRepo implements IOrderRepo {
             //  validate already processedOrder
             const validationRes = await this.validateAlreadyProcessedOrder(
                 transaction,
-                paymentOrderId,
+                paymentOrderId
             );
 
             if (
@@ -302,15 +289,9 @@ export class OrderRepo implements IOrderRepo {
 
             const p1 = this.processStock(transaction, result.order);
 
-            const p2 = this.createOrderAndUpdatePendingOrder(
-                transaction,
-                result.order,
-            );
+            const p2 = this.createOrderAndUpdatePendingOrder(transaction, result.order);
 
-            const p3 = this.clearCart(
-                transaction,
-                result.order.customerDetails.id,
-            );
+            const p3 = this.clearCart(transaction, result.order.customerDetails.id);
 
             await Promise.all([p1, p2, p3]);
 
@@ -321,7 +302,7 @@ export class OrderRepo implements IOrderRepo {
             handleError(error);
 
             return getUnhandledErrorDTO(
-                `${error.message ?? ""}: error in process order transaction`,
+                `${error.message ?? ""}: error in process order transaction`
             );
         }
     }
@@ -330,7 +311,7 @@ export class OrderRepo implements IOrderRepo {
 
     private async validateAlreadyProcessedOrder(
         transaction: Transaction,
-        paymentOrderId: string,
+        paymentOrderId: string
     ): Promise<DTO<ProcessPostOrderResult>> {
         const res: ProcessPostOrderResult = {
             order: null,
@@ -350,7 +331,7 @@ export class OrderRepo implements IOrderRepo {
         if (!pendingOrder) {
             return getSuccessDTO(
                 res,
-                `Pending order not found for: paymentOrderId ${paymentOrderId}`,
+                `Pending order not found for: paymentOrderId ${paymentOrderId}`
             );
         }
 
@@ -361,10 +342,9 @@ export class OrderRepo implements IOrderRepo {
             res.alreadyProcessed = true;
             return getSuccessDTO(
                 res,
-                `Pending order:${pendingOrder.id},  for: paymentOrderId ${paymentOrderId} is Already processed`,
+                `Pending order:${pendingOrder.id},  for: paymentOrderId ${paymentOrderId} is Already processed`
             );
         }
-
         return getSuccessDTO(res);
     }
 
@@ -372,10 +352,7 @@ export class OrderRepo implements IOrderRepo {
         return order.items.map((item) => item.id);
     }
     private async processStock(transaction: Transaction, order: PendingOrder) {
-        const stocksMap = await this.getStocksMap(
-            transaction,
-            this.getStockIds(order),
-        );
+        const stocksMap = await this.getStocksMap(transaction, this.getStockIds(order));
 
         //     decrement stock
         for (const item of order.items) {
@@ -401,7 +378,7 @@ export class OrderRepo implements IOrderRepo {
         Array.from(stocksMap).forEach(([id, option]) => {
             const promise = ProductVariationsModel.update(
                 { stock: option.stock },
-                { where: { id }, transaction },
+                { where: { id }, transaction }
             ).then(() => {});
 
             promises.push(promise);
@@ -416,10 +393,7 @@ export class OrderRepo implements IOrderRepo {
      * @param order
      * @private
      */
-    private async createOrderAndUpdatePendingOrder(
-        transaction: Transaction,
-        order: PendingOrder,
-    ) {
+    private async createOrderAndUpdatePendingOrder(transaction: Transaction, order: PendingOrder) {
         // todo @Mandeep handle this function
         //     save order in order table
         //     update in pendingOrder table
@@ -428,7 +402,7 @@ export class OrderRepo implements IOrderRepo {
 
     private async getStocksMap(
         transaction: Transaction,
-        ids: number[],
+        ids: number[]
     ): Promise<Map<number, ProductOptions>> {
         const options = (
             await ProductVariationsModel.findAll(
@@ -436,12 +410,12 @@ export class OrderRepo implements IOrderRepo {
                 {
                     where: { id: { [Op.in]: ids } }, // Match any ID in the array
                     transaction,
-                },
+                }
             )
         ).map((model) => model.toJSON());
 
         const result: Map<number, ProductOptions> = new Map(
-            options.map((option) => [option.id, option]),
+            options.map((option) => [option.id, option])
         );
 
         return result;

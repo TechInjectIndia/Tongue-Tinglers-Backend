@@ -117,7 +117,7 @@ server.get("/", async (_, res) => {
     res.send(resp);
 });
 
-leadCron.startCron("07 23 * * *")  //Purpose: start cron for lead which dont have any follow up for last 7 days, whoes status is new and has assigned user
+leadCron.startCron("0 10 * * *")  //Purpose: start cron for lead which dont have any follow up for last 7 days, whoes status is new and has assigned user
 
 server.use("/api", router);
 

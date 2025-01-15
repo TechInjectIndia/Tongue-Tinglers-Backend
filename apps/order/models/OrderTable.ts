@@ -52,12 +52,12 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     public addAnomalyOrderItems:(anomalies:Array<any|number>)=>Promise<void>;
 
     public static associate(){
-        OrderModel.belongsToMany(NotesModel, {
-            through: "order_notes_join", // Join table name
-            foreignKey: "orderId", // Foreign key in the join table
-            otherKey: "notes_id", // Other foreign key in the join table
-            as: "notes", // Alias for the relationship
-        });
+        // OrderModel.belongsToMany(NotesModel, {
+        //     through: "order_notes_join", // Join table name
+        //     foreignKey: "orderId", // Foreign key in the join table
+        //     otherKey: "notes_id", // Other foreign key in the join table
+        //     as: "notes", // Alias for the relationship
+        // });
 
         OrderModel.belongsToMany(OrderItemsModel, {
             through: "order_items_join", // Join table name

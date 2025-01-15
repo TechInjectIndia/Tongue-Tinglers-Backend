@@ -29,6 +29,7 @@ import expressSanitizer from "express-sanitizer";
 // import RepoProvider from "./apps/RepoProvider";
 import { sendMail } from "libraries/resend";
 import { LeadToProspectMail } from "static/views/email/get-templates/LeadToProspectMail";
+import leadCron from "apps/lead/cron/leadCron";
 
 require("dotenv").config();
 
@@ -115,6 +116,9 @@ server.get("/", async (_, res) => {
 
     res.send(resp);
 });
+
+leadCron.startCron("07 23 * * *")  //Purpose: start cron for lead which dont have any follow up for last 7 days, whoes status is new and has assigned user
+
 server.use("/api", router);
 
 const PORT = CONFIG.PORT;

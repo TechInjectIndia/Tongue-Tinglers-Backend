@@ -182,11 +182,17 @@ export default class AdminController {
     static async addGuest(req: Request, res: Response, next: NextFunction) {
         try {
 
+            console.log("Hello")
             const payload = { ...req?.body, createdBy: 1 };
+
+            console.log(payload);
 
             const existingAdmin = await new Auth().getUserByEmail(
                 payload.email
             );
+
+            console.log(existingAdmin)
+
             if (existingAdmin) {
                 return res
                     .status(400)
@@ -201,23 +207,27 @@ export default class AdminController {
             const firebaseUser = await createFirebaseUser({
                 email: payload.email,
                 emailVerified: true,
-                phoneNumber: null,
+                phoneNumber: payload.phoneNumber,
                 password: payload.password,
                 disabled: false,
             });
 
+            console.log(firebaseUser)
+
             if (!firebaseUser?.success) {
                 return res
                     .status(400)
-                    .send(sendResponse(RESPONSE_TYPE.ERROR, firebaseUser?.uid));
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, firebaseUser.error));
             }
 
             const hashedPassword = await createPassword(payload.password);
-            await new AdminRepo().create({
+            const response = await new AdminRepo().create({
                 ...payload,
                 password: hashedPassword,
                 firebaseUid: firebaseUser.uid,
             });
+
+            console.log(response)
 
             try {
                 const emailContent = await getEmailTemplate(

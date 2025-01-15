@@ -13,16 +13,16 @@ class LeadCron {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        // Get date 7 days ago
-        const sevenDaysAgo = new Date(today);
-        sevenDaysAgo.setDate(today.getDate() - 7);
+        // // Get date 7 days ago
+        // const sevenDaysAgo = new Date(today);
+        // sevenDaysAgo.setDate(today.getDate() - 7);
 
         try {
             const data = await LeadsModel.findAll({
                 where: {
-                    status: "new",
+                    status: { [Op.notIn]: ["lost", "converted"]},
                     assignedUser: { [Op.ne]: null },
-                    createdAt: { [Op.lte]: sevenDaysAgo.toISOString() },
+                    // createdAt: { [Op.lte]: sevenDaysAgo.toISOString() },
                 },
                 include: [
                     {
@@ -66,7 +66,7 @@ class LeadCron {
                     const leads: ParsedLead[] = await this.getLeadStatusData();
 
                     if (!leads.length) {
-                        console.log("⚠️ No leads to process.");
+                        console.log("No leads to process.");
                         return;
                     }
 
@@ -109,7 +109,6 @@ class LeadCron {
     
                 result[email].leads.push(lead);
             });
-    console.log("result", result);
     
             // Iterate over each assigned user to send follow-up reminders
             for (const email in result) {

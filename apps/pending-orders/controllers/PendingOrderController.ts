@@ -28,6 +28,25 @@ export default class PendingOrderController {
         }
     }
 
+    static async getPendingOrderByAttributes(req: Request, res: Response){
+        try{
+            const payload = req.body;
+            const pendingOrder = await new PendingOrderRepo().getPendingOrderByAttributes(payload);
+            if(!pendingOrder) throw Error('Error getting pending order');
+            return res.status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.CREATED,
+                        pendingOrder
+                    ),
+                );
+        }catch(error){
+            console.error(error);
+            return res.status(400).json({ message: "Invalid request body" });
+        }
+    }
+
     static async deleteAllPendingOrderByOrderId(req: Request, res: Response){
         try{
             const orderId = parseInt(get(req.params, "id"));

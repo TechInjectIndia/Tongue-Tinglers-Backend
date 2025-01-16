@@ -93,6 +93,7 @@ interface ParsedOrder extends ParsedMeta {
     couponCodes: string[],
     notes: Notes[];
     orderItems: BaseOrderItem[];
+    orderType: ORDER_TYPE;
 }
 
 interface PresaleParsedOrder extends OrderPayload {

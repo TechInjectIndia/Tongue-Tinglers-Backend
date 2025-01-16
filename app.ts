@@ -110,20 +110,10 @@ server.use(xss()); // Purpose: Middleware for Express to sanitize user input
 server.use(expressSanitizer());
 // server.use(limiter); // Purpose: Limits repeated requests to public APIs
 // and/or endpoints, which helps to prevent
-server.use(cors(corsOptions)); // Purpose: Provides a middleware for enabling
-                               // Cross-Origin Resource Sharing (CORS) with
-                               // various
+server.use(cors(corsOptions));
 server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");
 
-server.get("/a", async (_, res) => {
-
-    console.log("Hello")
-    const dd = await  PendingOrderModel.findOne({where:{id:1}});
-    console.log(dd.toJSON());
-    const resp = await  parseAndSavePendingOrderToOrder(dd.toJSON())
-    res.send(resp)
-});
 
 server.get("/", async (_, res) => {
     const resp = await  RepoProvider.orderRepo.getAllOrders(100,100,'',{})

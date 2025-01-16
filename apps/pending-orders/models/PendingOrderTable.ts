@@ -12,7 +12,6 @@ class PendingOrderModel
     extends Model<Order, PendingOrderCreationAttributes>
     implements Order
 {
-
     status!: string;
     item_count!: number;
     total!: number;

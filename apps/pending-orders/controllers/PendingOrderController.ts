@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { get } from "lodash";
 import { sendResponse } from "../../../libraries";
-import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constants";
+import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
 import { PendingOrderRepo } from "../repos/PendingOrderRepo";
 
 export default class PendingOrderController {
 
-    async create(req: Request, res: Response) {
+    static async  create(req: Request, res: Response) {
         try{
             const user_id = parseInt(get(req, "user_id"));
             if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
@@ -28,7 +28,7 @@ export default class PendingOrderController {
         }
     }
 
-    async deleteAllPendingOrderByOrderId(req: Request, res: Response){
+    static async deleteAllPendingOrderByOrderId(req: Request, res: Response){
         try{
             const orderId = parseInt(get(req.params, "id"));
             if (isNaN(orderId)) throw Error('Missing orderId or isNaN');

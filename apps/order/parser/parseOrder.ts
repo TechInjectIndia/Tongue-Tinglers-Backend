@@ -26,7 +26,7 @@ console.log("productVariations: ",productVariations)
 
     const data: ParsedOrder = {
         anomalyArr: [],
-        billingAddress: order.billing_address,
+        billingAddress: order.billingAddress,
         cancelledItems: [],
         coupon: "",
         couponCodes: [],

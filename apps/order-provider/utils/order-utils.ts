@@ -1,7 +1,17 @@
-import { OrderStatus, ParsedOrder, PAYMENT_TYPE, PresaleParsedOrder } from "apps/order/interface/Order";
-import { IDiscComponent, PriceComponent } from "apps/order/interface/OrderItem";
-import { MetaUser, ParsedUser, TUser, USER_STATUS, USER_TYPE } from "apps/user/interface/user";
-import { json } from "sequelize";
+import {
+    ORDER_TYPE,
+    OrderStatus,
+    ParsedOrder,
+    PAYMENT_TYPE,
+    PresaleParsedOrder
+} from "apps/order/interface/Order";
+import {IDiscComponent, PriceComponent} from "apps/order/interface/OrderItem";
+import {
+    MetaUser,
+    ParsedUser,
+    USER_STATUS,
+    USER_TYPE
+} from "apps/user/interface/user";
 import {UserModel} from "../../user/models/UserTable";
 
 const getEmptyParsedOrder = () => {
@@ -24,6 +34,7 @@ const getEmptyParsedOrder = () => {
     };
 
     const obj: ParsedOrder = {
+        orderType: ORDER_TYPE.RM_ORDER,
         id: 0,
         status: OrderStatus.PROCESSED,
         total: 0,
@@ -71,7 +82,7 @@ const getEmptyParsedOrder = () => {
         couponCodes: [],
         discount: {},
         price: {},
-        createdBy: 0,
+        createdBy: 0
     };
 
     return obj;
@@ -111,6 +122,47 @@ function parseIncludedUserModel(obj: any): UserModel {
 
 const getEmptyPreSaleOrder=()=>{
     const preSaleParsedOrder: PresaleParsedOrder = {
+        anomalyArr: [],
+        billingAddress: {
+            id: 0,
+            street: "",
+            city: "",
+            state: "",
+            postalCode: "",
+            country: "",
+            phoneNumber: "",
+            firstName: "",
+            lastName: ""
+        },
+        cancelled_items: [],
+        createdBy: 0,
+        customer_details: 0,
+        deletedBy: 0,
+        delivery_details: 1,
+        delivery_status: "",
+        discount_prices: "",
+        franchise_id: 0,
+        item_count: 0,
+        order_type: ORDER_TYPE.RM_ORDER,
+        payment_id: "",
+        payment_type: "",
+        prices: "",
+        shippingAddress: {
+            id: 0,
+            street: "",
+            city: "",
+            state: "",
+            postalCode: "",
+            country: "",
+            phoneNumber: "",
+            firstName: "",
+            lastName: ""
+        },
+        status: "",
+        total_discount: 0,
+        total_shipping: 0,
+        total_tax: 0,
+        updatedBy: 0,
         total: 0,
         totalTax: 0,
         cancelledItems: [], // Initialize with no cancelled items.
@@ -118,7 +170,7 @@ const getEmptyPreSaleOrder=()=>{
         coupon: null, // Initialize with no coupon.
         items: [],
         notes: [], // Initialize with no notes.
-        orderItems: [],
+        orderItems: []
     };
 
     return preSaleParsedOrder

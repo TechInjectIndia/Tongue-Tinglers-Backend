@@ -1,46 +1,40 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import {
-    AnomalyOrderItem,
-    PendingOrder,
-    PendingOrderPayload
-} from "../interface/PendingOrder";
-import { OrderStatus, PAYMENT_TYPE } from "apps/order/interface/Order";
-import { ParsedUser } from "apps/user/interface/user";
-import {
-    IDiscComponent,
-    ParsedOrderItem,
-    PriceComponent,
-} from "apps/order/interface/OrderItem";
+    Order,
+    ORDER_TYPE
+} from "apps/order/interface/Order";
 import { Address } from "types";
 import { sequelize } from "../../../config";
 
-interface PendingOrderCreationAttributes extends Optional<PendingOrder, "id"> {}
+interface PendingOrderCreationAttributes extends Optional<Order, "id"> {}
 
 class PendingOrderModel
-    extends Model<PendingOrder, PendingOrderCreationAttributes>
-    implements PendingOrderPayload
+    extends Model<Order, PendingOrderCreationAttributes>
+    implements Order
 {
-    orderId: number;
-    status: OrderStatus;
-    total: number; // without Tax
-    totalTax: number;
-    deliveryStatus: string;
-    customerDetails: ParsedUser;
-    paymentType: PAYMENT_TYPE; //todo convert to enum
-    paymentId: string;
-    paymentOrderId: string;
-    cancelledItems: ParsedOrderItem[];
-    discount: Record<string, IDiscComponent>;
-    totalDiscount: number;
-    deliveryDetails: any; //todo @nitesh convert to interface
+    status!: string;
+    item_count!: number;
+    total!: number;
+    anomalyArr!: number[];
+    cancelled_items!: number[];
+    customer_details!: number;
+    delivery_details!: number;
+    delivery_status!: string;
+    payment_id!: string;
+    payment_type!: string;
+    total_discount!: number;
+    total_shipping!: number;
+    franchise_id: number;
+    billingAddress: Address;
     shippingAddress: Address;
-    totalShipping: number;
-    anomalyArr: number[];
-    coupon: string | null;
-    items: ParsedOrderItem[];
-    price: Record<string, PriceComponent>;
-    couponCodes: string[];
-    anomalies: AnomalyOrderItem[]|null;
+    total_tax!: number;
+    prices!: string | null;
+    discount_prices!: string | null;
+    order_type: ORDER_TYPE;
+    createdBy!: number | null;
+    updatedBy!: number | null;
+    deletedBy!: number | null;
+
 
     public static initModel() {
         PendingOrderModel.init(
@@ -50,89 +44,82 @@ class PendingOrderModel
                     autoIncrement: true,
                     primaryKey: true,
                 },
-                orderId: {
+                status: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
+                item_count: {
                     type: DataTypes.INTEGER,
                     allowNull: false,
                 },
-                status: {
-                    type: DataTypes.ENUM(...Object.values(OrderStatus)), // Assuming OrderStatus is an enum
-                    allowNull: false,
-                },
                 total: {
-                    type: DataTypes.FLOAT,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
-                },
-                totalTax: {
-                    type: DataTypes.FLOAT,
-                    allowNull: true,
-                },
-                deliveryStatus: {
-                    type: DataTypes.STRING,
-                    allowNull: true,
-                },
-                customerDetails: {
-                    type: DataTypes.JSON, // Store complex objects as JSON
-                    allowNull: false,
-                },
-                paymentType: {
-                    type: DataTypes.ENUM(...Object.values(PAYMENT_TYPE)), // Assuming PAYMENT_TYPE is an enum
-                    allowNull: false,
-                },
-                paymentId: {
-                    type: DataTypes.STRING,
-                    allowNull: true,
-                },
-                paymentOrderId: {
-                    type: DataTypes.STRING,
-                    allowNull: false,
-                },
-                cancelledItems: {
-                    type: DataTypes.JSON, // Store array of objects as JSON
-                    allowNull: false,
-                },
-                discount: {
-                    type: DataTypes.JSON,
-                    allowNull: false,
-                },
-                totalDiscount: {
-                    type: DataTypes.FLOAT,
-                    allowNull: true,
-                },
-                deliveryDetails: {
-                    type: DataTypes.JSON,
-                    allowNull: true,
-                },
-                shippingAddress: {
-                    type: DataTypes.JSON,
-                    allowNull: true,
-                },
-                totalShipping: {
-                    type: DataTypes.FLOAT,
-                    allowNull: true,
                 },
                 anomalyArr: {
-                    type: DataTypes.JSON,
-                    allowNull: true, // Array of numbers
+                    type: DataTypes.ARRAY(DataTypes.INTEGER),
+                    allowNull: true,
                 },
-                coupon: {
+                cancelled_items: {
+                    type: DataTypes.ARRAY(DataTypes.INTEGER),
+                    allowNull: true,
+                },
+                customer_details: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
+                },
+                delivery_details: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
+                },
+                delivery_status: {
                     type: DataTypes.STRING,
                     allowNull: true,
                 },
-                items: {
-                    type: DataTypes.JSON,
-                    allowNull: false,
-                },
-                anomalies: {
-                    type: DataTypes.JSON,
+                franchise_id: {
+                    type: DataTypes.INTEGER,
                     allowNull: true,
                 },
-                price: {
-                    type: DataTypes.JSON,
-                    allowNull: false,
+                billingAddress:{
+                    type: DataTypes.JSONB,
+                    allowNull: true,
                 },
-                couponCodes: {
-                    type: DataTypes.JSON,
-                    allowNull: true, // Array of strings
+                shippingAddress:{
+                    type: DataTypes.JSONB,
+                    allowNull: true,
+                },
+                payment_id: {
+                    type: DataTypes.STRING,
+                    allowNull: true,
+                },
+                payment_type: {
+                    type: DataTypes.STRING,
+                    allowNull: true,
+                },
+                total_discount: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
+                },
+                total_shipping: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
+                },
+                total_tax: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
+                },
+                prices: {
+                    type: DataTypes.JSONB,
+                    allowNull: true,
+                },
+                discount_prices: {
+                    type: DataTypes.JSONB,
+                    allowNull: true,
+                },
+                order_type: {
+                    type: DataTypes.ENUM(ORDER_TYPE.RM_ORDER, ORDER_TYPE.SAMPLE_KIT),
+                    allowNull: false,
+                    defaultValue: ORDER_TYPE.RM_ORDER
                 },
                 createdBy: {
                     type: DataTypes.INTEGER,
@@ -168,11 +155,15 @@ class PendingOrderModel
             {
                 sequelize,
                 tableName: "pending_orders",
-                timestamps: true, // Add `createdAt` and `updatedAt`
+                timestamps: true,
             },
         );
         return PendingOrderModel;
     }
+    createdAt: Date;
+    deletedAt: Date | null;
+    id: number;
+    updatedAt: Date | null;
 }
 
 export { PendingOrderModel };

@@ -37,7 +37,6 @@ interface BaseOrder {
     total: number;
     total_tax: number;
     delivery_status: string;
-    // notes: number[];
     customer_details: number;
     payment_type: string;
     payment_id: string | null;
@@ -72,7 +71,7 @@ export enum DeliveryStatus {
 
   }
 
-interface ParsedOrder extends ParsedMeta, OrderPayload {
+interface ParsedOrder extends ParsedMeta {
     id: number;
     status: OrderStatus;
     total: number; // without Tax
@@ -92,9 +91,11 @@ interface ParsedOrder extends ParsedMeta, OrderPayload {
     coupon: string | null;
     items: ParsedOrderItem[];
     price: Record<string, PriceComponent>;
-    couponCodes: string[]
     orderType: ORDER_TYPE
     franchise: ParsedFranchise
+    couponCodes: string[],
+    notes: Notes[];
+    orderItems: BaseOrderItem[];
 }
 
 interface PresaleParsedOrder extends OrderPayload {
@@ -106,7 +107,7 @@ interface PresaleParsedOrder extends OrderPayload {
     items: PreSaleParsedOrderItem[];
 }
 
-interface OrderPayload {
+interface OrderPayload  extends  BaseOrder{
     notes: Notes[];
     orderItems: BaseOrderItem[];
 }

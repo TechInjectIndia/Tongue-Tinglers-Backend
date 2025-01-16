@@ -4,13 +4,41 @@ import { TaxRateModel } from "../models/TaxRateTable";
 import { parseTaxRate } from "../parser/taxRateParser";
 import { ITaxRateRepo } from "./ITaxRateRepo";
 import { Op } from "sequelize";
+import { UserModel } from "apps/user/models/UserTable";
+import { getUserName } from "apps/common/utils/commonUtils";
 
 export default class TaxRateRepo implements ITaxRateRepo {
 
-    async create(payload: TaxRatePayload): Promise<ParsedTaxRate | null> {
+    async create(payload: TaxRatePayload, user_id: number): Promise<ParsedTaxRate | null> {
         try{
-            const taxRateCreated = await TaxRateModel.create(payload);
-            return parseTaxRate(taxRateCreated)
+            const user = await UserModel.findByPk(user_id);
+            if(!user){
+                throw new Error("User not found");
+            }
+            const taxRateCreated = await TaxRateModel.create(payload, {
+                userId: user.id,
+                userName: getUserName(user)
+            });
+            if(!taxRateCreated){
+                throw new Error("Tax Rate not created");
+            }
+            const taxRateCreatedData = await TaxRateModel.findOne({where: {
+                id: taxRateCreated.id
+            }, include:[
+                {
+                    model: UserModel,
+                    as: "createdByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "deletedByUser",
+                }
+            ]});
+            return parseTaxRate(taxRateCreatedData)
         }catch(error){
             console.log(error);
             return null;
@@ -25,7 +53,23 @@ export default class TaxRateRepo implements ITaxRateRepo {
             }
             existingTaxRate.set(payload);
             existingTaxRate.save();
-            return parseTaxRate(existingTaxRate);
+            const taxRateCreatedData = await TaxRateModel.findOne({where: {
+                id: id
+            }, include:[
+                {
+                    model: UserModel,
+                    as: "createdByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "deletedByUser",
+                }
+            ]});
+            return parseTaxRate(taxRateCreatedData);
         }catch(error){
             console.log(error)
             return null;
@@ -36,7 +80,21 @@ export default class TaxRateRepo implements ITaxRateRepo {
         try{
             const existingTaxRate = await TaxRateModel.findOne({where: {
                 id: id
-            }});
+            },include:[
+                {
+                    model: UserModel,
+                    as: "createdByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "deletedByUser",
+                }
+            ]
+            });
             if(!existingTaxRate){
                 throw new Error(`Tax Rate with ID ${id} not found`);
             }
@@ -65,7 +123,20 @@ export default class TaxRateRepo implements ITaxRateRepo {
                 offset,
                 limit,
                 order: [["createdAt", "DESC"]],
-                include:[]
+                include:[
+                    {
+                        model: UserModel,
+                        as: "createdByUser",
+                    },
+                    {
+                        model: UserModel,
+                        as: "updatedByUser",
+                    },
+                    {
+                        model: UserModel,
+                        as: "deletedByUser",
+                    }
+                ]
             }).then((data)=> {
                 return {
                     rows: data.rows.map((taxRate) => parseTaxRate(taxRate)),
@@ -82,7 +153,22 @@ export default class TaxRateRepo implements ITaxRateRepo {
 
     async delete(id: number): Promise<ParsedTaxRate> {
         try{
-            const existingTaxRate = await TaxRateModel.findByPk(id);
+
+            const existingTaxRate = await TaxRateModel.findOne({
+                where:{id},
+                include:[{
+                    model: UserModel,
+                    as: "createdByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "deletedByUser",
+                }]
+            });
             if(!existingTaxRate){
                 throw new Error(`Tax Rate with ID ${id} not found`);
             }

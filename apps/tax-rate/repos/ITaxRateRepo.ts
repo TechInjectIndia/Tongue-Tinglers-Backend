@@ -2,7 +2,7 @@ import { Pagination } from "apps/common/models/common";
 import { ParsedTaxRate, TaxRatePayload } from "../interface/taxRate";
 
 export interface ITaxRateRepo {
-    create(payload: TaxRatePayload): Promise<ParsedTaxRate | null>;
+    create(payload: TaxRatePayload, user_id: number): Promise<ParsedTaxRate | null>;
 
     update(id: number, payload: TaxRatePayload): Promise<ParsedTaxRate | null>;
 

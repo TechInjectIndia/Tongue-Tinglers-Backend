@@ -11,7 +11,7 @@ export default class TaxRateController {
         try{
             const user_id = parseInt(get(req, 'user_id'));
             const payload = { ...req.body, createdBy: user_id };
-            const taxRate = await new TaxRateRepo().create(payload);
+            const taxRate = await new TaxRateRepo().create(payload, user_id);
             return res
                 .status(200)
                 .send(

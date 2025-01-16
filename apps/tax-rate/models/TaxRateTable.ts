@@ -1,13 +1,15 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { TaxRateTable } from "../interface/taxRate";
 import { sequelize } from "../../../config";
+import { UserModel } from "apps/user/models/UserTable";
+import RepoProvider from "apps/RepoProvider";
 
 interface TaxRateCreationAttributes
     extends Optional<TaxRateTable, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> {
 }
 
 class TaxRateModel extends Model<TaxRateTable, TaxRateCreationAttributes>
-implements TaxRateTable {
+    implements TaxRateTable {
     public id!: number;
     public title!: string;
     public value!: number;
@@ -18,7 +20,22 @@ implements TaxRateTable {
     public updatedAt!: Date;
     public deletedAt!: Date;
 
-    public static initModel(){
+    public static associate() {
+        TaxRateModel.belongsTo(UserModel, {
+            foreignKey: 'createdBy',
+            as: 'createdByUser',
+        })
+        TaxRateModel.belongsTo(UserModel, {
+            foreignKey: 'updatedBy',
+            as: 'updatedByUser',
+        })
+        TaxRateModel.belongsTo(UserModel, {
+            foreignKey: 'deletedBy',
+            as: 'deletedByUser',
+        })
+    }
+
+    public static initModel() {
         TaxRateModel.init({
             id: {
                 type: DataTypes.INTEGER,
@@ -72,6 +89,36 @@ implements TaxRateTable {
         })
         return TaxRateModel
     }
+
+    public static hook() {
+        TaxRateModel.addHook("afterCreate", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "create",
+                "Tax Rate",
+                instance,
+                options
+            );
+        });
+
+        TaxRateModel.addHook("afterUpdate", async (instance, options) => {
+            // Now call logModelAction as before
+            await RepoProvider.LogRepo.logModelAction(
+                "update",
+                "Tax Rate",
+                instance,
+                options
+            );
+        });
+
+        TaxRateModel.addHook("afterDestroy", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "delete",
+                "Tax Rate",
+                instance,
+                options
+            );
+        });
+    }
 }
 
-export {TaxRateModel}
+export { TaxRateModel }

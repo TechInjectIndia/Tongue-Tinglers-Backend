@@ -17,9 +17,7 @@ interface BaseProduct {
     variations: Array<BaseProductOptions> | null;
 }
 
-interface IProductTable extends Omit<BaseProduct,'variations'>, BaseMeta {
-
-}
+interface IProductTable extends Omit<BaseProduct, "variations">, BaseMeta {}
 
 enum PRODUCT_STATUS {
     ACTIVE = "active",
@@ -29,9 +27,8 @@ enum PRODUCT_STATUS {
 enum PRODUCTS_TYPE {
     RETORT = "retort",
     PACKAGING = "packaging",
-    SAMPLE_KIT= "sample-kit"
+    SAMPLE_KIT = "sample-kit",
 }
-
 
 // interface TListFilters {
 //     offset: number;
@@ -73,6 +70,11 @@ interface ParsedProduct extends ParsedMeta {
     variations?: Array<ParsedProductOptions>;
 }
 
+export interface TaxRate {
+    id: number;
+    title: string;
+    value: number;
+}
 
 export {
     IProductTable,
@@ -81,5 +83,6 @@ export {
     Pagination,
     PRODUCT_STATUS,
     CHANGE_STATUS,
-    ParsedProduct
+    ParsedProduct,
+    
 };

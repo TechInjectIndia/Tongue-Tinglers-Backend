@@ -34,6 +34,7 @@ const getEmptyParsedOrder = () => {
     };
 
     const obj: ParsedOrder = {
+        orderType: ORDER_TYPE.RM_ORDER,
         id: 0,
         status: OrderStatus.PROCESSED,
         total: 0,
@@ -81,7 +82,7 @@ const getEmptyParsedOrder = () => {
         couponCodes: [],
         discount: {},
         price: {},
-        createdBy: 0,
+        createdBy: 0
     };
 
     return obj;

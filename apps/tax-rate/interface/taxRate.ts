@@ -1,5 +1,5 @@
 import { BaseMeta, BaseMetaUsers } from "apps/common/models/Base";
-import { ParsedUser } from "apps/user/interface/user";
+import { MetaUser, ParsedUser } from "apps/user/interface/user";
 
 interface TaxRatePayload {
     title: string;
@@ -12,9 +12,9 @@ interface ParsedTaxRate {
     id: number;
     title: string;
     value: number;
-    createdBy: ParsedUser;
-    updatedBy: ParsedUser | null;
-    deletedBy: ParsedUser | null;
+    createdBy: MetaUser;
+    updatedBy: MetaUser | null;
+    deletedBy: MetaUser | null;
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date;

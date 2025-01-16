@@ -3,7 +3,7 @@ import {APIResponse} from "../../common/models/Base";
 import {
     COMMISSION_PAID_STATUS,
     CommissionEntityMappingModel,
-    ICommissionEntity,
+    ICommissionEntityMapping,
     ICommissionEntityMappingResponse, CommissionVoucherCreationAttributes
 } from "../model/CommissionEntityMappingTable";
 import {CommissionTable} from "../model/CommmisionTable";
@@ -136,7 +136,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
     }
 
     async updateMapEntity(id: number,
-        mapEntity: ICommissionEntity): Promise<APIResponse<boolean>> {
+        mapEntity: ICommissionEntityMapping): Promise<APIResponse<boolean>> {
         try {
             await CommissionEntityMappingModel.update(mapEntity, {
                 where: {

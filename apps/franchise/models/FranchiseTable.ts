@@ -10,7 +10,7 @@ import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
 import {
     CommissionEntityMappingModel,
-    ICommissionEntity
+    ICommissionEntityMapping
 } from "../../commission/model/CommissionEntityMappingTable";
 
 

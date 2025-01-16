@@ -28,7 +28,7 @@ import {PendingOrderModel} from "../../pending-orders/models/PendingOrderTable";
 import {parseAndSavePendingOrderToOrder} from "../../order/parser/parseOrder";
 import {
     COMMISSION_PAID_STATUS, CommissionVoucherCreationAttributes,
-    ICommissionEntity
+    ICommissionEntityMapping
 } from "../../commission/model/CommissionEntityMappingTable";
 
 import {validateWebhookSignature} from "razorpay/dist/utils/razorpay-utils";
@@ -134,7 +134,7 @@ export default class PaymentsController {
 
                                 // Prepare commission mapping entries
                                 const commissionEntries = franchiseModel.commissionMap.map(
-                                    (commission: ICommissionEntity) => {
+                                    (commission: ICommissionEntityMapping) => {
                                         const voucherCreationDto: CommissionVoucherCreationAttributes = {
                                             createdBy: 1, // system user - TT
                                             franchiseId: order.franchise_id,

@@ -9,7 +9,7 @@ import { ParsedRegion } from "apps/region/models/Region";
 import {MetaUser, ParsedUser} from "apps/user/interface/user";
 import {ICommission} from "../../commission/interface/Commission";
 import {
-    ICommissionEntity
+    ICommissionEntityMapping
 } from "../../commission/model/CommissionEntityMappingTable";
 
 
@@ -56,7 +56,7 @@ interface ParsedFranchise extends ParsedMeta {
     location: Address;
     sm: Array<SocialMediaDetails>;
     assignedUser: MetaUser | null
-    commissionMap: Array<ICommissionEntity>
+    commissionMap: Array<ICommissionEntityMapping>
 }
 
 enum FRANCHISE_STATUS {

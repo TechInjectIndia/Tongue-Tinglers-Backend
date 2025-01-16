@@ -10,13 +10,13 @@ const {STRING, DATE, INTEGER, NOW} = DataTypes;
 
 
 // Define the creation attributes by making certain fields optional
-type CommissionVoucherCreationAttributes = Optional<ICommissionEntity, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'deletedBy' | 'updatedBy'>
+type CommissionVoucherCreationAttributes = Optional<ICommissionEntityMapping, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'deletedBy' | 'updatedBy'>
 
 class CommissionEntityMappingModel
-    extends Model<ICommissionEntity, CommissionVoucherCreationAttributes>
-    implements ICommissionEntity {
+    extends Model<ICommissionEntityMapping, CommissionVoucherCreationAttributes>
+    implements ICommissionEntityMapping {
     public id: number;
-    // public franchiseId: number;
+    public franchiseId: number;
     public commissionId: number;
     public organizationId: number;
     public status: COMMISSION_PAID_STATUS;
@@ -71,7 +71,10 @@ class CommissionEntityMappingModel
                 type: INTEGER,
                 allowNull: false,
             },
-
+            franchiseId:{
+                type: INTEGER,
+                allowNull: false,
+            },
             organizationId: {
                 type: INTEGER,
                 allowNull: false,
@@ -140,19 +143,20 @@ enum COMMISSION_PAID_STATUS {
 }
 
 type OrganizationCommissions = {
-    organizationId: number; // payable to
-    commissionId: number;
+    franchiseId: number; // franchise being sold or franchise purchasing raw Material
+    organizationId: number; // payable to organization
+    commissionId: number; // commissionModelId
 }
 
-interface ICommissionEntity extends BaseMeta,OrganizationCommissions {
+//payable to, receiving party
+interface ICommissionEntityMapping extends BaseMeta, OrganizationCommissions {
 
 }
 
 interface ICommissionVoucher extends BaseMeta {
-    relationId: number, //many-to-many join Table id
+    relationId: number, // many-to-many join Table id, FK
     entityId: number,
     entityType: COMMISSION_VOUCHER_ENTITIES, // order | franchise
-    organizationId: number, // payable to
     status: COMMISSION_PAID_STATUS,
 }
 
@@ -194,7 +198,7 @@ export {
     CommissionEntityMappingModel,
     CommissionVoucherCreationAttributes,
     COMMISSION_ENTITIES,
-    ICommissionEntity,
+    ICommissionEntityMapping,
     COMMISSION_PAID_STATUS,
     OrganizationCommissions,
     ICommissionEntityMappingResponse

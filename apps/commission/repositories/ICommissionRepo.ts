@@ -3,7 +3,7 @@ import { ICommission } from "../interface/Commission";
 import {
     COMMISSION_PAID_STATUS,
     CommissionEntityMappingModel,
-    ICommissionEntity,
+    ICommissionEntityMapping,
     ICommissionEntityMappingResponse,
     CommissionVoucherCreationAttributes
 } from "../model/CommissionEntityMappingTable";
@@ -22,7 +22,7 @@ export interface ICommissionRepo {
 
     createMapEntities(mapEntities: CommissionVoucherCreationAttributes[], options?: { transaction?: any }): Promise<APIResponse<boolean>>;
 
-    updateMapEntity(id: number, mapEntity: ICommissionEntity): Promise<APIResponse<boolean>>;
+    updateMapEntity(id: number, mapEntity: ICommissionEntityMapping): Promise<APIResponse<boolean>>;
 
     isTitleAlreadyExists(title: string): Promise<APIResponse<boolean>>;
 

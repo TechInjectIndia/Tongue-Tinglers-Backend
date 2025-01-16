@@ -29,8 +29,8 @@ import {
 } from "../product-options/models/ProductVariationTable";
 import { FollowDetailsModel } from "apps/follow-details/model/followDetailModel";
 import {
-    CommissionEntityMapTable
-} from "apps/commission/model/CommissionEntityMapTable";
+    CommissionEntityMappingModel
+} from "../commission/model/CommissionEntityMappingTable";
 import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
 import {
     ProductsCategoryModel
@@ -107,7 +107,7 @@ const m = [
     ProductVariationsModel,
     AffiliateModel,
     FollowDetailsModel,
-    CommissionEntityMapTable,
+    CommissionEntityMappingModel,
     CommissionTable,
     CartDetailsModel,
     ProductsCategoryModel,
@@ -118,7 +118,7 @@ const m = [
     CartProductModel,
     ItemStockModel,
     RPOrderTable
-    
+
 
 ];
 
@@ -147,7 +147,7 @@ const models = {
     QuestionModel: QuestionModel.initModel(),
     CampaignQuestionModel: CampaignQuestionModel.initModel(),
     FollowDetailModel: FollowDetailsModel.initModel(),
-    CommissionEntityMap: CommissionEntityMapTable.initModel(),
+    CommissionEntityMap: CommissionEntityMappingModel.initModel(),
     Commission: CommissionTable.initModel(),
     CartDetails: CartDetailsModel.initModel(),
     ProductCategory: ProductsCategoryModel.initModel(),

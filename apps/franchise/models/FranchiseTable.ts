@@ -8,6 +8,10 @@ import { AddressModel } from "apps/address/models/AddressTable";
 import { UserModel } from "apps/user/models/UserTable";
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
+import {
+    CommissionEntityMappingModel,
+    ICommissionEntity
+} from "../../commission/model/CommissionEntityMappingTable";
 
 
 
@@ -55,21 +59,26 @@ class FranchiseModel
     public addFranchiseDocument!: (
         document: DocumentModel | number
     ) => Promise<void>;
+
     public addFranchiseDocuments!: (
         documents: Array<DocumentModel | number>
     ) => Promise<void>;
+
     public setFranchiseDocuments!: (
         documents: Array<DocumentModel | number>
     ) => Promise<void>;
+
     public removeFranchiseDocument!: (
         document: DocumentModel | number
     ) => Promise<void>;
+
     public removeFranchiseDocuments!: (
         documents: Array<DocumentModel | number>
     ) => Promise<void>;
 
     // Associations
     public static associate() {
+
         FranchiseModel.hasMany(DocumentModel, {
             foreignKey: "entity_id",
             as: "franchiseDocuments",

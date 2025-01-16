@@ -1,6 +1,12 @@
 import { APIResponse } from "apps/common/models/Base";
 import { ICommission } from "../interface/Commission";
-import { COMMISSION_PAID_STATUS, CommissionEntityMapTable, ICommissionEntityMapping, ICommissionEntityMappingResponse } from "../model/CommissionEntityMapTable";
+import {
+    COMMISSION_PAID_STATUS,
+    CommissionEntityMappingModel,
+    ICommissionEntity,
+    ICommissionEntityMappingResponse,
+    CommissionVoucherCreationAttributes
+} from "../model/CommissionEntityMappingTable";
 
 
 export interface ICommissionRepo {
@@ -14,9 +20,9 @@ export interface ICommissionRepo {
 
     getById(id: number): Promise<APIResponse<ICommission>>;
 
-    createMapEntities(mapEntities: ICommissionEntityMapping[], options?: { transaction?: any }): Promise<APIResponse<boolean>>;
+    createMapEntities(mapEntities: CommissionVoucherCreationAttributes[], options?: { transaction?: any }): Promise<APIResponse<boolean>>;
 
-    updateMapEntity(id: number, mapEntity: ICommissionEntityMapping): Promise<APIResponse<boolean>>;
+    updateMapEntity(id: number, mapEntity: ICommissionEntity): Promise<APIResponse<boolean>>;
 
     isTitleAlreadyExists(title: string): Promise<APIResponse<boolean>>;
 
@@ -24,6 +30,6 @@ export interface ICommissionRepo {
 
     getMappingsData(): Promise<APIResponse<ICommissionEntityMappingResponse[]>>;
 
-    updateCommisionEntityStatus(id: number, status: COMMISSION_PAID_STATUS): Promise<APIResponse<boolean>>;
+    updateCommissionEntityStatus(id: number, status: COMMISSION_PAID_STATUS): Promise<APIResponse<boolean>>;
 }
 

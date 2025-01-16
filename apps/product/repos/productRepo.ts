@@ -1,5 +1,5 @@
 import { IProductRepo } from "./IProductRepo";
-// import { ProductModel } from "";
+
 import { Op } from "sequelize";
 
 import { parseProduct } from "../parser/productParser";

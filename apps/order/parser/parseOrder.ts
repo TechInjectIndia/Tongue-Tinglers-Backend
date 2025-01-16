@@ -55,8 +55,7 @@ const parseOrder = (order: any): ParsedOrder => {
 };
 
 
-export const parseAndSavePendingOrderToOrder = async (pendingOrder: PendingOrder): Promise<any> => {
-    try {
+export const parseAndSavePendingOrderToOrder = async (pendingOrder: PendingOrder): Promise<BaseOrder> => {
         // Extract relevant data from PendingOrder
         let {
             orderId,
@@ -126,11 +125,8 @@ export const parseAndSavePendingOrderToOrder = async (pendingOrder: PendingOrder
         const response = await  OrderItemsModel.bulkCreate(orderItems);
         const orderInstance = await OrderModel.create(orderData);
         await orderInstance.addOrderItems(response)
+        return orderInstance.toJSON()
 
-    } catch (error) {
-        console.error("Error parsing pending order to order:", error);
-        throw new Error("Failed to parse pending order to order");
-    }
 };
 
 

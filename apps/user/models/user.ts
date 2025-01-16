@@ -205,7 +205,7 @@ export class AdminRepo  {
         email: {
           [Op.like]: `%${filters.search}%`,
         },
-        type: USER_TYPE.SUPER_FRANSHISE,
+        type: USER_TYPE.SUPER_FRANCHISE,
         deletedAt: { [Op.not]: null },
       },
       paranoid: false,
@@ -218,7 +218,7 @@ export class AdminRepo  {
         email: {
           [Op.like]: `%${filters.search}%`,
         },
-        type: USER_TYPE.SUPER_FRANSHISE,
+        type: USER_TYPE.SUPER_FRANCHISE,
         deletedAt: { [Op.not]: null },
       },
       paranoid: false,

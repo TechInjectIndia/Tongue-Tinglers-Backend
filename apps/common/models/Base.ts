@@ -28,7 +28,6 @@ interface ParsedMeta {
     deletedAt: Date | null;
 }
 
-
 /* TODO: mandeep singh - remove this after refactoring */
 interface PaginatedBaseResponse<T> {
     totalData: number;
@@ -36,8 +35,6 @@ interface PaginatedBaseResponse<T> {
     totalPages: number;
     data: T[];
 }
-
-
 
 export { BaseMeta, ParsedMeta, BaseMetaUsers, APIResponse, PaginatedBaseResponse };
 

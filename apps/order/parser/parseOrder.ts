@@ -8,20 +8,71 @@ import {
 import {PendingOrder} from "../../pending-orders/interface/PendingOrder";
 import {OrderModel} from "../models/OrderTable";
 import {OrderItemsModel} from "../../order-items/models/OrderItemsTable";
-import { parseUserToMetaUser } from "apps/user/parser/user-parser";
+import { parseCustomerDetails, parseUserToMetaUser } from "apps/user/parser/user-parser";
 import { UserModel } from "apps/user/models/UserTable";
 import { ParsedUser } from "apps/user/interface/user";
+import { parseFranchise } from "apps/franchise/parser/franchiseParser";
 
 
-// const parseOrder = (order: any): ParsedOrder => {
-//     console.log('order.orderItems: ', order.orderItems);
-//     const productVariations = order.orderItems.map((orderItem: any) =>{
-//             console.log(">>>>>>>parseOrderItem>>>>>>>>>>>",parseOrderItem(orderItem));
-//             parseOrderItem(orderItem)
-//         }
+const parseOrder = (order: any): ParsedOrder => {
+    console.log('order.orderItems: ', order.orderItems);
+    const productVariations = order.orderItems.map((orderItem: any) =>{
+            console.log(">>>>>>>parseOrderItem>>>>>>>>>>>",parseOrderItem(orderItem));
+            parseOrderItem(orderItem)
+        }
+    );
+
+console.log("productVariations: ",productVariations)
+
+    const data: ParsedOrder = {
+        anomalyArr: [],
+        billingAddress: order.billing_address,
+        cancelledItems: [],
+        coupon: "",
+        couponCodes: [],
+        createdAt: order.created_at,
+        createdBy: order.createdByUser ? parseUserToMetaUser(order.createdByUser) : null,
+        customerDetails: order.customer ? parseCustomerDetails(order.customer) : null,
+        deletedAt: order.deletedAt,
+        deletedBy: order.deletedByUser ? parseUserToMetaUser(order.deletedByUser) : null,
+        deliveryDetails: order.delivery_details,
+        deliveryStatus: order.delivery_status,
+        discount: null,
+        id: order.id,
+        items: [],
+        notes: [],
+        orderItems: productVariations,
+        paymentId: order.payment_id,
+        paymentType: order.payment_type,
+        price: order.prices,
+        shippingAddress: order.shippingAddress,
+        status: order.status,
+        total: order.total,
+        totalDiscount: order.total_discount,
+        totalShipping: order.total_shipping,
+        totalTax: order.total_tax,
+        updatedAt: order.updatedAt,
+        updatedBy: order.updatedByUser ? parseUserToMetaUser(order.updatedByUser) : null,
+        orderType: order.orderType,
+        franchise: order.franchise ? parseFranchise(order.franchise) : null
+    };
+
+    return data; // Return the result
+};
+
+
+// const parseOrder = async (order: any): Promise<ParsedOrder> => {
+//     // console.log('order.orderItems: ', order.orderItems);
+//     const customerDetails = await UserModel.findOne(({where: {id: order.customer_details},attributes:['id', 'firstName', 'lastName','email']}))
+//     console.log('customerDetails: ', customerDetails);
+//     // Use await inside map to ensure promises are resolved
+//     const productVariations = await Promise.all(
+//         order.orderItems.map(async (orderItem: any) => {// Await the parseOrderItem result
+//             return await parseOrderItem(orderItem); // Ensure to return the parsed item
+//         })
 //     );
 
-// console.log("productVariations: ",productVariations)
+    
 
 //     const data: ParsedOrder = {
 //         anomalyArr: [],
@@ -31,7 +82,7 @@ import { ParsedUser } from "apps/user/interface/user";
 //         couponCodes: [],
 //         createdAt: order.created_at,
 //         createdBy: order.createdBy,
-//         customerDetails: order.customerDetails,
+//         customerDetails: customerDetails as unknown as ParsedUser,
 //         deletedAt: order.deletedAt,
 //         deletedBy: order.deletedBy,
 //         deliveryDetails: null,
@@ -40,7 +91,7 @@ import { ParsedUser } from "apps/user/interface/user";
 //         id: 0,
 //         items: [],
 //         notes: [],
-//         orderItems: productVariations,
+//         orderItems: productVariations, // Now populated with the resolved values
 //         paymentId: 0,
 //         paymentType: null,
 //         price: order.price,
@@ -51,60 +102,11 @@ import { ParsedUser } from "apps/user/interface/user";
 //         totalShipping: 0,
 //         totalTax: 0,
 //         updatedAt: order.updatedAt,
-//         updatedBy: order.updatedBy
-
+//         updatedBy: order.updatedBy,
 //     };
 
 //     return data; // Return the result
 // };
-
-
-const parseOrder = async (order: any): Promise<ParsedOrder> => {
-    // console.log('order.orderItems: ', order.orderItems);
-    const customerDetails = await UserModel.findOne(({where: {id: order.customer_details},attributes:['id', 'firstName', 'lastName','email']}))
-    console.log('customerDetails: ', customerDetails);
-    // Use await inside map to ensure promises are resolved
-    const productVariations = await Promise.all(
-        order.orderItems.map(async (orderItem: any) => {// Await the parseOrderItem result
-            return await parseOrderItem(orderItem); // Ensure to return the parsed item
-        })
-    );
-
-    
-
-    const data: ParsedOrder = {
-        anomalyArr: [],
-        billingAddress: undefined,
-        cancelledItems: [],
-        coupon: "",
-        couponCodes: [],
-        createdAt: order.created_at,
-        createdBy: order.createdBy,
-        customerDetails: customerDetails as unknown as ParsedUser,
-        deletedAt: order.deletedAt,
-        deletedBy: order.deletedBy,
-        deliveryDetails: null,
-        deliveryStatus: "",
-        discount: null,
-        id: 0,
-        items: [],
-        notes: [],
-        orderItems: productVariations, // Now populated with the resolved values
-        paymentId: 0,
-        paymentType: null,
-        price: order.price,
-        shippingAddress: order.shippingAddress,
-        status: order.status,
-        total: 0,
-        totalDiscount: 0,
-        totalShipping: 0,
-        totalTax: 0,
-        updatedAt: order.updatedAt,
-        updatedBy: order.updatedBy,
-    };
-
-    return data; // Return the result
-};
 
 
 export const parseAndSavePendingOrderToOrder = async (pendingOrder: PendingOrder): Promise<any> => {

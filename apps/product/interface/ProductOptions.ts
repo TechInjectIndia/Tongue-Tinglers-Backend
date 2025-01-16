@@ -45,34 +45,34 @@ interface ParsedProductOptions {
     images: string;
 }
 
-// export const parsedProductOptions = (data: any):ParsedProductOptions => {
-//     console.log('data: ', data);
-//     // const optionValueData = new OptionsValueRepo().
-//     return {
-//         id: data.id,
-//         option_value: parseOptionsValues(data.optionsValue),
-//         price: data.price,
-//         stock: data.stock,
-//         status: data.status,
-//         images: data.images,
-//     };
-// };
-
-export const parsedProductOptions = async (data: any): Promise<ParsedProductOptions> => {
+export const parsedProductOptions = (data: any):ParsedProductOptions => {
     console.log('data: ', data);
-
-    // Ensure `data` is resolved before proceeding (assuming this is a promise)
-    const resolvedData = await data; // Ensure that data is resolved
-
+    // const optionValueData = new OptionsValueRepo().
     return {
-        id: resolvedData.id,
-        option_value: parseOptionsValues(resolvedData.optionsValue),
-        price: resolvedData.price,
-        stock: resolvedData.stock,
-        status: resolvedData.status,
-        images: resolvedData.images,
+        id: data.id,
+        option_value: parseOptionsValues(data.optionsValue),
+        price: data.price,
+        stock: data.stock,
+        status: data.status,
+        images: data.images,
     };
 };
+
+// export const parsedProductOptions = async (data: any): Promise<ParsedProductOptions> => {
+//     console.log('data: ', data);
+
+//     // Ensure `data` is resolved before proceeding (assuming this is a promise)
+//     const resolvedData = await data; // Ensure that data is resolved
+
+//     return {
+//         id: resolvedData.id,
+//         option_value: parseOptionsValues(resolvedData.optionsValue),
+//         price: resolvedData.price,
+//         stock: resolvedData.stock,
+//         status: resolvedData.status,
+//         images: resolvedData.images,
+//     };
+// };
 
 export {
     BaseProductOptions,

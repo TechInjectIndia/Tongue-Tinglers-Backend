@@ -73,7 +73,7 @@ const parseOrderItem = async (orderItem: OrderItem): Promise<ParsedOrderItem> =>
         ],
     });
 
-    const productOptionData = ProductVariationsModel.findOne({
+    const productOptionData = await  ProductVariationsModel.findOne({
         where: { id: orderItem.product_option_id },
         include: [
             {
@@ -91,7 +91,7 @@ const parseOrderItem = async (orderItem: OrderItem): Promise<ParsedOrderItem> =>
         ],
     })
 
-    const resolvedProductOptions = await parsedProductOptions(productOptionData);
+    const resolvedProductOptions = parsedProductOptions(productOptionData);
 
     // Construct ParsedOrderItem
     const data: ParsedOrderItem = {

@@ -59,18 +59,13 @@ interface ParsedProductOptions {
 // };
 
 export const parsedProductOptions =  (data: any): ParsedProductOptions=> {
-    console.log('data: ', data);
-
-    // Ensure `data` is resolved before proceeding (assuming this is a promise)
-    const resolvedData=  data; // Ensure that data is resolved
-
     return {
-        id: resolvedData.id,
-        option_value: parseOptionsValues(resolvedData.optionsValue),
-        price: resolvedData.price,
-        stock: resolvedData.stock,
-        status: resolvedData.status,
-        images: resolvedData.images,
+        id: data.id,
+        option_value: parseOptionsValues(data.optionsValue),
+        price: data.price,
+        stock: data.stock,
+        status: data.status,
+        images: data.images,
     };
 };
 

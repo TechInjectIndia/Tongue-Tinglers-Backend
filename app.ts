@@ -119,7 +119,7 @@ server.set("view engine", "ejs");
 server.get("/a", async (_, res) => {
 
     console.log("Hello")
-    const dd = await  PendingOrderModel.findOne({where:{id:1}});
+    const dd = await PendingOrderModel.findOne({where:{id:1}});
     console.log(dd.toJSON());
     const resp = await  parseAndSavePendingOrderToOrder(dd.toJSON())
     res.send(resp)

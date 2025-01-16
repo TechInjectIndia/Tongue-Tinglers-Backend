@@ -148,7 +148,7 @@ type OrganizationCommissions = {
     commissionId: number; // commissionModelId
 }
 
-//payable to, receiving party
+// relation of receiving party & franchise involved in trade - either sold / ordered RM
 interface ICommissionEntityMapping extends BaseMeta, OrganizationCommissions {
 
 }

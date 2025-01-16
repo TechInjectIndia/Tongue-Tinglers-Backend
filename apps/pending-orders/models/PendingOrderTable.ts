@@ -12,6 +12,7 @@ class PendingOrderModel
     extends Model<Order, PendingOrderCreationAttributes>
     implements Order
 {
+    id:number;
     status!: string;
     item_count!: number;
     total!: number;
@@ -162,7 +163,6 @@ class PendingOrderModel
     }
     createdAt: Date;
     deletedAt: Date | null;
-    id: number;
     updatedAt: Date | null;
 }
 

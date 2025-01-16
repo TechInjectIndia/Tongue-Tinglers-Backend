@@ -1,7 +1,7 @@
 import { IOrderRepo } from "./IOrderRepo";
 import { OrderModel } from "../models/OrderTable";
 import { NotesModel } from "../models/NotesTable";
-import { Op, Sequelize, Transaction, where } from "sequelize";
+import { Op, Transaction } from "sequelize";
 
 import { OrderItemsModel } from "../../order-items/models/OrderItemsTable";
 import { OrderItem } from "../../order-items/interface/orderItem";
@@ -27,9 +27,6 @@ import { handleError } from "../../common/utils/HelperMethods";
 import { sequelize } from "../../../config";
 import { PendingOrderModel } from "../../pending-orders/models/PendingOrderTable";
 import { ProcessPostOrderResult } from "../interface/ProcessPostOrderResult";
-import { CartDetailsModel } from "../../cart-details/models/CartDetailTable";
-import cartDetailApi from "../../cart-details/api/cartDetailApi";
-import RepoProvider from "../../RepoProvider";
 import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
 import { ProductOptions } from "../../product/interface/ProductOptions";
 import { PendingOrder } from "../../pending-orders/interface/PendingOrder";
@@ -206,7 +203,7 @@ export class OrderRepo implements  IOrderRepo{
             page = Math.max(1, page || 1);
             limit = Math.max(1, limit || 10);
             const offset = (page - 1) * limit;
-    
+
             // Base query structure
             const query: any = {
                 where: {},
@@ -222,7 +219,7 @@ export class OrderRepo implements  IOrderRepo{
                     { model: UserModel, as: "updatedByUser" },
                 ],
             };
-    
+
             // Add search functionality
             if (search) {
                 query.where[Op.or] = [
@@ -231,7 +228,7 @@ export class OrderRepo implements  IOrderRepo{
                     { payment_type: { [Op.iLike]: `%${search}%` } },
                 ];
             }
-    
+
             // Apply filters if provided
             if (filters && typeof filters === "object") {
                 Object.entries(filters).forEach(([key, value]) => {
@@ -240,13 +237,13 @@ export class OrderRepo implements  IOrderRepo{
                     }
                 });
             }
-    
+
             // Fetch paginated data
             const { rows, count: total } = await OrderModel.findAndCountAll(query);
-    
+
             // Parse the results
             const data = await Promise.all(rows.map((order) => parseOrder(order.toJSON())));
-    
+
             // Return the paginated result
             return {
                 data,
@@ -260,7 +257,7 @@ export class OrderRepo implements  IOrderRepo{
             throw new Error("Failed to fetch orders.");
         }
     }
-    
+
 
     async processOrder(
         state: OrderState
@@ -271,7 +268,7 @@ export class OrderRepo implements  IOrderRepo{
     async proceedToPayment(state: OrderState): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>> {
         try {
             const order = await new OrderProvider().processOrder(state);
-            const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order.data.parsedOrder);
+            const pendingOrderData = await new PendingOrderRepo().createPendingOrderPayload(order.data.parsedOrder,order.data.rpOrder.id);
             await new PendingOrderRepo().create(pendingOrderData)
             await RPOrderTable.create(order.data.rpOrder);
 
@@ -356,7 +353,6 @@ export class OrderRepo implements  IOrderRepo{
             alreadyProcessed: false,
         };
 
-        //     get pending Order
         const pendingOrder = (
             await PendingOrderModel.findOne({
                 where: {
@@ -392,7 +388,6 @@ export class OrderRepo implements  IOrderRepo{
     private async processStock(transaction: Transaction, order: PendingOrder) {
         const stocksMap = await this.getStocksMap(transaction, this.getStockIds(order));
 
-        //     decrement stock
         for (const item of order.items) {
             const stockOption = stocksMap.get(item.id);
             if (!stockOption || stockOption.stock < item.quantity) {

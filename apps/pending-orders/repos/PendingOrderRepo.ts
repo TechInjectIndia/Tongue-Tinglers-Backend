@@ -1,4 +1,3 @@
-import {PendingOrderPayload} from "../interface/PendingOrder";
 import {PendingOrderModel} from "../models/PendingOrderTable";
 import {IPendingOrderRepo} from "./IPendingOrderRepo";
 import {UserModel} from "apps/user/models/UserTable";
@@ -21,7 +20,7 @@ export class PendingOrderRepo implements IPendingOrderRepo {
         }
     }
 
-    async createPendigOrderPayload(order:ParsedOrder, paymentOrderId:string){
+    async createPendingOrderPayload(order:ParsedOrder, paymentOrderId:string){
         const pendingOrderPayload: OrderPayload = {
             anomalyArr: [],
             billingAddress: order.billingAddress,
@@ -47,38 +46,17 @@ export class PendingOrderRepo implements IPendingOrderRepo {
             total_shipping: 0,
             total_tax: 0,
             updatedBy: 0
-            // anomalies:[],
-            // anomalyArr: order.anomalyArr ? order.anomalyArr : [],
-            // cancelledItems: order.cancelledItems ? order.cancelledItems : [],
-            // coupon: order.coupon ? order.coupon : null,
-            // couponCodes: order.couponCodes ? order.couponCodes : [],
-            // customerDetails: order.customerDetails ? order.customerDetails : null,
-            // deliveryDetails: order.deliveryDetails ? order.deliveryDetails : null,
-            // deliveryStatus: order.deliveryStatus ? order.deliveryStatus : null,
-            // discount: order.discount ? order.discount : null,
-            // items: order.items ? order.items : [],
-            // paymentId: paymentOrderId ? paymentOrderId : null,
-            // paymentType: order.paymentType ? order.paymentType : null,
-            // price: order.price ? order.price : null,
-            // shippingAddress: order.shippingAddress ? order.shippingAddress : null,
-            // status: order.status ? order.status : null,
-            // total: order.total ? order.total : null,
-            // totalDiscount: order.totalDiscount ? order.totalDiscount : null,
-            // totalShipping: order.totalShipping ? order.totalShipping : null,
-            // totalTax: order.totalTax ? order.totalTax : null,
-            // paymentOrderId,
         };
         return pendingOrderPayload;
     }
 
-    async deleteAllPendingOrderByOrderId(orderId:number){
+    async deleteAllPendingOrderByOrderId(id:number){
         try{
-            const pendingOrder = await PendingOrderModel.destroy({
+            return await PendingOrderModel.destroy({
                 where: {
-                    orderId: orderId
+                    id
                 }
             });
-            return pendingOrder;
         }catch(error){
             console.log(error);
             return null;

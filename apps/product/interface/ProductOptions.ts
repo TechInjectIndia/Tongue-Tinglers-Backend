@@ -58,11 +58,11 @@ interface ParsedProductOptions {
 //     };
 // };
 
-export const parsedProductOptions = async (data: any): Promise<ParsedProductOptions> => {
+export const parsedProductOptions =  (data: any): ParsedProductOptions=> {
     console.log('data: ', data);
 
     // Ensure `data` is resolved before proceeding (assuming this is a promise)
-    const resolvedData = await data; // Ensure that data is resolved
+    const resolvedData=  data; // Ensure that data is resolved
 
     return {
         id: resolvedData.id,

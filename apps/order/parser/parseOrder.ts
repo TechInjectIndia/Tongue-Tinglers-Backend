@@ -72,7 +72,7 @@ console.log("productVariations: ",productVariations)
 //         })
 //     );
 
-    
+
 
 //     const data: ParsedOrder = {
 //         anomalyArr: [],
@@ -151,7 +151,7 @@ export const parseAndSavePendingOrderToOrder = async (pendingOrder: PendingOrder
             payment_type: null,
             total_discount: null,
             total_shipping: null,
-            franchise_id: null, // Replace with logic if necessary
+            franchise: null, // Replace with logic if necessary
             billingAddress: shippingAddress, // Assuming billingAddress is the same as shippingAddress for simplicity
             shippingAddress: shippingAddress,
             anomalyArr:null,

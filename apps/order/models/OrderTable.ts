@@ -23,7 +23,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     payment_type!: string;
     total_discount!: number;
     total_shipping!: number;
-    franchise_id: number;
+    franchise: number;
     billingAddress: Address;
     shippingAddress: Address;
     total_tax!: number;
@@ -37,7 +37,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     // Mixin methods for managing notes
     public addNote!: (note: NotesModel | number) => Promise<void>;
     public addNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
-    
+
     public getNotes!: () => Promise<NotesModel[]>;
     public removeNote!: (note: NotesModel | number) => Promise<void>;
     public removeNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
@@ -130,7 +130,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     type: DataTypes.STRING,
                     allowNull: true,
                 },
-                franchise_id: {
+                franchise: {
                     type: DataTypes.INTEGER,
                     allowNull: true,
                 },

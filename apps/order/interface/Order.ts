@@ -50,7 +50,7 @@ interface BaseOrder {
     prices: string;
     discount_prices: string;
     order_type: ORDER_TYPE
-    franchise_id: number | null;
+    franchise: number | null;
     createdBy: number;
     updatedBy: number | null;
     deletedBy: number | null;

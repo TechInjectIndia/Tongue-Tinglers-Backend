@@ -382,23 +382,20 @@ export class OrderRepo implements  IOrderRepo{
         return getSuccessDTO(res);
     }
 
-    private getStockIds(order: PendingOrder): number[] {
+    private getStockIds(order: ParsedOrder): number[] {
         return order.items.map((item) => item.id);
     }
-    private async processStock(transaction: Transaction, order: PendingOrder) {
+    private async processStock(transaction: Transaction, order: ParsedOrder) {
         const stocksMap = await this.getStocksMap(transaction, this.getStockIds(order));
 
         for (const item of order.items) {
             const stockOption = stocksMap.get(item.id);
             if (!stockOption || stockOption.stock < item.quantity) {
-                // todo @sumeet: handle the stock anomaly against this
-                // anomaly case;
-
                 const anomalyQty = item.quantity - (stockOption?.stock ?? 0);
-                order.anomalies.push({
-                    id: item.id,
-                    quantity: anomalyQty,
-                });
+                // order.anomalies.push({
+                //     id: item.id,
+                //     quantity: anomalyQty,
+                // });
             } else {
                 stockOption.stock -= item.quantity;
                 stocksMap.set(item.id, stockOption);
@@ -426,7 +423,7 @@ export class OrderRepo implements  IOrderRepo{
      * @param order
      * @private
      */
-    private async createOrderAndUpdatePendingOrder(transaction: Transaction, order: PendingOrder) {
+    private async createOrderAndUpdatePendingOrder(transaction: Transaction, order: ParsedOrder) {
         // todo @Mandeep handle this function
         //     save order in order table
         //     update in pendingOrder table

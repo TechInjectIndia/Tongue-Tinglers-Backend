@@ -504,10 +504,10 @@ async function createProductWithAssociations(req: Request, res: Response) {
                 createdVariations.map((v) => v.id));
 
             // Use mixin to associate variations
-            await createdProduct.addVariations(
-                createdVariations.map((v) => v.id),
-                // transaction
-            );
+            // await createdProduct.addVariations(
+            //     createdVariations.map((v) => v.id),
+            //     // transaction
+            // );transaction
         }
 
         // Commit the transaction
@@ -548,8 +548,8 @@ async function resetDatabase(req, res) {
         host: development.host,
         dialect: 'postgres',
     });
-    
-    try{  
+
+    try{
         console.log('Terminating existing connections...');
         await adminConnection.query(`
             SELECT pg_terminate_backend(pg_stat_activity.pid)
@@ -559,7 +559,7 @@ async function resetDatabase(req, res) {
         `);
 
         console.log('Dropping database...');
-        await adminConnection.query(`DROP DATABASE IF EXISTS ${development.database};`); 
+        await adminConnection.query(`DROP DATABASE IF EXISTS ${development.database};`);
         console.log('Creating database...');
         await adminConnection.query(`CREATE DATABASE ${development.database};`);
         console.log('Database dropped and created programmatically.');
@@ -589,7 +589,7 @@ async function resetDatabase(req, res) {
         await adminConnection.close();
         await sequelize.close();
     }
-   
+
 }
 
 async function createSuperOrgHandler(req, res){

@@ -31,7 +31,7 @@ export class PendingOrderRepo implements IPendingOrderRepo {
             delivery_details: order.deliveryDetails,
             delivery_status: "",
             discount_prices: "",
-            franchise_id: 0,
+            franchise: 0,
             item_count: 0,
             notes: [],
             orderItems: [],

@@ -25,7 +25,7 @@ class PendingOrderModel
     payment_type!: string;
     total_discount!: number;
     total_shipping!: number;
-    franchise_id: number;
+    franchise: number;
     billingAddress: Address;
     shippingAddress: Address;
     total_tax!: number;
@@ -77,7 +77,7 @@ class PendingOrderModel
                     type: DataTypes.STRING,
                     allowNull: true,
                 },
-                franchise_id: {
+                franchise: {
                     type: DataTypes.INTEGER,
                     allowNull: true,
                 },

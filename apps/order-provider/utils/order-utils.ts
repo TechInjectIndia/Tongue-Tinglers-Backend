@@ -13,6 +13,8 @@ import {
     USER_TYPE
 } from "apps/user/interface/user";
 import {UserModel} from "../../user/models/UserTable";
+import user from "../../test-user/api/user";
+import {FRANCHISE_STATUS} from "../../franchise/interface/Franchise";
 
 const getEmptyParsedOrder = () => {
     const metaObj: MetaUser = { email: "", firstName: "", id: 0, lastName: "" };
@@ -34,6 +36,42 @@ const getEmptyParsedOrder = () => {
     };
 
     const obj: ParsedOrder = {
+        franchise: {
+            id: 1,
+            pocName: "",
+            pocEmail: "",
+            pocPhoneNumber: "",
+            users: [],
+            region: undefined,
+            area: "",
+            agreementIds: [],
+            paymentIds: [],
+            organization: undefined,
+            status: FRANCHISE_STATUS.Active,
+            establishedDate: undefined,
+            affiliate: {
+                id: 0,
+                type: "",
+                codes: "",
+                user: {
+                    id: 0,
+                    firstName: "",
+                    lastName: "",
+                    email: ""
+                },
+                createdAt: new Date(),
+                updatedAt: new Date()
+            },
+            location: undefined,
+            sm: [],
+            assignedUser: undefined,
+            createdBy: 0,
+            updatedBy: 0,
+            deletedBy: 0,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: new Date(),
+        },
         orderType: ORDER_TYPE.RM_ORDER,
         id: 0,
         status: OrderStatus.PROCESSED,
@@ -141,7 +179,7 @@ const getEmptyPreSaleOrder=()=>{
         delivery_details: 1,
         delivery_status: "",
         discount_prices: "",
-        franchise_id: 0,
+        franchise: 0,
         item_count: 0,
         order_type: ORDER_TYPE.RM_ORDER,
         payment_id: "",

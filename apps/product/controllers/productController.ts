@@ -12,6 +12,7 @@ import { IProductTable, ParsedProduct } from "../interface/Product";
 // import { ProductModel } from "../../../database/schema/product/productModel";
 export default class ProductController {
     static async createProduct(req: Request, res: Response) {
+        try{
         const payload: any = req?.body;
 
         const user_id = get(req, "user_id", null);
@@ -20,6 +21,16 @@ export default class ProductController {
             payload,
             user_id,
         );
+        if(!productDetails){
+            return res
+            .status(400)
+            .send(
+                sendResponse(
+                    RESPONSE_TYPE.ERROR,
+                    ERROR_MESSAGE.PRODUCT_NOT_CREATED,
+                ),
+            );
+        }
         return res
             .status(200)
             .send(
@@ -29,6 +40,19 @@ export default class ProductController {
                     productDetails,
                 ),
             );
+
+        }
+    catch (error) {
+        console.error(error);
+        return res
+            .status(500)
+            .send(
+                sendResponse(
+                    RESPONSE_TYPE.ERROR,
+                    "An error occurred while creating products.",
+                ),
+            );
+    }
     }
 
     static async getAllProducts(req: Request, res: Response) {

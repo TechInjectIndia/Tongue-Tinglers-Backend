@@ -3,7 +3,7 @@ import {PendingOrderModel} from "../models/PendingOrderTable";
 import {IPendingOrderRepo} from "./IPendingOrderRepo";
 import {UserModel} from "apps/user/models/UserTable";
 import {OrderPayload, ParsedOrder} from "../../order/interface/Order";
-import {DTO, getSuccessDTO} from "../../common/models/DTO";
+import {DTO, getHandledErrorDTO, getSuccessDTO} from "../../common/models/DTO";
 import {parseOrder} from "../../order/parser/parseOrder";
 
 export class PendingOrderRepo implements IPendingOrderRepo {
@@ -11,13 +11,13 @@ export class PendingOrderRepo implements IPendingOrderRepo {
         try{
             const user = await UserModel.findByPk(payload.customer_details);
             if(!user){
-                throw new Error(`User with ID ${payload.customer_details} not found.`);
+                getHandledErrorDTO(`User with ID ${payload.customer_details} not found.`);
             }
             const res =  await PendingOrderModel.create(payload);
-            return res? getSuccessDTO(parseOrder(res.toJSON())):get;
+            return res? getSuccessDTO(parseOrder(res.toJSON())):getHandledErrorDTO("not found");
         }catch(error){
             console.log(error);
-            return null;
+            getHandledErrorDTO("not found");
         }
     }
 
@@ -36,7 +36,7 @@ export class PendingOrderRepo implements IPendingOrderRepo {
             item_count: 0,
             notes: [],
             orderItems: [],
-            order_type: order.,
+            order_type: order.orderType,
             payment_id: "",
             payment_type: "",
             prices: "",

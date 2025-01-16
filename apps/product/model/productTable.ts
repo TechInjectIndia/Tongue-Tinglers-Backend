@@ -50,7 +50,7 @@ class ProductModel
     ) => Promise<void>;
     public addVariations!: (
         options: Array<ProductVariationsModel | number>,
-        // transaction: Transaction
+        transactionOptions: { transaction: Transaction }
     ) => Promise<void>;
     public setVariationses!: (
         options: Array<ProductVariationsModel | number>,

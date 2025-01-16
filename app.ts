@@ -36,6 +36,7 @@ import {
 import {parseAndSavePendingOrderToOrder} from "./apps/order/parser/parseOrder";
 import {OrderRepo} from "./apps/order/repos/orderRepo";
 import RepoProvider from "./apps/RepoProvider";
+import leadCron from "apps/lead/cron/leadCron";
 
 
 declare global {
@@ -126,9 +127,18 @@ server.get("/a", async (_, res) => {
 });
 
 server.get("/", async (_, res) => {
-    const resp = await  RepoProvider.orderRepo.getAllOrders(100,100,'',{})
-    res.send(resp)
+    let email: string = "harshdalal.techinject@gmail.com";
+
+    // welcome mail
+    // const mailDto = new FinalizeDetailsMail().getPayload({}, email);
+    const mailDto = new LeadToProspectMail().getPayload({}, email);
+    const resp = await sendMail(mailDto);
+
+    res.send(resp);
 });
+
+leadCron.startCron("0 10 * * *")  //Purpose: start cron for lead which dont have any follow up for last 7 days, whoes status is new and has assigned user
+
 server.use("/api", router);
 
 const PORT = CONFIG.PORT;

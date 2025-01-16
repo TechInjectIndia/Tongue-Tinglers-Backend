@@ -41,6 +41,7 @@ export const ERROR_MESSAGE = {
     AGREEMENT_DOC_NOT_UPDATED: "Agreement document not updated",
     ID_SHOULD_BE_NUMBER: "ID should be a number",
     USER_ID_SHOULD_BE_NUMBER: "User ID should be a number",
+    PRODUCT_NOT_CREATED: "Product not created"
 };
 
 export const SUCCESS_MESSAGE = {

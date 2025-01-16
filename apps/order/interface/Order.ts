@@ -1,7 +1,8 @@
 import { Address } from "apps/address/interface/Address";
 import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
-import { ParsedUser } from "apps/user/interface/user";
+import { ParsedCustomer, ParsedUser } from "apps/user/interface/user";
 import { BaseOrderItem, IDiscComponent, ParsedOrderItem, PreSaleParsedOrderItem, PriceComponent } from "./OrderItem";
+import { ParsedFranchise } from "apps/franchise/interface/Franchise";
 
 
 export enum PAYMENT_STATUS {
@@ -76,7 +77,7 @@ interface ParsedOrder extends ParsedMeta {
     total: number; // without Tax
     totalTax: number;
     deliveryStatus: string;
-    customerDetails: ParsedUser;
+    customerDetails: ParsedCustomer;
     paymentType: PAYMENT_TYPE; //todo convert to enum
     paymentId: number;
     cancelledItems: ParsedOrderItem[];
@@ -90,10 +91,11 @@ interface ParsedOrder extends ParsedMeta {
     coupon: string | null;
     items: ParsedOrderItem[];
     price: Record<string, PriceComponent>;
+    orderType: ORDER_TYPE
+    franchise: ParsedFranchise
     couponCodes: string[],
     notes: Notes[];
     orderItems: BaseOrderItem[];
-    orderType: ORDER_TYPE;
 }
 
 interface PresaleParsedOrder extends OrderPayload {

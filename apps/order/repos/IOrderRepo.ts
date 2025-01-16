@@ -15,7 +15,7 @@ export interface IOrderRepo {
     createOrder(
         transaction: Transaction,
         order: OrderPayload,
-    ): Promise<Order | null>
+    ): Promise<ParsedOrder | null>
     // updateOrder(order: any): Promise<any>;
     // createOrder(order: OrderPayload): Promise<Order | null>
     updateOrder(order: any): Promise<ParsedOrder | null>;
@@ -33,7 +33,7 @@ export interface IOrderRepo {
     ): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>>
 
     getOrderById(orderId: number): Promise<Order>;
-    getAllOrders(page: number, limit: number, search: string, filters: object): Promise<any>;
+    // getAllOrders(page: number, limit: number, search: string, filters: object): Promise<any>;
 
     getOrdersByUser(userId: number): Promise<ParsedOrder[]>
 

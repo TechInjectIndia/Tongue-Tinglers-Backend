@@ -35,9 +35,11 @@ import { ProductOptions } from "../../product/interface/ProductOptions";
 import { PendingOrder } from "../../pending-orders/interface/PendingOrder";
 import { PendingOrderRepo } from "../../pending-orders/repos/PendingOrderRepo";
 import { RPOrderTable } from "apps/rp-order/models/RPOrderTable";
+import { UserModel } from "apps/user/models/UserTable";
+import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
 
 export class OrderRepo implements  IOrderRepo{
-    async createOrder(transaction: Transaction, order: OrderPayload): Promise<Order | null> {
+    async createOrder(transaction: Transaction, order: OrderPayload): Promise<ParsedOrder | null> {
         try {
             let notesCreated: Notes[] = [];
             let orderItemsCreated: any[] = [];
@@ -80,7 +82,7 @@ export class OrderRepo implements  IOrderRepo{
             // // todo @Sumeet add the anomalies here;
             // orderCreated.addAnomalyOrderItems([]);
 
-            return orderCreated.toJSON();
+            return parseOrder(orderCreated.toJSON());
         } catch (error) {
             console.log(error);
             return null;
@@ -157,10 +159,35 @@ export class OrderRepo implements  IOrderRepo{
             return OrderModel.findByPk(orderId, {
                 include: [
                     {
+                        model: UserModel,
+                        as: "customer"
+                    },
+                    {
+                        model: FranchiseModel,
+                        as: "franchise"
+                    },
+                    {
                         model: NotesModel,
-                        as: "noteses",
+                        as: "notes",
                         through: { attributes: [] },
                     },
+                    {
+                        model: OrderItemsModel,
+                        through: { attributes: [] }, // Exclude the join table from the results
+                        as: "orderItems", // Use the alias defined in the association
+                    },
+                    {
+                        model: UserModel,
+                        as: "createdByUser"
+                    },
+                    {
+                        model: UserModel,
+                        as: "deletedByUser"
+                    },
+                    {
+                        model: UserModel,
+                        as: "updatedByUser"
+                    }
                 ],
             });
         } catch (error) {
@@ -175,59 +202,54 @@ export class OrderRepo implements  IOrderRepo{
         filters: Record<string, any>
     ): Promise<OrderPagination<ParsedOrder>> {
         try {
+            // Validate and normalize pagination parameters
+            page = Math.max(1, page || 1);
+            limit = Math.max(1, limit || 10);
             const offset = (page - 1) * limit;
-
-            // Building the query
+    
+            // Base query structure
             const query: any = {
                 where: {},
                 limit,
                 offset,
-                // include: [
-                //     {
-                //         model: NotesModel,
-                //         as: "notes",
-                //         through: { attributes: [] },
-                //     },
-                // ],
+                include: [
+                    { model: UserModel, as: "customer" },
+                    { model: FranchiseModel, as: "franchise" },
+                    { model: NotesModel, as: "notes", through: { attributes: [] } },
+                    { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
+                    { model: UserModel, as: "createdByUser" },
+                    { model: UserModel, as: "deletedByUser" },
+                    { model: UserModel, as: "updatedByUser" },
+                ],
             };
-
-            // Adding search functionality
+    
+            // Add search functionality
             if (search) {
-                query.where = {
-                    ...query.where,
-                    [Op.or]: [
-                        { status: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for status
-                        { delivery_status: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for delivery_status
-                        { payment_type: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for payment_type
-                    ],
-                };
+                query.where[Op.or] = [
+                    { status: { [Op.iLike]: `%${search}%` } },
+                    { delivery_status: { [Op.iLike]: `%${search}%` } },
+                    { payment_type: { [Op.iLike]: `%${search}%` } },
+                ];
             }
-
-            // Applying filters (if provided)
-            if (filters) {
+    
+            // Apply filters if provided
+            if (filters && typeof filters === "object") {
                 Object.entries(filters).forEach(([key, value]) => {
-                    query.where[key] = value;
+                    if (value !== undefined && value !== null) {
+                        query.where[key] = value;
+                    }
                 });
             }
-
-            // Fetch data with total count
-            let { rows, count: total } = await OrderModel.findAndCountAll({
-                include: [
-                    {
-                        model: OrderItemsModel,
-                        through: { attributes: [] }, // Exclude the join table from the results
-                        as: "orderItems", // Use the alias defined in the association
-                    },
-                ],
-            });
-
-            let finals=rows.map((d)=>{
-                parseOrder(d.toJSON());
-            })
-
-            // Returning paginated result
+    
+            // Fetch paginated data
+            const { rows, count: total } = await OrderModel.findAndCountAll(query);
+    
+            // Parse the results
+            const data = await Promise.all(rows.map((order) => parseOrder(order.toJSON())));
+    
+            // Return the paginated result
             return {
-                data: rows as unknown as ParsedOrder[], // Corrected from "order" to "rows"
+                data,
                 total,
                 page,
                 limit,
@@ -238,6 +260,7 @@ export class OrderRepo implements  IOrderRepo{
             throw new Error("Failed to fetch orders.");
         }
     }
+    
 
     async processOrder(
         state: OrderState
@@ -262,14 +285,16 @@ export class OrderRepo implements  IOrderRepo{
             const orders = await OrderModel.findAll({
                 where: { customer_details: userId },
                 include: [
-                    {
-                        model: NotesModel,
-                        as: "notes",
-                        through: { attributes: [] },
-                    },
+                    { model: UserModel, as: "customer" },
+                    { model: FranchiseModel, as: "franchise" },
+                    { model: NotesModel, as: "notes", through: { attributes: [] } },
+                    { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
+                    { model: UserModel, as: "createdByUser" },
+                    { model: UserModel, as: "deletedByUser" },
+                    { model: UserModel, as: "updatedByUser" },
                 ],
             });
-            return orders.map((order) => parseOrder(order));
+            return await Promise.all(orders.map((order) => parseOrder(order)));
         } catch (error) {
             console.log(error);
             return [];

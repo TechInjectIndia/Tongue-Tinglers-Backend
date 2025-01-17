@@ -57,6 +57,8 @@ export default class OrderController {
 
     static async getOrderById(req: any, res: any) {
         try {
+            console.log('hi');
+            
             const id = get(req, "params.id", 0);
             const order = await RepoProvider.orderRepo.getOrderById(id);
             return res.status(200)
@@ -81,7 +83,8 @@ export default class OrderController {
             const limit = get(req, "query.limit", 10);
             const search = get(req, "query.search", "");
             const filters = get(req, "query.filters", {});
-            const orders = await RepoProvider.orderRepo.getAllOrders(page, limit, search, filters);
+            const orders = await  RepoProvider.orderRepo.getAllOrders(100,100,'',{})
+               
             return res.status(200)
                 .send(
                     sendResponse(

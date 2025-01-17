@@ -1,7 +1,7 @@
 import { IOrderRepo } from "./IOrderRepo";
 import { OrderModel } from "../models/OrderTable";
 import { NotesModel } from "../models/NotesTable";
-import { Op, Transaction } from "sequelize";
+import { Op, Sequelize, Transaction, where } from "sequelize";
 
 import { OrderItemsModel } from "../../order-items/models/OrderItemsTable";
 import { OrderItem } from "../../order-items/interface/orderItem";
@@ -152,9 +152,16 @@ export class OrderRepo implements  IOrderRepo{
     deleteOrder(orderId: number): Promise<any> {
         throw new Error("Method not implemented.");
     }
-    getOrderById(orderId: number): Promise<any> {
+    async getOrderById(orderId: number): Promise<any> {
         try {
-            return OrderModel.findByPk(orderId, {
+            const order = await OrderModel.findByPk(orderId, {
+                // include: [
+                //     {
+                //         model: NotesModel,
+                //         as: "noteses",
+                //         through: { attributes: [] },
+                //     },
+                // ],
                 include: [
                     {
                         model: UserModel,
@@ -188,6 +195,8 @@ export class OrderRepo implements  IOrderRepo{
                     }
                 ],
             });
+
+            return parseOrder(order.toJSON());
         } catch (error) {
             console.log(error);
             return null;
@@ -266,7 +275,9 @@ export class OrderRepo implements  IOrderRepo{
         return new OrderProvider().processOrder(state);
     }
 
-    async proceedToPayment(state: OrderState): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>> {
+    async proceedToPayment(
+        state: OrderState
+    ): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>> {
         try {
             const order = await new OrderProvider().processOrder(state);
             const pendingOrderData = await new PendingOrderRepo().createPendingOrderPayload(order.data.parsedOrder,order.data.rpOrder.id);

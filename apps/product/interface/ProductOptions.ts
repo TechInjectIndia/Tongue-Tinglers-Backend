@@ -45,18 +45,6 @@ interface ParsedProductOptions {
     images: string;
 }
 
-export const parsedProductOptions = (data: any):ParsedProductOptions => {
-    console.log('data: ', data);
-    // const optionValueData = new OptionsValueRepo().
-    return {
-        id: data.id,
-        option_value: parseOptionsValues(data.optionsValue),
-        price: data.price,
-        stock: data.stock,
-        status: data.status,
-        images: data.images,
-    };
-};
 
 // export const parsedProductOptions = async (data: any): Promise<ParsedProductOptions> => {
 //     console.log('data: ', data);

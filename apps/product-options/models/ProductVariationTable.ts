@@ -4,6 +4,7 @@ import { BaseProductOptions, PRODUCT_OPTIONS_STATUS, ProductOptions } from "apps
 import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
+import { VariationStockModel } from "./VariationStockTable";
 
 interface ProductOptionsCreationAttributes
     extends Optional<ProductOptions, "id"> {}
@@ -12,11 +13,12 @@ class ProductVariationsModel
     extends Model<ProductOptions, ProductOptionsCreationAttributes>
     implements BaseProductOptions
 {
+    stock: number;
     id: number;
     product_id: number;
     optionValueId: number;
     price: number;
-    stock: number;
+    variationStockId: number;
     status: PRODUCT_OPTIONS_STATUS;
     images: string[];
     createdBy: number;
@@ -28,6 +30,10 @@ class ProductVariationsModel
             as: "optionsValue",
             foreignKey: "optionValueId",
         });
+        ProductVariationsModel.belongsTo(VariationStockModel, {
+            foreignKey: 'variationStockId',
+            as: 'variationStock'
+        })
     }
 
     public static initModel() {
@@ -50,7 +56,11 @@ class ProductVariationsModel
                     type: DataTypes.FLOAT,
                     allowNull: false,
                 },
-                stock: {
+                stock:{
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
+                },
+                variationStockId: {
                     type: DataTypes.INTEGER,
                     allowNull: false,
                 },

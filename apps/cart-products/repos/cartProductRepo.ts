@@ -15,6 +15,7 @@ import RepoProvider from "apps/RepoProvider";
 import { ParsedCartDetail } from "apps/cart-details/interface/CartDetail";
 import { UserModel } from "apps/user/models/UserTable";
 import { parseIncludedUserModel } from "apps/order-provider/utils/order-utils";
+import { VariationStockModel } from "apps/product-options/models/VariationStockTable";
 
 export class CartProductRepo implements ICartProductRepo {
     async create(cartProduct: Cart): Promise<ParsedCartDetail | null> {
@@ -24,7 +25,8 @@ export class CartProductRepo implements ICartProductRepo {
             const createdCartProducts = await CartProductModel.bulkCreate(
                 cartProduct.carts.map((product) => ({
                     product_id: product.product_id,
-                    product_option_id: product.product_option_id,
+                    product_option_id: 
+                    product.product_option_id,
                     quantity: product.quantity,
                 })),
                 { transaction, returning: true }
@@ -71,6 +73,25 @@ export class CartProductRepo implements ICartProductRepo {
                         model: ProductVariationsModel,
                         as: "variations",
                         include: [
+                            {
+                                model: VariationStockModel,
+                                as: "variationStock", // Include these fields from the User model
+                                // attributes: ["id", "stock"],
+                                include: [
+                                    {
+                                        model: UserModel,
+                                        as: "createdByUser",
+                                    },
+                                    {
+                                        model: UserModel,
+                                        as: "deletedByUser",
+                                    },
+                                    {
+                                        model: UserModel,
+                                        as: "updatedByUser",
+                                    },
+                                ],
+                            },
                             {
                                 model: OptionsValueModel,
                                 as: "optionsValue",

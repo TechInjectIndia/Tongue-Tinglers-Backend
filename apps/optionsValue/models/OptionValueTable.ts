@@ -9,6 +9,7 @@ class OptionsValueModel extends Model<OptionsValue, OptionsValueCreationAttribut
     id: number;
     option_id: number;
     name: string;
+    isStockable:boolean
 }
 
 OptionsValueModel.init(
@@ -25,6 +26,11 @@ OptionsValueModel.init(
         name: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        isStockable: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
         },
     },
     {

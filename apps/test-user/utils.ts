@@ -286,11 +286,13 @@ function createDummyProducts(): {
     const optionValues: BaseOptionsValue[] = [
         {
             "option_id": 1,
-            "name": "Red"
+            "name": "Red",
+            "isStockable": true
         },
         {
             "option_id": 2,
-            "name": "Large"
+            "name": "Large",
+            "isStockable": true
         }
     ]
 

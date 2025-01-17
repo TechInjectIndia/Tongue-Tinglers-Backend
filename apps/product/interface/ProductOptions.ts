@@ -4,6 +4,7 @@ import {
     parseOptionsValues
 } from "apps/optionsValue/interface/optionValue";
 import { OptionsValueRepo } from "apps/optionsValue/repos/optionsValueRepo";
+import { ParsedVariationStock, parseVariationStock } from "apps/product-options/interface/variationStock";
 
 
 //todo rename to understand its received from frontend
@@ -17,6 +18,7 @@ interface BaseProductOptions {
 
 interface ProductOptions extends BaseMeta, BaseProductOptions {
     product_id: number;
+    variationStockId: number;
     id: number;
 }
 
@@ -40,7 +42,7 @@ interface ParsedProductOptions {
     // product_id: number;
     option_value: ParsedOptionsValue;
     price: number;
-    stock: number;
+    stock: ParsedVariationStock;
     status: PRODUCT_OPTIONS_STATUS;
     images: string;
 }
@@ -63,7 +65,7 @@ export const parsedProductOptions =  (data: any): ParsedProductOptions=> {
         id: data.id,
         option_value: parseOptionsValues(data.optionsValue),
         price: data.price,
-        stock: data.stock,
+        stock: parseVariationStock(data.variationStock),
         status: data.status,
         images: data.images,
     };

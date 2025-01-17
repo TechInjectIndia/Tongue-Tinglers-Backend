@@ -9,6 +9,7 @@ import { ProductVariationsModel } from "../../product-options/models/ProductVari
 import { CartDetailsModel } from "../models/CartDetailTable";
 import { CartProductModel } from "../../cart-products/model/CartProductTable";
 import { ParsedCartDetail } from "../interface/CartDetail";
+import { VariationStockModel } from "apps/product-options/models/VariationStockTable";
 
 export class CartDetailRepo implements ICartDetailRepo {
     async getCartDetailByUserId(userId: number): Promise<ParsedCartDetail> {
@@ -24,13 +25,32 @@ export class CartDetailRepo implements ICartDetailRepo {
                             {
                                 model: ProductModel,  // Assuming you have a ProductModel
                                 as: "product",  // Alias for Product (ensure the association is correct)
-                                attributes: ['id', 'name'] // Specify which fields to include for the product
+                                attributes: ['id', 'name', 'images'] // Specify which fields to include for the product
                             },
                             {
                                 model: ProductVariationsModel,  // Assuming you have a ProductOptionsModel
                                 as: "variations",  // Alias for ProductOptions (ensure the association is correct)
                                 attributes: ['id', "product_id", "optionValueId", "price", "stock", "status", "images"], // Specify which fields to include for the product option
                                 include: [
+                                    {
+                                        model: VariationStockModel,
+                                        as: "variationStock", // Include these fields from the User model
+                                        // attributes: ["id", "stock"],
+                                        include: [
+                                            {
+                                                model: UserModel,
+                                                as: "createdByUser",
+                                            },
+                                            {
+                                                model: UserModel,
+                                                as: "deletedByUser",
+                                            },
+                                            {
+                                                model: UserModel,
+                                                as: "updatedByUser",
+                                            },
+                                        ],
+                                    },
                                     {
                                         model: OptionsValueModel,
                                         as: "optionsValue", // Include these fields from the User model

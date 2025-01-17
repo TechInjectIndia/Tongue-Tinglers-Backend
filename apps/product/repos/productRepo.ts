@@ -19,13 +19,14 @@ import {
     PRODUCTS_TYPE,
 } from "apps/product/interface/Product";
 import { Pagination } from "../../common/models/common";
+import { VariationStockModel } from "apps/product-options/models/VariationStockTable";
 
 export class ProductRepo implements IProductRepo {
     async create(
         product: BaseProduct,
         createdBy: number,
     ): Promise<IProductTable | null> {
-        // const transaction = await ProductModel.sequelize.transaction();
+        const transaction = await ProductModel.sequelize.transaction();
 
         try {
             let variationIds: number[] = []; // Array to store created option IDs
@@ -45,39 +46,44 @@ export class ProductRepo implements IProductRepo {
                     tax_rate_id: product.tax_rate_id,
                     createdBy,
                 },
-                // { transaction },
+                { transaction },
             );
 
             // Step 2: Handle variations if provided
             if (product.variations && Array.isArray(product.variations)) {
-                const productOptions = product.variations.map((option) => ({
-                    product_id: createdProduct.id, // Link the option to the created product
-                    optionValueId: option.optionValueId,
-                    price: option.price,
-                    stock: option.stock,
-                    status: option.status,
-                    images: option.images,
-                }));
+                const productOptions = await Promise.all(
+                    product.variations.map(async (option) => {
+                        const createdStock = await VariationStockModel.create({
+                            stock: option.stock,
+                            createdBy,
+                        }, {
+                            transaction,
+                            returning: true, // Ensure the created options are returned
+                        })
 
-                // Bulk create the product options
-                const createdOptions = await ProductVariationsModel.bulkCreate(
-                    productOptions,
-                    {
-                        // transaction,
-                        returning: true, // Ensure the created options are returned
-                    },
-                );
-
-                variationIds = createdOptions.map((option) => option.id);
-
+                        const createdOption = await ProductVariationsModel.create({
+                            product_id: createdProduct.id,
+                            optionValueId: option.optionValueId,
+                            price: option.price,
+                            variationStockId: createdStock.id,
+                            status: option.status,
+                            images: option.images,
+                            createdBy,
+                        }, {
+                            transaction,
+                            returning: true, // Ensure the created options are returned
+                        })
+                        return createdOption.id;
+                    })
+                )
+                variationIds = productOptions
                 // Update the product with the created option IDs
             }
 
-            console.log(createdProduct.addVariations(variationIds));
-            // await createdProduct.addVariations(variationIds, transaction);
+            await createdProduct.addVariations(variationIds, { transaction });
 
             // Commit the transaction
-            // await transaction.commit();
+            await transaction.commit();
 
             // Return the created product
             return createdProduct.toJSON();
@@ -85,7 +91,7 @@ export class ProductRepo implements IProductRepo {
             console.error("Error creating product:", error);
 
             // Rollback the transaction in case of error
-            // await transaction.rollback();
+            await transaction.rollback();
 
             return null;
         }
@@ -155,6 +161,25 @@ export class ProductRepo implements IProductRepo {
                                 "images",
                             ], // Only fetch these fields
                             include: [
+                                {
+                                    model: VariationStockModel,
+                                    as: "variationStock", // Include these fields from the User model
+                                    // attributes: ["id", "stock"],
+                                    include: [
+                                        {
+                                            model: UserModel,
+                                            as: "createdByUser",
+                                        },
+                                        {
+                                            model: UserModel,
+                                            as: "deletedByUser",
+                                        },
+                                        {
+                                            model: UserModel,
+                                            as: "updatedByUser",
+                                        },
+                                    ],
+                                },
                                 {
                                     model: OptionsValueModel,
                                     as: "optionsValue", // Include these fields from the User model
@@ -235,11 +260,29 @@ export class ProductRepo implements IProductRepo {
                             "id",
                             "optionValueId",
                             "price",
-                            "stock",
                             "status",
                             "images",
                         ], // Only fetch these fields
                         include: [
+                            {
+                                model: VariationStockModel,
+                                as: "variationStock", // Include these fields from the User model
+                                // attributes: ["id", "stock"],
+                                include: [
+                                    {
+                                        model: UserModel,
+                                        as: "createdByUser",
+                                    },
+                                    {
+                                        model: UserModel,
+                                        as: "deletedByUser",
+                                    },
+                                    {
+                                        model: UserModel,
+                                        as: "updatedByUser",
+                                    },
+                                ],
+                            },
                             {
                                 model: OptionsValueModel,
                                 as: "optionsValue", // Include these fields from the User model
@@ -367,6 +410,25 @@ export class ProductRepo implements IProductRepo {
                                 "images",
                             ], // Only fetch these fields
                             include: [
+                                {
+                                    model: VariationStockModel,
+                                    as: "variationStock", // Include these fields from the User model
+                                    // attributes: ["id", "stock"],
+                                    include: [
+                                        {
+                                            model: UserModel,
+                                            as: "createdByUser",
+                                        },
+                                        {
+                                            model: UserModel,
+                                            as: "deletedByUser",
+                                        },
+                                        {
+                                            model: UserModel,
+                                            as: "updatedByUser",
+                                        },
+                                    ],
+                                },
                                 {
                                     model: OptionsValueModel,
                                     as: "optionsValue", // Include these fields from the User model

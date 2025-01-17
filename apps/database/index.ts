@@ -82,6 +82,7 @@ import {DebitNoteTable} from "../inventory/debit_note/database/DebitNoteTable";
 import {
     PurchaseInvoiceTable
 } from "../inventory/purchase_invoice/database/PurchaseInvoiceTable";
+import { VariationStockModel } from "apps/product-options/models/VariationStockTable";
 
 const m = [
     RegionModel,
@@ -142,6 +143,7 @@ const models = {
     FranchiseLeadModel: FranchiseLeadModel.initModel(),
     PdiCheckPoints: PdiCheckpointModel.initModel(),
     IChecklistModel: IChecklistModel.initModel(),
+    VariationStock: VariationStockModel.initModel(),
     Variations: ProductVariationsModel.initModel(),
     Affiliate: AffiliateModel.initModel(),
     QuestionModel: QuestionModel.initModel(),

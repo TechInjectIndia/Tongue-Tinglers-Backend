@@ -429,7 +429,7 @@ router.post("/prospect", validateCreateAdminBody, addProspectUser);
 // ====== Admins Routes Ends ======
 
 async function createProductWithAssociations(req: Request, res: Response) {
-    // const transaction = await sequelize.transaction();
+    const transaction = await sequelize.transaction();
     const tableSequences = [
         {tableName: 'products_categories', columnName: 'id'},
         {tableName: 'options', columnName: 'id'},
@@ -506,7 +506,7 @@ async function createProductWithAssociations(req: Request, res: Response) {
             // Use mixin to associate variations
             await createdProduct.addVariations(
                 createdVariations.map((v) => v.id),
-                // transaction
+                {transaction}
             );
         }
 

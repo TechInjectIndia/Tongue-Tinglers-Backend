@@ -1,3 +1,4 @@
+import { ParsedVariationStock, parseVariationStock } from "apps/product-options/interface/variationStock"
 import {ParsedProduct} from "apps/product/interface/Product"
 import {ParsedProductOptions} from "apps/product/interface/ProductOptions"
 
@@ -40,7 +41,7 @@ interface ParsedVariations {
     id: number,
     optionsValue: ParsedProductOptions
     price: number,
-    stock: number,
+    stock: ParsedVariationStock,
     status: string,
     images: string[],
     quantity: number
@@ -52,7 +53,7 @@ const parsedVariations = (variation: any): ParsedVariations => {
         id: variation.id,
         optionsValue: variation.optionsValue,
         price: variation.price,
-        stock: variation.stock,
+        stock: parseVariationStock(variation.variationStock),
         status: variation.status,
         images: variation.images,
         quantity: variation.quantity

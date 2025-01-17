@@ -9,6 +9,7 @@ export class OptionsValueRepo implements IOptionsValueRepo {
             return (await OptionsValueModel.create({
                 option_id: option.option_id,
                 name: option.name,
+                isStockable: option.isStockable
             })).toJSON();
         } catch (error) {
             console.log(error);

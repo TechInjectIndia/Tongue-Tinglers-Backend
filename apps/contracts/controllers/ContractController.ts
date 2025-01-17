@@ -305,7 +305,7 @@ export default class ContractController {
                 status: FRANCHISE_STATUS.Active,
                 establishedDate: new Date(),
                 organizationId: existingContract.organizationId?.id || null,
-                affiliateId: 0,
+                // affiliateId: 0,
                 assignedUser: null,
             };
     

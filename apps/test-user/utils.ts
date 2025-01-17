@@ -229,7 +229,7 @@ async function createDummyMaster(user_id: number) {
         regionId: 1,
         start: new Date("2025-01-01"),
         to: new Date("2025-02-28"),
-        proposalIds: [1, 2, 3, 4],
+        // proposalIds: [1, 2, 3, 4],
         affiliateId: null,
 
     };

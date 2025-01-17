@@ -48,7 +48,7 @@ class FranchiseModel
     public createdAt: Date;
     public deletedAt: Date | null;
     public updatedAt: Date | null;
-    public affiliateId: number;
+    // public affiliateId: number;
 
     // Mixin for Documents
     public getFranchiseDocuments!: () => Promise<DocumentModel[]>;
@@ -128,10 +128,10 @@ class FranchiseModel
                     autoIncrement: true,
                     primaryKey: true,
                 },
-                affiliateId: {
-                    type: INTEGER,
-                    allowNull: true,
-                },
+                // affiliateId: {
+                    // type: INTEGER,
+                    // allowNull: true,
+                // },
                 createdAt: {
                     type: DATE,
                     allowNull: false,
@@ -220,7 +220,7 @@ class FranchiseModel
             },
             {
                 sequelize,
-                tableName: "franchisees", // Use a table name that makes sense
+                tableName: "franchises", // Use a table name that makes sense
                 timestamps: true, // Enable automatic timestamps
                 paranoid: true, // Enable soft deletes
                 comment: "Table to store franchisee organizations", // Comment for the

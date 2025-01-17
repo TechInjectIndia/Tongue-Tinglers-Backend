@@ -21,7 +21,7 @@ interface BaseFranchise {
     status: FRANCHISE_STATUS;
     establishedDate: Date;
     organizationId: number;
-    affiliateId: number | null;
+    // affiliateId: number | null;
     assignedUser: number | null;
 }
 

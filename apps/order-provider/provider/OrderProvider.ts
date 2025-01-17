@@ -10,7 +10,6 @@ import {
 import { Address } from "apps/address/interface/Address";
 import { IOrderProvider } from "./IOrderProvider";
 import { AddressRepo } from "apps/address/repositories/AddressRepo";
-import { BaseCartProduct, Cart } from "apps/cart-products/interface/Cart";
 import { AdminRepo } from "apps/user/models/user";
 import { TUserWithPermission } from "types/admin/admin-user";
 import { getCartItemPayableIncTax, getCartItemTax } from "../utils/order-utils";
@@ -54,7 +53,6 @@ import RepoProvider from "../../RepoProvider";
 import {RPOrderTable} from "../../rp-order/models/RPOrderTable";
 import user from "../../test-user/api/user";
 import {FRANCHISE_STATUS} from "../../franchise/interface/Franchise";
-import { RPOrderTable } from "../../rp-order/models/RPOrderTable";
 export class OrderProvider implements IOrderProvider {
     async processOrder(
         state: OrderState

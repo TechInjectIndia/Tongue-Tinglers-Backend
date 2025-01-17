@@ -17,7 +17,7 @@ const router = express.Router();
 
 router.post("/create", validateCreateOrder, createOrder);
 router.get("/:id", validateGetAllOrder, getOrderById);
-router.get("/getAll/list", validateGetOrderById, getAllOrders);
+router.get("/list",  getAllOrders);
 // router.get('/:id', validateGetProductsCategoryById,getProductsCategoryById);
 // router.get('/slug/:slug', validateGetProductsCategoryBySlug,getProductsCategoryBySlug);
 // router.put('/update/:id',validateGetProductsCategoryById,validateUpdateProductsCategory ,updateProductsCategory);

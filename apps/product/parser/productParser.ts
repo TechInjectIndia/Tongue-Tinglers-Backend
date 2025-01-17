@@ -6,6 +6,7 @@ import {
     parseCategory
 } from "../../products-category/parser/parseProductCategory";
 const parseProduct = (product: any): ParsedProduct => {
+
     const variations = product.variations.map((productOption: any) => {
         return parsedProductOptions(productOption);
     });
@@ -31,7 +32,10 @@ const parseProduct = (product: any): ParsedProduct => {
 
     };
 
+    console.log("12345678");
+    console.log(data);
     return data;
+
 }
 
 export { parseProduct };

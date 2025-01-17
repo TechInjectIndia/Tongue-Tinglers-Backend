@@ -50,9 +50,10 @@ import { PendingOrderRepo } from "apps/pending-orders/repos/PendingOrderRepo";
 import { PendingOrder, PendingOrderPayload } from "apps/pending-orders/interface/PendingOrder";
 import { runAtomicFetch } from "../../common/utils/atomic-fetch/atomic-fetch";
 import RepoProvider from "../../RepoProvider";
-import {RPOrderTable} from "../../rp-order/models/RPOrderTable";
+import { RPOrderTable } from "../../rp-order/models/RPOrderTable";
 import user from "../../test-user/api/user";
-import {FRANCHISE_STATUS} from "../../franchise/interface/Franchise";
+import { FRANCHISE_STATUS } from "../../franchise/interface/Franchise";
+import TaxRateRepo from "apps/tax-rate/repos/TaxRateRepo";
 export class OrderProvider implements IOrderProvider {
     async processOrder(
         state: OrderState
@@ -364,9 +365,9 @@ export class OrderProvider implements IOrderProvider {
                 deletedBy: 0,
                 createdAt: undefined,
                 updatedAt: undefined,
-                deletedAt: undefined
-            }
-            , orderType: undefined,
+                deletedAt: undefined,
+            },
+            orderType: undefined,
             id: 0,
             status: OrderStatus.PROCESSED,
             total: 0,
@@ -374,7 +375,7 @@ export class OrderProvider implements IOrderProvider {
             deliveryStatus: "",
             customerDetails: user,
             paymentType: paymentData,
-            paymentId: '',
+            paymentId: "",
             cancelledItems: [],
             totalDiscount: 0,
             deliveryDetails: null,
@@ -394,7 +395,7 @@ export class OrderProvider implements IOrderProvider {
             couponCodes: [],
             discount: {},
             price: {},
-            createdBy: 0
+            createdBy: 0,
         };
 
         // SET ORDER ITEMS
@@ -650,14 +651,22 @@ export class OrderProvider implements IOrderProvider {
         cartItem: ParsedCartProductDetails
     ): Promise<ParsedOrderItem> {
         const product = await new ProductRepo().getById(cartItem.product.id);
+        let taxRateRes = await new TaxRateRepo().getById(product.tax_rate_id);
 
-        // todo rajinder fetch here tax from api
-
-        const taxRate: TaxRate = {
+        let taxRate: TaxRate = {
             id: 0,
             title: "",
-            value: 18,
+            value: 0,
         };
+
+        if (taxRateRes) {
+            taxRate = {
+                id: taxRateRes.id,
+                title: taxRateRes.title,
+                value: taxRate.value,
+            };
+        }
+
         // calculate tax
         const priceCom = this.getPriceIncludedTax(cartItem.variation.price, taxRate);
 
@@ -687,9 +696,7 @@ export class OrderProvider implements IOrderProvider {
         return objItem;
     }
 
-    private async transformToRPOrder(
-        order: ParsedOrder,
-    ): Promise<DTO<RPOrder>> {
+    private async transformToRPOrder(order: ParsedOrder): Promise<DTO<RPOrder>> {
         // STEP 1: create order in payment
         const response = await this.createOrder(order);
 
@@ -731,7 +738,7 @@ export class OrderProvider implements IOrderProvider {
             // todo rajinder access keys from env later
 
             const order: Orders.RazorpayOrder = await rpInstance.orders.create(
-                orderData as unknown as Orders.RazorpayOrderCreateRequestBody,
+                orderData as unknown as Orders.RazorpayOrderCreateRequestBody
             );
 
             return order;
@@ -752,9 +759,7 @@ export class OrderProvider implements IOrderProvider {
         return getSuccessDTO(existingAdmin);
     }
 
-    private async fetchCart(
-        userId: number,
-    ): Promise<DTO<ParsedCartProductDetails[]>> {
+    private async fetchCart(userId: number): Promise<DTO<ParsedCartProductDetails[]>> {
         const cart = await new CartDetailRepo().getCartDetailByUserId(userId);
         if (!cart) return getUnhandledErrorDTO("Cart not found");
         console.log("got", cart);
@@ -762,9 +767,7 @@ export class OrderProvider implements IOrderProvider {
         return getSuccessDTO(cart.cart);
     }
 
-    private async fetchAddress(
-        addressId: number | null,
-    ): Promise<DTO<Address | null>> {
+    private async fetchAddress(addressId: number | null): Promise<DTO<Address | null>> {
         if (!addressId) return getSuccessDTO(null);
         // Fetch address by addressId
         const userAddress = await new AddressRepo().findById(addressId);
@@ -784,7 +787,7 @@ export class OrderProvider implements IOrderProvider {
     }
 
     private async sendOrderMailAtomic(
-        order: ParsedOrder,
+        order: ParsedOrder
         // paymentVerificationMethod: PAYMENT_VERIFICATION_METHODS,
     ) {
         // const orderMetaField = ORDER_META_FIELDS.CONFIRMATION_MAIL;
@@ -805,7 +808,7 @@ export class OrderProvider implements IOrderProvider {
                 //     executionStatus,
                 //     paymentVerificationMethod
                 // );
-            },
+            }
         );
     }
 

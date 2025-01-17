@@ -74,6 +74,17 @@ export const parsedProductOptions = (data: any):ParsedProductOptions => {
 //     };
 // };
 
+export const parsedProductOptions =  (data: any): ParsedProductOptions=> {
+    return {
+        id: data.id,
+        option_value: parseOptionsValues(data.optionsValue),
+        price: data.price,
+        stock: data.stock,
+        status: data.status,
+        images: data.images,
+    };
+};
+
 export {
     BaseProductOptions,
     ProductOptions,

@@ -39,45 +39,38 @@ import { getUid } from "apps/common/utils/commonUtils";
 import { CURRENCY_TYPE, RPOrderParams } from "apps/razorpay/models/RPModels";
 import { Orders } from "node_modules/razorpay/dist/types/orders";
 import { RazorpayProvider } from "apps/razorpay/repositories/razorpay/RazorpayProvider";
-import { ParsedProduct } from "../../product/interface/Product";
+import { ParsedProduct, TaxRate } from "../../product/interface/Product";
 import {
     DTO,
     getHandledErrorDTO,
     getSuccessDTO,
-    getUnhandledErrorDTO
+    getUnhandledErrorDTO,
 } from "apps/common/models/DTO";
 
-
 import { PendingOrderRepo } from "apps/pending-orders/repos/PendingOrderRepo";
-import {
-    PendingOrder,
-    PendingOrderPayload
-} from "apps/pending-orders/interface/PendingOrder";
+import { PendingOrder, PendingOrderPayload } from "apps/pending-orders/interface/PendingOrder";
 import { runAtomicFetch } from "../../common/utils/atomic-fetch/atomic-fetch";
 import RepoProvider from "../../RepoProvider";
 import {RPOrderTable} from "../../rp-order/models/RPOrderTable";
 import user from "../../test-user/api/user";
 import {FRANCHISE_STATUS} from "../../franchise/interface/Franchise";
+import { RPOrderTable } from "../../rp-order/models/RPOrderTable";
 export class OrderProvider implements IOrderProvider {
     async processOrder(
-        state: OrderState,
+        state: OrderState
     ): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>> {
         // Fetch user, cart, and addresses concurrently
-        const [user, cart, billingAddress, shippingAddress] = await Promise.all(
-            [
-                this.fetchUser(state.userId),
-                this.fetchCart(state.userId),
-                this.fetchAddress(state.billingAddressId),
-                this.fetchAddress(state.shippingAddressId),
-            ],
-        );
+        const [user, cart, billingAddress, shippingAddress] = await Promise.all([
+            this.fetchUser(state.userId),
+            this.fetchCart(state.userId),
+            this.fetchAddress(state.billingAddressId),
+            this.fetchAddress(state.shippingAddressId),
+        ]);
 
         if (!user.success) return getUnhandledErrorDTO("User not found");
         if (!cart.success) return getUnhandledErrorDTO("Cart not found");
-        if (!billingAddress.success)
-            return getUnhandledErrorDTO("billingAddress not found");
-        if (!shippingAddress.success)
-            return getUnhandledErrorDTO("shippingAddress not found");
+        if (!billingAddress.success) return getUnhandledErrorDTO("billingAddress not found");
+        if (!shippingAddress.success) return getUnhandledErrorDTO("shippingAddress not found");
 
         console.log("shippppp", shippingAddress);
 
@@ -87,7 +80,7 @@ export class OrderProvider implements IOrderProvider {
             cart.data,
             billingAddress.data,
             shippingAddress.data,
-            state.paymentType,
+            state.paymentType
         );
 
         console.log("order--------->", order);
@@ -98,37 +91,28 @@ export class OrderProvider implements IOrderProvider {
         // Transform the order into RPOrder and ParsedOrder
         const rpOrderRes = await this.transformToRPOrder(order);
 
-
         // const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order, rpOrderRes.data.id);
         // await new PendingOrderRepo().create(pendingOrderData)
         // await RPOrderTable.create(rpOrderRes.data);
 
         console.log("RP order--------->", rpOrderRes.data);
 
-        if (!rpOrderRes.success)
-            return getUnhandledErrorDTO("Failed to create RP Order");
+        if (!rpOrderRes.success) return getUnhandledErrorDTO("Failed to create RP Order");
 
         return getSuccessDTO({ rpOrder: rpOrderRes.data, parsedOrder: order });
     }
 
-    async processPostOrder(paymentOrderId: string, paymentId:string): Promise<DTO<null>> {
+    async processPostOrder(paymentOrderId: string, paymentId: string): Promise<DTO<null>> {
         // revalidate the payment with razorpay
 
         // TODO @sumeet sir
 
         const validationRes = await this.verifyFromRazorpay(paymentId);
-        if (!validationRes)
-            return getHandledErrorDTO(
-                `revalidation failed for: ${paymentOrderId}`,
-            );
+        if (!validationRes) return getHandledErrorDTO(`revalidation failed for: ${paymentOrderId}`);
 
-        const processRes =
-            await RepoProvider.orderRepo.processPostOrderTransaction(
-                paymentOrderId,
-            );
+        const processRes = await RepoProvider.orderRepo.processPostOrderTransaction(paymentOrderId);
 
-        if (!processRes.success)
-            return getHandledErrorDTO(processRes.message, processRes);
+        if (!processRes.success) return getHandledErrorDTO(processRes.message, processRes);
         const res = processRes.data;
 
         // perform post OrderTasks with run atomic fetch
@@ -148,7 +132,7 @@ export class OrderProvider implements IOrderProvider {
      */
     private async calculateOrder(
         order: ParsedOrder,
-        currUser: TUserWithPermission,
+        currUser: TUserWithPermission
     ): Promise<ParsedOrder> {
         // calculate Order
 
@@ -158,8 +142,7 @@ export class OrderProvider implements IOrderProvider {
 
     private calculateBasePrice(order: ParsedOrder): DTO<ParsedOrder> {
         order.total = this.calculateTotalPrice(order);
-        order.price[PRICE_COMP_TYPE.BASE_PRICE] =
-            this.calculateBasePriceTotal(order);
+        order.price[PRICE_COMP_TYPE.BASE_PRICE] = this.calculateBasePriceTotal(order);
 
         return getSuccessDTO(order);
     }
@@ -196,12 +179,9 @@ export class OrderProvider implements IOrderProvider {
             // Check if the price calculation is percentage-based or absolute
             if (basePriceComp.calc === VALUE_TYPE.PERCENTAGE) {
                 // If percentage-based, calculate value as a percentage of the base price
-                const itemValue =
-                    (basePriceComp.value * basePriceComp.percent) / 100;
+                const itemValue = (basePriceComp.value * basePriceComp.percent) / 100;
                 priceCom.value += itemValue * item.quantity;
-                priceCom.tax +=
-                    ((basePriceComp.tax * basePriceComp.percent) / 100) *
-                    item.quantity;
+                priceCom.tax += ((basePriceComp.tax * basePriceComp.percent) / 100) * item.quantity;
             } else {
                 // If absolute, just multiply by quantity
                 priceCom.value += basePriceComp.value * item.quantity;
@@ -214,7 +194,7 @@ export class OrderProvider implements IOrderProvider {
 
     private async getCalculatedOrder(
         order: ParsedOrder,
-        currUser: TUserWithPermission,
+        currUser: TUserWithPermission
     ): Promise<ParsedOrder> {
         let shippingApplied: boolean = false;
 
@@ -225,14 +205,9 @@ export class OrderProvider implements IOrderProvider {
         // STEP 2: CALCULATE DISCOUNT
         // This function will be responsible to calculate the order item level discount,
         // order level discount based on coupons, student coupons and reward points
-        const handleCouponValidatePromise = this.applyDiscounts(
-            order,
-            currUser,
-        );
+        const handleCouponValidatePromise = this.applyDiscounts(order, currUser);
 
-        const [handleCouponValidateRes] = await Promise.all([
-            handleCouponValidatePromise,
-        ]);
+        const [handleCouponValidateRes] = await Promise.all([handleCouponValidatePromise]);
 
         // change state based on coupon discount
         this.changeStateBasedOnCoupon(order, handleCouponValidateRes.data);
@@ -290,20 +265,21 @@ export class OrderProvider implements IOrderProvider {
 
     private calculateTax(order: ParsedOrder): ParsedOrder {
         order.totalTax = this.getTotalTax(order);
+
         return order;
     }
 
     private getTotalTax(order: ParsedOrder) {
         let tax: number = 0;
         order.items.forEach((c) => {
-            tax += c.totalTax;
+            tax += c.totalTax * c.quantity;
         });
         return tax;
     }
 
     private changeStateBasedOnCoupon(
         order: ParsedOrder,
-        applyCouponRes: WrapperValidateResult | null,
+        applyCouponRes: WrapperValidateResult | null
     ): DTO<ParsedOrder> {
         order.total = this.calculateTotalPrice(order);
 
@@ -321,8 +297,7 @@ export class OrderProvider implements IOrderProvider {
                     value: 0,
                 };
             }
-            order.discount[DISCOUNT_COMP_TYPE.COUPON_DISCOUNT].value =
-                totalDisc;
+            order.discount[DISCOUNT_COMP_TYPE.COUPON_DISCOUNT].value = totalDisc;
         }
         return getSuccessDTO(order);
     }
@@ -330,9 +305,7 @@ export class OrderProvider implements IOrderProvider {
     getOrderTotalDiscAfterCoupon(orderItems: ParsedOrderItem[]) {
         let discount: number = 0;
         orderItems.forEach((item) => {
-            discount +=
-                getCartItemPayableIncTax(item.prices, item.disc).disc *
-                item.quantity;
+            discount += getCartItemPayableIncTax(item.prices, item.disc).disc * item.quantity;
         });
 
         return discount;
@@ -347,7 +320,7 @@ export class OrderProvider implements IOrderProvider {
         cart: ParsedCartProductDetails[],
         billingAddressObj: Address | null,
         shippingAddressObj: Address | null,
-        paymentData: PAYMENT_TYPE,
+        paymentData: PAYMENT_TYPE
     ): Promise<ParsedOrder> {
         // initialise Order instance
 
@@ -434,7 +407,7 @@ export class OrderProvider implements IOrderProvider {
     async applyDiscounts(
         order: ParsedOrder,
         currUser: TUserWithPermission,
-        shippingApplied: boolean = false,
+        shippingApplied: boolean = false
     ): Promise<DTO<WrapperValidateResult>> {
         const wrapperCouponRes: WrapperValidateResult = {
             order,
@@ -448,58 +421,44 @@ export class OrderProvider implements IOrderProvider {
             hasAppliedStudentCouponMap: false,
         };
 
-        const couponValidateRes = await this.applyCoupon(
-            wrapperCouponRes.order,
-            currUser,
-        );
+        const couponValidateRes = await this.applyCoupon(wrapperCouponRes.order, currUser);
 
-        if (couponValidateRes) {
-            if (couponValidateRes.hasAppliedCouponMap) {
-                order.items.forEach((oi) => {
-                    const couponRes = couponValidateRes.appliedCouponMap[oi.id];
-                    if (couponRes) {
-                        const OICIP = oi.product;
-                        if (!OICIP)
-                            throw new Error(
-                                "impossible - earlier fetched product missing",
-                            );
-                        const res = this.getDiscountMapFromProduct(
-                            OICIP,
-                            oi.totalTax,
-                            oi.prices,
-                            oi.quantity,
-                            shippingApplied,
-                            order,
-                        );
+        order.items.forEach((oi) => {
+            const couponRes = couponValidateRes.appliedCouponMap[oi.id];
+            if (couponRes) {
+                const OICIP = oi.product;
+                if (!OICIP) throw new Error("impossible - earlier fetched product missing");
+                const res = this.getDiscountMapFromProduct(
+                    OICIP,
+                    oi.totalTax,
+                    oi.prices,
+                    oi.quantity,
+                    shippingApplied,
+                    order
+                );
 
-                        if (!res.success) throw new Error(res.message);
-                        oi.disc = res.data;
-                        const { subtotal, disc } = getCartItemPayableIncTax(
-                            oi.prices,
-                            oi.disc,
-                        );
-                        oi.totalDiscount = disc;
-                        oi.total_price = subtotal - disc;
-                        oi.totalTax = getCartItemTax(oi.prices, oi.disc);
-                        // console.log("oi.totalTax",oi.totalTax);
-                    }
-                });
+                if (!res.success) throw new Error(res.message);
+                oi.disc = res.data;
+                const { subtotal, disc } = getCartItemPayableIncTax(oi.prices, oi.disc);
+                oi.totalDiscount = disc;
+                oi.total_price = subtotal - disc;
+                // console.log("oi.totalTax",oi.totalTax);
             }
+            oi.totalTax = getCartItemTax(oi.prices, oi.disc);
+        });
 
-            wrapperCouponRes.couponObj = couponValidateRes.couponObj;
-            wrapperCouponRes.hasAppliedCouponMap =
-                couponValidateRes.hasAppliedCouponMap;
-            wrapperCouponRes.inValidCoupon = couponValidateRes.inValidCoupon;
+        wrapperCouponRes.couponObj = couponValidateRes.couponObj;
+        wrapperCouponRes.hasAppliedCouponMap = couponValidateRes.hasAppliedCouponMap;
+        wrapperCouponRes.inValidCoupon = couponValidateRes.inValidCoupon;
 
-            if (!wrapperCouponRes.inValidCoupon) {
-                if (wrapperCouponRes.couponObj) {
-                    order.couponCodes = [wrapperCouponRes.couponObj.code];
-                }
+        if (!wrapperCouponRes.inValidCoupon) {
+            if (wrapperCouponRes.couponObj) {
+                order.couponCodes = [wrapperCouponRes.couponObj.code];
             }
-
-            wrapperCouponRes.issues = couponValidateRes.issues;
-            wrapperCouponRes.order = order;
         }
+
+        wrapperCouponRes.issues = couponValidateRes.issues;
+        wrapperCouponRes.order = order;
 
         return getSuccessDTO(wrapperCouponRes);
     }
@@ -510,7 +469,7 @@ export class OrderProvider implements IOrderProvider {
         prices: Record<string, PriceComponent>,
         qty: number,
         shippingApplied: boolean = false, //denoting shipping is applied or yet to be applied
-        order: ParsedOrder | null = null, // to calculate reward points
+        order: ParsedOrder | null = null // to calculate reward points
     ): DTO<Record<string, IDiscComponent>> {
         // Initialize the discount object with null values and a pre-filled clearance discount
 
@@ -605,7 +564,7 @@ export class OrderProvider implements IOrderProvider {
 
     async applyCoupon(
         order: ParsedOrder,
-        currUser: TUserWithPermission,
+        currUser: TUserWithPermission
     ): Promise<HandleCouponValidateResult | null> {
         const result = await this.handleCouponValidate(order, currUser);
 
@@ -615,17 +574,15 @@ export class OrderProvider implements IOrderProvider {
     }
 
     private async getOrderProcessCart(
-        carts: ParsedCartProductDetails[],
+        carts: ParsedCartProductDetails[]
     ): Promise<ParsedOrderItem[]> {
-        const orderItems = await Promise.all(
-            carts.map((c) => this.getOrderItemByCartItem(c)),
-        );
+        const orderItems = await Promise.all(carts.map((c) => this.getOrderItemByCartItem(c)));
         return orderItems;
     }
 
     private handleCouponValidate = async (
         order: ParsedOrder,
-        user: TUserWithPermission,
+        user: TUserWithPermission
     ): Promise<HandleCouponValidateResult> => {
         //   add coupon validations here
         return {
@@ -660,19 +617,60 @@ export class OrderProvider implements IOrderProvider {
         };
     };
 
+    private getPriceIncludedTax(
+        price: number,
+        taxRate: TaxRate
+    ): { prices: Record<string, PriceComponent>; applicableTaxPercent: number } {
+        let taxPercent = 0;
+        let priceObj: Record<string, PriceComponent> = {
+            [PRICE_COMP_TYPE.BASE_PRICE]: {
+                type: PRICE_COMP_TYPE_CART.BASE_PRICE,
+                percent: 0,
+                value: price,
+                tax: 0,
+                taxPercent: 0,
+                calc: VALUE_TYPE.ABSOLUTE,
+            },
+        };
+
+        // Calculate tax based on taxRate type
+        taxPercent = taxRate.value;
+
+        priceObj[PRICE_COMP_TYPE.BASE_PRICE].percent = taxPercent;
+        priceObj[PRICE_COMP_TYPE.BASE_PRICE].tax = (taxPercent * price) / 100;
+
+        priceObj = {
+            ...priceObj,
+        };
+
+        const result = { prices: priceObj, applicableTaxPercent: taxPercent };
+
+        return result;
+    }
+
     private async getOrderItemByCartItem(
-        cartItem: ParsedCartProductDetails,
+        cartItem: ParsedCartProductDetails
     ): Promise<ParsedOrderItem> {
         const product = await new ProductRepo().getById(cartItem.product.id);
 
-        const priceCom: PriceComponent = {
-            type: PRICE_COMP_TYPE_CART.BASE_PRICE,
-            percent: 0,
-            taxPercent: 0,
-            value: cartItem.variation.price,
-            tax: 0,
-            calc: VALUE_TYPE.ABSOLUTE,
+        // todo rajinder fetch here tax from api
+
+        const taxRate: TaxRate = {
+            id: 0,
+            title: "",
+            value: 18,
         };
+        // calculate tax
+        const priceCom = this.getPriceIncludedTax(cartItem.variation.price, taxRate);
+
+        // const priceCom: PriceComponent = {
+        //     type: PRICE_COMP_TYPE_CART.BASE_PRICE,
+        //     percent: 0,
+        //     taxPercent: 0,
+        //     value: cartItem.variation.price,
+        //     tax: 0,
+        //     calc: VALUE_TYPE.ABSOLUTE,
+        // };
 
         // cartItem.variation.price
         const objItem: ParsedOrderItem = {
@@ -682,9 +680,7 @@ export class OrderProvider implements IOrderProvider {
             quantity: cartItem.quantity,
             total_price: cartItem.variation.price,
             totalTax: 0,
-            prices: {
-                [PRICE_COMP_TYPE.BASE_PRICE]: priceCom,
-            },
+            prices: priceCom.prices,
             disc: {},
             type: ORDER_ITEM_TYPE.RETORT,
             totalDiscount: 0,
@@ -728,9 +724,7 @@ export class OrderProvider implements IOrderProvider {
 
             // _*_*_*_*_*_*_*_*_*_* MAIN _*_*_*_*_*_*_*_*_*_*
 
-            orderData.amount = Number(
-                (Number(orderData.amount) * 100).toFixed(2),
-            );
+            orderData.amount = Number((Number(orderData.amount) * 100).toFixed(2));
             let result: DTO<Orders.RazorpayOrder>;
             // console.log('here key',RP_ID_PROD);
 
@@ -825,8 +819,7 @@ export class OrderProvider implements IOrderProvider {
     }
 
     private async verifyFromRazorpay(paymentId: string) {
-        const res =
-            await RepoProvider.razorpayRepo.getTransaction(paymentId)
+        const res = await RepoProvider.razorpayRepo.getTransaction(paymentId);
 
         if (res.success && res.data.status && res.data.status === "captured") {
             return true;

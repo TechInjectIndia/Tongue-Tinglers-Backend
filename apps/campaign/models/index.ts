@@ -162,7 +162,7 @@ export class CampaignAdRepo
         const transaction: Transaction = await CampaignAdModel.sequelize.transaction();
 
         try {
-            const { questionList, ...campaignData} = data;
+            const {proposalIds, questionList, ...campaignData} = data;
 
             // Step 1: Create the campaign within the transaction
             const createdCampaign = await CampaignAdModel.create(
@@ -176,9 +176,9 @@ export class CampaignAdRepo
             }
 
             // Step 3: Associate proposals if provided
-            // if (proposalIds && proposalIds.length > 0) {
-            //     await createdCampaign.setProposals(proposalIds, {transaction});
-            // }
+            if (proposalIds && proposalIds.length > 0) {
+                await createdCampaign.setProposals(proposalIds, {transaction});
+            }
 
             // Commit the transaction
             await transaction.commit();
@@ -244,10 +244,10 @@ export class CampaignAdRepo
         data: CampaignPayload): Promise<[affectedCount: number]> {
         const transaction: Transaction = await CampaignAdModel.sequelize.transaction();
         const campaign = await CampaignAdModel.findByPk(id,{transaction});
-        // await  campaign.removeProposals(campaign.toJSON().proposalIds,{transaction});
+        await  campaign.removeProposals(campaign.toJSON().proposalIds,{transaction});
         await campaign.removeQuestions(campaign.toJSON().questionList,{transaction});
         await  campaign.setQuestions(data.questionList,{transaction});
-        // await  campaign.setProposals(data.proposalIds, {transaction})
+        await  campaign.setProposals(data.proposalIds, {transaction})
         await transaction.commit();
         return await CampaignAdModel.update(data, {
             where: {

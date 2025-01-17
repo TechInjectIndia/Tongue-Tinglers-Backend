@@ -56,6 +56,8 @@ import {
 import { runAtomicFetch } from "../../common/utils/atomic-fetch/atomic-fetch";
 import RepoProvider from "../../RepoProvider";
 import {RPOrderTable} from "../../rp-order/models/RPOrderTable";
+import user from "../../test-user/api/user";
+import {FRANCHISE_STATUS} from "../../franchise/interface/Franchise";
 export class OrderProvider implements IOrderProvider {
     async processOrder(
         state: OrderState,
@@ -369,6 +371,31 @@ export class OrderProvider implements IOrderProvider {
         const orderItems = await this.getOrderProcessCart(cart);
 
         const order: ParsedOrder = {
+            franchise: {
+                id: 0,
+                pocName: "",
+                pocEmail: "",
+                pocPhoneNumber: "",
+                users: [],
+                region: undefined,
+                area: "",
+                agreementIds: [],
+                paymentIds: [],
+                organization: undefined,
+                status: FRANCHISE_STATUS.Active,
+                establishedDate: undefined,
+                affiliate: undefined,
+                location: undefined,
+                sm: [],
+                assignedUser: undefined,
+                createdBy: 0,
+                updatedBy: 0,
+                deletedBy: 0,
+                createdAt: undefined,
+                updatedAt: undefined,
+                deletedAt: undefined
+            }
+            , orderType: undefined,
             id: 0,
             status: OrderStatus.PROCESSED,
             total: 0,
@@ -376,7 +403,7 @@ export class OrderProvider implements IOrderProvider {
             deliveryStatus: "",
             customerDetails: user,
             paymentType: paymentData,
-            paymentId: 0,
+            paymentId: '',
             cancelledItems: [],
             totalDiscount: 0,
             deliveryDetails: null,
@@ -396,7 +423,7 @@ export class OrderProvider implements IOrderProvider {
             couponCodes: [],
             discount: {},
             price: {},
-            createdBy: 0,
+            createdBy: 0
         };
 
         // SET ORDER ITEMS
@@ -757,7 +784,7 @@ export class OrderProvider implements IOrderProvider {
 
     //     Process Post Order private functions
 
-    private async performPostPaymentTasks(order: PendingOrder): Promise<void> {
+    private async performPostPaymentTasks(order: ParsedOrder): Promise<void> {
         // todo @Nitesh add more tasks here!!
         const p1 = this.sendOrderMailAtomic(order);
 
@@ -765,7 +792,7 @@ export class OrderProvider implements IOrderProvider {
     }
 
     private async sendOrderMailAtomic(
-        order: PendingOrder,
+        order: ParsedOrder,
         // paymentVerificationMethod: PAYMENT_VERIFICATION_METHODS,
     ) {
         // const orderMetaField = ORDER_META_FIELDS.CONFIRMATION_MAIL;
@@ -791,7 +818,7 @@ export class OrderProvider implements IOrderProvider {
     }
 
     // todo @Nitesh add mailing function here.
-    private async sendOrderMail(order: PendingOrder): Promise<boolean> {
+    private async sendOrderMail(order: ParsedOrder): Promise<boolean> {
         //     send mail functions
 
         throw new Error("method not implemented");

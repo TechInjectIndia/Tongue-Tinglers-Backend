@@ -109,56 +109,31 @@ console.log("productVariations: ",productVariations)
 // };
 
 
-export const parseAndSavePendingOrderToOrder = async (pendingOrder: PendingOrder): Promise<any> => {
+export const parseAndSavePendingOrderToOrder = async (pendingOrder:ParsedOrder): Promise<any> => {
     try {
-        // Extract relevant data from PendingOrder
-        let {
-            orderId,
-            status,
-            total,
-            totalTax,
-            deliveryStatus,
-            customerDetails,
-            paymentType,
-            paymentId,
-            paymentOrderId,
-            cancelledItems,
-            discount,
-            totalDiscount,
-            deliveryDetails,
-            shippingAddress,
-            totalShipping,
-            anomalyArr,
-            coupon,
-            items,
-            price,
-            couponCodes,
-        } = pendingOrder;
-
-        // Create the order object that will be saved in the database
         const orderData:BaseOrder = {
             cancelled_items: null,
-            customer_details: customerDetails.id,
+            customer_details: pendingOrder.customerDetails.id,
             deletedBy: 1,
             delivery_details: null,
             updatedBy: null,
-            status,
-            item_count: items.length, // Assuming items contain the order items
-            total,
-            total_tax: 0,
+            status:pendingOrder.status,
+            item_count: pendingOrder.items.length,
+            total:pendingOrder.total,
+            total_tax: pendingOrder.totalTax,
             delivery_status: null,
-            payment_id: paymentId,
+            payment_id: pendingOrder.paymentId,
             payment_type: null,
             total_discount: null,
             total_shipping: null,
-            franchise: null, // Replace with logic if necessary
-            billingAddress: shippingAddress, // Assuming billingAddress is the same as shippingAddress for simplicity
-            shippingAddress: shippingAddress,
+            franchise: null,
+            billingAddress: pendingOrder.shippingAddress,
+            shippingAddress: pendingOrder.shippingAddress,
             anomalyArr:null,
-            prices: JSON.stringify(price), // Converting price to JSON string if it's an object
-            discount_prices: null, // Assuming discount is an object
-            order_type: ORDER_TYPE.RM_ORDER, // Assuming order type is RM_ORDER
-            createdBy: customerDetails.id // Assuming the `createdBy` field comes from the customer
+            prices: JSON.stringify(pendingOrder.price),
+            discount_prices: null,
+            order_type: ORDER_TYPE.RM_ORDER,
+            createdBy: pendingOrder.customerDetails.id
         };
 
 

@@ -503,6 +503,7 @@ async function createProductWithAssociations(req: Request, res: Response) {
             console.log("Product variations created:",
                 createdVariations.map((v) => v.id));
 
+            await  createdProduct.addVariations(createdVariations)
             // Use mixin to associate variations
             // await createdProduct.addVariations(
             //     createdVariations.map((v) => v.id),
@@ -514,12 +515,12 @@ async function createProductWithAssociations(req: Request, res: Response) {
         // await transaction.commit();
         console.log("Transaction committed successfully");
 
-        return {
+        return res.status(200).json({
             category: categoryCreated,
             options: optionsCreated,
             optionValues: optionsValueCreated,
             product: createdProduct,
-        }
+        })
     }
     catch (err) {
         console.error("Error during transaction:", err);

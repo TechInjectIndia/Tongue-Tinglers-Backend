@@ -51,7 +51,7 @@ class PendingOrderModel
                 },
                 item_count: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 total: {
                     type: DataTypes.DOUBLE,

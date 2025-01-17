@@ -1,16 +1,18 @@
-import { Request, Response } from "express";
-import { get } from "lodash";
+import {Request, Response} from "express";
+import {get} from "lodash";
 
 // import { OrderStatus } from "../../../types";
 import {
     DeliveryStatus,
+    ORDER_TYPE,
     OrderStatus,
     ParsedOrder,
     PAYMENT_TYPE,
     PresaleParsedOrder
 } from "apps/order/interface/Order";
-import { CartDetailRepo } from "apps/cart-details/repos/cartDetailRepo";
+import {CartDetailRepo} from "apps/cart-details/repos/cartDetailRepo";
 import {USER_STATUS, USER_TYPE} from "../../user/interface/user";
+import {FRANCHISE_STATUS} from "../../franchise/interface/Franchise";
 
 
 export default class CheckoutController {
@@ -30,6 +32,31 @@ export default class CheckoutController {
         const shippingAddId = parseInt(get(req, "shippingAddId"));
         const billingAddId = parseInt(get(req, "billingAddId"));
         const order: ParsedOrder = {
+            franchise: {
+                id: 0,
+                pocName: "",
+                pocEmail: "",
+                pocPhoneNumber: "",
+                users: [],
+                region: undefined,
+                area: "",
+                agreementIds: [],
+                paymentIds: [],
+                organization: undefined,
+                status: FRANCHISE_STATUS.Active,
+                establishedDate: undefined,
+                affiliate: undefined,
+                location: undefined,
+                sm: [],
+                assignedUser: undefined,
+                createdBy: 0,
+                updatedBy: 0,
+                deletedBy: 0,
+                createdAt: undefined,
+                updatedAt: undefined,
+                deletedAt: undefined
+            },
+            orderType: ORDER_TYPE.RM_ORDER,
             couponCodes: [], discount: undefined, price: undefined,
             anomalyArr: [],
             cancelledItems: [],
@@ -37,20 +64,14 @@ export default class CheckoutController {
             createdAt: new Date(),
             createdBy: 1,
             customerDetails: {
-                id: 1,
-                firstName: "Admin",
-                lastName: "Tongue Tingler",
+                id: 0,
+                firstName: "",
+                lastName: "",
                 email: "",
                 phoneNumber: "",
                 type: USER_TYPE.ADMIN,
                 status: USER_STATUS.ACTIVE,
-                role: 0,
-                createdBy: 1,
-                updatedBy: null,
-                deletedBy: null,
-                createdAt: new Date(),
-                updatedAt: null,
-                deletedAt: null
+                role: 0
             },
             deletedAt: null,
             deletedBy: null,
@@ -60,7 +81,7 @@ export default class CheckoutController {
             items: [],
             notes: [],
             orderItems: [],
-            paymentId: 1,
+            paymentId: '',
             paymentType: PAYMENT_TYPE.RP_CHECKOUT,
             shippingAddress: null,
             billingAddress: null,

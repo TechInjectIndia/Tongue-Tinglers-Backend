@@ -59,8 +59,8 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
             as: 'customer'
         })
         OrderModel.belongsTo(FranchiseModel, {
-            foreignKey: 'franchise_id',
-            as: 'franchise'
+            foreignKey: 'franchise',
+            as: 'franchiseData'
         })
         OrderModel.belongsToMany(NotesModel, {
             through: "order_notes_join", // Join table name

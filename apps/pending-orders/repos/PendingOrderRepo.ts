@@ -4,8 +4,26 @@ import {UserModel} from "apps/user/models/UserTable";
 import {OrderPayload, ParsedOrder} from "../../order/interface/Order";
 import {DTO, getHandledErrorDTO, getSuccessDTO} from "../../common/models/DTO";
 import {parseOrder} from "../../order/parser/parseOrder";
+import {Transaction} from "sequelize";
 
 export class PendingOrderRepo implements IPendingOrderRepo {
+   async getPendingOrderByAttributes(payload: any, transaction?: Transaction): Promise<ParsedOrder | null> {
+    try {
+        const options: any = {
+            where: payload
+        };
+        // Only add transaction to options if it's provided
+        if (transaction) {
+            options.transaction = transaction;
+        }
+        const res = await PendingOrderModel.findOne(options);
+        return res ? parseOrder(res.toJSON()) : null;
+    } catch(error) {
+        console.log(error);
+        return null;
+    }
+}
+
     async create(payload: OrderPayload) : Promise<DTO<ParsedOrder>> {
         try{
             const user = await UserModel.findByPk(payload.customer_details);

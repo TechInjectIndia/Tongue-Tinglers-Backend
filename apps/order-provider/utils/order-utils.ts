@@ -80,7 +80,7 @@ const getEmptyParsedOrder = () => {
         deliveryStatus: "",
         customerDetails: user,
         paymentType: PAYMENT_TYPE.RP_CHECKOUT,
-        paymentId: 0,
+        paymentId: '',
         cancelledItems: [],
         totalDiscount: 0,
         deliveryDetails: null,

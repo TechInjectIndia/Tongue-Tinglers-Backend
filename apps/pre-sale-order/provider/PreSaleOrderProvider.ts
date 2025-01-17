@@ -34,6 +34,27 @@ export class PreSaleOrderProvider implements IPreSaleOrderProvider {
 
         // Construct the complete pre-sale parsed order.
         const preSaleParsedOrder: PresaleParsedOrder = {
+            anomalyArr: [],
+            billingAddress: undefined,
+            cancelled_items: [],
+            createdBy: 0,
+            customer_details: 0,
+            deletedBy: 0,
+            delivery_details: undefined,
+            delivery_status: "",
+            discount_prices: "",
+            franchise: 0,
+            item_count: 0,
+            order_type: undefined,
+            payment_id: "",
+            payment_type: "",
+            prices: "",
+            shippingAddress: undefined,
+            status: "",
+            total_discount: 0,
+            total_shipping: 0,
+            total_tax: 0,
+            updatedBy: 0,
             total: this.getTotalByPreSaleOrderItems(preSaleOrderItems),
             totalTax: this.getTotalTaxByPreSaleOrderItems(),
             cancelledItems: [], // Initialize with no cancelled items.
@@ -41,7 +62,7 @@ export class PreSaleOrderProvider implements IPreSaleOrderProvider {
             coupon: null, // Initialize with no coupon.
             items: preSaleOrderItems,
             notes: [], // Initialize with no notes.
-            orderItems: this.getOrderItemsByPreSaleParsedOrderItems(preSaleOrderItems),
+            orderItems: this.getOrderItemsByPreSaleParsedOrderItems(preSaleOrderItems)
         };
 
         return getSuccessDTO(preSaleParsedOrder);

@@ -34,6 +34,7 @@ import { PendingOrderRepo } from "../../pending-orders/repos/PendingOrderRepo";
 import { RPOrderTable } from "apps/rp-order/models/RPOrderTable";
 import { UserModel } from "apps/user/models/UserTable";
 import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
+import RepoProvider from "../../RepoProvider";
 
 export class OrderRepo implements  IOrderRepo{
     async createOrder(transaction: Transaction, order: OrderPayload): Promise<ParsedOrder | null> {
@@ -353,14 +354,16 @@ export class OrderRepo implements  IOrderRepo{
             alreadyProcessed: false,
         };
 
-        const pendingOrder = (
-            await PendingOrderModel.findOne({
-                where: {
-                    payment_id:paymentOrderId,
-                },
-                transaction,
-            })
-        ).toJSON();
+        // const pendingOrder = (
+        //     await PendingOrderModel.findOne({
+        //         where: {
+        //             payment_id:paymentOrderId,
+        //         },
+        //         transaction,
+        //     })
+        // ).toJSON();
+
+        const pendingOrder = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({payment_id:paymentOrderId,})
 
         if (!pendingOrder) {
             return getSuccessDTO(

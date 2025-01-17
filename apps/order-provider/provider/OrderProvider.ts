@@ -79,10 +79,9 @@ export class OrderProvider implements IOrderProvider {
             state.paymentType
         );
 
-        console.log("order--------->", order);
-
         // calculate Order
-        this.calculateOrder(order, user.data);
+        await this.calculateOrder(order, user.data);
+
 
         // Transform the order into RPOrder and ParsedOrder
         const rpOrderRes = await this.transformToRPOrder(order);
@@ -91,7 +90,6 @@ export class OrderProvider implements IOrderProvider {
         // await new PendingOrderRepo().create(pendingOrderData)
         // await RPOrderTable.create(rpOrderRes.data);
 
-        console.log("RP order--------->", rpOrderRes.data);
 
         if (!rpOrderRes.success) return getUnhandledErrorDTO("Failed to create RP Order");
 
@@ -261,7 +259,7 @@ export class OrderProvider implements IOrderProvider {
 
     private calculateTax(order: ParsedOrder): ParsedOrder {
         order.totalTax = this.getTotalTax(order);
-
+        order.total = order.total + order.totalTax;
         return order;
     }
 

@@ -5,12 +5,42 @@ import {OrderPayload, ParsedOrder} from "../../order/interface/Order";
 import {DTO, getHandledErrorDTO, getSuccessDTO} from "../../common/models/DTO";
 import {parseOrder} from "../../order/parser/parseOrder";
 import {Transaction} from "sequelize";
+import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
+import { NotesModel } from "apps/order/models/NotesTable";
+import { OrderItemsModel } from "apps/order-items/models/OrderItemsTable";
 
 export class PendingOrderRepo implements IPendingOrderRepo {
    async getPendingOrderByAttributes(payload: any, transaction?: Transaction): Promise<ParsedOrder | null> {
     try {
         const options: any = {
-            where: payload
+            where: payload,
+            include: [
+                {
+                    model: UserModel,
+                    as: "customer"
+                },
+                {
+                    model: FranchiseModel,
+                    as: "franchise"
+                },
+                {
+                    model: OrderItemsModel,
+                    through: { attributes: [] }, // Exclude the join table from the results
+                    as: "orderItems", // Use the alias defined in the association
+                },
+                {
+                    model: UserModel,
+                    as: "createdByUser"
+                },
+                {
+                    model: UserModel,
+                    as: "deletedByUser"
+                },
+                {
+                    model: UserModel,
+                    as: "updatedByUser"
+                }
+            ],
         };
         // Only add transaction to options if it's provided
         if (transaction) {

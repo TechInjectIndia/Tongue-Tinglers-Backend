@@ -259,7 +259,6 @@ export class OrderProvider implements IOrderProvider {
     private calculateTax(order: ParsedOrder): ParsedOrder {
         order.totalTax = this.getTotalTax(order);
         order.total = order.total + order.totalTax;
-
         return order;
     }
 

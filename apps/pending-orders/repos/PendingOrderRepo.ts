@@ -8,6 +8,7 @@ import {Transaction} from "sequelize";
 import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
 import { NotesModel } from "apps/order/models/NotesTable";
 import { OrderItemsModel } from "apps/order-items/models/OrderItemsTable";
+import {use} from "react";
 
 export class PendingOrderRepo implements IPendingOrderRepo {
    async getPendingOrderByAttributes(payload: any, transaction?: Transaction): Promise<ParsedOrder | null> {
@@ -68,14 +69,14 @@ export class PendingOrderRepo implements IPendingOrderRepo {
         }
     }
 
-    async createPendingOrderPayload(order:ParsedOrder, paymentOrderId:string){
+    async createPendingOrderPayload(order:ParsedOrder, paymentOrderId:string,userId:number){
         const pendingOrderPayload: OrderPayload = {
             anomalyArr: [],
             billingAddress: order.billingAddress,
             cancelled_items: [],
-            createdBy: 0,
-            customer_details: 0,
-            deletedBy: 0,
+            createdBy: userId,
+            customer_details: userId,
+            deletedBy: null,
             delivery_details: order.deliveryDetails,
             delivery_status: "",
             discount_prices: "",
@@ -93,7 +94,7 @@ export class PendingOrderRepo implements IPendingOrderRepo {
             total_discount: 0,
             total_shipping: 0,
             total_tax: 0,
-            updatedBy: 0
+            updatedBy: null
         };
         return pendingOrderPayload;
     }

@@ -7,7 +7,7 @@ import {validateCreateTaxRatePayload, validateGetTaxRateSchema, validateListTaxR
 router.post('/create', validateCreateTaxRatePayload,TaxRateController.create);
 router.get('/list', validateListTaxRateSchema, TaxRateController.getAll);
 router.get('/get/:id', validateGetTaxRateSchema, TaxRateController.getById);
-router.put('/update/:id', validateUpdateTaxRateSchema, TaxRateController.update);
+router.put('/update/:id', validateGetTaxRateSchema, validateCreateTaxRatePayload, TaxRateController.update);
 router.delete('/delete/:id', validateGetTaxRateSchema, TaxRateController.delete);
 
 export default router;

@@ -24,113 +24,93 @@ export default class TaxRateRepo implements ITaxRateRepo {
             const taxRateCreatedData = await TaxRateModel.findOne({
                 where: {
                     id: taxRateCreated.id,
+                },include:[
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
                 },
-                include: [
-                    {
-                        model: UserModel,
-                        as: "createdByUser",
-                    },
-                    {
-                        model: UserModel,
-                        as: "updatedByUser",
-                    },
-                    {
-                        model: UserModel,
-                        as: "deletedByUser",
-                    },
-                ],
-            });
-            return parseTaxRate(taxRateCreatedData);
-        } catch (error) {
+                {
+                    model: UserModel,
+                    as: "deletedByUser",
+                }
+            ]});
+            return parseTaxRate(taxRateCreatedData)
+        }catch(error){
             console.log(error);
             return null;
         }
     }
 
     async update(id: number, payload: TaxRatePayload): Promise<ParsedTaxRate | null> {
-        try {
-            const existingTaxRate = await TaxRateModel.findByPk(id);
-            if (!existingTaxRate) {
+        try{
+            const existingTaxRate = await TaxRateModel.findOne({where: {
+                id: id
+            }, include:[
+                {
+                    model: UserModel,
+                    as: "createdByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "deletedByUser",
+                }
+            ]});
+            if(!existingTaxRate){
                 throw new Error(`Tax Rate with ID ${id} not found`);
             }
             existingTaxRate.set(payload);
             existingTaxRate.save();
-            const taxRateCreatedData = await TaxRateModel.findOne({
-                where: {
-                    id: id,
-                },
-                include: [
-                    {
-                        model: UserModel,
-                        as: "createdByUser",
-                    },
-                    {
-                        model: UserModel,
-                        as: "updatedByUser",
-                    },
-                    {
-                        model: UserModel,
-                        as: "deletedByUser",
-                    },
-                ],
-            });
-            return parseTaxRate(taxRateCreatedData);
-        } catch (error) {
-            console.log(error);
+            return parseTaxRate(existingTaxRate);
+        }catch(error){
+            console.log(error)
             return null;
         }
     }
 
     async getById(id: number): Promise<ParsedTaxRate | null> {
-        try {
-            const existingTaxRate = await TaxRateModel.findOne({
-                where: {
-                    id: id,
+        try{
+            const existingTaxRate = await TaxRateModel.findOne({where: {
+                id: id
+            },include:[
+                {
+                    model: UserModel,
+                    as: "createdByUser",
                 },
-                include: [
-                    {
-                        model: UserModel,
-                        as: "createdByUser",
-                    },
-                    {
-                        model: UserModel,
-                        as: "updatedByUser",
-                    },
-                    {
-                        model: UserModel,
-                        as: "deletedByUser",
-                    },
-                ],
+                {
+                    model: UserModel,
+                    as: "updatedByUser",
+                },
+                {
+                    model: UserModel,
+                    as: "deletedByUser",
+                }
+            ]
             });
-            
-            if (!existingTaxRate) {
-                console.log(`Tax Rate with ID ${id} not found`);
-                return null;
+            if(!existingTaxRate){
+                throw new Error(`Tax Rate with ID ${id} not found`);
             }
-
-            return parseTaxRate(existingTaxRate);
-        } catch (error) {
-            console.log(error);
+            return parseTaxRate(existingTaxRate)
+        }catch(error){
+            console.log(error)
             return null;
         }
     }
 
-    async getAll(
-        page: number,
-        limit: number,
-        search: string,
-        filters: object
-    ): Promise<Pagination<ParsedTaxRate>> {
-        try {
+    async getAll(page: number, limit: number, search: string, filters: object): Promise<Pagination<ParsedTaxRate>> {
+        try{
             const query: any = {};
             const offset = (page - 1) * limit;
-            if (search) {
+            if(search){
                 query[Op.or] = [
                     { title: { [Op.iLike]: `%${search}%` } },
                     { value: { [Op.iLike]: `%${search}%` } },
                 ];
             }
-            if (filters) {
+            if(filters){
                 Object.assign(query, filters);
             }
             const { rows: taxRateData, count: total } = await TaxRateModel.findAndCountAll({
@@ -138,7 +118,7 @@ export default class TaxRateRepo implements ITaxRateRepo {
                 offset,
                 limit,
                 order: [["createdAt", "DESC"]],
-                include: [
+                include:[
                     {
                         model: UserModel,
                         as: "createdByUser",
@@ -150,21 +130,23 @@ export default class TaxRateRepo implements ITaxRateRepo {
                     {
                         model: UserModel,
                         as: "deletedByUser",
-                    },
-                ],
-            }).then((data) => {
+                    }
+                ]
+            }).then((data)=> {
                 return {
                     rows: data.rows.map((taxRate) => parseTaxRate(taxRate)),
                     count: data.count,
                 };
-            });
+            })
             const totalPages = Math.ceil(total / limit);
-            return { data: taxRateData, total, totalPages };
-        } catch (error) {
-            console.log(error);
+            return {data: taxRateData, total, totalPages}
+        }catch(error){
+            console.log(error)
             return null;
         }
     }
+
+    
 
     async delete(id: number): Promise<ParsedTaxRate> {
         try {

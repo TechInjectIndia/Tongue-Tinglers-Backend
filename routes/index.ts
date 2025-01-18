@@ -163,7 +163,7 @@ router.use(`/organization`,auth, organizationRouter);
 router.use(`${ADMIN}/products-category`, auth, OrderV1Routes);
 router.use(`/b2c-users`, auth, B2CUserAddressRouter);
 router.use('/options',optionRouter)
-router.use(`${ADMIN}/tax-rate`, TaxRateRouter)
+router.use(`${ADMIN}/tax-rate`,auth, TaxRateRouter)
 
 /* IMS */
 router.use(`${ADMIN}`, auth, itemCategoryRouter);

@@ -75,17 +75,29 @@ export default class TaxRateController {
 
     static async getAll(req: Request, res: Response){
         try{
-            let filtersData={}
-            const page = get(req.query, "page", 1);
-            const pageNumber = parseInt(page.toString());
-            const limit = get(req.query, "limit", 10);
-            const limitNumber = parseInt(limit.toString());
-            const search = get(req.query, "search");
-            const filters = get(req.query, "filters", {});
-            if (typeof filters === 'string') {
-                filtersData = JSON.parse(filters);
+            let page = parseInt(<string>get(req.query, "page", "1"));
+            if (isNaN(page)) page = 1;
+            let limit = parseInt(<string>get(req.query, "limit", "10"));
+            if (isNaN(limit)) limit = 10;
+            const search = <string>get(req.query, "search", "");
+            const filters = <string>get(req.query, "filters", "");
+
+             let filterObj = {};
+            if (filters) {
+                try {
+                    filterObj = JSON.parse(filters);
+                } catch (error) {
+                    return res
+                        .status(400)
+                        .send(
+                            sendResponse(
+                                RESPONSE_TYPE.ERROR,
+                                "Invalid filter format. It should be a valid JSON string.",
+                            ),
+                        );
+                }
             }
-            const taxRateData = await new TaxRateRepo().getAll(pageNumber, limitNumber, search.toString(), filtersData)
+            const taxRateData = await new TaxRateRepo().getAll(page, limit, search, filterObj)
             return res
                 .status(200)
                 .send(

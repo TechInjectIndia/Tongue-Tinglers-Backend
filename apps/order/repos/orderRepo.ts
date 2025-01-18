@@ -276,11 +276,12 @@ export class OrderRepo implements  IOrderRepo{
     }
 
     async proceedToPayment(
-        state: OrderState
+        state: OrderState,
+        userId:number
     ): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>> {
         try {
             const order = await new OrderProvider().processOrder(state);
-            const pendingOrderData = await new PendingOrderRepo().createPendingOrderPayload(order.data.parsedOrder,order.data.rpOrder.id);
+            const pendingOrderData = await new PendingOrderRepo().createPendingOrderPayload(order.data.parsedOrder,order.data.rpOrder.id,userId);
             await new PendingOrderRepo().create(pendingOrderData)
             await RPOrderTable.create(order.data.rpOrder);
 

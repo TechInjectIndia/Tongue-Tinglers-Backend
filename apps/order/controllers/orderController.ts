@@ -58,7 +58,7 @@ export default class OrderController {
     static async getOrderById(req: any, res: any) {
         try {
             console.log('hi');
-            
+
             const id = get(req, "params.id", 0);
             const order = await RepoProvider.orderRepo.getOrderById(id);
             return res.status(200)
@@ -84,7 +84,7 @@ export default class OrderController {
             const search = get(req, "query.search", "");
             const filters = get(req, "query.filters", {});
             const orders = await  RepoProvider.orderRepo.getAllOrders(100,100,'',{})
-               
+
             return res.status(200)
                 .send(
                     sendResponse(
@@ -126,7 +126,13 @@ export default class OrderController {
     static async proceedToPayment(req: any, res: any){
         try{
             const payload: any = req?.body;
-            const order = await RepoProvider.orderRepo.proceedToPayment(payload);
+            const user_id = Number(get(req, "user_id", 0));
+            if(isNaN(user_id)){
+                return res.status(400).send(
+                    sendResponse(RESPONSE_TYPE.ERROR, 'Invalid user id.'),
+                );
+            }
+            const order = await RepoProvider.orderRepo.proceedToPayment(payload,user_id);
             return res.status(200)
                 .send(
                     sendResponse(

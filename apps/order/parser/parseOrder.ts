@@ -16,11 +16,18 @@ import { parseFranchise } from "apps/franchise/parser/franchiseParser";
 
 const parseOrder = (order: any): ParsedOrder => {
     console.log('order.orderItems: ', order.orderItems);
-    const productVariations = order.orderItems.map((orderItem: any) =>{
-            console.log(">>>>>>>parseOrderItem>>>>>>>>>>>",parseOrderItem(orderItem));
+    let productVariations: any;
+    if(order.orderItems){
+        productVariations = order.orderItems.map((orderItem: any) =>{
             parseOrderItem(orderItem)
         }
     );
+    }else if(order.pendingOrderItems){
+        productVariations = order.pendingOrderItems.map((orderItem: any) =>{
+            parseOrderItem(orderItem)
+        }
+    );
+    }
 
 console.log("productVariations: ",productVariations)
 

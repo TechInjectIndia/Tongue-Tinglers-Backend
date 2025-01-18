@@ -71,8 +71,6 @@ export class OrderProvider implements IOrderProvider {
         if (!billingAddress.success) return getUnhandledErrorDTO("billingAddress not found");
         if (!shippingAddress.success) return getUnhandledErrorDTO("shippingAddress not found");
 
-        console.log("shippppp", shippingAddress);
-
         // Prepare the order using the fetched data
         const order = await this.prepareOrder(
             user.data,
@@ -82,10 +80,8 @@ export class OrderProvider implements IOrderProvider {
             state.paymentType
         );
 
-        console.log("order--------->", order);
-
         // calculate Order
-        this.calculateOrder(order, user.data);
+       await  this.calculateOrder(order, user.data);
 
         // Transform the order into RPOrder and ParsedOrder
         const rpOrderRes = await this.transformToRPOrder(order);
@@ -93,8 +89,6 @@ export class OrderProvider implements IOrderProvider {
         // const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(order, rpOrderRes.data.id);
         // await new PendingOrderRepo().create(pendingOrderData)
         // await RPOrderTable.create(rpOrderRes.data);
-
-        console.log("RP order--------->", rpOrderRes.data);
 
         if (!rpOrderRes.success) return getUnhandledErrorDTO("Failed to create RP Order");
 
@@ -264,6 +258,7 @@ export class OrderProvider implements IOrderProvider {
 
     private calculateTax(order: ParsedOrder): ParsedOrder {
         order.totalTax = this.getTotalTax(order);
+        order.total = order.total + order.totalTax;
 
         return order;
     }
@@ -620,6 +615,7 @@ export class OrderProvider implements IOrderProvider {
         price: number,
         taxRate: TaxRate
     ): { prices: Record<string, PriceComponent>; applicableTaxPercent: number } {
+        
         let taxPercent = 0;
         let priceObj: Record<string, PriceComponent> = {
             [PRICE_COMP_TYPE.BASE_PRICE]: {
@@ -653,6 +649,7 @@ export class OrderProvider implements IOrderProvider {
         const product = await new ProductRepo().getById(cartItem.product.id);
         let taxRateRes = await new TaxRateRepo().getById(product.tax_rate_id);
 
+
         let taxRate: TaxRate = {
             id: 0,
             title: "",
@@ -663,7 +660,7 @@ export class OrderProvider implements IOrderProvider {
             taxRate = {
                 id: taxRateRes.id,
                 title: taxRateRes.title,
-                value: taxRate.value,
+                value: taxRateRes.value,
             };
         }
 

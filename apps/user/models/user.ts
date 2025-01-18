@@ -3,10 +3,14 @@ const { Op } = require("sequelize");
 
 import { TListFilters } from "apps/common/models/common";
 import IBaseRepo from "../controllers/IUserController";
-import { TUser, USER_STATUS, USER_TYPE } from "../interface/user";
+import { ParsedUser, TUser, USER_STATUS, USER_TYPE } from "../interface/user";
 import { UserModel } from "./UserTable";
 import { TAddUser, TEditUser, TEditUserProfile, TUpdateUserReferralCode, TUsersList, TUserWithPermission } from "types";
 import { RolesModel } from "./RolesTable";
+import { parseUser } from "../parser/user-parser";
+import { OrganizationRepo } from "apps/organization/models";
+import { B2CUserAddressModel } from "apps/b2c-users-address/models/B2CUserAddressTable";
+import { AddressModel } from "apps/address/models/AddressTable";
 
 export class AdminRepo  {
   constructor() { }
@@ -254,5 +258,24 @@ export class AdminRepo  {
         id,
       },
     });
+  }
+
+  public async getProfile(userId: number):Promise<any>{
+    try{
+      const profile = await UserModel.findOne({
+        where: {
+          id: userId
+        }
+      });
+      if(!profile){
+        throw new Error("User not found");
+      }
+      const organizationData = await new OrganizationRepo().getOrgDetails(userId)
+
+      return {profile: parseUser(profile), organization: organizationData};
+    }catch(error){
+      console.log(error);
+      return null;
+    }
   }
 }

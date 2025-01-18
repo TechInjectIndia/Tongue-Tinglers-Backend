@@ -337,6 +337,7 @@ export class OrderProvider implements IOrderProvider {
             updatedAt: currUser.updatedAt,
             deletedAt: currUser.deletedAt,
             createdBy: currUser.createdBy,
+            profilePhoto: currUser.profilePhoto
         };
 
         const orderItems = await this.getOrderProcessCart(cart);

@@ -33,6 +33,7 @@ const getEmptyParsedOrder = () => {
         updatedAt: null,
         deletedAt: null,
         createdBy: 0,
+        profilePhoto: ""
     };
 
     const obj: ParsedOrder = {

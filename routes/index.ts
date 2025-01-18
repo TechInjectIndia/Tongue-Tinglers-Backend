@@ -95,7 +95,7 @@ import { purchaseInvoicesRouter } from "apps/inventory/purchase_invoice/routes/P
 import { debitNoteRouter } from "apps/inventory/debit_note/routes/DebitNoteRoutes";
 
 import B2CUserAddressRouter from "../apps/b2c-users-address/api/B2CUserAddressApi";
-
+import TaxRateRouter from "../apps/tax-rate/api/taxRateApi";
 
 // ====== Admin routes ======
 router.use(`${ADMIN}/users`, auth, adminUserRouter);
@@ -161,6 +161,7 @@ router.use(`/organization`,auth, organizationRouter);
 router.use(`${ADMIN}/products-category`, auth, OrderV1Routes);
 router.use(`/b2c-users`, auth, B2CUserAddressRouter);
 router.use('/options',optionRouter)
+router.use(`${ADMIN}/tax-rate`,auth, TaxRateRouter)
 
 /* IMS */
 router.use(`${ADMIN}`, auth, itemCategoryRouter);

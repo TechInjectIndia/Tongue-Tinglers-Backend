@@ -26,22 +26,18 @@ const createTaxRatePayload = Joi.object({
 
 // Validation for listing tax rates
 export const listTaxRateSchema = Joi.object({
-    query: Joi.object({
-        page: Joi.number().integer().min(1).optional(),
-        limit: Joi.number().integer().min(1).optional(),
-        search: Joi.string().optional(),
-        filters: Joi.object().optional(),
-    }),
+    page: Joi.number().min(1).optional(),
+    limit: Joi.number().min(1).optional(),
+    search: Joi.string().optional(),
+    filters: Joi.object().optional(),
 });
 
 // Validation for getting a tax rate by ID
 export const getTaxRateSchema = Joi.object({
-    params: Joi.object({
-        id: Joi.string().required().messages({
-            "string.base": `"ID" should be a string.`,
-            "string.empty": `"ID" cannot be empty.`,
-            "any.required": `"ID" is required.`,
-        }),
+    id: Joi.string().required().messages({
+        "string.base": `"ID" should be a string.`,
+        "string.empty": `"ID" cannot be empty.`,
+        "any.required": `"ID" is required.`,
     }),
 });
 

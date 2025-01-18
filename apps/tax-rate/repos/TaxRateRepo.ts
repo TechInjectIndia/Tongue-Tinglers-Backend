@@ -47,13 +47,7 @@ export default class TaxRateRepo implements ITaxRateRepo {
 
     async update(id: number, payload: TaxRatePayload): Promise<ParsedTaxRate | null> {
         try{
-            const existingTaxRate = await TaxRateModel.findByPk(id);
-            if(!existingTaxRate){
-                throw new Error(`Tax Rate with ID ${id} not found`);
-            }
-            existingTaxRate.set(payload);
-            existingTaxRate.save();
-            const taxRateCreatedData = await TaxRateModel.findOne({where: {
+            const existingTaxRate = await TaxRateModel.findOne({where: {
                 id: id
             }, include:[
                 {
@@ -69,7 +63,12 @@ export default class TaxRateRepo implements ITaxRateRepo {
                     as: "deletedByUser",
                 }
             ]});
-            return parseTaxRate(taxRateCreatedData);
+            if(!existingTaxRate){
+                throw new Error(`Tax Rate with ID ${id} not found`);
+            }
+            existingTaxRate.set(payload);
+            existingTaxRate.save();
+            return parseTaxRate(existingTaxRate);
         }catch(error){
             console.log(error)
             return null;

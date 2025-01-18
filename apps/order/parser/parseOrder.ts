@@ -8,7 +8,7 @@ import {
 import {PendingOrder} from "../../pending-orders/interface/PendingOrder";
 import {OrderModel} from "../models/OrderTable";
 import {OrderItemsModel} from "../../order-items/models/OrderItemsTable";
-import { parseCustomerDetails, parseUserToMetaUser } from "apps/user/parser/user-parser";
+import { parseUserToMetaUser } from "apps/user/parser/user-parser";
 import { UserModel } from "apps/user/models/UserTable";
 import { ParsedUser } from "apps/user/interface/user";
 import { parseFranchise } from "apps/franchise/parser/franchiseParser";
@@ -32,7 +32,7 @@ console.log("productVariations: ",productVariations)
         couponCodes: [],
         createdAt: order.created_at,
         createdBy: order.createdByUser ? parseUserToMetaUser(order.createdByUser) : null,
-        customerDetails: order.customer ? parseCustomerDetails(order.customer) : null,
+        customerDetails: order.customer,
         deletedAt: order.deletedAt,
         deletedBy: order.deletedByUser ? parseUserToMetaUser(order.deletedByUser) : null,
         deliveryDetails: order.delivery_details,

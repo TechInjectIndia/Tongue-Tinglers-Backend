@@ -120,8 +120,38 @@ export class B2CUserAddressRepo implements IB2CUserAddressRepo{
             return null
         }
     }
-    update(address: B2CUserAddressPayload): Promise<any> {
-        throw new Error("Method not implemented.");
+    async update(addressId:number, address: B2CUserAddressPayload): Promise<any> {
+        const transaction = await B2CUserAddressModel.sequelize?.transaction();
+        try{
+            const b2cUserData = await B2CUserAddressModel.findOne({
+                where:{
+                    userId: address.userId,
+                    addressId: addressId
+                }
+            })
+            if(!b2cUserData){
+                throw new Error("Guest user address not found");
+            }
+            const updatedAddress = await AddressModel.findOne({
+                where: {
+                    id: b2cUserData.addressId
+                }
+            })
+            if(!updatedAddress){
+                throw new Error("Address not found");
+            }
+            updatedAddress.set(address.address);
+            await updatedAddress.save({transaction: transaction});
+            await transaction?.commit();
+            return updatedAddress;
+        }catch(error){
+            // Rollback the transaction in case of error
+            if (transaction) {
+                await transaction.rollback();
+            }
+            console.log(error);
+            return null;
+        }
     }
     getById(id: number): Promise<any> {
         throw new Error("Method not implemented.");

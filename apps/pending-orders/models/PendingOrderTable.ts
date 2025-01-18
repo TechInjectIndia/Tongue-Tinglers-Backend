@@ -1,4 +1,4 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import {DataTypes, Model, Optional, Transaction} from "sequelize";
 import {
     Order,
     ORDER_TYPE
@@ -39,6 +39,16 @@ class PendingOrderModel
     updatedBy!: number | null;
     deletedBy!: number | null;
 
+
+    // Mixin methods for managing notes
+    // public addOrderItem!: (note: OrderItemsModel | number) => Promise<void>;
+    public addPendingOrderItems!: (notes: Array<OrderItemsModel | number> ) => Promise<void>;
+    public setPendingOrderItems!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
+    public getPendingOrderItems!: () => Promise<OrderItemsModel[]>;
+    // public removeOrderItem!: (note: OrderItemsModel | number) => Promise<void>;
+    // public removeOrderItems!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
+
+
     public static associate(){
         PendingOrderModel.belongsTo(UserModel, {
             foreignKey: 'customer_details',
@@ -49,10 +59,10 @@ class PendingOrderModel
             as: 'franchiseData'
         })
         PendingOrderModel.belongsToMany(OrderItemsModel, {
-            through: "order_items_join", // Join table name
-            foreignKey: "orderId", // Foreign key in the join table
-            otherKey: "order_items_id", // Other foreign key in the join table
-            as: "orderItems", // Alias for the relationship
+            through: "pending_order_items_join", // Join table name
+            foreignKey: "pendingOrderId", // Foreign key in the join table
+            otherKey: "pending_order_items_id", // Other foreign key in the join table
+            as: "pendingOrderItems", // Alias for the relationship
         });
 
         PendingOrderModel.belongsTo(UserModel, {
@@ -130,15 +140,15 @@ class PendingOrderModel
                     allowNull: true,
                 },
                 total_discount: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: true,
                 },
                 total_shipping: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: true,
                 },
                 total_tax: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: true,
                 },
                 prices: {

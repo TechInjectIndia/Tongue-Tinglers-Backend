@@ -5,6 +5,9 @@ import {
 } from "apps/order/interface/Order";
 import { Address } from "types";
 import { sequelize } from "../../../config";
+import { UserModel } from "apps/user/models/UserTable";
+import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
+import { OrderItemsModel } from "apps/order-items/models/OrderItemsTable";
 
 interface PendingOrderCreationAttributes extends Optional<Order, "id"> {}
 
@@ -36,6 +39,35 @@ class PendingOrderModel
     updatedBy!: number | null;
     deletedBy!: number | null;
 
+    public static associate(){
+        PendingOrderModel.belongsTo(UserModel, {
+            foreignKey: 'customer_details',
+            as: 'customer'
+        })
+        PendingOrderModel.belongsTo(FranchiseModel, {
+            foreignKey: 'franchise',
+            as: 'franchiseData'
+        })
+        PendingOrderModel.belongsToMany(OrderItemsModel, {
+            through: "order_items_join", // Join table name
+            foreignKey: "orderId", // Foreign key in the join table
+            otherKey: "order_items_id", // Other foreign key in the join table
+            as: "orderItems", // Alias for the relationship
+        });
+
+        PendingOrderModel.belongsTo(UserModel, {
+            foreignKey: 'createdBy',
+            as: 'createdByUser'
+        })
+        PendingOrderModel.belongsTo(UserModel, {
+            foreignKey: 'updatedBy',
+            as: 'updatedByUser'
+        })
+        PendingOrderModel.belongsTo(UserModel, {
+            foreignKey: 'deletedBy',
+            as: 'deletedByUser'
+        })
+    }
 
     public static initModel() {
         PendingOrderModel.init(

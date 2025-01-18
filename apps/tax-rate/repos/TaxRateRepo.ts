@@ -107,7 +107,6 @@ export default class TaxRateRepo implements ITaxRateRepo {
             if(search){
                 query[Op.or] = [
                     { title: { [Op.iLike]: `%${search}%` } },
-                    { value: { [Op.iLike]: `%${search}%` } },
                 ];
             }
             if(filters){

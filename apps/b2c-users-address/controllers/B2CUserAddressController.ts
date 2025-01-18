@@ -54,6 +54,35 @@ export default class B2CUserAddressController {
         }
     }
 
+    static async updateAddressById(req: Request, res: Response){
+        try{
+            const addressId = parseInt(get(req.params, "id"));
+            const user_id = parseInt(get(req, "user_id"));
+            if (!user_id) {
+                throw Error('Missing user_id or isNaN');
+            }
+            if (!addressId) {
+                throw Error('Missing addressId or isNaN');
+            }
+            const payload = {
+                address: req.body.address,
+                userId: user_id
+            }
+
+            const guestUserAddress = await new B2CUserAddressRepo().update(addressId, payload);
+
+            return res
+                .status(200)
+                .send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.UPDATED, guestUserAddress));
+
+        }catch(error){
+            console.error(error);
+            return res
+                .status(500)
+            .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
+        }
+    }
+
     static async deleteAddressById(req: Request, res: Response){
         try{
             const addressId = parseInt(get(req.params, "id"));

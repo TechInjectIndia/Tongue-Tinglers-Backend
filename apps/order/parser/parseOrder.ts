@@ -110,46 +110,6 @@ const parseOrder = (order: any): ParsedOrder => {
 
 export const parseAndSavePendingOrderToOrder = async (pendingOrder:ParsedOrder): Promise<any> => {
     try {
-        const orderData:BaseOrder = {
-            cancelled_items: null,
-            customer_details: pendingOrder.customerDetails.id,
-            deletedBy: 1,
-            delivery_details: null,
-            updatedBy: null,
-            status:pendingOrder.status,
-            item_count: pendingOrder.items.length,
-            total:pendingOrder.total,
-            total_tax: pendingOrder.totalTax,
-            delivery_status: null,
-            payment_id: pendingOrder.paymentId,
-            payment_type: null,
-            total_discount: null,
-            total_shipping: null,
-            franchise: null,
-            billingAddress: pendingOrder.shippingAddress,
-            shippingAddress: pendingOrder.shippingAddress,
-            anomalyArr:null,
-            prices: JSON.stringify(pendingOrder.price),
-            discount_prices: null,
-            order_type: ORDER_TYPE.RM_ORDER,
-            createdBy: pendingOrder.customerDetails.id
-        };
-
-
-        const orderItems:BaseOrderItem[] = pendingOrder.items.map((pr)=>{
-            return {
-                product_id: pr.product.id,
-                product_option_id: pr.productOption.id,
-                quantity: pr.quantity,
-                total_price: pr.total_price,
-                total_tax: pr.totalTax,
-                coupon_discount: 0,
-                points_discount: 0,
-                student_discount: 0,
-                type: pr.type
-            }
-        });
-
         const payload = parsedToPayload(pendingOrder);
         const response = await  OrderItemsModel.bulkCreate(payload.orderItems);
         const orderInstance = await OrderModel.create(payload);

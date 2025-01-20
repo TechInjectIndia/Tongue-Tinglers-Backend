@@ -9,7 +9,8 @@ import { constructNow } from "date-fns";
 export default class AffiliateController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const affiliateData = req.body;
+            const userId = get(req, 'user_id', '');
+            const affiliateData = { ...req.body, userId: userId };
 
             // Extract the social media details
             const { sm, type, codes } = affiliateData; // Destructure type and codes from affiliateData
@@ -26,7 +27,7 @@ export default class AffiliateController {
 
             // Remove social media details from the payload for affiliate creation
             delete payload.sm;
-
+            delete payload.user_id
             // Create the affiliate record
             const Affiliate = await new AffiliateRepo().create(payload);
 

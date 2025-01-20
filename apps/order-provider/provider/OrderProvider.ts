@@ -325,6 +325,7 @@ export class OrderProvider implements IOrderProvider {
             createdAt: currUser.createdAt,
             updatedAt: currUser.updatedAt,
             deletedAt: currUser.deletedAt,
+            profilePhoto: currUser.profilePhoto,
             createdBy: currUser.createdBy as unknown as  MetaUser,
         };
 

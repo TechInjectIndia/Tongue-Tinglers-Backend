@@ -32,6 +32,7 @@ const getEmptyParsedOrder = () => {
         createdAt: null,
         updatedAt: null,
         deletedAt: null,
+        profilePhoto: "",
         createdBy: {} as MetaUser,
     };
 

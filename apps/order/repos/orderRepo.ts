@@ -218,9 +218,9 @@ export class OrderRepo implements  IOrderRepo{
                 limit,
                 offset,
                 include: [
-                    { model: UserModel, as: "customer" },
+                    // { model: UserModel, as: "customer" },
                     // { model: FranchiseModel, as: "franchise" },
-                    { model: NotesModel, as: "notes", through: { attributes: [] } },
+                    // { model: NotesModel, as: "notes", through: { attributes: [] } },
                     { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
                     { model: UserModel, as: "createdByUser" },
                     { model: UserModel, as: "deletedByUser" },
@@ -229,13 +229,13 @@ export class OrderRepo implements  IOrderRepo{
             };
 
             // Add search functionality
-            if (search) {
-                query.where[Op.or] = [
-                    { status: { [Op.iLike]: `%${search}%` } },
-                    { delivery_status: { [Op.iLike]: `%${search}%` } },
-                    { payment_type: { [Op.iLike]: `%${search}%` } },
-                ];
-            }
+            // if (search) {
+            //     query.where[Op.or] = [
+            //         { status: { [Op.iLike]: `%${search}%` } },
+            //         { delivery_status: { [Op.iLike]: `%${search}%` } },
+            //         { payment_type: { [Op.iLike]: `%${search}%` } },
+            //     ];
+            // }
 
             // Apply filters if provided
             if (filters && typeof filters === "object") {

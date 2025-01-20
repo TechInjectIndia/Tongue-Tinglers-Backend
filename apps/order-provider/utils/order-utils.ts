@@ -32,7 +32,7 @@ const getEmptyParsedOrder = () => {
         createdAt: null,
         updatedAt: null,
         deletedAt: null,
-        createdBy: 0,
+        createdBy: {} as MetaUser,
     };
 
     const obj: ParsedOrder = {
@@ -65,7 +65,7 @@ const getEmptyParsedOrder = () => {
             location: undefined,
             sm: [],
             assignedUser: undefined,
-            createdBy: 0,
+            createdBy: { } as MetaUser,
             updatedBy: 0,
             deletedBy: 0,
             createdAt: new Date(),
@@ -120,7 +120,7 @@ const getEmptyParsedOrder = () => {
         couponCodes: [],
         discount: {},
         price: {},
-        createdBy: 0
+        createdBy: {} as MetaUser
     };
 
     return obj;

@@ -1,4 +1,4 @@
-import {PendingOrderModel} from "../models/PendingOrderTable";
+import {PendingOrder, PendingOrderModel} from "../models/PendingOrderTable";
 import {IPendingOrderRepo} from "./IPendingOrderRepo";
 import {UserModel} from "apps/user/models/UserTable";
 import {
@@ -9,110 +9,69 @@ import {
 import {DTO, getHandledErrorDTO, getSuccessDTO} from "../../common/models/DTO";
 import {parseOrder} from "../../order/parser/parseOrder";
 import {Transaction} from "sequelize";
-import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
 import {OrderItemsModel} from "apps/order-items/models/OrderItemsTable";
 import {BaseOrderItem, ORDER_ITEM_TYPE} from "../../order/interface/OrderItem";
-import {NotesModel} from "../../order/models/NotesTable";
-import order from "../../../static/views/email/react-templates/Order";
+import {OptionsValueModel} from "../../optionsValue/models/OptionValueTable";
+import RepoProvider from "../../RepoProvider";
 
 export class PendingOrderRepo implements IPendingOrderRepo {
-   async getPendingOrderByAttributes(payload: any, transaction?: Transaction): Promise<ParsedOrder | null> {
+   async getPendingOrderByAttributes(id, transaction?: Transaction): Promise<ParsedOrder | null> {
     try {
         const options: any = {
-            where: payload,
+            where: id,
             include: [
-                {
-                    model: UserModel,
-                    as: "customer"
-                },
-                {
-                    model: FranchiseModel,
-                    as: "franchise"
-                },
-                {
-                    model: OrderItemsModel,
-                    through: { attributes: [] }, // Exclude the join table from the results
-                    as: "orderItems", // Use the alias defined in the association
-                },
-                {
-                    model: UserModel,
-                    as: "createdByUser"
-                },
-                {
-                    model: UserModel,
-                    as: "deletedByUser"
-                },
-                {
-                    model: UserModel,
-                    as: "updatedByUser"
-                }
+                { model: UserModel, as: "createdByUser" },
+                { model: UserModel, as: "deletedByUser" },
+                { model: UserModel, as: "updatedByUser" },
             ],
         };
         // Only add transaction to options if it's provided
         if (transaction) {
             options.transaction = transaction;
         }
-        const res = await PendingOrderModel.findOne(options);
-        return res ? parseOrder(res.toJSON()) : null;
+        const resp = await PendingOrderModel.findOne(options)
+
+        resp.pendingOrderItems = await  Promise.all(resp.pendingOrderItems.map(async (dd) => {
+                dd.product_id = dd.product_id;
+                dd.product_option_id = await RepoProvider.optionsValueRepo.getById(dd.product_option_id)
+            return {
+                    ...dd
+                  }
+        }));
+
+        console.log(resp.toJSON())
+
+        return resp ? parseOrder(resp.toJSON()) : null;
     } catch(error) {
         console.log(error);
         return null;
     }
 }
 
-    async create(payload: OrderPayload) : Promise<DTO<ParsedOrder>> {
+    async create(payload: OrderPayload) : Promise<DTO<PendingOrder>> {
        try {
-    // Start a transaction
-    // const transaction = await PendingOrderModel.sequelize?.transaction();
-    //
-    // if (!transaction) {
-    //     return getHandledErrorDTO("Failed to start transaction");
-    // }
-
-    try {
         // Find user within transaction
         const user = await UserModel.findByPk(payload.customer_details,);
         if (!user) {
-            throw new Error(`User with ID ${payload.customer_details} not found.`);
+            return  getHandledErrorDTO(`User with ID ${payload.customer_details} not found.`);
         }
-        // Create order items within transaction
-        const orderItemIds = await Promise.all(
-            payload.orderItems.map(async (item) => {
-                const orderItem = await OrderItemsModel.create(item);
-                return orderItem.id;
-            })
-        );
 
-        // Create pending order within transaction
-        const pendingOrder = await PendingOrderModel.create(payload);
-        // Associate order items within transaction
-        await pendingOrder.addPendingOrderItems(orderItemIds);
+        const dd = {...payload,pendingOrderItems:payload.orderItems}
+        const pendingOrder = await PendingOrderModel.create(dd);
 
         const resp = await PendingOrderModel.findOne({where:{id:pendingOrder.id},
             include: [
-                // { model: UserModel, as: "customer" },
-                // { model: FranchiseModel, as: "franchise" },
-                { model: OrderItemsModel, as: "pendingOrderItems", through: { attributes: [] } },
                 { model: UserModel, as: "createdByUser" },
                 { model: UserModel, as: "deletedByUser" },
                 { model: UserModel, as: "updatedByUser" },
             ],})
 
-        return getSuccessDTO(parseOrder(pendingOrder.toJSON()));
+        return getSuccessDTO(resp.toJSON());
 
-    } catch (innerError) {
-        // Rollback transaction on error
-        // await transaction.rollback();
-        console.error('Transaction failed:', innerError);
-        return getHandledErrorDTO(innerError.message || "Transaction failed");
+    } catch (error) {
+        return getHandledErrorDTO(error.message || "Transaction failed");
     }
-
-} catch (error) {
-    console.error('Outer error:', error);
-    return getHandledErrorDTO("Failed to process order");
-}
-
-    }
+   }
 
     async createPendingOrderPayload(order:ParsedOrder, paymentOrderId:string,userId:number){
         const pendingOrderPayload: OrderPayload = {

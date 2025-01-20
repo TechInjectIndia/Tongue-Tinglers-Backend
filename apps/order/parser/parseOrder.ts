@@ -1,21 +1,19 @@
-import {BaseOrder, Order, ORDER_TYPE, ParsedOrder} from "../interface/Order"
-import {parseOrderItem} from "../../order-items/parser/parseOrderItem";
 import {
-    BaseOrderItem,
-    PRICE_COMP_TYPE_CART,
-    VALUE_TYPE
-} from "../interface/OrderItem";
-import {PendingOrder} from "../../pending-orders/interface/PendingOrder";
+    BaseOrder,
+    ORDER_TYPE,
+    OrderPayload,
+    ParsedOrder
+} from "../interface/Order"
+import {parseOrderItem} from "../../order-items/parser/parseOrderItem";
+import {BaseOrderItem, ORDER_ITEM_TYPE} from "../interface/OrderItem";
 import {OrderModel} from "../models/OrderTable";
 import {OrderItemsModel} from "../../order-items/models/OrderItemsTable";
-import { parseUserToMetaUser } from "apps/user/parser/user-parser";
-import { UserModel } from "apps/user/models/UserTable";
-import { ParsedUser } from "apps/user/interface/user";
-import { parseFranchise } from "apps/franchise/parser/franchiseParser";
+import {parseUserToMetaUser} from "apps/user/parser/user-parser";
+import {parseFranchise} from "apps/franchise/parser/franchiseParser";
 
 
 const parseOrder = (order: any): ParsedOrder => {
-    console.log('order.orderItems: ', order.orderItems);
+
     let productVariations: any;
     if(order.orderItems){
         productVariations = order.orderItems.map((orderItem: any) =>{
@@ -23,14 +21,8 @@ const parseOrder = (order: any): ParsedOrder => {
         }
     );
     }else if(order.pendingOrderItems){
-        productVariations = order.pendingOrderItems.map((orderItem: any) =>{
-            parseOrderItem(orderItem)
-        }
-    );
+        productVariations = order.pendingOrderItems;
     }
-
-console.log("productVariations: ",productVariations)
-
     const data: ParsedOrder = {
         anomalyArr: [],
         billingAddress: order.billingAddress,
@@ -158,9 +150,9 @@ export const parseAndSavePendingOrderToOrder = async (pendingOrder:ParsedOrder):
             }
         });
 
-        //
-        const response = await  OrderItemsModel.bulkCreate(orderItems);
-        const orderInstance = await OrderModel.create(orderData);
+        const payload = parsedToPayload(pendingOrder);
+        const response = await  OrderItemsModel.bulkCreate(payload.orderItems);
+        const orderInstance = await OrderModel.create(payload);
         await orderInstance.addOrderItems(response)
 
     } catch (error) {
@@ -168,6 +160,53 @@ export const parseAndSavePendingOrderToOrder = async (pendingOrder:ParsedOrder):
         throw new Error("Failed to parse pending order to order");
     }
 };
+
+export const parsedToPayload=(parsed:any)=>{
+
+    console.log(parsed)
+    const dd = parsed.orderItems.map((d)=>{
+        const item:BaseOrderItem={
+        coupon_discount:0,
+        points_discount: 0,
+        product_id: d.product_id,
+        product_option_id: d.product_option_id.id,
+        quantity: d.quantity,
+        student_discount: 0,
+        total_price: d.total_price,
+        total_tax: d.totalTax,
+        type: ORDER_ITEM_TYPE.PACKAGING
+        }
+        return item;
+    })
+    const payload:OrderPayload={
+        anomalyArr: [],
+        billingAddress: parsed.billingAddress,
+        cancelled_items: [],
+        createdBy: parsed.createdBy.id ,
+        customer_details: parsed.createdBy.id,
+        deletedBy: null,
+        delivery_details: "",
+        delivery_status: "",
+        discount_prices: parsed.discount as unknown as any,
+        franchise: 0,
+        item_count: dd.length,
+        notes: [],
+        orderItems: dd,
+        order_type: ORDER_TYPE.SAMPLE_KIT,
+        payment_id: parsed.paymentId,
+        payment_type: parsed.paymentType,
+        prices: parsed.price as unknown as any,
+        shippingAddress: parsed.shippingAddress,
+        status: "pending",
+        total: parsed.total,
+        total_discount: parsed.totalDiscount,
+        total_shipping: parsed.totalShipping,
+        total_tax: parsed.totalTax,
+        updatedBy: null
+    }
+
+    return payload;
+}
 
 
 export { parseOrder };

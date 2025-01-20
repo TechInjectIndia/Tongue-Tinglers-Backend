@@ -13,8 +13,9 @@ import {OrderModel} from "../models/OrderTable";
 export interface IOrderRepo {
     // createOrder(order: OrderPayload): Promise<Order | null>;
     createOrder(
-        transaction: Transaction,
         order: OrderPayload,
+        transaction?: Transaction,
+
     ): Promise<ParsedOrder | null>
     // updateOrder(order: any): Promise<any>;
     // createOrder(order: OrderPayload): Promise<Order | null>

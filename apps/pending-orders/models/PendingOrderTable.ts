@@ -1,4 +1,4 @@
-import {DataTypes, Model, Optional, Transaction} from "sequelize";
+import {DataTypes, Model, Optional} from "sequelize";
 import {
     Order,
     ORDER_TYPE
@@ -8,12 +8,16 @@ import { sequelize } from "../../../config";
 import { UserModel } from "apps/user/models/UserTable";
 import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
 import { OrderItemsModel } from "apps/order-items/models/OrderItemsTable";
+import {BaseOrderItem} from "../../order/interface/OrderItem";
 
-interface PendingOrderCreationAttributes extends Optional<Order, "id"> {}
+export interface PendingOrder extends Order{
+    pendingOrderItems: any
+}
+interface PendingOrderCreationAttributes extends Optional<PendingOrder, "id"> {}
 
 class PendingOrderModel
-    extends Model<Order, PendingOrderCreationAttributes>
-    implements Order
+    extends Model<PendingOrder, PendingOrderCreationAttributes>
+    implements PendingOrder
 {
     id:number;
     status!: string;
@@ -38,15 +42,9 @@ class PendingOrderModel
     createdBy!: number | null;
     updatedBy!: number | null;
     deletedBy!: number | null;
+    pendingOrderItems!: Array<any>;
 
 
-    // Mixin methods for managing notes
-    // public addOrderItem!: (note: OrderItemsModel | number) => Promise<void>;
-    public addPendingOrderItems!: (notes: Array<OrderItemsModel | number> ) => Promise<void>;
-    public setPendingOrderItems!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
-    public getPendingOrderItems!: () => Promise<OrderItemsModel[]>;
-    // public removeOrderItem!: (note: OrderItemsModel | number) => Promise<void>;
-    // public removeOrderItems!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
 
 
     public static associate(){
@@ -58,12 +56,6 @@ class PendingOrderModel
             foreignKey: 'franchise',
             as: 'franchiseData'
         })
-        PendingOrderModel.belongsToMany(OrderItemsModel, {
-            through: "pending_order_items_join", // Join table name
-            foreignKey: "pendingOrderId", // Foreign key in the join table
-            otherKey: "pending_order_items_id", // Other foreign key in the join table
-            as: "pendingOrderItems", // Alias for the relationship
-        });
 
         PendingOrderModel.belongsTo(UserModel, {
             foreignKey: 'createdBy',
@@ -194,6 +186,10 @@ class PendingOrderModel
                     defaultValue: null,
                     field: "deleted_at",
                 },
+                pendingOrderItems:{
+                    type: DataTypes.JSONB,
+                    allowNull: true,
+                }
             },
             {
                 sequelize,

@@ -25,11 +25,9 @@ import {
 } from "apps/common/models/DTO";
 import { handleError } from "../../common/utils/HelperMethods";
 import { sequelize } from "../../../config";
-import { PendingOrderModel } from "../../pending-orders/models/PendingOrderTable";
 import { ProcessPostOrderResult } from "../interface/ProcessPostOrderResult";
 import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
 import { ProductOptions } from "../../product/interface/ProductOptions";
-import { PendingOrder } from "../../pending-orders/interface/PendingOrder";
 import { PendingOrderRepo } from "../../pending-orders/repos/PendingOrderRepo";
 import { RPOrderTable } from "apps/rp-order/models/RPOrderTable";
 import { UserModel } from "apps/user/models/UserTable";
@@ -37,7 +35,7 @@ import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
 import RepoProvider from "../../RepoProvider";
 
 export class OrderRepo implements  IOrderRepo{
-    async createOrder(transaction: Transaction, order: OrderPayload): Promise<ParsedOrder | null> {
+    async createOrder(order: OrderPayload,transaction?: Transaction): Promise<ParsedOrder | null> {
         try {
             let notesCreated: Notes[] = [];
             let orderItemsCreated: any[] = [];
@@ -366,15 +364,6 @@ export class OrderRepo implements  IOrderRepo{
             alreadyProcessed: false,
         };
 
-        // const pendingOrder = (
-        //     await PendingOrderModel.findOne({
-        //         where: {
-        //             payment_id:paymentOrderId,
-        //         },
-        //         transaction,
-        //     })
-        // ).toJSON();
-
         const pendingOrder = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({payment_id:paymentOrderId,})
 
         if (!pendingOrder) {
@@ -383,6 +372,7 @@ export class OrderRepo implements  IOrderRepo{
                 `Pending order not found for: paymentOrderId ${paymentOrderId}`
             );
         }
+
 
         res.order = pendingOrder;
 
@@ -407,10 +397,6 @@ export class OrderRepo implements  IOrderRepo{
             const stockOption = stocksMap.get(item.id);
             if (!stockOption || stockOption.stock < item.quantity) {
                 const anomalyQty = item.quantity - (stockOption?.stock ?? 0);
-                // order.anomalies.push({
-                //     id: item.id,
-                //     quantity: anomalyQty,
-                // });
             } else {
                 stockOption.stock -= item.quantity;
                 stocksMap.set(item.id, stockOption);

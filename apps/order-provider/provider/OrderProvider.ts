@@ -11,7 +11,12 @@ import {AddressRepo} from "apps/address/repositories/AddressRepo";
 import {AdminRepo} from "apps/user/models/user";
 import {TUserWithPermission} from "types/admin/admin-user";
 import {getCartItemPayableIncTax, getCartItemTax} from "../utils/order-utils";
-import {ParsedUser, USER_STATUS, USER_TYPE} from "apps/user/interface/user";
+import {
+    MetaUser,
+    ParsedUser,
+    USER_STATUS,
+    USER_TYPE
+} from "apps/user/interface/user";
 import {
     DISCOUNT_COMP_TYPE,
     IDiscComponent,
@@ -320,7 +325,7 @@ export class OrderProvider implements IOrderProvider {
             createdAt: currUser.createdAt,
             updatedAt: currUser.updatedAt,
             deletedAt: currUser.deletedAt,
-            createdBy: currUser.createdBy,
+            createdBy: currUser.createdBy as unknown as  MetaUser,
         };
 
         const orderItems = await this.getOrderProcessCart(cart);
@@ -343,7 +348,7 @@ export class OrderProvider implements IOrderProvider {
                 location: undefined,
                 sm: [],
                 assignedUser: undefined,
-                createdBy: 0,
+                createdBy: 0  as unknown as  MetaUser,
                 updatedBy: 0,
                 deletedBy: 0,
                 createdAt: undefined,
@@ -378,7 +383,7 @@ export class OrderProvider implements IOrderProvider {
             couponCodes: [],
             discount: {},
             price: {},
-            createdBy: 0
+            createdBy: 0  as unknown as  MetaUser
         };
 
         // SET ORDER ITEMS

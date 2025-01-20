@@ -15,11 +15,9 @@ const createTaxRatePayload = Joi.object({
             "any.required": `"Title" is required.`,
         }),
     value: Joi.number()
-        .positive()
         .required()
         .messages({
             "number.base": `"Value" should be a number.`,
-            "number.positive": `"Value" must be a positive number.`,
             "any.required": `"Value" is required.`,
         }),
 });

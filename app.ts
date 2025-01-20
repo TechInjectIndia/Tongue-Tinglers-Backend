@@ -124,10 +124,10 @@ server.get("/a", async (_, res) => {
     res.json(response)
 });
 //
-// server.get("/", async (_, res) => {
-//     const resp = await  RepoProvider.orderRepo.getAllOrders(100,100,'',{})
-//     res.send(resp)
-// });
+server.get("/", async (_, res) => {
+    const resp = await  RepoProvider.orderRepo.getAllOrders(100,100,'',{})
+    res.send(resp)
+});
 server.use("/api", router);
 
 const PORT = CONFIG.PORT;

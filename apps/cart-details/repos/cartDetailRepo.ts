@@ -24,7 +24,7 @@ export class CartDetailRepo implements ICartDetailRepo {
                             {
                                 model: ProductModel,  // Assuming you have a ProductModel
                                 as: "product",  // Alias for Product (ensure the association is correct)
-                                attributes: ['id', 'name'] // Specify which fields to include for the product
+                                attributes: ['id', 'name', 'images'] // Specify which fields to include for the product
                             },
                             {
                                 model: ProductVariationsModel,  // Assuming you have a ProductOptionsModel

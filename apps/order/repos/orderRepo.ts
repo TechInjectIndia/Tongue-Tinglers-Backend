@@ -33,6 +33,7 @@ import { RPOrderTable } from "apps/rp-order/models/RPOrderTable";
 import { UserModel } from "apps/user/models/UserTable";
 import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
 import RepoProvider from "../../RepoProvider";
+import {getRawAsset} from "node:sea";
 
 export class OrderRepo implements  IOrderRepo{
     async createOrder(order: OrderPayload,transaction?: Transaction): Promise<ParsedOrder | null> {
@@ -200,88 +201,98 @@ export class OrderRepo implements  IOrderRepo{
             return null;
         }
     }
-    async getAllOrders(
-        page: number,
-        limit: number,
-        search: string,
-        filters: Record<string, any>
-    ): Promise<OrderPagination<ParsedOrder>> {
-        try {
-            // Validate and normalize pagination parameters
-            page = Math.max(1, page || 1);
-            limit = Math.max(1, limit || 10);
-            const offset = (page - 1) * limit;
+   async getAllOrders(
+    page: number,
+    limit: number,
+    search: string,
+    filters: Record<string, any>
+): Promise<OrderPagination<ParsedOrder>> {
+    try {
+        // Validate and normalize pagination parameters
+        page = Math.max(1, page || 1);
+        limit = Math.max(1, limit || 10);
+        const offset = (page - 1) * limit;
 
-            // Base query structure
-            const query: any = {
-                where: {},
-                limit,
-                offset,
-                include: [
-                    // { model: UserModel, as: "customer" },
-                    // { model: FranchiseModel, as: "franchise" },
-                    // { model: NotesModel, as: "notes", through: { attributes: [] } },
-                    { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
-                    { model: UserModel, as: "createdByUser" },
-                    { model: UserModel, as: "deletedByUser" },
-                    { model: UserModel, as: "updatedByUser" },
-                ],
-            };
+        // Build the where clause
+        const whereClause: any = {};
 
-            // Add search functionality
-            // if (search) {
-            //     query.where[Op.or] = [
-            //         { status: { [Op.iLike]: `%${search}%` } },
-            //         { delivery_status: { [Op.iLike]: `%${search}%` } },
-            //         { payment_type: { [Op.iLike]: `%${search}%` } },
-            //     ];
-            // }
-
-            // Apply filters if provided
-            if (filters && typeof filters === "object") {
-                Object.entries(filters).forEach(([key, value]) => {
-                    if (value !== undefined && value !== null) {
-                        query.where[key] = value;
-                    }
-                });
-            }
-
-
-            console.log("123456");
-            // Fetch paginated data
-            const { rows, count: total } = await OrderModel.findAndCountAll({include: [
-                    // { model: UserModel, as: "customer" },
-                    // { model: FranchiseModel, as: "franchise" },
-                    // { model: NotesModel, as: "notes", through: { attributes: [] } },
-                    { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
-                    { model: UserModel, as: "createdByUser" },
-                    { model: UserModel, as: "deletedByUser" },
-                    { model: UserModel, as: "updatedByUser" },
-                ],});
-            console.log("54678");
-
-            console.log(rows)
-
-            // Parse the results
-            const data = await Promise.all(rows.map((order) => parseOrder(order.toJSON())));
-
-            console.log("6r5t7y8u9i0");
-            console.log(data);
-            console.log("546754678");
-
-            // Return the paginated result
-            return {
-                data,
-                total,
-                page,
-                limit,
-                totalPages: Math.ceil(total / limit),
-            };
-        } catch (error) {
-            console.error("Error fetching orders with pagination:", error);
-            throw new Error("Failed to fetch orders.");
+        // Add search functionality
+        if (search) {
+            whereClause[Op.or] = [
+                { status: { [Op.iLike]: `%${search}%` } },
+                { delivery_status: { [Op.iLike]: `%${search}%` } },
+                { payment_type: { [Op.iLike]: `%${search}%` } },
+            ];
         }
+
+        // Apply filters if provided
+        if (filters && typeof filters === "object") {
+            Object.entries(filters).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                    whereClause[key] = value;
+                }
+            });
+        }
+
+        // Fetch paginated data
+        const { rows, count: total } = await OrderModel.findAndCountAll({
+            include: [
+                { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
+                { model: UserModel, as: "createdByUser" },
+                { model: UserModel, as: "deletedByUser" },
+                { model: UserModel, as: "updatedByUser" },
+            ],
+        });
+
+        console.log(rows)
+        // Process orders and fetch product options in batch
+        const processedOrders = await Promise.all(
+            rows.map(async (order) => {
+                const orderData:any = order.toJSON();
+                if (orderData.orderItems && orderData.orderItems.length > 0) {
+                    // Get all product option IDs from this order
+                    const productOptionIds = orderData.orderItems.map(item => item.productOption);
+
+                    // Fetch all product options for this order in one query
+                    const productOptions = await ProductVariationsModel.findAll({
+                        where: {
+                            id: productOptionIds
+                        }
+                    });
+
+                    // Create a map for quick lookup
+                    const productOptionMap = productOptions.reduce((acc, option) => {
+                        acc[option.id] = option;
+                        return acc;
+                    }, {});
+
+                    // Attach product options to order items
+                    orderData.orderItems = orderData.orderItems.map(item => ({
+                        ...item,
+                        productOption: productOptionMap[item.productOption] || null
+                    }));
+                }
+                return orderData;
+            })
+        );
+
+        // Parse the results
+        const parsedOrders = await Promise.all(
+            processedOrders.map(order => parseOrder(order))
+        );
+
+        return {
+            data: parsedOrders,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        };
+    } catch (error) {
+        console.error("Error fetching orders with pagination:", error);
+        throw new Error("Failed to fetch orders.");
     }
+}
 
 
     async processOrder(

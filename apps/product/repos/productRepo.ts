@@ -19,6 +19,7 @@ import {
     PRODUCTS_TYPE,
 } from "apps/product/interface/Product";
 import { Pagination } from "../../common/models/common";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 export class ProductRepo implements IProductRepo {
     async create(
@@ -281,6 +282,11 @@ export class ProductRepo implements IProductRepo {
                             "status",
                         ], // Include these fields from the User model"
                     },
+                    {
+                        model: LogModel,
+                        as: "logs",
+                        where:{model: "Product"}
+                    }
                 ],
             }).then((productData) => {
                 return productData ? parseProduct(productData.toJSON()) : null;

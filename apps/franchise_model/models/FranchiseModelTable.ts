@@ -6,6 +6,7 @@ import { sequelize } from "config";
 import { DataTypes, Model, Optional } from "sequelize";
 import { FranchiseModels } from "../interface/franchiseModel";
 import { ExtraFieldsModel } from "apps/lead/models/ExtraFieldTable";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 
 const { STRING, TEXT, JSONB } = DataTypes;
@@ -45,6 +46,12 @@ class FranchiseLeadModel
         IChecklistModel.belongsTo(FranchiseLeadModel, {
             foreignKey: "franchiseModelId",
         });
+        FranchiseLeadModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs", 
+        })
     }
 
     public static initModel() {

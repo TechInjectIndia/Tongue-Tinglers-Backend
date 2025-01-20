@@ -7,6 +7,7 @@ import { TUser, USER_STATUS, USER_TYPE } from "../interface/user";
 import { UserModel } from "./UserTable";
 import { TAddUser, TEditUser, TEditUserProfile, TUpdateUserReferralCode, TUsersList, TUserWithPermission } from "types";
 import { RolesModel } from "./RolesTable";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 export class AdminRepo  {
   constructor() { }
@@ -135,6 +136,16 @@ export class AdminRepo  {
       where: {
         id: id
       },
+      attributes:{
+        exclude: ['password']
+      },
+      include:[
+        {
+          model: LogModel,
+          as: 'logs',
+          where:{model: 'User'}
+        }
+      ]
     });
     if (data) {
       const role = await RolesModel.findOne({

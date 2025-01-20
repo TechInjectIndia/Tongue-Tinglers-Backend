@@ -23,6 +23,7 @@ import { FranchiseModel } from "../models/FranchiseTable";
 import { RegionModel } from "apps/region/models/RegionTable";
 import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 import { AddressModel } from "apps/address/models/AddressTable";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 export class FranchiseRepo implements IFranchiseRepo {
   async create(franchise: FranchiseDetails, userId: number, options?: { transaction?: any }): Promise<Franchise | null> {
@@ -269,6 +270,11 @@ export class FranchiseRepo implements IFranchiseRepo {
                 model: UserModel,
                 as: "deletedByUser", // Include deletedByUser
               },
+              {
+                model: LogModel,
+                as: "logs",
+                where:{model: "Franchisee"}
+              }
             ],
           },
           {

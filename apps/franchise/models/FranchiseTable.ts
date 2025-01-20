@@ -234,7 +234,7 @@ class FranchiseModel
         FranchiseModel.addHook("afterCreate", async (instance, options) => {
             await RepoProvider.LogRepo.logModelAction(
                 "create",
-                "FranchiseModel",
+                "Franchisee",
                 instance,
                 options
             );
@@ -245,7 +245,7 @@ class FranchiseModel
             // Now call logModelAction as before
             await RepoProvider.LogRepo.logModelAction(
                 "update",
-                "FranchiseModel",
+                "Franchisee",
                 instance,
                 options
             );
@@ -255,7 +255,7 @@ class FranchiseModel
         FranchiseModel.addHook("afterDestroy", async (instance, options) => {
             await RepoProvider.LogRepo.logModelAction(
                 "delete",
-                "FranchiseModel",
+                "Franchisee",
                 instance,
                 options
             );

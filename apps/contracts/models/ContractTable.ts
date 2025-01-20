@@ -7,6 +7,7 @@ import { LeadsModel } from "apps/lead/models/LeadTable";
 import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 
 interface ContractCreationAttributes
@@ -76,6 +77,12 @@ class ContractModel
             as: "organization",
             constraints: false,
         });
+        ContractModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs", 
+        })
     }
     public static initModel() {
         ContractModel.init(

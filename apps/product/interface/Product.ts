@@ -68,6 +68,7 @@ interface ParsedProduct extends ParsedMeta {
     tax_rate_id: number;
     vendorId: number;
     variations?: Array<ParsedProductOptions>;
+    logs?: any[] | null
 }
 
 export interface TaxRate {

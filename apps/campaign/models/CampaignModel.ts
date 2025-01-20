@@ -11,6 +11,7 @@ import {AffiliateModel} from "apps/affiliate/models/affiliateModel";
 import {OrganizationModel} from "apps/organization/models/OrganizationTable";
 import {ProposalModel} from "../../proposal_model/models/ProposalModelTable";
 import {CampaignProposalsModel} from "./CampaignProposalsModel";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 const {STRING, INTEGER, DATE, NOW, JSONB} = DataTypes;
 
@@ -185,6 +186,13 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
             otherKey: "questionId",
             as: "questions",
         });
+
+        CampaignAdModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs", 
+        })
     }
 
     public static hook() {

@@ -2,6 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { Address } from "../interface/Address";
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 const { STRING, INTEGER } = DataTypes;
 
@@ -20,6 +21,15 @@ class AddressModel
     phoneNumber: string;
     firstName: string;
     lastName: string;
+
+    public static associate(){
+        AddressModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs",             // Alias for the association
+          });
+    }
 
     public static initModel() {
         AddressModel.init(

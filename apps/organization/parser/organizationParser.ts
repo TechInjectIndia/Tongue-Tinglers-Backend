@@ -23,7 +23,8 @@ const parseOrganization = (organization: any) => {
         createdAt: organization.createdAt,
         updatedAt: organization.updatedAt,
         deletedAt: organization.deletedAt,
-        user: organization.user
+        user: organization.user,
+        logs: organization.logs
     }
     return data;
 }

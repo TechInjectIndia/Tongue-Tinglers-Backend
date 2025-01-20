@@ -5,6 +5,7 @@ import { BaseProductsCategory, PRODUCT_CATEGORY_STATUS, ProductsCategory } from 
 // import { ProductsCategoryModel } from "database/schema/product-category/productCategoryModel";
 import { Pagination } from "apps/common/models/common";
 import { ProductsCategoryModel } from "../models/ProductCategoryTable";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 export class ProductsCategoryRepo implements IProductsCategoryRepo {
     async createProductsCategory(category: BaseProductsCategory): Promise<ProductsCategory | null> {
@@ -33,7 +34,14 @@ export class ProductsCategoryRepo implements IProductsCategoryRepo {
             const category = await ProductsCategoryModel.findOne({
                 where: {
                     id: id
-                }
+                },
+                include:[
+                    {
+                        model: LogModel,
+                        as: 'logs',
+                        where: {model: 'Product Category'}
+                    }
+                ]
             })
 
             return category?.toJSON();

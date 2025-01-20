@@ -10,6 +10,7 @@ import { TListFiltersContract } from "types/admin";
 import moment from 'moment'
 
 import { OrganizationModel } from "apps/organization/models/OrganizationTable";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 
 export class ContractRepo {
@@ -75,6 +76,10 @@ export class ContractRepo {
                 },{
                     model: UserModel,
                     as: "assignuser"
+                },{
+                    model: LogModel,
+                    as: 'logs',
+                    where: {model: 'Contracts'}
                 }],
             });
 
@@ -126,6 +131,10 @@ export class ContractRepo {
                 },{
                     model: UserModel,
                     as: "assignuser"
+                },{
+                    model: LogModel,
+                    as: 'logs',
+                    where: {model: 'Contracts'}
                 }],
             });
 
@@ -193,6 +202,10 @@ export class ContractRepo {
                 {
                     model: OrganizationModel,
                     as: 'organization',
+                },{
+                    model: LogModel,
+                    as: 'logs',
+                    where: {model: 'Contracts'}
                 }],
         });
         return data ? parseContract(data) : null;
@@ -219,6 +232,11 @@ export class ContractRepo {
                 {
                     model: OrganizationModel,
                     as: 'organization',
+                },
+                {
+                    model: LogModel,
+                    as: 'logs',
+                    where: {model: 'Contracts'}
                 }
                 ],
             transaction,

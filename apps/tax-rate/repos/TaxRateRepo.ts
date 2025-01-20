@@ -6,6 +6,7 @@ import { ITaxRateRepo } from "./ITaxRateRepo";
 import { Op } from "sequelize";
 import { UserModel } from "apps/user/models/UserTable";
 import { getUserName } from "apps/common/utils/commonUtils";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 export default class TaxRateRepo implements ITaxRateRepo {
     async create(payload: TaxRatePayload, user_id: number): Promise<ParsedTaxRate | null> {
@@ -87,6 +88,11 @@ export default class TaxRateRepo implements ITaxRateRepo {
                 {
                     model: UserModel,
                     as: "deletedByUser",
+                },
+                {
+                    model: LogModel,
+                    as: 'logs',
+                    where:{model: 'Tax Rate'}
                 }
             ]
             });

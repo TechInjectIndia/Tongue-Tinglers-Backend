@@ -61,6 +61,7 @@ export type TAddressFilters = {
 
 interface ParsedAddress extends BaseAddress {
     id: number;
+    logs?: any[] | null;
 }
 
 

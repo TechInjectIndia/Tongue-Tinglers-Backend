@@ -187,6 +187,7 @@ export interface ParsedOrganization {
     updatedAt: Date;
     deletedBy: ParsedUser | null;
     deletedAt: Date;
+    logs: any[] | null;
 }
 
 export interface OrganizationAddresses {

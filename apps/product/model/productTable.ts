@@ -10,6 +10,7 @@ import RepoProvider from "apps/RepoProvider";
 import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
 import { UserModel } from "apps/user/models/UserTable";
 import { CartProductModel } from "../../cart-products/model/CartProductTable";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 interface ProductCreationAttributes
     extends Optional<
@@ -105,6 +106,13 @@ class ProductModel
             as: "cartProducts", // Alias to use if you want to reference
             // CartProduct from Product
         });
+
+        ProductModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs", 
+        })
     }
 
     public static initModel() {

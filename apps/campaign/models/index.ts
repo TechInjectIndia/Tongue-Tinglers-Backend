@@ -18,6 +18,7 @@ import {
     FranchiseLeadModel
 } from "../../franchise_model/models/FranchiseModelTable";
 import {handleError} from "../../common/utils/HelperMethods";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 export class CampaignAdRepo
     implements IBaseRepo<ParsedCampaign, TListFiltersCampaigns> {
@@ -68,6 +69,14 @@ export class CampaignAdRepo
                     model: QuestionModel,
                     as: "questions",
                 },
+                {
+                    model: LogModel,
+                    as: 'logs',
+                    where: {
+                        model: 'Campaign'
+                    },
+                }
+
             ],
         });
 

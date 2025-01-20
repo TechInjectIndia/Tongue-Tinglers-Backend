@@ -11,6 +11,7 @@ import { getUserName } from "../../common/utils/commonUtils";
 import sequelize from "sequelize";
 import { FranchiseLeadModel } from "./FranchiseModelTable";
 import { UserModel } from "apps/user/models/UserTable";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 
 export class FranchiseModelRepo {
@@ -21,6 +22,13 @@ export class FranchiseModelRepo {
             where: {
                 id,
             },
+            include:[
+                {
+                    model: LogModel,
+                    as: 'logs',
+                    where:{ model: 'Franchise Model'}
+                }
+            ]
         });
         return data;
     }

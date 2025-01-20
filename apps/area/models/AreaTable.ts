@@ -5,6 +5,7 @@ import { IArea } from "../interface/Area";
 import { UserModel } from "apps/user/models/UserTable";
 import RepoProvider from "apps/RepoProvider";
 import { sequelize } from "config";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 
 interface AreaCreationAttributes
@@ -37,7 +38,12 @@ class AreaModel extends Model<IArea, AreaCreationAttributes> implements IArea {
             as: "deleter",
             onDelete: "SET NULL",
         });
-
+        AreaModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs",             // Alias for the association
+        })
     }
 
     public static initModel() {

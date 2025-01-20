@@ -3,6 +3,7 @@ import { parseAddress } from "../parser/addressParser"
 import { Address, BaseAddress } from "../interface/Address";
 import { TListFilters } from "types";
 import { AddressModel } from "../models/AddressTable";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 export class AddressRepo implements IUserAddressController<BaseAddress, Address, TListFilters> {
     public async list(filters: TListFilters = {
@@ -52,7 +53,18 @@ export class AddressRepo implements IUserAddressController<BaseAddress, Address,
      */
     public async findById(id: number): Promise<Address | null> {
         try {
-            const userAddress = await AddressModel.findByPk(id).then((address) => {
+            const userAddress = await AddressModel.findOne({
+                where: {
+                    id: id
+                },
+                include:[
+                    {
+                        model: LogModel,
+                        as: "logs",
+                        where: { model: "Address" },
+                    }
+                ]
+            }).then((address) => {
                 return parseAddress(address.toJSON());
             });
             return userAddress;

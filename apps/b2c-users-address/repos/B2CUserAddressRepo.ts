@@ -3,12 +3,21 @@ import { B2CUserAddressPayload } from "../interface/B2CUserAddress";
 import { B2CUserAddressModel } from "../models/B2CUserAddressTable";
 import { IB2CUserAddressRepo } from "./IB2CUserAddressRepo";
 import { UserModel } from "apps/user/models/UserTable";
+import { getUserName } from "apps/common/utils/commonUtils";
 
 export class B2CUserAddressRepo implements IB2CUserAddressRepo{
     async save(address: B2CUserAddressPayload): Promise<any> {
         const transaction = await B2CUserAddressModel.sequelize?.transaction();
         try{
-            const addressCreated = await AddressModel.create(address.address,{transaction: transaction})
+            const user = await UserModel.findByPk(address.userId);
+            if(!user){
+                throw new Error("User not found");
+            }
+            const addressCreated = await AddressModel.create(address.address,{
+                userId: address.userId,
+                userName: getUserName(user),
+                transaction: transaction,
+            })
             if(!addressCreated){
                 throw new Error("Address not created");
             }

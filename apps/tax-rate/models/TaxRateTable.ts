@@ -3,6 +3,7 @@ import { TaxRateTable } from "../interface/taxRate";
 import { sequelize } from "../../../config";
 import { UserModel } from "apps/user/models/UserTable";
 import RepoProvider from "apps/RepoProvider";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 interface TaxRateCreationAttributes
     extends Optional<TaxRateTable, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> {
@@ -32,6 +33,12 @@ class TaxRateModel extends Model<TaxRateTable, TaxRateCreationAttributes>
         TaxRateModel.belongsTo(UserModel, {
             foreignKey: 'deletedBy',
             as: 'deletedByUser',
+        })
+        TaxRateModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs", 
         })
     }
 

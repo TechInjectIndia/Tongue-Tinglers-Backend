@@ -11,6 +11,7 @@ import {
 import { AddressModel } from "apps/address/models/AddressTable";
 import { DocumentModel } from "apps/documents/models/DocumentTable";
 import { UserModel } from "apps/user/models/UserTable";
+import { LogModel } from "apps/logs/models/LogsTable";
 // Ensure this path is correct
 
 const { STRING, INTEGER, DATE, NOW, ENUM } = DataTypes;
@@ -88,6 +89,13 @@ class OrganizationModel extends Model<IOrganization, OrganizationCreationAttribu
             as: "organizationDocuments",
             scope: { entity_type: "organization" },
         });
+
+        OrganizationModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs", 
+        })
     }
 
     static initModel() {

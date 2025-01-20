@@ -9,6 +9,7 @@ import {IOrganizationPayloadData, IOrganizationPayloadDataWithMeta, Organization
 import { AddressModel } from "apps/address/models/AddressTable";
 import { UserModel } from "apps/user/models/UserTable";
 import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 export class OrganizationRepo{
     constructor() {
@@ -127,6 +128,11 @@ export class OrganizationRepo{
                     model: UserModel,
                     as: "deletedByUser", // Include deletedByUser
                 },
+                {
+                    model: LogModel,
+                    as: "logs", // Include logs
+                    where: {model: 'Organization'}
+                }
             ],
         }).then((organization) => {
             return parseOrganization(organization?.toJSON())

@@ -28,12 +28,9 @@ const parseProduct = (product: any): ParsedProduct => {
         updatedAt: product.updatedAt,
         deletedAt: product.deletedAt,
         createdBy:product.createdBy,
-        variations: variations
-
+        variations: variations,
+        logs: product.logs
     };
-
-    console.log("12345678");
-    console.log(data);
     return data;
 
 }

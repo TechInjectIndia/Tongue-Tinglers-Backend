@@ -52,6 +52,7 @@ interface ParsedCampaign extends CampaignPayload {
     proposals: ParsedProposal[];
     region: ParsedRegion;
     organization:ParsedOrganization;
+    
 }
 
 export {

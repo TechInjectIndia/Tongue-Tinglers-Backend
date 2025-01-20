@@ -11,7 +11,8 @@ const parseTaxRate = (data:any):ParsedTaxRate => {
         deletedBy: data.deletedByUser ? parseUserToMetaUser(data.deletedByUser) : null,
         createdAt: data.created_at,
         updatedAt: data.updated_at,
-        deletedAt: data.deleted_at
+        deletedAt: data.deleted_at,
+        logs: data.logs
     }
     return taxRateData
 }

@@ -1,3 +1,4 @@
+import { LogModel } from "apps/logs/models/LogsTable";
 import {
     ProductVariationsModel
 } from "../../product-options/models/ProductVariationTable";
@@ -38,6 +39,13 @@ class ProductsCategoryModel
             {as: "product_category", foreignKey: "category"})
         ProductModel.belongsTo(ProductsCategoryModel,
             {as: "productCategory", foreignKey: "category"})
+
+        ProductsCategoryModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs", 
+        })
     }
 
     public static initModel() {

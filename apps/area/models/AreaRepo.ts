@@ -4,6 +4,8 @@ import IBaseRepo from '../controllers/IAreaController';
 import { IArea, TAreaList, TPayloadArea } from "../interface/Area";
 import { TListFiltersAreas } from "apps/common/models/common";
 import { AreaModel } from "./AreaTable";
+import { LogModel } from "apps/logs/models/LogsTable";
+import { UserModel } from "apps/user/models/UserTable";
 
 export class AreaRepo implements IBaseRepo<IArea, TListFiltersAreas> {
     constructor() { }
@@ -13,6 +15,28 @@ export class AreaRepo implements IBaseRepo<IArea, TListFiltersAreas> {
             where: {
                 id,
             },
+            include:[
+                {
+                    model: UserModel,
+                    as: "creator",
+                    attributes: ["id", "firstName", "lastName", "email"],
+                },
+                {
+                    model: UserModel,
+                    as: "updater",
+                    attributes: ["id", "firstName", "lastName", "email"],
+                },
+                {
+                    model: UserModel,
+                    as: "deleter",
+                    attributes: ["id", "firstName", "lastName", "email"],
+                },
+                {
+                    model: LogModel,
+                    as: 'logs',
+                    where: { model: "Areas" },
+                }
+            ]
         });
         return data;
     }

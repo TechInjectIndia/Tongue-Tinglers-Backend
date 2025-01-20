@@ -4,6 +4,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import RepoProvider from "apps/RepoProvider";
 import { TUser, USER_STATUS, USER_TYPE } from "../interface/user";
 import { sequelize } from "config";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 
 const { INTEGER, STRING, ENUM, JSONB } = DataTypes;
@@ -155,7 +156,12 @@ class UserModel extends Model<TUser, UserCreationAttributes> implements TUser {
     }
 
     public static associate() {
-
+        UserModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs",
+        })
         // UserModel.hasMany(AffiliateModel, { foreignKey: 'userId', as: 'affiliates' });
     }
 

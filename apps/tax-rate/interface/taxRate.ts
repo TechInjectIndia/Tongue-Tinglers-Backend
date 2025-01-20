@@ -18,6 +18,7 @@ interface ParsedTaxRate {
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date;
+    logs?: any[] | null
 }
 
 export {

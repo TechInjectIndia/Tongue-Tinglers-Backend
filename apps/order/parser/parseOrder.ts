@@ -15,12 +15,11 @@ import {ParsedUser} from "../../user/interface/user";
 
 const parseOrder = (order: any): ParsedOrder => {
 
+
     let productVariations: any;
+
     if(order.orderItems){
-        productVariations = order.orderItems.map((orderItem: any) =>{
-            return parseOrderItem(orderItem)
-        }
-    );
+        productVariations = order.orderItems;
     } else if(order.pendingOrderItems){
         productVariations = order.pendingOrderItems;
     }

@@ -21,8 +21,6 @@ const parseOrderItem = (orderItem: OrderItem): ParsedOrderItem => {
         orderItem.id = 0;
     }
 
-    console.log(orderItem)
-
     const data: ParsedOrderItem = {
         id: orderItem.id,
         quantity: orderItem.quantity,

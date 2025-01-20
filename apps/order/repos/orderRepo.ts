@@ -246,11 +246,20 @@ export class OrderRepo implements  IOrderRepo{
                 });
             }
 
+
+            console.log("123456");
             // Fetch paginated data
             const { rows, count: total } = await OrderModel.findAndCountAll(query);
+            console.log("54678");
+
+            console.log(rows)
 
             // Parse the results
             const data = await Promise.all(rows.map((order) => parseOrder(order.toJSON())));
+
+            console.log("6r5t7y8u9i0");
+            console.log(data);
+            console.log("546754678");
 
             // Return the paginated result
             return {

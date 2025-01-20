@@ -110,7 +110,7 @@ export default class PaymentsController {
                     // @TODO @rajinder sir this is temporary
                     try {
 
-                        const pendingOrderRes = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({ paymentId: rpResponse.id})
+                        const pendingOrderRes = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({ payment_id: rpResponse.id})
 
                         if (pendingOrderRes) {
                             const response = await parseAndSavePendingOrderToOrder(pendingOrderRes);

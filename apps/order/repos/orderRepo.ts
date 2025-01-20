@@ -253,6 +253,9 @@ export class OrderRepo implements  IOrderRepo{
                     // Get all product option IDs from this order
                     const productOptionIds = orderData.orderItems.map(item => item.productOption);
 
+                    console.log("546789")
+                    console.log(productOptionIds)
+                    console.log("5467895678")
                     // Fetch all product options for this order in one query
                     const productOptions = await ProductVariationsModel.findAll({
                         where: {

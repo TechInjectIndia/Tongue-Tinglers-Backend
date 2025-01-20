@@ -5,8 +5,10 @@ import {
     CommissionEntityMappingModel,
     ICommissionEntityMapping,
     ICommissionEntityMappingResponse,
-    CommissionVoucherCreationAttributes
+    CommissionVoucherCreationAttributes,
+    COMMISSION_VOUCHER_ENTITIES
 } from "../model/CommissionEntityMappingTable";
+import { ICommissionVoucher } from "../model/CommissionVoucherTable";
 
 
 export interface ICommissionRepo {
@@ -31,5 +33,7 @@ export interface ICommissionRepo {
     getMappingsData(): Promise<APIResponse<ICommissionEntityMappingResponse[]>>;
 
     updateCommissionEntityStatus(id: number, status: COMMISSION_PAID_STATUS): Promise<APIResponse<boolean>>;
+
+    addVoucherToEntity(entityId: number, entityType: COMMISSION_VOUCHER_ENTITIES, voucherData: Partial<ICommissionVoucher>)
 }
 

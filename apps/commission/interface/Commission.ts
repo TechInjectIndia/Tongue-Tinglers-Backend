@@ -1,4 +1,8 @@
 import { BaseMeta } from "apps/common/models/Base";
+import { CommissionVoucherModel } from "../model/CommissionVoucherTable";
+import { CommissionEntityMappingModel } from "../model/CommissionEntityMappingTable";
+import { OrganizationModel } from "apps/organization/models/OrganizationTable";
+import { CommissionTable } from "../model/CommmisionTable";
 
 // Interface behind Commission Model
 interface ICommission extends BaseMeta {
@@ -20,8 +24,38 @@ enum CommissionEventType {
     AFFILIATE_RAW_MATERIAL_SOLD = 'affiliate-raw-material-sold',
 }
 
+type CommissionDetails = CommissionVoucherModel & {commissionEntity:CommissionEntityMappingModel} & CommissionTable ;
+
+interface Customer {
+    name: string,
+    email: string,
+    phone: string,
+}
+
+interface BankAccount{
+    account_number: string,
+    name: string,
+    ifsc: string,
+
+}
+
+
+interface organizationPaymentDetails {
+    organizationId: number,
+    name: string,
+    amount: number,
+    email : string,
+    phone : string,
+    account_number: string,
+    ifsc : string,
+}
+
 export {
     ICommission,
     CommissionType,
     CommissionEventType,
+    CommissionDetails,
+    Customer,
+    BankAccount,
+    organizationPaymentDetails
 }

@@ -4,14 +4,18 @@ import {
     COMMISSION_PAID_STATUS,
     CommissionEntityMappingModel,
     ICommissionEntityMapping,
-    ICommissionEntityMappingResponse, CommissionVoucherCreationAttributes
+    ICommissionEntityMappingResponse, CommissionVoucherCreationAttributes,
+    COMMISSION_VOUCHER_ENTITIES,
+    COMMISSION_ENTITIES
 } from "../model/CommissionEntityMappingTable";
 import {CommissionTable} from "../model/CommmisionTable";
 import {ICommissionRepo} from "./ICommissionRepo";
 import {OrganizationModel} from "apps/organization/models/OrganizationTable";
 import {handleError, HelperMethods} from "apps/common/utils/HelperMethods";
-import {ICommission} from "../interface/Commission";
+import {CommissionType, ICommission} from "../interface/Commission";
 import {Op, UniqueConstraintError} from "sequelize";
+import { CommissionVoucherModel, ICommissionVoucher } from "../model/CommissionVoucherTable";
+import { OrderModel } from "apps/order/models/OrderTable";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
 
@@ -70,7 +74,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                         id: commissionMapping.organizationId,
                         name: commissionMapping["OrganizationModel"].name,
                     },
-                    status: commissionMapping.status,
+                    // status: commissionMapping.status,
                     createdBy: commissionMapping.createdBy,
                     updatedBy: commissionMapping.updatedBy,
                     deletedBy: commissionMapping.deletedBy,
@@ -125,8 +129,29 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         options?: { transaction?: any }): Promise<APIResponse<boolean>> {
         try {
             const {transaction} = options || {};
-            await CommissionEntityMappingModel.bulkCreate(mapEntities,
+           const CommissionEntityMappingData =  await CommissionEntityMappingModel.bulkCreate(mapEntities,
                 {transaction});
+
+                
+                CommissionEntityMappingData.forEach(async(data)=>{
+                    //Get percentage is stored somewhere
+                    const percentage = 10;
+                    let finalAmount = 0;
+                    const commission:CommissionTable = await CommissionTable.findByPk(data.commissionId);
+
+                 if(commission.type=== CommissionType.PERCENTAGE){
+                        finalAmount = (commission.value * percentage)/100;
+                    }
+                    await CommissionVoucherModel.create({
+                        relationId: data.id,
+                        entityId:data.franchiseId,
+                        entityType: COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION,
+                        status: COMMISSION_PAID_STATUS.PENDING,
+                        value:finalAmount,
+                        createdBy:data.createdBy,
+                    },{transaction});
+                })
+            
             return HelperMethods.getSuccessResponse<boolean>(true);
         }
         catch (error) {
@@ -254,7 +279,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         try {
 
             await CommissionEntityMappingModel.update({
-                status: status
+                // status: status
             }, {
                 where: {
                     id: id
@@ -269,4 +294,19 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             return HelperMethods.getErrorResponse();
         }
     }
+
+    async addVoucherToEntity(entityId: number, entityType: COMMISSION_VOUCHER_ENTITIES, voucherData: Partial<ICommissionVoucher>) {
+    if (entityType === COMMISSION_VOUCHER_ENTITIES.ORDER_COMMISSION) {
+        const order = await OrderModel.findByPk(entityId);
+        if (!order) throw new Error("Order not found");
+
+        await order.createAddVoucher({ ...voucherData });
+    } else if (entityType === COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION) {
+        const franchise = await FranchiseModel.findByPk(entityId);
+        if (!franchise) throw new Error("Franchise not found");
+
+        await franchise.createAddVoucher({ ...voucherData });
+    }
+}
+
 }

@@ -5,6 +5,8 @@ import { NotesModel } from "./NotesTable";
 import { OrderItemsModel } from "../../order-items/models/OrderItemsTable";
 import { Address } from "../../address/interface/Address";
 import RepoProvider from "apps/RepoProvider";
+import { CommissionVoucherModel, ICommissionVoucher } from "apps/commission/model/CommissionVoucherTable";
+import { COMMISSION_VOUCHER_ENTITIES } from "apps/commission/model/CommissionEntityMappingTable";
 
 interface OrderCreationAttributes extends Optional<Order, "id"> {}
 
@@ -65,6 +67,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
             otherKey: "order_items_id", // Other foreign key in the join table
             as: "orderItems", // Alias for the relationship
         });
+
     }
 
     public static initModel(){
@@ -227,6 +230,10 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     options
                 );
             });
+    }
+
+    public async createAddVoucher(voucherData: Partial<ICommissionVoucher>) {
+        return await this.createAddVoucher({ ...voucherData, entityType: COMMISSION_VOUCHER_ENTITIES.ORDER_COMMISSION });
     }
 }
 

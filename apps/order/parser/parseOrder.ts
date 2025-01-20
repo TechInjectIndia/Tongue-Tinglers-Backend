@@ -148,7 +148,7 @@ export const parsedToPayload=(parsed:any)=>{
         delivery_details: "",
         delivery_status: "",
         discount_prices: parsed.discount as unknown as any,
-        franchise: 0,
+        franchise: null,
         item_count: dd.length,
         notes: [],
         orderItems: dd,

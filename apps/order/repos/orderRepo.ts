@@ -165,10 +165,10 @@ export class OrderRepo implements  IOrderRepo{
                         model: UserModel,
                         as: "customer"
                     },
-                    {
-                        model: FranchiseModel,
-                        as: "franchise"
-                    },
+                    // {
+                    //     model: FranchiseModel,
+                    //     as: "franchise"
+                    // },
                     {
                         model: NotesModel,
                         as: "notes",
@@ -219,7 +219,7 @@ export class OrderRepo implements  IOrderRepo{
                 offset,
                 include: [
                     { model: UserModel, as: "customer" },
-                    { model: FranchiseModel, as: "franchise" },
+                    // { model: FranchiseModel, as: "franchise" },
                     { model: NotesModel, as: "notes", through: { attributes: [] } },
                     { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
                     { model: UserModel, as: "createdByUser" },
@@ -294,7 +294,7 @@ export class OrderRepo implements  IOrderRepo{
                 where: { customer_details: userId },
                 include: [
                     { model: UserModel, as: "customer" },
-                    { model: FranchiseModel, as: "franchise" },
+                    // { model: FranchiseModel, as: "franchise" },
                     { model: NotesModel, as: "notes", through: { attributes: [] } },
                     { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
                     { model: UserModel, as: "createdByUser" },

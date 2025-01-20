@@ -21,7 +21,7 @@ const parseOrder = (order: any): ParsedOrder => {
             return parseOrderItem(orderItem)
         }
     );
-    }else if(order.pendingOrderItems){
+    } else if(order.pendingOrderItems){
         productVariations = order.pendingOrderItems;
     }
     const data: ParsedOrder = {

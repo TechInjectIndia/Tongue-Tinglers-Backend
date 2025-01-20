@@ -249,7 +249,15 @@ export class OrderRepo implements  IOrderRepo{
 
             console.log("123456");
             // Fetch paginated data
-            const { rows, count: total } = await OrderModel.findAndCountAll(query);
+            const { rows, count: total } = await OrderModel.findAndCountAll({include: [
+                    // { model: UserModel, as: "customer" },
+                    // { model: FranchiseModel, as: "franchise" },
+                    // { model: NotesModel, as: "notes", through: { attributes: [] } },
+                    { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
+                    { model: UserModel, as: "createdByUser" },
+                    { model: UserModel, as: "deletedByUser" },
+                    { model: UserModel, as: "updatedByUser" },
+                ],});
             console.log("54678");
 
             console.log(rows)

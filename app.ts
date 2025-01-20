@@ -119,8 +119,8 @@ server.set("view engine", "ejs");
 
 server.get("/a", async (_, res) => {
     const response = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({id:1});
-    // const payload = parsedToPayload(response);
-    // const ress = await  RepoProvider.orderRepo.createOrder(payload);
+    const payload = parsedToPayload(response);
+    const ress = await  RepoProvider.orderRepo.createOrder(payload);
     res.json(response)
 });
 //

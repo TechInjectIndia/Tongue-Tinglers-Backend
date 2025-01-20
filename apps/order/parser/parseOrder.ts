@@ -18,7 +18,7 @@ const parseOrder = (order: any): ParsedOrder => {
     let productVariations: any;
     if(order.orderItems){
         productVariations = order.orderItems.map((orderItem: any) =>{
-            parseOrderItem(orderItem)
+            return parseOrderItem(orderItem)
         }
     );
     }else if(order.pendingOrderItems){

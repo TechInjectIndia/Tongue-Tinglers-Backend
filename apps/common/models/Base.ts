@@ -20,7 +20,7 @@ interface BaseMeta extends BaseMetaUsers {
 }
 
 interface ParsedMeta {
-    createdBy: MetaUser | number;
+    createdBy: MetaUser | number ;
     updatedBy: MetaUser | number;
     deletedBy: MetaUser | number;
     createdAt: Date;

@@ -71,7 +71,14 @@ export default class CheckoutController {
                 phoneNumber: "",
                 type: USER_TYPE.ADMIN,
                 status: USER_STATUS.ACTIVE,
-                role: 0
+                role: 0,
+                profilePhoto: "",
+                createdBy: 0,
+                updatedBy: 0,
+                deletedBy: 0,
+                createdAt: undefined,
+                updatedAt: undefined,
+                deletedAt: undefined
             },
             deletedAt: null,
             deletedBy: null,

@@ -10,10 +10,17 @@ import { OptionsModel } from "apps/options/models/optionTable";
 import { UserModel } from "apps/user/models/UserTable";
 import { ProductsCategoryModel } from "apps/products-category/models/ProductCategoryTable";
 import { ProductOptionRepo } from "apps/product-options/repos/productOptionsRepo";
+import RepoProvider from "../../RepoProvider";
 
 const parseOrderItem = (orderItem: OrderItem): ParsedOrderItem => {
+
+    if(orderItem && !orderItem.id){
+        orderItem.id = 0 ;
+    }
+    console.log(orderItem)
+
     const data: ParsedOrderItem = {
-        id: orderItem.id,
+        id: orderItem?.id??0,
         quantity: orderItem.quantity,
         total_price: orderItem.total_price,
         product: orderItem.product_id as unknown as  ParsedProduct,
@@ -23,6 +30,8 @@ const parseOrderItem = (orderItem: OrderItem): ParsedOrderItem => {
         prices: {},
         disc: {},
     };
+
+    console.log(data)
 
     return data;
 };

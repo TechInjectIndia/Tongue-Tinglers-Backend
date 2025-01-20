@@ -49,7 +49,7 @@ class OrderItemsModel
                 },
                 total_tax: {
                     type: DataTypes.DOUBLE,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 coupon_discount: {
                     type: DataTypes.DOUBLE,
@@ -64,8 +64,7 @@ class OrderItemsModel
                     allowNull: false,
                 },
                 type: {
-                    type: DataTypes.ENUM(...Object.values(ORDER_ITEM_TYPE)),
-                    allowNull: false,
+                    type: DataTypes.STRING,
                 },
                 createdBy: {
                     type: DataTypes.INTEGER,

@@ -63,6 +63,11 @@ interface ParsedProductOptions {
 // };
 
 export const parsedProductOptions =  (data: any): ParsedProductOptions=> {
+
+    console.log('4e6r5t7y8uoi')
+    console.log(data)
+    console.log('4657890')
+
     return {
         id: data.id,
         option_value: parseOptionsValues(data.optionsValue),

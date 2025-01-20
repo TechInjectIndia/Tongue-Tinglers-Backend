@@ -12,7 +12,7 @@ export class OptionsValueRepo implements IOptionsValueRepo {
             })).toJSON();
         } catch (error) {
             console.log(error);
-            return null;  
+            return null;
         }
     }
 
@@ -25,6 +25,22 @@ export class OptionsValueRepo implements IOptionsValueRepo {
                 }]
             }
             )).map((option) => option.toJSON());
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+    async getById(id:number): Promise<OptionsValue | null> {
+        try {
+            const ddd = (await OptionsValueModel.findOne({
+                where:{id:id},
+                include:[{
+                    model: OptionsModel,
+                    as: "options",
+                }]
+            }
+            ));
+            return ddd.toJSON();
         } catch (error) {
             console.log(error);
             return null;

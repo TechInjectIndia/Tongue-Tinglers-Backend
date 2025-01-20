@@ -77,7 +77,7 @@ interface ParsedOrder extends ParsedMeta {
     total: number; // without Tax
     totalTax: number;
     deliveryStatus: string;
-    customerDetails: ParsedCustomer;
+    customerDetails: ParsedUser;
     paymentType: PAYMENT_TYPE; //todo convert to enum
     paymentId: string;
     cancelledItems: ParsedOrderItem[];

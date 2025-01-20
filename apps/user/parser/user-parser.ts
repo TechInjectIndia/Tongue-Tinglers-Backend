@@ -1,4 +1,4 @@
-import {MetaUser, ParsedCustomer, ParsedUser} from "../interface/user";
+import {MetaUser, ParsedUser, USER_TYPE} from "../interface/user";
 
 export const parseUserToMetaUser = (data: ParsedUser): MetaUser => {
     return {
@@ -10,17 +10,25 @@ export const parseUserToMetaUser = (data: ParsedUser): MetaUser => {
     };
 }
 
-export const parseCustomerDetails = (customerData:any): ParsedCustomer => {
-    return {
-        id: customerData.id,
-        firstName: customerData.firstName,
-        lastName: customerData.lastName,
-        email: customerData.email,
-        phoneNumber: customerData.phoneNumber,
-        type: customerData.type,
-        status: customerData.status,
-        role: customerData.role,
-    }
+export const parseUser = (data:any, options?:any): ParsedUser => {
+    const userData:ParsedUser =   {
+        id: data.id,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        profilePhoto: data.profilePhoto ? data.profilePhoto : null,
+        createdBy: data.createdBy ? parseUserToMetaUser(data.createdBy) : null,
+        updatedBy: data.updatedBy ? parseUserToMetaUser(data.updatedBy) : null,
+        deletedBy: data.deletedBy ? parseUserToMetaUser(data.deletedBy) : null,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+        deletedAt: data.deletedAt,
+        type: data.type,
+        status: data.status,
+        role: data.role
+    };
+    return userData
 }
 
 

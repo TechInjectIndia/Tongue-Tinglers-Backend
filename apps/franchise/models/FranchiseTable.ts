@@ -9,9 +9,11 @@ import { UserModel } from "apps/user/models/UserTable";
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
 import {
+    COMMISSION_VOUCHER_ENTITIES,
     CommissionEntityMappingModel,
     ICommissionEntityMapping
 } from "../../commission/model/CommissionEntityMappingTable";
+import { CommissionVoucherModel, ICommissionVoucher } from "apps/commission/model/CommissionVoucherTable";
 
 
 
@@ -269,6 +271,10 @@ class FranchiseModel
                 options
             );
         });
+    }
+
+    public async createAddVoucher(voucherData: Partial<ICommissionVoucher>) {
+        return await this.createAddVoucher({ ...voucherData, entityType: COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION });
     }
 }
 

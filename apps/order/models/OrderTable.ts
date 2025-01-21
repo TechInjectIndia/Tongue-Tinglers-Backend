@@ -5,6 +5,8 @@ import { NotesModel } from "./NotesTable";
 import { OrderItemsModel } from "../../order-items/models/OrderItemsTable";
 import { Address } from "../../address/interface/Address";
 import RepoProvider from "apps/RepoProvider";
+import { CommissionVoucherModel, ICommissionVoucher } from "apps/commission/model/CommissionVoucherTable";
+import { COMMISSION_VOUCHER_ENTITIES } from "apps/commission/model/CommissionEntityMappingTable";
 import { UserModel } from "apps/user/models/UserTable";
 import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
 
@@ -250,6 +252,10 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     options
                 );
             });
+    }
+
+    public async createAddVoucher(voucherData: Partial<ICommissionVoucher>) {
+        return await this.createAddVoucher({ ...voucherData, entityType: COMMISSION_VOUCHER_ENTITIES.ORDER_COMMISSION });
     }
 }
 

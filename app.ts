@@ -39,6 +39,7 @@ import {
 } from "./apps/order/parser/parseOrder";
 import {OrderRepo} from "./apps/order/repos/orderRepo";
 import RepoProvider from "./apps/RepoProvider";
+import commissionCron from "apps/commission/cron/commissionCron";
 
 
 declare global {
@@ -128,8 +129,12 @@ server.get("/", async (_, res) => {
     const resp = await  RepoProvider.orderRepo.getAllOrders(100,100,'',{})
     res.send(resp)
 });
+
+
+
 server.use("/api", router);
 
+commissionCron.startCron("11 15 * * *");
 const PORT = CONFIG.PORT;
 try {
     server.listen(PORT, () =>

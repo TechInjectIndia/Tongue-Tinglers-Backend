@@ -4,6 +4,7 @@ import {BaseMeta} from "apps/common/models/Base";
 import {OrganizationModel} from "apps/organization/models/OrganizationTable";
 import {CommissionEventType, CommissionType} from "../interface/Commission";
 import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
+import { CommissionTable } from "./CommmisionTable";
 
 
 const {STRING, DATE, INTEGER, NOW} = DataTypes;
@@ -19,7 +20,7 @@ class CommissionEntityMappingModel
     public franchiseId: number;
     public commissionId: number;
     public organizationId: number;
-    public status: COMMISSION_PAID_STATUS;
+    // public status: COMMISSION_PAID_STATUS;
     public createdBy: number;
     public updatedBy: number | null;
     public deletedBy: number | null;
@@ -55,6 +56,15 @@ class CommissionEntityMappingModel
                 allowNull: false,
                 name: 'organizationId',
             },
+            as : 'organization'
+        });
+
+        CommissionEntityMappingModel.belongsTo(CommissionTable, {
+            foreignKey: {
+                allowNull: false,
+                name: 'commissionId',
+            },
+            as : 'commission'
         });
     }
 
@@ -185,7 +195,7 @@ interface ICommissionEntityMappingResponse {
         id: number;
         name: string;
     };
-    status: COMMISSION_PAID_STATUS;
+    // status: COMMISSION_PAID_STATUS;
     createdBy: number;
     updatedBy: number | null;
     deletedBy: number | null;
@@ -201,5 +211,6 @@ export {
     ICommissionEntityMapping,
     COMMISSION_PAID_STATUS,
     OrganizationCommissions,
-    ICommissionEntityMappingResponse
+    ICommissionEntityMappingResponse,
+    COMMISSION_VOUCHER_ENTITIES,
 };

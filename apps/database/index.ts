@@ -82,6 +82,7 @@ import {DebitNoteTable} from "../inventory/debit_note/database/DebitNoteTable";
 import {
     PurchaseInvoiceTable
 } from "../inventory/purchase_invoice/database/PurchaseInvoiceTable";
+import { CommissionVoucherModel } from "apps/commission/model/CommissionVoucherTable";
 import { TaxRateModel } from "apps/tax-rate/models/TaxRateTable";
 
 const m = [
@@ -118,7 +119,8 @@ const m = [
     OrderItemsModel,
     CartProductModel,
     ItemStockModel,
-    RPOrderTable
+    RPOrderTable,
+    CommissionVoucherModel
 
 
 ];
@@ -159,6 +161,7 @@ const models = {
     Cart: CartProductModel.initModel(),
     ItemStockModel: ItemStockModel.initModel(),
     CampaignProposalsModel: CampaignProposalsModel.initModel(),
+    CommissionVoucherModel:CommissionVoucherModel.initModel(),
 
     /* inventory */
 

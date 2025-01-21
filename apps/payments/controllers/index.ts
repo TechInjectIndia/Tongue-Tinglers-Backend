@@ -132,7 +132,7 @@ export default class PaymentsController {
                                             franchiseId: order.franchise_id,
                                             commissionId: commission.commissionId,
                                             organizationId: commission.organizationId,
-                                            status: COMMISSION_PAID_STATUS.PENDING
+                                            // status: COMMISSION_PAID_STATUS.PENDING
                                         }
                                         return voucherCreationDto;
                                     });

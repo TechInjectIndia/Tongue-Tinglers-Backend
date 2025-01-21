@@ -1,6 +1,6 @@
-import {Op, UniqueConstraintError} from "sequelize";
-import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
-import {APIResponse} from "../../common/models/Base";
+import { Op, UniqueConstraintError } from "sequelize";
+import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
+import { APIResponse } from "../../common/models/Base";
 import {
     COMMISSION_PAID_STATUS,
     CommissionEntityMappingModel,
@@ -8,10 +8,10 @@ import {
     ICommissionEntityMappingResponse, CommissionVoucherCreationAttributes,
     COMMISSION_VOUCHER_ENTITIES,
 } from "../model/CommissionEntityMappingTable";
-import {CommissionTable} from "../model/CommmisionTable";
-import {ICommissionRepo} from "./ICommissionRepo";
-import {OrganizationModel} from "apps/organization/models/OrganizationTable";
-import {handleError, HelperMethods} from "apps/common/utils/HelperMethods";
+import { CommissionTable } from "../model/CommmisionTable";
+import { ICommissionRepo } from "./ICommissionRepo";
+import { OrganizationModel } from "apps/organization/models/OrganizationTable";
+import { handleError, HelperMethods } from "apps/common/utils/HelperMethods";
 import {
     CommissionType,
     ICommission,
@@ -70,6 +70,9 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                         type: commissionMapping["CommissionTable"].type,
                         eventType: commissionMapping["CommissionTable"].eventType,
                         value: commissionMapping["CommissionTable"].value,
+                    }, appliedCommission: {
+                        franchiseAmount: commissionMapping["CommissionTable"].franchiseAmount,
+                        commissionAmount: commissionMapping["CommissionTable"].commissionAmount
                     },
                     organization: {
                         id: commissionMapping.organizationId,
@@ -129,29 +132,29 @@ export class PostgresCommissionRepo implements ICommissionRepo {
     async createMapEntities(mapEntities: CommissionVoucherCreationAttributes[],
         options?: { transaction?: any }): Promise<APIResponse<boolean>> {
         try {
-            const {transaction} = options || {};
-           const CommissionEntityMappingData =  await CommissionEntityMappingModel.bulkCreate(mapEntities,
-                {transaction});
+            const { transaction } = options || {};
+            const CommissionEntityMappingData = await CommissionEntityMappingModel.bulkCreate(mapEntities,
+                { transaction });
 
 
-                CommissionEntityMappingData.forEach(async(data)=>{
-                    //Get percentage is stored somewhere
-                    const percentage = 10;
-                    let finalAmount = 0;
-                    const commission:CommissionTable = await CommissionTable.findByPk(data.commissionId);
+            CommissionEntityMappingData.forEach(async (data) => {
+                //Get percentage is stored somewhere
+                const percentage = 10;
+                let finalAmount = 0;
+                const commission: CommissionTable = await CommissionTable.findByPk(data.commissionId);
 
-                 if(commission.type=== CommissionType.PERCENTAGE){
-                        finalAmount = (commission.value * percentage)/100;
-                    }
-                    await CommissionVoucherModel.create({
-                        relationId: data.id,
-                        entityId:data.franchiseId,
-                        entityType: COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION,
-                        status: COMMISSION_PAID_STATUS.PENDING,
-                        value:finalAmount,
-                        createdBy:data.createdBy,
-                    },{transaction});
-                })
+                if (commission.type === CommissionType.PERCENTAGE) {
+                    finalAmount = (commission.value * percentage) / 100;
+                }
+                await CommissionVoucherModel.create({
+                    relationId: data.id,
+                    entityId: data.franchiseId,
+                    entityType: COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION,
+                    status: COMMISSION_PAID_STATUS.PENDING,
+                    value: finalAmount,
+                    createdBy: data.createdBy,
+                }, { transaction });
+            })
 
             return HelperMethods.getSuccessResponse<boolean>(true);
         }
@@ -185,10 +188,10 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                     deletedBy: deletedById,
                     deletedAt: new Date(),
                 }, {
-                    where: {
-                        id: ids
-                    }
-                });
+                where: {
+                    id: ids
+                }
+            });
             return HelperMethods.getSuccessResponse<boolean>(true);
         }
         catch (error) {
@@ -298,17 +301,17 @@ export class PostgresCommissionRepo implements ICommissionRepo {
     }
 
     async addVoucherToEntity(entityId: number, entityType: COMMISSION_VOUCHER_ENTITIES, voucherData: Partial<ICommissionVoucher>) {
-    if (entityType === COMMISSION_VOUCHER_ENTITIES.ORDER_COMMISSION) {
-        const order = await OrderModel.findByPk(entityId);
-        if (!order) throw new Error("Order not found");
+        if (entityType === COMMISSION_VOUCHER_ENTITIES.ORDER_COMMISSION) {
+            const order = await OrderModel.findByPk(entityId);
+            if (!order) throw new Error("Order not found");
 
-        await order.createAddVoucher({ ...voucherData });
-    } else if (entityType === COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION) {
-        const franchise = await FranchiseModel.findByPk(entityId);
-        if (!franchise) throw new Error("Franchise not found");
+            await order.createAddVoucher({ ...voucherData });
+        } else if (entityType === COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION) {
+            const franchise = await FranchiseModel.findByPk(entityId);
+            if (!franchise) throw new Error("Franchise not found");
 
-        await franchise.createAddVoucher({ ...voucherData });
+            await franchise.createAddVoucher({ ...voucherData });
+        }
     }
-}
 
 }

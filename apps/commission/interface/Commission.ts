@@ -42,6 +42,7 @@ interface OrganizationPaymentDetails {
     phone : string,
     account_number: string,
     ifsc : string,
+    voucherId: number
 }
 
 export {

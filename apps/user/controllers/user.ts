@@ -507,4 +507,26 @@ export default class AdminController {
             });
         }
     }
+
+    static async getProfile(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = get(req, "user_id");
+            const response = await new AdminRepo().getProfile(userId);
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.ADMIN_FETCHED,
+                        response
+                    )
+                );
+        }
+        catch (err) {
+            console.error("Error:", err);
+            return res.status(500).send({
+                message: err.message || ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
 }

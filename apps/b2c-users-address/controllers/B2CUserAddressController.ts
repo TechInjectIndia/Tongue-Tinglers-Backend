@@ -105,4 +105,27 @@ export default class B2CUserAddressController {
             .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
+
+    static async getProfileOfB2CUser(req: Request, res: Response){
+        try{
+            const user_id = parseInt(get(req, "user_id"));
+            if (!user_id) {
+                throw Error('Missing user_id or isNaN');
+            }
+            const guestUserAddress = await new B2CUserAddressRepo().getProfileOfB2CUser(user_id);
+            if(!guestUserAddress){
+                return res
+                    .status(400)
+                    .send(sendResponse(RESPONSE_TYPE.ERROR, ERROR_MESSAGE.NOT_EXISTS));
+            }
+            return res
+                .status(200)
+                .send(sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FETCHED, guestUserAddress));
+        }catch(error){
+            console.error(error);
+            return res
+                .status(500)
+            .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
+        }
+    }
 }

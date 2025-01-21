@@ -4,6 +4,7 @@ import { B2CUserAddressModel } from "../models/B2CUserAddressTable";
 import { IB2CUserAddressRepo } from "./IB2CUserAddressRepo";
 import { UserModel } from "apps/user/models/UserTable";
 import { getUserName } from "apps/common/utils/commonUtils";
+import { parseUser } from "apps/user/parser/user-parser";
 
 export class B2CUserAddressRepo implements IB2CUserAddressRepo{
     async save(address: B2CUserAddressPayload): Promise<any> {
@@ -167,5 +168,39 @@ export class B2CUserAddressRepo implements IB2CUserAddressRepo{
     }
     getAll(): Promise<any> {
         throw new Error("Method not implemented.");
+    }
+
+    async getProfileOfB2CUser(userId: number):Promise<any>{
+        try{
+    
+          const profile = await UserModel.findOne({
+            where: {
+              id: userId
+            }
+          });
+          if(!profile){
+            throw new Error("User not found");
+          }
+          const addressData = await B2CUserAddressModel.findAll({
+            where: {
+              userId: userId
+            },
+            include:[
+              {
+                model: AddressModel,
+                as: 'address'
+              },
+              {
+                  model: UserModel,
+                  as: 'users'
+              }
+            ]
+          })
+          return {profile: parseUser(profile), address: addressData};
+    
+        }catch(error){
+          console.log(error);
+          return null;
+        }
     }
 }

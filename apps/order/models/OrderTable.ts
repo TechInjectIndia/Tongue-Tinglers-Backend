@@ -17,7 +17,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     anomalyArr!: number[];
     cancelled_items!: number[];
     customer_details!: number;
-    delivery_details!: number;
+    delivery_details!: string;
     delivery_status!: string;
     payment_id!: string;
     payment_type!: string;
@@ -58,10 +58,10 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
             foreignKey: 'customer_details',
             as: 'customer'
         })
-        OrderModel.belongsTo(FranchiseModel, {
-            foreignKey: 'franchise',
-            as: 'franchiseData'
-        })
+        // OrderModel.belongsTo(FranchiseModel, {
+        //     foreignKey: 'franchise',
+        //     as: 'franchiseData'
+        // })
         OrderModel.belongsToMany(NotesModel, {
             through: "order_notes_join", // Join table name
             foreignKey: "orderId", // Foreign key in the join table
@@ -123,7 +123,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     allowNull: true,
                 },
                 delivery_details: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.STRING,
                     allowNull: true,
                 },
                 delivery_status: {
@@ -159,11 +159,11 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     allowNull: true,
                 },
                 total_tax: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: true,
                 },
                 prices: {
-                    type: DataTypes.JSONB,
+                    type: DataTypes.STRING,
                     allowNull: true,
                 },
                 discount_prices: {

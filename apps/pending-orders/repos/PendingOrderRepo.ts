@@ -1,100 +1,121 @@
-import {PendingOrderModel} from "../models/PendingOrderTable";
+import {PendingOrder, PendingOrderModel} from "../models/PendingOrderTable";
 import {IPendingOrderRepo} from "./IPendingOrderRepo";
 import {UserModel} from "apps/user/models/UserTable";
-import {OrderPayload, ParsedOrder} from "../../order/interface/Order";
+import {
+    ORDER_TYPE,
+    OrderPayload,
+    ParsedOrder
+} from "../../order/interface/Order";
 import {DTO, getHandledErrorDTO, getSuccessDTO} from "../../common/models/DTO";
 import {parseOrder} from "../../order/parser/parseOrder";
 import {Transaction} from "sequelize";
-import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
-import { NotesModel } from "apps/order/models/NotesTable";
-import { OrderItemsModel } from "apps/order-items/models/OrderItemsTable";
+import {OrderItemsModel} from "apps/order-items/models/OrderItemsTable";
+import {BaseOrderItem, ORDER_ITEM_TYPE} from "../../order/interface/OrderItem";
+import {OptionsValueModel} from "../../optionsValue/models/OptionValueTable";
+import RepoProvider from "../../RepoProvider";
 
 export class PendingOrderRepo implements IPendingOrderRepo {
-   async getPendingOrderByAttributes(payload: any, transaction?: Transaction): Promise<ParsedOrder | null> {
+   async getPendingOrderByAttributes(id, transaction?: Transaction): Promise<ParsedOrder | null> {
     try {
         const options: any = {
-            where: payload,
+            where: id,
             include: [
-                {
-                    model: UserModel,
-                    as: "customer"
-                },
-                {
-                    model: FranchiseModel,
-                    as: "franchise"
-                },
-                {
-                    model: OrderItemsModel,
-                    through: { attributes: [] }, // Exclude the join table from the results
-                    as: "orderItems", // Use the alias defined in the association
-                },
-                {
-                    model: UserModel,
-                    as: "createdByUser"
-                },
-                {
-                    model: UserModel,
-                    as: "deletedByUser"
-                },
-                {
-                    model: UserModel,
-                    as: "updatedByUser"
-                }
+                { model: UserModel, as: "createdByUser" },
+                { model: UserModel, as: "deletedByUser" },
+                { model: UserModel, as: "updatedByUser" },
             ],
         };
         // Only add transaction to options if it's provided
         if (transaction) {
             options.transaction = transaction;
         }
-        const res = await PendingOrderModel.findOne(options);
-        return res ? parseOrder(res.toJSON()) : null;
+        const resp = await PendingOrderModel.findOne(options)
+
+        resp.pendingOrderItems = await  Promise.all(resp.pendingOrderItems.map(async (dd) => {
+                dd.product_id = dd.product_id;
+                dd.product_option_id = await RepoProvider.optionsValueRepo.getById(dd.product_option_id)
+            return {
+                    ...dd
+                  }
+        }));
+
+        console.log(resp.toJSON())
+
+        return resp ? parseOrder(resp.toJSON()) : null;
     } catch(error) {
         console.log(error);
         return null;
     }
 }
 
-    async create(payload: OrderPayload) : Promise<DTO<ParsedOrder>> {
-        try{
-            const user = await UserModel.findByPk(payload.customer_details);
-            if(!user){
-                getHandledErrorDTO(`User with ID ${payload.customer_details} not found.`);
-            }
-            const res =  await PendingOrderModel.create(payload);
-            return res? getSuccessDTO(parseOrder(res.toJSON())):getHandledErrorDTO("not found");
-        }catch(error){
-            console.log(error);
-            getHandledErrorDTO("not found");
+    async create(payload: OrderPayload) : Promise<DTO<PendingOrder>> {
+       try {
+        // Find user within transaction
+        const user = await UserModel.findByPk(payload.customer_details,);
+        if (!user) {
+            return  getHandledErrorDTO(`User with ID ${payload.customer_details} not found.`);
         }
-    }
 
-    async createPendingOrderPayload(order:ParsedOrder, paymentOrderId:string){
+        const dd = {...payload,pendingOrderItems:payload.orderItems}
+        const pendingOrder = await PendingOrderModel.create(dd);
+
+        const resp = await PendingOrderModel.findOne({where:{id:pendingOrder.id},
+            include: [
+                { model: UserModel, as: "createdByUser" },
+                { model: UserModel, as: "deletedByUser" },
+                { model: UserModel, as: "updatedByUser" },
+            ],})
+
+        return getSuccessDTO(resp.toJSON());
+
+    } catch (error) {
+        return getHandledErrorDTO(error.message || "Transaction failed");
+    }
+   }
+
+    async createPendingOrderPayload(order:ParsedOrder, paymentOrderId:string,userId:number){
         const pendingOrderPayload: OrderPayload = {
             anomalyArr: [],
             billingAddress: order.billingAddress,
             cancelled_items: [],
-            createdBy: 0,
-            customer_details: 0,
-            deletedBy: 0,
+            createdBy: userId,
+            customer_details: userId,
+            deletedBy: null,
             delivery_details: order.deliveryDetails,
             delivery_status: "",
             discount_prices: "",
-            franchise: 0,
+            franchise: null,
             item_count: 0,
             notes: [],
-            orderItems: [],
-            order_type: order.orderType,
-            payment_id: "",
+            orderItems: order.items.map((d)=>{const dd:BaseOrderItem={
+                coupon_discount: 0,
+                points_discount: 0,
+                product_id: d.product.id,
+                product_option_id: d.productOption.id,
+                quantity: d.quantity,
+                student_discount: Number(d.totalDiscount),
+                total_price: Number(d.total_price),
+                total_tax: Number(d.totalTax),
+                type: order.orderType===ORDER_TYPE.RM_ORDER?ORDER_ITEM_TYPE.PACKAGING:ORDER_ITEM_TYPE.RETORT
+            }
+            return dd;
+            }),
+            order_type: order.orderType??ORDER_TYPE.RM_ORDER,
+            payment_id: paymentOrderId,
             payment_type: "",
             prices: "",
             shippingAddress: order.shippingAddress,
-            status: "",
-            total: 0,
-            total_discount: 0,
-            total_shipping: 0,
-            total_tax: 0,
-            updatedBy: 0
+            status: order.status,
+            total: Number(order.total),
+            total_discount: Number(order.totalDiscount),
+            total_shipping: Number(order.totalShipping),
+            total_tax: Number(order.totalTax),
+            updatedBy: null
         };
+
+        console.log("******");
+        console.log(pendingOrderPayload);
+        console.log("******");
         return pendingOrderPayload;
     }
 

@@ -13,8 +13,9 @@ import {OrderModel} from "../models/OrderTable";
 export interface IOrderRepo {
     // createOrder(order: OrderPayload): Promise<Order | null>;
     createOrder(
-        transaction: Transaction,
         order: OrderPayload,
+        transaction?: Transaction,
+
     ): Promise<ParsedOrder | null>
     // updateOrder(order: any): Promise<any>;
     // createOrder(order: OrderPayload): Promise<Order | null>
@@ -37,7 +38,7 @@ export interface IOrderRepo {
 
     getOrdersByUser(userId: number): Promise<ParsedOrder[]>
 
-    proceedToPayment(state: OrderState): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>>
+    proceedToPayment(state: OrderState,userId:number): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>>
 
     /**
      * DB Transaction

@@ -8,4 +8,5 @@ export interface IB2CUserAddressRepo {
     // delete(address: Address): Promise<any>;
     getById(id: number): Promise<ParsedB2CUserAddress>;
     getAll(): Promise<ParsedB2CUserAddress[]>;
+    getProfileOfB2CUser(userId:number): Promise<any>;
 }

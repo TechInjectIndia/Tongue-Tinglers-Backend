@@ -3,7 +3,12 @@ import { jsPDF } from "jspdf";
 import { type InvoiceOrderItem, type Invoice } from "../models/Invoice";
 import { Timestamp } from "firebase-admin/firestore";
 import { ParsedOrder } from "apps/order/interface/Order";
-import { COMPANY_ADDRESS, COMPANY_NAME } from "../models/invoice-contants";
+import {
+    COMPANY_ADDRESS,
+    COMPANY_NAME,
+    INVOICE_BORDER,
+    INVOICE_LOGO_URI,
+} from "../models/invoice-contants";
 import { getStringFromAddress, getTotalDiscount } from "../utils/invoice-utils";
 import { formatDateUI } from "apps/common/utils/commonUtils";
 
@@ -68,12 +73,13 @@ function invoiceDtoFromOrder(order: ParsedOrder): Invoice | undefined {
             contact: order.customerDetails.phoneNumber,
             paymentType: order.paymentType,
             // rewardPoints: order.pointsData ? order.pointsData.value + order.pointsData.tax : 0,
-            couponCode: order.couponCodes.length > 0 ? order.couponCodes[0] : null,
+            couponCode:
+                order.couponCodes.length > 0 ? order.couponCodes[0] : null,
             paymentId: order.paymentId,
             // note:
             //     order.customerDetails.notes.length > 0 &&
             //     order.customerDetails.notes[0].createdBy === order.customerDetails.uid
-            //         ? order.customerDetails.notes[0].note 
+            //         ? order.customerDetails.notes[0].note
             //         : null,
         };
     } catch (e) {
@@ -92,7 +98,24 @@ async function createInvoicePdf(invoice: Invoice) {
     addInvoiceInfo(doc, invoice);
     const summaryStart = addOrderItemsTable(doc, invoice, yvalue + 10);
     addSummarySection(doc, invoice, summaryStart);
+
+    const totalPages = doc.internal.pages.length;
+    for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
+        doc.setPage(pageNumber);
+        addBorder(doc);
+    }
     return Buffer.from(doc.output(), "binary");
+}
+
+async function addBorder(doc: jsPDF) {
+    const pageWidth = doc.internal.pageSize.width; // 210mm
+    const pageHeight = doc.internal.pageSize.height; // 297mm
+
+    const borderWidth = pageWidth;
+    const borderHeight = pageHeight;
+
+    const borderImage = INVOICE_BORDER;
+    doc.addImage(borderImage, "PNG", 0, 0, borderWidth, borderHeight);
 }
 
 async function createShippingLabelPdf(invoice: Invoice) {
@@ -113,17 +136,23 @@ function initializeDoc() {
 }
 
 async function addLogo(doc: jsPDF) {
-    const logoHeight = 15;
-    const logoPositionY = 20;
-    doc.setFontSize(10).setFont("helvetica", "normal");
-    const dateUTC = new Date();
-    let date = dateUTC.getTime();
-    let dateIST = new Date(date);
-    dateIST.setHours(dateIST.getHours() + 5);
-    dateIST.setMinutes(dateIST.getMinutes() + 30);
-    doc.text(formatDateUI(new Date(dateIST), true), 30, 15);
-    doc.setFontSize(14).setFont("helvetica", "normal");
-    doc.setFontSize(10).setFont("helvetica", "normal");
+    const logoHeight = 50;
+    const logoWidth = 100;
+    const logoPositionY = 30;
+    const logoPositionX = 30;
+
+    const logoImage = INVOICE_LOGO_URI;
+    doc.addImage(logoImage, "PNG", logoPositionX, logoPositionY, logoWidth, logoHeight);
+
+    // doc.setFontSize(10).setFont("helvetica", "normal");
+    // const dateUTC = new Date();
+    // let date = dateUTC.getTime();
+    // let dateIST = new Date(date);
+    // dateIST.setHours(dateIST.getHours() + 5);
+    // dateIST.setMinutes(dateIST.getMinutes() + 30);
+    // doc.text(formatDateUI(new Date(dateIST), true), 30, 15);
+    // doc.setFontSize(14).setFont("helvetica", "normal");
+    // doc.setFontSize(10).setFont("helvetica", "normal");
     // doc.text("Telephone : ", 30, logoPositionY + logoHeight);
     // doc.text(TELEPHONE, 75, logoPositionY + logoHeight);
     // doc.text("Email : ", 30, logoPositionY + logoHeight + 10);
@@ -156,22 +185,38 @@ function addShippingDetails(doc: jsPDF, invoice: Invoice) {
         doc.text(words[1], 155, 130);
         doc.text(words[2], 155, 140);
         doc.text(words[3], 155, 150);
-        doc.text(capitalizeWordsAndSlash(invoice.shippingDetails.pin), 155, 160);
+        doc.text(
+            capitalizeWordsAndSlash(invoice.shippingDetails.pin),
+            155,
+            160,
+        );
         doc.text(invoice.shippingDetails.contact, 155, 170);
     } else if (words[2]) {
         yvalue = 160;
         doc.text(words[1], 155, 130);
         doc.text(words[2], 155, 140);
-        doc.text(capitalizeWordsAndSlash(invoice.shippingDetails.pin), 155, 150);
+        doc.text(
+            capitalizeWordsAndSlash(invoice.shippingDetails.pin),
+            155,
+            150,
+        );
         doc.text(invoice.shippingDetails.contact, 155, 160);
     } else if (words[1]) {
         yvalue = 150;
         doc.text(words[1], 155, 130);
-        doc.text(capitalizeWordsAndSlash(invoice.shippingDetails.pin), 155, 140);
+        doc.text(
+            capitalizeWordsAndSlash(invoice.shippingDetails.pin),
+            155,
+            140,
+        );
         doc.text(invoice.shippingDetails.contact, 155, 150);
     } else {
         yvalue = 140;
-        doc.text(capitalizeWordsAndSlash(invoice.shippingDetails.pin), 155, 130);
+        doc.text(
+            capitalizeWordsAndSlash(invoice.shippingDetails.pin),
+            155,
+            130,
+        );
         doc.text(invoice.shippingDetails.contact, 155, 140);
     }
     return yvalue;
@@ -209,8 +254,10 @@ function addShippingCompanyDetails(doc: jsPDF, invoice: Invoice) {
     doc.text(invoice.companyDetails.companyName, logoPositionX - 45, 55);
 
     const addressArr = breakIntoLines(
-        capitalizeWordsAndSlash(getStringFromAddress(invoice.companyDetails.companyAddress)),
-        25
+        capitalizeWordsAndSlash(
+            getStringFromAddress(invoice.companyDetails.companyAddress),
+        ),
+        25,
     );
     addressArr.forEach((add, index) => {
         doc.setFontSize(10).setFont("helvetica");
@@ -238,7 +285,11 @@ function addInvoiceInfo(doc: jsPDF, invoice: Invoice) {
     doc.setFontSize(10).setFont("helvetica");
 }
 
-function addOrderItemsTable(doc: jsPDF, invoice: Invoice, yvalue: number): number {
+function addOrderItemsTable(
+    doc: jsPDF,
+    invoice: Invoice,
+    yvalue: number,
+): number {
     const tableLeft = 25;
     const rowHeight = 15;
 
@@ -280,7 +331,12 @@ function printItems(doc: jsPDF, arr: InvoiceOrderItem[], y: number): number {
     return y;
 }
 
-const printItem = (item: InvoiceOrderItem, x: number, y: number, doc: jsPDF): number => {
+const printItem = (
+    item: InvoiceOrderItem,
+    x: number,
+    y: number,
+    doc: jsPDF,
+): number => {
     let yvalue = y;
     const quantity = item.qty;
     let price = item.unitPrice;
@@ -328,7 +384,7 @@ const checkRowHeight = (item: InvoiceOrderItem): number => {
 
 const isFullLengthUsed = (h: number, doc: jsPDF) => {
     const finalHeight = doc.internal.pageSize.getHeight() - 50;
- 
+
     if (h > finalHeight) {
         doc.addPage();
         return true;
@@ -385,7 +441,7 @@ function addSummarySection(doc: jsPDF, invoice: Invoice, summaryStart: number) {
     //     doc.text("Note :", 30, startY);
     //     doc.setFontSize(9).setFont("helvetica");
     //     doc.text(invoice.note, 50, startY ,{maxWidth:150});
-    
+
     // }
 
     if (invoice.couponCode) {
@@ -398,11 +454,15 @@ function addSummarySection(doc: jsPDF, invoice: Invoice, summaryStart: number) {
     // doc.text("Credits :", 315, startY + 10);
     // doc.setFontSize(9).setFont("helvetica");
     // doc.text("- " + "Rs. " + String(invoice.rewardPoints?.toFixed(2) ?? 0), 376, startY + 10);
-    
+
     doc.setFontSize(9).setFont("helvetica");
     doc.text("Shipping :", 315, startY + 20);
     doc.setFontSize(9).setFont("helvetica");
-    doc.text("+ " + "Rs. " + String(invoice.shippingCharge?.toFixed(2) ?? 0), 376, startY + 20);
+    doc.text(
+        "+ " + "Rs. " + String(invoice.shippingCharge?.toFixed(2) ?? 0),
+        376,
+        startY + 20,
+    );
 
     doc.setFontSize(11).setFont("helvetica", "bold");
     doc.rect(315, startY + 25, 115, 0, "FD");
@@ -412,7 +472,11 @@ function addSummarySection(doc: jsPDF, invoice: Invoice, summaryStart: number) {
     doc.setFontSize(6).setFont("helvetica", "normal");
 }
 
-function printShippingItems(doc: jsPDF, arr: InvoiceOrderItem[], y: number): number {
+function printShippingItems(
+    doc: jsPDF,
+    arr: InvoiceOrderItem[],
+    y: number,
+): number {
     const rowHeight = 55;
     const tableLeft = 25;
     for (let i = 0; i < arr.length; i++) {
@@ -424,7 +488,7 @@ function printShippingItems(doc: jsPDF, arr: InvoiceOrderItem[], y: number): num
 
         // const sku = capitalizeWordsAndSlash(item.model);
         // doc.text(sku, tableLeft + 200, y + yVal);
-        
+
         doc.text(String(quantity), tableLeft + 300, y + yVal);
         doc.setFontSize(10).setFont("helvetica");
         doc.text("0 " + "g", tableLeft + 355, y + yVal);
@@ -440,10 +504,18 @@ function printShippingItems(doc: jsPDF, arr: InvoiceOrderItem[], y: number): num
         Object.keys(item.selectedOption).forEach((key, index) => {
             doc.setFontSize(7).setFont("helvetica");
             if (index < 3) {
-                doc.text(" - " + key + " : " + item.selectedOption[key], tableLeft + 5, yValue);
+                doc.text(
+                    " - " + key + " : " + item.selectedOption[key],
+                    tableLeft + 5,
+                    yValue,
+                );
                 yValue = yValue + (index + 1 * 8);
             } else {
-                doc.text(" - " + key + " : " + item.selectedOption[key], tableLeft + 40, yValue);
+                doc.text(
+                    " - " + key + " : " + item.selectedOption[key],
+                    tableLeft + 40,
+                    yValue,
+                );
                 yValue = yValue + (index - 2 + 1 * 8);
             }
         });
@@ -526,7 +598,9 @@ function capitalizeWordsAndSlash(str: string) {
     return finalResult;
 }
 
-export const getDateFromTimeStamp = (dd: Timestamp | Date | string): Date | string => {
+export const getDateFromTimeStamp = (
+    dd: Timestamp | Date | string,
+): Date | string => {
     const pattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
     if (typeof dd === "string") {
         if (pattern.test(dd)) {

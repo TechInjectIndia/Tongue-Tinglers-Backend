@@ -135,7 +135,9 @@ interface OrderState {
     userId: number;
     billingAddressId: number | null;
     shippingAddressId: number | null;
-    paymentType:PAYMENT_TYPE
+    paymentType:PAYMENT_TYPE,
+    orderType:ORDER_TYPE
+
 }
 
 enum RP_ORDER_STATUS {

@@ -10,17 +10,17 @@ import {OrderModel} from "../models/OrderTable";
 import {OrderItemsModel} from "../../order-items/models/OrderItemsTable";
 import {parseUserToMetaUser} from "apps/user/parser/user-parser";
 import {parseFranchise} from "apps/franchise/parser/franchiseParser";
+import {ParsedUser} from "../../user/interface/user";
 
 
 const parseOrder = (order: any): ParsedOrder => {
 
+
     let productVariations: any;
+
     if(order.orderItems){
-        productVariations = order.orderItems.map((orderItem: any) =>{
-            parseOrderItem(orderItem)
-        }
-    );
-    }else if(order.pendingOrderItems){
+        productVariations = order.orderItems;
+    } else if(order.pendingOrderItems){
         productVariations = order.pendingOrderItems;
     }
     const data: ParsedOrder = {
@@ -31,7 +31,7 @@ const parseOrder = (order: any): ParsedOrder => {
         couponCodes: [],
         createdAt: order.created_at,
         createdBy: order.createdByUser ? parseUserToMetaUser(order.createdByUser) : null,
-        customerDetails: order.customer,
+        customerDetails: order.createdByUser as unknown as ParsedUser,
         deletedAt: order.deletedAt,
         deletedBy: order.deletedByUser ? parseUserToMetaUser(order.deletedByUser) : null,
         deliveryDetails: order.delivery_details,

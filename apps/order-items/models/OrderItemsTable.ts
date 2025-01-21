@@ -21,7 +21,9 @@ class OrderItemsModel
     student_discount: number;
     type: ORDER_ITEM_TYPE;
 
-    public static associate() {}
+    public static associate() {
+
+    }
 
     public static initModel() {
         OrderItemsModel.init(

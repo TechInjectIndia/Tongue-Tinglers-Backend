@@ -675,7 +675,7 @@ export class OrderProvider implements IOrderProvider {
             totalTax: 0,
             prices: priceCom.prices,
             disc: {},
-            type: ORDER_ITEM_TYPE.RETORT,
+            type: product.type as unknown as ORDER_ITEM_TYPE,
             totalDiscount: 0,
         };
 

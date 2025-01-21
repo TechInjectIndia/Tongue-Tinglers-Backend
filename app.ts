@@ -39,7 +39,7 @@ import {
 } from "./apps/order/parser/parseOrder";
 import {OrderRepo} from "./apps/order/repos/orderRepo";
 import RepoProvider from "./apps/RepoProvider";
-import commissionCron from "apps/commission/cron/commissionCron";
+import commissionCron from "./apps/commission/cron/CommissionCron";
 
 
 declare global {

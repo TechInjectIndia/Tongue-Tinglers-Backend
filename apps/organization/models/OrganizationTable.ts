@@ -159,6 +159,4 @@ class OrganizationModel extends Model<IOrganization, OrganizationCreationAttribu
     }
 }
 
-
-
 export { OrganizationModel };

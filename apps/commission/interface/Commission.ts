@@ -34,15 +34,7 @@ interface Customer {
     phone: string,
 }
 
-interface BankAccount{
-    account_number: string,
-    name: string,
-    ifsc: string,
-
-}
-
-
-interface organizationPaymentDetails {
+interface OrganizationPaymentDetails {
     organizationId: number,
     name: string,
     amount: number,
@@ -58,6 +50,5 @@ export {
     CommissionEventType,
     CommissionDetails,
     Customer,
-    BankAccount,
-    organizationPaymentDetails
+    OrganizationPaymentDetails
 }

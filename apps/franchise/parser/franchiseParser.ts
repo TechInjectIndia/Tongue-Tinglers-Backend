@@ -1,4 +1,4 @@
-import {parseUserToMetaUser} from "apps/user/parser/user-parser";
+import {parseUserToMetaUser} from "../../user/parser/user-parser";
 import {ParsedFranchise} from "../interface/Franchise";
 
 const parseFranchise = (franchise: any):ParsedFranchise => {

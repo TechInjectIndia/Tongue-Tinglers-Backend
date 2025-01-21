@@ -2,6 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { Affiliate } from "../interface/affiliate";
 import { UserModel } from "apps/user/models/UserTable";
 import { SocialMediaDetailsModel } from "apps/lead/models/smDetailsTable";
+import {CampaignAdModel} from "apps/campaign/models/CampaignModel"
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
 
@@ -27,6 +28,11 @@ class AffiliateModel
         });
         AffiliateModel.hasMany(SocialMediaDetailsModel, {
             as: "sm",
+            foreignKey: "affiliateId",
+        });
+
+        AffiliateModel.hasMany(CampaignAdModel, {
+            as: "cm",
             foreignKey: "affiliateId",
         });
     }

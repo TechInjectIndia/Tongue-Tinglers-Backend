@@ -1,3 +1,4 @@
+import {Op, UniqueConstraintError} from "sequelize";
 import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
 import {APIResponse} from "../../common/models/Base";
 import {
@@ -6,16 +7,18 @@ import {
     ICommissionEntityMapping,
     ICommissionEntityMappingResponse, CommissionVoucherCreationAttributes,
     COMMISSION_VOUCHER_ENTITIES,
-    COMMISSION_ENTITIES
 } from "../model/CommissionEntityMappingTable";
 import {CommissionTable} from "../model/CommmisionTable";
 import {ICommissionRepo} from "./ICommissionRepo";
 import {OrganizationModel} from "apps/organization/models/OrganizationTable";
 import {handleError, HelperMethods} from "apps/common/utils/HelperMethods";
-import {CommissionType, ICommission} from "../interface/Commission";
-import {Op, UniqueConstraintError} from "sequelize";
+import {
+    CommissionType,
+    ICommission,
+} from "../interface/Commission";
 import { CommissionVoucherModel, ICommissionVoucher } from "../model/CommissionVoucherTable";
 import { OrderModel } from "apps/order/models/OrderTable";
+import CommissionPayoutModel from "../model/CommissionPayoutModel";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
 
@@ -26,7 +29,6 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                     include: [
                         {
                             model: CommissionTable,
-                            attributes: ["id", "title"],
                         },
                         {
                             model: FranchiseModel,
@@ -34,12 +36,16 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                             include: [{
                                 model: OrganizationModel,
                                 as: "organization",
-                                attributes: ["id", "name"],
                             }]
                         },
                         {
                             model: OrganizationModel,
-                            attributes: ["id", "name"],
+                        },
+                        {
+                            model: CommissionVoucherModel,
+                            include: [{
+                                model: CommissionPayoutModel,
+                            }]
                         },
                     ]
                 }
@@ -47,10 +53,9 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
             const response: ICommissionEntityMappingResponse[] = [];
 
-            /* TODO: Mandeep Singh(self), change this after the dependency is done */
-            let franchiseAmount = 2000;
-            let commissionAmount = 0;
-            let appliedCommission = 10;
+            /* TODO: @rashmeet Mandeep Singh(self), change this after the dependency is done */
+
+
             for (const commissionMapping of result) {
                 response.push({
                     id: commissionMapping.id,
@@ -65,10 +70,6 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                         type: commissionMapping["CommissionTable"].type,
                         eventType: commissionMapping["CommissionTable"].eventType,
                         value: commissionMapping["CommissionTable"].value,
-                    },
-                    appliedCommission: {
-                        franchiseAmount: franchiseAmount,
-                        commissionAmount: appliedCommission,
                     },
                     organization: {
                         id: commissionMapping.organizationId,

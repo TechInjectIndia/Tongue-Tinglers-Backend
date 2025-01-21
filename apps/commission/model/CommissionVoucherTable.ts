@@ -1,22 +1,25 @@
-import { DataTypes, DECIMAL, DecimalDataType, Model, Optional } from "sequelize";
-import { sequelize } from "../../../config";
-import { BaseMeta } from "apps/common/models/Base";
-import { COMMISSION_PAID_STATUS, CommissionEntityMappingModel } from "./CommissionEntityMappingTable";
-import { COMMISSION_VOUCHER_ENTITIES } from "./CommissionEntityMappingTable";
-import { OrderModel } from "apps/order/models/OrderTable";
-import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
+import {DataTypes, DECIMAL, Model, Optional} from "sequelize";
+import {sequelize} from "../../../config";
+import {BaseMeta} from "apps/common/models/Base";
+import {
+    COMMISSION_PAID_STATUS,
+    COMMISSION_VOUCHER_ENTITIES,
+    CommissionEntityMappingModel
+} from "./CommissionEntityMappingTable";
+import {OrderModel} from "apps/order/models/OrderTable";
+import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
 
-const { STRING, INTEGER, DATE, NOW } = DataTypes;
+const {STRING, INTEGER, DATE, NOW} = DataTypes;
 
 // Define the creation attributes by making certain fields optional
 type CommissionVoucherCreationAttributes = Optional<ICommissionVoucher, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'deletedBy' | 'updatedBy'>;
 
-class CommissionVoucherModel extends Model<ICommissionVoucher, CommissionVoucherCreationAttributes> implements ICommissionVoucher {
+class CommissionVoucherModel
+    extends Model<ICommissionVoucher, CommissionVoucherCreationAttributes>
+    implements ICommissionVoucher {
     public id: number;
     public relationId: number;
-    // public orderId: number;
-    // public franchiseId: number;
-    public entityId : number;
+    public entityId: number;
     public entityType: COMMISSION_VOUCHER_ENTITIES;
     public status: COMMISSION_PAID_STATUS;
     public value: number;
@@ -27,18 +30,21 @@ class CommissionVoucherModel extends Model<ICommissionVoucher, CommissionVoucher
     public readonly updatedAt: Date;
     public readonly deletedAt: Date | null;
 
-        public static associate() {
-            // CommissionVoucherModel.belongsTo(OrderModel, { foreignKey: "orderId", as: "order" });
-            // CommissionVoucherModel.belongsTo(FranchiseModel, { foreignKey: "franchiseId", as: "franchise"})
-            
-            CommissionVoucherModel.belongsTo(OrderModel, { foreignKey: "entityId", as: "order", constraints: false });
-            CommissionVoucherModel.belongsTo(FranchiseModel, { foreignKey: "entityId", as: "franchise", constraints: false });
+    public static associate() {
 
-            OrderModel.hasMany(CommissionVoucherModel,{foreignKey: 'entityId', constraints: false})
-            FranchiseModel.hasMany(CommissionVoucherModel,{foreignKey: 'entityId', constraints:false})
+        CommissionVoucherModel.belongsTo(OrderModel,
+            {foreignKey: "entityId", as: "order", constraints: false});
+        CommissionVoucherModel.belongsTo(FranchiseModel,
+            {foreignKey: "entityId", as: "franchise", constraints: false});
 
-            CommissionVoucherModel.belongsTo(CommissionEntityMappingModel, { foreignKey: "relationId", as: "commissionEntity"});
-        }
+        OrderModel.hasMany(CommissionVoucherModel,
+            {foreignKey: 'entityId', constraints: false})
+        FranchiseModel.hasMany(CommissionVoucherModel,
+            {foreignKey: 'entityId', constraints: false})
+
+        CommissionVoucherModel.belongsTo(CommissionEntityMappingModel,
+            {foreignKey: "relationId", as: "commissionEntity"});
+    }
 
     public static initModel() {
         CommissionVoucherModel.init({
@@ -52,18 +58,10 @@ class CommissionVoucherModel extends Model<ICommissionVoucher, CommissionVoucher
                 type: INTEGER,
                 allowNull: false,
             },
-            // orderId: {
-            //     type: INTEGER,
-            //     allowNull: true,
-            // },
-            // franchiseId:{
-            //     type: INTEGER,
-            //     allowNull: true,
-            // },
             entityId: {
                 type: INTEGER,
                 allowNull: false,
-                },
+            },
             entityType: {
                 type: STRING,
                 allowNull: false,
@@ -72,8 +70,8 @@ class CommissionVoucherModel extends Model<ICommissionVoucher, CommissionVoucher
                 type: STRING,
                 allowNull: false,
             },
-            value :{
-                type: DECIMAL(10,2),
+            value: {
+                type: DECIMAL(10, 2),
                 allowNull: false,
             },
             createdBy: {
@@ -115,14 +113,17 @@ class CommissionVoucherModel extends Model<ICommissionVoucher, CommissionVoucher
         return CommissionVoucherModel;
     }
 }
+
 interface ICommissionVoucher extends BaseMeta {
     relationId: number, // many-to-many join Table id, FK
-    // orderId: number,
-    // franchiseId: number,
     entityId: number,
     entityType: COMMISSION_VOUCHER_ENTITIES, // order | franchise
     status: COMMISSION_PAID_STATUS,
-    value : number,
+    value: number,
 }
 
-export { CommissionVoucherModel, CommissionVoucherCreationAttributes,ICommissionVoucher };
+export {
+    CommissionVoucherModel,
+    CommissionVoucherCreationAttributes,
+    ICommissionVoucher
+};

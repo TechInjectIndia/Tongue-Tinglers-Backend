@@ -20,7 +20,6 @@ class CommissionEntityMappingModel
     public franchiseId: number;
     public commissionId: number;
     public organizationId: number;
-    // public status: COMMISSION_PAID_STATUS;
     public createdBy: number;
     public updatedBy: number | null;
     public deletedBy: number | null;

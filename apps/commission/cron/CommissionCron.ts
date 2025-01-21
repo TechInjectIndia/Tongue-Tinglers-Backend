@@ -13,7 +13,11 @@ import {
     OrganizationPaymentDetails
 } from "../interface/Commission";
 import {CommissionTable} from "../model/CommmisionTable";
-import {BankDetails} from "../../organization/interface/organization";
+import {BankDetails} from "apps/organization/interface/organization";
+import * as process from "node:process";
+import CommissionPayoutModel, {
+    PayoutCreationAttributes
+} from "../model/CommissionPayoutModel";
 
 let commissionCronJob = null;
 const key_id = process.env.ENVIRONMENT === "PROD"
@@ -29,12 +33,6 @@ class CommissionCron {
 
     async getCommissionStatusData(): Promise<OrganizationPaymentDetails[]> {
 
-        // const frequency = 10;
-        // const today = new Date();
-        // today.setHours(0, 0, 0, 0);
-
-        // const daysBack = new Date(today);
-        // daysBack.setDate(today.getDate() - frequency);
         try {
             this.data = await CommissionVoucherModel.findAll({
                 where: {
@@ -73,6 +71,7 @@ class CommissionCron {
             const finalDetails: OrganizationPaymentDetails[] = organizationDetails.map(
                 (item) => {
                     return {
+                        voucherId: organizationAmount[item.id].voucherId,
                         organizationId: item.id,
                         name: item.contactPersonName,
                         amount: organizationAmount[item.id].amount,
@@ -97,7 +96,11 @@ class CommissionCron {
     async getFormatedData() {
 
         const organizationAmount: {
-            [key: string]: { organizationId: number; amount: number, }
+            [key: string]: {
+                organizationId: number;
+                amount: number,
+                voucherId: number
+            }
         } = {};
 
         await Promise.all(this.data.map(async (item) => {
@@ -108,11 +111,11 @@ class CommissionCron {
             if (!organizationAmount[organizationId]) {
                 organizationAmount[organizationId] = {
                     organizationId,
-                    amount: value
+                    amount: value,
+                    voucherId: item.id
                 };
             } else {
                 organizationAmount[organizationId].amount += value;
-
             }
         }))
 
@@ -141,18 +144,14 @@ class CommissionCron {
                         console.log("No Customer Payment Details to process.");
                         return;
                     }
-                    for (const data1 of customerPaymentDetails) {
-                        await this.processPayment(data1);
+                    for (const payout of customerPaymentDetails) {
+                        await this.processPayment(payout);
                     }
 
                 },
                 {
                     timezone: "Asia/Kolkata",
                 },
-            );
-
-            console.log(
-                `New cron job for payment created with schedule: ${cronTime}`,
             );
         }
         catch (error) {
@@ -229,27 +228,49 @@ class CommissionCron {
 
     // Function to initiate payment transfer
     // todo fix hardcoding
-    async transferToCustomer(fundAccountId: string, amount: number) {
+    async transferToCustomer(voucherId: number, fundAccountId: string,
+        amount: number) {
+        const payoutCreationAttr: PayoutCreationAttributes = {
+            amount: 0,
+            createdAt: undefined,
+            currency: "",
+            fundAccountId: "",
+            status: "",
+            updatedAt: undefined,
+            voucherId: 0
+        }
+        const payoutModel = await CommissionPayoutModel.create(
+            {
+                voucherId,
+                fundAccountId,
+                amount,
+                currency: "INR",
+                status: "pending",
+            }
+        );
+
         const response = await axios.post(
             "https://api.razorpay.com/v1/payouts",
             {
-                account_number: "2323230085940196", // Razorpay virtual account
-                                                    // number
+                account_number: process.env.PROD === 'prod' ?
+                    process.env.PAYOUT_ACCOUNT_NO :
+                    process.env._DEV_PAYOUT_ACCOUNT_NO,
                 fund_account_id: fundAccountId,
                 amount: amount * 100, // Amount in paise (₹100 = 10000)
                 currency: "INR",
                 mode: "NEFT", // Other modes: NEFT, UPI, RTGS
                 purpose: "payout",
-                queue_if_low_balance: true, // If insufficient balance, queue it
-                reference_id: "txn_123456",
-                narration: "Customer payment",
+                queue_if_low_balance: false, // If insufficient balance, queue
+                                             // it
+                reference_id: payoutModel.voucherId,
+                narration: "Partner Commission",
             },
             {
                 auth: {username: key_id, password: key_secret},
             }
         );
-
         console.log("Payout successful:", response.data.id);
+
         return response.data.id; // Return payout ID
     }
 
@@ -271,7 +292,8 @@ class CommissionCron {
             });
 
             // Step 3: Transfer payment
-            const payoutId = await this.transferToCustomer(fundAccountId,
+            const payoutId = await this.transferToCustomer(
+                customerPaymentDetails.voucherId, fundAccountId,
                 customerPaymentDetails.amount);
 
             console.log(" Payment processed successfully! Payout ID:",
@@ -327,11 +349,9 @@ class CommissionCron {
                 }
             })
         );
-
         console.log(
             `Payment status updated for organizationId: ${organizationId}`);
     }
 }
-
 
 export default new CommissionCron();

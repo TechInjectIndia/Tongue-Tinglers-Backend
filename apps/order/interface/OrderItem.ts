@@ -81,7 +81,9 @@ interface ParsedOrderItem extends PreSaleParsedOrderItem {
 
 enum ORDER_ITEM_TYPE {
     RETORT = 'retort',
-    PACKAGING = 'packaging'
+    PACKAGING = 'packaging',
+    SAMPLE_KIT = "sample-kit",
+
 }
 
 interface OrderItem extends BaseOrderItem, ParsedMeta {

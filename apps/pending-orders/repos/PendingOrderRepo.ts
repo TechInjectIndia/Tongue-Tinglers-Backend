@@ -96,7 +96,7 @@ export class PendingOrderRepo implements IPendingOrderRepo {
                 student_discount: Number(d.totalDiscount),
                 total_price: Number(d.total_price),
                 total_tax: Number(d.totalTax),
-                type: order.orderType===ORDER_TYPE.RM_ORDER?ORDER_ITEM_TYPE.PACKAGING:ORDER_ITEM_TYPE.RETORT
+                type: d.type
             }
             return dd;
             }),

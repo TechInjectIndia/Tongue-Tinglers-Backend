@@ -5,18 +5,13 @@ import {
     PAYMENT_TYPE,
     RPOrder,
 } from "apps/order/interface/Order";
-import {Address} from "apps/address/interface/Address";
-import {IOrderProvider} from "./IOrderProvider";
-import {AddressRepo} from "apps/address/repositories/AddressRepo";
-import {AdminRepo} from "apps/user/models/user";
-import {TUserWithPermission} from "types/admin/admin-user";
-import {getCartItemPayableIncTax, getCartItemTax} from "../utils/order-utils";
-import {
-    MetaUser,
-    ParsedUser,
-    USER_STATUS,
-    USER_TYPE
-} from "apps/user/interface/user";
+import { Address } from "apps/address/interface/Address";
+import { IOrderProvider } from "./IOrderProvider";
+import { AddressRepo } from "apps/address/repositories/AddressRepo";
+import { AdminRepo } from "apps/user/models/user";
+import { TUserWithPermission } from "types/admin/admin-user";
+import { getCartItemPayableIncTax, getCartItemTax } from "../utils/order-utils";
+import { MetaUser, ParsedUser, USER_STATUS, USER_TYPE } from "apps/user/interface/user";
 import {
     DISCOUNT_COMP_TYPE,
     IDiscComponent,
@@ -27,28 +22,26 @@ import {
     PriceComponent,
     VALUE_TYPE,
 } from "apps/order/interface/OrderItem";
-import {ProductRepo} from "apps/product/repos/productRepo";
+import { ProductRepo } from "apps/product/repos/productRepo";
 import {
     HandleCouponValidateResult,
     WrapperValidateResult,
 } from "apps/common/models/CheckOutPageState";
-import {COUPON_STATUS, DISCOUNT_TYPE} from "apps/coupons/models/Coupon";
+import { COUPON_STATUS, DISCOUNT_TYPE } from "apps/coupons/models/Coupon";
 
-import {CartDetailRepo} from "apps/cart-details/repos/cartDetailRepo";
-import {ParsedCartProductDetails} from "apps/cart-details/interface/CartDetail";
-import {CURRENCY_TYPE, RPOrderParams} from "apps/razorpay/models/RPModels";
-import {Orders} from "node_modules/razorpay/dist/types/orders";
-import {
-    RazorpayProvider
-} from "apps/razorpay/repositories/razorpay/RazorpayProvider";
-import {ParsedProduct, TaxRate} from "../../product/interface/Product";
+import { CartDetailRepo } from "apps/cart-details/repos/cartDetailRepo";
+import { ParsedCartProductDetails } from "apps/cart-details/interface/CartDetail";
+import { CURRENCY_TYPE, RPOrderParams } from "apps/razorpay/models/RPModels";
+import { Orders } from "node_modules/razorpay/dist/types/orders";
+import { RazorpayProvider } from "apps/razorpay/repositories/razorpay/RazorpayProvider";
+import { ParsedProduct, TaxRate } from "../../product/interface/Product";
 import {
     DTO,
     getHandledErrorDTO,
     getSuccessDTO,
     getUnhandledErrorDTO,
 } from "apps/common/models/DTO";
-import {runAtomicFetch} from "../../common/utils/atomic-fetch/atomic-fetch";
+import { runAtomicFetch } from "../../common/utils/atomic-fetch/atomic-fetch";
 import RepoProvider from "../../RepoProvider";
 import { RPOrderTable } from "../../rp-order/models/RPOrderTable";
 import user from "../../test-user/api/user";
@@ -97,7 +90,6 @@ export class OrderProvider implements IOrderProvider {
     }
 
     async processPostOrder(paymentOrderId: string, paymentId: string): Promise<DTO<null>> {
-
         const validationRes = await this.verifyFromRazorpay(paymentId);
         if (!validationRes) return getHandledErrorDTO(`revalidation failed for: ${paymentOrderId}`);
 
@@ -328,7 +320,7 @@ export class OrderProvider implements IOrderProvider {
             updatedAt: currUser.updatedAt,
             deletedAt: currUser.deletedAt,
             profilePhoto: currUser.profilePhoto,
-            createdBy: currUser.createdBy as unknown as  MetaUser,
+            createdBy: currUser.createdBy as unknown as MetaUser,
         };
 
         const orderItems = await this.getOrderProcessCart(cart);
@@ -351,7 +343,7 @@ export class OrderProvider implements IOrderProvider {
                 location: undefined,
                 sm: [],
                 assignedUser: undefined,
-                createdBy: 0  as unknown as  MetaUser,
+                createdBy: 0 as unknown as MetaUser,
                 updatedBy: 0,
                 deletedBy: 0,
                 createdAt: undefined,
@@ -386,7 +378,7 @@ export class OrderProvider implements IOrderProvider {
             couponCodes: [],
             discount: {},
             price: {},
-            createdBy: 0  as unknown as  MetaUser
+            createdBy: 0 as unknown as MetaUser,
         };
 
         // SET ORDER ITEMS
@@ -611,7 +603,6 @@ export class OrderProvider implements IOrderProvider {
         price: number,
         taxRate: TaxRate
     ): { prices: Record<string, PriceComponent>; applicableTaxPercent: number } {
-        
         let taxPercent = 0;
         let priceObj: Record<string, PriceComponent> = {
             [PRICE_COMP_TYPE.BASE_PRICE]: {
@@ -644,7 +635,6 @@ export class OrderProvider implements IOrderProvider {
     ): Promise<ParsedOrderItem> {
         const product = await new ProductRepo().getById(cartItem.product.id);
         let taxRateRes = await new TaxRateRepo().getById(product.tax_rate_id);
-
 
         let taxRate: TaxRate = {
             id: 0,
@@ -682,7 +672,7 @@ export class OrderProvider implements IOrderProvider {
             totalTax: 0,
             prices: priceCom.prices,
             disc: {},
-            type: ORDER_ITEM_TYPE.RETORT,
+            type: product.type as unknown as ORDER_ITEM_TYPE,
             totalDiscount: 0,
         };
 

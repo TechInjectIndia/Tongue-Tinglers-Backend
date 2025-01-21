@@ -21,10 +21,7 @@ import {
 import { Pagination } from "../../common/models/common";
 
 export class ProductRepo implements IProductRepo {
-    async create(
-        product: BaseProduct,
-        createdBy: number,
-    ): Promise<IProductTable | null> {
+    async create(product: BaseProduct, createdBy: number): Promise<IProductTable | null> {
         // const transaction = await ProductModel.sequelize.transaction();
 
         try {
@@ -44,7 +41,7 @@ export class ProductRepo implements IProductRepo {
                     vendorId: product.vendorId, // Initialize with an empty array
                     tax_rate_id: product.tax_rate_id,
                     createdBy,
-                },
+                }
                 // { transaction },
             );
 
@@ -60,13 +57,10 @@ export class ProductRepo implements IProductRepo {
                 }));
 
                 // Bulk create the product options
-                const createdOptions = await ProductVariationsModel.bulkCreate(
-                    productOptions,
-                    {
-                        // transaction,
-                        returning: true, // Ensure the created options are returned
-                    },
-                );
+                const createdOptions = await ProductVariationsModel.bulkCreate(productOptions, {
+                    // transaction,
+                    returning: true, // Ensure the created options are returned
+                });
 
                 variationIds = createdOptions.map((option) => option.id);
 
@@ -95,14 +89,10 @@ export class ProductRepo implements IProductRepo {
         try {
             // Find the product by its primary key (ID)
             const existingProduct = await ProductModel.findByPk(product.id, {
-                include: [
-                    { model: ProductVariationsModel, as: "productOptions" },
-                ],
+                include: [{ model: ProductVariationsModel, as: "productOptions" }],
             });
             if (!existingProduct) {
-                throw new Error(
-                    `IProductTable with ID ${product.id} not found`,
-                );
+                throw new Error(`IProductTable with ID ${product.id} not found`);
             }
             await existingProduct.update(product);
             return existingProduct.toJSON();
@@ -116,7 +106,7 @@ export class ProductRepo implements IProductRepo {
         page: number,
         limit: number,
         search: string,
-        filters: object,
+        filters: object
     ): Promise<Pagination<ParsedProduct>> {
         try {
             const offset = (page - 1) * limit;
@@ -136,109 +126,20 @@ export class ProductRepo implements IProductRepo {
                 Object.assign(query, filters);
             }
 
-            const { rows: products, count: total } =
-                await ProductModel.findAndCountAll({
-                    where: query,
-                    offset,
-                    limit,
-                    order: [["createdAt", "DESC"]],
-                    include: [
-                        {
-                            model: ProductVariationsModel, // Include the ProductOptions model
-                            as: "variations", // Alias used in the ProductModel association
-                            attributes: [
-                                "id",
-                                "optionValueId",
-                                "price",
-                                "stock",
-                                "status",
-                                "images",
-                            ], // Only fetch these fields
-                            include: [
-                                {
-                                    model: OptionsValueModel,
-                                    as: "optionsValue", // Include these fields from the User model
-                                    attributes: ["id", "name", "option_id"],
-                                    include: [
-                                        {
-                                            model: OptionsModel,
-                                            as: "options",
-                                            attributes: ["id", "name"],
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
-                        {
-                            model: UserModel,
-                            as: "createdByUser", // Include createdByUser
-                            attributes: [
-                                "id",
-                                "firstName",
-                                "lastName",
-                                "email",
-                            ], // Include these fields from the User model
-                        },
-                        {
-                            model: UserModel,
-                            as: "updatedByUser", // Include createdByUser
-                            attributes: [
-                                "id",
-                                "firstName",
-                                "lastName",
-                                "email",
-                            ], // Include these fields from the User model
-                        },
-                        {
-                            model: UserModel,
-                            as: "deletedByUser", // Include createdByUser
-                            attributes: [
-                                "id",
-                                "firstName",
-                                "lastName",
-                                "email",
-                            ], // Include these fields from the User model
-                        },
-                        {
-                            model: ProductsCategoryModel,
-                            as: "productCategory", // Include createdByUser
-                            attributes: ["id", "name", "description"], // Include these fields from the User model
-                        },
-                    ],
-                }).then((res) => {
-                    return {
-                        rows: res.rows.map((product) =>
-                            parseProduct(product.toJSON()),
-                        ),
-                        count: res.count,
-                    };
-                });
+            // exclude sample ki
+            query["type"] = { [Op.ne]: PRODUCTS_TYPE.SAMPLE_KIT };
 
-            const totalPages = Math.ceil(products.length / limit);
+            const { rows: products, count: total } = await ProductModel.findAndCountAll({
+                where: query,
+                offset,
+                limit,
+                order: [["createdAt", "DESC"]],
 
-            return { data: products, total: products.length, totalPages };
-        } catch (error) {
-            console.log(error);
-            return null;
-        }
-    }
-
-    async getById(id: number): Promise<ParsedProduct | null> {
-        try {
-            // Fetch product by primary key (ID)
-            const product = await ProductModel.findByPk(id, {
                 include: [
                     {
                         model: ProductVariationsModel, // Include the ProductOptions model
                         as: "variations", // Alias used in the ProductModel association
-                        attributes: [
-                            "id",
-                            "optionValueId",
-                            "price",
-                            "stock",
-                            "status",
-                            "images",
-                        ], // Only fetch these fields
+                        attributes: ["id", "optionValueId", "price", "stock", "status", "images"], // Only fetch these fields
                         include: [
                             {
                                 model: OptionsValueModel,
@@ -272,14 +173,68 @@ export class ProductRepo implements IProductRepo {
                     {
                         model: ProductsCategoryModel,
                         as: "productCategory", // Include createdByUser
-                        attributes: [
-                            "id",
-                            "name",
-                            "description",
-                            "slug",
-                            "type",
-                            "status",
-                        ], // Include these fields from the User model"
+                        attributes: ["id", "name", "description"], // Include these fields from the User model
+                    },
+                ],
+            }).then((res) => {
+                return {
+                    rows: res.rows.map((product) => parseProduct(product.toJSON())),
+                    count: res.count,
+                };
+            });
+
+            const totalPages = Math.ceil(products.length / limit);
+
+            return { data: products, total: products.length, totalPages };
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
+    async getById(id: number): Promise<ParsedProduct | null> {
+        try {
+            // Fetch product by primary key (ID)
+            const product = await ProductModel.findByPk(id, {
+                include: [
+                    {
+                        model: ProductVariationsModel, // Include the ProductOptions model
+                        as: "variations", // Alias used in the ProductModel association
+                        attributes: ["id", "optionValueId", "price", "stock", "status", "images"], // Only fetch these fields
+                        include: [
+                            {
+                                model: OptionsValueModel,
+                                as: "optionsValue", // Include these fields from the User model
+                                attributes: ["id", "name", "option_id"],
+                                include: [
+                                    {
+                                        model: OptionsModel,
+                                        as: "options",
+                                        attributes: ["id", "name"],
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        model: UserModel,
+                        as: "createdByUser", // Include createdByUser
+                        attributes: ["id", "firstName", "lastName", "email"], // Include these fields from the User model
+                    },
+                    {
+                        model: UserModel,
+                        as: "updatedByUser", // Include createdByUser
+                        attributes: ["id", "firstName", "lastName", "email"], // Include these fields from the User model
+                    },
+                    {
+                        model: UserModel,
+                        as: "deletedByUser", // Include createdByUser
+                        attributes: ["id", "firstName", "lastName", "email"], // Include these fields from the User model
+                    },
+                    {
+                        model: ProductsCategoryModel,
+                        as: "productCategory", // Include createdByUser
+                        attributes: ["id", "name", "description", "slug", "type", "status"], // Include these fields from the User model"
                     },
                 ],
             }).then((productData) => {
@@ -320,9 +275,7 @@ export class ProductRepo implements IProductRepo {
             const validStatuses = ["active", "inactive"];
             if (!validStatuses.includes(status)) {
                 throw new Error(
-                    `Invalid status value. Status must be one of: ${validStatuses.join(
-                        ", ",
-                    )}`,
+                    `Invalid status value. Status must be one of: ${validStatuses.join(", ")}`
                 );
             }
             const product = await ProductModel.findByPk(id);
@@ -343,95 +296,63 @@ export class ProductRepo implements IProductRepo {
 
     async getAllProductBySamplekit(
         page: number,
-        limit: number,
+        limit: number
     ): Promise<Pagination<ParsedProduct>> {
         try {
             const offset = (page - 1) * limit;
-            const { rows: products, count: total } =
-                await ProductModel.findAndCountAll({
-                    offset,
-                    limit,
-                    where: {
-                        type: PRODUCTS_TYPE.SAMPLE_KIT,
+            const { rows: products, count: total } = await ProductModel.findAndCountAll({
+                offset,
+                limit,
+                where: {
+                    type: PRODUCTS_TYPE.SAMPLE_KIT,
+                },
+                include: [
+                    {
+                        model: ProductVariationsModel, // Include the ProductOptions model
+                        as: "variations", // Alias used in the ProductModel association
+                        attributes: ["id", "optionValueId", "price", "stock", "status", "images"], // Only fetch these fields
+                        include: [
+                            {
+                                model: OptionsValueModel,
+                                as: "optionsValue", // Include these fields from the User model
+                                attributes: ["id", "name", "option_id"],
+                                include: [
+                                    {
+                                        model: OptionsModel,
+                                        as: "options",
+                                        attributes: ["id", "name"],
+                                    },
+                                ],
+                            },
+                        ],
                     },
-                    include: [
-                        {
-                            model: ProductVariationsModel, // Include the ProductOptions model
-                            as: "variations", // Alias used in the ProductModel association
-                            attributes: [
-                                "id",
-                                "optionValueId",
-                                "price",
-                                "stock",
-                                "status",
-                                "images",
-                            ], // Only fetch these fields
-                            include: [
-                                {
-                                    model: OptionsValueModel,
-                                    as: "optionsValue", // Include these fields from the User model
-                                    attributes: ["id", "name", "option_id"],
-                                    include: [
-                                        {
-                                            model: OptionsModel,
-                                            as: "options",
-                                            attributes: ["id", "name"],
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
-                        {
-                            model: UserModel,
-                            as: "createdByUser", // Include createdByUser
-                            attributes: [
-                                "id",
-                                "firstName",
-                                "lastName",
-                                "email",
-                            ], // Include these fields from the User model
-                        },
-                        {
-                            model: UserModel,
-                            as: "updatedByUser", // Include createdByUser
-                            attributes: [
-                                "id",
-                                "firstName",
-                                "lastName",
-                                "email",
-                            ], // Include these fields from the User model
-                        },
-                        {
-                            model: UserModel,
-                            as: "deletedByUser", // Include createdByUser
-                            attributes: [
-                                "id",
-                                "firstName",
-                                "lastName",
-                                "email",
-                            ], // Include these fields from the User model
-                        },
-                        {
-                            model: ProductsCategoryModel,
-                            as: "productCategory", // Include createdByUser
-                            attributes: [
-                                "id",
-                                "name",
-                                "description",
-                                "slug",
-                                "type",
-                                "status",
-                            ], // Include these fields from the User model"
-                        },
-                    ],
-                }).then((res) => {
-                    return {
-                        rows: res.rows.map((product) =>
-                            parseProduct(product.toJSON()),
-                        ),
-                        count: res.count,
-                    };
-                });
+                    {
+                        model: UserModel,
+                        as: "createdByUser", // Include createdByUser
+                        attributes: ["id", "firstName", "lastName", "email"], // Include these fields from the User model
+                    },
+                    {
+                        model: UserModel,
+                        as: "updatedByUser", // Include createdByUser
+                        attributes: ["id", "firstName", "lastName", "email"], // Include these fields from the User model
+                    },
+                    {
+                        model: UserModel,
+                        as: "deletedByUser", // Include createdByUser
+                        attributes: ["id", "firstName", "lastName", "email"], // Include these fields from the User model
+                    },
+                    {
+                        model: ProductsCategoryModel,
+                        as: "productCategory", // Include createdByUser
+                        attributes: ["id", "name", "description", "slug", "type", "status"], // Include these fields from the User model"
+                    },
+                ],
+            }).then((res) => {
+                return {
+                    rows: res.rows.map((product) => parseProduct(product.toJSON())),
+                    count: res.count,
+                };
+            });
             const totalPages = Math.ceil(products.length / limit);
             return { data: products, total: products.length, totalPages };
         } catch (error) {

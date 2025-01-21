@@ -6,7 +6,7 @@ import {get} from "lodash";
 
 
 import RepoProvider from "../../RepoProvider";
-import { COMMISSION_PAID_STATUS, OrganizationCommissions } from "../model/CommissionEntityMapTable";
+import { COMMISSION_PAID_STATUS, OrganizationCommissions } from "../model/CommissionEntityMappingTable";
 import { CommissionTable } from "../model/CommmisionTable";
 
 export class PostgresCommissionController implements ICommissionController {
@@ -242,7 +242,7 @@ export class PostgresCommissionController implements ICommissionController {
 
         const status = get(req.body, "status");
 
-        const result = await RepoProvider.commissionRepo.updateCommisionEntityStatus(id, status);
+        const result = await RepoProvider.commissionRepo.updateCommissionEntityStatus(id, status);
 
         if (!result.success) {
             res.status(500).send(result);

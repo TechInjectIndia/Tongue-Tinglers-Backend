@@ -11,7 +11,7 @@ export class RolesRepo {
         const data = await UserModel.findAll({
             where: {
                 role: ids,
-                type: USER_TYPE.SUPER_FRANSHISE,
+                type: USER_TYPE.SUPER_FRANCHISE,
             },
         });
         return data;

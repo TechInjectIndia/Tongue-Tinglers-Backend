@@ -30,7 +30,7 @@ interface BaseNotes {
 interface Notes extends BaseNotes {
     id: number;
 }
-
+//todo stop @Nitesh using _ in names
 interface BaseOrder {
     status: string;
     item_count: number;

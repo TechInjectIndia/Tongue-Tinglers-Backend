@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { get } from "lodash";
 import { HelperMethods } from "../../common/utils/HelperMethods";
-import { COMMISSION_PAID_STATUS } from "../model/CommissionEntityMapTable";
+import { COMMISSION_PAID_STATUS } from "../model/CommissionEntityMappingTable";
 
 
 const createCommissionSchema = Joi.object({
@@ -112,7 +112,7 @@ const validateDeleteCommission = (req: Request, res: Response, next: NextFunctio
 const validateGetCommissionById = (req: Request, res: Response, next: NextFunction) => {
 
     const id = parseInt(get(req.params, "id"));
-    
+
     if (!id || id <= 0) {
         return res.status(400).send(HelperMethods.getErrorResponse('Invalid request'));
     }

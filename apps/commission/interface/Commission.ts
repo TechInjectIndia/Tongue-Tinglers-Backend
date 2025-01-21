@@ -1,13 +1,12 @@
 import { BaseMeta } from "apps/common/models/Base";
 
-
+// Interface behind Commission Model
 interface ICommission extends BaseMeta {
     title: string,
     type: CommissionType,
     value: number,
     eventType: CommissionEventType,
 }
-
 
 enum CommissionType {
     ABSOLUTE = 'absolute',

@@ -9,7 +9,7 @@ const commissionRouter = express.Router();
 
 /**
  * @swagger
- * 
+ *
  * /api/commission/create:
  *   post:
  *     summary: Create a commission
@@ -40,8 +40,8 @@ const commissionRouter = express.Router();
  *         description: Invalid request body
  *       '401':
  *         description: Unauthorized
- * 
- * 
+ *
+ *
  */
 commissionRouter.post("/create", auth, validateCreateCommission, ControllerProvider.commissionController.create);
 
@@ -51,9 +51,7 @@ commissionRouter.delete("/delete", auth, validateDeleteCommission, ControllerPro
 
 commissionRouter.get("/", auth, ControllerProvider.commissionController.getAll);
 
-
 commissionRouter.get("/search", auth, validateSearchCommission, ControllerProvider.commissionController.searchCommission);
-
 
 commissionRouter.post("/create-commission-mapping", auth, validateCreateCommissionMapEntry, ControllerProvider.commissionController.createMapEntry);
 
@@ -61,6 +59,6 @@ commissionRouter.get("/commission-mappings", auth, ControllerProvider.commission
 
 commissionRouter.get("/:id", auth, validateGetCommissionById, ControllerProvider.commissionController.getById);
 
-commissionRouter.put("/update-commission-entity-status/:id", auth, validateGetCommissionById,validateUpdateCommissionEntityStatus, ControllerProvider.commissionController.updateCommisionEntityStatus)
+commissionRouter.put("/update-commission-entity-status/:id", auth, validateGetCommissionById, validateUpdateCommissionEntityStatus, ControllerProvider.commissionController.updateCommisionEntityStatus)
 
 export { commissionRouter };

@@ -38,51 +38,45 @@ import { extraFieldTypes, LeadAddress, LeadPayload, LeadSource, LeadStatus } fro
 function getSampleQuestions(): TPayloadQuestion[] {
 
     const sampleOptions: IOptions[] = [
-        {label: "Option 1", value: "option1"},
-        {label: "Option 2", value: "option2"},
-        {label: "Option 3", value: "option3"},
+        {label: "Urban", value: "urban"},
+        {label: "Semi-Urban", value: "semi-urban"},
+        {label: "Rural", value: "rural"},
     ];
 
-    const boolOptions: IOptions[] = [{
-        label: "Yes",
-        value: "Yes"
-    },
-        {
-            label: "No",
-            value: "No"
-        }
-
+    const boolOptions: IOptions[] = [
+        {label: "Yes", value: "Yes"},
+        {label: "No", value: "No"}
     ];
 
     return [
         {
-            question: "Do you like programming?",
+            question: "Are you currently running a food business?",
             type: QuestionType.BOOLEAN,
             required: true,
             createdBy: 1,
+            options: boolOptions,
         },
         {
-            question: "What is your favorite programming language?",
+            question: "What inspired you to consider the Tongue Tinglers franchise?",
             type: QuestionType.STRING,
             required: true,
             createdBy: 1,
         },
         {
-            question: "Select the technologies you are familiar with:",
-            type: QuestionType.MULTI_CHOICE,
-            required: false,
+            question: "Select the type of location you are planning for the franchise:",
+            type: QuestionType.SINGLE_CHOICE,
+            required: true,
             options: sampleOptions,
             createdBy: 1,
         },
         {
-            question: "Choose your preferred database:",
-            type: QuestionType.SINGLE_CHOICE,
+            question: "What is your preferred method of attracting customers?",
+            type: QuestionType.STRING,
             required: true,
-            options: sampleOptions,
             createdBy: 2,
         },
         {
-            question: "How many years of experience do you have in software development?",
+            question: "How many years of experience do you have in managing a business?",
             type: QuestionType.NUMBER,
             required: true,
             createdBy: 2,
@@ -90,38 +84,72 @@ function getSampleQuestions(): TPayloadQuestion[] {
     ];
 }
 
+
 function getSampleAreas(): TPayloadArea[] {
     return [
-        {title: "Area 1A", createdBy: 1},
-        {title: "Area 1B", createdBy: 1},
-        {title: "Area 1C", createdBy: 1},
-        {title: "Area 2A", createdBy: 1},
-        {title: "Area 2B", createdBy: 1},
-        {title: "Area 2C", createdBy: 1},
-        {title: "Area 3A", createdBy: 1},
-        {title: "Area 3B", createdBy: 1},
+        // North Zone
+        {title: "Delhi, Delhi", createdBy: 1},
+        {title: "Chandigarh, Punjab", createdBy: 1},
+        {title: "Jaipur, Rajasthan", createdBy: 1},
+        {title: "Lucknow, Uttar Pradesh", createdBy: 1},
+        {title: "Dehradun, Uttarakhand", createdBy: 1},
+
+        // South Zone
+        {title: "Bengaluru, Karnataka", createdBy: 1},
+        {title: "Hyderabad, Telangana", createdBy: 1},
+        {title: "Chennai, Tamil Nadu", createdBy: 1},
+        {title: "Kochi, Kerala", createdBy: 1},
+        {title: "Vijayawada, Andhra Pradesh", createdBy: 1},
+
+        // East Zone
+        {title: "Kolkata, West Bengal", createdBy: 1},
+        {title: "Bhubaneswar, Odisha", createdBy: 1},
+        {title: "Patna, Bihar", createdBy: 1},
+        {title: "Ranchi, Jharkhand", createdBy: 1},
+        {title: "Gangtok, Sikkim", createdBy: 1},
+
+        // West Zone
+        {title: "Mumbai, Maharashtra", createdBy: 1},
+        {title: "Ahmedabad, Gujarat", createdBy: 1},
+        {title: "Pune, Maharashtra", createdBy: 1},
+        {title: "Jaipur, Rajasthan", createdBy: 1},
+        {title: "Surat, Gujarat", createdBy: 1},
+
+        // Central Zone
+        {title: "Bhopal, Madhya Pradesh", createdBy: 1},
+        {title: "Indore, Madhya Pradesh", createdBy: 1},
+        {title: "Nagpur, Maharashtra", createdBy: 1},
+        {title: "Raipur, Chhattisgarh", createdBy: 1},
+        {title: "Jabalpur, Madhya Pradesh", createdBy: 1},
     ];
 }
 
 
 function getSampleRegions(): TPayloadRegion[] {
-
     return [
         {
             title: "North Region",
-            area: [1, 2, 3],
+            area: [1, 2, 3, 4, 5], // Delhi, Chandigarh, Jaipur, Lucknow, Dehradun
         },
         {
             title: "South Region",
-            area: [4, 5, 6],
+            area: [6, 7, 8, 9, 10], // Bengaluru, Hyderabad, Chennai, Kochi, Vijayawada
         },
         {
-
             title: "East Region",
-            area: [7, 8]
+            area: [11, 12, 13, 14, 15], // Kolkata, Bhubaneswar, Patna, Ranchi, Gangtok
+        },
+        {
+            title: "West Region",
+            area: [16, 17, 18, 19, 20], // Mumbai, Ahmedabad, Pune, Jaipur, Surat
+        },
+        {
+            title: "Central Region",
+            area: [21, 22, 23, 24, 25], // Bhopal, Indore, Nagpur, Raipur, Jabalpur
         },
     ];
 }
+
 
 function getSampleFranchiseModels(): TPayloadFranchiseModel[] {
     return [
@@ -318,7 +346,7 @@ function createDummyProducts(): {
 
 function createDummyLeads() {
     const leadAddress: LeadAddress = {
-        address: "123 Main Street",
+        address: "123 MG Road",
         city: "Mumbai",
         state: "Maharashtra",
         zipCode: "400001",
@@ -327,10 +355,10 @@ function createDummyLeads() {
     };
 
     const leadData: LeadPayload = {
-        additionalInfo: "Interested in our premium services.",
-        email: "john.doe@example.com",
-        firstName: "John",
-        lastName: "Doe",
+        additionalInfo: "Interested in opening a Tongue Tinglers franchise in Mumbai.",
+        email: "rahul.sharma@example.com",
+        firstName: "Rahul",
+        lastName: "Sharma",
         phoneNumber: "+919876543210",
         status: LeadStatus.NEW,
         address: leadAddress,
@@ -340,51 +368,52 @@ function createDummyLeads() {
         referBy: null,
         notes: [],
         proposalModalId: null,
-        amount: 50000,
+        amount: 500000, // Franchise investment amount
         franchiseModals: [],
         affiliate: [],
         marketing: [],
         other: [
             {
-                key: "What is your favorite programming language?", value: "Java",
+                key: "Are you currently running a food business?", value: "Yes",
                 id: 0,
                 title: "",
                 type: extraFieldTypes.STRING,
                 franchiseModelId: 0
             },
             {
-                key: "Choose your preferred database", value: "option2",
+                key: "What inspired you to consider the Tongue Tinglers franchise?", value: "Passion for food business and brand recognition.",
                 id: 0,
                 title: "",
                 type: extraFieldTypes.STRING,
                 franchiseModelId: 0
             },
             {
-                key: "Select the technologies you are familiar with:", value: "option2",
+                key: "Select the type of location you are planning for the franchise:", value: "Urban",
                 id: 0,
                 title: "",
                 type: extraFieldTypes.STRING,
                 franchiseModelId: 0
             },
             {
-                key: "How many years of experience do you have in software development?", value: "4",
+                key: "What is your preferred method of attracting customers?", value: "Social media marketing and local events.",
                 id: 0,
                 title: "",
                 type: extraFieldTypes.STRING,
                 franchiseModelId: 0
             },
             {
-                key: "Do you like programming?", value: "Yes",
+                key: "How many years of experience do you have in managing a business?", value: "5",
                 id: 0,
                 title: "",
-                type: extraFieldTypes.STRING,
+                type: extraFieldTypes.NUMBER,
                 franchiseModelId: 0
             },
         ],
         assignedUser: null
     };
-    return leadData
+    return leadData;
 }
+
 
 export {
     getSampleQuestions,

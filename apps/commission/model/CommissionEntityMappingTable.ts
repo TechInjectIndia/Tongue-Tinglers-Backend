@@ -1,19 +1,20 @@
-import { Model, Optional, DataTypes } from "sequelize";
-import { sequelize } from "../../../config";
-import { BaseMeta } from "apps/common/models/Base";
-import { OrganizationModel } from "apps/organization/models/OrganizationTable";
-import { CommissionEventType, CommissionType } from "../interface/Commission";
-import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
+import {DataTypes, Model, Optional} from "sequelize";
+import {sequelize} from "../../../config";
+import {BaseMeta} from "apps/common/models/Base";
+import {OrganizationModel} from "apps/organization/models/OrganizationTable";
+import {CommissionEventType, CommissionType} from "../interface/Commission";
+import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
 
 
-
-const { STRING, DATE, INTEGER, NOW, } = DataTypes;
+const {STRING, DATE, INTEGER, NOW} = DataTypes;
 
 
 // Define the creation attributes by making certain fields optional
-interface CommissionEntityMappingCreationAttributes extends Optional<ICommissionEntityMapping, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> { }
+type CommissionVoucherCreationAttributes = Optional<ICommissionEntityMapping, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'deletedBy' | 'updatedBy'>
 
-class CommissionEntityMapTable extends Model<ICommissionEntityMapping, CommissionEntityMappingCreationAttributes> implements ICommissionEntityMapping {
+class CommissionEntityMappingModel
+    extends Model<ICommissionEntityMapping, CommissionVoucherCreationAttributes>
+    implements ICommissionEntityMapping {
     public id: number;
     public franchiseId: number;
     public commissionId: number;
@@ -27,28 +28,29 @@ class CommissionEntityMapTable extends Model<ICommissionEntityMapping, Commissio
     public readonly deletedAt: Date | null;
 
     public static associate() {
-        CommissionEntityMapTable.belongsTo(FranchiseModel, {
+        CommissionEntityMappingModel.belongsTo(FranchiseModel, {
+            foreignKey: {
+                allowNull: false,
+                name: 'franchiseId',
+            }, as: 'commissionMap'
+        });
+
+        FranchiseModel.hasMany(CommissionEntityMappingModel, {
             foreignKey: {
                 allowNull: false,
                 name: 'franchiseId',
             },
+            as: 'commissionMap'
         });
 
-        FranchiseModel.hasMany(CommissionEntityMapTable, {
-            foreignKey: {
-                allowNull: false,
-                name: 'franchiseId',
-            },
-        });
-
-        OrganizationModel.hasMany(CommissionEntityMapTable, {
+        OrganizationModel.hasMany(CommissionEntityMappingModel, {
             foreignKey: {
                 allowNull: false,
                 name: 'organizationId',
             },
         });
 
-        CommissionEntityMapTable.belongsTo(OrganizationModel, {
+        CommissionEntityMappingModel.belongsTo(OrganizationModel, {
             foreignKey: {
                 allowNull: false,
                 name: 'organizationId',
@@ -58,7 +60,7 @@ class CommissionEntityMapTable extends Model<ICommissionEntityMapping, Commissio
 
 
     public static initModel() {
-        CommissionEntityMapTable.init({
+        CommissionEntityMappingModel.init({
             id: {
                 type: INTEGER,
                 primaryKey: true,
@@ -69,19 +71,15 @@ class CommissionEntityMapTable extends Model<ICommissionEntityMapping, Commissio
                 type: INTEGER,
                 allowNull: false,
             },
-            franchiseId: {
+            franchiseId:{
                 type: INTEGER,
                 allowNull: false,
             },
-
             organizationId: {
                 type: INTEGER,
                 allowNull: false,
             },
-            status: {
-                type: STRING,
-                allowNull: false,
-            },
+
             createdBy: {
                 type: INTEGER,
                 allowNull: false
@@ -118,42 +116,47 @@ class CommissionEntityMapTable extends Model<ICommissionEntityMapping, Commissio
             timestamps: true,
             paranoid: true,
         });
-        return CommissionEntityMapTable;
+        return CommissionEntityMappingModel;
     }
 
 }
 
 
-
-
-
 /* associations */
 
 
-
-
 enum COMMISSION_ENTITIES {
-    AFFILIATE = 'affiliate',
-    MASTER_FRANCHISE = 'master-franchise',
+    AFFILIATE = 'aff',
+    MASTER_FRANCHISE = 'mf',
+}
+
+
+enum COMMISSION_VOUCHER_ENTITIES {
+    ORDER_COMMISSION = 'oc',
+    FRANCHISE_COMMISSION = 'fc',
 }
 
 enum COMMISSION_PAID_STATUS {
     PENDING = 'pending',
     PAID = 'paid',
     HOLD = 'hold'
-    
 }
 
 type OrganizationCommissions = {
-    organizationId: number;
-    commissionId: number;
+    franchiseId: number; // franchise being sold or franchise purchasing raw Material
+    organizationId: number; // payable to organization
+    commissionId: number; // commissionModelId
 }
 
+// relation of receiving party & franchise involved in trade - either sold / ordered RM
+interface ICommissionEntityMapping extends BaseMeta, OrganizationCommissions {
 
-interface ICommissionEntityMapping extends BaseMeta {
-    commissionId: number,
-    franchiseId: number,
-    organizationId: number,
+}
+
+interface ICommissionVoucher extends BaseMeta {
+    relationId: number, // many-to-many join Table id, FK
+    entityId: number,
+    entityType: COMMISSION_VOUCHER_ENTITIES, // order | franchise
     status: COMMISSION_PAID_STATUS,
 }
 
@@ -191,4 +194,12 @@ interface ICommissionEntityMappingResponse {
     deletedAt: Date | null;
 }
 
-export { CommissionEntityMapTable, COMMISSION_ENTITIES, ICommissionEntityMapping, COMMISSION_PAID_STATUS, OrganizationCommissions, ICommissionEntityMappingResponse };
+export {
+    CommissionEntityMappingModel,
+    CommissionVoucherCreationAttributes,
+    COMMISSION_ENTITIES,
+    ICommissionEntityMapping,
+    COMMISSION_PAID_STATUS,
+    OrganizationCommissions,
+    ICommissionEntityMappingResponse
+};

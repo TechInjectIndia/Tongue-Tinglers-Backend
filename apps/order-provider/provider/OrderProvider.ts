@@ -351,12 +351,13 @@ export class OrderProvider implements IOrderProvider {
                 location: undefined,
                 sm: [],
                 assignedUser: undefined,
-                createdBy: 0  as unknown as  MetaUser,
+                createdBy: 0 as unknown as MetaUser,
                 updatedBy: 0,
                 deletedBy: 0,
                 createdAt: undefined,
                 updatedAt: undefined,
                 deletedAt: undefined,
+                commissionMap: []
             },
             orderType: undefined,
             id: 0,
@@ -611,7 +612,7 @@ export class OrderProvider implements IOrderProvider {
         price: number,
         taxRate: TaxRate
     ): { prices: Record<string, PriceComponent>; applicableTaxPercent: number } {
-        
+
         let taxPercent = 0;
         let priceObj: Record<string, PriceComponent> = {
             [PRICE_COMP_TYPE.BASE_PRICE]: {

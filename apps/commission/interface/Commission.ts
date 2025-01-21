@@ -24,7 +24,9 @@ enum CommissionEventType {
     AFFILIATE_RAW_MATERIAL_SOLD = 'affiliate-raw-material-sold',
 }
 
-type CommissionDetails = CommissionVoucherModel & {commissionEntity:CommissionEntityMappingModel} & CommissionTable ;
+type CommissionDetails = CommissionVoucherModel & {
+    commissionEntity: CommissionEntityMappingModel
+} & CommissionTable;
 
 interface Customer {
     name: string,

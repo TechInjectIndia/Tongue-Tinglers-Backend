@@ -132,7 +132,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
            const CommissionEntityMappingData =  await CommissionEntityMappingModel.bulkCreate(mapEntities,
                 {transaction});
 
-                
+
                 CommissionEntityMappingData.forEach(async(data)=>{
                     //Get percentage is stored somewhere
                     const percentage = 10;
@@ -151,7 +151,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                         createdBy:data.createdBy,
                     },{transaction});
                 })
-            
+
             return HelperMethods.getSuccessResponse<boolean>(true);
         }
         catch (error) {
@@ -291,6 +291,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         }
         catch (error) {
             handleError(error, id, status);
+
             return HelperMethods.getErrorResponse();
         }
     }

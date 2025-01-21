@@ -13,11 +13,10 @@ import {
     USER_TYPE
 } from "apps/user/interface/user";
 import {UserModel} from "../../user/models/UserTable";
-import user from "../../test-user/api/user";
 import {FRANCHISE_STATUS} from "../../franchise/interface/Franchise";
 
 const getEmptyParsedOrder = () => {
-    const metaObj: MetaUser = { email: "", firstName: "", id: 0, lastName: "" };
+    const metaObj: MetaUser = {email: "", firstName: "", id: 0, lastName: ""};
     const user: ParsedUser = {
         id: 0,
         firstName: "",
@@ -66,12 +65,13 @@ const getEmptyParsedOrder = () => {
             location: undefined,
             sm: [],
             assignedUser: undefined,
-            createdBy: { } as MetaUser,
+            createdBy: {} as MetaUser,
             updatedBy: 0,
             deletedBy: 0,
             createdAt: new Date(),
             updatedAt: new Date(),
             deletedAt: new Date(),
+            commissionMap: []
         },
         orderType: ORDER_TYPE.RM_ORDER,
         id: 0,
@@ -132,8 +132,10 @@ const getCartItemPayableIncTax = (
     discs: Record<string, IDiscComponent>
 ) => {
     return {
-        subtotal: Object.values(prices).reduce((acc, next) => acc + next.tax + next.value, 0),
-        disc: Object.values(discs).reduce((acc, next) => acc + next.tax + next.value, 0),
+        subtotal: Object.values(prices)
+            .reduce((acc, next) => acc + next.tax + next.value, 0),
+        disc: Object.values(discs)
+            .reduce((acc, next) => acc + next.tax + next.value, 0),
     };
 };
 
@@ -159,7 +161,7 @@ function parseIncludedUserModel(obj: any): UserModel {
     }
 }
 
-const getEmptyPreSaleOrder=()=>{
+const getEmptyPreSaleOrder = () => {
     const preSaleParsedOrder: PresaleParsedOrder = {
         anomalyArr: [],
         billingAddress: {
@@ -215,4 +217,10 @@ const getEmptyPreSaleOrder=()=>{
     return preSaleParsedOrder
 }
 
-export { getEmptyParsedOrder, getCartItemPayableIncTax, getCartItemTax, parseIncludedUserModel , getEmptyPreSaleOrder};
+export {
+    getEmptyParsedOrder,
+    getCartItemPayableIncTax,
+    getCartItemTax,
+    parseIncludedUserModel,
+    getEmptyPreSaleOrder
+};

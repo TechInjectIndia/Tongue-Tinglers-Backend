@@ -1,18 +1,22 @@
-import { DataTypes, Model, Optional } from "sequelize";
-import { BaseOrder, Order, ORDER_TYPE } from "../interface/Order";
-import { sequelize } from "../../../config";
-import { NotesModel } from "./NotesTable";
-import { OrderItemsModel } from "../../order-items/models/OrderItemsTable";
-import { Address } from "../../address/interface/Address";
+import {DataTypes, Model, Optional} from "sequelize";
+import {BaseOrder, Order, ORDER_TYPE} from "../interface/Order";
+import {sequelize} from "apps/../../config";
+import {NotesModel} from "./NotesTable";
+import {OrderItemsModel} from "apps/order-items/models/OrderItemsTable";
+import {Address} from "apps/address/interface/Address";
 import RepoProvider from "apps/RepoProvider";
-import { CommissionVoucherModel, ICommissionVoucher } from "apps/commission/model/CommissionVoucherTable";
-import { COMMISSION_VOUCHER_ENTITIES } from "apps/commission/model/CommissionEntityMappingTable";
-import { UserModel } from "apps/user/models/UserTable";
-import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
+import {ICommissionVoucher} from "apps/commission/model/CommissionVoucherTable";
+import {
+    COMMISSION_VOUCHER_ENTITIES
+} from "apps/commission/model/CommissionEntityMappingTable";
+import {UserModel} from "apps/user/models/UserTable";
 
-interface OrderCreationAttributes extends Optional<Order, "id"> {}
 
-class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOrder {
+interface OrderCreationAttributes extends Optional<Order, "id"> {
+}
+
+class OrderModel extends Model<Order, OrderCreationAttributes>
+    implements BaseOrder {
     status!: string;
     item_count!: number;
     total!: number;
@@ -53,9 +57,9 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     public removeOrderItemses!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
 
     // todo
-    public addAnomalyOrderItems:(anomalies:Array<any|number>)=>Promise<void>;
+    public addAnomalyOrderItems: (anomalies: Array<any | number>) => Promise<void>;
 
-    public static associate(){
+    public static associate() {
         OrderModel.belongsTo(UserModel, {
             foreignKey: 'customer_details',
             as: 'customer'
@@ -92,7 +96,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
         })
     }
 
-    public static initModel(){
+    public static initModel() {
         OrderModel.init(
             {
                 id: {
@@ -136,11 +140,11 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     type: DataTypes.INTEGER,
                     allowNull: true,
                 },
-                billingAddress:{
+                billingAddress: {
                     type: DataTypes.JSONB,
                     allowNull: true,
                 },
-                shippingAddress:{
+                shippingAddress: {
                     type: DataTypes.JSONB,
                     allowNull: true,
                 },
@@ -173,7 +177,8 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     allowNull: true,
                 },
                 order_type: {
-                    type: DataTypes.ENUM(ORDER_TYPE.RM_ORDER, ORDER_TYPE.SAMPLE_KIT),
+                    type: DataTypes.ENUM(ORDER_TYPE.RM_ORDER,
+                        ORDER_TYPE.SAMPLE_KIT),
                     allowNull: false,
                     defaultValue: ORDER_TYPE.RM_ORDER
                 },
@@ -223,40 +228,43 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     }
 
     public static hook() {
-            OrderModel.addHook("afterCreate", async (instance, options) => {
-                await RepoProvider.LogRepo.logModelAction(
-                    "create",
-                    "Order",
-                    instance,
-                    options
-                );
-            });
+        OrderModel.addHook("afterCreate", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "create",
+                "Order",
+                instance,
+                options
+            );
+        });
 
-            // After Update Hook - Log the updated fields of the Order
-            OrderModel.addHook("afterUpdate", async (instance, options) => {
-                // Now call logModelAction as before
-                await RepoProvider.LogRepo.logModelAction(
-                    "update",
-                    "Order",
-                    instance,
-                    options
-                );
-            });
+        // After Update Hook - Log the updated fields of the Order
+        OrderModel.addHook("afterUpdate", async (instance, options) => {
+            // Now call logModelAction as before
+            await RepoProvider.LogRepo.logModelAction(
+                "update",
+                "Order",
+                instance,
+                options
+            );
+        });
 
-            // After Destroy Hook - Log the deletion of the Order
-            OrderModel.addHook("afterDestroy", async (instance, options) => {
-                await RepoProvider.LogRepo.logModelAction(
-                    "delete",
-                    "Order",
-                    instance,
-                    options
-                );
-            });
+        // After Destroy Hook - Log the deletion of the Order
+        OrderModel.addHook("afterDestroy", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "delete",
+                "Order",
+                instance,
+                options
+            );
+        });
     }
 
     public async createAddVoucher(voucherData: Partial<ICommissionVoucher>) {
-        return await this.createAddVoucher({ ...voucherData, entityType: COMMISSION_VOUCHER_ENTITIES.ORDER_COMMISSION });
+        return await this.createAddVoucher({
+            ...voucherData,
+            entityType: COMMISSION_VOUCHER_ENTITIES.ORDER_COMMISSION
+        });
     }
 }
 
-export { OrderModel };
+export {OrderModel};

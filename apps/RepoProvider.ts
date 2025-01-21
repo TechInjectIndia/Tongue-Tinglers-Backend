@@ -63,6 +63,8 @@ import { IPurchaseInvoiceRepo } from './inventory/purchase_invoice/repositories/
 import { PostgresPurchaseInvoiceRepo } from './inventory/purchase_invoice/repositories/PostgresPurchaseInvoiceRepo';
 import { IDebitNoteRepo } from './inventory/debit_note/repositories/IDebitNoteRepo';
 import { PostgresDebitNoteRepo } from './inventory/debit_note/repositories/PostgresDebitNoteRepo';
+import {IPendingOrderRepo} from "./pending-orders/repos/IPendingOrderRepo";
+import {PendingOrderRepo} from "./pending-orders/repos/PendingOrderRepo";
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -93,6 +95,7 @@ export default class RepoProvider {
   private static _rawMaterialStockRepo: IRawMaterialStockRepo;
   private static _purchaseInvoiceRepo: IPurchaseInvoiceRepo;
   private static _debitNoteRepo: IDebitNoteRepo;
+  private static _pendingOrderRepo: IPendingOrderRepo;
 
   /* properties */
   static get commissionRepo(): ICommissionRepo {
@@ -293,4 +296,10 @@ export default class RepoProvider {
     return this._debitNoteRepo;
   }
 
+  static get pendingOrderRepo() {
+    if (!this._pendingOrderRepo) {
+      this._pendingOrderRepo = new PendingOrderRepo();
+    }
+    return this._pendingOrderRepo;
+  }
 }

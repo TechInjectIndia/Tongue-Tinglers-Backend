@@ -5,6 +5,8 @@ import { NotesModel } from "./NotesTable";
 import { OrderItemsModel } from "../../order-items/models/OrderItemsTable";
 import { Address } from "../../address/interface/Address";
 import RepoProvider from "apps/RepoProvider";
+import { UserModel } from "apps/user/models/UserTable";
+import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
 
 interface OrderCreationAttributes extends Optional<Order, "id"> {}
 
@@ -15,13 +17,13 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     anomalyArr!: number[];
     cancelled_items!: number[];
     customer_details!: number;
-    delivery_details!: number;
+    delivery_details!: string;
     delivery_status!: string;
     payment_id!: string;
     payment_type!: string;
     total_discount!: number;
     total_shipping!: number;
-    franchise_id: number;
+    franchise: number;
     billingAddress: Address;
     shippingAddress: Address;
     total_tax!: number;
@@ -33,12 +35,12 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     deletedBy!: number | null;
 
     // Mixin methods for managing notes
-    // public addNote!: (note: NotesModel | number) => Promise<void>;
-    // public addNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
-    //
-    // public getNotes!: () => Promise<NotesModel[]>;
-    // public removeNote!: (note: NotesModel | number) => Promise<void>;
-    // public removeNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
+    public addNote!: (note: NotesModel | number) => Promise<void>;
+    public addNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
+
+    public getNotes!: () => Promise<NotesModel[]>;
+    public removeNote!: (note: NotesModel | number) => Promise<void>;
+    public removeNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
 
     // Mixin methods for managing notes
     public addOrderItem!: (note: OrderItemsModel | number) => Promise<void>;
@@ -52,12 +54,20 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
     public addAnomalyOrderItems:(anomalies:Array<any|number>)=>Promise<void>;
 
     public static associate(){
-        // OrderModel.belongsToMany(NotesModel, {
-        //     through: "order_notes_join", // Join table name
-        //     foreignKey: "orderId", // Foreign key in the join table
-        //     otherKey: "notes_id", // Other foreign key in the join table
-        //     as: "notes", // Alias for the relationship
-        // });
+        OrderModel.belongsTo(UserModel, {
+            foreignKey: 'customer_details',
+            as: 'customer'
+        })
+        // OrderModel.belongsTo(FranchiseModel, {
+        //     foreignKey: 'franchise',
+        //     as: 'franchiseData'
+        // })
+        OrderModel.belongsToMany(NotesModel, {
+            through: "order_notes_join", // Join table name
+            foreignKey: "orderId", // Foreign key in the join table
+            otherKey: "notes_id", // Other foreign key in the join table
+            as: "notes", // Alias for the relationship
+        });
 
         OrderModel.belongsToMany(OrderItemsModel, {
             through: "order_items_join", // Join table name
@@ -65,6 +75,19 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
             otherKey: "order_items_id", // Other foreign key in the join table
             as: "orderItems", // Alias for the relationship
         });
+
+        OrderModel.belongsTo(UserModel, {
+            foreignKey: 'createdBy',
+            as: 'createdByUser'
+        })
+        OrderModel.belongsTo(UserModel, {
+            foreignKey: 'updatedBy',
+            as: 'updatedByUser'
+        })
+        OrderModel.belongsTo(UserModel, {
+            foreignKey: 'deletedBy',
+            as: 'deletedByUser'
+        })
     }
 
     public static initModel(){
@@ -100,14 +123,14 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     allowNull: true,
                 },
                 delivery_details: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.STRING,
                     allowNull: true,
                 },
                 delivery_status: {
                     type: DataTypes.STRING,
                     allowNull: true,
                 },
-                franchise_id: {
+                franchise: {
                     type: DataTypes.INTEGER,
                     allowNull: true,
                 },
@@ -136,11 +159,11 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     allowNull: true,
                 },
                 total_tax: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: true,
                 },
                 prices: {
-                    type: DataTypes.JSONB,
+                    type: DataTypes.STRING,
                     allowNull: true,
                 },
                 discount_prices: {

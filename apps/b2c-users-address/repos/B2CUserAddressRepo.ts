@@ -3,6 +3,7 @@ import { B2CUserAddressPayload } from "../interface/B2CUserAddress";
 import { B2CUserAddressModel } from "../models/B2CUserAddressTable";
 import { IB2CUserAddressRepo } from "./IB2CUserAddressRepo";
 import { UserModel } from "apps/user/models/UserTable";
+import { parseUser } from "apps/user/parser/user-parser";
 
 export class B2CUserAddressRepo implements IB2CUserAddressRepo{
     async save(address: B2CUserAddressPayload): Promise<any> {
@@ -120,13 +121,77 @@ export class B2CUserAddressRepo implements IB2CUserAddressRepo{
             return null
         }
     }
-    update(address: B2CUserAddressPayload): Promise<any> {
-        throw new Error("Method not implemented.");
+    async update(addressId:number, address: B2CUserAddressPayload): Promise<any> {
+        const transaction = await B2CUserAddressModel.sequelize?.transaction();
+        try{
+            const b2cUserData = await B2CUserAddressModel.findOne({
+                where:{
+                    userId: address.userId,
+                    addressId: addressId
+                }
+            })
+            if(!b2cUserData){
+                throw new Error("Guest user address not found");
+            }
+            const updatedAddress = await AddressModel.findOne({
+                where: {
+                    id: b2cUserData.addressId
+                }
+            })
+            if(!updatedAddress){
+                throw new Error("Address not found");
+            }
+            updatedAddress.set(address.address);
+            await updatedAddress.save({transaction: transaction});
+            await transaction?.commit();
+            return updatedAddress;
+        }catch(error){
+            // Rollback the transaction in case of error
+            if (transaction) {
+                await transaction.rollback();
+            }
+            console.log(error);
+            return null;
+        }
     }
     getById(id: number): Promise<any> {
         throw new Error("Method not implemented.");
     }
     getAll(): Promise<any> {
         throw new Error("Method not implemented.");
+    }
+
+    async getProfileOfB2CUser(userId: number):Promise<any>{
+        try{
+    
+          const profile = await UserModel.findOne({
+            where: {
+              id: userId
+            }
+          });
+          if(!profile){
+            throw new Error("User not found");
+          }
+          const addressData = await B2CUserAddressModel.findAll({
+            where: {
+              userId: userId
+            },
+            include:[
+              {
+                model: AddressModel,
+                as: 'address'
+              },
+              {
+                  model: UserModel,
+                  as: 'users'
+              }
+            ]
+          })
+          return {profile: parseUser(profile), address: addressData};
+    
+        }catch(error){
+          console.log(error);
+          return null;
+        }
     }
 }

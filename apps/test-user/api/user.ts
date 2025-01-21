@@ -503,23 +503,24 @@ async function createProductWithAssociations(req: Request, res: Response) {
             console.log("Product variations created:",
                 createdVariations.map((v) => v.id));
 
+            await  createdProduct.addVariations(createdVariations)
             // Use mixin to associate variations
-            await createdProduct.addVariations(
-                createdVariations.map((v) => v.id),
-                // transaction
-            );
+            // await createdProduct.addVariations(
+            //     createdVariations.map((v) => v.id),
+            //     // transaction
+            // );transaction
         }
 
         // Commit the transaction
         // await transaction.commit();
         console.log("Transaction committed successfully");
 
-        return {
+        return res.status(200).json({
             category: categoryCreated,
             options: optionsCreated,
             optionValues: optionsValueCreated,
             product: createdProduct,
-        }
+        })
     }
     catch (err) {
         console.error("Error during transaction:", err);
@@ -548,8 +549,8 @@ async function resetDatabase(req, res) {
         host: development.host,
         dialect: 'postgres',
     });
-    
-    try{  
+
+    try{
         console.log('Terminating existing connections...');
         await adminConnection.query(`
             SELECT pg_terminate_backend(pg_stat_activity.pid)
@@ -559,7 +560,7 @@ async function resetDatabase(req, res) {
         `);
 
         console.log('Dropping database...');
-        await adminConnection.query(`DROP DATABASE IF EXISTS ${development.database};`); 
+        await adminConnection.query(`DROP DATABASE IF EXISTS ${development.database};`);
         console.log('Creating database...');
         await adminConnection.query(`CREATE DATABASE ${development.database};`);
         console.log('Database dropped and created programmatically.');
@@ -589,7 +590,7 @@ async function resetDatabase(req, res) {
         await adminConnection.close();
         await sequelize.close();
     }
-   
+
 }
 
 async function createSuperOrgHandler(req, res){

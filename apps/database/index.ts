@@ -82,6 +82,7 @@ import {DebitNoteTable} from "../inventory/debit_note/database/DebitNoteTable";
 import {
     PurchaseInvoiceTable
 } from "../inventory/purchase_invoice/database/PurchaseInvoiceTable";
+import { TaxRateModel } from "apps/tax-rate/models/TaxRateTable";
 
 const m = [
     RegionModel,
@@ -181,7 +182,8 @@ const models = {
     File: FileModel.initModel(),
     PendingOrder: PendingOrderModel.initModel(),
     RPOrderTable:RPOrderTable.initModel(),
-    B2CUserAddress: B2CUserAddressModel.initModel()
+    B2CUserAddress: B2CUserAddressModel.initModel(),
+    TaxRate: TaxRateModel.initModel()
 };
 
 let currentModel: string = null;

@@ -105,17 +105,15 @@ export default class PaymentsController {
             else if(body.payload && body.payload.order  && body.payload.order.entity &&
                 body.payload.order.entity.status === "paid"){
 
-                // @sumeet sir
-
                 const rpResponse = await RPOrderTable.findOne({where:{id:body.payload.order.entity.id}});
                 if(rpResponse){
                     // @TODO @rajinder sir this is temporary
                     try {
-                        const pendingOrderRes = await PendingOrderModel.findOne({
-                            where: { paymentId: rpResponse.id }  // 'paymentId' is the column you're filtering by
-                        });
+
+                        const pendingOrderRes = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({ payment_id: rpResponse.id})
+
                         if (pendingOrderRes) {
-                            const response = await parseAndSavePendingOrderToOrder(pendingOrderRes.toJSON());
+                            const response = await parseAndSavePendingOrderToOrder(pendingOrderRes);
                         } else {
                             console.log('No pending order found for the provided paymentId');
                         }

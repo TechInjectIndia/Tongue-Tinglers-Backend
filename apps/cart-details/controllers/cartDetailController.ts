@@ -16,7 +16,7 @@ export default class CartDetailController {
                     sendResponse(RESPONSE_TYPE.SUCCESS, 'Cart details fetched successfully.', cartDetails)
                 );
             } else {
-                return res.status(404).send(
+                return res.status(200).send(
                     sendResponse(RESPONSE_TYPE.ERROR, 'Cart details not found.')
                 );
             }

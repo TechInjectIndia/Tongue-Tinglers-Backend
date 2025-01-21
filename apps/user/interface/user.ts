@@ -40,22 +40,8 @@ interface ParsedUser extends ParsedMeta {
     type: USER_TYPE;
     status: USER_STATUS;
     role: number | null;
-
+    profilePhoto: string | null
 }
-
-
-interface ParsedUser {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: string;
-    type: USER_TYPE;
-    status: USER_STATUS;
-    role: number | null;
-}
-
-
 
 enum USER_TYPE {
     ADMIN = "admin",
@@ -110,7 +96,17 @@ interface ParsedUser extends ParsedMeta {
     type: USER_TYPE;
     status: USER_STATUS;
     role: number | null;
+}
 
+interface ParsedCustomer {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    type: USER_TYPE;
+    status: USER_STATUS;
+    role: number | null;
 }
 
 type TUser = {
@@ -144,4 +140,4 @@ type TUser = {
 
 
 
-export { ParsedUser, MetaUser, TUser, USER_STATUS, USER_TYPE };
+export { ParsedUser, MetaUser, TUser, USER_STATUS, USER_TYPE, ParsedCustomer };

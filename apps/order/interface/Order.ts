@@ -1,7 +1,8 @@
 import { Address } from "apps/address/interface/Address";
 import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
-import { ParsedUser } from "apps/user/interface/user";
+import { ParsedCustomer, ParsedUser } from "apps/user/interface/user";
 import { BaseOrderItem, IDiscComponent, ParsedOrderItem, PreSaleParsedOrderItem, PriceComponent } from "./OrderItem";
+import { ParsedFranchise } from "apps/franchise/interface/Franchise";
 
 
 export enum PAYMENT_STATUS {
@@ -36,7 +37,6 @@ interface BaseOrder {
     total: number;
     total_tax: number;
     delivery_status: string;
-    // notes: number[];
     customer_details: number;
     payment_type: string;
     payment_id: string | null;
@@ -50,7 +50,7 @@ interface BaseOrder {
     prices: string;
     discount_prices: string;
     order_type: ORDER_TYPE
-    franchise_id: number | null;
+    franchise: number | null;
     createdBy: number;
     updatedBy: number | null;
     deletedBy: number | null;
@@ -71,7 +71,7 @@ export enum DeliveryStatus {
 
   }
 
-interface ParsedOrder extends ParsedMeta, OrderPayload {
+interface ParsedOrder extends ParsedMeta {
     id: number;
     status: OrderStatus;
     total: number; // without Tax
@@ -79,7 +79,7 @@ interface ParsedOrder extends ParsedMeta, OrderPayload {
     deliveryStatus: string;
     customerDetails: ParsedUser;
     paymentType: PAYMENT_TYPE; //todo convert to enum
-    paymentId: number;
+    paymentId: string;
     cancelledItems: ParsedOrderItem[];
     discount: Record<string, IDiscComponent>;
     totalDiscount: number;
@@ -91,8 +91,11 @@ interface ParsedOrder extends ParsedMeta, OrderPayload {
     coupon: string | null;
     items: ParsedOrderItem[];
     price: Record<string, PriceComponent>;
-    couponCodes: string[]
-
+    orderType: ORDER_TYPE
+    franchise: ParsedFranchise
+    couponCodes: string[],
+    notes: Notes[];
+    orderItems: BaseOrderItem[];
 }
 
 interface PresaleParsedOrder extends OrderPayload {
@@ -104,7 +107,7 @@ interface PresaleParsedOrder extends OrderPayload {
     items: PreSaleParsedOrderItem[];
 }
 
-interface OrderPayload {
+interface OrderPayload  extends  BaseOrder{
     notes: Notes[];
     orderItems: BaseOrderItem[];
 }
@@ -132,7 +135,9 @@ interface OrderState {
     userId: number;
     billingAddressId: number | null;
     shippingAddressId: number | null;
-    paymentType:PAYMENT_TYPE
+    paymentType:PAYMENT_TYPE,
+    orderType:ORDER_TYPE
+
 }
 
 enum RP_ORDER_STATUS {

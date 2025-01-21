@@ -152,13 +152,13 @@ export const sendMail = async (mailOptionsDto: DTO<AllMailOptions>) => {
     }
 
     const mailData = mailOptionsDto.data;
-    console.log(mailData);
+    // console.log(mailData);
 
     try {
         let res: DTO<boolean>;
         if (mailData.react) {
+            
             console.log("react");
-
             res = await MailProvider.getResendController().sendMail(mailData);
         } else if (mailData.html) {
             console.log("nodemailer");

@@ -7,7 +7,7 @@ export interface AllMailOptions {
     html: string | undefined | null;
     react?: React.JSX.Element | null;
     attachments: {
-        filename: string | false | undefined; // allow `false | undefined`
+        filename: string | false | undefined ; // allow `false | undefined`
         path?: string;
     }[];
 }

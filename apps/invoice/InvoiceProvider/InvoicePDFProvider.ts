@@ -13,10 +13,10 @@ class InvoicePDFProvider implements IInvoicePDFProvider {
     private readonly ROWS_ON_FULL_PAGE = 18;
     private readonly ROWS_ON_LAST_PAGE_NO_GAP = 10;
 
-    generate(order: ParsedOrder): DTO<null> {
+    async generate(order: ParsedOrder): Promise<DTO<ArrayBuffer>> {
         try {
-            this.downloadPDF(order);
-            return getSuccessDTO(null);
+            const pdf = await this.downloadPDF(order);
+            return getSuccessDTO(pdf);
         } catch (error: any) {
             handleError(error, null);
             return getHandledErrorDTO(
@@ -64,44 +64,109 @@ class InvoicePDFProvider implements IInvoicePDFProvider {
         return content;
     }
 
+
+    private generatePDFWithPromise(content: string): Promise<Buffer> {
+        const pdf = new jsPDF();
+    
+        return new Promise((resolve, reject) => {
+            // Use the `html` method to add HTML content to the PDF
+            try {
+                // Generate the PDF asynchronously using the html method
+                pdf.html("<h1>Hello</h1>", {
+                    margin: 0,
+                    x: 0,
+                    y: 0,
+                    html2canvas: {
+                        scale: 0.263,
+                    },
+                    width: 180,
+                    windowWidth: 798,
+                }).then(() => {
+                    // After pdf.html() completes, add image borders or any additional actions
+                    const totalPages = pdf.internal.pages.length;
+                    for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
+                        pdf.setPage(pageNumber);
+                        this.addImageBorder(pdf);  // Add your image border to each page
+                    }
+    
+                    // Convert the generated PDF to a Buffer
+                    const pdfBuffer = Buffer.from(pdf.output('arraybuffer'));
+    
+                    // Resolve the promise with the generated PDF buffer
+                    resolve(pdfBuffer);
+                }).catch(error => {
+                    // Reject the promise if there's an error during the PDF generation
+                    reject(error);
+                });
+            } catch (error) {
+                // Reject if there are any other errors
+                reject(error);
+            }
+        });
+    }
+
+
+    private  addImageBorder = (doc: jsPDF) => {
+        const pageWidth = doc.internal.pageSize.width; // 210mm
+        const pageHeight = doc.internal.pageSize.height; // 297mm
+
+        const borderWidth = pageWidth;
+        const borderHeight = pageHeight;
+
+        const borderImage = INVOICE_BORDER;
+        doc.addImage(borderImage, "PNG", 0, 0, borderWidth, borderHeight);
+    };
     // Private Functions:
-    private downloadPDF(order: ParsedOrder) {
+    private async downloadPDF(order: ParsedOrder) {
         const content = this.getContent(order);
 
-        const pdf = new jsPDF("p", "mm", "a4"); // A4 dimensions: 210mm x 297mm
+        console.log(content);
+        
 
-        const addImageBorder = (doc: jsPDF) => {
-            const pageWidth = doc.internal.pageSize.width; // 210mm
-            const pageHeight = doc.internal.pageSize.height; // 297mm
+        // const pdf = new jsPDF("p", "mm", "a4"); // A4 dimensions: 210mm x 297mm
 
-            const borderWidth = pageWidth;
-            const borderHeight = pageHeight;
+        // const addImageBorder = (doc: jsPDF) => {
+        //     const pageWidth = doc.internal.pageSize.width; // 210mm
+        //     const pageHeight = doc.internal.pageSize.height; // 297mm
 
-            const borderImage = INVOICE_BORDER;
-            doc.addImage(borderImage, "PNG", 0, 0, borderWidth, borderHeight);
-        };
+        //     const borderWidth = pageWidth;
+        //     const borderHeight = pageHeight;
 
-        pdf.html(content, {
-            callback: function (doc) {
-                addImageBorder(doc);
+        //     const borderImage = INVOICE_BORDER;
+        //     doc.addImage(borderImage, "PNG", 0, 0, borderWidth, borderHeight);
+        // };
 
-                const totalPages = doc.internal.pages.length;
-                for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
-                    doc.setPage(pageNumber);
-                    addImageBorder(doc);
-                }
+        // await pdf.html(content, {
+        //     callback: function (doc) {
+        //         addImageBorder(doc);
 
-                doc.save("invoice.pdf");
-            },
-            margin: 0,
-            x: 0, 
-            y: 0,
-            html2canvas: {
-                scale: 0.263, 
-            },
-            width: 180, 
-            windowWidth: 798, 
-        });
+        //         const totalPages = doc.internal.pages.length;
+        //         for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
+        //             doc.setPage(pageNumber);
+        //             addImageBorder(doc);
+        //         }
+
+        //         // doc.save("invoice.pdf");
+        //     },
+        //     margin: 0,
+        //     x: 0, 
+        //     y: 0,
+        //     html2canvas: {
+        //         scale: 0.263, 
+        //     },
+        //     width: 180, 
+        //     windowWidth: 798, 
+        // });
+
+        // console.log(pdf);
+        
+
+        // return pdf;
+
+        const dd = await this.generatePDFWithPromise(content);
+        console.log(dd);
+        return dd;
+        
     }
 
     private getContent(order: ParsedOrder, forUi: boolean = false) {

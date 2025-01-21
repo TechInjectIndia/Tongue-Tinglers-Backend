@@ -24,6 +24,7 @@ export class ResendController implements IResendController {
 
     async sendMail(mailOptions: AllMailOptions): Promise<DTO<boolean>> {
         try {
+            console.log("%%%%%%%%%%%%%%%%%%%%%%%%", mailOptions.attachments);
             const response = await this.resendInstance.emails.send({
                 from: this.resendMail,
                 to: mailOptions.to,
@@ -33,7 +34,7 @@ export class ResendController implements IResendController {
                 attachments: mailOptions.attachments ? mailOptions.attachments : undefined,
             });
             //
-            console.log(response);
+            console.log(response, "********************");
 
             if (response.error !== null) {
                 return getUnhandledErrorDTO(response.error.message, response.error.message);

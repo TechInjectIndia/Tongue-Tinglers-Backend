@@ -75,6 +75,10 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                         id: commissionMapping.organizationId,
                         name: commissionMapping["OrganizationModel"].name,
                     },
+                    appliedCommission: {
+                        franchiseAmount: commissionMapping["CommissionTable"].franchiseAmount,
+                        commissionAmount: commissionMapping["CommissionTable"].commissionAmount
+                    },
                     // status: commissionMapping.status,
                     createdBy: commissionMapping.createdBy,
                     updatedBy: commissionMapping.updatedBy,

@@ -7,5 +7,5 @@ export const EMAIL_LOGO_URL =
 export const EMAIL_PHONE_LOGO =
     "https://firebasestorage.googleapis.com/v0/b/pinni-wala.appspot.com/o/tt-mails%2Fphone.png?alt=media&token=ada99899-9734-4419-9e01-3a61c3d6a070";
 
-    export const EMAIL_MAIL_LOGO =
+export const EMAIL_MAIL_LOGO =
     "https://firebasestorage.googleapis.com/v0/b/pinni-wala.appspot.com/o/tt-mails%2Fmail.png?alt=media&token=a70b2075-c225-4ec6-bce6-a2b0f4ad1bb4";

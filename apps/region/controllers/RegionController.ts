@@ -41,7 +41,7 @@ export default class RegionController {
                 }
             }
 
-            const region = await new RegionRepo().create(payload);
+            const region = await new RegionRepo().create(payload, user_id);
             return res
                 .status(200)
                 .send(

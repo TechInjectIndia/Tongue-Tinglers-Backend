@@ -210,14 +210,14 @@ async function createDummyMaster(user_id: number) {
         a => aRepo.create({createdBy: user_id, ...a}))).then(_ => {
         const rRepo = new RegionRepo();
         return Promise.all(regions.map(
-            r => rRepo.create({createdBy: user_id, ...r})));
+            r => rRepo.create({createdBy: user_id, ...r}, user_id)));
     });
 
     const fmRepo = new FranchiseModelRepo();
     const franchiseModelsProm = await Promise.all(franchiseModels.map(
         fm => fmRepo.create(fm, user_id))).then(_ => {
         const pRepo = new ProposalModelRepo();
-        return Promise.all(proposals.map(p => pRepo.create(p)));
+        return Promise.all(proposals.map(p => pRepo.create(p, user_id)));
     });
 
     // Campaign creation logic

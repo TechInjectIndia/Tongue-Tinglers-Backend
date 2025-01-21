@@ -7,6 +7,9 @@ import {
     ProposalTable
 } from '../interface/proposal';
 import {ProposalModel} from "./ProposalModelTable";
+import { UserModel } from "apps/user/models/UserTable";
+import { getUserName } from "apps/common/utils/commonUtils";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 export class ProposalModelRepo implements IBaseRepo<ProposalTable, TListFilters> {
     constructor() { }
@@ -16,6 +19,13 @@ export class ProposalModelRepo implements IBaseRepo<ProposalTable, TListFilters>
             where: {
                 id,
             },
+            include: [
+                {
+                    model:LogModel,
+                    as: 'logs',
+                    where: {model: 'Proposal Model'}
+                }
+            ]
         });
         return data;
     }
@@ -41,17 +51,26 @@ export class ProposalModelRepo implements IBaseRepo<ProposalTable, TListFilters>
         return { total, data };
     }
 
-    public async create(data: ProposalPayload): Promise<ProposalTable> {
-        const response = await ProposalModel.create(data);
+    public async create(data: ProposalPayload, userId: number): Promise<ProposalTable> {
+        const user = await UserModel.findByPk(userId);
+        if(!user){
+            throw new Error("User not found");
+        }
+        const response = await ProposalModel.create(data, {
+            userId: userId,
+            userName: getUserName(user)
+        });
         return response;
     }
 
     public async update(id: number, data: ProposalPayload): Promise<[affectedCount: number]> {
-        return await ProposalModel.update(data, {
-            where: {
-                id: id,
-            },
-        });
+        const proposalModal = await ProposalModel.findByPk(id);
+        if (!proposalModal) {
+        throw new Error("Proposal Modal not found");
+        }
+        proposalModal.set(data);
+        await proposalModal.save();
+        return [1];
     }
 
     public async delete(ids: number[]): Promise<number> {

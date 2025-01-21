@@ -5,6 +5,9 @@ import { IRegion, TPayloadRegion, TRegionList } from "./Region";
 import { TListFiltersRegions } from "apps/common/models/common";
 import { RegionModel } from "./RegionTable";
 import { AreaModel } from "apps/area/models/AreaTable";
+import { UserModel } from "apps/user/models/UserTable";
+import { getUserName } from "apps/common/utils/commonUtils";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
     constructor() { }
@@ -14,6 +17,13 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
             where: {
                 id,
             },
+            include:[
+                {
+                    model: LogModel,
+                    as: 'logs',
+                    where:{model: 'Regions'}
+                }
+            ]
         });
         return data;
     }
@@ -71,8 +81,15 @@ export class RegionRepo implements IBaseRepo<IRegion, TListFiltersRegions> {
         return { total, data };
     }
 
-    public async create(data: TPayloadRegion): Promise<IRegion> {
-        const response = await RegionModel.create(data);
+    public async create(data: TPayloadRegion, userId:number): Promise<IRegion> {
+        const user = await UserModel.findByPk(userId);
+        if(!user){
+            throw new Error("User not found");
+        }
+        const response = await RegionModel.create(data, {
+            userId: userId,
+            userName: getUserName(user)
+        });
         if(data.area) await response.addAreas(data.area);
         return response;
     }

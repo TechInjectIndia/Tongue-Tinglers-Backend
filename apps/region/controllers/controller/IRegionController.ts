@@ -23,7 +23,7 @@ interface IRegionController<T, F extends TQueryFilters> {
      * @param payload - The data to create the region.
      * @returns Promise resolving to the created region.
      */
-    create(payload: TPayloadRegion): Promise<T>;
+    create(payload: TPayloadRegion, userId:number): Promise<T>;
 
     /**
      * Update an existing region.

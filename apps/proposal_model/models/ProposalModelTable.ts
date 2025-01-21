@@ -10,6 +10,8 @@ import {
 import {
     FranchiseLeadModel
 } from "../../franchise_model/models/FranchiseModelTable";
+import RepoProvider from "apps/RepoProvider";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 
 const { STRING, TEXT, DATE, JSONB, UUIDV4 } = DataTypes;
@@ -105,6 +107,54 @@ class ProposalModel extends Model<ProposalTable, ProposalCreationAttributes>
             foreignKey: "franchiseModel",
             as: "franchiseModelObj",
         })
+
+        ProposalModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs",
+        })
+    }
+
+    public static hook() {
+        ProposalModel.addHook(
+            "afterCreate",
+            async (instance, options) => {
+                await RepoProvider.LogRepo.logModelAction(
+                    "create",
+                    "Proposal Model",
+                    instance,
+                    options
+                );
+            }
+        );
+
+        // After Update Hook - Log the updated fields of the Product Category
+        ProposalModel.addHook(
+            "afterUpdate",
+            async (instance, options) => {
+                // Now call logModelAction as Product Category
+                await RepoProvider.LogRepo.logModelAction(
+                    "update",
+                    "Proposal Model",
+                    instance,
+                    options
+                );
+            }
+        );
+
+        // After Destroy Hook - Log the deletion of the Product Category
+        ProposalModel.addHook(
+            "afterDestroy",
+            async (instance, options) => {
+                await RepoProvider.LogRepo.logModelAction(
+                    "delete",
+                    "Proposal Model",
+                    instance,
+                    options
+                );
+            }
+        );
     }
 }
 

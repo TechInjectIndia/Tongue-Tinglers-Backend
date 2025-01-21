@@ -18,7 +18,7 @@ export default class ProposalModelController {
                 createdAt: new Date(),
             };
 
-            const proposalModel = await new ProposalModelRepo().create(payload);
+            const proposalModel = await new ProposalModelRepo().create(payload, user_id);
             return res
                 .status(201) // 201 Created
                 .send(

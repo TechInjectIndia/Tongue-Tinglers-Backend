@@ -6,6 +6,7 @@ import { IQuestion, TPayloadQuestion, TQuestionList } from "../interface/Questio
 import { QuestionModel } from "./QuestionModel";
 import { UserModel } from "apps/user/models/UserTable";
 import { getUserName } from "apps/common/utils/commonUtils";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 
 export class QuestionRepo {
@@ -16,6 +17,13 @@ export class QuestionRepo {
             where: {
                 id,
             },
+            include:[
+                {
+                    model: LogModel,
+                    as: 'logs',
+                    where:{model: 'Questions'}
+                }
+            ]
         });
         return data;
     }

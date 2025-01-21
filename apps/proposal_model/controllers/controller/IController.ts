@@ -26,7 +26,7 @@ interface IProposalModelsController<T, F extends TQueryFilters> {
      * @param payload - The data to create the ProposalModels.
      * @returns Promise resolving to the created ProposalModels.
      */
-    create(payload: ProposalPayload): Promise<T>;
+    create(payload: ProposalPayload, userId:number): Promise<T>;
 
     /**
      * Update an existing ProposalModels for a user.

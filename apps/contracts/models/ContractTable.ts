@@ -12,6 +12,7 @@ import RepoProvider from "apps/RepoProvider";
 interface ContractCreationAttributes
     extends Optional<ContractTable, "id" | "createdAt" | "updatedAt"> { }
 
+// todo rename - Prospect Model
 class ContractModel
     extends Model<ContractTable, ContractCreationAttributes>
     implements ContractTable {
@@ -46,8 +47,8 @@ class ContractModel
     public notes: Note[] | null;
     public additionalInfo!: string | null;
     public logs: ITrackable[] | null;
-    
-  
+
+
     public createdBy!: number;
     public updatedBy!: number | null;
     public deletedBy!: number | null;

@@ -89,7 +89,7 @@ class LogsRepo implements ILogsRepo {
                 recordId: instance.get(primaryKey),
                 data: dataToLog,
                 userId: options.userId || null,
-                userName: options.userName || null,
+                userName: options.userName || null, //  todo @nitesh why do we need this?
                 timestamp: new Date(),
             });
         } catch (error) {

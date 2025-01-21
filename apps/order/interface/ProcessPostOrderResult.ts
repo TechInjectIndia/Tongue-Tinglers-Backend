@@ -1,7 +1,7 @@
-import { PendingOrder } from "../../pending-orders/interface/PendingOrder";
+import {Order, ParsedOrder} from "./Order";
 
 interface ProcessPostOrderResult {
-    order: PendingOrder | null;
+    order: ParsedOrder | null;
     alreadyProcessed: boolean;
 }
 

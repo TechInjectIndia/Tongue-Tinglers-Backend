@@ -20,14 +20,13 @@ interface BaseMeta extends BaseMetaUsers {
 }
 
 interface ParsedMeta {
-    createdBy: MetaUser | number;
+    createdBy: MetaUser | number ;
     updatedBy: MetaUser | number;
     deletedBy: MetaUser | number;
     createdAt: Date;
     updatedAt: Date | null;
     deletedAt: Date | null;
 }
-
 
 /* TODO: mandeep singh - remove this after refactoring */
 interface PaginatedBaseResponse<T> {
@@ -36,8 +35,6 @@ interface PaginatedBaseResponse<T> {
     totalPages: number;
     data: T[];
 }
-
-
 
 export { BaseMeta, ParsedMeta, BaseMetaUsers, APIResponse, PaginatedBaseResponse };
 

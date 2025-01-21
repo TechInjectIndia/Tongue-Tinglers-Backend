@@ -29,8 +29,8 @@ import {
 } from "../product-options/models/ProductVariationTable";
 import { FollowDetailsModel } from "apps/follow-details/model/followDetailModel";
 import {
-    CommissionEntityMapTable
-} from "apps/commission/model/CommissionEntityMapTable";
+    CommissionEntityMappingModel
+} from "../commission/model/CommissionEntityMappingTable";
 import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
 import {
     ProductsCategoryModel
@@ -82,6 +82,8 @@ import {DebitNoteTable} from "../inventory/debit_note/database/DebitNoteTable";
 import {
     PurchaseInvoiceTable
 } from "../inventory/purchase_invoice/database/PurchaseInvoiceTable";
+import { CommissionVoucherModel } from "apps/commission/model/CommissionVoucherTable";
+import { TaxRateModel } from "apps/tax-rate/models/TaxRateTable";
 
 const m = [
     RegionModel,
@@ -107,7 +109,7 @@ const m = [
     ProductVariationsModel,
     AffiliateModel,
     FollowDetailsModel,
-    CommissionEntityMapTable,
+    CommissionEntityMappingModel,
     CommissionTable,
     CartDetailsModel,
     ProductsCategoryModel,
@@ -117,8 +119,9 @@ const m = [
     OrderItemsModel,
     CartProductModel,
     ItemStockModel,
-    RPOrderTable
-    
+    RPOrderTable,
+    CommissionVoucherModel
+
 
 ];
 
@@ -147,7 +150,7 @@ const models = {
     QuestionModel: QuestionModel.initModel(),
     CampaignQuestionModel: CampaignQuestionModel.initModel(),
     FollowDetailModel: FollowDetailsModel.initModel(),
-    CommissionEntityMap: CommissionEntityMapTable.initModel(),
+    CommissionEntityMap: CommissionEntityMappingModel.initModel(),
     Commission: CommissionTable.initModel(),
     CartDetails: CartDetailsModel.initModel(),
     ProductCategory: ProductsCategoryModel.initModel(),
@@ -158,6 +161,7 @@ const models = {
     Cart: CartProductModel.initModel(),
     ItemStockModel: ItemStockModel.initModel(),
     CampaignProposalsModel: CampaignProposalsModel.initModel(),
+    CommissionVoucherModel:CommissionVoucherModel.initModel(),
 
     /* inventory */
 
@@ -181,7 +185,8 @@ const models = {
     File: FileModel.initModel(),
     PendingOrder: PendingOrderModel.initModel(),
     RPOrderTable:RPOrderTable.initModel(),
-    B2CUserAddress: B2CUserAddressModel.initModel()
+    B2CUserAddress: B2CUserAddressModel.initModel(),
+    TaxRate: TaxRateModel.initModel()
 };
 
 let currentModel: string = null;

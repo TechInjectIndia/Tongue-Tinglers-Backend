@@ -45,20 +45,29 @@ interface ParsedProductOptions {
     images: string;
 }
 
-// export const parsedProductOptions = (data: any):ParsedProductOptions => {
+
+// export const parsedProductOptions = async (data: any): Promise<ParsedProductOptions> => {
 //     console.log('data: ', data);
-//     // const optionValueData = new OptionsValueRepo().
+
+//     // Ensure `data` is resolved before proceeding (assuming this is a promise)
+//     const resolvedData = await data; // Ensure that data is resolved
+
 //     return {
-//         id: data.id,
-//         option_value: parseOptionsValues(data.optionsValue),
-//         price: data.price,
-//         stock: data.stock,
-//         status: data.status,
-//         images: data.images,
+//         id: resolvedData.id,
+//         option_value: parseOptionsValues(resolvedData.optionsValue),
+//         price: resolvedData.price,
+//         stock: resolvedData.stock,
+//         status: resolvedData.status,
+//         images: resolvedData.images,
 //     };
 // };
 
 export const parsedProductOptions =  (data: any): ParsedProductOptions=> {
+
+    console.log('4e6r5t7y8uoi')
+    console.log(data)
+    console.log('4657890')
+
     return {
         id: data.id,
         option_value: parseOptionsValues(data.optionsValue),

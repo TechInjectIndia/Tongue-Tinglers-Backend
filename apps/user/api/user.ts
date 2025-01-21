@@ -16,7 +16,7 @@ const {
   validateEditMultipleIdsBody,
 } = AdminValidation;
 
-const { getAdmins, getAllUsers,addGuest, addAdmin, editAdmin, deleteAdmin, getAdmin,getAdminFirebaseUid, updateType } = AdminController;
+const { getAdmins, getAllUsers,addGuest, addAdmin, editAdmin, deleteAdmin, getAdmin,getAdminFirebaseUid, updateType, getProfile } = AdminController;
 
 // ====== Admins Routes Start ======
 /**
@@ -276,6 +276,10 @@ adminUserRouter.get("/get-firebase/:id", hasPermission('admin', 'read'), validat
 adminUserRouter.put("/update/:id", hasPermission('admin', 'update'), validateEditAdminParams, validateEditAdminBody, editAdmin);
 adminUserRouter.put("/update-type/:id", hasPermission('admin', 'update'), validateEditAdminParams, validateUpdateType, updateType);
 adminUserRouter.delete("/delete", hasPermission('admin', 'delete'), validateEditMultipleIdsBody, deleteAdmin); // Soft delete single or multiple
+adminUserRouter.get("/profile", hasPermission('admin', 'read'), getProfile);
+
 // ====== Admins Routes Ends ======
+
+
 
 export {adminUserRouter,guestUserRouter};

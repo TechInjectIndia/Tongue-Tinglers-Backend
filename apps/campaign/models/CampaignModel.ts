@@ -41,10 +41,13 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
 
     public setQuestions: (questions: Array<QuestionModel | number>,
         options: { transaction: Transaction }) => Promise<void>;
+
     public removeQuestions: (questions: Array<QuestionModel | number>,
                              options: { transaction: Transaction }  ) => Promise<void>;
+
     public setProposals: (proposals: Array<ProposalModel | number>,
         options: { transaction: Transaction }) => Promise<void>;
+
     public removeProposals: (proposals: Array<ProposalModel | number>,
         options: { transaction: Transaction }) => Promise<void>;
 

@@ -8,6 +8,12 @@ import { AddressModel } from "apps/address/models/AddressTable";
 import { UserModel } from "apps/user/models/UserTable";
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
+import {
+    COMMISSION_VOUCHER_ENTITIES,
+    CommissionEntityMappingModel,
+    ICommissionEntityMapping
+} from "../../commission/model/CommissionEntityMappingTable";
+import { CommissionVoucherModel, ICommissionVoucher } from "apps/commission/model/CommissionVoucherTable";
 
 
 
@@ -55,21 +61,26 @@ class FranchiseModel
     public addFranchiseDocument!: (
         document: DocumentModel | number
     ) => Promise<void>;
+
     public addFranchiseDocuments!: (
         documents: Array<DocumentModel | number>
     ) => Promise<void>;
+
     public setFranchiseDocuments!: (
         documents: Array<DocumentModel | number>
     ) => Promise<void>;
+
     public removeFranchiseDocument!: (
         document: DocumentModel | number
     ) => Promise<void>;
+
     public removeFranchiseDocuments!: (
         documents: Array<DocumentModel | number>
     ) => Promise<void>;
 
     // Associations
     public static associate() {
+
         FranchiseModel.hasMany(DocumentModel, {
             foreignKey: "entity_id",
             as: "franchiseDocuments",
@@ -260,6 +271,10 @@ class FranchiseModel
                 options
             );
         });
+    }
+
+    public async createAddVoucher(voucherData: Partial<ICommissionVoucher>) {
+        return await this.createAddVoucher({ ...voucherData, entityType: COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION });
     }
 }
 

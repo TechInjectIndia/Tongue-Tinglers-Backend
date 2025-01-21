@@ -25,19 +25,24 @@ import {
 } from "apps/common/models/DTO";
 import { handleError } from "../../common/utils/HelperMethods";
 import { sequelize } from "../../../config";
-import { PendingOrderModel } from "../../pending-orders/models/PendingOrderTable";
 import { ProcessPostOrderResult } from "../interface/ProcessPostOrderResult";
-import { CartDetailsModel } from "../../cart-details/models/CartDetailTable";
-import cartDetailApi from "../../cart-details/api/cartDetailApi";
-import RepoProvider from "../../RepoProvider";
 import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
 import { ProductOptions } from "../../product/interface/ProductOptions";
-import { PendingOrder } from "../../pending-orders/interface/PendingOrder";
 import { PendingOrderRepo } from "../../pending-orders/repos/PendingOrderRepo";
 import { RPOrderTable } from "apps/rp-order/models/RPOrderTable";
+import { UserModel } from "apps/user/models/UserTable";
+import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
+import RepoProvider from "../../RepoProvider";
+import {getRawAsset} from "node:sea";
+import {OptionsValueModel} from "../../optionsValue/models/OptionValueTable";
+import {OptionsModel} from "../../options/models/optionTable";
+import {ProductModel} from "../../product/model/productTable";
+import {
+    ProductsCategoryModel
+} from "../../products-category/models/ProductCategoryTable";
 
-export class OrderRepo implements IOrderRepo {
-    async createOrder(transaction: Transaction, order: OrderPayload): Promise<Order | null> {
+export class OrderRepo implements  IOrderRepo{
+    async createOrder(order: OrderPayload,transaction?: Transaction): Promise<ParsedOrder | null> {
         try {
             let notesCreated: Notes[] = [];
             let orderItemsCreated: any[] = [];
@@ -71,16 +76,17 @@ export class OrderRepo implements IOrderRepo {
                     ...orderDetails, // Spread the remaining order details
                     // notes: noteIds, // Link notes by their IDs
                     createdAt: new Date(),
-                }
+                },
                 // { include: [{ association: "notes" }], transaction }
             );
+            await  orderCreated.addOrderItems(orderItemIds)
 
             // orderCreated.addNotes(noteIds);
             //
             // // todo @Sumeet add the anomalies here;
             // orderCreated.addAnomalyOrderItems([]);
 
-            return orderCreated.toJSON();
+            return parseOrder(orderCreated.toJSON());
         } catch (error) {
             console.log(error);
             return null;
@@ -163,87 +169,313 @@ export class OrderRepo implements IOrderRepo {
                 //     },
                 // ],
                 include: [
-                    {
-                        model: OrderItemsModel,
-                        through: { attributes: [] }, // Exclude the join table from the results
-                        as: "orderItems", // Use the alias defined in the association
-                    },
+                    { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
+                    { model: UserModel, as: "createdByUser" },
+                    { model: UserModel, as: "deletedByUser" },
+                    { model: UserModel, as: "updatedByUser" },
                 ],
             });
 
-            return parseOrder(order.toJSON());
+            const orderData: any = order.toJSON();
+
+            const a=async () => {
+
+                if (orderData.orderItems && orderData.orderItems.length > 0) {
+
+                    // Get all product option IDs from this order
+                    const productOptionIds = structuredClone(orderData.orderItems).map(item => item.product_option_id);
+                    const productsIds = structuredClone(orderData.orderItems).map(item => item.product_id);
+
+                    // Fetch all product options for this order in one query
+                    const productOptions = await OptionsValueModel.findAll({
+                        include: [
+                            {
+                                model: OptionsModel,
+                                as: "options",
+                                attributes: ["id", "name"],
+                            },
+                        ],
+                        where: {
+                            id: productOptionIds
+                        }
+                    });
+
+                    const products = await ProductModel.findAll({
+                        include: [
+                            {
+                                model: ProductVariationsModel, // Include the ProductOptions model
+                                as: "variations", // Alias used in the ProductModel association
+                                attributes: [
+                                    "id",
+                                    "optionValueId",
+                                    "price",
+                                    "stock",
+                                    "status",
+                                    "images",
+                                ], // Only fetch these fields
+                                include: [
+                                    {
+                                        model: OptionsValueModel,
+                                        as: "optionsValue", // Include these fields from the User model
+                                        attributes: ["id", "name", "option_id"],
+                                        include: [
+                                            {
+                                                model: OptionsModel,
+                                                as: "options",
+                                                attributes: ["id", "name"],
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                            {
+                                model: UserModel,
+                                as: "createdByUser", // Include createdByUser
+                                attributes: [
+                                    "id",
+                                    "firstName",
+                                    "lastName",
+                                    "email",
+                                ], // Include these fields from the User model
+                            },
+                            {
+                                model: UserModel,
+                                as: "updatedByUser", // Include createdByUser
+                                attributes: [
+                                    "id",
+                                    "firstName",
+                                    "lastName",
+                                    "email",
+                                ], // Include these fields from the User model
+                            },
+                            {
+                                model: UserModel,
+                                as: "deletedByUser", // Include createdByUser
+                                attributes: [
+                                    "id",
+                                    "firstName",
+                                    "lastName",
+                                    "email",
+                                ], // Include these fields from the User model
+                            },
+                            {
+                                model: ProductsCategoryModel,
+                                as: "productCategory", // Include createdByUser
+                                attributes: ["id", "name", "description"], // Include these fields from the User model
+                            },
+                        ],
+                        where: {
+                            id: productsIds
+                        }
+                    });
+
+
+                    // Create a map for quick lookup
+                    const productOptionMap = productOptions.reduce((acc, option) => {
+                        acc[option.id] = option.toJSON();
+                        return acc;
+                    }, {});
+                    const productMaps = products.reduce((acc, option) => {
+                        acc[option.id] = option.toJSON();
+                        return acc;
+                    }, {});
+
+                    // Attach product options to order items
+                    orderData.orderItems = orderData.orderItems.map(item => ({
+                        ...item,
+                        productOption: productOptionMap[item.product_option_id] || null,
+                        product_id: productMaps[item.product_id] || null,
+                    }));
+                }
+                return orderData;
+            }
+            const dd = await a();
+
+            return parseOrder(dd);
         } catch (error) {
             console.log(error);
             return null;
         }
     }
-    async getAllOrders(
-        page: number,
-        limit: number,
-        search: string,
-        filters: Record<string, any>
-    ): Promise<OrderPagination<ParsedOrder>> {
-        try {
-            const offset = (page - 1) * limit;
+   async getAllOrders(
+    page: number,
+    limit: number,
+    search: string,
+    filters: Record<string, any>
+): Promise<OrderPagination<ParsedOrder>> {
+    try {
+        // Validate and normalize pagination parameters
+        page = Math.max(1, page || 1);
+        limit = Math.max(1, limit || 10);
+        const offset = (page - 1) * limit;
 
-            // Building the query
-            const query: any = {
-                where: {},
-                limit,
-                offset,
-                // include: [
-                //     {
-                //         model: NotesModel,
-                //         as: "notes",
-                //         through: { attributes: [] },
-                //     },
-                // ],
-            };
+        // Build the where clause
+        const whereClause: any = {};
 
-            // Adding search functionality
-            if (search) {
-                query.where = {
-                    ...query.where,
-                    [Op.or]: [
-                        { status: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for status
-                        { delivery_status: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for delivery_status
-                        { payment_type: { [Op.iLike]: `%${search}%` } }, // Case-insensitive search for payment_type
-                    ],
-                };
-            }
-
-            // Applying filters (if provided)
-            if (filters) {
-                Object.entries(filters).forEach(([key, value]) => {
-                    query.where[key] = value;
-                });
-            }
-
-            // Fetch data with total count
-            let { rows, count: total } = await OrderModel.findAndCountAll({
-                include: [
-                    {
-                        model: OrderItemsModel,
-                        through: { attributes: [] }, // Exclude the join table from the results
-                        as: "orderItems", // Use the alias defined in the association
-                    },
-                ],
-            });
-
-            const finals = await Promise.all(rows.map((d) => parseOrder(d.toJSON())));
-            // Returning paginated result
-            return {
-                data: finals, // Corrected from "order" to "rows"
-                total,
-                page,
-                limit,
-                totalPages: Math.ceil(total / limit),
-            };
-        } catch (error) {
-            console.error("Error fetching orders with pagination:", error);
-            throw new Error("Failed to fetch orders.");
+        // Add search functionality
+        if (search) {
+            whereClause[Op.or] = [
+                { status: { [Op.iLike]: `%${search}%` } },
+                { delivery_status: { [Op.iLike]: `%${search}%` } },
+                { payment_type: { [Op.iLike]: `%${search}%` } },
+            ];
         }
+
+        // Apply filters if provided
+        // if (filters && typeof filters === "object") {
+        //     Object.entries(filters).forEach(([key, value]) => {
+        //         if (value !== undefined && value !== null) {
+        //             whereClause[key] = value;
+        //         }
+        //     });
+        // }
+
+        // Fetch paginated data
+        const { rows, count: total } = await OrderModel.findAndCountAll({
+            include: [
+                { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
+                { model: UserModel, as: "createdByUser" },
+                { model: UserModel, as: "deletedByUser" },
+                { model: UserModel, as: "updatedByUser" },
+            ],
+        });
+
+        // console.log(rows)
+        // Process orders and fetch product options in batch
+        const processedOrders = await Promise.all(
+            rows.map(async (order) => {
+                const orderData:any = order.toJSON();
+                if (orderData.orderItems && orderData.orderItems.length > 0) {
+
+                    // Get all product option IDs from this order
+                    const productOptionIds =  structuredClone(orderData.orderItems).map(item => item.product_option_id);
+                    const productsIds  = structuredClone(orderData.orderItems).map(item => item.product_id);
+
+                    // Fetch all product options for this order in one query
+                    const productOptions = await OptionsValueModel.findAll({
+                        include:[
+                            {
+                                model: OptionsModel,
+                                as: "options",
+                                attributes: ["id", "name"],
+                            },
+                        ],
+                        where: {
+                            id: productOptionIds
+                        }
+                    });
+
+                    const products = await ProductModel.findAll({
+                        include: [
+                        {
+                            model: ProductVariationsModel, // Include the ProductOptions model
+                            as: "variations", // Alias used in the ProductModel association
+                            attributes: [
+                                "id",
+                                "optionValueId",
+                                "price",
+                                "stock",
+                                "status",
+                                "images",
+                            ], // Only fetch these fields
+                            include: [
+                                {
+                                    model: OptionsValueModel,
+                                    as: "optionsValue", // Include these fields from the User model
+                                    attributes: ["id", "name", "option_id"],
+                                    include: [
+                                        {
+                                            model: OptionsModel,
+                                            as: "options",
+                                            attributes: ["id", "name"],
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                        {
+                            model: UserModel,
+                            as: "createdByUser", // Include createdByUser
+                            attributes: [
+                                "id",
+                                "firstName",
+                                "lastName",
+                                "email",
+                            ], // Include these fields from the User model
+                        },
+                        {
+                            model: UserModel,
+                            as: "updatedByUser", // Include createdByUser
+                            attributes: [
+                                "id",
+                                "firstName",
+                                "lastName",
+                                "email",
+                            ], // Include these fields from the User model
+                        },
+                        {
+                            model: UserModel,
+                            as: "deletedByUser", // Include createdByUser
+                            attributes: [
+                                "id",
+                                "firstName",
+                                "lastName",
+                                "email",
+                            ], // Include these fields from the User model
+                        },
+                        {
+                            model: ProductsCategoryModel,
+                            as: "productCategory", // Include createdByUser
+                            attributes: ["id", "name", "description"], // Include these fields from the User model
+                        },
+                    ],
+                        where: {
+                            id: productsIds
+                        }
+                    });
+
+
+
+                    // Create a map for quick lookup
+                    const productOptionMap = productOptions.reduce((acc, option) => {
+                        acc[option.id] = option.toJSON();
+                        return acc;
+                    }, {});
+                    const productMaps = products.reduce((acc, option) => {
+                        acc[option.id] = option.toJSON();
+                        return acc;
+                    }, {});
+
+                    // Attach product options to order items
+                    orderData.orderItems = orderData.orderItems.map(item => ({
+                        ...item,
+                        productOption: productOptionMap[item.product_option_id] || null,
+                        product_id:productMaps[item.product_id]||null,
+                    }));
+                }
+                return orderData;
+            })
+        );
+
+
+        // Parse the results
+        const parsedOrders = await Promise.all(
+            processedOrders.map(order => parseOrder(order))
+        );
+
+        return {
+            data: parsedOrders,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        };
+    } catch (error) {
+        console.error("Error fetching orders with pagination:", error);
+        throw new Error("Failed to fetch orders.");
     }
+}
+
 
     async processOrder(
         state: OrderState
@@ -252,15 +484,13 @@ export class OrderRepo implements IOrderRepo {
     }
 
     async proceedToPayment(
-        state: OrderState
+        state: OrderState,
+        userId:number
     ): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>> {
         try {
             const order = await new OrderProvider().processOrder(state);
-            const pendingOrderData = await new PendingOrderRepo().createPendigOrderPayload(
-                order.data.parsedOrder,
-                order.data.rpOrder.id
-            );
-            await new PendingOrderRepo().create(pendingOrderData);
+            const pendingOrderData = await new PendingOrderRepo().createPendingOrderPayload(order.data.parsedOrder,order.data.rpOrder.id,userId);
+            await new PendingOrderRepo().create(pendingOrderData)
             await RPOrderTable.create(order.data.rpOrder);
 
             return order;
@@ -273,11 +503,13 @@ export class OrderRepo implements IOrderRepo {
             const orders = await OrderModel.findAll({
                 where: { customer_details: userId },
                 include: [
-                    {
-                        model: NotesModel,
-                        as: "notes",
-                        through: { attributes: [] },
-                    },
+                    { model: UserModel, as: "customer" },
+                    // { model: FranchiseModel, as: "franchise" },
+                    { model: NotesModel, as: "notes", through: { attributes: [] } },
+                    { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
+                    { model: UserModel, as: "createdByUser" },
+                    { model: UserModel, as: "deletedByUser" },
+                    { model: UserModel, as: "updatedByUser" },
                 ],
             });
             return await Promise.all(orders.map((order) => parseOrder(order)));
@@ -342,15 +574,7 @@ export class OrderRepo implements IOrderRepo {
             alreadyProcessed: false,
         };
 
-        //     get pending Order
-        const pendingOrder = (
-            await PendingOrderModel.findOne({
-                where: {
-                    paymentOrderId,
-                },
-                transaction,
-            })
-        ).toJSON();
+        const pendingOrder = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({payment_id:paymentOrderId,})
 
         if (!pendingOrder) {
             return getSuccessDTO(
@@ -358,6 +582,7 @@ export class OrderRepo implements IOrderRepo {
                 `Pending order not found for: paymentOrderId ${paymentOrderId}`
             );
         }
+
 
         res.order = pendingOrder;
 
@@ -372,24 +597,16 @@ export class OrderRepo implements IOrderRepo {
         return getSuccessDTO(res);
     }
 
-    private getStockIds(order: PendingOrder): number[] {
+    private getStockIds(order: ParsedOrder): number[] {
         return order.items.map((item) => item.id);
     }
-    private async processStock(transaction: Transaction, order: PendingOrder) {
+    private async processStock(transaction: Transaction, order: ParsedOrder) {
         const stocksMap = await this.getStocksMap(transaction, this.getStockIds(order));
 
-        //     decrement stock
         for (const item of order.items) {
             const stockOption = stocksMap.get(item.id);
             if (!stockOption || stockOption.stock < item.quantity) {
-                // todo @sumeet: handle the stock anomaly against this
-                // anomaly case;
-
                 const anomalyQty = item.quantity - (stockOption?.stock ?? 0);
-                order.anomalies.push({
-                    id: item.id,
-                    quantity: anomalyQty,
-                });
             } else {
                 stockOption.stock -= item.quantity;
                 stocksMap.set(item.id, stockOption);
@@ -417,7 +634,7 @@ export class OrderRepo implements IOrderRepo {
      * @param order
      * @private
      */
-    private async createOrderAndUpdatePendingOrder(transaction: Transaction, order: PendingOrder) {
+    private async createOrderAndUpdatePendingOrder(transaction: Transaction, order: ParsedOrder) {
         // todo @Mandeep handle this function
         //     save order in order table
         //     update in pendingOrder table

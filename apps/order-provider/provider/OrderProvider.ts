@@ -1,20 +1,22 @@
 import {
     OrderState,
-    RPOrder,
-    ParsedOrder,
     OrderStatus,
+    ParsedOrder,
     PAYMENT_TYPE,
-    Order,
-    RP_ORDER_STATUS,
+    RPOrder,
 } from "apps/order/interface/Order";
-import { Address } from "apps/address/interface/Address";
-import { IOrderProvider } from "./IOrderProvider";
-import { AddressRepo } from "apps/address/repositories/AddressRepo";
-import { BaseCartProduct, Cart } from "apps/cart-products/interface/Cart";
-import { AdminRepo } from "apps/user/models/user";
-import { TUserWithPermission } from "types/admin/admin-user";
-import { getCartItemPayableIncTax, getCartItemTax } from "../utils/order-utils";
-import { ParsedUser, USER_STATUS, USER_TYPE } from "apps/user/interface/user";
+import {Address} from "apps/address/interface/Address";
+import {IOrderProvider} from "./IOrderProvider";
+import {AddressRepo} from "apps/address/repositories/AddressRepo";
+import {AdminRepo} from "apps/user/models/user";
+import {TUserWithPermission} from "types/admin/admin-user";
+import {getCartItemPayableIncTax, getCartItemTax} from "../utils/order-utils";
+import {
+    MetaUser,
+    ParsedUser,
+    USER_STATUS,
+    USER_TYPE
+} from "apps/user/interface/user";
 import {
     DISCOUNT_COMP_TYPE,
     IDiscComponent,
@@ -25,32 +27,34 @@ import {
     PriceComponent,
     VALUE_TYPE,
 } from "apps/order/interface/OrderItem";
-import { ProductRepo } from "apps/product/repos/productRepo";
-import { ProductOptionRepo } from "apps/product-options/repos/productOptionsRepo";
+import {ProductRepo} from "apps/product/repos/productRepo";
 import {
     HandleCouponValidateResult,
     WrapperValidateResult,
 } from "apps/common/models/CheckOutPageState";
-import { COUPON_STATUS, DISCOUNT_TYPE } from "apps/coupons/models/Coupon";
+import {COUPON_STATUS, DISCOUNT_TYPE} from "apps/coupons/models/Coupon";
 
-import { CartDetailRepo } from "apps/cart-details/repos/cartDetailRepo";
-import { ParsedCartProductDetails } from "apps/cart-details/interface/CartDetail";
-import { CURRENCY_TYPE, RPOrderParams } from "apps/razorpay/models/RPModels";
-import { Orders } from "node_modules/razorpay/dist/types/orders";
-import { RazorpayProvider } from "apps/razorpay/repositories/razorpay/RazorpayProvider";
-import { ParsedProduct, TaxRate } from "../../product/interface/Product";
+import {CartDetailRepo} from "apps/cart-details/repos/cartDetailRepo";
+import {ParsedCartProductDetails} from "apps/cart-details/interface/CartDetail";
+import {CURRENCY_TYPE, RPOrderParams} from "apps/razorpay/models/RPModels";
+import {Orders} from "node_modules/razorpay/dist/types/orders";
+import {
+    RazorpayProvider
+} from "apps/razorpay/repositories/razorpay/RazorpayProvider";
+import {ParsedProduct, TaxRate} from "../../product/interface/Product";
 import {
     DTO,
     getHandledErrorDTO,
     getSuccessDTO,
     getUnhandledErrorDTO,
 } from "apps/common/models/DTO";
-
-import { PendingOrderRepo } from "apps/pending-orders/repos/PendingOrderRepo";
-import { PendingOrder, PendingOrderPayload } from "apps/pending-orders/interface/PendingOrder";
-import { runAtomicFetch } from "../../common/utils/atomic-fetch/atomic-fetch";
+import {runAtomicFetch} from "../../common/utils/atomic-fetch/atomic-fetch";
 import RepoProvider from "../../RepoProvider";
 import { RPOrderTable } from "../../rp-order/models/RPOrderTable";
+import user from "../../test-user/api/user";
+import { FRANCHISE_STATUS } from "../../franchise/interface/Franchise";
+import TaxRateRepo from "apps/tax-rate/repos/TaxRateRepo";
+
 export class OrderProvider implements IOrderProvider {
     async processOrder(
         state: OrderState
@@ -68,8 +72,6 @@ export class OrderProvider implements IOrderProvider {
         if (!billingAddress.success) return getUnhandledErrorDTO("billingAddress not found");
         if (!shippingAddress.success) return getUnhandledErrorDTO("shippingAddress not found");
 
-        console.log("shippppp", shippingAddress);
-
         // Prepare the order using the fetched data
         const order = await this.prepareOrder(
             user.data,
@@ -82,7 +84,6 @@ export class OrderProvider implements IOrderProvider {
         // calculate Order
         await this.calculateOrder(order, user.data);
 
-
         // Transform the order into RPOrder and ParsedOrder
         const rpOrderRes = await this.transformToRPOrder(order);
 
@@ -90,16 +91,12 @@ export class OrderProvider implements IOrderProvider {
         // await new PendingOrderRepo().create(pendingOrderData)
         // await RPOrderTable.create(rpOrderRes.data);
 
-
         if (!rpOrderRes.success) return getUnhandledErrorDTO("Failed to create RP Order");
 
         return getSuccessDTO({ rpOrder: rpOrderRes.data, parsedOrder: order });
     }
 
     async processPostOrder(paymentOrderId: string, paymentId: string): Promise<DTO<null>> {
-        // revalidate the payment with razorpay
-
-        // TODO @sumeet sir
 
         const validationRes = await this.verifyFromRazorpay(paymentId);
         if (!validationRes) return getHandledErrorDTO(`revalidation failed for: ${paymentOrderId}`);
@@ -130,8 +127,7 @@ export class OrderProvider implements IOrderProvider {
     ): Promise<ParsedOrder> {
         // calculate Order
 
-        let result = await this.getCalculatedOrder(order, currUser);
-        return result;
+        return await this.getCalculatedOrder(order, currUser);
     }
 
     private calculateBasePrice(order: ParsedOrder): DTO<ParsedOrder> {
@@ -253,7 +249,6 @@ export class OrderProvider implements IOrderProvider {
     }
 
     private calculateShipping(order: ParsedOrder) {
-        // todo @nitesh add shipping logic here
         return order;
     }
 
@@ -332,12 +327,39 @@ export class OrderProvider implements IOrderProvider {
             createdAt: currUser.createdAt,
             updatedAt: currUser.updatedAt,
             deletedAt: currUser.deletedAt,
-            createdBy: currUser.createdBy,
+            profilePhoto: currUser.profilePhoto,
+            createdBy: currUser.createdBy as unknown as  MetaUser,
         };
 
         const orderItems = await this.getOrderProcessCart(cart);
 
         const order: ParsedOrder = {
+            franchise: {
+                id: 0,
+                pocName: "",
+                pocEmail: "",
+                pocPhoneNumber: "",
+                users: [],
+                region: undefined,
+                area: "",
+                agreementIds: [],
+                paymentIds: [],
+                organization: undefined,
+                status: FRANCHISE_STATUS.Active,
+                establishedDate: undefined,
+                affiliate: undefined,
+                location: undefined,
+                sm: [],
+                assignedUser: undefined,
+                createdBy: 0 as unknown as MetaUser,
+                updatedBy: 0,
+                deletedBy: 0,
+                createdAt: undefined,
+                updatedAt: undefined,
+                deletedAt: undefined,
+                commissionMap: []
+            },
+            orderType: undefined,
             id: 0,
             status: OrderStatus.PROCESSED,
             total: 0,
@@ -345,7 +367,7 @@ export class OrderProvider implements IOrderProvider {
             deliveryStatus: "",
             customerDetails: user,
             paymentType: paymentData,
-            paymentId: 0,
+            paymentId: "",
             cancelledItems: [],
             totalDiscount: 0,
             deliveryDetails: null,
@@ -365,7 +387,7 @@ export class OrderProvider implements IOrderProvider {
             couponCodes: [],
             discount: {},
             price: {},
-            createdBy: 0,
+            createdBy: 0  as unknown as  MetaUser
         };
 
         // SET ORDER ITEMS
@@ -590,6 +612,7 @@ export class OrderProvider implements IOrderProvider {
         price: number,
         taxRate: TaxRate
     ): { prices: Record<string, PriceComponent>; applicableTaxPercent: number } {
+
         let taxPercent = 0;
         let priceObj: Record<string, PriceComponent> = {
             [PRICE_COMP_TYPE.BASE_PRICE]: {
@@ -621,14 +644,23 @@ export class OrderProvider implements IOrderProvider {
         cartItem: ParsedCartProductDetails
     ): Promise<ParsedOrderItem> {
         const product = await new ProductRepo().getById(cartItem.product.id);
+        let taxRateRes = await new TaxRateRepo().getById(product.tax_rate_id);
 
-        // todo rajinder fetch here tax from api
 
-        const taxRate: TaxRate = {
+        let taxRate: TaxRate = {
             id: 0,
             title: "",
-            value: 18,
+            value: 0,
         };
+
+        if (taxRateRes) {
+            taxRate = {
+                id: taxRateRes.id,
+                title: taxRateRes.title,
+                value: taxRateRes.value,
+            };
+        }
+
         // calculate tax
         const priceCom = this.getPriceIncludedTax(cartItem.variation.price, taxRate);
 
@@ -741,7 +773,7 @@ export class OrderProvider implements IOrderProvider {
 
     //     Process Post Order private functions
 
-    private async performPostPaymentTasks(order: PendingOrder): Promise<void> {
+    private async performPostPaymentTasks(order: ParsedOrder): Promise<void> {
         // todo @Nitesh add more tasks here!!
         const p1 = this.sendOrderMailAtomic(order);
 
@@ -749,7 +781,7 @@ export class OrderProvider implements IOrderProvider {
     }
 
     private async sendOrderMailAtomic(
-        order: PendingOrder
+        order: ParsedOrder
         // paymentVerificationMethod: PAYMENT_VERIFICATION_METHODS,
     ) {
         // const orderMetaField = ORDER_META_FIELDS.CONFIRMATION_MAIL;
@@ -775,7 +807,7 @@ export class OrderProvider implements IOrderProvider {
     }
 
     // todo @Nitesh add mailing function here.
-    private async sendOrderMail(order: PendingOrder): Promise<boolean> {
+    private async sendOrderMail(order: ParsedOrder): Promise<boolean> {
         //     send mail functions
 
         throw new Error("method not implemented");

@@ -1,5 +1,6 @@
-import AdminController from "../../user/controllers/user";
-import {Auth} from "../../auth/models";
+import { Sequelize } from "sequelize";
+import AdminController from "apps/user/controllers/user";
+import {Auth} from "apps/auth/models";
 import {
     checkFirebaseUser,
     createFirebaseUser,
@@ -30,18 +31,17 @@ import {OptionsValueModel} from "apps/optionsValue/models/OptionValueTable";
 import {ProductModel} from "apps/product/model/productTable";
 import {
     ProductVariationsModel
-} from "../../product-options/models/ProductVariationTable";
+} from "apps/product-options/models/ProductVariationTable";
 import express, {Request, Response} from "express";
 import {validateCreateAdminBody} from "../validations/user";
 import config from "src/config/config";
-import { exec } from "child_process";
+
 import { sequelize } from "config";
 import {
     BUSINESS_TYPE,
     IOrganizationPayloadData, ORGANIZATION_TYPE
-} from "../../organization/interface/organization";
-import { Sequelize } from "sequelize";
-import { extraFieldTypes, LeadAddress, LeadPayload, LeadSource, LeadStatus } from "apps/lead/interface/lead";
+} from "apps/organization/interface/organization";
+
 import { LeadRepo } from "apps/lead/models/lead";
 const router = express.Router();
 
@@ -503,23 +503,24 @@ async function createProductWithAssociations(req: Request, res: Response) {
             console.log("Product variations created:",
                 createdVariations.map((v) => v.id));
 
+            await  createdProduct.addVariations(createdVariations)
             // Use mixin to associate variations
-            await createdProduct.addVariations(
-                createdVariations.map((v) => v.id),
-                // transaction
-            );
+            // await createdProduct.addVariations(
+            //     createdVariations.map((v) => v.id),
+            //     // transaction
+            // );transaction
         }
 
         // Commit the transaction
         // await transaction.commit();
         console.log("Transaction committed successfully");
 
-        return {
+        return res.status(200).json({
             category: categoryCreated,
             options: optionsCreated,
             optionValues: optionsValueCreated,
             product: createdProduct,
-        }
+        })
     }
     catch (err) {
         console.error("Error during transaction:", err);
@@ -548,8 +549,8 @@ async function resetDatabase(req, res) {
         host: development.host,
         dialect: 'postgres',
     });
-    
-    try{  
+
+    try{
         console.log('Terminating existing connections...');
         await adminConnection.query(`
             SELECT pg_terminate_backend(pg_stat_activity.pid)
@@ -559,7 +560,7 @@ async function resetDatabase(req, res) {
         `);
 
         console.log('Dropping database...');
-        await adminConnection.query(`DROP DATABASE IF EXISTS ${development.database};`); 
+        await adminConnection.query(`DROP DATABASE IF EXISTS ${development.database};`);
         console.log('Creating database...');
         await adminConnection.query(`CREATE DATABASE ${development.database};`);
         console.log('Database dropped and created programmatically.');
@@ -589,7 +590,7 @@ async function resetDatabase(req, res) {
         await adminConnection.close();
         await sequelize.close();
     }
-   
+
 }
 
 async function createSuperOrgHandler(req, res){
@@ -633,10 +634,10 @@ async function createSuperOrgHandler(req, res){
             const hashedPassword = await createPassword(password);
 
             const data:TUser={
-                "firstName": "Root",
-                "lastName": "User",
-                "phoneNumber": "+918220735528",
-                nameForSearch: "",
+                "firstName": "Tongue Tingler",
+                "lastName": "Bot",
+                "phoneNumber": "+910000000000",
+                nameForSearch: "system",
                 referBy: undefined,
                 "type": USER_TYPE.ADMIN,
                 email,
@@ -717,7 +718,7 @@ async function createSuperOrgHandler(req, res){
         if (createSampleData) {campaignCreated = await createDummyMaster(admin.id);}
 
         if(campaignCreated){
-            console.log("campaignCreated: ",campaignCreated)
+            console.log("campaignCreated: ", campaignCreated)
             // await createDummyLead(admin.id)
         }
 

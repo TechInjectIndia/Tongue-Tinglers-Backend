@@ -33,9 +33,13 @@ import {loggerMiddleware} from "./apps/logger/middlewares/loggerMiddleware";
 import {
     PendingOrderModel
 } from "./apps/pending-orders/models/PendingOrderTable";
-import {parseAndSavePendingOrderToOrder} from "./apps/order/parser/parseOrder";
+import {
+    parseAndSavePendingOrderToOrder,
+    parsedToPayload
+} from "./apps/order/parser/parseOrder";
 import {OrderRepo} from "./apps/order/repos/orderRepo";
 import RepoProvider from "./apps/RepoProvider";
+import commissionCron from "apps/commission/cron/commissionCron";
 
 
 declare global {
@@ -110,27 +114,27 @@ server.use(xss()); // Purpose: Middleware for Express to sanitize user input
 server.use(expressSanitizer());
 // server.use(limiter); // Purpose: Limits repeated requests to public APIs
 // and/or endpoints, which helps to prevent
-server.use(cors(corsOptions)); // Purpose: Provides a middleware for enabling
-                               // Cross-Origin Resource Sharing (CORS) with
-                               // various
+server.use(cors(corsOptions));
 server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");
 
 server.get("/a", async (_, res) => {
-
-    console.log("Hello")
-    const dd = await PendingOrderModel.findOne({where:{id:1}});
-    console.log(dd.toJSON());
-    const resp = await  parseAndSavePendingOrderToOrder(dd.toJSON())
-    res.send(resp)
+    const response = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({id:1});
+    const payload = parsedToPayload(response);
+    const ress = await  RepoProvider.orderRepo.createOrder(payload);
+    res.json(response)
 });
-
+//
 server.get("/", async (_, res) => {
     const resp = await  RepoProvider.orderRepo.getAllOrders(100,100,'',{})
     res.send(resp)
 });
+
+
+
 server.use("/api", router);
 
+commissionCron.startCron("11 15 * * *");
 const PORT = CONFIG.PORT;
 try {
     server.listen(PORT, () =>

@@ -11,10 +11,12 @@ interface CommissionCreationAttributes extends Optional<ICommission, 'id' | 'cre
 
 class CommissionTable extends Model<ICommission, CommissionCreationAttributes> implements ICommission {
     public id: number;
+
     public title: string;
     public type: CommissionType;
     public value: number;
     public eventType: CommissionEventType;
+
     public createdBy: number;
     public updatedBy: number | null;
     public deletedBy: number | null;

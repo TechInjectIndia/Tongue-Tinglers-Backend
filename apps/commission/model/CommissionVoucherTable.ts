@@ -18,11 +18,15 @@ class CommissionVoucherModel
     extends Model<ICommissionVoucher, CommissionVoucherCreationAttributes>
     implements ICommissionVoucher {
     public id: number;
+
     public relationId: number;
+
     public entityId: number;
     public entityType: COMMISSION_VOUCHER_ENTITIES;
+
     public status: COMMISSION_PAID_STATUS;
     public value: number;
+
     public createdBy: number;
     public updatedBy: number | null;
     public deletedBy: number | null;

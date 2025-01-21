@@ -84,6 +84,7 @@ import {
 } from "../inventory/purchase_invoice/database/PurchaseInvoiceTable";
 import { CommissionVoucherModel } from "apps/commission/model/CommissionVoucherTable";
 import { TaxRateModel } from "apps/tax-rate/models/TaxRateTable";
+import CommissionPayoutModel from "../commission/model/CommissionPayoutTable";
 
 const m = [
      ProposalModel,
@@ -202,7 +203,8 @@ const models = {
     PendingOrder: PendingOrderModel.initModel(),
     RPOrderTable:RPOrderTable.initModel(),
     B2CUserAddress: B2CUserAddressModel.initModel(),
-    TaxRate: TaxRateModel.initModel()
+    TaxRate: TaxRateModel.initModel(),
+    CommissionPayoutModel: CommissionPayoutModel.initModel()
 };
 
 let currentModel: string = null;

@@ -17,7 +17,7 @@ import {BankDetails} from "apps/organization/interface/organization";
 import * as process from "node:process";
 import CommissionPayoutModel, {
     PayoutCreationAttributes
-} from "../model/CommissionPayoutModel";
+} from "../model/CommissionPayoutTable";
 
 let commissionCronJob = null;
 const key_id = process.env.ENVIRONMENT === "PROD"

@@ -1,5 +1,7 @@
 import {DataTypes, Model, Optional, Sequelize,} from "sequelize";
 import {CommissionVoucherModel} from "./CommissionVoucherTable";
+import RepoProvider from "../../RepoProvider";
+import {sequelize} from "../../../config";
 
 export enum PayoutStatus {
     queued='queued',
@@ -25,18 +27,19 @@ export interface PayoutAttributes {
 
 export type PayoutCreationAttributes = Optional<PayoutAttributes, "id" | "createdAt" | "updatedAt">;
 
-class Payout extends Model<PayoutAttributes, PayoutCreationAttributes>
+class CommissionPayoutModel extends Model<PayoutAttributes, PayoutCreationAttributes>
     implements PayoutAttributes {
     public id!: number;
     public voucherId!: number;
     public fundAccountId!: string;
     public amount!: number;
     public currency!: string;
-    public status!: string;
+    public status!: PayoutStatus;
+
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
-    static initialize(sequelize: Sequelize) {
+    static initModel() {
         this.init(
             {
                 id: {
@@ -73,14 +76,48 @@ class Payout extends Model<PayoutAttributes, PayoutCreationAttributes>
                 timestamps: true,
             }
         );
+        return CommissionPayoutModel;
     }
 
     static associate() {
-        Payout.belongsTo(CommissionVoucherModel, {
+        CommissionPayoutModel.belongsTo(CommissionVoucherModel, {
             foreignKey: "voucherId",
             as: "commissionVoucher",
         });
     }
+
+    static hook() {
+        //todo test @Dhruv
+        CommissionPayoutModel.addHook("afterCreate", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "create",
+                "CommissionPayout",
+                instance,
+                options
+            );
+        });
+
+        // After Update Hook - Log the updated fields of the CommissionPayout
+        CommissionPayoutModel.addHook("afterUpdate", async (instance, options) => {
+            // Now call logModelAction as before
+            await RepoProvider.LogRepo.logModelAction(
+                "update",
+                "CommissionPayout",
+                instance,
+                options
+            );
+        });
+
+        // After Destroy Hook - Log the deletion of the CommissionPayout
+        CommissionPayoutModel.addHook("afterDestroy", async (instance, options) => {
+            await RepoProvider.LogRepo.logModelAction(
+                "delete",
+                "CommissionPayout",
+                instance,
+                options
+            );
+        });
+    }
 }
 
-export default Payout;
+export default CommissionPayoutModel;

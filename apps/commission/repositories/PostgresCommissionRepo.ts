@@ -18,7 +18,7 @@ import {
 } from "../interface/Commission";
 import { CommissionVoucherModel, ICommissionVoucher } from "../model/CommissionVoucherTable";
 import { OrderModel } from "apps/order/models/OrderTable";
-import CommissionPayoutModel from "../model/CommissionPayoutModel";
+import CommissionPayoutModel from "../model/CommissionPayoutTable";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
 
@@ -53,7 +53,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
             const response: ICommissionEntityMappingResponse[] = [];
 
-            /* TODO: @rashmeet Mandeep Singh(self), change this after the dependency is done */
+            /* TODO: @dhruv Mandeep Singh(self), change this after the dependency is done */
 
 
             for (const commissionMapping of result) {

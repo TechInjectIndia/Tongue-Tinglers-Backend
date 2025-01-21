@@ -30,10 +30,9 @@ export class ResendController implements IResendController {
                 subject: mailOptions.subject,
                 react: mailOptions.react ? mailOptions.react : null,
                 html: mailOptions.html ? (mailOptions.html as string) : undefined,
-                attachments: mailOptions.attachments ? mailOptions.attachments : undefined,
+                attachments: mailOptions.attachments ? [{filename : "invoice.pdf", content: mailOptions.attachments[0].path}] : undefined,
             });
             //
-            console.log(response);
 
             if (response.error !== null) {
                 return getUnhandledErrorDTO(response.error.message, response.error.message);

@@ -9,6 +9,7 @@ import { CommissionTable } from "../model/CommmisionTable";
 import {ParsedFranchise} from "../../franchise/interface/Franchise";
 import {ParsedOrder} from "../../order/interface/Order";
 import {PayoutStatus} from "../model/CommissionPayoutTable";
+import {ParsedOrganization} from "../../organization/interface/organization";
 
 // Interface behind Commission Model
 interface ICommission extends BaseMeta {
@@ -31,9 +32,6 @@ enum CommissionEventType {
 }
 
 
-
-
-
 type CommissionDetails = CommissionVoucherModel & {
     commissionEntity: CommissionEntityMappingModel
 } & CommissionTable;
@@ -54,7 +52,6 @@ interface OrganizationPaymentDetails {
     ifsc : string,
     voucherId: number
 }
-
 
 
 // parsed commission
@@ -85,6 +82,11 @@ interface  ParsedVoucher extends  ParsedMeta {
     value: number;
 }
 
+interface  ParsedCommissionEntityMapping extends  ParsedMeta {
+    id: number;
+    relations: {organization: ParsedOrganization,commission: ParsedCommission }[];
+}
+
 interface  ParsedPayout extends  ParsedMeta{
     id: number;
     voucherId: number;
@@ -95,13 +97,15 @@ interface  ParsedPayout extends  ParsedMeta{
 }
 
 
-
-
 export {
     ICommission,
     CommissionType,
     CommissionEventType,
     CommissionDetails,
     Customer,
-    OrganizationPaymentDetails
+    OrganizationPaymentDetails,
+    ParsedCommission,
+    ParsedVoucher,
+    ParsedPayout,
+    ParsedCommissionEntityMapping
 }

@@ -20,12 +20,11 @@ export interface Invoice {
     // note: string | null;
 }
 
-interface BillingDetails {
+export interface BillingDetails {
     name: string;
-    address: string;
+    address: InvoiceAddress;
     contact: string;
     email: string;
-    pin: string;
 }
 
 interface CompanyDetails {

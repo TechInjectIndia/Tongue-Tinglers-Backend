@@ -224,9 +224,6 @@ export class LeadToProspectMail extends Mail<null> implements IEmail {
                     orderType: ORDER_TYPE.RM_ORDER,
                     franchise: undefined
                 };
-                // let obj = new InvoicePDFProvider();
-                // const resp: DTO<ArrayBuffer> = await obj.generate(order);
-
                 const content = await invoice(order!)
                 // console.log("hjg");
                 

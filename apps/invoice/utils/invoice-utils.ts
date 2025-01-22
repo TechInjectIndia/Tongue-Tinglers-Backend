@@ -1,5 +1,6 @@
 import { ParsedOrder } from "apps/order/interface/Order";
 import { InvoiceAddress } from "../models/Invoice";
+import * as fs from 'fs';
 
 export const getTotalDiscount = (order: ParsedOrder) => {
     let totalDiscount: number = 0;
@@ -55,3 +56,15 @@ export const getStringFromAddress = (address: InvoiceAddress ) => {
 
 //     return subTotal
 // };
+
+export function saveBuffersAsPDF(bufferArray,) {
+
+    
+    fs.mkdirSync('./', { recursive: true }); // Create the directory if it doesn't exist
+
+    // bufferArray.forEach((buffer, index) => {
+        const fileName = `a.pdf`; // e.g., "document_1.pdf"
+        const filePath = `${'./'}/${fileName}`;
+        fs.writeFileSync(filePath, bufferArray);
+    // });
+}

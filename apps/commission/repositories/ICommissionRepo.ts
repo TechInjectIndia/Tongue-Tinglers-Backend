@@ -1,19 +1,26 @@
 import {
     ICommission,
     ParsedCommission,
-    ParsedCommissionEntityMapping
+    ParsedCommissionEntityMapping,
+    ParsedVoucher
 } from "../interface/Commission";
 import {
     COMMISSION_PAID_STATUS,
-    ICommissionEntityMapping,
+    COMMISSION_VOUCHER_ENTITIES,
     CommissionVoucherCreationAttributes,
-    COMMISSION_VOUCHER_ENTITIES
+    ICommissionEntityMapping
 } from "../model/CommissionEntityMappingTable";
-import { ICommissionVoucher } from "../model/CommissionVoucherTable";
+import {ICommissionVoucher} from "../model/CommissionVoucherTable";
 import {DTO} from "apps/common/models/DTO";
 
 
 export interface ICommissionRepo {
+
+    isTitleAlreadyExists(title: string): Promise<DTO<boolean>>;
+
+    search(searchText: string, type?: string): Promise<DTO<ParsedCommission[]>>;
+
+
     //     - create commission - DTO<ParsedCommission|null>
     create(commission: ICommission): Promise<DTO<ParsedCommission>>;
 
@@ -23,51 +30,54 @@ export interface ICommissionRepo {
     //     - delete commission - DTO<boolean>
     delete(ids: number[], deletedById: number): Promise<DTO<boolean>>;
 
-    //     - get all commissions - DTO<Array<ParsedCommission>|null>
-    getAll(): Promise<DTO<Array<ParsedCommission>>>;  // todo @Dhruv make sure this is paginated
+    //     - get all commissions - DTO<Array<ParsedCommission>>
+    // todo @Dhruv make sure this is paginated
+    getAll(): Promise<DTO<Array<ParsedCommission>>>;
 
     //     - get commission by id - DTO<ParsedCommission|null>
     getById(id: number): Promise<DTO<ParsedCommission>>;
 
-    createMapEntities(mapEntities: CommissionVoucherCreationAttributes[], options?: { transaction?: any }): Promise<DTO<boolean>>;
+    //     - create commission mapping - DTO<ParsedCommissionEntityMapping>
+    createCommissionMapping(mapEntities: CommissionVoucherCreationAttributes[],
+        options?: {
+            transaction?: any
+        }): Promise<DTO<ParsedCommissionEntityMapping>>;
 
-    updateMapEntity(id: number, mapEntity: ICommissionEntityMapping): Promise<DTO<boolean>>;
+    //     - update commission mapping - DTO<ParsedCommissionEntityMapping>
+    updateCommissionMapping(id: number,
+        mapEntity: ICommissionEntityMapping): Promise<DTO<ParsedCommissionEntityMapping>>;
 
-    isTitleAlreadyExists(title: string): Promise<DTO<boolean>>;
-
-    search(searchText: string, type?: string): Promise<DTO<ICommission[]>>;
-
-    // get all commission mappings - DTO<Array<ParsedCommissionEntity> | null>
+    // get all commission mappings - DTO<Array<ParsedCommissionEntityMapping>>
+    // todo @Dhruv make sure this is paginated
     getCommissionMappings(): Promise<DTO<ParsedCommissionEntityMapping[]>>;
 
 
-    updateCommissionEntityStatus(id: number, status: COMMISSION_PAID_STATUS): Promise<DTO<boolean>>;
+    updateCommissionEntityStatus(id: number,
+        status: COMMISSION_PAID_STATUS): Promise<DTO<boolean>>;
 
-    addVoucherToEntity(entityId: number, entityType: COMMISSION_VOUCHER_ENTITIES, voucherData: Partial<ICommissionVoucher>)
-
-
-
-
-
-
-
-//     -
-//     - get commission mapping by id - DTO<ParsedCommissionEntity | null>
-//     - create commission mapping - DTO<ParsedCommissionEntity | null>
-//     - update commission mapping - DTO<ParsedCommissionEntity | null>
-//     - delete commission mapping - DTO<boolean>
-//     - get all commission voucher - DTO<Array<ParsedVoucher>|null>
-//     - get commission voucher by id - DTO<ParsedVoucher|null>
-//     - create commission voucher - DTO<ParsedVoucher | null>
-//     - update commission voucher - DTO<ParsedVoucher | null>
-//     - delete commission voucher - DTO<boolean>
-//     - get all commission payout - DTO<Array<ParsedPayout>|null>
-//     - get commission payout by id - DTO<ParsedPayout|null>
-//     - create commission payout - DTO<ParsedPayout|null>
-//     - update commission payout - DTO<ParsedPayout|null>
-//     - delete commission payout - DTO<boolean>
+    //     - create commission voucher - DTO<ParsedVoucher | null>
+    addVoucherToEntity(entityId: number,
+        entityType: COMMISSION_VOUCHER_ENTITIES,
+        voucherData: Partial<ICommissionVoucher>): Promise<DTO<ParsedVoucher>>
 
 
+    /**
+     * todo @Dhruv
+     - get commission mapping by id - DTO<ParsedCommissionEntityMapping>
+     - delete commission mapping - DTO<boolean>
+
+     // todo @Dhruv make sure this is paginated
+     - get all commission voucher - DTO<Array<ParsedVoucher>|null>
+     - get commission voucher by id - DTO<ParsedVoucher|null>
+     - update commission voucher - DTO<ParsedVoucher | null>
+     - delete commission voucher - DTO<boolean>
+
+     // todo @Dhruv make sure this is paginated
+     - get all commission payout - DTO<Array<ParsedPayout>|null> paginated
+     - get commission payout by id - DTO<ParsedPayout|null>
+     - create commission payout - DTO<ParsedPayout|null>
+     - update commission payout - DTO<ParsedPayout|null>
+     */
 
 }
 

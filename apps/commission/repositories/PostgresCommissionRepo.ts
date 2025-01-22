@@ -22,7 +22,7 @@ import CommissionPayoutModel from "../model/CommissionPayoutTable";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
 
-    async getMappingsData(): Promise<APIResponse<ICommissionEntityMappingResponse[]>> {
+    async getCommissionMappings(): Promise<APIResponse<ICommissionEntityMappingResponse[]>> {
         try {
             const result = await CommissionEntityMappingModel.findAll(
                 {
@@ -130,7 +130,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         }
     }
 
-    async createMapEntities(mapEntities: CommissionVoucherCreationAttributes[],
+    async createCommissionMapping(mapEntities: CommissionVoucherCreationAttributes[],
         options?: { transaction?: any }): Promise<APIResponse<boolean>> {
         try {
             const {transaction} = options || {};
@@ -165,7 +165,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         }
     }
 
-    async updateMapEntity(id: number,
+    async updateCommissionMapping(id: number,
         mapEntity: ICommissionEntityMapping): Promise<APIResponse<boolean>> {
         try {
             await CommissionEntityMappingModel.update(mapEntity, {

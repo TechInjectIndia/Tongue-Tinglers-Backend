@@ -324,7 +324,7 @@ export default class ContractController {
             }));
 
             // Create commission mappings
-            await RepoProvider.commissionRepo.createMapEntities(commissionEntries);
+            await RepoProvider.commissionRepo.createCommissionMapping(commissionEntries);
 
             // Send email notification
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password`;

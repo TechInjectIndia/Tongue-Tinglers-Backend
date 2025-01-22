@@ -15,7 +15,7 @@ export class PostgresCommissionController implements ICommissionController {
         res: Response,
         next: NextFunction
     ) {
-        const result = await RepoProvider.commissionRepo.getMappingsData();
+        const result = await RepoProvider.commissionRepo.getCommissionMappings();
         if (!result.success) {
             res.status(500).send(result);
             return;
@@ -70,7 +70,7 @@ export class PostgresCommissionController implements ICommissionController {
             });
         }
 
-        const result = await RepoProvider.commissionRepo.createMapEntities(
+        const result = await RepoProvider.commissionRepo.createCommissionMapping(
             entries);
         if (!result.success) {
              res.status(500).send(result);
@@ -232,7 +232,7 @@ export class PostgresCommissionController implements ICommissionController {
         res.status(200).send(result);
     }
 
-    async updateCommisionEntityStatus(
+    async updateCommissionEntityStatus(
         req: Request,
         res: Response,
         next: NextFunction

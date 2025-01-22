@@ -1,40 +1,31 @@
-import {OrderItem, ParsedOrderItem} from "../interface/orderItem";
+import {ParsedOrderItem} from "../interface/orderItem";
 import {parseProduct} from '../../product/parser/productParser'
-import {
-    ParsedProductOptions,
-    parsedProductOptions
-} from "../../product/interface/ProductOptions";
-import {ParsedOrder} from "../../order/interface/Order";
-import {ParsedProduct} from "../../product/interface/Product";
-import { ProductModel } from "apps/product/model/productTable";
-import { ProductVariationsModel } from "apps/product-options/models/ProductVariationTable";
-import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
-import { OptionsModel } from "apps/options/models/optionTable";
-import { UserModel } from "apps/user/models/UserTable";
-import { ProductsCategoryModel } from "apps/products-category/models/ProductCategoryTable";
-import { ProductOptionRepo } from "apps/product-options/repos/productOptionsRepo";
-import RepoProvider from "../../RepoProvider";
+import { parseUserToMetaUser } from "apps/user/parser/user-parser";
+import { parseProductVariation } from "apps/product-options/parser/parseProductVariation";
 
-const parseOrderItem = (orderItem: OrderItem): ParsedOrderItem => {
+const parseOrderItem = (orderItem: any): ParsedOrderItem => {
+    console.log('orderItem: ', orderItem.variationData);
 
     if(orderItem && !orderItem.id){
         orderItem.id = 0;
     }
 
     const data: ParsedOrderItem = {
-        id: orderItem.id,
-        quantity: orderItem.quantity,
-        total_price: orderItem.total_price,
-        product: orderItem.product_id as unknown as  ParsedProduct,
-        // productOption: parsedProductOptions(orderItem.product_option_id),
-        productOption: orderItem.product_option_id as unknown as ParsedProductOptions,
-        type: orderItem.type,
-        totalTax: orderItem.total_tax,
-        prices: {},
-        disc: {},
+       id: orderItem.id,
+       variation: orderItem.variationData ? parseProductVariation(orderItem.variationData) : null,
+       couponDiscount: orderItem.couponDiscount,
+       price: orderItem.price,
+       totalPrice: orderItem.totalPrice,
+       quantity: orderItem.quantity,
+       totalTax: orderItem.totalTax,
+       type: orderItem.type,
+       createdBy: orderItem.createdByUser ? parseUserToMetaUser(orderItem.createdByUser) : null,
+       updatedBy: orderItem.updatedByUser ? parseUserToMetaUser(orderItem.updatedByUser) : null,
+       deletedBy: orderItem.deletedByUser ? parseUserToMetaUser(orderItem.deletedByUser) : null,
+       createdAt: orderItem.createdAt,
+       updatedAt: orderItem.updatedAt,
+       deletedAt: orderItem.deletedAt
     };
-
-    console.log(data)
 
     return data;
 };

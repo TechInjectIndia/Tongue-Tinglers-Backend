@@ -41,7 +41,7 @@ import { ICommissionRepo } from "./commission/repositories/ICommissionRepo";
 import { PostgresCommissionRepo } from "./commission/repositories/PostgresCommissionRepo";
 import { OrderRepo } from './order/repos/orderRepo';
 import { IPreSaleOrderProvider } from './pre-sale-order/provider/IPreSaleOrderProvider';
-import { PreSaleOrderProvider } from './pre-sale-order/provider/PreSaleOrderProvider';
+// import { PreSaleOrderProvider } from './pre-sale-order/provider/PreSaleOrderProvider';
 import { IRegion } from './region/models/Region';
 import { SocialMediaDetails } from './lead/interface/lead';
 import { IItemCategory } from './inventory/item_category/models/IItemCategory';
@@ -64,7 +64,7 @@ import { PostgresPurchaseInvoiceRepo } from './inventory/purchase_invoice/reposi
 import { IDebitNoteRepo } from './inventory/debit_note/repositories/IDebitNoteRepo';
 import { PostgresDebitNoteRepo } from './inventory/debit_note/repositories/PostgresDebitNoteRepo';
 import {IPendingOrderRepo} from "./pending-orders/repos/IPendingOrderRepo";
-import {PendingOrderRepo} from "./pending-orders/repos/PendingOrderRepo";
+// import {PendingOrderRepo} from "./pending-orders/repos/PendingOrderRepo";
 
 export default class RepoProvider {
   private static _franchiseRepo: IFranchiseRepo;
@@ -224,12 +224,12 @@ export default class RepoProvider {
     return this._agreementDocRepo;
   }
 
-  static get preSaleOrderProvider() {
-    if (!this._preSaleProvider) {
-      this._preSaleProvider = new PreSaleOrderProvider();
-    }
-    return this._preSaleProvider;
-  }
+  // static get preSaleOrderProvider() {
+  //   if (!this._preSaleProvider) {
+  //     this._preSaleProvider = new PreSaleOrderProvider();
+  //   }
+  //   return this._preSaleProvider;
+  // }
 
   static get itemCategoryRepo() {
     if (!this._itemCategoryRepo) {
@@ -296,10 +296,10 @@ export default class RepoProvider {
     return this._debitNoteRepo;
   }
 
-  static get pendingOrderRepo() {
-    if (!this._pendingOrderRepo) {
-      this._pendingOrderRepo = new PendingOrderRepo();
-    }
-    return this._pendingOrderRepo;
-  }
+  // static get pendingOrderRepo() {
+  //   if (!this._pendingOrderRepo) {
+  //     this._pendingOrderRepo = new PendingOrderRepo();
+  //   }
+  //   return this._pendingOrderRepo;
+  // }
 }

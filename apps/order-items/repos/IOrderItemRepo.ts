@@ -1,21 +1,23 @@
-import { BaseOrderItem, OrderItem, ORDER_ITEM_TYPE, UpdateQuantity, UpdateStudentDiscount, UpdateCouponDiscount, UpdatePointsDiscount } from "../interface/orderItem";
+import { Transaction } from "sequelize";
+import { BaseOrderItem, OrderItem, ORDER_ITEM_TYPE, UpdateQuantity, UpdateStudentDiscount, UpdateCouponDiscount, UpdatePointsDiscount, OrderItemPayload, ParsedOrderItem } from "../interface/orderItem";
+import { DTO } from "apps/common/models/DTO";
 export interface IOrderItemRepo {
 
-    createOrderItem(orderItem: BaseOrderItem): Promise<OrderItem>;
+    createOrderItem(orderItem: OrderItemPayload,transaction?:Transaction): Promise<DTO<ParsedOrderItem>>;
 
-    createBulkOrderItem(orderItem: BaseOrderItem[]): Promise<OrderItem[]>
+    createBulkOrderItem(orderItem: OrderItemPayload[],transaction?:Transaction): Promise<DTO<ParsedOrderItem[]>>
 
-    getOrderItemsById(id: number): Promise<OrderItem>;
+    getOrderItemsById(id: number,transaction?:Transaction): Promise<DTO<ParsedOrderItem>>;
     
-    updateOrderItem(orderItem: OrderItem): Promise<OrderItem>;
+    updateOrderItem(id: number, orderItem: OrderItemPayload,transaction?:Transaction): Promise<DTO<ParsedOrderItem>>;
     
-    deleteOrderItem(id: number): Promise<OrderItem>;
+    deleteOrderItem(id: number,transaction?:Transaction): Promise<DTO<ParsedOrderItem>>;
 
-    updateQuantity(quantity: UpdateQuantity): Promise<OrderItem>;
+    updateQuantity(quantity: UpdateQuantity,transaction?:Transaction): Promise<DTO<ParsedOrderItem>>;
 
-    updateCouponDiscount(coupon_discount: UpdateCouponDiscount): Promise<OrderItem>;
+    updateCouponDiscount(coupon_discount: UpdateCouponDiscount,transaction?:Transaction): Promise<DTO<ParsedOrderItem>>;
 
-    updatePointsDiscount(points_discount: UpdatePointsDiscount): Promise<OrderItem>;
+    updatePointsDiscount(points_discount: UpdatePointsDiscount,transaction?:Transaction): Promise<DTO<ParsedOrderItem>>;
 
-    updateStudentDiscount(student_discount: UpdateStudentDiscount): Promise<OrderItem>;
+    updateStudentDiscount(student_discount: UpdateStudentDiscount,transaction?:Transaction): Promise<DTO<ParsedOrderItem>>;
 }

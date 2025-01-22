@@ -126,7 +126,7 @@ const router = Router();
  *         - Orders
  */
 // router.get('/getCart', getCartDetailByUserId);
-router.get('/presale', validate(preSaleOrderParamsValidation), CheckoutController.getPreSaleOrder);
+// router.get('/presale', validate(preSaleOrderParamsValidation), CheckoutController.getPreSaleOrder);
 router.get('/', validate(orderParamsValidation), CheckoutController.getOrder);
 
 export default router;

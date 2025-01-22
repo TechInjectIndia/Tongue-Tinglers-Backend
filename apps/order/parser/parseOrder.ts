@@ -1,119 +1,80 @@
 import {
     BaseOrder,
+    DeliveryStatus,
     ORDER_TYPE,
     OrderPayload,
-    ParsedOrder
+    OrderStatus,
+    ParsedNotes,
+    ParsedOrder,
+    PAYMENT_TYPE
 } from "../interface/Order"
 import {parseOrderItem} from "../../order-items/parser/parseOrderItem";
 import {BaseOrderItem, ORDER_ITEM_TYPE} from "../interface/OrderItem";
 import {OrderModel} from "../models/OrderTable";
 import {OrderItemsModel} from "../../order-items/models/OrderItemsTable";
-import {parseUserToMetaUser} from "apps/user/parser/user-parser";
+import {parseUser, parseUserToMetaUser} from "apps/user/parser/user-parser";
 import {parseFranchise} from "apps/franchise/parser/franchiseParser";
 import {ParsedUser} from "../../user/interface/user";
+import { OrderItemTable } from "apps/order-items/interface/orderItem";
+import sortingLogs from "apps/lead/parser/leadParser";
 
 
 const parseOrder = (order: any): ParsedOrder => {
-
-
-    let productVariations: any;
-
-    if(order.orderItems){
-        productVariations = order.orderItems;
-    } else if(order.pendingOrderItems){
-        productVariations = order.pendingOrderItems;
+    let notesLogs=[];
+    if((order.notes && Array.isArray(order.notes)) && (order.notes.length > 0)){
+        notesLogs = order.notes.flatMap(note => note.logs);
     }
     const data: ParsedOrder = {
-        anomalyArr: [],
-        billingAddress: order.billingAddress,
-        cancelledItems: [],
-        coupon: "",
-        couponCodes: [],
-        createdAt: order.created_at,
-        createdBy: order.createdByUser ? parseUserToMetaUser(order.createdByUser) : null,
-        customerDetails: order.createdByUser as unknown as ParsedUser,
-        deletedAt: order.deletedAt,
-        deletedBy: order.deletedByUser ? parseUserToMetaUser(order.deletedByUser) : null,
-        deliveryDetails: order.delivery_details,
-        deliveryStatus: order.delivery_status,
-        discount: null,
         id: order.id,
-        items: [],
-        notes: [],
-        orderItems: productVariations,
-        paymentId: order.payment_id,
-        paymentType: order.payment_type,
-        price: order.prices,
-        shippingAddress: order.shippingAddress,
         status: order.status,
         total: order.total,
-        totalDiscount: order.total_discount,
-        totalShipping: order.total_shipping,
-        totalTax: order.total_tax,
-        updatedAt: order.updatedAt,
-        updatedBy: order.updatedByUser ? parseUserToMetaUser(order.updatedByUser) : null,
+        totalTax: order.totalTax,
+        deliveryStatus: order.deliveryStatus,
+        customerDetails: order.customer ? parseUser(order.customer) : null,
+        paymentType: order.paymentType,
+        paymentId: order.paymentId,
+        cancelledItems: order.cancelledItems,
+        totalDiscount: order.totalDiscount,
+        deliveryDetails: order.deliveryDetails,
+        shippingAddress: order.shippingAddress,
+        billingAddress: order.billingAddress,
+        totalShipping: order.totalShipping,
+        anomalyArr: order.anomalyArr,
+        items: order.orderItems.map((item: OrderItemTable) => parseOrderItem(item)),
+        price: order.price,
         orderType: order.orderType,
-        franchise: order.franchise ? parseFranchise(order.franchise) : null
+        franchise: order.franchiseData ? parseFranchise(order.franchiseData) : null,
+        notes: order.notes && order.notes.length > 0 ? order.notes.map((note) => parseNotes(note)) : [],
+        createdBy: order.createdByUser ? parseUserToMetaUser(order.createdByUser) : null,
+        updatedBy: order.updatedByUser ? parseUserToMetaUser(order.updatedByUser) : null,
+        deletedBy: order.deletedByUser ? parseUserToMetaUser(order.deletedByUser) : null,
+        createdAt: order.createdAt,
+        updatedAt: order.updatedAt,
+        deletedAt: order.deletedAt,
+        logs: order.logs ? sortingLogs(order.logs, notesLogs) : null
     };
 
     return data; // Return the result
 };
 
-
-// const parseOrder = async (order: any): Promise<ParsedOrder> => {
-//     // console.log('order.orderItems: ', order.orderItems);
-//     const customerDetails = await UserModel.findOne(({where: {id: order.customer_details},attributes:['id', 'firstName', 'lastName','email']}))
-//     console.log('customerDetails: ', customerDetails);
-//     // Use await inside map to ensure promises are resolved
-//     const productVariations = await Promise.all(
-//         order.orderItems.map(async (orderItem: any) => {// Await the parseOrderItem result
-//             return await parseOrderItem(orderItem); // Ensure to return the parsed item
-//         })
-//     );
-
-
-
-//     const data: ParsedOrder = {
-//         anomalyArr: [],
-//         billingAddress: undefined,
-//         cancelledItems: [],
-//         coupon: "",
-//         couponCodes: [],
-//         createdAt: order.created_at,
-//         createdBy: order.createdBy,
-//         customerDetails: customerDetails as unknown as ParsedUser,
-//         deletedAt: order.deletedAt,
-//         deletedBy: order.deletedBy,
-//         deliveryDetails: null,
-//         deliveryStatus: "",
-//         discount: null,
-//         id: 0,
-//         items: [],
-//         notes: [],
-//         orderItems: productVariations, // Now populated with the resolved values
-//         paymentId: 0,
-//         paymentType: null,
-//         price: order.price,
-//         shippingAddress: order.shippingAddress,
-//         status: order.status,
-//         total: 0,
-//         totalDiscount: 0,
-//         totalShipping: 0,
-//         totalTax: 0,
-//         updatedAt: order.updatedAt,
-//         updatedBy: order.updatedBy,
-//     };
-
-//     return data; // Return the result
-// };
-
+const parseNotes = (note: any): ParsedNotes => {
+    return {
+        id: note.id,
+        notes: note.notes,
+        isNew: note.isNew,
+        createdAt: note.createdAt,
+        updatedAt: note.updatedAt,
+        createdBy: note.createdByUser ? parseUserToMetaUser(note.createdByUser) : null,
+        updatedBy: note.updatedByUser ? parseUserToMetaUser(note.updatedByUser) : null,
+    };
+};
 
 export const parseAndSavePendingOrderToOrder = async (pendingOrder:ParsedOrder): Promise<any> => {
     try {
         const payload = parsedToPayload(pendingOrder);
-        const response = await  OrderItemsModel.bulkCreate(payload.orderItems);
-        const orderInstance = await OrderModel.create(payload);
-        await orderInstance.addOrderItems(response)
+        // const response = await  OrderItemsModel.bulkCreate(payload.orderItems);
+        // const orderInstance = await OrderModel.create(payload);
+        // await orderInstance.addOrderItems(response)
 
     } catch (error) {
         console.error("Error parsing pending order to order:", error);
@@ -141,32 +102,40 @@ export const parsedToPayload=(parsed:any)=>{
     const payload:OrderPayload={
         anomalyArr: [],
         billingAddress: parsed.billingAddress,
-        cancelled_items: [],
-        createdBy: parsed.createdBy.id ,
-        customer_details: parsed.createdBy.id,
-        deletedBy: null,
-        delivery_details: "",
-        delivery_status: "",
-        discount_prices: parsed.discount as unknown as any,
+        cancelledItems: [],
+        // cancelled_items: [],
+        // createdBy: parsed.createdBy.id ,
+        // customer_details: parsed.createdBy.id,
+        // deletedBy: null,
+        // delivery_details: "",
+        // delivery_status: "",
+        // discount_prices: parsed.discount as unknown as any,
         franchise: null,
-        item_count: dd.length,
+        // item_count: dd.length,
         notes: [],
-        orderItems: dd,
-        order_type: ORDER_TYPE.SAMPLE_KIT,
-        payment_id: parsed.paymentId,
-        payment_type: parsed.paymentType,
-        prices: parsed.price as unknown as any,
+        // orderItems: dd,
+        // order_type: ORDER_TYPE.SAMPLE_KIT,
+        // payment_id: parsed.paymentId,
+        // payment_type: parsed.paymentType,
+        // prices: parsed.price as unknown as any,
         shippingAddress: parsed.shippingAddress,
-        status: "pending",
+        status: OrderStatus.PENDING,
         total: parsed.total,
-        total_discount: parsed.totalDiscount,
-        total_shipping: parsed.totalShipping,
-        total_tax: parsed.totalTax,
-        updatedBy: null
+        items: [],
+        totalTax: 0,
+        deliveryStatus: DeliveryStatus.PENDING,
+        customerDetails: 0,
+        paymentType: PAYMENT_TYPE.RP_CHECKOUT,
+        paymentId: "",
+        totalDiscount: 0,
+        deliveryDetails: undefined,
+        totalShipping: 0,
+        price: undefined,
+        orderType: ORDER_TYPE.RM_ORDER
     }
 
     return payload;
 }
 
 
-export { parseOrder };
+export { parseOrder, parseNotes };

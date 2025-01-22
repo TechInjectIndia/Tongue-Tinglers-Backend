@@ -67,7 +67,7 @@ const parseLead = (lead: any): ParsedLead => {
 
 export { parseLead };
 
-function sortingLogs(leadsLogs, followDetailsLog){
+export default function sortingLogs(leadsLogs, followDetailsLog){
     const mergedLogs = [...leadsLogs, ...followDetailsLog].sort((a, b) => {
         const dateA = new Date(a.timestamp).getTime();
         const dateB = new Date(b.timestamp).getTime();

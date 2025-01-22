@@ -1,4 +1,5 @@
 import {
+    DeliveryStatus,
     OrderState,
     OrderStatus,
     ParsedOrder,
@@ -273,21 +274,21 @@ export class OrderProvider implements IOrderProvider {
         order.total = this.calculateTotalPrice(order);
 
         const totalDisc = this.getOrderTotalDiscAfterCoupon(order.items);
-        order.coupon = applyCouponRes?.couponObj.code ?? "";
+        // order.coupon = applyCouponRes?.couponObj.code ?? "";
 
-        if (totalDisc) {
-            if (!order.discount[DISCOUNT_COMP_TYPE.COUPON_DISCOUNT]) {
-                order.discount[DISCOUNT_COMP_TYPE.COUPON_DISCOUNT] = {
-                    calc: VALUE_TYPE.PERCENTAGE,
-                    percent: 0,
-                    tax: 0,
-                    taxPercent: 0,
-                    type: DISCOUNT_COMP_TYPE.COUPON_DISCOUNT,
-                    value: 0,
-                };
-            }
-            order.discount[DISCOUNT_COMP_TYPE.COUPON_DISCOUNT].value = totalDisc;
-        }
+        // if (totalDisc) {
+        //     if (!order.discount[DISCOUNT_COMP_TYPE.COUPON_DISCOUNT]) {
+        //         order.discount[DISCOUNT_COMP_TYPE.COUPON_DISCOUNT] = {
+        //             calc: VALUE_TYPE.PERCENTAGE,
+        //             percent: 0,
+        //             tax: 0,
+        //             taxPercent: 0,
+        //             type: DISCOUNT_COMP_TYPE.COUPON_DISCOUNT,
+        //             value: 0,
+        //         };
+        //     }
+        //     order.discount[DISCOUNT_COMP_TYPE.COUPON_DISCOUNT].value = totalDisc;
+        // }
         return getSuccessDTO(order);
     }
 
@@ -322,13 +323,15 @@ export class OrderProvider implements IOrderProvider {
             type: currUser.type as USER_TYPE,
             status: currUser.status as USER_STATUS,
             role: currUser.role,
-            updatedBy: currUser.updatedBy,
-            deletedBy: currUser.deletedBy,
+            // updatedBy: currUser.updatedBy,
+            // deletedBy: currUser.deletedBy,
             createdAt: currUser.createdAt,
             updatedAt: currUser.updatedAt,
             deletedAt: currUser.deletedAt,
             profilePhoto: currUser.profilePhoto,
-            createdBy: currUser.createdBy as unknown as  MetaUser,
+            createdBy: currUser.createdBy as unknown as MetaUser,
+            updatedBy: undefined,
+            deletedBy: undefined
         };
 
         const orderItems = await this.getOrderProcessCart(cart);
@@ -351,19 +354,21 @@ export class OrderProvider implements IOrderProvider {
                 location: undefined,
                 sm: [],
                 assignedUser: undefined,
-                createdBy: 0  as unknown as  MetaUser,
-                updatedBy: 0,
-                deletedBy: 0,
+                createdBy: 0 as unknown as MetaUser,
+                // updatedBy: 0,
+                // deletedBy: 0,
                 createdAt: undefined,
                 updatedAt: undefined,
                 deletedAt: undefined,
+                updatedBy: undefined,
+                deletedBy: undefined
             },
             orderType: undefined,
             id: 0,
             status: OrderStatus.PROCESSED,
             total: 0,
             totalTax: 0,
-            deliveryStatus: "",
+            // deliveryStatus: "",
             customerDetails: user,
             paymentType: paymentData,
             paymentId: "",
@@ -374,7 +379,7 @@ export class OrderProvider implements IOrderProvider {
             billingAddress: billingAddressObj,
             totalShipping: 0,
             anomalyArr: [],
-            coupon: "",
+            // coupon: "",
             items: orderItems,
             updatedBy: { email: "", firstName: "", id: 0, lastName: "" },
             deletedBy: { email: "", firstName: "", id: 0, lastName: "" },
@@ -382,11 +387,13 @@ export class OrderProvider implements IOrderProvider {
             updatedAt: null,
             deletedAt: null,
             notes: [],
-            orderItems: [],
-            couponCodes: [],
-            discount: {},
+            // orderItems: [],
+            // couponCodes: [],
+            // discount: {},
             price: {},
-            createdBy: 0  as unknown as  MetaUser
+            createdBy: 0 as unknown as MetaUser,
+            deliveryStatus: DeliveryStatus.PENDING,
+            logs: []
         };
 
         // SET ORDER ITEMS
@@ -443,7 +450,7 @@ export class OrderProvider implements IOrderProvider {
 
         if (!wrapperCouponRes.inValidCoupon) {
             if (wrapperCouponRes.couponObj) {
-                order.couponCodes = [wrapperCouponRes.couponObj.code];
+                // order.couponCodes = [wrapperCouponRes.couponObj.code];
             }
         }
 
@@ -676,7 +683,7 @@ export class OrderProvider implements IOrderProvider {
         const objItem: ParsedOrderItem = {
             id: cartItem.id,
             product: product,
-            productOption: cartItem.variation.optionsValue,
+            // productOption: cartItem.variation.optionsValue,
             quantity: cartItem.quantity,
             total_price: cartItem.variation.price,
             totalTax: 0,
@@ -684,6 +691,7 @@ export class OrderProvider implements IOrderProvider {
             disc: {},
             type: ORDER_ITEM_TYPE.RETORT,
             totalDiscount: 0,
+            productOption: undefined
         };
 
         return objItem;

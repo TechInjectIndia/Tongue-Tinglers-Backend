@@ -30,15 +30,15 @@ const rateLimiter = new RateLimiterMemory({
 
 import './apps/database/index'
 import {loggerMiddleware} from "./apps/logger/middlewares/loggerMiddleware";
-import {
-    PendingOrderModel
-} from "./apps/pending-orders/models/PendingOrderTable";
-import {
-    parseAndSavePendingOrderToOrder,
-    parsedToPayload
-} from "./apps/order/parser/parseOrder";
-import {OrderRepo} from "./apps/order/repos/orderRepo";
-import RepoProvider from "./apps/RepoProvider";
+// import {
+//     PendingOrderModel
+// } from "./apps/pending-orders/models/PendingOrderTable";
+// import {
+//     parseAndSavePendingOrderToOrder,
+//     parsedToPayload
+// } from "./apps/order/parser/parseOrder";
+// import {OrderRepo} from "./apps/order/repos/orderRepo";
+// import RepoProvider from "./apps/RepoProvider";
 
 
 declare global {
@@ -117,17 +117,17 @@ server.use(cors(corsOptions));
 server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");
 
-server.get("/a", async (_, res) => {
-    const response = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({id:1});
-    const payload = parsedToPayload(response);
-    const ress = await  RepoProvider.orderRepo.createOrder(payload);
-    res.json(response)
-});
+// server.get("/a", async (_, res) => {
+//     // const response = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({id:1});
+//     // const payload = parsedToPayload(response);
+//     // const ress = await  RepoProvider.orderRepo.createOrder(payload);
+//     // res.json(response)
+// });
 //
-server.get("/", async (_, res) => {
-    const resp = await  RepoProvider.orderRepo.getAllOrders(100,100,'',{})
-    res.send(resp)
-});
+// server.get("/", async (_, res) => {
+//     const resp = await  RepoProvider.orderRepo.getAllOrders(100,100,'',{})
+//     res.send(resp)
+// });
 server.use("/api", router);
 
 const PORT = CONFIG.PORT;

@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "@hapi/joi";
 import { validateReq } from "../../../libraries";
+import { DeliveryStatus, ORDER_TYPE, OrderStatus, PAYMENT_TYPE } from "../interface/Order";
+import { ORDER_ITEM_TYPE } from "../interface/OrderItem";
+import { PRODUCTS_TYPE } from "apps/product/interface/Product";
 
 const orderValidationSchema = Joi.object({
     order_items: Joi.array()
@@ -113,6 +116,203 @@ const orderValidationSchema = Joi.object({
         }),
 });
 
+const orderSchema = Joi.object({
+    status: Joi.string()
+        .valid(...Object.values(OrderStatus))
+        .required()
+        .messages({
+            "any.required": "Order status is required.",
+            "any.only": `Order status must be one of ${Object.values(OrderStatus).join(", ")}.`,
+        }),
+    total: Joi.number().positive().required().messages({
+        "number.base": "Total must be a number.",
+        "number.positive": "Total must be a positive number.",
+        "any.required": "Total is required.",
+    }),
+    totalTax: Joi.number().positive().required().messages({
+        "number.base": "Total tax must be a number.",
+        "number.positive": "Total tax must be a positive number.",
+        "any.required": "Total tax is required.",
+    }),
+    deliveryStatus: Joi.string()
+        .valid(...Object.values(DeliveryStatus))
+        .required()
+        .messages({
+            "any.required": "Delivery status is required.",
+            "any.only": `Delivery status must be one of ${Object.values(DeliveryStatus).join(", ")}.`,
+        }),
+    customerDetails: Joi.number().integer().positive().required().messages({
+        "number.base": "Customer details must be a number.",
+        "number.integer": "Customer details must be an integer.",
+        "number.positive": "Customer details must be a positive number.",
+        "any.required": "Customer details are required.",
+    }),
+    paymentType: Joi.string()
+        .valid(...Object.values(PAYMENT_TYPE))
+        .required()
+        .messages({
+            "any.required": "Payment type is required.",
+            "any.only": `Payment type must be one of ${Object.values(PAYMENT_TYPE).join(", ")}.`,
+        }),
+    paymentId: Joi.string().required().messages({
+        "any.required": "Payment ID is required.",
+    }),
+    cancelledItems: Joi.array()
+        .items(Joi.number().integer().positive())
+        .allow(null)
+        .messages({
+            "array.base": "Cancelled items must be an array of numbers.",
+            "array.includes": "Cancelled items must contain only positive integers.",
+        }),
+    totalDiscount: Joi.number().allow(null).messages({
+        "number.base": "Total discount must be a number.",
+    }),
+    deliveryDetails: Joi.string().allow(null, "").messages({
+        "string.base": "Delivery details must be a string.",
+    }),
+    shippingAddress: Joi.object({
+        street: Joi.string().required().messages({
+            "any.required": "Street in Shipping address is required.",
+        }),
+        city: Joi.string().required().messages({
+            "any.required": "City in shipping address is required.",
+        }),
+        state: Joi.string().required().messages({
+            "any.required": "State in shipping address is required.",
+        }),
+        postalCode: Joi.string().required().messages({
+            "any.required": "Postal code in shipping address is required.",
+        }),
+        country: Joi.string().required().messages({
+            "any.required": "Country in shipping address is required.",
+        }),
+        phoneNumber: Joi.string().required().messages({
+            "any.required": "Phone number in shipping address is required.",
+        }),
+        firstName: Joi.string().required().messages({
+            "any.required": "First name in shipping address is required.",
+        }),
+        lastName: Joi.string().required().messages({
+            "any.required": "Last name in shipping address is required.",
+        }),
+    }).required(),
+    billingAddress: Joi.object({
+        street: Joi.string().required().messages({
+            "any.required": "Street in Shipping address is required.",
+        }),
+        city: Joi.string().required().messages({
+            "any.required": "City in shipping address is required.",
+        }),
+        state: Joi.string().required().messages({
+            "any.required": "State in shipping address is required.",
+        }),
+        postalCode: Joi.string().required().messages({
+            "any.required": "Postal code in shipping address is required.",
+        }),
+        country: Joi.string().required().messages({
+            "any.required": "Country in shipping address is required.",
+        }),
+        phoneNumber: Joi.string().required().messages({
+            "any.required": "Phone number in shipping address is required.",
+        }),
+        firstName: Joi.string().required().messages({
+            "any.required": "First name in shipping address is required.",
+        }),
+        lastName: Joi.string().required().messages({
+            "any.required": "Last name in shipping address is required.",
+        }),
+    }).required(),
+    totalShipping: Joi.number().required().messages({
+        "number.base": "Total shipping must be a number.",
+        "any.required": "Total shipping is required.",
+    }),
+    anomalyArr: Joi.array()
+        .items(Joi.number().integer())
+        .allow(null)
+        .messages({
+            "array.base": "Anomaly array must be an array of numbers.",
+        }),
+    price: Joi.object({
+        basePrice: Joi.number().required().messages({
+            "any.required": "Base price is required.",
+        }),
+        discountedPrice: Joi.number().required().messages({
+            "any.required": "Discounted price is required.",
+        }),
+        taxAmount: Joi.number().required().messages({
+            "any.required": "Tax amount is required.",
+        }),
+    }).required(),
+    orderType: Joi.string()
+        .valid(...Object.values(ORDER_TYPE))
+        .required()
+        .messages({
+            "any.required": "Order type is required.",
+            "any.only": `Order type must be one of ${Object.values(ORDER_TYPE)}.`,
+        }),
+    franchise: Joi.number().integer().allow(null).messages({
+        "number.base": "Franchise must be a number.",
+    }),
+    items: Joi.array()
+        .items(
+            Joi.object({
+                product: Joi.number().required().messages({
+                    "any.required": "Product ID is required in items.",
+                }),
+                variation: Joi.number().required().messages({
+                    "any.required": "Variation ID is required in items.",
+                }),
+                quantity: Joi.number().required().messages({
+                    "any.required": "Quantity is required in items.",
+                }),
+                price: Joi.object({
+                    basePrice: Joi.number().required().messages({
+                        "any.required": "Base price is required in items.",
+                    }),
+                    discountedPrice: Joi.number().required().messages({
+                        "any.required": "Discounted price is required in items.",
+                    }),
+                    taxAmount: Joi.number().required().messages({
+                        "any.required": "Tax amount is required in items.",
+                    }),
+                }).required(),
+                totalPrice: Joi.number().required().messages({
+                    "any.required": "Total price is required in items.",
+                }),
+                totalTax: Joi.number().required().messages({
+                    "any.required": "Total tax is required in items.",
+                }),
+                couponDiscount: Joi.number().optional(),
+                type: Joi.string().valid(...Object.values(PRODUCTS_TYPE)).required().messages({
+                    "any.required": "Type is required in items.",
+                }),
+            })
+        )
+        .required()
+        .messages({
+            "array.base": "Items must be an array.",
+            "array.includes": "Items contain invalid data.",
+        }),
+    notes: Joi.array().optional()
+        // .items(
+        //     Joi.object({
+        //         content: Joi.string().required().messages({
+        //             "any.required": "Content is required in notes.",
+        //         }),
+        //         createdBy: Joi.number().integer().positive().required().messages({
+        //             "any.required": "Created by ID is required in notes.",
+        //         }),
+        //         updatedBy: Joi.number().integer().positive().allow(null).messages({
+        //             "number.base": "Updated by ID in notes must be a number.",
+        //         }),
+        //     })
+        // )
+        // .allow([])
+        // .messages({
+        //     "array.base": "Notes must be an array.",
+        // }),
+});
+
 const getOrderByIdValidationSchema = Joi.object({
     id: Joi.number()
         .integer()
@@ -162,7 +362,7 @@ export const validateCreateOrder = (
     req: Request,
     res: Response,
     next: NextFunction
-) => validateReq(req, res, next, orderValidationSchema, "body");
+) => validateReq(req, res, next, orderSchema, "body");
 
 export const validateGetOrderById = (
     req: Request,

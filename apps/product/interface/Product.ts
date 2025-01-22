@@ -1,5 +1,5 @@
 import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
-import { BaseProductOptions, ParsedProductOptions } from "./ProductOptions";
+import { BaseProductOptions, ParsedVariations } from "./ProductOptions";
 import { ParsedCategory } from "apps/products-category/interface/Category";
 
 // received from frontend
@@ -67,7 +67,7 @@ interface ParsedProduct extends ParsedMeta {
     images: Array<string>;
     tax_rate_id: number;
     vendorId: number;
-    variations?: Array<ParsedProductOptions>;
+    variations?: Array<ParsedVariations>;
 }
 
 export interface TaxRate {

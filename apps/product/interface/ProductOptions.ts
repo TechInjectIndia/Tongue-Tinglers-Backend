@@ -4,6 +4,8 @@ import {
     parseOptionsValues
 } from "apps/optionsValue/interface/optionValue";
 import { OptionsValueRepo } from "apps/optionsValue/repos/optionsValueRepo";
+import { ParsedProduct } from "./Product";
+import { parseProduct } from "../parser/productParser";
 
 
 //todo rename to understand its received from frontend
@@ -35,10 +37,10 @@ interface ProductOptionsList<T> {
     productOptions: T[];
 }
 
-interface ParsedProductOptions {
+interface ParsedVariations {
     id: number;
-    // product_id: number;
-    option_value: ParsedOptionsValue;
+    product: ParsedProduct;
+    optionValue: ParsedOptionsValue;
     price: number;
     stock: number;
     status: PRODUCT_OPTIONS_STATUS;
@@ -62,21 +64,22 @@ interface ParsedProductOptions {
 //     };
 // };
 
-export const parsedProductOptions =  (data: any): ParsedProductOptions=> {
+// export const parsedProductOptions =  (data: any): ParsedProductOptions=> {
 
-    console.log('4e6r5t7y8uoi')
-    console.log(data)
-    console.log('4657890')
+//     console.log('4e6r5t7y8uoi')
+//     console.log(data)
+//     console.log('4657890')
 
-    return {
-        id: data.id,
-        option_value: parseOptionsValues(data.optionsValue),
-        price: data.price,
-        stock: data.stock,
-        status: data.status,
-        images: data.images,
-    };
-};
+//     return {
+//         id: data.id,
+//         product: parseProduct(data.product_id),
+//         optionValue: parseOptionsValues(data.optionsValue),
+//         price: data.price,
+//         stock: data.stock,
+//         status: data.status,
+//         images: data.images,
+//     };
+// };
 
 export {
     BaseProductOptions,
@@ -84,5 +87,5 @@ export {
     PRODUCT_OPTIONS_STATUS,
     Pagination,
     ProductOptionsList,
-    ParsedProductOptions,
+    ParsedVariations,
 };

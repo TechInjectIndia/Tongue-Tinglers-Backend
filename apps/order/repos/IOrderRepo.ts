@@ -14,26 +14,25 @@ export interface IOrderRepo {
     // createOrder(order: OrderPayload): Promise<Order | null>;
     createOrder(
         order: OrderPayload,
-        transaction?: Transaction,
-
-    ): Promise<ParsedOrder | null>
+        transaction?: Transaction
+    ): Promise<DTO<ParsedOrder | null>>
     // updateOrder(order: any): Promise<any>;
     // createOrder(order: OrderPayload): Promise<Order | null>
-    updateOrder(order: any): Promise<ParsedOrder | null>;
-    deleteOrder(orderId: number): Promise<any>;
-
+    updateOrder(orderId:number, order: OrderPayload, userId:number, transaction?: Transaction): Promise<DTO<ParsedOrder | null>>;
+    deleteOrder(orderId: number): Promise<DTO<ParsedOrder | null>>;
     getAllOrders(
         page: number,
         limit: number,
         search: string,
-        filters: Record<string, any>
-    ): Promise<OrderPagination<ParsedOrder>>;
+        filters: Record<string, any>,
+        transaction?: Transaction
+    ): Promise<DTO<OrderPagination<ParsedOrder>>>;
 
     processOrder(
         state: OrderState,
     ): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>>
 
-    getOrderById(orderId: number): Promise<Order>;
+    getOrderById(orderId: number): Promise<DTO<ParsedOrder>>;
     // getAllOrders(page: number, limit: number, search: string, filters: object): Promise<any>;
 
     getOrdersByUser(userId: number): Promise<ParsedOrder[]>

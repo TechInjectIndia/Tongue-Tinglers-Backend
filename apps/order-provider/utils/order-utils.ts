@@ -1,9 +1,10 @@
 import {
+    DeliveryStatus,
     ORDER_TYPE,
     OrderStatus,
     ParsedOrder,
     PAYMENT_TYPE,
-    PresaleParsedOrder
+    // PresaleParsedOrder
 } from "apps/order/interface/Order";
 import {IDiscComponent, PriceComponent} from "apps/order/interface/OrderItem";
 import {
@@ -66,19 +67,21 @@ const getEmptyParsedOrder = () => {
             location: undefined,
             sm: [],
             assignedUser: undefined,
-            createdBy: { } as MetaUser,
-            updatedBy: 0,
-            deletedBy: 0,
+            createdBy: {} as MetaUser,
+            // updatedBy: 0,
+            // deletedBy: 0,
             createdAt: new Date(),
             updatedAt: new Date(),
             deletedAt: new Date(),
+            updatedBy: undefined,
+            deletedBy: undefined
         },
         orderType: ORDER_TYPE.RM_ORDER,
         id: 0,
         status: OrderStatus.PROCESSED,
         total: 0,
         totalTax: 0,
-        deliveryStatus: "",
+        // deliveryStatus: "",
         customerDetails: user,
         paymentType: PAYMENT_TYPE.RP_CHECKOUT,
         paymentId: '',
@@ -89,7 +92,7 @@ const getEmptyParsedOrder = () => {
             city: "",
             country: "",
             firstName: "",
-            id: 0,
+            // id: 0,
             lastName: "",
             phoneNumber: "",
             postalCode: "",
@@ -100,7 +103,7 @@ const getEmptyParsedOrder = () => {
             city: "",
             country: "",
             firstName: "",
-            id: 0,
+            // id: 0,
             lastName: "",
             phoneNumber: "",
             postalCode: "",
@@ -109,7 +112,7 @@ const getEmptyParsedOrder = () => {
         },
         totalShipping: 0,
         anomalyArr: [],
-        coupon: "",
+        // coupon: "",
         items: [],
         updatedBy: metaObj,
         deletedBy: metaObj,
@@ -117,11 +120,13 @@ const getEmptyParsedOrder = () => {
         updatedAt: null,
         deletedAt: null,
         notes: [],
-        orderItems: [],
-        couponCodes: [],
-        discount: {},
+        // orderItems: [],
+        // couponCodes: [],
+        // discount: {},
         price: {},
-        createdBy: {} as MetaUser
+        createdBy: {} as MetaUser,
+        deliveryStatus: DeliveryStatus.PENDING,
+        logs: null
     };
 
     return obj;
@@ -160,7 +165,7 @@ function parseIncludedUserModel(obj: any): UserModel {
 }
 
 const getEmptyPreSaleOrder=()=>{
-    const preSaleParsedOrder: PresaleParsedOrder = {
+    const preSaleParsedOrder = {
         anomalyArr: [],
         billingAddress: {
             id: 0,

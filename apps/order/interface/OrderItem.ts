@@ -1,6 +1,7 @@
 import { ParsedMeta } from "apps/common/models/Base";
 import { ParsedProduct } from "apps/product/interface/Product";
-import { ParsedProductOptions } from "apps/product/interface/ProductOptions";
+import { ParsedVariations } from "apps/product/interface/ProductOptions";
+// import { ParsedProductOptions } from "apps/product/interface/ProductOptions";
 
 
 interface BaseOrderItem {
@@ -64,7 +65,7 @@ export interface IDiscComponent {
 
 interface PreSaleParsedOrderItem {
     product: ParsedProduct,
-    productOption: ParsedProductOptions,
+    productOption: ParsedVariations,
     quantity: number,
     total_price: number,
     totalTax: number,

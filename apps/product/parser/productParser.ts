@@ -1,15 +1,19 @@
 
 
 import {ParsedProduct} from "../interface/Product";
-import {parsedProductOptions} from "../interface/ProductOptions";
+// import {parsedProductOptions} from "../interface/ProductOptions";
 import {
     parseCategory
 } from "../../products-category/parser/parseProductCategory";
+import { parsedVariations } from "apps/cart-products/interface/Cart";
+import { parseUserToMetaUser } from "apps/user/parser/user-parser";
 const parseProduct = (product: any): ParsedProduct => {
-
-    const variations = product.variations.map((productOption: any) => {
-        return parsedProductOptions(productOption);
-    });
+    let variations: any = null;
+    if(product.variation){
+        variations = product.variations.map((productOption: any) => {
+            return parsedVariations(productOption);
+        });
+    }
     const data: ParsedProduct = {
         id: product.id,
         name: product.name,
@@ -22,20 +26,16 @@ const parseProduct = (product: any): ParsedProduct => {
         type: product.type,
         tax_rate_id: product.tax_rate_id,
         vendorId: product.vendorId,
-        updatedBy: product.updatedByUser,
-        deletedBy: product.deletedByUser,
+        createdBy: parseUserToMetaUser(product.createdByUser),
+        updatedBy: product.updatedByUser ? parseUserToMetaUser(product.updatedByUser) : null,
+        deletedBy: product.deletedByUser ? parseUserToMetaUser(product.deletedByUser) : null,
         createdAt: product.createdAt,
         updatedAt: product.updatedAt,
         deletedAt: product.deletedAt,
-        createdBy:product.createdBy,
         variations: variations
 
     };
-
-    console.log("12345678");
-    console.log(data);
     return data;
-
 }
 
 export { parseProduct };

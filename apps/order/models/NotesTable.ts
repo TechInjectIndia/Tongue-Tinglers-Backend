@@ -2,6 +2,8 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { BaseOrder, Notes, Order, BaseNotes } from "../interface/Order";
 import { sequelize } from "../../../config";
 import RepoProvider from "apps/RepoProvider";
+import { UserModel } from "apps/user/models/UserTable";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 interface NotesCreationAttributes extends Optional<Notes, "id"> {}
 
@@ -9,11 +11,27 @@ class NotesModel
     extends Model<Notes, NotesCreationAttributes>
     implements BaseNotes
 {
+    id: number;
     notes: string;
     isNew: boolean;
     createdBy: number;
-
-    public static associate() {}
+    updatedBy: number;
+    public static associate() {
+        NotesModel.belongsTo(UserModel, {
+            foreignKey: "createdBy",
+            as: "createdByUser",
+        });
+        NotesModel.belongsTo(UserModel, {
+            foreignKey: "updatedBy",
+            as: "updatedByUser",
+        });
+        NotesModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs",
+        });
+    }
 
     public static initModel() {
         NotesModel.init(
@@ -32,6 +50,10 @@ class NotesModel
                     allowNull: false,
                 },
                 createdBy: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
+                },
+                updatedBy: {
                     type: DataTypes.INTEGER,
                     allowNull: true,
                 },

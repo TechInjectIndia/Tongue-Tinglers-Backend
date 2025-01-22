@@ -1,5 +1,8 @@
-import { ParsedMeta } from "apps/common/models/Base";
+import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
 import { PreSaleParsedOrderItem } from "apps/order/interface/OrderItem";
+import { ParsedProduct, PRODUCTS_TYPE } from "apps/product/interface/Product";
+import { ParsedVariations } from "apps/product/interface/ProductOptions";
+import { MetaUser, ParsedUser } from "apps/user/interface/user";
 
 interface BaseOrderItem {
     product_id: number,
@@ -13,9 +16,9 @@ interface BaseOrderItem {
     type: ORDER_ITEM_TYPE
 }
 
-interface ParsedOrderItem extends PreSaleParsedOrderItem {
-    id: number;
-}
+// interface ParsedOrderItem extends PreSaleParsedOrderItem {
+//     id: number;
+// }
 
 enum ORDER_ITEM_TYPE {
     RETORT = 'retort',
@@ -42,6 +45,36 @@ interface UpdateStudentDiscount extends OrderItem {
     student_discount: number
 }
 
+interface OrderItemPayload {
+    orderId: number,
+    product: number,
+    variation: number,
+    quantity: number,
+    price: Record<string, string | number>,
+    totalPrice: number,
+    totalTax: number,
+    couponDiscount: number,
+    type: PRODUCTS_TYPE 
+}
+
+interface OrderItemTable extends OrderItemPayload, BaseMeta {}
+
+interface ParsedOrderItem {
+    id: number,
+    variation: ParsedVariations,
+    quantity: number,
+    price: Record<string, string | number>,
+    totalPrice: number,
+    totalTax: number,
+    couponDiscount: number,
+    type: PRODUCTS_TYPE,
+    createdBy: MetaUser,
+    updatedBy: MetaUser | null,
+    deletedBy: MetaUser | null,
+    createdAt: Date,
+    updatedAt: Date | null,
+    deletedAt: Date | null
+}
 export {
     OrderItem,
     BaseOrderItem,
@@ -51,5 +84,7 @@ export {
     UpdatePointsDiscount,
     UpdateStudentDiscount,
     ParsedOrderItem,
-    PreSaleParsedOrderItem
+    PreSaleParsedOrderItem,
+    OrderItemTable,
+    OrderItemPayload
 }

@@ -4,6 +4,7 @@ import { BaseProductOptions, PRODUCT_OPTIONS_STATUS, ProductOptions } from "apps
 import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
+import { ProductModel } from "apps/product/model/productTable";
 
 interface ProductOptionsCreationAttributes
     extends Optional<ProductOptions, "id"> {}
@@ -20,14 +21,18 @@ class ProductVariationsModel
     status: PRODUCT_OPTIONS_STATUS;
     images: string[];
     createdBy: number;
-    updatedBy: number;
-    deletedBy: number;
+    updatedBy: number | null;
+    deletedBy: number | null;
 
     public static associate() {
         ProductVariationsModel.belongsTo(OptionsValueModel, {
             as: "optionsValue",
             foreignKey: "optionValueId",
         });
+        ProductVariationsModel.belongsTo(ProductModel, {
+            foreignKey: 'product_id',
+            as: 'productData'
+        })
     }
 
     public static initModel() {

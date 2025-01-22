@@ -1,10 +1,10 @@
 import {DataTypes, Model, Optional} from "sequelize";
 import {sequelize} from "../../../config";
-import {BaseMeta} from "apps/common/models/Base";
 import {OrganizationModel} from "apps/organization/models/OrganizationTable";
 
 import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
-import { CommissionTable } from "./CommmisionTable";
+import {CommissionTable} from "./CommmisionTable";
+import {ICommissionEntityMapping} from "../interface/CommissionEntityMapping";
 
 const {DATE, INTEGER, NOW} = DataTypes;
 
@@ -56,7 +56,7 @@ class CommissionEntityMappingModel
                 allowNull: false,
                 name: 'organizationId',
             },
-            as : 'organization'
+            as: 'organization'
         });
 
         CommissionEntityMappingModel.belongsTo(CommissionTable, {
@@ -64,7 +64,7 @@ class CommissionEntityMappingModel
                 allowNull: false,
                 name: 'commissionId',
             },
-            as : 'commission'
+            as: 'commission'
         });
     }
 
@@ -81,7 +81,7 @@ class CommissionEntityMappingModel
                 type: INTEGER,
                 allowNull: false,
             },
-            franchiseId:{
+            franchiseId: {
                 type: INTEGER,
                 allowNull: false,
             },
@@ -135,43 +135,7 @@ class CommissionEntityMappingModel
 /* associations */
 
 
-enum COMMISSION_ENTITIES {
-    AFFILIATE = 'aff',
-    MASTER_FRANCHISE = 'mf',
-}
-
-
-enum COMMISSION_VOUCHER_ENTITIES {
-    ORDER_COMMISSION = 'oc',
-    FRANCHISE_COMMISSION = 'fc',
-}
-
-enum COMMISSION_PAID_STATUS {
-    PENDING = 'pending',
-    PAID = 'paid',
-    HOLD = 'hold'
-}
-
-type OrganizationCommissions = {
-    franchiseId: number; // franchise being sold or franchise purchasing raw Material
-    organizationId: number; // payable to organization
-    commissionId: number; // commissionModelId
-}
-
-// relation of receiving party & franchise involved in trade - either sold / ordered RM
-interface ICommissionEntityMapping extends BaseMeta, OrganizationCommissions {
-
-}
-
-
-
-
 export {
     CommissionEntityMappingModel,
     CommissionVoucherCreationAttributes,
-    COMMISSION_ENTITIES,
-    ICommissionEntityMapping,
-    COMMISSION_PAID_STATUS,
-    OrganizationCommissions,
-    COMMISSION_VOUCHER_ENTITIES,
 };

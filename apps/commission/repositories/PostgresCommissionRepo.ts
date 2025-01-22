@@ -5,7 +5,7 @@ import {
     COMMISSION_PAID_STATUS,
     CommissionEntityMappingModel,
     ICommissionEntityMapping,
-    ICommissionEntityMappingResponse, CommissionVoucherCreationAttributes,
+    CommissionVoucherCreationAttributes,
     COMMISSION_VOUCHER_ENTITIES,
 } from "../model/CommissionEntityMappingTable";
 import {CommissionTable} from "../model/CommmisionTable";

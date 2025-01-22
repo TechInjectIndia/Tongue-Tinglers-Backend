@@ -5,13 +5,14 @@ import {
     ParsedVoucher
 } from "../interface/Commission";
 import {
-    COMMISSION_PAID_STATUS,
-    COMMISSION_VOUCHER_ENTITIES,
     CommissionVoucherCreationAttributes,
-    ICommissionEntityMapping
 } from "../model/CommissionEntityMappingTable";
 import {ICommissionVoucher} from "../model/CommissionVoucherTable";
 import {DTO} from "apps/common/models/DTO";
+import {
+    COMMISSION_PAID_STATUS, COMMISSION_VOUCHER_ENTITIES,
+    ICommissionEntityMapping, OrganizationCommissions
+} from "../interface/CommissionEntityMapping";
 
 
 export interface ICommissionRepo {
@@ -51,6 +52,10 @@ export interface ICommissionRepo {
     // todo @Dhruv make sure this is paginated
     getCommissionMappings(): Promise<DTO<ParsedCommissionEntityMapping[]>>;
 
+    // get all commission mappings - DTO<Array<ParsedCommissionEntityMapping>>
+    // todo @Dhruv make sure this is paginated
+    filterCommissionMappings(commissionMappingsFilterOption: OrganizationCommissions): Promise<DTO<ParsedCommissionEntityMapping[]>>;
+
     //     - update commission mapping - DTO<ParsedCommissionEntityMapping>
     updateCommissionEntityStatus(id: number,
         status: COMMISSION_PAID_STATUS): Promise<DTO<ParsedCommissionEntityMapping>>;
@@ -74,10 +79,9 @@ export interface ICommissionRepo {
 
      // todo @Dhruv make sure this is paginated
      - get all commission payout - DTO<Array<ParsedPayout>|null> paginated
-     - get commission payout by id - DTO<ParsedPayout|null>
-     - create commission payout - DTO<ParsedPayout|null>
-     - update commission payout - DTO<ParsedPayout|null>
+     - get commission payout by id - DTO<ParsedPayout>
+     - create commission payout - DTO<ParsedPayout>
+     - update commission payout - DTO<ParsedPayout>
      */
-
 }
 

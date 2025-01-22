@@ -27,6 +27,10 @@ import RepoProvider from "apps/RepoProvider";
 import { COMMISSION_PAID_STATUS } from "apps/commission/model/CommissionEntityMapTable";
 import { PaymentReceivedMail } from "static/views/email/get-templates/PaymentReceivedMail";
 import { getHandledErrorDTO, getSuccessDTO } from "apps/common/models/DTO";
+import {adminUserRouter} from "../../user/api/user";
+import {AdminRepo} from "../../user/models/user";
+import {UserModel} from "../../user/models/UserTable";
+import {USER_TYPE} from "../../user/interface/user";
 
 export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -262,31 +266,31 @@ export default class ContractController {
             const user_id = parseInt(get(req, "user_id"));
             const address = get(req.body, "address", null);
             const mappings = get(req.body, "mappings", []);
-    
+
             // Fetch related data
             const existingContract = await new ContractRepo().get(id);
             if (!existingContract) throw new Error("Contract not found");
-    
+
             const existingLead = await new LeadRepo().getLeadByAttr(
                 "id",
                 existingContract.leadId?.id
             );
             if (!existingLead) throw new Error("Lead not found");
-    
+
             const franchiseExists = await RepoProvider.franchise.exists(existingLead.email);
             if (franchiseExists) {
                 return res.status(200).send(
                     sendResponse(RESPONSE_TYPE.ERROR, SUCCESS_MESSAGE.FRANCHISE_EXISTS)
                 );
             }
-    
+
             const existingCampaign = await new CampaignAdRepo().get(existingLead.campaignId?.id);
             if (!existingCampaign) throw new Error("Campaign not found");
-    
+
             // Extract payment and signed document IDs
             const paymentId = existingContract.payment?.slice(-1)?.[0]?.paymentId || null;
             const signId = existingContract.signedDocs?.slice(-1)?.[0]?.docId || null;
-    
+
             // Prepare franchise details
             const franchiseDetailsData: FranchiseDetails = {
                 location: address,
@@ -308,12 +312,16 @@ export default class ContractController {
                 affiliateId: 0,
                 assignedUser: null,
             };
-    
+
             console.log("Franchise Details:", franchiseDetailsData);
-    
+
             // Create franchise
             const franchise = await RepoProvider.franchise.create(franchiseDetailsData, user_id);
-    
+            await UserModel.update(
+                { type: USER_TYPE.ADMIN }, // Fields to update
+                { where: { email:existingLead.email} } // Condition
+            );
+
             // Prepare commission mapping entries
             const commissionEntries = mappings.map((commission: any) => ({
                 createdBy: user_id,
@@ -322,28 +330,28 @@ export default class ContractController {
                 organizationId: commission.organizationId,
                 status: COMMISSION_PAID_STATUS.PENDING,
             }));
-    
+
             // Create commission mappings
             await RepoProvider.commissionRepo.createMapEntities(commissionEntries);
-    
+
             // Send email notification
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password`;
-    
+
             try {
-                const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
+                const emailContent = getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
                     leadName: `${existingLead.firstName} ${existingLead.lastName}`,
                     leadEmail: existingLead.email,
                     leadPhone: existingLead.phoneNumber,
                     passwordCreateLink,
                 });
-    
+
                 const mailDto = new PaymentReceivedMail().getPayload({}, existingLead.email);
                 await sendMail(mailDto);
             } catch (emailError) {
                 console.error("Email Error:", emailError);
                 throw new Error(`Error sending email: ${emailError.message}`);
             }
-    
+
             // Commit the transaction and send success response
             await transaction.commit();
             return res.status(200).send(
@@ -355,7 +363,7 @@ export default class ContractController {
             return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
-    
+
 
     static async updatePartialContract(
         req: Request,

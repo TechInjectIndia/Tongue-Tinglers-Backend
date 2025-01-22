@@ -254,17 +254,19 @@ export class ContractRepo {
 
             if (filters?.filters.minPrice) {
                 console.log('filters?.filters.minPrice: ', filters?.filters.minPrice);
-                where.amount[Op.gte] = parseInt(filters?.filters.minPrice); // Minimum amount
+                where.amount[Op.gte] = filters?.filters.minPrice; // Minimum amount
             }
 
             if (filters?.filters.maxPrice) {
-                where.amount[Op.lte] = parseInt(filters?.filters.maxPrice); // Maximum amount
+                where.amount[Op.lte] = filters?.filters.maxPrice; // Maximum amount
             }
         }
 
         // Filter for due_date
         if (filters?.filters.dueDate) {
-            const date = moment(filters.filters.dueDate); // Parse the given date
+            const date = moment(filters.filters.dueDate);
+            // Parse the given date
+            console.log(date)
             where.dueDate = {
                 [Op.between]: [
                     date.startOf("day").toDate(), // Start of the day (00:00)

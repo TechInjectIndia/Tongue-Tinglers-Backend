@@ -51,9 +51,9 @@ export interface ICommissionRepo {
     // todo @Dhruv make sure this is paginated
     getCommissionMappings(): Promise<DTO<ParsedCommissionEntityMapping[]>>;
 
-
+    //     - update commission mapping - DTO<ParsedCommissionEntityMapping>
     updateCommissionEntityStatus(id: number,
-        status: COMMISSION_PAID_STATUS): Promise<DTO<boolean>>;
+        status: COMMISSION_PAID_STATUS): Promise<DTO<ParsedCommissionEntityMapping>>;
 
     //     - create commission voucher - DTO<ParsedVoucher | null>
     addVoucherToEntity(entityId: number,

@@ -14,6 +14,7 @@ import {
 } from "apps/user/interface/user";
 import {UserModel} from "../../user/models/UserTable";
 import {FRANCHISE_STATUS} from "../../franchise/interface/Franchise";
+import {ParsedMeta} from "../../common/models/Base";
 
 const getEmptyParsedOrder = () => {
     const metaObj: MetaUser = {email: "", firstName: "", id: 0, lastName: ""};
@@ -66,8 +67,8 @@ const getEmptyParsedOrder = () => {
             sm: [],
             assignedUser: undefined,
             createdBy: {} as MetaUser,
-            updatedBy: 0,
-            deletedBy: 0,
+            updatedBy: 0 as unknown as  MetaUser,
+            deletedBy: 0 as unknown as  MetaUser,
             createdAt: new Date(),
             updatedAt: new Date(),
             deletedAt: new Date(),

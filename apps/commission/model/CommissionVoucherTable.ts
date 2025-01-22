@@ -20,10 +20,8 @@ class CommissionVoucherModel
     public id: number;
 
     public relationId: number;
-
     public entityId: number;
     public entityType: COMMISSION_VOUCHER_ENTITIES;
-
     public status: COMMISSION_PAID_STATUS;
     public value: number;
 

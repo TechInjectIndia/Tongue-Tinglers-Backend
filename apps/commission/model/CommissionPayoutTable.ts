@@ -2,6 +2,7 @@ import {DataTypes, Model, Optional, Sequelize,} from "sequelize";
 import {CommissionVoucherModel} from "./CommissionVoucherTable";
 import RepoProvider from "../../RepoProvider";
 import {sequelize} from "../../../config";
+import {BaseMeta} from "../../common/models/Base";
 
 export enum PayoutStatus {
     queued='queued',
@@ -14,15 +15,13 @@ export enum PayoutStatus {
     failed='failed',
 }
 
-export interface PayoutAttributes {
+export interface PayoutAttributes extends  BaseMeta{
     id: number;
     voucherId: number;
     fundAccountId: string;
     amount: number;
     currency: string;
     status: string;
-    createdAt?: Date;
-    updatedAt?: Date;
 }
 
 export type PayoutCreationAttributes = Optional<PayoutAttributes, "id" | "createdAt" | "updatedAt">;
@@ -68,6 +67,30 @@ class CommissionPayoutModel extends Model<PayoutAttributes, PayoutCreationAttrib
                     type: DataTypes.STRING,
                     allowNull: false,
                     defaultValue: "PENDING",
+                },
+                createdAt:{
+                    type: DataTypes.STRING,
+                    allowNull: null,
+                },
+                updatedAt:{
+                    type: DataTypes.STRING,
+                    allowNull: null,
+                },
+                deletedAt:{
+                    type: DataTypes.STRING,
+                    allowNull: null,
+                },
+                createdBy: {
+                    type: DataTypes.INTEGER,
+                    allowNull: false,
+                },
+                updatedBy: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
+                },
+                deletedBy: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
                 },
             },
             {
@@ -118,6 +141,11 @@ class CommissionPayoutModel extends Model<PayoutAttributes, PayoutCreationAttrib
             );
         });
     }
+
+    createdBy: number;
+    deletedAt: Date | null;
+    deletedBy: number | null;
+    updatedBy: number | null;
 }
 
 export default CommissionPayoutModel;

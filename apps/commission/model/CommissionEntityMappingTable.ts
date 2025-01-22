@@ -2,12 +2,11 @@ import {DataTypes, Model, Optional} from "sequelize";
 import {sequelize} from "../../../config";
 import {BaseMeta} from "apps/common/models/Base";
 import {OrganizationModel} from "apps/organization/models/OrganizationTable";
-import {CommissionEventType, CommissionType} from "../interface/Commission";
+
 import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
 import { CommissionTable } from "./CommmisionTable";
 
-
-const {STRING, DATE, INTEGER, NOW} = DataTypes;
+const {DATE, INTEGER, NOW} = DataTypes;
 
 
 // Define the creation attributes by making certain fields optional
@@ -26,7 +25,7 @@ class CommissionEntityMappingModel
     public updatedBy: number | null;
     public deletedBy: number | null;
     public readonly createdAt: Date;
-    public readonly updatedAt: Date;
+    public readonly updatedAt: Date | null;
     public readonly deletedAt: Date | null;
 
     public static associate() {
@@ -164,46 +163,8 @@ interface ICommissionEntityMapping extends BaseMeta, OrganizationCommissions {
 
 }
 
-interface ICommissionVoucher extends BaseMeta {
-    relationId: number, // many-to-many join Table id, FK
-    entityId: number,
-    entityType: COMMISSION_VOUCHER_ENTITIES, // order | franchise
-    status: COMMISSION_PAID_STATUS,
-}
 
-/* This table has relations with other tables, so we need to define an interface for it */
-interface ICommissionEntityMappingResponse {
-    id: number;
-    franchiseId: number;
-    /* it is organization of this franchise */
-    franchiseOrganization: {
-        id: number;
-        name: string;
-    };
-    commission: {
-        id: number;
-        title: string;
-        type: CommissionType;
-        eventType: CommissionEventType;
-        value: number;
-    };
-    appliedCommission: {
-        franchiseAmount: number;
-        commissionAmount: number;
-    }
-    /* it may be affiliate or master franchise organization */
-    organization: {
-        id: number;
-        name: string;
-    };
-    // status: COMMISSION_PAID_STATUS;
-    createdBy: number;
-    updatedBy: number | null;
-    deletedBy: number | null;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date | null;
-}
+
 
 export {
     CommissionEntityMappingModel,
@@ -212,6 +173,5 @@ export {
     ICommissionEntityMapping,
     COMMISSION_PAID_STATUS,
     OrganizationCommissions,
-    ICommissionEntityMappingResponse,
     COMMISSION_VOUCHER_ENTITIES,
 };

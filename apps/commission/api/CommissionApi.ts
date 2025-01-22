@@ -1,11 +1,20 @@
 import * as express from "express";
-import { validateCreateCommission, validateCreateCommissionMapEntry, validateDeleteCommission, validateGetCommissionById, validateSearchCommission, validateUpdateCommission, validateUpdateCommissionEntityStatus } from "../validations/CommissionValidations";
+import {
+    validateCreateCommission,
+    validateCreateCommissionMapEntry,
+    validateDeleteCommission,
+    validateGetCommissionById,
+    validateSearchCommission,
+    validateUpdateCommission,
+    validateUpdateCommissionEntityStatus,
+} from "../validations/CommissionValidations";
 import { ControllerProvider } from "../../common/utils/ControllerProvider";
-import { auth } from '../../../middlewares/auth';
+import { auth } from "../../../middlewares/auth";
+import CommissionController from "../controllers/ICommissionController";
 
+const { getAllCommision, getById, createCommission } = CommissionController;
 
 const commissionRouter = express.Router();
-
 
 /**
  * @swagger
@@ -62,13 +71,14 @@ const commissionRouter = express.Router();
 // commissionRouter.put("/update-commission-entity-status/:id", auth, validateGetCommissionById, validateUpdateCommissionEntityStatus, ControllerProvider.commissionController.updateCommisionEntityStatus)
 //
 
-
-
 // TODO @Dhruv
 // api required:
 //     - get all commissions - DTO<Array<ParsedCommission>|null>
+commissionRouter.get("/list", getAllCommision);
 //     - get commission by id - DTO<ParsedCommission|null>
+commissionRouter.get("/get/:id", getById);
 //     - create commission - DTO<ParsedCommission|null>
+commissionRouter.post("/create", createCommission);
 //     - update commission - DTO<ParsedCommission>
 //     - delete commission - DTO<boolean>
 //     - get all commission mappings - DTO<Array<ParsedCommissionEntity> | null>

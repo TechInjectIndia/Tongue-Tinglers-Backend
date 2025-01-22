@@ -106,6 +106,7 @@ router.use(`/users`, guestUserRouter);
 // router.use(`${ADMIN}/roles`, auth, rolesRouter);
 
 import optionRouter from 'apps/optionsValue/api/optionsValueApi'
+import { petPoojaRouter } from "apps/pet-pooja/api/petpooja";
 router.use(`${ADMIN}/settings`, auth, settingsRouter); // pending
 router.use(`/payments`, paymentsRouter); // dont add auth to this url
 
@@ -156,14 +157,14 @@ router.use(`/cart`, auth, cartProductRouter);
 router.use("/migration", migrationRouter);
 router.use("/document", auth, documentRouter);
 router.use(`${ADMIN}/agreement-docs`, agreementDocRouter);
-// router.use(`/pet-pooja`, petPoojaApiRouter);
+router.use(`/pet-pooja`, petPoojaRouter);
 router.use(`/organization`, auth, organizationRouter);
 
-router.use(`/organization`,auth, organizationRouter);
+router.use(`/organization`, auth, organizationRouter);
 router.use(`${ADMIN}/products-category`, auth, OrderV1Routes);
 router.use(`/b2c-users`, auth, B2CUserAddressRouter);
-router.use('/options',optionRouter)
-router.use(`${ADMIN}/tax-rate`,auth, TaxRateRouter)
+router.use('/options', optionRouter)
+router.use(`${ADMIN}/tax-rate`, auth, TaxRateRouter)
 
 /* IMS */
 router.use(`${ADMIN}`, auth, itemCategoryRouter);

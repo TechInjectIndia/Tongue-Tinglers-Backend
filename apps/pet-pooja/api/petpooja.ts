@@ -1,7 +1,7 @@
 import * as express from "express";
 import PetPoojaController from "../controllers/petpooja";
 
-const router = express.Router();
+const petPoojaRouter = express.Router();
 
 // ====== Testimonials Starts ======
 /**
@@ -46,9 +46,9 @@ const router = express.Router();
  * 
  */
 
-router.get("/place-order", PetPoojaController.newOrderPlaced);
-router.get("/inventory", PetPoojaController.processAndSaveStockData);
-router.post("/orders-webhook", PetPoojaController.callOrdersWebHook);
-router.post("/orders-callback", PetPoojaController.callOrdersWebHook);
+petPoojaRouter.get("/place-order", PetPoojaController.newOrderPlaced);
+petPoojaRouter.get("/inventory", PetPoojaController.processAndSaveStockData);
+petPoojaRouter.post("/orders-webhook", PetPoojaController.callOrdersWebHook);
+petPoojaRouter.post("/orders-callback", PetPoojaController.callOrdersWebHook);
 
-export default router;
+export { petPoojaRouter };

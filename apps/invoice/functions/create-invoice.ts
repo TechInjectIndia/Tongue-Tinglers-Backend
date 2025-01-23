@@ -13,8 +13,11 @@ import {
     INVOICE_LOGO_URI,
 } from "../models/invoice-contants";
 import { getTotalDiscount } from "../utils/invoice-utils";
+
 export async function invoice(order: ParsedOrder) {
     const data = invoiceDtoFromOrder(order);
+    console.log("hello");
+    console.log(data);
     const jspdfData = await createInvoicePdf(data!);
     return jspdfData;
 }

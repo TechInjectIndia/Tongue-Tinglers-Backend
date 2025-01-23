@@ -99,7 +99,6 @@ export default class PaymentsController {
                 await sendMail(mailDto);
                 }
 
-
                 return res.status(200).send({ message: "Webhook processed successfully" });
             }
             else if(body.payload && body.payload.order  && body.payload.order.entity &&

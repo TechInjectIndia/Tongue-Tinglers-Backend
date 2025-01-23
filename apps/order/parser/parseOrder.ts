@@ -124,6 +124,8 @@ export const parseAndSavePendingOrderToOrder = async (
             pendingOrder.customerDetails.email,
         );
         const resp = await sendMail(dto);
+        console.log(dto)
+        console.log(resp)
     } catch (error) {
         console.error("Error parsing pending order to order:", error);
         throw new Error("Failed to parse pending order to order");

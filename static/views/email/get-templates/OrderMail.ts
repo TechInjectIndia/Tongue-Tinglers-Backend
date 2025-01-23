@@ -39,7 +39,7 @@ export class OrderMail extends Mail<null> implements IWelcomeMail {
                 (typeof to === "string" && to.trim() !== "") ||
                 (Array.isArray(to) && to.length > 0)
             ) {
-                const body = this.getBody(data);
+                const body = this.getBody(data.order);
 
                 const content = await invoice(data.order!);
 

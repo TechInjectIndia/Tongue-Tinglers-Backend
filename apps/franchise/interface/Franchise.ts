@@ -1,16 +1,16 @@
 import { Address, BaseAddress } from "apps/address/interface/Address";
 import { ParsedAffiliate } from "apps/affiliate/interface/affiliate";
 import { BaseMeta, BaseMetaUsers, ParsedMeta } from "apps/common/models/Base";
-import { BaseSocialMedia, SocialMediaDetails } from "../../lead/interface/lead";
-import { ParsedOrganization } from "../../organization/interface/organization";
+import { BaseSocialMedia, SocialMediaDetails } from "apps/lead/interface/lead";
+import { ParsedOrganization } from "apps/organization/interface/organization";
 
 
 import { ParsedRegion } from "apps/region/models/Region";
 import {MetaUser, ParsedUser} from "apps/user/interface/user";
-import {ICommission} from "../../commission/interface/Commission";
 import {
     ICommissionEntityMapping
-} from "../../commission/model/CommissionEntityMappingTable";
+} from "apps/commission/interface/CommissionEntityMapping";
+
 
 
 interface BaseFranchise {

@@ -1,5 +1,5 @@
 import { Address, BaseAddress, ParsedAddress } from "apps/address/interface/Address";
-import { BaseMeta, BaseMetaUsers } from "apps/common/models/Base";
+import {BaseMeta, BaseMetaUsers, ParsedMeta} from "apps/common/models/Base";
 import { ParsedUser } from "apps/user/interface/user";
 
 
@@ -10,29 +10,11 @@ export enum ORGANIZATION_TYPE {
     AFFILIATE = "affiliate",
 }
 
-interface BaseOrganization extends BankDetails {
-    name: string;
-    contactPersonName: string;
-    contactNumber: string;
-    contactEmail: string;
-    pan: string | null;
-    gst: string | null;
-    bankName: string;
-    rootUser: number | null;
-    type: ORGANIZATION_TYPE;
-    businessType: BUSINESS_TYPE;
-}
-
 
 export interface IOrganizationPayload extends BaseOrganization {
     billingAddressId: number;
 }
 
-export interface BankDetails {
-    bankName: string;
-    bankAccountNumber: string;
-    bankIFSCCode: string;
-}
 
 export interface IOrganization extends IOrganizationPayload, BaseMeta {
 }
@@ -66,46 +48,20 @@ export interface OrganizationPayload {
 
 export interface OrganizationTable extends OrganizationPayload, BaseMeta{}
 
-export interface ParsedOrganization {
-    id: number;
-    user: ParsedUser;
-    name: string;
-    contactPersonName: string;
-    contactNumber: string;
-    contactEmail: string;
-    pan: string | null;
-    gst: string | null;
-    bankName: string;
-    bankAccountNumber: string;
-    bankIFSCCode: string;
-    billingAddress: ParsedAddress;
-    shippingAddress: Array<ParsedAddress>;
-    masterFranchise: ParsedOrganization | null;
-    type: ORGANIZATION_TYPE;
-    businessType: BUSINESS_TYPE;
-    createdBy: ParsedUser;
-    createdAt: Date;
-    updatedBy: ParsedUser | null;
-    updatedAt: Date;
-    deletedBy: ParsedUser | null;
-    deletedAt: Date;
-}
-
 export interface OrganizationAddressPayload {
     billingAddress?: Address;
     shippingAddress?: Array<Address>;
 }
 
-interface BaseOrganization {
+
+
+interface BaseOrganization extends BankDetails{
     name: string;
     contactPersonName: string;
     contactNumber: string;
     contactEmail: string;
     pan: string | null;
     gst: string | null;
-    bankName: string;
-    bankAccountNumber: string;
-    bankIFSCCode: string;
     masterFranchiseId: number | null;
     rootUser: number | null;
     type: ORGANIZATION_TYPE;
@@ -136,34 +92,13 @@ export interface Organization {
 
 }
 
-
-export interface TOrganization {
-    name: string;
-    contactPersonName: string;
-    contactNumber: string;
-    contactEmail: string;
-
-    pan: string | null;
-    gst: string | null;
-
+export interface BankDetails {
     bankName: string;
     bankAccountNumber: string;
     bankIFSCCode: string;
-
-    billingAddressId: Address;
-    shippingAddressId: Array<Address>;
-
-    masterFranchiseId: number | null;
-    createdBy: number;
-    rootUser: number | null;
-
-    type: ORGANIZATION_TYPE;
-    businessType: BUSINESS_TYPE;
 }
 
-
-
-export interface ParsedOrganization {
+export interface ParsedOrganization extends ParsedMeta, BankDetails {
     id: number;
     user: ParsedUser;
     name: string;
@@ -172,20 +107,11 @@ export interface ParsedOrganization {
     contactEmail: string;
     pan: string | null;
     gst: string | null;
-    bankName: string;
-    bankAccountNumber: string;
-    bankIFSCCode: string;
     billingAddress: ParsedAddress;
     shippingAddress: Array<ParsedAddress>;
     masterFranchise: ParsedOrganization | null;
     type: ORGANIZATION_TYPE;
     businessType: BUSINESS_TYPE;
-    createdBy: ParsedUser;
-    createdAt: Date;
-    updatedBy: ParsedUser | null;
-    updatedAt: Date;
-    deletedBy: ParsedUser | null;
-    deletedAt: Date;
 }
 
 export interface OrganizationAddresses {

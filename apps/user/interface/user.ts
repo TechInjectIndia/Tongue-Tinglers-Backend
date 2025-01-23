@@ -78,14 +78,6 @@ export interface UserInformation {
     address: Array<BaseAddress>;
 }
 
-interface MetaUser {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-}
-
-
 interface ParsedUser extends ParsedMeta {
     id: number;
     firstName: string;

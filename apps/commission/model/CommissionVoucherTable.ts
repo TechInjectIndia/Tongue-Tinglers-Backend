@@ -1,18 +1,14 @@
-import { DataTypes, DECIMAL, Model, Optional } from "sequelize";
-import { sequelize } from "../../../config";
-import { BaseMeta } from "apps/common/models/Base";
-// import {
-//     // COMMISSION_PAID_STATUS,
-//     // COMMISSION_VOUCHER_ENTITIES,
-//     CommissionEntityMappingModel,
-// } from "./CommissionEntityMappingTable";
-import { ParsedCommissionEntityMapping } from "../interface/Commission";
-import { OrderModel } from "apps/order/models/OrderTable";
-import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
+import {DataTypes, DECIMAL, Model, Optional} from "sequelize";
+import {sequelize} from "../../../config";
+import {BaseMeta} from "apps/common/models/Base";
+
+import {OrderModel} from "apps/order/models/OrderTable";
+import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
 import {
     COMMISSION_PAID_STATUS,
-    COMMISSION_VOUCHER_ENTITIES,
+    COMMISSION_VOUCHER_ENTITIES
 } from "../interface/CommissionEntityMapping";
+import CommissionEntityMappingModel from "./CommissionEntityMappingTable";
 
 const { STRING, INTEGER, DATE, NOW } = DataTypes;
 

@@ -11,7 +11,7 @@ const {DATE, INTEGER, NOW} = DataTypes;
 
 
 // Define the creation attributes by making certain fields optional
-type CommissionVoucherCreationAttributes = Optional<ICommissionEntityMapping, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'deletedBy' | 'updatedBy'>
+export type CommissionVoucherCreationAttributes = Optional<ICommissionEntityMapping, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'deletedBy' | 'updatedBy'>
 
 class CommissionEntityMappingModel
     extends Model<ICommissionEntityMapping, CommissionVoucherCreationAttributes>
@@ -133,4 +133,5 @@ class CommissionEntityMappingModel
 }
 
 
+export default CommissionEntityMappingModel
 /* associations */

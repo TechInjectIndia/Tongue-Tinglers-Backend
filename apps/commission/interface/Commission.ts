@@ -80,6 +80,7 @@ interface ParsedVoucher extends ParsedMeta {
 
 interface ParsedCommissionEntityMapping extends ParsedMeta {
     id: number;
+    franchise: ParsedFranchise;
     relations: {
         organization: ParsedOrganization,
         commission: ParsedCommission

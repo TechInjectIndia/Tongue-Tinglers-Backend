@@ -9,6 +9,7 @@ export interface AllMailOptions {
     attachments: {
         filename: string | false | undefined; // allow `false | undefined`
         path?: string;
+        content?: string | Buffer;
     }[];
 }
 

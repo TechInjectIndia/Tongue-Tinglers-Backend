@@ -1,4 +1,3 @@
-import { logger } from "firebase-functions/v2";
 import { jsPDF } from "jspdf";
 import {
     type InvoiceOrderItem,
@@ -95,8 +94,7 @@ function invoiceDtoFromOrder(order: ParsedOrder): Invoice | undefined {
             //         : null,
         };
     } catch (e) {
-        logger.error(e);
-        return undefined;
+     return undefined;
     }
 }
 

@@ -264,7 +264,7 @@ export default class LeadController {
             await transaction.commit();
 
             // Send email notification
-            const mailDto = new LeadToProspectMail().getPayload(
+            const mailDto = await  new LeadToProspectMail().getPayload(
                 {
                     btnLink: `https://tonguetingler.com/organization-setup?prospectId=${prospect.id}`,
                 },
@@ -412,7 +412,7 @@ export default class LeadController {
             }
 
             const newLead = await new LeadRepo().create(payload, user_id);
-            const mailDto = new CreateLeadMail().getPayload({}, newLead.email);
+            const mailDto =  await  new CreateLeadMail().getPayload({}, newLead.email);
             await sendMail(mailDto);
 
             // Check and create assignment if 'assign' object is provided in the request body

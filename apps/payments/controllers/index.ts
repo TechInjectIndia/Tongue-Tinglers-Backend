@@ -95,7 +95,7 @@ export default class PaymentsController {
                 console.log("status");
                 console.log(status);
                 if(status === 'paid' || status==="order.paid" ||status ==="Paid"){
-                const mailDto = await new PaymentReceivedMail().getPayload({}, contractDetails.leadId.email);
+                const mailDto = await  new PaymentReceivedMail().getPayload({}, contractDetails.leadId.email);
                 await sendMail(mailDto);
                 }
 
@@ -323,7 +323,7 @@ export default class PaymentsController {
 
 
             // @Harsh After sign agreement mail
-            const mailDto = await new MakePaymentMail().getPayload(
+            const mailDto =  await  new MakePaymentMail().getPayload(
                 {
                     btnLink: link.short_url
                 },

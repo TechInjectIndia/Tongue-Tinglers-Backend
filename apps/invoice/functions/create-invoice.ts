@@ -358,6 +358,13 @@ function addSummarySection(doc: jsPDF, invoice: Invoice, summaryStart: number) {
 
 // footer functions
 function addFooter(doc: jsPDF, yvalue: number) {
+    const isFullLength = isFullLengthUsed(yvalue + 150, doc);
+    if (isFullLength) {
+        yvalue = 10;
+    }
+
+    yvalue = yvalue + 10;
+
     yvalue = addTerms(doc, yvalue + 30);
     let startY = paymentInfo(doc, yvalue + 20);
     companyDetails(doc, yvalue + 20);

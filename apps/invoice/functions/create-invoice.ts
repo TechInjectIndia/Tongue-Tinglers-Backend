@@ -147,7 +147,7 @@ async function addLogo(doc: jsPDF) {
 
 async function addInvoiceHeader(doc: jsPDF) {
     const logoPositionX = doc.internal.pageSize.getWidth() - 130;
-    doc.setFontSize(32).setFont("arial", "normal", 600);
+    doc.setFontSize(32).setFont("arial", "normal");
     doc.text("INVOICE", logoPositionX, 60);
 }
 

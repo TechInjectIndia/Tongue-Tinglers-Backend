@@ -1247,7 +1247,7 @@ export class LeadToProspectMail extends Mail<null> implements IEmail {
                     orderType: ORDER_TYPE.RM_ORDER,
                     franchise: undefined,
                 };
-                const content = await invoice(order!)
+                // const content = await invoice(order!)
                 // console.log("hjg");
                 
                 // console.log(content.toString('base64'));
@@ -1256,12 +1256,7 @@ export class LeadToProspectMail extends Mail<null> implements IEmail {
                     to: to,
                     subject: this.getSubject(),
                     html: null,
-                    attachments: [
-                        {
-                            filename: "invoice.pdf",
-                            path: content.toString('base64')
-                        },
-                    ],
+                    attachments: [],
                 };
 
                 if (body.html) {

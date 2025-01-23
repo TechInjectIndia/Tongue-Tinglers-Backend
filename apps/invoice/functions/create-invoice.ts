@@ -3,7 +3,6 @@ import { jsPDF } from "jspdf";
 import {
     type InvoiceOrderItem,
     type Invoice,
-    InvoiceAddress,
     BillingDetails,
 } from "../models/Invoice";
 import { Timestamp } from "firebase-admin/firestore";
@@ -14,10 +13,7 @@ import {
     INVOICE_BORDER,
     INVOICE_LOGO_URI,
 } from "../models/invoice-contants";
-import { getStringFromAddress, getTotalDiscount } from "../utils/invoice-utils";
-import { formatDateUI } from "apps/common/utils/commonUtils";
-import { start } from "node:repl";
-
+import { getTotalDiscount } from "../utils/invoice-utils";
 export async function invoice(order: ParsedOrder) {
     const data = invoiceDtoFromOrder(order);
     const jspdfData = await createInvoicePdf(data!);

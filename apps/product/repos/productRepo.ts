@@ -303,7 +303,7 @@ export class ProductRepo implements IProductRepo {
             const { rows: products, count: total } = await ProductModel.findAndCountAll({
                 offset,
                 limit,
-                order: [["id", "DESC"]],
+                order: [["id", "ASC"]],
                 where: {
                     type: PRODUCTS_TYPE.SAMPLE_KIT,
                 },

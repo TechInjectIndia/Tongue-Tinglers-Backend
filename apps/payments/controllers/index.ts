@@ -138,7 +138,7 @@ export default class PaymentsController {
                                     });
 
                                 // Create commission mappings
-                                await RepoProvider.commissionRepo.createMapEntities(
+                                await RepoProvider.commissionRepo.createCommissionMapping(
                                     commissionEntries);
                             }
                         } else {

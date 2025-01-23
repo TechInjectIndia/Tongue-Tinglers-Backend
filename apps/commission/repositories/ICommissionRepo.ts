@@ -1,76 +1,70 @@
-import { APIResponse } from "apps/common/models/Base";
-import { ICommission } from "../interface/Commission";
 import {
     ICommission,
     ParsedCommission,
     ParsedCommissionEntityMapping,
-    ParsedVoucher,
+    ParsedVoucher
 } from "../interface/Commission";
-import { CommissionVoucherCreationAttributes } from "../model/CommissionEntityMappingTable";
-import { ICommissionVoucher } from "../model/CommissionVoucherTable";
-import { DTO } from "apps/common/models/DTO";
 import {
-    COMMISSION_PAID_STATUS,
-    COMMISSION_VOUCHER_ENTITIES,
-    ICommissionEntityMapping,
-    OrganizationCommissions,
+    CommissionVoucherCreationAttributes,
+} from "../model/CommissionEntityMappingTable";
+import {ICommissionVoucher} from "../model/CommissionVoucherTable";
+import {DTO} from "apps/common/models/DTO";
+import {
+    COMMISSION_PAID_STATUS, COMMISSION_VOUCHER_ENTITIES,
+    ICommissionEntityMapping, OrganizationCommissions
 } from "../interface/CommissionEntityMapping";
-import { IParsedCommissionEntityMappingResponse } from "../interface/CommissionEntityMapping";
+
 
 export interface ICommissionRepo {
+
     isTitleAlreadyExists(title: string): Promise<DTO<boolean>>;
 
     search(searchText: string, type?: string): Promise<DTO<ParsedCommission[]>>;
 
+
     //     - create commission - DTO<ParsedCommission|null>
     create(commission: ICommission): Promise<DTO<ParsedCommission>>;
 
-    update(id: number, commission: ICommission): Promise<APIResponse<boolean>>;
+    //     - update commission - DTO<ParsedCommission>
+    update(commission: ICommission): Promise<DTO<ParsedCommission>>;
 
-    delete(ids: number[], deletedById: number): Promise<APIResponse<boolean>>;
+    //     - delete commission - DTO<boolean>
+    delete(ids: number[], deletedById: number): Promise<DTO<boolean>>;
 
-    getAll(): Promise<APIResponse<ICommission[]>>;
+    //     - get all commissions - DTO<Array<ParsedCommission>>
+    // todo @Dhruv make sure this is paginated
+    getAll(): Promise<DTO<Array<ParsedCommission>>>;
 
-    getById(id: number): Promise<APIResponse<ICommission>>;
+    //     - get commission by id - DTO<ParsedCommission|null>
+    getById(id: number): Promise<DTO<ParsedCommission>>;
 
     //     - create commission mapping - DTO<ParsedCommissionEntityMapping>
-    createCommissionMapping(
-        mapEntities: CommissionVoucherCreationAttributes[],
+    createCommissionMapping(mapEntities: CommissionVoucherCreationAttributes[],
         options?: {
-            transaction?: any;
-        },
-    ): Promise<DTO<ParsedCommissionEntityMapping>>;
+            transaction?: any
+        }): Promise<DTO<ParsedCommissionEntityMapping>>;
 
     //     - update commission mapping - DTO<ParsedCommissionEntityMapping>
-    updateCommissionMapping(
-        id: number,
-        mapEntity: ICommissionEntityMapping,
-    ): Promise<DTO<ParsedCommissionEntityMapping>>;
+    updateCommissionMapping(id: number,
+        mapEntity: ICommissionEntityMapping): Promise<DTO<ParsedCommissionEntityMapping>>;
 
     // get all commission mappings - DTO<Array<ParsedCommissionEntityMapping>>
     // todo @Dhruv make sure this is paginated
-    getCommissionMappings(): Promise<
-        DTO<IParsedCommissionEntityMappingResponse[]>
-    >;
+    getCommissionMappings(): Promise<DTO<ParsedCommissionEntityMapping[]>>;
 
     // get all commission mappings - DTO<Array<ParsedCommissionEntityMapping>>
     // todo @Dhruv make sure this is paginated
-    filterCommissionMappings(
-        commissionMappingsFilterOption: OrganizationCommissions,
-    ): Promise<DTO<ParsedCommissionEntityMapping[]>>;
+    filterCommissionMappings(commissionMappingsFilterOption: OrganizationCommissions): Promise<DTO<ParsedCommissionEntityMapping[]>>;
 
     //     - update commission mapping - DTO<ParsedCommissionEntityMapping>
-    updateCommissionEntityStatus(
-        id: number,
-        status: COMMISSION_PAID_STATUS,
-    ): Promise<DTO<ParsedCommissionEntityMapping>>;
+    updateCommissionEntityStatus(id: number,
+        status: COMMISSION_PAID_STATUS): Promise<DTO<ParsedCommissionEntityMapping>>;
 
     //     - create commission voucher - DTO<ParsedVoucher | null>
-    addVoucherToEntity(
-        entityId: number,
+    addVoucherToEntity(entityId: number,
         entityType: COMMISSION_VOUCHER_ENTITIES,
-        voucherData: Partial<ICommissionVoucher>,
-    ): Promise<DTO<ParsedVoucher>>;
+        voucherData: Partial<ICommissionVoucher>): Promise<DTO<ParsedVoucher>>
+
 
     /**
      * todo @Dhruv
@@ -90,3 +84,4 @@ export interface ICommissionRepo {
      - update commission payout - DTO<ParsedPayout>
      */
 }
+

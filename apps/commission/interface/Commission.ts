@@ -1,14 +1,17 @@
 import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
-import { CommissionVoucherModel } from "../model/CommissionVoucherTable";
+import {CommissionVoucherModel} from "../model/CommissionVoucherTable";
 import {
-    COMMISSION_PAID_STATUS,
-    COMMISSION_VOUCHER_ENTITIES,
     CommissionEntityMappingModel,
 } from "../model/CommissionEntityMappingTable";
-import { CommissionTable } from "../model/CommmisionTable";
+import {CommissionTable} from "../model/CommmisionTable";
 import { ParsedFranchise } from "../../franchise/interface/Franchise";
 import { ParsedOrder } from "../../order/interface/Order";
 import { PayoutStatus } from "../model/CommissionPayoutTable";
+import {ParsedOrganization} from "../../organization/interface/organization";
+import {
+    COMMISSION_PAID_STATUS,
+    COMMISSION_VOUCHER_ENTITIES
+} from "./CommissionEntityMapping";
 
 // Interface behind Commission Model
 interface ICommission extends BaseMeta {
@@ -29,7 +32,6 @@ enum CommissionEventType {
     AFFILIATE_FRANCHISE_SOLD = "affiliate-franchise-sold",
     AFFILIATE_RAW_MATERIAL_SOLD = "affiliate-raw-material-sold",
 }
-
 type CommissionDetails = CommissionVoucherModel & {
     commissionEntity: CommissionEntityMappingModel;
 } & CommissionTable;
@@ -50,7 +52,6 @@ interface OrganizationPaymentDetails {
     ifsc: string;
     voucherId: number;
 }
-
 // parsed commission
 
 interface ParsedCommission extends ParsedMeta {
@@ -77,6 +78,14 @@ interface ParsedVoucher extends ParsedMeta {
     value: number;
 }
 
+interface ParsedCommissionEntityMapping extends ParsedMeta {
+    id: number;
+    relations: {
+        organization: ParsedOrganization,
+        commission: ParsedCommission
+    }[];
+}
+
 interface ParsedPayout extends ParsedMeta {
     id: number;
     voucherId: number;
@@ -85,6 +94,9 @@ interface ParsedPayout extends ParsedMeta {
     currency: string;
     status: PayoutStatus;
 }
+
+
+
 
 export {
     ICommission,
@@ -95,4 +107,6 @@ export {
     OrganizationPaymentDetails,
     ParsedCommission,
     ParsedVoucher,
+    ParsedPayout,
+    ParsedCommissionEntityMapping,
 };

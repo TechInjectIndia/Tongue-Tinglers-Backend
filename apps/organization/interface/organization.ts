@@ -15,11 +15,6 @@ export interface IOrganizationPayload extends BaseOrganization {
     billingAddressId: number;
 }
 
-export interface BankDetails {
-    bankName: string;
-    bankAccountNumber: string;
-    bankIFSCCode: string;
-}
 
 export interface IOrganization extends IOrganizationPayload, BaseMeta {
 }
@@ -58,6 +53,8 @@ export interface OrganizationAddressPayload {
     shippingAddress?: Array<Address>;
 }
 
+
+
 interface BaseOrganization extends BankDetails{
     name: string;
     contactPersonName: string;
@@ -95,8 +92,13 @@ export interface Organization {
 
 }
 
+export interface BankDetails {
+    bankName: string;
+    bankAccountNumber: string;
+    bankIFSCCode: string;
+}
 
-export interface ParsedOrganization extends ParsedMeta {
+export interface ParsedOrganization extends ParsedMeta, BankDetails {
     id: number;
     user: ParsedUser;
     name: string;
@@ -105,15 +107,11 @@ export interface ParsedOrganization extends ParsedMeta {
     contactEmail: string;
     pan: string | null;
     gst: string | null;
-    bankName: string;
-    bankAccountNumber: string;
-    bankIFSCCode: string;
     billingAddress: ParsedAddress;
     shippingAddress: Array<ParsedAddress>;
     masterFranchise: ParsedOrganization | null;
     type: ORGANIZATION_TYPE;
     businessType: BUSINESS_TYPE;
-
 }
 
 export interface OrganizationAddresses {

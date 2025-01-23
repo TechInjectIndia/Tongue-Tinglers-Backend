@@ -1,17 +1,19 @@
-import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
-import {CommissionVoucherModel} from "../model/CommissionVoucherTable";
+import {BaseMeta, ParsedMeta} from "apps/common/models/Base";
 import {
-    CommissionEntityMappingModel,
-} from "../model/CommissionEntityMappingTable";
-import {CommissionTable} from "../model/CommmisionTable";
-import { ParsedFranchise } from "../../franchise/interface/Franchise";
-import { ParsedOrder } from "../../order/interface/Order";
-import { PayoutStatus } from "../model/CommissionPayoutTable";
-import {ParsedOrganization} from "../../organization/interface/organization";
+    CommissionVoucherModel
+} from "apps/commission/model/CommissionVoucherTable";
+
+import {CommissionTable} from "apps/commission/model/CommmisionTable";
+import {ParsedFranchise} from "apps/franchise/interface/Franchise";
+import {ParsedOrder} from "apps/order/interface/Order";
+import {PayoutStatus} from "apps/commission/model/CommissionPayoutTable";
+import {ParsedOrganization} from "apps/organization/interface/organization";
 import {
     COMMISSION_PAID_STATUS,
     COMMISSION_VOUCHER_ENTITIES
-} from "./CommissionEntityMapping";
+} from "apps/commission/interface/CommissionEntityMapping";
+import CommissionEntityMappingModel
+    from "apps/commission/model/CommissionEntityMappingTable";
 
 // Interface behind Commission Model
 interface ICommission extends BaseMeta {
@@ -32,6 +34,7 @@ enum CommissionEventType {
     AFFILIATE_FRANCHISE_SOLD = "affiliate-franchise-sold",
     AFFILIATE_RAW_MATERIAL_SOLD = "affiliate-raw-material-sold",
 }
+
 type CommissionDetails = CommissionVoucherModel & {
     commissionEntity: CommissionEntityMappingModel;
 } & CommissionTable;
@@ -52,6 +55,7 @@ interface OrganizationPaymentDetails {
     ifsc: string;
     voucherId: number;
 }
+
 // parsed commission
 
 interface ParsedCommission extends ParsedMeta {
@@ -60,13 +64,6 @@ interface ParsedCommission extends ParsedMeta {
     type: CommissionType;
     value: number;
     eventType: CommissionEventType;
-}
-
-interface ICommissionVoucher extends BaseMeta {
-    relationId: number; // many-to-many join Table id, FK
-    entityId: number;
-    entityType: COMMISSION_VOUCHER_ENTITIES; // order | franchise
-    status: COMMISSION_PAID_STATUS;
 }
 
 interface ParsedVoucher extends ParsedMeta {
@@ -95,8 +92,6 @@ interface ParsedPayout extends ParsedMeta {
     currency: string;
     status: PayoutStatus;
 }
-
-
 
 
 export {

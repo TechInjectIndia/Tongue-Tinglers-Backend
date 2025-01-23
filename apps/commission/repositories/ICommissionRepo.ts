@@ -3,16 +3,18 @@ import {
     ParsedCommission,
     ParsedCommissionEntityMapping,
     ParsedVoucher
-} from "../interface/Commission";
+} from "apps/commission/interface/Commission";
 import {
     CommissionVoucherCreationAttributes,
-} from "../model/CommissionEntityMappingTable";
-import {ICommissionVoucher} from "../model/CommissionVoucherTable";
+} from "apps/commission/model/CommissionEntityMappingTable";
+import {ICommissionVoucher} from "apps/commission/model/CommissionVoucherTable";
 import {DTO} from "apps/common/models/DTO";
 import {
-    COMMISSION_PAID_STATUS, COMMISSION_VOUCHER_ENTITIES,
-    ICommissionEntityMapping, OrganizationCommissions
-} from "../interface/CommissionEntityMapping";
+    COMMISSION_PAID_STATUS,
+    COMMISSION_VOUCHER_ENTITIES,
+    ICommissionEntityMapping,
+    OrganizationCommissions
+} from "apps/commission/interface/CommissionEntityMapping";
 
 
 export interface ICommissionRepo {

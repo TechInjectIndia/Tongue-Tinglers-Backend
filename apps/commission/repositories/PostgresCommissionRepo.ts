@@ -1,10 +1,7 @@
 import {Op, UniqueConstraintError} from "sequelize";
 import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
-import {APIResponse} from "../../common/models/Base";
-import {
-    CommissionEntityMappingModel,
-    CommissionVoucherCreationAttributes,
-} from "apps/commission/model/CommissionEntityMappingTable";
+import {APIResponse} from "apps/common/models/Base";
+
 import {
     COMMISSION_PAID_STATUS,
     COMMISSION_VOUCHER_ENTITIES,
@@ -21,12 +18,15 @@ import {
     ParsedCommissionEntityMapping
 } from "apps/commission/interface/Commission";
 import {
+    CommissionVoucherCreationAttributes,
     CommissionVoucherModel,
     ICommissionVoucher,
 } from "apps/commission/model/CommissionVoucherTable";
 import {OrderModel} from "apps/order/models/OrderTable";
 import CommissionPayoutModel from "apps/commission/model/CommissionPayoutTable";
 import {DTO} from "apps/common/models/DTO";
+import CommissionEntityMappingModel
+    from "apps/commission/model/CommissionEntityMappingTable";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
     async getCommissionMappings(): Promise<

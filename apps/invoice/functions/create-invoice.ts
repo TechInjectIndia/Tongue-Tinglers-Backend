@@ -23,11 +23,11 @@ export async function invoice(order: ParsedOrder) {
     return jspdfData;
 }
 
-export async function shippingLabel(order: ParsedOrder) {
-    const data = invoiceDtoFromOrder(order);
-    const jspdfData = await createShippingLabelPdf(data!);
-    return jspdfData;
-}
+// export async function shippingLabel(order: ParsedOrder) {
+//     const data = invoiceDtoFromOrder(order);
+//     const jspdfData = await createShippingLabelPdf(data!);
+//     return jspdfData;
+// }
 
 function invoiceDtoFromOrder(order: ParsedOrder): Invoice | undefined {
     try {
@@ -108,10 +108,13 @@ async function createInvoicePdf(invoice: Invoice) {
 
     await addHeader(doc);
 
-    const yvalue = await addSubHeader(doc, invoice);
+    let yvalue = await addSubHeader(doc, invoice);
 
-    const summaryStart = addOrderItemsTable(doc, invoice, yvalue + 10);
-    addSummarySection(doc, invoice, summaryStart);
+    yvalue = addOrderItemsTable(doc, invoice, yvalue + 10);
+
+    yvalue = addSummarySection(doc, invoice, yvalue);
+
+    addFooter(doc, yvalue);
 
     const totalPages = doc.internal.pages.length;
     for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
@@ -207,7 +210,6 @@ function addInvoiceDetails(doc: jsPDF, invoice: Invoice) {
 }
 
 // table functions
-
 function addOrderItemsTable(
     doc: jsPDF,
     invoice: Invoice,
@@ -288,10 +290,10 @@ const printItem = (
     doc.setFillColor("white");
 
     // Top border lines
-    doc.line(x, y, x + 257, y); // Top border of the first column
-    doc.line(282, y, 282 + 30, y); // Top border of the second column
-    doc.line(312, y, 312 + 60, y); // Top border of the third column
-    doc.line(372, y, 372 + 45, y); // Top border of the fourth column
+    // doc.line(x, y, x + 257, y); // Top border of the first column
+    // doc.line(282, y, 282 + 30, y); // Top border of the second column
+    // doc.line(312, y, 312 + 60, y); // Top border of the third column
+    // doc.line(372, y, 372 + 45, y); // Top border of the fourth column
 
     doc.setFontSize(10).setFont("helvetica");
     doc.text(item.name, x + 5, y + 13);
@@ -311,8 +313,114 @@ const printItem = (
     //     y = y + 7;
     // });
     doc.setFontSize(10).setFont("helvetica");
-    return yvalue + height + 9;
+    return yvalue + height + 12;
 };
+
+// summary section
+function addSummarySection(doc: jsPDF, invoice: Invoice, summaryStart: number) {
+    const isFullLength = isFullLengthUsed(summaryStart + 50, doc);
+    if (isFullLength) {
+        summaryStart = 50;
+    }
+
+    let startY = summaryStart + 10;
+
+    // subtotal
+    doc.setFontSize(10).setFont("helvetica", "bold");
+    doc.text("Subtotal :", 320, startY);
+    doc.setFontSize(10).setFont("helvetica", "normal");
+    doc.text("Rs. " + String(invoice.subTotal.toFixed(2)), 376, startY);
+
+    // tax
+    doc.setFontSize(10).setFont("helvetica", "bold");
+    doc.text("Tax (18%) :", 320, startY + 20);
+    doc.setFontSize(10).setFont("helvetica", "normal");
+    doc.text(
+        "+ " + "Rs. " + String(invoice.tax?.toFixed(2) ?? 0),
+        372,
+        startY + 20,
+    );
+
+    // Thank you
+    doc.setFontSize(24).setFont("arial", "normal");
+    doc.text("Thank You!", 35, startY + 40);
+
+    // Total
+    doc.setFontSize(12).setFont("helvetica", "bold");
+    doc.rect(315, startY + 28, 105, 0, "FD");
+    doc.setFontSize(12).setFont("helvetica", "bold");
+    doc.text("Total :", 320, startY + 40);
+    doc.text("Rs. " + String(invoice.grandTotal.toFixed(2)), 372, startY + 40);
+
+    return startY + 50;
+}
+
+// footer functions
+function addFooter(doc: jsPDF, yvalue: number) {
+    yvalue = addTerms(doc, yvalue + 30);
+    paymentInfo(doc, yvalue + 20);
+    companyDetails(doc, yvalue + 20);
+
+    // add footer link
+}
+
+function addTerms(doc: jsPDF, yValue) {
+    doc.setFontSize(12).setFont("helvetica", "bold");
+    doc.text("TERMS & CONDITIONS", 35, yValue);
+    doc.setFontSize(10).setFont("helvetica", "normal");
+    doc.text(
+        "1. All disputes are subjected to Telangana Jurisdiction only.",
+        35,
+        yValue + 15,
+    );
+    doc.text(
+        "2. Interest @ 24% p.a. will be charged if bill is not paid within 7 days.",
+        35,
+        yValue + 26,
+    );
+    doc.text(
+        "3. TDS certificate, if applicable, please share.",
+        35,
+        yValue + 37,
+    );
+    return yValue + 40;
+}
+
+function paymentInfo(doc: jsPDF, yValue) {
+    doc.setFontSize(12).setFont("helvetica", "bold");
+    doc.text("PAYMENT INFORMATION", 35, yValue);
+
+    doc.setFontSize(11).setFont("helvetica", "normal");
+    doc.text("HDFC Bank", 35, yValue + 15);
+    doc.text("Account Name: Tongue Tingler", 35, yValue + 26);
+    doc.text("Account No: 123-456-7890", 35, yValue + 37);
+    doc.text("IFSC: HDFC0000408", 35, yValue + 48);
+    doc.text("Pay By: 29/11/25", 35, yValue + 59);
+}
+
+function companyDetails(doc: jsPDF, yValue) {
+    doc.setFontSize(20).setFont("arial", "normal");
+    doc.text("Tongue Tingler", 316, yValue + 10);
+
+    doc.setFontSize(11).setFont("helvetica", "normal");
+    doc.text("123/76, Peter's Rd, Royapettah", 295, yValue + 25);
+    doc.text("Chennai, Tamil Nadu,", 330, yValue + 36);
+    doc.text("600014", 380, yValue + 47);
+    doc.text("info@tonguetingler.com", 320, yValue + 58);
+    // doc.text("Pay By: 29/11/25", 35, yValue + 59);
+}
+
+// border
+async function addBorder(doc: jsPDF) {
+    const pageWidth = doc.internal.pageSize.width; // 210mm
+    const pageHeight = doc.internal.pageSize.height; // 297mm
+
+    const borderWidth = pageWidth;
+    const borderHeight = pageHeight;
+
+    const borderImage = INVOICE_BORDER;
+    doc.addImage(borderImage, "PNG", 0, 0, borderWidth, borderHeight);
+}
 
 const checkRowHeight = (item: InvoiceOrderItem): number => {
     let rowHeight = 0;
@@ -344,148 +452,83 @@ function orderItemsRecursion(doc: jsPDF, arr: InvoiceOrderItem[]): number {
     return orderItemsRecursion(doc, arr.slice(11));
 }
 
-function addSummarySection(doc: jsPDF, invoice: Invoice, summaryStart: number) {
-    const isFullLength = isFullLengthUsed(summaryStart + 50, doc);
-    if (isFullLength) {
-        summaryStart = 50;
-    }
-
-    // doc.rect(25, summaryStart, 400, 0, "FD");
-    let startY = summaryStart + 10;
-    doc.setFontSize(9).setFont("helvetica");
-    doc.text("Subtotal :", 315, startY);
-    doc.setFontSize(9).setFont("helvetica");
-    doc.text("Rs. " + String(invoice.subTotal.toFixed(2)), 380, startY);
-
-    doc.setFontSize(9).setFont("helvetica");
-    doc.text("Total Items :", 245, startY);
-    doc.setFontSize(9).setFont("helvetica");
-    doc.text(String(getTotalItemsQty(invoice.orderItems)), 285, startY);
-
-    // if (invoice.note) {
-    //     doc.setFontSize(9).setFont("helvetica");
-    //     doc.text("Note :", 30, startY);
-    //     doc.setFontSize(9).setFont("helvetica");
-    //     doc.text(invoice.note, 50, startY ,{maxWidth:150});
-
-    // }
-
-    if (invoice.couponCode) {
-        doc.text("Coupon Code :", 315, startY + 10);
-        doc.setFontSize(9).setFont("helvetica");
-        doc.text(String(invoice.couponCode), 380, startY + 10);
-        startY = startY + 10;
-    }
-
-    // doc.text("Credits :", 315, startY + 10);
-    // doc.setFontSize(9).setFont("helvetica");
-    // doc.text("- " + "Rs. " + String(invoice.rewardPoints?.toFixed(2) ?? 0), 376, startY + 10);
-
-    doc.setFontSize(9).setFont("helvetica");
-    doc.text("Shipping :", 315, startY + 20);
-    doc.setFontSize(9).setFont("helvetica");
-    doc.text(
-        "+ " + "Rs. " + String(invoice.shippingCharge?.toFixed(2) ?? 0),
-        376,
-        startY + 20,
-    );
-
-    doc.setFontSize(11).setFont("helvetica", "bold");
-    doc.rect(315, startY + 25, 115, 0, "FD");
-    doc.setFontSize(11).setFont("helvetica", "bold");
-    doc.text("Total :", 315, startY + 35);
-    doc.text("Rs. " + String(invoice.grandTotal.toFixed(2)), 376, startY + 35);
-    doc.setFontSize(6).setFont("helvetica", "normal");
-}
-
-async function addBorder(doc: jsPDF) {
-    const pageWidth = doc.internal.pageSize.width; // 210mm
-    const pageHeight = doc.internal.pageSize.height; // 297mm
-
-    const borderWidth = pageWidth;
-    const borderHeight = pageHeight;
-
-    const borderImage = INVOICE_BORDER;
-    doc.addImage(borderImage, "PNG", 0, 0, borderWidth, borderHeight);
-}
-
-async function createShippingLabelPdf(invoice: Invoice) {
-    const doc = initializeDoc();
-    await addLogo(doc);
-    addShippingDetails(doc, invoice);
-    addShippingCompanyDetails(doc, invoice);
-    addInvoiceInfo(doc, invoice);
-    // addPaymentDetails(doc, invoice);
-    const n = addShippingItemsTable(doc, invoice);
-    doc.rect(25, n, 400, 0, "FD");
-    return Buffer.from(doc.output(), "binary");
-}
+// async function createShippingLabelPdf(invoice: Invoice) {
+//     const doc = initializeDoc();
+//     await addLogo(doc);
+//     addShippingDetails(doc, invoice);
+//     addShippingCompanyDetails(doc, invoice);
+//     addInvoiceInfo(doc, invoice);
+//     // addPaymentDetails(doc, invoice);
+//     const n = addShippingItemsTable(doc, invoice);
+//     doc.rect(25, n, 400, 0, "FD");
+//     return Buffer.from(doc.output(), "binary");
+// }
 
 /* eslint-disable new-cap */
 function initializeDoc() {
     return new jsPDF("p", "px", "a4", true);
 }
 
-function addShippingDetails(doc: jsPDF, invoice: Invoice) {
-    let yvalue = 150;
-    // doc.rect(25, 80, 400, 0, "FD");
-    // doc.setFontSize(14).setFont("helvetica", "normal");
-    // doc.setTextColor("black");
+// function addShippingDetails(doc: jsPDF, invoice: Invoice) {
+//     let yvalue = 150;
+//     // doc.rect(25, 80, 400, 0, "FD");
+//     // doc.setFontSize(14).setFont("helvetica", "normal");
+//     // doc.setTextColor("black");
 
-    // doc.setFontSize(10).setFont("helvetica", "bold");
-    // doc.text("Shipping Address:", 155, 100);
+//     // doc.setFontSize(10).setFont("helvetica", "bold");
+//     // doc.text("Shipping Address:", 155, 100);
 
-    // doc.setFontSize(10).setFont("helvetica", "normal");
-    // doc.text(capitalizeWordsAndSlash(invoice.shippingDetails.name), 155, 110);
+//     // doc.setFontSize(10).setFont("helvetica", "normal");
+//     // doc.text(capitalizeWordsAndSlash(invoice.shippingDetails.name), 155, 110);
 
-    // let addressStr = capitalizeWordsAndSlash(invoice.shippingDetails.address);
-    // addressStr = addressStr.replace(/[\n\r]/g, "");
+//     // let addressStr = capitalizeWordsAndSlash(invoice.shippingDetails.address);
+//     // addressStr = addressStr.replace(/[\n\r]/g, "");
 
-    // const words = breakIntoLines(addressStr, 27);
-    // doc.setFontSize(10).setFont("helvetica");
-    // doc.text(words[0], 155, 120);
+//     // const words = breakIntoLines(addressStr, 27);
+//     // doc.setFontSize(10).setFont("helvetica");
+//     // doc.text(words[0], 155, 120);
 
-    // if (words[3]) {
-    //     yvalue = 170;
-    //     doc.text(words[1], 155, 130);
-    //     doc.text(words[2], 155, 140);
-    //     doc.text(words[3], 155, 150);
-    //     doc.text(
-    //         capitalizeWordsAndSlash(invoice.shippingDetails.pin),
-    //         155,
-    //         160,
-    //     );
-    //     doc.text(invoice.shippingDetails.contact, 155, 170);
-    // } else if (words[2]) {
-    //     yvalue = 160;
-    //     doc.text(words[1], 155, 130);
-    //     doc.text(words[2], 155, 140);
-    //     doc.text(
-    //         capitalizeWordsAndSlash(invoice.shippingDetails.pin),
-    //         155,
-    //         150,
-    //     );
-    //     doc.text(invoice.shippingDetails.contact, 155, 160);
-    // } else if (words[1]) {
-    //     yvalue = 150;
-    //     doc.text(words[1], 155, 130);
-    //     doc.text(
-    //         capitalizeWordsAndSlash(invoice.shippingDetails.pin),
-    //         155,
-    //         140,
-    //     );
-    //     doc.text(invoice.shippingDetails.contact, 155, 150);
-    // } else {
-    //     yvalue = 140;
-    //     doc.text(
-    //         capitalizeWordsAndSlash(invoice.shippingDetails.pin),
-    //         155,
-    //         130,
-    //     );
-    //     doc.text(invoice.shippingDetails.contact, 155, 140);
-    // }
-    return yvalue;
-}
+//     // if (words[3]) {
+//     //     yvalue = 170;
+//     //     doc.text(words[1], 155, 130);
+//     //     doc.text(words[2], 155, 140);
+//     //     doc.text(words[3], 155, 150);
+//     //     doc.text(
+//     //         capitalizeWordsAndSlash(invoice.shippingDetails.pin),
+//     //         155,
+//     //         160,
+//     //     );
+//     //     doc.text(invoice.shippingDetails.contact, 155, 170);
+//     // } else if (words[2]) {
+//     //     yvalue = 160;
+//     //     doc.text(words[1], 155, 130);
+//     //     doc.text(words[2], 155, 140);
+//     //     doc.text(
+//     //         capitalizeWordsAndSlash(invoice.shippingDetails.pin),
+//     //         155,
+//     //         150,
+//     //     );
+//     //     doc.text(invoice.shippingDetails.contact, 155, 160);
+//     // } else if (words[1]) {
+//     //     yvalue = 150;
+//     //     doc.text(words[1], 155, 130);
+//     //     doc.text(
+//     //         capitalizeWordsAndSlash(invoice.shippingDetails.pin),
+//     //         155,
+//     //         140,
+//     //     );
+//     //     doc.text(invoice.shippingDetails.contact, 155, 150);
+//     // } else {
+//     //     yvalue = 140;
+//     //     doc.text(
+//     //         capitalizeWordsAndSlash(invoice.shippingDetails.pin),
+//     //         155,
+//     //         130,
+//     //     );
+//     //     doc.text(invoice.shippingDetails.contact, 155, 140);
+//     // }
+//     return yvalue;
+// }
 
 // function addCompanyDetails(doc: jsPDF, invoice: Invoice) {
 // const logoPositionX = doc.internal.pageSize.getWidth() - 100 + 10;
@@ -495,97 +538,97 @@ function addShippingDetails(doc: jsPDF, invoice: Invoice) {
 // doc.setTextColor("black");
 // }
 
-function addShippingCompanyDetails(doc: jsPDF, invoice: Invoice) {
-    const logoPositionX = doc.internal.pageSize.getWidth() - 100 + 10;
-    doc.setFontSize(18).setFont("helvetica", "italic");
-    doc.text("Dispatch Note #" + invoice.invoiceId, logoPositionX - 95, 25);
-    doc.setFontSize(12).setFont("helvetica", "bold");
-    doc.setTextColor("black");
-    doc.text("From Address:", logoPositionX - 45, 45);
-    doc.setFontSize(10).setFont("helvetica", "normal");
-    doc.text(invoice.companyDetails.companyName, logoPositionX - 45, 55);
+// function addShippingCompanyDetails(doc: jsPDF, invoice: Invoice) {
+//     const logoPositionX = doc.internal.pageSize.getWidth() - 100 + 10;
+//     doc.setFontSize(18).setFont("helvetica", "italic");
+//     doc.text("Dispatch Note #" + invoice.invoiceId, logoPositionX - 95, 25);
+//     doc.setFontSize(12).setFont("helvetica", "bold");
+//     doc.setTextColor("black");
+//     doc.text("From Address:", logoPositionX - 45, 45);
+//     doc.setFontSize(10).setFont("helvetica", "normal");
+//     doc.text(invoice.companyDetails.companyName, logoPositionX - 45, 55);
 
-    const addressArr = breakIntoLines(
-        capitalizeWordsAndSlash(
-            getStringFromAddress(invoice.companyDetails.companyAddress),
-        ),
-        25,
-    );
-    addressArr.forEach((add, index) => {
-        doc.setFontSize(10).setFont("helvetica");
-        doc.text(add, logoPositionX - 45, 55 + (index + 1) * 10);
-    });
-}
+//     const addressArr = breakIntoLines(
+//         capitalizeWordsAndSlash(
+//             getStringFromAddress(invoice.companyDetails.companyAddress),
+//         ),
+//         25,
+//     );
+//     addressArr.forEach((add, index) => {
+//         doc.setFontSize(10).setFont("helvetica");
+//         doc.text(add, logoPositionX - 45, 55 + (index + 1) * 10);
+//     });
+// }
 
-function addInvoiceInfo(doc: jsPDF, invoice: Invoice) {
-    // doc.setFontSize(14).setFont("helvetica");
-    // doc.setTextColor("black");
-    // const positionX = 30;
-    // doc.setFontSize(10).setFont("helvetica");
-    // doc.text("Order Id:", positionX, 100);
-    // doc.setFontSize(10).setFont("helvetica");
-    // doc.text(invoice.invoiceId.toString(), positionX + 32, 100);
-    // doc.setFontSize(10).setFont("helvetica");
-    // doc.text("Date:", positionX, 110);
-    // doc.setFontSize(10).setFont("helvetica");
-    // doc.text(String(invoice.date), positionX + 20, 110);
-    // doc.setFontSize(10).setFont("helvetica");
-}
+// function addInvoiceInfo(doc: jsPDF, invoice: Invoice) {
+// doc.setFontSize(14).setFont("helvetica");
+// doc.setTextColor("black");
+// const positionX = 30;
+// doc.setFontSize(10).setFont("helvetica");
+// doc.text("Order Id:", positionX, 100);
+// doc.setFontSize(10).setFont("helvetica");
+// doc.text(invoice.invoiceId.toString(), positionX + 32, 100);
+// doc.setFontSize(10).setFont("helvetica");
+// doc.text("Date:", positionX, 110);
+// doc.setFontSize(10).setFont("helvetica");
+// doc.text(String(invoice.date), positionX + 20, 110);
+// doc.setFontSize(10).setFont("helvetica");
+// }
 
-function printShippingItems(
-    doc: jsPDF,
-    arr: InvoiceOrderItem[],
-    y: number,
-): number {
-    const rowHeight = 55;
-    const tableLeft = 25;
-    for (let i = 0; i < arr.length; i++) {
-        const item = arr[i];
-        let yVal = 10;
-        const quantity = item.qty;
+// function printShippingItems(
+//     doc: jsPDF,
+//     arr: InvoiceOrderItem[],
+//     y: number,
+// ): number {
+//     const rowHeight = 55;
+//     const tableLeft = 25;
+//     for (let i = 0; i < arr.length; i++) {
+//         const item = arr[i];
+//         let yVal = 10;
+//         const quantity = item.qty;
 
-        const nameStringArr = breakSentence(item.name, 40);
+//         const nameStringArr = breakSentence(item.name, 40);
 
-        // const sku = capitalizeWordsAndSlash(item.model);
-        // doc.text(sku, tableLeft + 200, y + yVal);
+//         // const sku = capitalizeWordsAndSlash(item.model);
+//         // doc.text(sku, tableLeft + 200, y + yVal);
 
-        doc.text(String(quantity), tableLeft + 300, y + yVal);
-        doc.setFontSize(10).setFont("helvetica");
-        doc.text("0 " + "g", tableLeft + 355, y + yVal);
+//         doc.text(String(quantity), tableLeft + 300, y + yVal);
+//         doc.setFontSize(10).setFont("helvetica");
+//         doc.text("0 " + "g", tableLeft + 355, y + yVal);
 
-        const nameStringLines = nameStringArr.length;
+//         const nameStringLines = nameStringArr.length;
 
-        nameStringArr.forEach((name, index) => {
-            doc.text(name, tableLeft + 5, y + (index + 1) * 10);
-        });
+//         nameStringArr.forEach((name, index) => {
+//             doc.text(name, tableLeft + 5, y + (index + 1) * 10);
+//         });
 
-        let yValue = y + (nameStringLines + 1) * 10;
+//         let yValue = y + (nameStringLines + 1) * 10;
 
-        Object.keys(item.selectedOption).forEach((key, index) => {
-            doc.setFontSize(7).setFont("helvetica");
-            if (index < 3) {
-                doc.text(
-                    " - " + key + " : " + item.selectedOption[key],
-                    tableLeft + 5,
-                    yValue,
-                );
-                yValue = yValue + (index + 1 * 8);
-            } else {
-                doc.text(
-                    " - " + key + " : " + item.selectedOption[key],
-                    tableLeft + 40,
-                    yValue,
-                );
-                yValue = yValue + (index - 2 + 1 * 8);
-            }
-        });
-        doc.setFontSize(10).setFont("helvetica");
+//         Object.keys(item.selectedOption).forEach((key, index) => {
+//             doc.setFontSize(7).setFont("helvetica");
+//             if (index < 3) {
+//                 doc.text(
+//                     " - " + key + " : " + item.selectedOption[key],
+//                     tableLeft + 5,
+//                     yValue,
+//                 );
+//                 yValue = yValue + (index + 1 * 8);
+//             } else {
+//                 doc.text(
+//                     " - " + key + " : " + item.selectedOption[key],
+//                     tableLeft + 40,
+//                     yValue,
+//                 );
+//                 yValue = yValue + (index - 2 + 1 * 8);
+//             }
+//         });
+//         doc.setFontSize(10).setFont("helvetica");
 
-        y = y + rowHeight;
-    }
+//         y = y + rowHeight;
+//     }
 
-    return y;
-}
+//     return y;
+// }
 
 /**
  * Adds an order items table to the PDF document, including SKU, product name, quantity, price, and total columns.
@@ -594,58 +637,59 @@ function printShippingItems(
  * @param {Invoice} invoice - The Invoice object containing the order items to display in the table.
  * @return {number} The Y-coordinate position after adding the table.
  */
-function addShippingItemsTable(doc: jsPDF, invoice: Invoice): number {
-    const tableTop = 220;
-    const tableLeft = 25;
-    const rowHeight = 15;
+// function addShippingItemsTable(doc: jsPDF, invoice: Invoice): number {
+//     const tableTop = 220;
+//     const tableLeft = 25;
+//     const rowHeight = 15;
 
-    doc.setFontSize(10).setFont("helvetica", "bold");
+//     doc.setFontSize(10).setFont("helvetica", "bold");
 
-    doc.setTextColor("black");
-    doc.setFillColor("white");
+//     doc.setTextColor("black");
+//     doc.setFillColor("white");
 
-    doc.text("Product", tableLeft + 5, tableTop + rowHeight);
-    doc.text("Model", tableLeft + 200, tableTop + rowHeight);
-    doc.text("Qty.", tableLeft + 300, tableTop + rowHeight);
-    doc.text("weight", tableLeft + 355, tableTop + rowHeight);
-    doc.setFontSize(10).setFont("helvetica", "normal");
+//     doc.text("Product", tableLeft + 5, tableTop + rowHeight);
+//     doc.text("Model", tableLeft + 200, tableTop + rowHeight);
+//     doc.text("Qty.", tableLeft + 300, tableTop + rowHeight);
+//     doc.text("weight", tableLeft + 355, tableTop + rowHeight);
+//     doc.setFontSize(10).setFont("helvetica", "normal");
 
-    // Add table rows
+//     // Add table rows
 
-    doc.setTextColor("black");
-    doc.setFillColor("white");
+//     doc.setTextColor("black");
+//     doc.setFillColor("white");
 
-    doc.rect(tableLeft, tableTop + 25, 400, 0, "FD");
+//     doc.rect(tableLeft, tableTop + 25, 400, 0, "FD");
 
-    const y = tableTop + 2 * rowHeight;
-    doc.setFontSize(10).setFont("helvetica");
-    doc.setTextColor("black");
+//     const y = tableTop + 2 * rowHeight;
+//     doc.setFontSize(10).setFont("helvetica");
+//     doc.setTextColor("black");
 
-    // exceeding page
-    const finalHeight = doc.internal.pageSize.getHeight() - 50;
+//     // exceeding page
+//     const finalHeight = doc.internal.pageSize.getHeight() - 50;
 
-    const heightY = y + invoice.orderItems.length * 60;
+//     const heightY = y + invoice.orderItems.length * 60;
 
-    if (heightY > finalHeight) {
-        printShippingItems(doc, invoice.orderItems.slice(0, 6), y);
-        return shippingItemsRecursion(doc, invoice.orderItems.slice(6));
-    }
+//     if (heightY > finalHeight) {
+//         printShippingItems(doc, invoice.orderItems.slice(0, 6), y);
+//         return shippingItemsRecursion(doc, invoice.orderItems.slice(6));
+//     }
 
-    return printShippingItems(doc, invoice.orderItems, y);
-}
+//     return printShippingItems(doc, invoice.orderItems, y);
+// }
 
-function shippingItemsRecursion(doc: jsPDF, arr: InvoiceOrderItem[]): number {
-    if (arr.length < 9) {
-        doc.addPage();
-        return printShippingItems(doc, arr, 50);
-    }
+// function shippingItemsRecursion(doc: jsPDF, arr: InvoiceOrderItem[]): number {
+//     if (arr.length < 9) {
+//         doc.addPage();
+//         return printShippingItems(doc, arr, 50);
+//     }
 
-    doc.addPage();
-    printShippingItems(doc, arr.slice(0, 9), 50);
-    return orderItemsRecursion(doc, arr.slice(9));
-}
+//     doc.addPage();
+//     printShippingItems(doc, arr.slice(0, 9), 50);
+//     return orderItemsRecursion(doc, arr.slice(9));
+// }
 
 //
+
 function capitalizeWordsAndSlash(str: string) {
     const words = str.split(" ");
     const capitalizedWords = words.map((word) => {

@@ -121,7 +121,7 @@ export const parseAndSavePendingOrderToOrder = async (
         let obj = new OrderMail();
         const dto = await obj.getPayload(
             { order: pendingOrder },
-            "harshdalal.techinject@gmail.com",
+            pendingOrder.customerDetails.email,
         );
         const resp = await sendMail(dto);
     } catch (error) {

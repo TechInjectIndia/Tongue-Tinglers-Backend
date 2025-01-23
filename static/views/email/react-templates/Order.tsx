@@ -1,5 +1,6 @@
 import React from "react";
 import MailLayout from "./MailLayout";
+import { formatDateUI } from "apps/common/utils/commonUtils";
 
 const Order = (data: any) => (
     <MailLayout>
@@ -15,10 +16,10 @@ const Order = (data: any) => (
                     <br />
                     <b>Order Details:</b>
                     <ul>
-                        <li className="text-[17px] text-left text-black">Order Id:</li>
-                        <li className="text-[17px] text-left text-black">Items Ordered:</li>
-                        <li className="text-[17px] text-left text-black">Order Total:</li>
-                        <li className="text-[17px] text-left text-black">Order Date:</li>
+                        <li className="text-[17px] text-left text-black">Order Id: {data.id}</li>
+                        <li className="text-[17px] text-left text-black">Items Ordered: {data.items.length}</li>
+                        <li className="text-[17px] text-left text-black">Order Total: {data.total + data.totalTax}</li>
+                        <li className="text-[17px] text-left text-black">Order Date: {formatDateUI(data.createdAt)}</li>
                     </ul>
                 </p>
 

@@ -2,25 +2,24 @@ import {
     BaseOrder,
     ORDER_TYPE,
     OrderPayload,
-    ParsedOrder
-} from "../interface/Order"
-import {parseOrderItem} from "../../order-items/parser/parseOrderItem";
-import {BaseOrderItem, ORDER_ITEM_TYPE} from "../interface/OrderItem";
-import {OrderModel} from "../models/OrderTable";
-import {OrderItemsModel} from "../../order-items/models/OrderItemsTable";
-import {parseUserToMetaUser} from "apps/user/parser/user-parser";
-import {parseFranchise} from "apps/franchise/parser/franchiseParser";
-import {ParsedUser} from "../../user/interface/user";
-
+    ParsedOrder,
+} from "../interface/Order";
+import { parseOrderItem } from "../../order-items/parser/parseOrderItem";
+import { BaseOrderItem, ORDER_ITEM_TYPE } from "../interface/OrderItem";
+import { OrderModel } from "../models/OrderTable";
+import { OrderItemsModel } from "../../order-items/models/OrderItemsTable";
+import { parseUserToMetaUser } from "apps/user/parser/user-parser";
+import { parseFranchise } from "apps/franchise/parser/franchiseParser";
+import { ParsedUser } from "../../user/interface/user";
+import { sendMail } from "libraries/resend";
+import { OrderMail } from "static/views/email/get-templates/OrderMail";
 
 const parseOrder = (order: any): ParsedOrder => {
-
-
     let productVariations: any;
 
-    if(order.orderItems){
+    if (order.orderItems) {
         productVariations = order.orderItems;
-    } else if(order.pendingOrderItems){
+    } else if (order.pendingOrderItems) {
         productVariations = order.pendingOrderItems;
     }
     const data: ParsedOrder = {
@@ -30,10 +29,14 @@ const parseOrder = (order: any): ParsedOrder => {
         coupon: "",
         couponCodes: [],
         createdAt: order.created_at,
-        createdBy: order.createdByUser ? parseUserToMetaUser(order.createdByUser) : null,
+        createdBy: order.createdByUser
+            ? parseUserToMetaUser(order.createdByUser)
+            : null,
         customerDetails: order.createdByUser as unknown as ParsedUser,
         deletedAt: order.deletedAt,
-        deletedBy: order.deletedByUser ? parseUserToMetaUser(order.deletedByUser) : null,
+        deletedBy: order.deletedByUser
+            ? parseUserToMetaUser(order.deletedByUser)
+            : null,
         deliveryDetails: order.delivery_details,
         deliveryStatus: order.delivery_status,
         discount: null,
@@ -51,14 +54,15 @@ const parseOrder = (order: any): ParsedOrder => {
         totalShipping: order.total_shipping,
         totalTax: order.total_tax,
         updatedAt: order.updatedAt,
-        updatedBy: order.updatedByUser ? parseUserToMetaUser(order.updatedByUser) : null,
+        updatedBy: order.updatedByUser
+            ? parseUserToMetaUser(order.updatedByUser)
+            : null,
         orderType: order.orderType,
-        franchise: order.franchise ? parseFranchise(order.franchise) : null
+        franchise: order.franchise ? parseFranchise(order.franchise) : null,
     };
 
     return data; // Return the result
 };
-
 
 // const parseOrder = async (order: any): Promise<ParsedOrder> => {
 //     // console.log('order.orderItems: ', order.orderItems);
@@ -70,8 +74,6 @@ const parseOrder = (order: any): ParsedOrder => {
 //             return await parseOrderItem(orderItem); // Ensure to return the parsed item
 //         })
 //     );
-
-
 
 //     const data: ParsedOrder = {
 //         anomalyArr: [],
@@ -107,42 +109,48 @@ const parseOrder = (order: any): ParsedOrder => {
 //     return data; // Return the result
 // };
 
-
-export const parseAndSavePendingOrderToOrder = async (pendingOrder:ParsedOrder): Promise<any> => {
+export const parseAndSavePendingOrderToOrder = async (
+    pendingOrder: ParsedOrder,
+): Promise<any> => {
     try {
         const payload = parsedToPayload(pendingOrder);
-        const response = await  OrderItemsModel.bulkCreate(payload.orderItems);
+        const response = await OrderItemsModel.bulkCreate(payload.orderItems);
         const orderInstance = await OrderModel.create(payload);
-        await orderInstance.addOrderItems(response)
+        await orderInstance.addOrderItems(response);
 
+        let obj = new OrderMail();
+        const dto = await obj.getPayload(
+            { order: pendingOrder },
+            pendingOrder.customerDetails.email,
+        );
+        const resp = await sendMail(dto);
     } catch (error) {
         console.error("Error parsing pending order to order:", error);
         throw new Error("Failed to parse pending order to order");
     }
 };
 
-export const parsedToPayload=(parsed:any)=>{
-
-    console.log(parsed)
-    const dd = parsed.orderItems.map((d)=>{
-        const item:BaseOrderItem={
-        coupon_discount:0,
-        points_discount: 0,
-        product_id: d.product_id,
-        product_option_id: d.product_option_id.id,
-        quantity: d.quantity,
-        student_discount: 0,
-        total_price: d.total_price,
-        total_tax: d.totalTax,
-        type: ORDER_ITEM_TYPE.PACKAGING
-        }
+export const parsedToPayload = (parsed: any) => {
+    console.log(parsed);
+    const dd = parsed.orderItems.map((d) => {
+        const item: BaseOrderItem = {
+            coupon_discount: 0,
+            points_discount: 0,
+            product_id: d.product_id,
+            product_option_id: d.product_option_id.id,
+            quantity: d.quantity,
+            student_discount: 0,
+            total_price: d.total_price,
+            total_tax: d.totalTax,
+            type: ORDER_ITEM_TYPE.PACKAGING,
+        };
         return item;
-    })
-    const payload:OrderPayload={
+    });
+    const payload: OrderPayload = {
         anomalyArr: [],
         billingAddress: parsed.billingAddress,
         cancelled_items: [],
-        createdBy: parsed.createdBy.id ,
+        createdBy: parsed.createdBy.id,
         customer_details: parsed.createdBy.id,
         deletedBy: null,
         delivery_details: "",
@@ -162,11 +170,10 @@ export const parsedToPayload=(parsed:any)=>{
         total_discount: parsed.totalDiscount,
         total_shipping: parsed.totalShipping,
         total_tax: parsed.totalTax,
-        updatedBy: null
-    }
+        updatedBy: null,
+    };
 
     return payload;
-}
-
+};
 
 export { parseOrder };

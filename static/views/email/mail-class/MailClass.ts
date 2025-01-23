@@ -7,6 +7,6 @@ export abstract class Mail<T> implements IMail<T> {
     abstract validator(data: any): string | null;
     abstract parser(data: any): T;
     abstract getBody(data: T): MailBodyOptions;
-    abstract getPayload(data: any, to: string | Array<string>): DTO<AllMailOptions>;
+    abstract getPayload(data: any, to: string | Array<string>): Promise<DTO<AllMailOptions>>;
     abstract getSubject(data: T): string;
 }

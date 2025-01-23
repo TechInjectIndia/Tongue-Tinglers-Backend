@@ -26,7 +26,7 @@ export class MakePaymentMail extends Mail<null> implements IWelcomeMail {
         };
     }
 
-    getPayload(data: any, to: string | Array<string>): DTO<AllMailOptions> {
+    async getPayload(data: any, to: string | Array<string>): Promise<DTO<AllMailOptions>> {
         try {
             if (
                 (typeof to === "string" && to.trim() !== "") ||

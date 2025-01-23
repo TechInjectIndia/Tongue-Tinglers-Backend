@@ -482,6 +482,7 @@ export default class LeadController {
             if (minAmount) filters.minAmount = minAmount;
             if (maxAmount) filters.maxAmount = maxAmount;
 
+
             const leadsList = await new LeadRepo().list({
                 offset: skip as number,
                 limit: size as number,
@@ -489,6 +490,8 @@ export default class LeadController {
                 sorting: sorting,
                 filters: filters,
             });
+
+            console.log(leadsList)
 
             return res
                 .status(200)

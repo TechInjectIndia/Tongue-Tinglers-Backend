@@ -217,7 +217,7 @@ export default class ProductController {
         try {
             let page = parseInt(<string>get(req.query, "page", "1"));
             if (isNaN(page)) page = 1;
-            let limit = parseInt(<string>get(req.query, "limit", "10"));
+            let limit = parseInt(<string>get(req.query, "limit", "100"));
             if (isNaN(limit)) limit = 10;
             const products: Pagination<ParsedProduct> =
                 await RepoProvider.ProductRepo.getAllProductBySamplekit(

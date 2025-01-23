@@ -213,7 +213,6 @@ export default class PaymentsController {
                     );
             }
 
-            console.log("#23223###", contract_id);
 
             const contractDetails = await new ContractRepo().get(contract_id);
             if (!contractDetails) {

@@ -1,36 +1,36 @@
-import { Op, UniqueConstraintError } from "sequelize";
-import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
-import { APIResponse } from "../../common/models/Base";
+import {Op, UniqueConstraintError} from "sequelize";
+import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
+import {APIResponse} from "../../common/models/Base";
 import {
-    // COMMISSION_PAID_STATUS,
     CommissionEntityMappingModel,
-    // ICommissionEntityMapping,
     CommissionVoucherCreationAttributes,
-    // COMMISSION_VOUCHER_ENTITIES,
-} from "../model/CommissionEntityMappingTable";
+} from "apps/commission/model/CommissionEntityMappingTable";
 import {
-    ICommissionEntityMapping,
-    IParsedCommissionEntityMappingResponse,
     COMMISSION_PAID_STATUS,
     COMMISSION_VOUCHER_ENTITIES,
-} from "../interface/CommissionEntityMapping";
+    ICommissionEntityMapping,
+} from "apps/commission/interface/CommissionEntityMapping";
 
-import { CommissionTable } from "../model/CommmisionTable";
-import { ICommissionRepo } from "./ICommissionRepo";
-import { OrganizationModel } from "apps/organization/models/OrganizationTable";
-import { handleError, HelperMethods } from "apps/common/utils/HelperMethods";
-import { CommissionType, ICommission } from "../interface/Commission";
+import {CommissionTable} from "apps/commission/model/CommmisionTable";
+import {ICommissionRepo} from "apps/commission/repositories/ICommissionRepo";
+import {OrganizationModel} from "apps/organization/models/OrganizationTable";
+import {handleError, HelperMethods} from "apps/common/utils/HelperMethods";
+import {
+    CommissionType,
+    ICommission,
+    ParsedCommissionEntityMapping
+} from "apps/commission/interface/Commission";
 import {
     CommissionVoucherModel,
     ICommissionVoucher,
-} from "../model/CommissionVoucherTable";
-import { OrderModel } from "apps/order/models/OrderTable";
-import CommissionPayoutModel from "../model/CommissionPayoutTable";
-import { DTO } from "apps/common/models/DTO";
+} from "apps/commission/model/CommissionVoucherTable";
+import {OrderModel} from "apps/order/models/OrderTable";
+import CommissionPayoutModel from "apps/commission/model/CommissionPayoutTable";
+import {DTO} from "apps/common/models/DTO";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
     async getCommissionMappings(): Promise<
-        DTO<IParsedCommissionEntityMappingResponse[]>
+        DTO<ParsedCommissionEntityMapping[]>
     > {
         try {
             const result = await CommissionEntityMappingModel.findAll({
@@ -62,7 +62,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                 ],
             });
 
-            const response: IParsedCommissionEntityMappingResponse[] = [];
+            const response: ParsedCommissionEntityMapping[] = [];
 
             /* TODO: @dhruv Mandeep Singh(self), change this after the dependency is done */
 
@@ -75,14 +75,14 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                             .id,
                         name: commissionMapping["FranchiseModel"][
                             "organization"
-                        ].name,
+                            ].name,
                     },
                     commission: {
                         id: commissionMapping.commissionId,
                         title: commissionMapping["CommissionTable"].title,
                         type: commissionMapping["CommissionTable"].type,
                         eventType:
-                            commissionMapping["CommissionTable"].eventType,
+                        commissionMapping["CommissionTable"].eventType,
                         value: commissionMapping["CommissionTable"].value,
                     },
                     organization: {
@@ -91,11 +91,11 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                     },
                     appliedCommission: {
                         franchiseAmount:
-                            commissionMapping["CommissionTable"]
-                                .franchiseAmount,
+                        commissionMapping["CommissionTable"]
+                            .franchiseAmount,
                         commissionAmount:
-                            commissionMapping["CommissionTable"]
-                                .commissionAmount,
+                        commissionMapping["CommissionTable"]
+                            .commissionAmount,
                     },
                     // status: commissionMapping.status,
                     createdBy: commissionMapping.createdBy,
@@ -110,7 +110,8 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             // todo using hooks
 
             return HelperMethods.getSuccessResponse(response);
-        } catch (error) {
+        }
+        catch (error) {
             handleError(error);
             return HelperMethods.getErrorResponse();
         }
@@ -136,7 +137,8 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             });
 
             return HelperMethods.getSuccessResponse(result);
-        } catch (error) {
+        }
+        catch (error) {
             handleError(error, searchText, type);
             return HelperMethods.getErrorResponse();
         }
@@ -147,7 +149,7 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         options?: { transaction?: any },
     ): Promise<APIResponse<boolean>> {
         try {
-            const { transaction } = options || {};
+            const {transaction} = options || {};
             const CommissionEntityMappingData =
                 await CommissionEntityMappingModel.bulkCreate(mapEntities, {
                     transaction,
@@ -168,17 +170,18 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                         relationId: data.id,
                         entityId: data.franchiseId,
                         entityType:
-                            COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION,
+                        COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION,
                         status: COMMISSION_PAID_STATUS.PENDING,
                         value: finalAmount,
                         createdBy: data.createdBy,
                     },
-                    { transaction },
+                    {transaction},
                 );
             });
 
             return HelperMethods.getSuccessResponse<boolean>(true);
-        } catch (error) {
+        }
+        catch (error) {
             handleError(error, mapEntities);
             return HelperMethods.getErrorResponse();
         }
@@ -195,7 +198,8 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                 },
             });
             return HelperMethods.getSuccessResponse<boolean>(true);
-        } catch (error) {
+        }
+        catch (error) {
             handleError(error, id, mapEntity);
             return HelperMethods.getErrorResponse();
         }
@@ -218,7 +222,8 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                 },
             );
             return HelperMethods.getSuccessResponse<boolean>(true);
-        } catch (error) {
+        }
+        catch (error) {
             handleError(error, ids, deletedById);
             return HelperMethods.getErrorResponse(error.toString());
         }
@@ -230,7 +235,8 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                 order: [["updated_at", "DESC"]],
             });
             return HelperMethods.getSuccessResponse(result);
-        } catch (error) {
+        }
+        catch (error) {
             handleError(error);
             return HelperMethods.getErrorResponse(error.toString());
         }
@@ -240,7 +246,8 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         try {
             const result = await CommissionTable.findByPk(id);
             return HelperMethods.getSuccessResponse(result);
-        } catch (error) {
+        }
+        catch (error) {
             handleError(error, id);
             return HelperMethods.getErrorResponse(error.toString());
         }
@@ -252,7 +259,8 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         try {
             const saved = await CommissionTable.create(commission);
             return HelperMethods.getSuccessResponse<CommissionTable>(saved);
-        } catch (error) {
+        }
+        catch (error) {
             handleError(error, commission);
             if (error instanceof UniqueConstraintError) {
                 return HelperMethods.getErrorResponse("Title already exists");
@@ -272,7 +280,8 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                 },
             });
             return HelperMethods.getSuccessResponse<boolean>(true);
-        } catch (error) {
+        }
+        catch (error) {
             handleError(error, id, commission);
             if (error instanceof UniqueConstraintError) {
                 return HelperMethods.getErrorResponse("Title already exists");
@@ -297,7 +306,8 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                 true,
                 "Title already exists",
             );
-        } catch (error) {
+        }
+        catch (error) {
             handleError(error, title);
             return HelperMethods.getErrorResponse();
         }
@@ -320,7 +330,8 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             );
 
             return HelperMethods.getSuccessResponse<boolean>(true);
-        } catch (error) {
+        }
+        catch (error) {
             handleError(error, id, status);
 
             return HelperMethods.getErrorResponse();
@@ -336,14 +347,14 @@ export class PostgresCommissionRepo implements ICommissionRepo {
             const order = await OrderModel.findByPk(entityId);
             if (!order) throw new Error("Order not found");
 
-            await order.createAddVoucher({ ...voucherData });
+            await order.createAddVoucher({...voucherData});
         } else if (
             entityType === COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION
         ) {
             const franchise = await FranchiseModel.findByPk(entityId);
             if (!franchise) throw new Error("Franchise not found");
 
-            await franchise.createAddVoucher({ ...voucherData });
+            await franchise.createAddVoucher({...voucherData});
         }
     }
 }

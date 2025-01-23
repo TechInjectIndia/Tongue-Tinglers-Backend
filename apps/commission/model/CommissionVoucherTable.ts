@@ -7,10 +7,10 @@ import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
 import {
     COMMISSION_PAID_STATUS,
     COMMISSION_VOUCHER_ENTITIES
-} from "../interface/CommissionEntityMapping";
+} from "apps/commission/interface/CommissionEntityMapping";
 import CommissionEntityMappingModel from "./CommissionEntityMappingTable";
 
-const { STRING, INTEGER, DATE, NOW } = DataTypes;
+const {STRING, INTEGER, DATE, NOW} = DataTypes;
 
 // Define the creation attributes by making certain fields optional
 type CommissionVoucherCreationAttributes = Optional<
@@ -20,8 +20,7 @@ type CommissionVoucherCreationAttributes = Optional<
 
 class CommissionVoucherModel
     extends Model<ICommissionVoucher, CommissionVoucherCreationAttributes>
-    implements ICommissionVoucher
-{
+    implements ICommissionVoucher {
     public id: number;
 
     public relationId: number;

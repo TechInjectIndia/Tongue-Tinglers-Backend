@@ -13,7 +13,8 @@ import {
     COMMISSION_VOUCHER_ENTITIES,
 } from "apps/commission/interface/CommissionEntityMapping";
 import CommissionEntityMappingModel
-    from "apps/commission/model/CommissionEntityMappingTable";
+    from "apps/commission//model/CommissionEntityMappingTable";
+
 
 // Interface behind Commission Model
 interface ICommission extends BaseMeta {

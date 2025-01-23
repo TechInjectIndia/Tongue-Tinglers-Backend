@@ -1,4 +1,4 @@
-import {BaseMeta, ParsedMeta} from "../../common/models/Base";
+import {BaseMeta} from "apps/common/models/Base";
 
 
 enum COMMISSION_ENTITIES {
@@ -19,12 +19,14 @@ enum COMMISSION_PAID_STATUS {
 }
 
 type OrganizationCommissions = {
-    franchiseId: number; // franchise being sold or franchise purchasing raw Material
+    franchiseId: number; // franchise being sold or franchise purchasing raw
+                         // Material
     organizationId: number; // payable to organization
     commissionId: number; // commissionModelId
 }
 
-// relation of receiving party & franchise involved in trade - either sold / ordered RM
+// relation of receiving party & franchise involved in trade - either sold /
+// ordered RM
 interface ICommissionEntityMapping extends BaseMeta, OrganizationCommissions {
 
 }

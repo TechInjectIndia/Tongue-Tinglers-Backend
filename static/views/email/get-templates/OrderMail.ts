@@ -50,7 +50,7 @@ export class OrderMail extends Mail<null> implements IWelcomeMail {
                     attachments: [
                         {
                             filename: "Invoice.pdf",
-                            path: content.toString("base64"),
+                            content: content.toString("base64"),
                         },
                     ],
                 };

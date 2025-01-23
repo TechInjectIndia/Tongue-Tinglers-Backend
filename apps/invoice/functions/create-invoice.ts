@@ -30,6 +30,9 @@ export async function invoice(order: ParsedOrder) {
 
 function invoiceDtoFromOrder(order: ParsedOrder): Invoice | undefined {
     try {
+
+        console.log("nitesh")
+        console.log(order)
         const invoiceId = order.id;
         const shippingCharge = order.totalShipping;
         const billingAddress: BillingDetails = {
@@ -63,14 +66,14 @@ function invoiceDtoFromOrder(order: ParsedOrder): Invoice | undefined {
         };
 
         const orderItems: InvoiceOrderItem[] = [];
-        order.items.map((item) => {
-            orderItems.push({
-                name: item.product.name,
-                // model: item.product.id,
-                qty: item.quantity,
-                unitPrice: item.total_price,
-                selectedOption: item.productOption,
-            });
+        order.orderItems.map((item) => {
+            // orderItems.push({
+            //     name: item.name,
+            //     // model: item.product.id,
+            //     qty: item.quantity,
+            //     unitPrice: item.total_price,
+            //     selectedOption: item.productOption,
+            // });
         });
         return {
             invoiceId: invoiceId,
@@ -79,9 +82,9 @@ function invoiceDtoFromOrder(order: ParsedOrder): Invoice | undefined {
             companyDetails: companyDetails,
             orderItems: orderItems,
             tax: order.totalTax,
-            discount: getTotalDiscount(order),
-            subTotal: order.price["base-price"].value,
-            grandTotal: order.price["base-price"].value + order.totalTax,
+            discount: 0,
+            subTotal: 0,
+            grandTotal: 0,
             date: formatDateToDDMMYYYY(getDateFromTimeStamp(order.createdAt)),
             shippingCharge: shippingCharge,
             contact: order.customerDetails.phoneNumber,

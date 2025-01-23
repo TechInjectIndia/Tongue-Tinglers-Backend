@@ -3,13 +3,7 @@ import { InvoiceAddress } from "../models/Invoice";
 import * as fs from 'fs';
 
 export const getTotalDiscount = (order: ParsedOrder) => {
-    let totalDiscount: number = 0;
 
-    order.items.forEach((item) => {
-        totalDiscount += item.totalDiscount * item.quantity;
-    });
-
-    return totalDiscount;
 };
 
 export const getStringFromAddress = (address: InvoiceAddress ) => {
@@ -59,7 +53,7 @@ export const getStringFromAddress = (address: InvoiceAddress ) => {
 
 export function saveBuffersAsPDF(bufferArray,) {
 
-    
+
     fs.mkdirSync('./', { recursive: true }); // Create the directory if it doesn't exist
 
     // bufferArray.forEach((buffer, index) => {

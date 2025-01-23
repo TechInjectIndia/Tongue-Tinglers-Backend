@@ -50,6 +50,7 @@ import {
     VALUE_TYPE,
 } from "apps/order/interface/OrderItem";
 import { saveBuffersAsPDF } from "apps/invoice/utils/invoice-utils";
+import {OrderMail} from "./static/views/email/get-templates/OrderMail";
 
 declare global {
     interface BigInt {
@@ -126,6 +127,7 @@ server.use(cors(corsOptions));
 server.engine("html", ejs.renderFile);
 server.set("view engine", "ejs");
 
+
 server.get("/a", async (_, res) => {
     const response =
         await RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({
@@ -133,8 +135,22 @@ server.get("/a", async (_, res) => {
         });
     const payload = parsedToPayload(response);
     const ress = await RepoProvider.orderRepo.createOrder(payload);
-    res.json(response);
+
+    res.json(ress);
 });
+
+
+server.get("/b", async (_, res) => {
+    const response =  await RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({
+        id: 4,
+    });
+
+   const dd = await new OrderMail().getPayload({order:response},"niteshrghv@gmail.com")
+    await  sendMail(dd)
+
+    res.json(dd);
+});
+
 
 server.get("/", async (_, res) => {
     const resp = await RepoProvider.orderRepo.getAllOrders(100, 100, "", {});

@@ -120,6 +120,9 @@ export const parseAndSavePendingOrderToOrder = async (
 
         let obj = new OrderMail();
 
+        console.log(pendingOrder)
+        console.log("pending order")
+
         const dto = await obj.getPayload(
             { order: pendingOrder },
             pendingOrder.customerDetails.email,

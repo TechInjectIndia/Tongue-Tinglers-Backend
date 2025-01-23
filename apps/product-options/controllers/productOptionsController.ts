@@ -5,8 +5,7 @@ import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
 import { Request, Response } from "express";
 
 import {
-    BaseProductOptions,
-    parsedProductOptions, ProductOptions
+    BaseProductOptions, ProductOptions
 } from "apps/product/interface/ProductOptions";
 
 export default class ProductOptionsController {
@@ -66,7 +65,7 @@ export default class ProductOptionsController {
                         sendResponse(
                             RESPONSE_TYPE.SUCCESS,
                             SUCCESS_MESSAGE.FETCHED,
-                            parsedProductOptions(productOptions),
+                            // parsedProductOptions(productOptions),
                         ),
                     );
         } catch (error) {

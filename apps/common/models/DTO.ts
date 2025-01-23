@@ -1,9 +1,9 @@
 type DTO<T, E = unknown> = SuccessDTO<T> | FailedDTO<E>;
 
 enum DTO_CODE {
-    SUCCESS,
-    HANDLED_ERROR,
-    UNHANDLED_ERROR,
+    SUCCESS = 200,
+    HANDLED_ERROR = 400,
+    UNHANDLED_ERROR = 500,
 }
 
 interface SuccessDTO<T> {

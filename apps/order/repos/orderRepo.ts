@@ -4,7 +4,7 @@ import { NotesModel } from "../models/NotesTable";
 import { Op, Sequelize, Transaction, where } from "sequelize";
 
 import { OrderItemsModel } from "../../order-items/models/OrderItemsTable";
-import { OrderItem } from "../../order-items/interface/orderItem";
+import { OrderItem, OrderItemPayload } from "../../order-items/interface/orderItem";
 import {
     Notes,
     Order,
@@ -19,6 +19,7 @@ import { parseOrder } from "../parser/parseOrder";
 import { OrderProvider } from "apps/order-provider/provider/OrderProvider";
 import {
     DTO,
+    DTO_CODE,
     getHandledErrorDTO,
     getSuccessDTO,
     getUnhandledErrorDTO,
@@ -28,7 +29,7 @@ import { sequelize } from "../../../config";
 import { ProcessPostOrderResult } from "../interface/ProcessPostOrderResult";
 import { ProductVariationsModel } from "../../product-options/models/ProductVariationTable";
 import { ProductOptions } from "../../product/interface/ProductOptions";
-import { PendingOrderRepo } from "../../pending-orders/repos/PendingOrderRepo";
+// import { PendingOrderRepo } from "../../pending-orders/repos/PendingOrderRepo";
 import { RPOrderTable } from "apps/rp-order/models/RPOrderTable";
 import { UserModel } from "apps/user/models/UserTable";
 import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
@@ -40,345 +41,108 @@ import {ProductModel} from "../../product/model/productTable";
 import {
     ProductsCategoryModel
 } from "../../products-category/models/ProductCategoryTable";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 export class OrderRepo implements  IOrderRepo{
-    async createOrder(order: OrderPayload,transaction?: Transaction): Promise<ParsedOrder | null> {
-        try {
-            let notesCreated: Notes[] = [];
-            let orderItemsCreated: any[] = [];
-            const { notes, orderItems, ...orderDetails } = order;
-
-            if (orderItems && orderItems.length > 0) {
-                orderItemsCreated = await Promise.all(
-                    orderItems.map(async (orderItem) => {
-                        const createdOrderItem = await OrderItemsModel.create(orderItem);
-                        return createdOrderItem.toJSON(); // Convert to plain object if needed
-                    })
-                );
-            }
-
-            // Create notes if provided
-            // if (notes && notes.length > 0) {
-            //     notesCreated = await Promise.all(
-            //         notes.map(async (note) => {
-            //             const createdNote = await NotesModel.create(note);
-            //             return createdNote.toJSON(); // Convert to plain object if needed
-            //         })
-            //     );
-            // }
-
-            const orderItemIds = orderItemsCreated.map((orderItem) => orderItem.id);
-            const noteIds = notesCreated.map((note) => note.id);
-
-            // Create the order
-            const orderCreated = await OrderModel.create(
-                {
-                    ...orderDetails, // Spread the remaining order details
-                    // notes: noteIds, // Link notes by their IDs
-                    createdAt: new Date(),
-                },
-                // { include: [{ association: "notes" }], transaction }
-            );
-            await  orderCreated.addOrderItems(orderItemIds)
-
-            // orderCreated.addNotes(noteIds);
-            //
-            // // todo @Sumeet add the anomalies here;
-            // orderCreated.addAnomalyOrderItems([]);
-
-            return parseOrder(orderCreated.toJSON());
-        } catch (error) {
-            console.log(error);
-            return null;
-        }
-    }
-
-    async updateOrder(order: any): Promise<ParsedOrder | null> {
-        try {
-            const orderId = order.id;
-            let notesUpdated: Notes[] = [];
-            let orderItemsUpdated: OrderItem[] = [];
-            const { notes, order_items, ...orderDetails } = order;
-
-            // Fetch the existing order to ensure it exists
-            const existingOrder = await OrderModel.findByPk(orderId, {
-                include: [{ association: "noteses" }, { association: "orderItems" }],
-            });
-
-            if (!existingOrder) {
-                throw new Error(`Order with ID ${orderId} not found.`);
-            }
-
-            // Update order items if provided
-            // if (order_items && order_items.length > 0) {
-            //     // Delete existing order items if necessary (optional based on your business logic)
-            //     await OrderItemModel.destroy({ where: { id: orderId } });
-
-            //     // Add new or updated order items
-            //     orderItemsUpdated = await Promise.all(
-            //         order_items.map(async (orderItem) => {
-            //             const createdOrderItem = await OrderItemModel.create({ ...orderItem, orderId });
-            //             return createdOrderItem.toJSON();
-            //         })
-            //     );
-            // }
-
-            // // Update notes if provided
-            // if (notes && notes.length > 0) {
-            //     // Delete existing notes if necessary (optional based on your business logic)
-            //     await NotesModel.destroy({ where: { order_id: orderId } });
-
-            //     // Add new or updated notes
-            //     notesUpdated = await Promise.all(
-            //         notes.map(async (note) => {
-            //             const createdNote = await NotesModel.create({ ...note, orderId });
-            //             return createdNote.toJSON();
-            //         })
-            //     );
-            // }
-
-            // Update the order details
-            await existingOrder.update({
-                ...orderDetails, // Spread the updated order details
-                updatedAt: new Date(),
-            });
-
-            // Update associations if necessary
-            // const noteIds = notesUpdated.map((note) => note.id);
-            // if (noteIds.length > 0) {
-            //     await existingOrder.setNoteses(noteIds);
-            // }
-
-            return parseOrder(existingOrder.toJSON());
-        } catch (error) {
-            console.log(error);
-            return null;
-        }
-    }
-    deleteOrder(orderId: number): Promise<any> {
+    proceedToPayment(state: OrderState, userId: number): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder; }>> {
         throw new Error("Method not implemented.");
     }
-    async getOrderById(orderId: number): Promise<any> {
-        try {
-            const order = await OrderModel.findByPk(orderId, {
-                // include: [
-                //     {
-                //         model: NotesModel,
-                //         as: "noteses",
-                //         through: { attributes: [] },
-                //     },
-                // ],
-                include: [
-                    { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
-                    { model: UserModel, as: "createdByUser" },
-                    { model: UserModel, as: "deletedByUser" },
-                    { model: UserModel, as: "updatedByUser" },
-                ],
-            });
+    async updateOrder(orderId: number, order: OrderPayload, userId:number, transaction?: Transaction): Promise<DTO<ParsedOrder | null>> {
+        try{
+            let noteIds: number[] = [];
+            const {status, deliveryStatus} = order;
 
-            const orderData: any = order.toJSON();
+            const existingOrder = await OrderModel.findByPk(orderId, {
+                transaction
+            })
 
-            const a=async () => {
-
-                if (orderData.orderItems && orderData.orderItems.length > 0) {
-
-                    // Get all product option IDs from this order
-                    const productOptionIds = structuredClone(orderData.orderItems).map(item => item.product_option_id);
-                    const productsIds = structuredClone(orderData.orderItems).map(item => item.product_id);
-
-                    // Fetch all product options for this order in one query
-                    const productOptions = await OptionsValueModel.findAll({
-                        include: [
-                            {
-                                model: OptionsModel,
-                                as: "options",
-                                attributes: ["id", "name"],
-                            },
-                        ],
-                        where: {
-                            id: productOptionIds
-                        }
-                    });
-
-                    const products = await ProductModel.findAll({
-                        include: [
-                            {
-                                model: ProductVariationsModel, // Include the ProductOptions model
-                                as: "variations", // Alias used in the ProductModel association
-                                attributes: [
-                                    "id",
-                                    "optionValueId",
-                                    "price",
-                                    "stock",
-                                    "status",
-                                    "images",
-                                ], // Only fetch these fields
-                                include: [
-                                    {
-                                        model: OptionsValueModel,
-                                        as: "optionsValue", // Include these fields from the User model
-                                        attributes: ["id", "name", "option_id"],
-                                        include: [
-                                            {
-                                                model: OptionsModel,
-                                                as: "options",
-                                                attributes: ["id", "name"],
-                                            },
-                                        ],
-                                    },
-                                ],
-                            },
-                            {
-                                model: UserModel,
-                                as: "createdByUser", // Include createdByUser
-                                attributes: [
-                                    "id",
-                                    "firstName",
-                                    "lastName",
-                                    "email",
-                                ], // Include these fields from the User model
-                            },
-                            {
-                                model: UserModel,
-                                as: "updatedByUser", // Include createdByUser
-                                attributes: [
-                                    "id",
-                                    "firstName",
-                                    "lastName",
-                                    "email",
-                                ], // Include these fields from the User model
-                            },
-                            {
-                                model: UserModel,
-                                as: "deletedByUser", // Include createdByUser
-                                attributes: [
-                                    "id",
-                                    "firstName",
-                                    "lastName",
-                                    "email",
-                                ], // Include these fields from the User model
-                            },
-                            {
-                                model: ProductsCategoryModel,
-                                as: "productCategory", // Include createdByUser
-                                attributes: ["id", "name", "description"], // Include these fields from the User model
-                            },
-                        ],
-                        where: {
-                            id: productsIds
-                        }
-                    });
-
-
-                    // Create a map for quick lookup
-                    const productOptionMap = productOptions.reduce((acc, option) => {
-                        acc[option.id] = option.toJSON();
-                        return acc;
-                    }, {});
-                    const productMaps = products.reduce((acc, option) => {
-                        acc[option.id] = option.toJSON();
-                        return acc;
-                    }, {});
-
-                    // Attach product options to order items
-                    orderData.orderItems = orderData.orderItems.map(item => ({
-                        ...item,
-                        productOption: productOptionMap[item.product_option_id] || null,
-                        product_id: productMaps[item.product_id] || null,
-                    }));
-                }
-                return orderData;
+            if(!existingOrder){
+                return getHandledErrorDTO("Order not found");
             }
-            const dd = await a();
 
-            return parseOrder(dd);
-        } catch (error) {
+            if (status) existingOrder.status = status;
+            if (deliveryStatus) existingOrder.deliveryStatus = deliveryStatus;
+            existingOrder.updatedBy = userId
+            await existingOrder.save({ transaction });
+
+            if (order.notes && Array.isArray(order.notes)) {
+                for (const note of order.notes) {
+                    if (note.id) {
+                        // If ID exists, update the record
+                        const existingNotes = await NotesModel.findByPk(
+                            note.id
+                        );
+                        if (existingNotes) {
+                            note.updatedBy = userId
+                            await existingNotes.update(note);
+                        } else {
+                            console.warn(
+                                `Notes with ID ${note.id} not found. Skipping update.`
+                            );
+                        }
+                    } else {
+                        note.createdBy = userId
+                        // If no ID, create a new record
+                        const newDetail = await NotesModel.create(note);
+                        noteIds.push(newDetail.id);
+                        await existingOrder.addNotes(noteIds);
+                    }
+                }
+            }
+
+            const updatedOrder = await this.getOrderById(existingOrder.id, transaction, 'Order Updated Successfully');
+
+            return updatedOrder
+        }catch(error){
             console.log(error);
-            return null;
+            return getHandledErrorDTO(error.message, error);
         }
     }
-   async getAllOrders(
-    page: number,
-    limit: number,
-    search: string,
-    filters: Record<string, any>
-): Promise<OrderPagination<ParsedOrder>> {
-    try {
-        // Validate and normalize pagination parameters
-        page = Math.max(1, page || 1);
-        limit = Math.max(1, limit || 10);
-        const offset = (page - 1) * limit;
+    async getAllOrders(page: number, limit: number, search: string, filters: Record<string, any>, transaction?: Transaction): Promise<DTO<OrderPagination<ParsedOrder>>> {
+        try{
+            const offset = (page - 1) * limit;
 
-        // Build the where clause
-        const whereClause: any = {};
+            const query: any = {
+                where: {},
+                offset,
+                limit,
+                order: [["createdAt", "DESC"]], // Orders sorted by creation date (newest first)
+                transaction
+            };
 
-        // Add search functionality
-        if (search) {
-            whereClause[Op.or] = [
-                { status: { [Op.iLike]: `%${search}%` } },
-                { delivery_status: { [Op.iLike]: `%${search}%` } },
-                { payment_type: { [Op.iLike]: `%${search}%` } },
-            ];
-        }
-
-        // Apply filters if provided
-        // if (filters && typeof filters === "object") {
-        //     Object.entries(filters).forEach(([key, value]) => {
-        //         if (value !== undefined && value !== null) {
-        //             whereClause[key] = value;
-        //         }
-        //     });
-        // }
-
-        // Fetch paginated data
-        const { rows, count: total } = await OrderModel.findAndCountAll({
-            include: [
-                { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
-                { model: UserModel, as: "createdByUser" },
-                { model: UserModel, as: "deletedByUser" },
-                { model: UserModel, as: "updatedByUser" },
-            ],
-        });
-
-        // console.log(rows)
-        // Process orders and fetch product options in batch
-        const processedOrders = await Promise.all(
-            rows.map(async (order) => {
-                const orderData:any = order.toJSON();
-                if (orderData.orderItems && orderData.orderItems.length > 0) {
-
-                    // Get all product option IDs from this order
-                    const productOptionIds =  structuredClone(orderData.orderItems).map(item => item.product_option_id);
-                    const productsIds  = structuredClone(orderData.orderItems).map(item => item.product_id);
-
-                    // Fetch all product options for this order in one query
-                    const productOptions = await OptionsValueModel.findAll({
-                        include:[
-                            {
-                                model: OptionsModel,
-                                as: "options",
-                                attributes: ["id", "name"],
-                            },
-                        ],
-                        where: {
-                            id: productOptionIds
-                        }
-                    });
-
-                    const products = await ProductModel.findAll({
-                        include: [
+            // Include associations if needed
+            query.include = [
+                { 
+                    model: OrderItemsModel, 
+                    as: "orderItems", 
+                    include:[
                         {
-                            model: ProductVariationsModel, // Include the ProductOptions model
-                            as: "variations", // Alias used in the ProductModel association
-                            attributes: [
-                                "id",
-                                "optionValueId",
-                                "price",
-                                "stock",
-                                "status",
-                                "images",
-                            ], // Only fetch these fields
-                            include: [
+                            model: ProductVariationsModel,
+                            as: 'variationData',
+                            include:[
+                                {
+                                    model: ProductModel,
+                                    as: 'productData',
+                                    include: [
+                                        {
+                                            model: ProductsCategoryModel,
+                                            as: "productCategory", // Include createdByUser
+                                            attributes: ["id", "name", "description"], // Include these fields from the User model
+                                        },
+                                        { 
+                                            model: UserModel, 
+                                            as: "createdByUser" 
+                                        },
+                                        { 
+                                            model: UserModel, 
+                                            as: "deletedByUser" 
+                                        },
+                                        { 
+                                            model: UserModel, 
+                                            as: "updatedByUser" 
+                                        },
+                                    ]
+                                },
                                 {
                                     model: OptionsValueModel,
                                     as: "optionsValue", // Include these fields from the User model
@@ -391,91 +155,256 @@ export class OrderRepo implements  IOrderRepo{
                                         },
                                     ],
                                 },
-                            ],
+                            ]
                         },
                         {
                             model: UserModel,
-                            as: "createdByUser", // Include createdByUser
-                            attributes: [
-                                "id",
-                                "firstName",
-                                "lastName",
-                                "email",
-                            ], // Include these fields from the User model
+                            as: 'createdByUser'
                         },
                         {
                             model: UserModel,
-                            as: "updatedByUser", // Include createdByUser
-                            attributes: [
-                                "id",
-                                "firstName",
-                                "lastName",
-                                "email",
-                            ], // Include these fields from the User model
+                            as: 'updatedByUser'
                         },
                         {
                             model: UserModel,
-                            as: "deletedByUser", // Include createdByUser
-                            attributes: [
-                                "id",
-                                "firstName",
-                                "lastName",
-                                "email",
-                            ], // Include these fields from the User model
-                        },
-                        {
-                            model: ProductsCategoryModel,
-                            as: "productCategory", // Include createdByUser
-                            attributes: ["id", "name", "description"], // Include these fields from the User model
-                        },
-                    ],
-                        where: {
-                            id: productsIds
+                            as: 'deletedByUser'
                         }
-                    });
-
-
-
-                    // Create a map for quick lookup
-                    const productOptionMap = productOptions.reduce((acc, option) => {
-                        acc[option.id] = option.toJSON();
-                        return acc;
-                    }, {});
-                    const productMaps = products.reduce((acc, option) => {
-                        acc[option.id] = option.toJSON();
-                        return acc;
-                    }, {});
-
-                    // Attach product options to order items
-                    orderData.orderItems = orderData.orderItems.map(item => ({
-                        ...item,
-                        productOption: productOptionMap[item.product_option_id] || null,
-                        product_id:productMaps[item.product_id]||null,
-                    }));
+                    ] 
+                },
+                { 
+                    model: UserModel, 
+                    as: "customer" 
+                },
+                { 
+                    model: UserModel, 
+                    as: "createdByUser" 
+                },
+                { 
+                    model: UserModel, 
+                    as: "deletedByUser" 
+                },
+                { 
+                    model: UserModel, 
+                    as: "updatedByUser" 
+                },
+                {
+                    model: FranchiseModel,
+                    as: 'franchiseData'
+                },
+                {
+                    model: NotesModel,
+                    as: 'notes',
+                    through:{attributes:[]},
+                    include: [
+                        {
+                            model: UserModel,
+                            as: 'createdByUser',
+                        },
+                        {
+                            model: UserModel,
+                            as: 'updatedByUser',
+                        },
+                        {
+                            model: LogModel,
+                            as: 'logs',
+                            where: {model: 'Notes'},
+                            required: false
+                        }
+                    ]
+                },
+                {
+                    model: LogModel,
+                    as: 'logs',
+                    where: {model: 'Order'}
                 }
-                return orderData;
-            })
-        );
+            ]   
+                 
+            // Fetch orders and count total records
+            const { rows, count } = await OrderModel.findAndCountAll(query);
 
-
-        // Parse the results
-        const parsedOrders = await Promise.all(
-            processedOrders.map(order => parseOrder(order))
-        );
-
-        return {
-            data: parsedOrders,
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
-        };
-    } catch (error) {
-        console.error("Error fetching orders with pagination:", error);
-        throw new Error("Failed to fetch orders.");
+            // Pagination details
+            const totalPages = Math.ceil(count / limit);
+            const parsedData = rows.map(data => parseOrder(data))
+            return getSuccessDTO({
+                data: parsedData,
+                total: count,
+                totalPages,
+                page: parseInt(page.toString()),
+                limit: parseInt(limit.toString())
+            },'Fetched Successfully')
+        }catch(error){
+            console.log(error);
+            return getHandledErrorDTO(error.message, error);
+        }
     }
-}
 
+    async createOrder(order: OrderPayload,transaction?: Transaction): Promise<DTO<ParsedOrder | null>> {
+        try {
+            const options: any = {
+                returning: true
+            };
+            if (transaction) {
+                options.transaction = transaction;
+            }
+            const orderCreated = await OrderModel.create(order, options);
+            if(!orderCreated){
+                return getHandledErrorDTO("Error while creating order");
+            }
+
+            const orderItemPayload = order.items.map((item) => ({
+                orderId: orderCreated.id,
+                product: item.product,
+                variation: item.variation,
+                quantity: item.quantity,
+                price: item.price,
+                totalPrice: item.totalPrice,
+                totalTax: item.totalTax,
+                couponDiscount: item.couponDiscount,
+                type: item.type,
+                createdBy: order['createdBy']
+            }))
+
+            const orderItemsCreated = await OrderItemsModel.bulkCreate(orderItemPayload, options)
+
+            if (!orderItemsCreated || orderItemsCreated.length === 0) {
+                return getHandledErrorDTO("Error while creating order items");
+            }
+            // Fetch the created order with associated items
+            const completeOrder = await this.getOrderById(orderCreated.id, transaction, 'Order Created Successfully');
+            return completeOrder
+        } catch (error) {
+            console.log(error);
+            return getHandledErrorDTO(error.message, error);
+        }
+    }
+
+    deleteOrder(orderId: number): Promise<any> {
+        throw new Error("Method not implemented.");
+    }
+
+    async getOrderById(orderId: number, transaction?: Transaction, message?: string): Promise<DTO<ParsedOrder>> {
+        try {
+            const options: any = {
+                returning: true
+            };
+            if (transaction) {
+            options.transaction = transaction;
+            }
+            const orderData = await OrderModel.findOne({
+                where: { id: orderId },
+                include: [
+                    { 
+                        model: OrderItemsModel, 
+                        as: "orderItems", 
+                        include:[
+                            {
+                                model: ProductVariationsModel,
+                                as: 'variationData',
+                                include:[
+                                    {
+                                        model: ProductModel,
+                                        as: 'productData',
+                                        include: [
+                                            {
+                                                model: ProductsCategoryModel,
+                                                as: "productCategory", // Include createdByUser
+                                                attributes: ["id", "name", "description"], // Include these fields from the User model
+                                            },
+                                            { 
+                                                model: UserModel, 
+                                                as: "createdByUser" 
+                                            },
+                                            { 
+                                                model: UserModel, 
+                                                as: "deletedByUser" 
+                                            },
+                                            { 
+                                                model: UserModel, 
+                                                as: "updatedByUser" 
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        model: OptionsValueModel,
+                                        as: "optionsValue", // Include these fields from the User model
+                                        attributes: ["id", "name", "option_id"],
+                                        include: [
+                                            {
+                                                model: OptionsModel,
+                                                as: "options",
+                                                attributes: ["id", "name"],
+                                            },
+                                        ],
+                                    },
+                                ]
+                            },
+                            {
+                                model: UserModel,
+                                as: 'createdByUser'
+                            },
+                            {
+                                model: UserModel,
+                                as: 'updatedByUser'
+                            },
+                            {
+                                model: UserModel,
+                                as: 'deletedByUser'
+                            }
+                        ] 
+                    },
+                    { 
+                        model: UserModel, 
+                        as: "customer" 
+                    },
+                    { 
+                        model: UserModel, 
+                        as: "createdByUser" 
+                    },
+                    { 
+                        model: UserModel, 
+                        as: "deletedByUser" 
+                    },
+                    { 
+                        model: UserModel, 
+                        as: "updatedByUser" 
+                    },
+                    {
+                        model: FranchiseModel,
+                        as: 'franchiseData'
+                    },
+                    {
+                        model: NotesModel,
+                        as: 'notes',
+                        through:{attributes:[]},
+                        include: [
+                            {
+                                model: UserModel,
+                                as: 'createdByUser',
+                            },
+                            {
+                                model: UserModel,
+                                as: 'updatedByUser',
+                            },
+                            {
+                                model: LogModel,
+                                as: 'logs',
+                                where: {model: 'Notes'}
+                            }
+                        ]
+                    },
+                    {
+                        model: LogModel,
+                        as: 'logs',
+                        where: {model: 'Order'}
+                    }
+                ],
+            })
+            return orderData ? getSuccessDTO(parseOrder(orderData.toJSON()), message) : getHandledErrorDTO("Not Found")
+        } catch (error) {
+            console.log(error);
+            return getHandledErrorDTO(error.message, error)
+        }
+    }
 
     async processOrder(
         state: OrderState
@@ -483,36 +412,36 @@ export class OrderRepo implements  IOrderRepo{
         return new OrderProvider().processOrder(state);
     }
 
-    async proceedToPayment(
-        state: OrderState,
-        userId:number
-    ): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>> {
-        try {
-            const order = await new OrderProvider().processOrder(state);
-            const pendingOrderData = await new PendingOrderRepo().createPendingOrderPayload(order.data.parsedOrder,order.data.rpOrder.id,userId);
-            await new PendingOrderRepo().create(pendingOrderData)
-            await RPOrderTable.create(order.data.rpOrder);
+    // async proceedToPayment(
+    //     state: OrderState,
+    //     userId:number
+    // ): Promise<DTO<{ rpOrder: RPOrder; parsedOrder: ParsedOrder }>> {
+    //     try {
+    //         const order = await new OrderProvider().processOrder(state);
+    //         const pendingOrderData = await new PendingOrderRepo().createPendingOrderPayload(order.data.parsedOrder,order.data.rpOrder.id,userId);
+    //         await new PendingOrderRepo().create(pendingOrderData)
+    //         await RPOrderTable.create(order.data.rpOrder);
 
-            return order;
-        } catch (err) {
-            return getUnhandledErrorDTO(err.message);
-        }
-    }
+    //         return order;
+    //     } catch (err) {
+    //         return getUnhandledErrorDTO(err.message);
+    //     }
+    // }
     async getOrdersByUser(userId: number): Promise<ParsedOrder[]> {
         try {
-            const orders = await OrderModel.findAll({
-                where: { customer_details: userId },
-                include: [
-                    { model: UserModel, as: "customer" },
-                    // { model: FranchiseModel, as: "franchise" },
-                    { model: NotesModel, as: "notes", through: { attributes: [] } },
-                    { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
-                    { model: UserModel, as: "createdByUser" },
-                    { model: UserModel, as: "deletedByUser" },
-                    { model: UserModel, as: "updatedByUser" },
-                ],
-            });
-            return await Promise.all(orders.map((order) => parseOrder(order)));
+            // const orders = await OrderModel.findAll({
+            //     where: { customer_details: userId },
+            //     include: [
+            //         { model: UserModel, as: "customer" },
+            //         // { model: FranchiseModel, as: "franchise" },
+            //         { model: NotesModel, as: "notes", through: { attributes: [] } },
+            //         { model: OrderItemsModel, as: "orderItems", through: { attributes: [] } },
+            //         { model: UserModel, as: "createdByUser" },
+            //         { model: UserModel, as: "deletedByUser" },
+            //         { model: UserModel, as: "updatedByUser" },
+            //     ],
+            // });
+            // return await Promise.all(orders.map((order) => parseOrder(order)));
         } catch (error) {
             console.log(error);
             return [];
@@ -526,34 +455,34 @@ export class OrderRepo implements  IOrderRepo{
             const transaction = await sequelize.transaction();
 
             //  validate already processedOrder
-            const validationRes = await this.validateAlreadyProcessedOrder(
-                transaction,
-                paymentOrderId
-            );
+            // const validationRes = await this.validateAlreadyProcessedOrder(
+            //     transaction,
+            //     paymentOrderId
+            // );
 
-            if (
-                !validationRes.success ||
-                !validationRes.data.order ||
-                validationRes.data.alreadyProcessed
-            ) {
-                return validationRes;
-            }
+            // if (
+            //     !validationRes.success ||
+            //     !validationRes.data.order ||
+            //     validationRes.data.alreadyProcessed
+            // ) {
+            //     return validationRes;
+            // }
 
             //     Process the Order NOW!
 
-            const result = validationRes.data;
+            // const result = validationRes.data;
 
-            const p1 = this.processStock(transaction, result.order);
+            // const p1 = this.processStock(transaction, result.order);
 
-            const p2 = this.createOrderAndUpdatePendingOrder(transaction, result.order);
+            // const p2 = this.createOrderAndUpdatePendingOrder(transaction, result.order);
 
-            const p3 = this.clearCart(transaction, result.order.customerDetails.id);
+            // const p3 = this.clearCart(transaction, result.order.customerDetails.id);
 
-            await Promise.all([p1, p2, p3]);
+            // await Promise.all([p1, p2, p3]);
 
-            await transaction.commit();
+            // await transaction.commit();
 
-            return getSuccessDTO(result);
+            // return getSuccessDTO(result);
         } catch (error: any) {
             handleError(error);
 
@@ -565,37 +494,37 @@ export class OrderRepo implements  IOrderRepo{
 
     //     Private Functions:
 
-    private async validateAlreadyProcessedOrder(
-        transaction: Transaction,
-        paymentOrderId: string
-    ): Promise<DTO<ProcessPostOrderResult>> {
-        const res: ProcessPostOrderResult = {
-            order: null,
-            alreadyProcessed: false,
-        };
+    // private async validateAlreadyProcessedOrder(
+    //     transaction: Transaction,
+    //     paymentOrderId: string
+    // ): Promise<DTO<ProcessPostOrderResult>> {
+    //     const res: ProcessPostOrderResult = {
+    //         order: null,
+    //         alreadyProcessed: false,
+    //     };
 
-        const pendingOrder = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({payment_id:paymentOrderId,})
+    //     const pendingOrder = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({payment_id:paymentOrderId,})
 
-        if (!pendingOrder) {
-            return getSuccessDTO(
-                res,
-                `Pending order not found for: paymentOrderId ${paymentOrderId}`
-            );
-        }
+    //     if (!pendingOrder) {
+    //         return getSuccessDTO(
+    //             res,
+    //             `Pending order not found for: paymentOrderId ${paymentOrderId}`
+    //         );
+    //     }
 
 
-        res.order = pendingOrder;
+    //     res.order = pendingOrder;
 
-        // validate already processed case
-        if (pendingOrder.status === OrderStatus.PROCESSED) {
-            res.alreadyProcessed = true;
-            return getSuccessDTO(
-                res,
-                `Pending order:${pendingOrder.id},  for: paymentOrderId ${paymentOrderId} is Already processed`
-            );
-        }
-        return getSuccessDTO(res);
-    }
+    //     // validate already processed case
+    //     if (pendingOrder.status === OrderStatus.PROCESSED) {
+    //         res.alreadyProcessed = true;
+    //         return getSuccessDTO(
+    //             res,
+    //             `Pending order:${pendingOrder.id},  for: paymentOrderId ${paymentOrderId} is Already processed`
+    //         );
+    //     }
+    //     return getSuccessDTO(res);
+    // }
 
     private getStockIds(order: ParsedOrder): number[] {
         return order.items.map((item) => item.id);

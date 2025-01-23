@@ -1,67 +1,61 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { BaseOrder, Order, ORDER_TYPE } from "../interface/Order";
+import { BaseOrder, DeliveryStatus, Notes, Order, ORDER_TYPE, OrderPayload, OrderStatus, OrderTable, PAYMENT_TYPE } from "../interface/Order";
 import { sequelize } from "../../../config";
 import { NotesModel } from "./NotesTable";
 import { OrderItemsModel } from "../../order-items/models/OrderItemsTable";
-import { Address } from "../../address/interface/Address";
 import RepoProvider from "apps/RepoProvider";
 import { UserModel } from "apps/user/models/UserTable";
+import { OrderItemPayload } from "apps/order-items/interface/orderItem";
+import { BaseAddress } from "types";
 import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
+import { LogModel } from "apps/logs/models/LogsTable";
 
-interface OrderCreationAttributes extends Optional<Order, "id"> {}
+interface OrderCreationAttributes extends Optional<OrderTable, "id"> {}
 
-class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOrder {
-    status!: string;
-    item_count!: number;
-    total!: number;
-    anomalyArr!: number[];
-    cancelled_items!: number[];
-    customer_details!: number;
-    delivery_details!: string;
-    delivery_status!: string;
-    payment_id!: string;
-    payment_type!: string;
-    total_discount!: number;
-    total_shipping!: number;
-    franchise: number;
-    billingAddress: Address;
-    shippingAddress: Address;
-    total_tax!: number;
-    prices!: string | null;
-    discount_prices!: string | null;
-    order_type: ORDER_TYPE;
-    createdBy!: number | null;
-    updatedBy!: number | null;
-    deletedBy!: number | null;
+class OrderModel extends Model<OrderTable, OrderCreationAttributes> implements OrderTable {
+    id: number;
+    status: OrderStatus;
+    total: number;
+    totalTax: number;
+    deliveryStatus: DeliveryStatus;
+    customerDetails: number;
+    paymentType: PAYMENT_TYPE;
+    paymentId: string;
+    cancelledItems: number[] | null;
+    totalDiscount: number;
+    deliveryDetails: any | null;
+    shippingAddress: BaseAddress | null;
+    billingAddress: BaseAddress | null;
+    totalShipping: number;
+    anomalyArr: number[] | null;
+    price: Record<string, string | number>;
+    orderType: ORDER_TYPE;
+    franchise: number | null;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date;
+    createdBy: number;
+    updatedBy: number | null;
+    deletedBy: number | null;
 
     // Mixin methods for managing notes
     public addNote!: (note: NotesModel | number) => Promise<void>;
     public addNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
-
     public getNotes!: () => Promise<NotesModel[]>;
     public removeNote!: (note: NotesModel | number) => Promise<void>;
     public removeNotes!: (notes: Array<NotesModel | number>) => Promise<void>;
-
-    // Mixin methods for managing notes
-    public addOrderItem!: (note: OrderItemsModel | number) => Promise<void>;
-    public addOrderItems!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
-    public setOrderItemses!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
-    public getOrderItemses!: () => Promise<OrderItemsModel[]>;
-    public removeOrderItems!: (note: OrderItemsModel | number) => Promise<void>;
-    public removeOrderItemses!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
-
-    // todo
-    public addAnomalyOrderItems:(anomalies:Array<any|number>)=>Promise<void>;
-
+    
     public static associate(){
         OrderModel.belongsTo(UserModel, {
-            foreignKey: 'customer_details',
+            foreignKey: 'customerDetails',
             as: 'customer'
         })
-        // OrderModel.belongsTo(FranchiseModel, {
-        //     foreignKey: 'franchise',
-        //     as: 'franchiseData'
-        // })
+
+        OrderModel.hasMany(OrderItemsModel, {
+            foreignKey: 'orderId', 
+            as: 'orderItems' 
+        });
+       
         OrderModel.belongsToMany(NotesModel, {
             through: "order_notes_join", // Join table name
             foreignKey: "orderId", // Foreign key in the join table
@@ -69,12 +63,10 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
             as: "notes", // Alias for the relationship
         });
 
-        OrderModel.belongsToMany(OrderItemsModel, {
-            through: "order_items_join", // Join table name
-            foreignKey: "orderId", // Foreign key in the join table
-            otherKey: "order_items_id", // Other foreign key in the join table
-            as: "orderItems", // Alias for the relationship
-        });
+        OrderModel.belongsTo(FranchiseModel, {
+            foreignKey: 'franchise',
+            as: 'franchiseData'
+        })
 
         OrderModel.belongsTo(UserModel, {
             foreignKey: 'createdBy',
@@ -88,6 +80,12 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
             foreignKey: 'deletedBy',
             as: 'deletedByUser'
         })
+        OrderModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs",             // Alias for the association
+          });
     }
 
     public static initModel(){
@@ -102,10 +100,6 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     type: DataTypes.STRING,
                     allowNull: false,
                 },
-                item_count: {
-                    type: DataTypes.INTEGER,
-                    allowNull: false,
-                },
                 total: {
                     type: DataTypes.DOUBLE,
                     allowNull: false,
@@ -114,19 +108,19 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     type: DataTypes.ARRAY(DataTypes.INTEGER),
                     allowNull: true,
                 },
-                cancelled_items: {
+                cancelledItems: {
                     type: DataTypes.ARRAY(DataTypes.INTEGER),
                     allowNull: true,
                 },
-                customer_details: {
+                customerDetails: {
                     type: DataTypes.INTEGER,
                     allowNull: true,
                 },
-                delivery_details: {
+                deliveryDetails: {
                     type: DataTypes.STRING,
                     allowNull: true,
                 },
-                delivery_status: {
+                deliveryStatus: {
                     type: DataTypes.STRING,
                     allowNull: true,
                 },
@@ -134,43 +128,39 @@ class OrderModel extends Model<Order, OrderCreationAttributes> implements BaseOr
                     type: DataTypes.INTEGER,
                     allowNull: true,
                 },
-                billingAddress:{
+                billingAddress: {
                     type: DataTypes.JSONB,
                     allowNull: true,
                 },
-                shippingAddress:{
+                shippingAddress: {
                     type: DataTypes.JSONB,
                     allowNull: true,
                 },
-                payment_id: {
+                paymentId: {
                     type: DataTypes.STRING,
                     allowNull: true,
                 },
-                payment_type: {
+                paymentType: {
                     type: DataTypes.STRING,
                     allowNull: true,
                 },
-                total_discount: {
+                totalDiscount: {
                     type: DataTypes.INTEGER,
                     allowNull: true,
                 },
-                total_shipping: {
+                totalShipping: {
                     type: DataTypes.INTEGER,
                     allowNull: true,
                 },
-                total_tax: {
+                totalTax: {
                     type: DataTypes.DOUBLE,
                     allowNull: true,
                 },
-                prices: {
-                    type: DataTypes.STRING,
-                    allowNull: true,
-                },
-                discount_prices: {
+                price: {
                     type: DataTypes.JSONB,
                     allowNull: true,
                 },
-                order_type: {
+                orderType: {
                     type: DataTypes.ENUM(ORDER_TYPE.RM_ORDER, ORDER_TYPE.SAMPLE_KIT),
                     allowNull: false,
                     defaultValue: ORDER_TYPE.RM_ORDER

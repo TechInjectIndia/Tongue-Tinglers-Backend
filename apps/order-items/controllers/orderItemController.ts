@@ -1,4 +1,4 @@
-import { BaseOrderItem, OrderItem} from '../../order-items/interface/orderItem'
+import { BaseOrderItem, OrderItem, OrderItemPayload, ParsedOrderItem} from '../../order-items/interface/orderItem'
 import RepoProvider from "../../RepoProvider";
 import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE, SUCCESS_MESSAGE } from "../../../constants";
@@ -8,16 +8,9 @@ export default class OrderItemController {
     
     static async createOrderItem(req: any, res: any) {
         try {
-            const payload: BaseOrderItem  = req.body;
+            const payload:OrderItemPayload  = req.body;
             const orderItem = await RepoProvider.orderItemRepo.createOrderItem(payload);
-            return res.status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CREATED,
-                        orderItem,
-                    ),
-                );
+            return orderItem
         } catch (error) {
             console.error(error);
             return res.status(500).send(
@@ -28,16 +21,9 @@ export default class OrderItemController {
 
     static async createBulkOrderItem(req: any, res: any) {
         try {
-            const payload: BaseOrderItem[]  = req.body;
+            const payload: OrderItemPayload[]  = req.body;
             const orderItem = await RepoProvider.orderItemRepo.createBulkOrderItem(payload);
-            return res.status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CREATED,
-                        orderItem,
-                    ),
-                );
+            return orderItem
         } catch (error) {
             console.error(error);
             return res.status(500).send(
@@ -49,15 +35,8 @@ export default class OrderItemController {
     static async getOrderItemsById(req: Request, res: Response) {
         try {
             const id = parseInt(req.params.id, 0);
-            const orderItems: OrderItem = await RepoProvider.orderItemRepo.getOrderItemsById(id);
-            return res.status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FETCHED,
-                        orderItems,
-                    ),
-                );
+            const orderItems = await RepoProvider.orderItemRepo.getOrderItemsById(id);
+            return orderItems
         } catch (error) {
             console.error(error);
             return res.status(500).send(
@@ -69,17 +48,9 @@ export default class OrderItemController {
     static async updateOrderItem(req: Request, res: Response) {
         try {
             const id = parseInt(req.params.id, 0);
-            const payload: OrderItem = req.body;
-            payload.id = id;
-            const orderItem: OrderItem = await RepoProvider.orderItemRepo.updateOrderItem(payload);
-            return res.status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED,
-                        orderItem,
-                    ),
-                );
+            const payload: OrderItemPayload = req.body;;
+            const orderItem = await RepoProvider.orderItemRepo.updateOrderItem(id, payload);
+            return orderItem
         } catch (error) {
             console.error(error);
             return res.status(500).send(
@@ -91,15 +62,8 @@ export default class OrderItemController {
     static async deleteOrderItem(req: Request, res: Response) {
         try {
             const id = parseInt(req.params.id, 0);
-            const orderItem: OrderItem | null = await RepoProvider.orderItemRepo.deleteOrderItem(id);
-            return res.status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.DELETED,
-                        orderItem,
-                    ),
-                );
+            const orderItem = await RepoProvider.orderItemRepo.deleteOrderItem(id);
+            return orderItem
         } catch (error) {
             console.error(error);
             return res.status(500).send(
@@ -113,15 +77,8 @@ export default class OrderItemController {
             const id = parseInt(req.params.id, 0);
             const payload = req.body;
             payload.id = id;
-            const orderItem: OrderItem = await RepoProvider.orderItemRepo.updateQuantity(payload);
-            return res.status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED,
-                        orderItem,
-                    ),
-                );
+            const orderItem = await RepoProvider.orderItemRepo.updateQuantity(payload);
+            return orderItem
         } catch (error) {
             console.error(error);
             return res.status(500).send(
@@ -135,15 +92,8 @@ export default class OrderItemController {
             const id = parseInt(req.params.id, 0);
             const payload = req.body;
             payload.id = id;
-            const orderItem: OrderItem = await RepoProvider.orderItemRepo.updateCouponDiscount(payload);
-            return res.status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED,
-                        orderItem,
-                    ),
-                );
+            const orderItem = await RepoProvider.orderItemRepo.updateCouponDiscount(payload);
+            return orderItem
         } catch (error) {
             console.error(error);
             return res.status(500).send(
@@ -157,15 +107,8 @@ export default class OrderItemController {
             const id = parseInt(req.params.id, 0);
             const payload = req.body;
             payload.id = id;
-            const orderItem: OrderItem = await RepoProvider.orderItemRepo.updateStudentDiscount(payload);
-            return res.status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED,
-                        orderItem,
-                    ),
-                );
+            const orderItem = await RepoProvider.orderItemRepo.updateStudentDiscount(payload);
+            return orderItem
         } catch (error) {
             console.error(error);
             return res.status(500).send(
@@ -179,15 +122,8 @@ export default class OrderItemController {
             const id = parseInt(req.params.id, 0);
             const payload = req.body;
             payload.id = id;
-            const orderItem: OrderItem = await RepoProvider.orderItemRepo.updatePointsDiscount(payload);
-            return res.status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED,
-                        orderItem,
-                    ),
-                );
+            const orderItem = await RepoProvider.orderItemRepo.updatePointsDiscount(payload);
+            return orderItem
         } catch (error) {
             console.error(error);
             return res.status(500).send(

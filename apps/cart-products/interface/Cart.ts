@@ -1,5 +1,5 @@
 import {ParsedProduct} from "apps/product/interface/Product"
-import {ParsedProductOptions} from "apps/product/interface/ProductOptions"
+// import {ParsedVariations} from "apps/product/interface/ProductOptions"
 
 interface BaseCartProduct {
     product_id: number,
@@ -38,7 +38,7 @@ interface ParsedCartProduct {
 
 interface ParsedVariations {
     id: number,
-    optionsValue: ParsedProductOptions
+    optionsValue: ParsedVariations
     price: number,
     stock: number,
     status: string,

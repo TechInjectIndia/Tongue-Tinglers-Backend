@@ -12,12 +12,14 @@ const {
     processOrder,
     proceedToPayment,
     getOrdersByUserId,
+    updateOrder
 } = OrderController;
 const router = express.Router();
 
 router.post("/create", validateCreateOrder, createOrder);
 router.get("/:id", validateGetAllOrder, getOrderById);
-router.get("/list",  getAllOrders);
+router.get("/getAll/list",  getAllOrders);
+router.put("/update/:id", updateOrder);
 // router.get('/:id', validateGetProductsCategoryById,getProductsCategoryById);
 // router.get('/slug/:slug', validateGetProductsCategoryBySlug,getProductsCategoryBySlug);
 // router.put('/update/:id',validateGetProductsCategoryById,validateUpdateProductsCategory ,updateProductsCategory);

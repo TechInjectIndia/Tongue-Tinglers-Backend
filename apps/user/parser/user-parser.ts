@@ -1,12 +1,11 @@
-import {MetaUser, ParsedUser, USER_TYPE} from "../interface/user";
+import {MetaUser, ParsedUser, TUser} from "../interface/user";
 
-export const parseUserToMetaUser = (data: ParsedUser): MetaUser => {
+export const parseUserToMetaUser = (data: TUser): MetaUser => {
     return {
         id: data.id,
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
-
     };
 }
 

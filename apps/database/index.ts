@@ -45,7 +45,7 @@ import {ItemStockModel} from "../pet-pooja/models/stock";
 import {OrganizationModel} from "../organization/models/OrganizationTable";
 import { PdiModel } from "apps/pdi/model/PdiTable";
 import { FileModel } from "apps/files/models/FileTable";
-import { PendingOrderModel } from "apps/pending-orders/models/PendingOrderTable";
+// import { PendingOrderModel } from "apps/pending-orders/models/PendingOrderTable";
 import { RPOrderTable } from "apps/rp-order/models/RPOrderTable";
 
 import { B2CUserAddressModel } from "apps/b2c-users-address/models/B2CUserAddressTable";
@@ -180,7 +180,7 @@ const models = {
 
     PDI: PdiModel.initModel(),
     File: FileModel.initModel(),
-    PendingOrder: PendingOrderModel.initModel(),
+    // PendingOrder: PendingOrderModel.initModel(),
     RPOrderTable:RPOrderTable.initModel(),
     B2CUserAddress: B2CUserAddressModel.initModel(),
     TaxRate: TaxRateModel.initModel()

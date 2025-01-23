@@ -1,28 +1,61 @@
 import RepoProvider from "apps/RepoProvider";
-import { BaseOrderItem, ORDER_ITEM_TYPE } from "../interface/orderItem";
+import { BaseOrderItem, ORDER_ITEM_TYPE, OrderItemPayload, OrderItemTable } from "../interface/orderItem";
 import { sequelize } from "config";
 import { OrderItem } from "../interface/orderItem";
 import { DataTypes, Model, Optional } from "sequelize";
+import { ProductModel } from "apps/product/model/productTable";
+import { ProductVariationsModel } from "apps/product-options/models/ProductVariationTable";
+import { PRODUCTS_TYPE } from "apps/product/interface/Product";
+import { UserModel } from "apps/user/models/UserTable";
+import { OrderModel } from "apps/order/models/OrderTable";
 
-interface OrderItemCreationAttributes extends Optional<OrderItem, "id"> {}
+interface OrderItemCreationAttributes extends Optional<OrderItemTable, "id"> {}
 
 class OrderItemsModel
-    extends Model<OrderItem, OrderItemCreationAttributes>
-    implements BaseOrderItem
+    extends Model<OrderItemTable, OrderItemCreationAttributes>
+    implements OrderItemTable
 {
     id: number;
-    product_id: number;
-    product_option_id: number;
+    orderId: number;
+    product: number;
+    variation: number;
     quantity: number;
-    total_price: number;
-    total_tax: number;
-    coupon_discount: number;
-    points_discount: number;
-    student_discount: number;
-    type: ORDER_ITEM_TYPE;
-
+    totalPrice: number;
+    price: Record<string, string | number>;
+    totalTax: number;
+    couponDiscount: number;
+    type: PRODUCTS_TYPE;
+    createdBy: number;
+    updatedBy: number;
+    deletedBy: number;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date;
     public static associate() {
-
+        OrderItemsModel.belongsTo(ProductModel,{
+            foreignKey:'product',
+            as: 'productData'
+        })
+        OrderItemsModel.belongsTo(ProductVariationsModel,{
+            foreignKey:'variation',
+            as: 'variationData'
+        })
+        OrderItemsModel.belongsTo(UserModel, {
+            foreignKey: 'createdBy',
+            as: 'createdByUser'
+        })
+        OrderItemsModel.belongsTo(UserModel, {
+            foreignKey: 'updatedBy',
+            as: 'updatedByUser'
+        })
+        OrderItemsModel.belongsTo(UserModel, {
+            foreignKey: 'deletedBy',
+            as: 'deletedByUser'
+        })
+        OrderItemsModel.belongsTo(OrderModel, {
+            foreignKey: 'orderId',
+            as: 'orderData'
+        })
     }
 
     public static initModel() {
@@ -33,11 +66,15 @@ class OrderItemsModel
                     autoIncrement: true,
                     primaryKey: true,
                 },
-                product_id: {
+                orderId:{
                     type: DataTypes.INTEGER,
                     allowNull: false,
                 },
-                product_option_id: {
+                product: {
+                    type: DataTypes.INTEGER,
+                    allowNull: false,
+                },
+                variation: {
                     type: DataTypes.INTEGER,
                     allowNull: false,
                 },
@@ -45,28 +82,26 @@ class OrderItemsModel
                     type: DataTypes.INTEGER,
                     allowNull: false,
                 },
-                total_price: {
+                price: {
+                    type: DataTypes.JSONB,
+                    allowNull: false,
+                },
+                totalPrice: {
                     type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
-                total_tax: {
+                totalTax: {
                     type: DataTypes.DOUBLE,
                     allowNull: true,
                 },
-                coupon_discount: {
-                    type: DataTypes.DOUBLE,
-                    allowNull: false,
-                },
-                points_discount: {
-                    type: DataTypes.DOUBLE,
-                    allowNull: false,
-                },
-                student_discount: {
+                couponDiscount: {
                     type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 type: {
-                    type: DataTypes.STRING,
+                    type: DataTypes.ENUM(...Object.values(PRODUCTS_TYPE)),
+                    allowNull: false,
+                    defaultValue: PRODUCTS_TYPE.RETORT,
                 },
                 createdBy: {
                     type: DataTypes.INTEGER,
@@ -101,7 +136,7 @@ class OrderItemsModel
             },
             {
                 sequelize,
-                tableName: "order_items",
+                tableName: "Order-Items",
                 timestamps: true,
                 paranoid: true,
             }

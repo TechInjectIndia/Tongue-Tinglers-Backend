@@ -9,23 +9,9 @@ export default class OrderController {
             const payload:any = req?.body;
             const user_id = get(req, "user_id", 0);
             payload.createdBy = user_id
-            if(payload.notes && payload.notes.length > 0){
-                payload.notes.map((element)=> {
-                    element.isNew = false
-                    element.createdBy = user_id
-                })
-            }
-            // const order = await RepoProvider.orderRepo.createOrder(payload);
+            const order = await RepoProvider.orderRepo.createOrder(payload);
             // todo @Nitesh handle this the create order function is not be exposed... it runs in transaction
-            const order = null
-            return res.status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.CREATED,
-                        order,
-                    ),
-                );
+            return res.send(order)
         } catch (error) {
             console.error(error);
             return res.status(500).send(
@@ -37,16 +23,10 @@ export default class OrderController {
     static async updateOrder(req: any, res: any) {
         try {
             const payload: any = req?.body;
-            payload.id = get(req, "params.id", 0);
-            const order = await RepoProvider.orderRepo.updateOrder(payload);
-            return res.status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.UPDATED,
-                        order,
-                    ),
-                );
+            const orderId = get(req, "params.id", 0);
+            const user_id = get(req, "user_id", 0);
+            const order = await RepoProvider.orderRepo.updateOrder(orderId, payload, user_id);
+            return res.send(order)
         } catch (error) {
             console.error(error);
             return res.status(500).send(
@@ -57,8 +37,6 @@ export default class OrderController {
 
     static async getOrderById(req: any, res: any) {
         try {
-            console.log('hi');
-
             const id = get(req, "params.id", 0);
             const order = await RepoProvider.orderRepo.getOrderById(id);
             return res.status(200)
@@ -83,15 +61,10 @@ export default class OrderController {
             const limit = get(req, "query.limit", 10);
             const search = get(req, "query.search", "");
             const filters = get(req, "query.filters", {});
-            const orders = await  RepoProvider.orderRepo.getAllOrders(100,100,'',{})
+            const orders = await  RepoProvider.orderRepo.getAllOrders(page,limit,search,filters)
 
-            return res.status(200)
-                .send(
-                    sendResponse(
-                        RESPONSE_TYPE.SUCCESS,
-                        SUCCESS_MESSAGE.FETCHED,
-                        orders,
-                    ),
+            return res
+                .send(orders
                 );
         } catch (error) {
             console.error(error);

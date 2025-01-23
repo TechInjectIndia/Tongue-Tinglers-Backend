@@ -2,13 +2,12 @@
 import { IProductOptionsRepo } from "./IProductOptionsRepo";
 
 import {
-    BaseProductOptions,
-    ParsedProductOptions,
-    parsedProductOptions, ProductOptions
+    BaseProductOptions, ProductOptions
 } from "apps/product/interface/ProductOptions";
 import { OptionsValueModel } from "apps/optionsValue/models/OptionValueTable";
 import { ProductVariationsModel } from "../models/ProductVariationTable";
 import {Pagination} from "../../common/models/common";
+import { parsedVariations, ParsedVariations } from "apps/cart-products/interface/Cart";
 
 export class ProductOptionRepo implements IProductOptionsRepo{
     async create(productOptions: BaseProductOptions, createdBy:number): Promise<ProductOptions | null> {
@@ -50,7 +49,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
     delete(id: number): Promise<ProductOptions> {
         throw new Error("Method not implemented.");
     }
-    async getById(id: number): Promise<ParsedProductOptions> {
+    async getById(id: number): Promise<ParsedVariations> {
         try {
             // Fetch product by primary key (ID)
            const productOptions = (await ProductVariationsModel.findOne({
@@ -67,7 +66,7 @@ export class ProductOptionRepo implements IProductOptionsRepo{
                throw new Error(`Product with ID ${id} not found`);
            }
 
-           return parsedProductOptions(productOptions);
+           return parsedVariations(productOptions);
        } catch (error) {
            console.log(error);
            return null;

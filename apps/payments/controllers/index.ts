@@ -29,8 +29,8 @@ import {
     MakePaymentMail
 } from "../../../static/views/email/get-templates/MakePaymentMail";
 import {RPOrderTable} from "../../rp-order/models/RPOrderTable";
-import {PendingOrderRepo} from "../../pending-orders/repos/PendingOrderRepo";
-import {PendingOrderModel} from "../../pending-orders/models/PendingOrderTable";
+// import {PendingOrderRepo} from "../../pending-orders/repos/PendingOrderRepo";
+// import {PendingOrderModel} from "../../pending-orders/models/PendingOrderTable";
 import {where} from "sequelize";
 import {OrderModel} from "../../order/models/OrderTable";
 import {parseAndSavePendingOrderToOrder} from "../../order/parser/parseOrder";
@@ -110,13 +110,13 @@ export default class PaymentsController {
                     // @TODO @rajinder sir this is temporary
                     try {
 
-                        const pendingOrderRes = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({ payment_id: rpResponse.id})
+                        // const pendingOrderRes = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({ payment_id: rpResponse.id})
 
-                        if (pendingOrderRes) {
-                            const response = await parseAndSavePendingOrderToOrder(pendingOrderRes);
-                        } else {
-                            console.log('No pending order found for the provided paymentId');
-                        }
+                        // if (pendingOrderRes) {
+                        //     const response = await parseAndSavePendingOrderToOrder(pendingOrderRes);
+                        // } else {
+                        //     console.log('No pending order found for the provided paymentId');
+                        // }
                     } catch (error) {
                         console.error('Error retrieving pending order:', error);
                     }

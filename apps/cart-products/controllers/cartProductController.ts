@@ -5,7 +5,7 @@ import { sendResponse } from "../../../libraries";
 import { RESPONSE_TYPE } from "../../../constants";
 import { Request, Response } from "express";
 import { ParsedCartDetail } from "apps/cart-details/interface/CartDetail";
-import { PresaleParsedOrder } from "apps/order/interface/Order";
+// import { PresaleParsedOrder } from "apps/order/interface/Order";
 import { getEmptyPreSaleOrder } from "apps/order-provider/utils/order-utils";
 import { DTO, getSuccessDTO } from "apps/common/models/DTO";
 
@@ -18,14 +18,14 @@ export default class CartProductController {
                 ...payload,
                 user_id: user_id,
             };
-            const productDetails = await RepoProvider.cartProductRepo.create(product);
-            let preSaleRes :DTO<PresaleParsedOrder>=getSuccessDTO(getEmptyPreSaleOrder()) 
+            // const productDetails = await RepoProvider.cartProductRepo.create(product);
+            // let preSaleRes :DTO<PresaleParsedOrder>=getSuccessDTO(getEmptyPreSaleOrder()) 
             
-            if (productDetails.cart.length > 0) {
-                 preSaleRes = await RepoProvider.preSaleOrderProvider.getPreSaleOrder(
-                    productDetails
-                );
-            }
+            // if (productDetails.cart.length > 0) {
+            //      preSaleRes = await RepoProvider.preSaleOrderProvider.getPreSaleOrder(
+            //         productDetails
+            //     );
+            // }
 
             return res
                 .status(201)
@@ -33,7 +33,7 @@ export default class CartProductController {
                     sendResponse(
                         RESPONSE_TYPE.SUCCESS,
                         "Cart products created successfully.",
-                        preSaleRes.data
+                        // preSaleRes.data
                     )
                 );
         } catch (error) {

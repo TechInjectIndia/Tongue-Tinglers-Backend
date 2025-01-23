@@ -123,7 +123,7 @@ export default class LeadController {
                 await new AssignRepo().create(assignPayload);
             }
 
-            const mailDto = new CreateLeadMail().getPayload({}, newLead.email);
+            const mailDto = await new CreateLeadMail().getPayload({}, newLead.email);
             await sendMail(mailDto);
 
             return res

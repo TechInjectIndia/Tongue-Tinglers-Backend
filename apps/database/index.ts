@@ -83,6 +83,8 @@ import {
     PurchaseInvoiceTable
 } from "../inventory/purchase_invoice/database/PurchaseInvoiceTable";
 import { TaxRateModel } from "apps/tax-rate/models/TaxRateTable";
+import { PendingOrderModel } from "apps/pending-orders/models/PendingOrderTable";
+import { PendingOrderItemModel } from "apps/pending-orders/models/PendingOrderItemTable";
 
 const m = [
     RegionModel,
@@ -154,8 +156,10 @@ const models = {
     ProductCategory: ProductsCategoryModel.initModel(),
     Product: ProductModel.initModel(),
     Order: OrderModel.initModel(),
+    PendingOrderModel: PendingOrderModel.initModel(),
     Notes: NotesModel.initModel(),
     OrderItem: OrderItemsModel.initModel(),
+    PendingOrderItemModel: PendingOrderItemModel.initModel(),
     Cart: CartProductModel.initModel(),
     ItemStockModel: ItemStockModel.initModel(),
     CampaignProposalsModel: CampaignProposalsModel.initModel(),

@@ -232,17 +232,14 @@ const orderSchema = Joi.object({
         .messages({
             "array.base": "Anomaly array must be an array of numbers.",
         }),
-    price: Joi.object({
-        basePrice: Joi.number().required().messages({
-            "any.required": "Base price is required.",
+    price: Joi.object()
+        .min(1) // Ensures the object has at least one key-value pair
+        .required()
+        .messages({
+            "object.base": "Price must be a valid object.",
+            "object.min": "Price must contain at least one key-value pair.",
+            "any.required": "Price is required.",
         }),
-        discountedPrice: Joi.number().required().messages({
-            "any.required": "Discounted price is required.",
-        }),
-        taxAmount: Joi.number().required().messages({
-            "any.required": "Tax amount is required.",
-        }),
-    }).required(),
     orderType: Joi.string()
         .valid(...Object.values(ORDER_TYPE))
         .required()

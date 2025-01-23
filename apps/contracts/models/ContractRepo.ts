@@ -290,6 +290,7 @@ export class ContractRepo {
         }
 
 
+        console.log('where: ', where);
         const total = await ContractModel.count({
             where: where,
         });

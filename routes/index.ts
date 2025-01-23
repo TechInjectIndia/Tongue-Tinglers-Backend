@@ -96,7 +96,7 @@ import { debitNoteRouter } from "apps/inventory/debit_note/routes/DebitNoteRoute
 
 import B2CUserAddressRouter from "../apps/b2c-users-address/api/B2CUserAddressApi";
 import TaxRateRouter from "../apps/tax-rate/api/taxRateApi";
-
+import PendingOrderRouter from "../apps/pending-orders/api/pendingOrderApi";
 
 
 // ====== Admin routes ======
@@ -152,6 +152,7 @@ router.use(`${ADMIN}/products-category`, auth, productsCategoryRouter);
 router.use("/cart-detail", auth, cartDetailRouter);
 router.use("/order-items", auth, orderItemRouter);
 router.use(`${ADMIN}/order`, auth, OrderRouter);
+router.use(`${ADMIN}/pending-order`, auth, PendingOrderRouter)
 // router.use(ORDERS, auth, OrderV1Routes);
 router.use(`/cart`, auth, cartProductRouter);
 router.use("/migration", migrationRouter);

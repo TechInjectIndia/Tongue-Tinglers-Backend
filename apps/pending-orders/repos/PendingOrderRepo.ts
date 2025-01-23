@@ -1,77 +1,293 @@
-// import {PendingOrder, PendingOrderModel} from "../models/PendingOrderTable";
-// import {IPendingOrderRepo} from "./IPendingOrderRepo";
-// import {UserModel} from "apps/user/models/UserTable";
-// import {
-//     ORDER_TYPE,
-//     OrderPayload,
-//     ParsedOrder
-// } from "../../order/interface/Order";
-// import {DTO, getHandledErrorDTO, getSuccessDTO} from "../../common/models/DTO";
-// import {parseOrder} from "../../order/parser/parseOrder";
-// import {Transaction} from "sequelize";
-// import {OrderItemsModel} from "apps/order-items/models/OrderItemsTable";
-// import {BaseOrderItem, ORDER_ITEM_TYPE} from "../../order/interface/OrderItem";
-// import {OptionsValueModel} from "../../optionsValue/models/OptionValueTable";
-// import RepoProvider from "../../RepoProvider";
+import {PendingOrderModel} from "../models/PendingOrderTable";
+import {IPendingOrderRepo} from "./IPendingOrderRepo";
+import {UserModel} from "apps/user/models/UserTable";
+import {
+    ORDER_TYPE,
+    OrderPayload,
+    ParsedOrder
+} from "../../order/interface/Order";
+import {DTO, getHandledErrorDTO, getSuccessDTO} from "../../common/models/DTO";
+import {parseOrder} from "../../order/parser/parseOrder";
+import {Transaction} from "sequelize";
+import {OrderItemsModel} from "apps/order-items/models/OrderItemsTable";
+import {BaseOrderItem, ORDER_ITEM_TYPE} from "../../order/interface/OrderItem";
+import {OptionsValueModel} from "../../optionsValue/models/OptionValueTable";
+import RepoProvider from "../../RepoProvider";
+import { PendingOrderPayload } from "../interface/PendingOrder";
+import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
+import { ProductVariationsModel } from "apps/product-options/models/ProductVariationTable";
+import { ProductModel } from "apps/product/model/productTable";
+import { ProductsCategoryModel } from "apps/products-category/models/ProductCategoryTable";
+import { OptionsModel } from "apps/options/models/optionTable";
+import { PendingOrderItemModel } from "../models/PendingOrderItemTable";
 
-// export class PendingOrderRepo implements IPendingOrderRepo {
-//    async getPendingOrderByAttributes(id, transaction?: Transaction): Promise<ParsedOrder | null> {
-//     try {
-//         const options: any = {
-//             where: id,
-//             include: [
-//                 { model: UserModel, as: "createdByUser" },
-//                 { model: UserModel, as: "deletedByUser" },
-//                 { model: UserModel, as: "updatedByUser" },
-//             ],
-//         };
-//         // Only add transaction to options if it's provided
-//         if (transaction) {
-//             options.transaction = transaction;
-//         }
-//         const resp = await PendingOrderModel.findOne(options)
+export class PendingOrderRepo implements IPendingOrderRepo {
+    async deleteAllPendingOrderByOrderId(pendingOrderId: number, transaction?: Transaction): Promise<DTO<ParsedOrder>> {
+        console.log('pendingOrderId: ', pendingOrderId);
+        try{
+            const deletedPendingOrder = await this.getPendingOrderById(pendingOrderId, transaction, 'Pending order deleted successfully');
+            // Check if the pending order exists
+            const pendingOrder = await PendingOrderModel.findOne({where:{id: pendingOrderId}, transaction});
+            if (!pendingOrder) {
+                return getHandledErrorDTO(`Pending order with ID ${pendingOrderId} not found.`, null);
+            }
 
-//         resp.pendingOrderItems = await  Promise.all(resp.pendingOrderItems.map(async (dd) => {
-//                 dd.product_id = dd.product_id;
-//                 dd.product_option_id = await RepoProvider.optionsValueRepo.getById(dd.product_option_id)
-//             return {
-//                     ...dd
-//                   }
-//         }));
+            // Delete all dependent PendingOrderItems
+            await PendingOrderItemModel.destroy({
+                where: { id: pendingOrderId },
+                transaction
+            });
 
-//         console.log(resp.toJSON())
+            // Delete the PendingOrder itself
+            await PendingOrderModel.destroy({
+                where: { id: pendingOrderId },
+                transaction
+            });
 
-//         return resp ? parseOrder(resp.toJSON()) : null;
-//     } catch(error) {
-//         console.log(error);
-//         return null;
-//     }
-// }
+            return deletedPendingOrder
 
-//     async create(payload: OrderPayload) : Promise<DTO<PendingOrder>> {
-//        try {
-//         // Find user within transaction
-//         // const user = await UserModel.findByPk(payload.customer_details,);
-//         // if (!user) {
-//         //     return  getHandledErrorDTO(`User with ID ${payload.customer_details} not found.`);
-//         // }
+        }catch(error){
+            console.log(error);
+            return getHandledErrorDTO(error.message, error);
+        }
+    }
+    async getPendingOrderByAttributes(payload: any, transaction?: Transaction): Promise<DTO<ParsedOrder>> {
+        try{
+            const options: any = {
+                returning: true
+            };
+            if (transaction) {
+                options.transaction = transaction;
+            }
+            const pendingOrderData = await PendingOrderModel.findOne({
+                where: payload,
+                include: [
+                    { 
+                        model: PendingOrderItemModel, 
+                        as: "orderItems", 
+                        include:[
+                            {
+                                model: ProductVariationsModel,
+                                as: 'variationData',
+                                include:[
+                                    {
+                                        model: ProductModel,
+                                        as: 'productData',
+                                        include: [
+                                            {
+                                                model: ProductsCategoryModel,
+                                                as: "productCategory", // Include createdByUser
+                                                attributes: ["id", "name", "description"], // Include these fields from the User model
+                                            },
+                                            { 
+                                                model: UserModel, 
+                                                as: "createdByUser" 
+                                            },
+                                            { 
+                                                model: UserModel, 
+                                                as: "deletedByUser" 
+                                            },
+                                            { 
+                                                model: UserModel, 
+                                                as: "updatedByUser" 
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        model: OptionsValueModel,
+                                        as: "optionsValue", // Include these fields from the User model
+                                        attributes: ["id", "name", "option_id"],
+                                        include: [
+                                            {
+                                                model: OptionsModel,
+                                                as: "options",
+                                                attributes: ["id", "name"],
+                                            },
+                                        ],
+                                    },
+                                ]
+                            },
+                            {
+                                model: UserModel,
+                                as: 'createdByUser'
+                            },
+                            {
+                                model: UserModel,
+                                as: 'updatedByUser'
+                            },
+                            {
+                                model: UserModel,
+                                as: 'deletedByUser'
+                            }
+                        ] 
+                    },
+                    { 
+                        model: UserModel, 
+                        as: "customer" 
+                    },
+                    { 
+                        model: UserModel, 
+                        as: "createdByUser" 
+                    },
+                    { 
+                        model: UserModel, 
+                        as: "deletedByUser" 
+                    },
+                    { 
+                        model: UserModel, 
+                        as: "updatedByUser" 
+                    },
+                    {
+                        model: FranchiseModel,
+                        as: 'franchiseData'
+                    },
+                ],
+            })
+            return pendingOrderData ? getSuccessDTO(parseOrder(pendingOrderData.toJSON())) : getHandledErrorDTO("Not Found")
+        }catch(error){
+            console.log(error);
+            return getHandledErrorDTO(error.message, error)
+        }
+    }
 
-//         // const dd = {...payload,pendingOrderItems:payload.orderItems}
-//         // const pendingOrder = await PendingOrderModel.create(dd);
+    async create(payload: PendingOrderPayload, userId: number, transaction?: Transaction) : Promise<DTO<ParsedOrder>> {
+        try {
+            const options: any = {
+                returning: true
+            };
+            if (transaction) {
+                options.transaction = transaction;
+            }
 
-//         // const resp = await PendingOrderModel.findOne({where:{id:pendingOrder.id},
-//         //     include: [
-//         //         { model: UserModel, as: "createdByUser" },
-//         //         { model: UserModel, as: "deletedByUser" },
-//         //         { model: UserModel, as: "updatedByUser" },
-//         //     ],})
+            const pendingOrderCreated = await PendingOrderModel.create(payload, options);
+            if(!pendingOrderCreated){
+                return getHandledErrorDTO("Error while creating pending order");
+            }
+            const pendingOrderItemPayload = payload.items.map((item) => ({
+                orderId: pendingOrderCreated.id,
+                product: item.product,
+                variation: item.variation,
+                quantity: item.quantity,
+                price: item.price,
+                totalPrice: item.totalPrice,
+                totalTax: item.totalTax,
+                couponDiscount: item.couponDiscount,
+                type: item.type,
+                createdBy: pendingOrderCreated['createdBy']
+            }))
 
-//         // return getSuccessDTO(resp.toJSON());
+            const orderItemsCreated = await PendingOrderItemModel.bulkCreate(pendingOrderItemPayload, options)
 
-//     } catch (error) {
-//         return getHandledErrorDTO(error.message || "Transaction failed");
-//     }
-//    }
+            if (!orderItemsCreated || orderItemsCreated.length === 0) {
+                return getHandledErrorDTO("Error while creating order items");
+            }
+            // Fetch the created order with associated items
+            const completePendingOrder = await this.getPendingOrderById(pendingOrderCreated.id, transaction, 'Pending Order Created Successfully');
+            return completePendingOrder
+        } catch (error) {
+            console.log(error);
+            return getHandledErrorDTO(error.message, error);
+        }
+    }
+
+    async getPendingOrderById(pendingOrderId: number, transaction?: Transaction, message?: string): Promise<DTO<ParsedOrder>>{
+        try{
+            const options: any = {
+                returning: true
+            };
+            if (transaction) {
+                options.transaction = transaction;
+            }
+            const pendingOrderData = await PendingOrderModel.findOne({
+                where: { id: pendingOrderId },
+                include: [
+                    { 
+                        model: PendingOrderItemModel, 
+                        as: "orderItems", 
+                        include:[
+                            {
+                                model: ProductVariationsModel,
+                                as: 'variationData',
+                                include:[
+                                    {
+                                        model: ProductModel,
+                                        as: 'productData',
+                                        include: [
+                                            {
+                                                model: ProductsCategoryModel,
+                                                as: "productCategory", // Include createdByUser
+                                                attributes: ["id", "name", "description"], // Include these fields from the User model
+                                            },
+                                            { 
+                                                model: UserModel, 
+                                                as: "createdByUser" 
+                                            },
+                                            { 
+                                                model: UserModel, 
+                                                as: "deletedByUser" 
+                                            },
+                                            { 
+                                                model: UserModel, 
+                                                as: "updatedByUser" 
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        model: OptionsValueModel,
+                                        as: "optionsValue", // Include these fields from the User model
+                                        attributes: ["id", "name", "option_id"],
+                                        include: [
+                                            {
+                                                model: OptionsModel,
+                                                as: "options",
+                                                attributes: ["id", "name"],
+                                            },
+                                        ],
+                                    },
+                                ]
+                            },
+                            {
+                                model: UserModel,
+                                as: 'createdByUser'
+                            },
+                            {
+                                model: UserModel,
+                                as: 'updatedByUser'
+                            },
+                            {
+                                model: UserModel,
+                                as: 'deletedByUser'
+                            }
+                        ] 
+                    },
+                    { 
+                        model: UserModel, 
+                        as: "customer" 
+                    },
+                    { 
+                        model: UserModel, 
+                        as: "createdByUser" 
+                    },
+                    { 
+                        model: UserModel, 
+                        as: "deletedByUser" 
+                    },
+                    { 
+                        model: UserModel, 
+                        as: "updatedByUser" 
+                    },
+                    {
+                        model: FranchiseModel,
+                        as: 'franchiseData'
+                    },
+                ],
+            })
+            return pendingOrderData ? getSuccessDTO(parseOrder(pendingOrderData.toJSON()), message) : getHandledErrorDTO("Not Found")
+        }catch(error){
+            console.log(error);
+            return getHandledErrorDTO(error.message, error)
+        }
+    }
 
 //     async createPendingOrderPayload(order:ParsedOrder, paymentOrderId:string,userId:number){
 //         // const pendingOrderPayload: OrderPayload = {
@@ -131,4 +347,4 @@
 //             return null;
 //         }
 //     }
-// }
+}

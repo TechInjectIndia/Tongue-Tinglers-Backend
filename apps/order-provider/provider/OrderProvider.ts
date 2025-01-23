@@ -350,15 +350,11 @@ export class OrderProvider implements IOrderProvider {
                 sm: [],
                 assignedUser: undefined,
                 createdBy: 0 as unknown as MetaUser,
-                updatedBy: 0,
-                deletedBy: 0,
-                // updatedBy: 0,
-                // deletedBy: 0,
+                updatedBy: 0 as unknown as MetaUser,
+                deletedBy: 0 as unknown as MetaUser,
                 createdAt: undefined,
                 updatedAt: undefined,
-                deletedAt: undefined,
-                updatedBy: undefined,
-                deletedBy: undefined
+                deletedAt: undefined
             },
             orderType: orderType,
             id: 0,

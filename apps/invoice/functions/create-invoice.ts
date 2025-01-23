@@ -16,6 +16,7 @@ import {
 } from "../models/invoice-contants";
 import { getStringFromAddress, getTotalDiscount } from "../utils/invoice-utils";
 import { formatDateUI } from "apps/common/utils/commonUtils";
+import { start } from "node:repl";
 
 export async function invoice(order: ParsedOrder) {
     const data = invoiceDtoFromOrder(order);
@@ -358,10 +359,12 @@ function addSummarySection(doc: jsPDF, invoice: Invoice, summaryStart: number) {
 // footer functions
 function addFooter(doc: jsPDF, yvalue: number) {
     yvalue = addTerms(doc, yvalue + 30);
-    paymentInfo(doc, yvalue + 20);
+    let startY = paymentInfo(doc, yvalue + 20);
     companyDetails(doc, yvalue + 20);
 
     // add footer link
+    doc.setFontSize(12).setFont("helvetica", "bold");
+    doc.text("www.tonguetingler.com", 170, startY + 20);
 }
 
 function addTerms(doc: jsPDF, yValue) {
@@ -396,6 +399,8 @@ function paymentInfo(doc: jsPDF, yValue) {
     doc.text("Account No: 123-456-7890", 35, yValue + 37);
     doc.text("IFSC: HDFC0000408", 35, yValue + 48);
     doc.text("Pay By: 29/11/25", 35, yValue + 59);
+
+    return yValue + 60;
 }
 
 function companyDetails(doc: jsPDF, yValue) {

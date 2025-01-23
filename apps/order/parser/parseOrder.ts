@@ -119,12 +119,17 @@ export const parseAndSavePendingOrderToOrder = async (
         await orderInstance.addOrderItems(response);
 
         let obj = new OrderMail();
+
         const dto = await obj.getPayload(
             { order: pendingOrder },
             pendingOrder.customerDetails.email,
         );
-        const resp = await sendMail(dto);
+
+        console.log("5467890")
         console.log(dto)
+        console.log("465789")
+        const resp = await sendMail(dto);
+
         console.log(resp)
     } catch (error) {
         console.error("Error parsing pending order to order:", error);

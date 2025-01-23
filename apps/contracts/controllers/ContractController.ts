@@ -345,7 +345,7 @@ export default class ContractController {
                     passwordCreateLink,
                 });
 
-                const mailDto = new PaymentReceivedMail().getPayload({}, existingLead.email);
+                const mailDto = await new PaymentReceivedMail().getPayload({}, existingLead.email);
                 await sendMail(mailDto);
             } catch (emailError) {
                 console.error("Email Error:", emailError);

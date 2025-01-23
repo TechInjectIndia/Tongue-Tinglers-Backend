@@ -1,42 +1,44 @@
-import {Op} from "sequelize";
+import { Op } from "sequelize";
 import cron from "node-cron";
 import axios from "axios";
-import {CommissionVoucherModel} from "../model/CommissionVoucherTable";
+import { CommissionVoucherModel } from "../model/CommissionVoucherTable";
 import {
-    COMMISSION_PAID_STATUS,
-    CommissionEntityMappingModel
+    // COMMISSION_PAID_STATUS,
+    CommissionEntityMappingModel,
 } from "../model/CommissionEntityMappingTable";
-import {OrganizationModel} from "apps/organization/models/OrganizationTable";
+import { COMMISSION_PAID_STATUS } from "../interface/CommissionEntityMapping";
+import { PayoutCreationAttributes } from "../model/CommissionPayoutTable";
+import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 import {
     CommissionDetails,
     CommissionType,
-    OrganizationPaymentDetails
+    OrganizationPaymentDetails,
 } from "../interface/Commission";
-import {CommissionTable} from "../model/CommmisionTable";
-import {BankDetails} from "apps/organization/interface/organization";
+import { CommissionTable } from "../model/CommmisionTable";
+import { BankDetails } from "apps/organization/interface/organization";
 import * as process from "node:process";
-import CommissionPayoutModel, {
-    PayoutCreationAttributes
-} from "../model/CommissionPayoutTable";
+import CommissionPayoutModel from // PayoutCreationAttributes
+"../model/CommissionPayoutTable";
 
 let commissionCronJob = null;
-const key_id = process.env.ENVIRONMENT === "PROD"
-    ? process.env.RAZORPAY_KEY_ID_PROD
-    : process.env.RAZORPAY_KEY_ID_DEV;
+const key_id =
+    process.env.ENVIRONMENT === "PROD"
+        ? process.env.RAZORPAY_KEY_ID_PROD
+        : process.env.RAZORPAY_KEY_ID_DEV;
 
-const key_secret = process.env.ENVIRONMENT === "PROD"
-    ? process.env.RAZORPAY_KEY_SECRET_PROD
-    : process.env.RAZORPAY_KEY_SECRET_DEV;
+const key_secret =
+    process.env.ENVIRONMENT === "PROD"
+        ? process.env.RAZORPAY_KEY_SECRET_PROD
+        : process.env.RAZORPAY_KEY_SECRET_DEV;
 
 class CommissionCron {
     data: CommissionDetails[] = [];
 
     async getCommissionStatusData(): Promise<OrganizationPaymentDetails[]> {
-
         try {
-            this.data = await CommissionVoucherModel.findAll({
+            this.data = (await CommissionVoucherModel.findAll({
                 where: {
-                    status: {[Op.notIn]: ["hold", "paid"]},
+                    status: { [Op.notIn]: ["hold", "paid"] },
                     // createdAt: { [Op.lte]: daysBack.toISOString() },
                 },
                 include: [
@@ -44,7 +46,7 @@ class CommissionCron {
                         model: CommissionEntityMappingModel,
                         as: "commissionEntity",
                         where: {
-                            id: {[Op.ne]: null},
+                            id: { [Op.ne]: null },
                         },
                         include: [
                             {
@@ -57,19 +59,17 @@ class CommissionCron {
                         ],
                     },
                 ],
-            }) as unknown as CommissionDetails[];
+            })) as unknown as CommissionDetails[];
 
             if (!this.data.length) {
                 console.log("No pending payment");
                 return [];
             }
-            const {
-                organizationAmount,
-                organizationDetails
-            } = await this.getFormatedData()
+            const { organizationAmount, organizationDetails } =
+                await this.getFormatedData();
 
-            const finalDetails: OrganizationPaymentDetails[] = organizationDetails.map(
-                (item) => {
+            const finalDetails: OrganizationPaymentDetails[] =
+                organizationDetails.map((item) => {
                     return {
                         voucherId: organizationAmount[item.id].voucherId,
                         organizationId: item.id,
@@ -79,50 +79,51 @@ class CommissionCron {
                         phone: item.contactNumber,
                         account_number: item.bankAccountNumber,
                         ifsc: item.bankIFSCCode,
-                    }
-                })
+                    };
+                });
             if (!finalDetails.length) {
                 console.log("No pending payment");
                 return [];
             }
             return finalDetails;
-        }
-        catch (error) {
+        } catch (error) {
             console.error("Error fetching payment in cron job:", error);
             return [];
         }
     }
 
     async getFormatedData() {
-
         const organizationAmount: {
             [key: string]: {
                 organizationId: number;
-                amount: number,
-                voucherId: number
-            }
+                amount: number;
+                voucherId: number;
+            };
         } = {};
 
-        await Promise.all(this.data.map(async (item) => {
+        await Promise.all(
+            this.data.map(async (item) => {
+                const organizationId = item.commissionEntity.organizationId;
+                const value = item.value;
 
-            const organizationId = item.commissionEntity.organizationId;
-            const value = item.value;
+                if (!organizationAmount[organizationId]) {
+                    organizationAmount[organizationId] = {
+                        organizationId,
+                        amount: value,
+                        voucherId: item.id,
+                    };
+                } else {
+                    organizationAmount[organizationId].amount += value;
+                }
+            }),
+        );
 
-            if (!organizationAmount[organizationId]) {
-                organizationAmount[organizationId] = {
-                    organizationId,
-                    amount: value,
-                    voucherId: item.id
-                };
-            } else {
-                organizationAmount[organizationId].amount += value;
-            }
-        }))
+        const organizationDetails: OrganizationModel[] =
+            await OrganizationModel.findAll({
+                where: { id: Object.keys(organizationAmount) },
+            });
 
-        const organizationDetails: OrganizationModel[] = await OrganizationModel.findAll(
-            {where: {id: Object.keys(organizationAmount)}});
-
-        return {organizationAmount, organizationDetails}
+        return { organizationAmount, organizationDetails };
     }
 
     async startCron(cronTime: string) {
@@ -138,7 +139,8 @@ class CommissionCron {
                     console.log(
                         `Running scheduled tasks for payment at ${cronTime}...`,
                     );
-                    const customerPaymentDetails: OrganizationPaymentDetails[] = await this.getCommissionStatusData();
+                    const customerPaymentDetails: OrganizationPaymentDetails[] =
+                        await this.getCommissionStatusData();
 
                     if (!customerPaymentDetails.length) {
                         console.log("No Customer Payment Details to process.");
@@ -147,14 +149,12 @@ class CommissionCron {
                     for (const payout of customerPaymentDetails) {
                         await this.processPayment(payout);
                     }
-
                 },
                 {
                     timezone: "Asia/Kolkata",
                 },
             );
-        }
-        catch (error) {
+        } catch (error) {
             console.error("Error starting cron job:", error);
         }
     }
@@ -163,22 +163,24 @@ class CommissionCron {
         const response = await axios.get(
             "https://api.razorpay.com/v1/contacts",
             {
-                auth: {username: key_id, password: key_secret},
-            }
+                auth: { username: key_id, password: key_secret },
+            },
         );
 
         // Check if contact exists
         const existingContact = response.data.items.find(
-            (contact: any) => contact.email === email || contact.contact ===
-                phone
+            (contact: any) =>
+                contact.email === email || contact.contact === phone,
         );
 
         return existingContact ? existingContact.id : null;
     }
 
-
-    async createOrGetContact(customerName: string, email: string,
-        phone: string) {
+    async createOrGetContact(
+        customerName: string,
+        email: string,
+        phone: string,
+    ) {
         const existingContactId = await this.getExistingContact(email, phone);
 
         if (existingContactId) {
@@ -196,8 +198,8 @@ class CommissionCron {
                 type: "customer",
             },
             {
-                auth: {username: key_id, password: key_secret},
-            }
+                auth: { username: key_id, password: key_secret },
+            },
         );
 
         console.log("New contact created:", response.data.id);
@@ -218,8 +220,8 @@ class CommissionCron {
                 },
             },
             {
-                auth: {username: key_id, password: key_secret},
-            }
+                auth: { username: key_id, password: key_secret },
+            },
         );
 
         console.log("Fund account created:", response.data.id);
@@ -228,46 +230,49 @@ class CommissionCron {
 
     // Function to initiate payment transfer
     // todo fix hardcoding
-    async transferToCustomer(voucherId: number, fundAccountId: string,
-        amount: number) {
-        const payoutCreationAttr: PayoutCreationAttributes = {
-            amount: 0,
-            createdAt: undefined,
-            currency: "",
-            fundAccountId: "",
-            status: "",
-            updatedAt: undefined,
-            voucherId: 0
-        }
-        const payoutModel = await CommissionPayoutModel.create(
-            {
-                voucherId,
-                fundAccountId,
-                amount,
-                currency: "INR",
-                status: "pending",
-            }
-        );
+    async transferToCustomer(
+        voucherId: number,
+        fundAccountId: string,
+        amount: number,
+    ) {
+        // const payoutCreationAttr: PayoutCreationAttributes = {
+        //     amount: 0,
+        //     createdAt: undefined,
+        //     currency: "",
+        //     fundAccountId: "",
+        //     status: "",
+        //     updatedAt: undefined,
+        //     voucherId: 0
+        // }
+        // console.log(payoutCreationAttr)
+        const payoutModel = await CommissionPayoutModel.create({
+            voucherId,
+            fundAccountId,
+            amount,
+            currency: "INR",
+            status: "pending",
+        });
 
         const response = await axios.post(
             "https://api.razorpay.com/v1/payouts",
             {
-                account_number: process.env.PROD === 'prod' ?
-                    process.env.PAYOUT_ACCOUNT_NO :
-                    process.env._DEV_PAYOUT_ACCOUNT_NO,
+                account_number:
+                    process.env.PROD === "prod"
+                        ? process.env.PAYOUT_ACCOUNT_NO
+                        : process.env._DEV_PAYOUT_ACCOUNT_NO,
                 fund_account_id: fundAccountId,
                 amount: amount * 100, // Amount in paise (₹100 = 10000)
                 currency: "INR",
                 mode: "NEFT", // Other modes: NEFT, UPI, RTGS
                 purpose: "payout",
                 queue_if_low_balance: false, // If insufficient balance, queue
-                                             // it
+                // it
                 reference_id: payoutModel.voucherId,
                 narration: "Partner Commission",
             },
             {
-                auth: {username: key_id, password: key_secret},
-            }
+                auth: { username: key_id, password: key_secret },
+            },
         );
         console.log("Payout successful:", response.data.id);
 
@@ -281,46 +286,54 @@ class CommissionCron {
             const contactId = await this.createOrGetContact(
                 customerPaymentDetails.name,
                 customerPaymentDetails.email,
-                customerPaymentDetails.phone
+                customerPaymentDetails.phone,
             );
 
             // Step 2: Create fund account
             const fundAccountId = await this.createFundAccount(contactId, {
                 bankName: customerPaymentDetails.name,
                 bankAccountNumber: customerPaymentDetails.account_number,
-                bankIFSCCode: customerPaymentDetails.ifsc
+                bankIFSCCode: customerPaymentDetails.ifsc,
             });
 
             // Step 3: Transfer payment
             const payoutId = await this.transferToCustomer(
-                customerPaymentDetails.voucherId, fundAccountId,
-                customerPaymentDetails.amount);
+                customerPaymentDetails.voucherId,
+                fundAccountId,
+                customerPaymentDetails.amount,
+            );
 
-            console.log(" Payment processed successfully! Payout ID:",
-                payoutId);
+            console.log(
+                " Payment processed successfully! Payout ID:",
+                payoutId,
+            );
 
-            await this.updatePaymentStatus(this.data,
-                customerPaymentDetails.organizationId);
-        }
-        catch (error) {
-            console.error(" Payment failed:",
-                error.response?.data || error.message);
+            await this.updatePaymentStatus(
+                this.data,
+                customerPaymentDetails.organizationId,
+            );
+        } catch (error) {
+            console.error(
+                " Payment failed:",
+                error.response?.data || error.message,
+            );
         }
     }
 
     async updatePaymentStatus(
         data: CommissionDetails[],
-        organizationId: number
+        organizationId: number,
     ): Promise<void> {
         // Filter data to get only items related to the given organizationId
         const paymentUpdateData = data.filter(
-            (item) => item.commissionEntity?.organizationId === organizationId
+            (item) => item.commissionEntity?.organizationId === organizationId,
         );
 
         // Ensure there is data to process
         if (!paymentUpdateData.length) {
             console.log(
-                `No payment data found for organizationId: ${organizationId}`);
+                `No payment data found for organizationId: ${organizationId}`,
+            );
             return;
         }
 
@@ -336,21 +349,22 @@ class CommissionCron {
                             where: {
                                 id: item.id,
                             },
-                        }
+                        },
                     );
                     console.log(
-                        `Payment status updated for item ID: ${item.id}`);
-                }
-                catch (error) {
+                        `Payment status updated for item ID: ${item.id}`,
+                    );
+                } catch (error) {
                     console.error(
                         `Failed to update payment status for item ID: ${item.id}, Error:`,
-                        error
+                        error,
                     );
                 }
-            })
+            }),
         );
         console.log(
-            `Payment status updated for organizationId: ${organizationId}`);
+            `Payment status updated for organizationId: ${organizationId}`,
+        );
     }
 }
 

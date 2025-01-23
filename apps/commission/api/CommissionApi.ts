@@ -8,14 +8,13 @@ import {
     validateUpdateCommission,
     validateUpdateCommissionEntityStatus,
 } from "../validations/CommissionValidations";
-import { ControllerProvider } from "../../common/utils/ControllerProvider";
 import { auth } from "../../../middlewares/auth";
-import CommissionController from "../controllers/ICommissionController";
-
-const { getAllCommision, getById, createCommission } = CommissionController;
-
+import { PostgresCommissionController } from "../controllers/PostgresCommissionController";
+console.log(PostgresCommissionController, "check here");
 const commissionRouter = express.Router();
+import { ControllerProvider } from "../../common/utils/ControllerProvider";
 
+const commissionController = ControllerProvider.commissionController;
 /**
  * @swagger
  *
@@ -58,7 +57,26 @@ const commissionRouter = express.Router();
 //
 // commissionRouter.delete("/delete", auth, validateDeleteCommission, ControllerProvider.commissionController.update);
 //
-// commissionRouter.get("/", auth, ControllerProvider.commissionController.getAll);
+commissionRouter.get("/list", auth, commissionController.getAll);
+
+commissionRouter.get("/get/:id", commissionController.getById);
+
+commissionRouter.post(
+    "/create",
+    auth,
+    validateCreateCommission,
+    commissionController.create,
+);
+
+commissionRouter.put(
+    "/update/:id",
+    auth,
+    validateUpdateCommission,
+    commissionController.update,
+);
+
+commissionRouter.delete("/delete", commissionController.delete);
+
 //
 // commissionRouter.get("/search", auth, validateSearchCommission, ControllerProvider.commissionController.searchCommission);
 //
@@ -74,11 +92,11 @@ const commissionRouter = express.Router();
 // TODO @Dhruv
 // api required:
 //     - get all commissions - DTO<Array<ParsedCommission>|null>
-commissionRouter.get("/list", getAllCommision);
+// commissionRouter.get("/list", getAllCommision);
 //     - get commission by id - DTO<ParsedCommission|null>
-commissionRouter.get("/get/:id", getById);
+// commissionRouter.get("/get/:id", getById);
 //     - create commission - DTO<ParsedCommission|null>
-commissionRouter.post("/create", createCommission);
+// commissionRouter.post("/create", createCommission);
 //     - update commission - DTO<ParsedCommission>
 //     - delete commission - DTO<boolean>
 //     - get all commission mappings - DTO<Array<ParsedCommissionEntity> | null>

@@ -1,21 +1,18 @@
-
-import {APIResponse} from "../../common/models/Base";
-import {ICommissionController} from "./ICommissionController";
-import {NextFunction, Request, Response} from "express";
-import {get} from "lodash";
-
+import { APIResponse } from "../../common/models/Base";
+import { ICommissionController } from "./ICommissionController";
+import { NextFunction, Request, Response } from "express";
+import { get } from "lodash";
 
 import RepoProvider from "../../RepoProvider";
-import { COMMISSION_PAID_STATUS, OrganizationCommissions } from "../model/CommissionEntityMappingTable";
+// import { COMMISSION_PAID_STATUS, OrganizationCommissions } from "../model/CommissionEntityMappingTable";
+import { COMMISSION_PAID_STATUS } from "../interface/CommissionEntityMapping";
+import { OrganizationCommissions } from "../interface/CommissionEntityMapping";
 import { CommissionTable } from "../model/CommmisionTable";
 
-export class PostgresCommissionController implements ICommissionController {
-    async getMappingsData(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) {
-        const result = await RepoProvider.commissionRepo.getCommissionMappings();
+export class PostgresCommissionController {
+    async getMappingsData(req: Request, res: Response, next: NextFunction) {
+        const result =
+            await RepoProvider.commissionRepo.getCommissionMappings();
         if (!result.success) {
             res.status(500).send(result);
             return;
@@ -26,7 +23,7 @@ export class PostgresCommissionController implements ICommissionController {
     async searchCommission(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<void> {
         const title = get(req.query, "title").toString();
         const type = get(req.query, "type")?.toString();
@@ -51,7 +48,7 @@ export class PostgresCommissionController implements ICommissionController {
     async createMapEntry(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<void> {
         /* prepare the input */
         const user_id = get(req, "user_id");
@@ -70,11 +67,11 @@ export class PostgresCommissionController implements ICommissionController {
             });
         }
 
-        const result = await RepoProvider.commissionRepo.createCommissionMapping(
-            entries);
+        const result =
+            await RepoProvider.commissionRepo.createCommissionMapping(entries);
         if (!result.success) {
-             res.status(500).send(result);
-             return ;
+            res.status(500).send(result);
+            return;
         }
         res.status(200).send(result);
     }
@@ -82,7 +79,7 @@ export class PostgresCommissionController implements ICommissionController {
     updateMapEntry(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<APIResponse<null>> {
         throw new Error("Method not implemented.");
     }
@@ -90,16 +87,15 @@ export class PostgresCommissionController implements ICommissionController {
     async getById(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<APIResponse<CommissionTable>> {
-
         const id = parseInt(get(req.params, "id"));
-        if(isNaN(id)) throw Error('Missing id or isNaN')
+        if (isNaN(id)) throw Error("Missing id or isNaN");
         const result = await RepoProvider.commissionRepo.getById(id);
 
         if (!result.success) {
-             res.status(500).send(result);
-             return;
+            res.status(500).send(result);
+            return;
         }
         res.status(200).send(result);
     }
@@ -107,31 +103,31 @@ export class PostgresCommissionController implements ICommissionController {
     async delete(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<void> {
         /* prepare the input */
 
         const user_id = parseInt(get(req, "user_id"));
-        if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
+        if (isNaN(user_id)) throw Error("Missing user_id or isNaN");
 
         const ids = get(req.body, "ids");
 
         // Check if ids exists and is an array
         if (!ids || !Array.isArray(ids)) {
-            throw Error('ids must be an array');
+            throw Error("ids must be an array");
         }
 
         // Convert strings to numbers and validate
-        const numericIds = ids.map(id => {
-            const num = typeof id === 'string' ? parseInt(id) : id;
-            if (typeof num !== 'number' || isNaN(num)) {
-                throw Error('all ids must be valid numbers or numeric strings');
+        const numericIds = ids.map((id) => {
+            const num = typeof id === "string" ? parseInt(id) : id;
+            if (typeof num !== "number" || isNaN(num)) {
+                throw Error("all ids must be valid numbers or numeric strings");
             }
             return num;
         });
 
         if (numericIds.length === 0) {
-            throw Error('ids array is empty');
+            throw Error("ids array is empty");
         }
 
         const result = await RepoProvider.commissionRepo.delete(ids, user_id);
@@ -146,7 +142,7 @@ export class PostgresCommissionController implements ICommissionController {
     async getAll(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<void> {
         const result = await RepoProvider.commissionRepo.getAll();
 
@@ -160,12 +156,12 @@ export class PostgresCommissionController implements ICommissionController {
     async create(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<APIResponse<CommissionTable>> {
         /* prepare the input */
         const user_id = get(req, "user_id", "");
 
-        const input = {...req.body, createdBy: user_id};
+        const input = { ...req.body, createdBy: user_id };
 
         input.title = input.title.trim().toLowerCase();
 
@@ -186,8 +182,8 @@ export class PostgresCommissionController implements ICommissionController {
 
         const result = await RepoProvider.commissionRepo.create(input);
         if (!result.success) {
-             res.status(500).send(result);
-             return;
+            res.status(500).send(result);
+            return;
         }
         res.status(200).send(result);
     }
@@ -195,18 +191,17 @@ export class PostgresCommissionController implements ICommissionController {
     async update(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<APIResponse<CommissionTable>> {
         /* prepare the input */
 
         const user_id = parseInt(get(req, "user_id"));
-        if (isNaN(user_id)) throw Error('Missing user_id or isNaN');
+        if (isNaN(user_id)) throw Error("Missing user_id or isNaN");
 
         const id = parseInt(get(req.params, "id"));
-        if (isNaN(id)) throw Error('Missing id or isNaN');
+        if (isNaN(id)) throw Error("Missing id or isNaN");
 
-
-        const input = {...req.body, updatedBy: user_id};
+        const input = { ...req.body, updatedBy: user_id };
         input.title = input.title.trim().toLowerCase();
 
         // const isTitleAlreadyExists = await
@@ -235,14 +230,18 @@ export class PostgresCommissionController implements ICommissionController {
     async updateCommissionEntityStatus(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<void> {
         const id = parseInt(get(req.params, "id"));
-        if (isNaN(id)) throw Error('Missing id or isNaN');
+        if (isNaN(id)) throw Error("Missing id or isNaN");
 
         const status = get(req.body, "status");
 
-        const result = await RepoProvider.commissionRepo.updateCommissionEntityStatus(id, status);
+        const result =
+            await RepoProvider.commissionRepo.updateCommissionEntityStatus(
+                id,
+                status,
+            );
 
         if (!result.success) {
             res.status(500).send(result);

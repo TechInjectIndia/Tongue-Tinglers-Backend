@@ -24,7 +24,8 @@ import {
     FranchiseDetails,
 } from "apps/franchise/interface/Franchise";
 import RepoProvider from "apps/RepoProvider";
-import { COMMISSION_PAID_STATUS } from "../../commission/model/CommissionEntityMappingTable";
+// import { COMMISSION_PAID_STATUS } from "../../commission/model/CommissionEntityMappingTable";
+import { COMMISSION_PAID_STATUS } from "apps/commission/interface/CommissionEntityMapping";
 import { PaymentReceivedMail } from "static/views/email/get-templates/PaymentReceivedMail";
 import { getHandledErrorDTO, getSuccessDTO } from "apps/common/models/DTO";
 
@@ -269,23 +270,34 @@ export default class ContractController {
 
             const existingLead = await new LeadRepo().getLeadByAttr(
                 "id",
-                existingContract.leadId?.id
+                existingContract.leadId?.id,
             );
             if (!existingLead) throw new Error("Lead not found");
 
-            const franchiseExists = await RepoProvider.franchise.exists(existingLead.email);
+            const franchiseExists = await RepoProvider.franchise.exists(
+                existingLead.email,
+            );
             if (franchiseExists) {
-                return res.status(200).send(
-                    sendResponse(RESPONSE_TYPE.ERROR, SUCCESS_MESSAGE.FRANCHISE_EXISTS)
-                );
+                return res
+                    .status(200)
+                    .send(
+                        sendResponse(
+                            RESPONSE_TYPE.ERROR,
+                            SUCCESS_MESSAGE.FRANCHISE_EXISTS,
+                        ),
+                    );
             }
 
-            const existingCampaign = await new CampaignAdRepo().get(existingLead.campaignId?.id);
+            const existingCampaign = await new CampaignAdRepo().get(
+                existingLead.campaignId?.id,
+            );
             if (!existingCampaign) throw new Error("Campaign not found");
 
             // Extract payment and signed document IDs
-            const paymentId = existingContract.payment?.slice(-1)?.[0]?.paymentId || null;
-            const signId = existingContract.signedDocs?.slice(-1)?.[0]?.docId || null;
+            const paymentId =
+                existingContract.payment?.slice(-1)?.[0]?.paymentId || null;
+            const signId =
+                existingContract.signedDocs?.slice(-1)?.[0]?.docId || null;
 
             // Prepare franchise details
             const franchiseDetailsData: FranchiseDetails = {
@@ -312,7 +324,10 @@ export default class ContractController {
             console.log("Franchise Details:", franchiseDetailsData);
 
             // Create franchise
-            const franchise = await RepoProvider.franchise.create(franchiseDetailsData, user_id);
+            const franchise = await RepoProvider.franchise.create(
+                franchiseDetailsData,
+                user_id,
+            );
 
             // Prepare commission mapping entries
             const commissionEntries = mappings.map((commission: any) => ({
@@ -324,20 +339,28 @@ export default class ContractController {
             }));
 
             // Create commission mappings
-            await RepoProvider.commissionRepo.createCommissionMapping(commissionEntries);
+            await RepoProvider.commissionRepo.createCommissionMapping(
+                commissionEntries,
+            );
 
             // Send email notification
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password`;
 
             try {
-                const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
-                    leadName: `${existingLead.firstName} ${existingLead.lastName}`,
-                    leadEmail: existingLead.email,
-                    leadPhone: existingLead.phoneNumber,
-                    passwordCreateLink,
-                });
+                const emailContent = await getEmailTemplate(
+                    EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED,
+                    {
+                        leadName: `${existingLead.firstName} ${existingLead.lastName}`,
+                        leadEmail: existingLead.email,
+                        leadPhone: existingLead.phoneNumber,
+                        passwordCreateLink,
+                    },
+                );
 
-                const mailDto = new PaymentReceivedMail().getPayload({}, existingLead.email);
+                const mailDto = new PaymentReceivedMail().getPayload(
+                    {},
+                    existingLead.email,
+                );
                 await sendMail(mailDto);
             } catch (emailError) {
                 console.error("Email Error:", emailError);
@@ -346,16 +369,22 @@ export default class ContractController {
 
             // Commit the transaction and send success response
             await transaction.commit();
-            return res.status(200).send(
-                sendResponse(RESPONSE_TYPE.SUCCESS, SUCCESS_MESSAGE.FRANCHISE_CREATED)
-            );
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FRANCHISE_CREATED,
+                    ),
+                );
         } catch (error) {
             console.error("Error in convert function:", error);
             await transaction.rollback();
-            return res.status(500).send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+            return res
+                .status(500)
+                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
         }
     }
-
 
     static async updatePartialContract(
         req: Request,

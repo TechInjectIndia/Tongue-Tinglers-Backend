@@ -1,22 +1,23 @@
-import {DataTypes, Model, Optional} from "sequelize";
-import {BaseOrder, Order, ORDER_TYPE} from "../interface/Order";
-import {sequelize} from "apps/../../config";
-import {NotesModel} from "./NotesTable";
-import {OrderItemsModel} from "apps/order-items/models/OrderItemsTable";
-import {Address} from "apps/address/interface/Address";
+import { DataTypes, Model, Optional } from "sequelize";
+import { BaseOrder, Order, ORDER_TYPE } from "../interface/Order";
+import { sequelize } from "apps/../../config";
+import { NotesModel } from "./NotesTable";
+import { OrderItemsModel } from "apps/order-items/models/OrderItemsTable";
+import { Address } from "apps/address/interface/Address";
 import RepoProvider from "apps/RepoProvider";
-import {ICommissionVoucher} from "apps/commission/model/CommissionVoucherTable";
-import {
-    COMMISSION_VOUCHER_ENTITIES
-} from "apps/commission/model/CommissionEntityMappingTable";
-import {UserModel} from "apps/user/models/UserTable";
+import { ICommissionVoucher } from "apps/commission/model/CommissionVoucherTable";
+// import {
+//     COMMISSION_VOUCHER_ENTITIES
+// } from "apps/commission/model/CommissionEntityMappingTable";
+import { COMMISSION_VOUCHER_ENTITIES } from "apps/commission/interface/CommissionEntityMapping";
+import { UserModel } from "apps/user/models/UserTable";
 
+interface OrderCreationAttributes extends Optional<Order, "id"> {}
 
-interface OrderCreationAttributes extends Optional<Order, "id"> {
-}
-
-class OrderModel extends Model<Order, OrderCreationAttributes>
-    implements BaseOrder {
+class OrderModel
+    extends Model<Order, OrderCreationAttributes>
+    implements BaseOrder
+{
     status!: string;
     item_count!: number;
     total!: number;
@@ -50,20 +51,28 @@ class OrderModel extends Model<Order, OrderCreationAttributes>
 
     // Mixin methods for managing notes
     public addOrderItem!: (note: OrderItemsModel | number) => Promise<void>;
-    public addOrderItems!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
-    public setOrderItemses!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
+    public addOrderItems!: (
+        notes: Array<OrderItemsModel | number>,
+    ) => Promise<void>;
+    public setOrderItemses!: (
+        notes: Array<OrderItemsModel | number>,
+    ) => Promise<void>;
     public getOrderItemses!: () => Promise<OrderItemsModel[]>;
     public removeOrderItems!: (note: OrderItemsModel | number) => Promise<void>;
-    public removeOrderItemses!: (notes: Array<OrderItemsModel | number>) => Promise<void>;
+    public removeOrderItemses!: (
+        notes: Array<OrderItemsModel | number>,
+    ) => Promise<void>;
 
     // todo
-    public addAnomalyOrderItems: (anomalies: Array<any | number>) => Promise<void>;
+    public addAnomalyOrderItems: (
+        anomalies: Array<any | number>,
+    ) => Promise<void>;
 
     public static associate() {
         OrderModel.belongsTo(UserModel, {
-            foreignKey: 'customer_details',
-            as: 'customer'
-        })
+            foreignKey: "customer_details",
+            as: "customer",
+        });
         // OrderModel.belongsTo(FranchiseModel, {
         //     foreignKey: 'franchise',
         //     as: 'franchiseData'
@@ -83,17 +92,17 @@ class OrderModel extends Model<Order, OrderCreationAttributes>
         });
 
         OrderModel.belongsTo(UserModel, {
-            foreignKey: 'createdBy',
-            as: 'createdByUser'
-        })
+            foreignKey: "createdBy",
+            as: "createdByUser",
+        });
         OrderModel.belongsTo(UserModel, {
-            foreignKey: 'updatedBy',
-            as: 'updatedByUser'
-        })
+            foreignKey: "updatedBy",
+            as: "updatedByUser",
+        });
         OrderModel.belongsTo(UserModel, {
-            foreignKey: 'deletedBy',
-            as: 'deletedByUser'
-        })
+            foreignKey: "deletedBy",
+            as: "deletedByUser",
+        });
     }
 
     public static initModel() {
@@ -177,10 +186,12 @@ class OrderModel extends Model<Order, OrderCreationAttributes>
                     allowNull: true,
                 },
                 order_type: {
-                    type: DataTypes.ENUM(ORDER_TYPE.RM_ORDER,
-                        ORDER_TYPE.SAMPLE_KIT),
+                    type: DataTypes.ENUM(
+                        ORDER_TYPE.RM_ORDER,
+                        ORDER_TYPE.SAMPLE_KIT,
+                    ),
                     allowNull: false,
-                    defaultValue: ORDER_TYPE.RM_ORDER
+                    defaultValue: ORDER_TYPE.RM_ORDER,
                 },
                 createdBy: {
                     type: DataTypes.INTEGER,
@@ -222,7 +233,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes>
                 createdAt: "created_at",
                 updatedAt: "updated_at",
                 deletedAt: "deleted_at",
-            }
+            },
         );
         return OrderModel;
     }
@@ -233,7 +244,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes>
                 "create",
                 "Order",
                 instance,
-                options
+                options,
             );
         });
 
@@ -244,7 +255,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes>
                 "update",
                 "Order",
                 instance,
-                options
+                options,
             );
         });
 
@@ -254,7 +265,7 @@ class OrderModel extends Model<Order, OrderCreationAttributes>
                 "delete",
                 "Order",
                 instance,
-                options
+                options,
             );
         });
     }
@@ -262,9 +273,9 @@ class OrderModel extends Model<Order, OrderCreationAttributes>
     public async createAddVoucher(voucherData: Partial<ICommissionVoucher>) {
         return await this.createAddVoucher({
             ...voucherData,
-            entityType: COMMISSION_VOUCHER_ENTITIES.ORDER_COMMISSION
+            entityType: COMMISSION_VOUCHER_ENTITIES.ORDER_COMMISSION,
         });
     }
 }
 
-export {OrderModel};
+export { OrderModel };

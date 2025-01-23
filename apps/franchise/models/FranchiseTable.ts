@@ -8,14 +8,16 @@ import { AddressModel } from "apps/address/models/AddressTable";
 import { UserModel } from "apps/user/models/UserTable";
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
+// import {
+//     COMMISSION_VOUCHER_ENTITIES,
+//     CommissionEntityMappingModel,
+//     ICommissionEntityMapping
+// } from "../../commission/model/CommissionEntityMappingTable";
+import { COMMISSION_VOUCHER_ENTITIES } from "apps/commission/interface/CommissionEntityMapping";
 import {
-    COMMISSION_VOUCHER_ENTITIES,
-    CommissionEntityMappingModel,
-    ICommissionEntityMapping
-} from "../../commission/model/CommissionEntityMappingTable";
-import { CommissionVoucherModel, ICommissionVoucher } from "apps/commission/model/CommissionVoucherTable";
-
-
+    CommissionVoucherModel,
+    ICommissionVoucher,
+} from "apps/commission/model/CommissionVoucherTable";
 
 const { STRING, INTEGER, DATE, NOW, ARRAY, ENUM } = DataTypes;
 
@@ -45,7 +47,7 @@ class FranchiseModel
     public paymentIds: string[];
     public status: FRANCHISE_STATUS;
     public establishedDate: Date;
-    public assignedUser: number | null
+    public assignedUser: number | null;
 
     public createdBy: number;
     public updatedBy: number | null;
@@ -59,28 +61,27 @@ class FranchiseModel
     // Mixin for Documents
     public getFranchiseDocuments!: () => Promise<DocumentModel[]>;
     public addFranchiseDocument!: (
-        document: DocumentModel | number
+        document: DocumentModel | number,
     ) => Promise<void>;
 
     public addFranchiseDocuments!: (
-        documents: Array<DocumentModel | number>
+        documents: Array<DocumentModel | number>,
     ) => Promise<void>;
 
     public setFranchiseDocuments!: (
-        documents: Array<DocumentModel | number>
+        documents: Array<DocumentModel | number>,
     ) => Promise<void>;
 
     public removeFranchiseDocument!: (
-        document: DocumentModel | number
+        document: DocumentModel | number,
     ) => Promise<void>;
 
     public removeFranchiseDocuments!: (
-        documents: Array<DocumentModel | number>
+        documents: Array<DocumentModel | number>,
     ) => Promise<void>;
 
     // Associations
     public static associate() {
-
         FranchiseModel.hasMany(DocumentModel, {
             foreignKey: "entity_id",
             as: "franchiseDocuments",
@@ -212,10 +213,10 @@ class FranchiseModel
                     type: DATE,
                     allowNull: false, // Franchisee's establishment date
                 },
-                assignedUser:{
-                                    type: INTEGER,
-                                    allowNull: true,
-                                },
+                assignedUser: {
+                    type: INTEGER,
+                    allowNull: true,
+                },
                 createdBy: {
                     type: INTEGER,
                     allowNull: false, // User ID of the creator
@@ -236,7 +237,7 @@ class FranchiseModel
                 paranoid: true, // Enable soft deletes
                 comment: "Table to store franchisee organizations", // Comment for the
                 // table
-            }
+            },
         );
         return FranchiseModel;
     }
@@ -247,7 +248,7 @@ class FranchiseModel
                 "create",
                 "FranchiseModel",
                 instance,
-                options
+                options,
             );
         });
 
@@ -258,7 +259,7 @@ class FranchiseModel
                 "update",
                 "FranchiseModel",
                 instance,
-                options
+                options,
             );
         });
 
@@ -268,13 +269,16 @@ class FranchiseModel
                 "delete",
                 "FranchiseModel",
                 instance,
-                options
+                options,
             );
         });
     }
 
     public async createAddVoucher(voucherData: Partial<ICommissionVoucher>) {
-        return await this.createAddVoucher({ ...voucherData, entityType: COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION });
+        return await this.createAddVoucher({
+            ...voucherData,
+            entityType: COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION,
+        });
     }
 }
 

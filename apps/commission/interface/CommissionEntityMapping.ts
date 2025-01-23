@@ -1,4 +1,4 @@
-import {BaseMeta} from "../../common/models/Base";
+import {BaseMeta, ParsedMeta} from "../../common/models/Base";
 
 
 enum COMMISSION_ENTITIES {

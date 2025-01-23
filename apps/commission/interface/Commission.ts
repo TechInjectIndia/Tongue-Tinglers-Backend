@@ -1,16 +1,14 @@
 import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
-import {CommissionVoucherModel} from "../model/CommissionVoucherTable";
-import {
-    CommissionEntityMappingModel,
-} from "../model/CommissionEntityMappingTable";
-import {CommissionTable} from "../model/CommmisionTable";
+import { CommissionVoucherModel } from "../model/CommissionVoucherTable";
+import { CommissionEntityMappingModel } from "../model/CommissionEntityMappingTable";
+import { CommissionTable } from "../model/CommmisionTable";
 import { ParsedFranchise } from "../../franchise/interface/Franchise";
 import { ParsedOrder } from "../../order/interface/Order";
 import { PayoutStatus } from "../model/CommissionPayoutTable";
-import {ParsedOrganization} from "../../organization/interface/organization";
+import { ParsedOrganization } from "../../organization/interface/organization";
 import {
     COMMISSION_PAID_STATUS,
-    COMMISSION_VOUCHER_ENTITIES
+    COMMISSION_VOUCHER_ENTITIES,
 } from "./CommissionEntityMapping";
 
 // Interface behind Commission Model
@@ -82,8 +80,8 @@ interface ParsedCommissionEntityMapping extends ParsedMeta {
     id: number;
     franchise: ParsedFranchise;
     relations: {
-        organization: ParsedOrganization,
-        commission: ParsedCommission
+        organization: ParsedOrganization;
+        commission: ParsedCommission;
     }[];
 }
 
@@ -95,9 +93,6 @@ interface ParsedPayout extends ParsedMeta {
     currency: string;
     status: PayoutStatus;
 }
-
-
-
 
 export {
     ICommission,

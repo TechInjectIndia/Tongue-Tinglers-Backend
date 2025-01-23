@@ -360,4 +360,60 @@ export class ProductRepo implements IProductRepo {
             return null;
         }
     }
+
+    async getAllProductIncludeSampleKit(page: number, limit: number): Promise<Pagination<ParsedProduct>>{
+        try {
+            const offset = (page - 1) * limit;
+            const { rows: products, count: total } = await ProductModel.findAndCountAll({
+                offset,
+                limit,
+                include: [
+                    {
+                        model: ProductVariationsModel, // Include the ProductOptions model
+                        as: "variations", // Alias used in the ProductModel association
+                        include: [
+                            {
+                                model: OptionsValueModel,
+                                as: "optionsValue", // Include these fields from the User model
+                                attributes: ["id", "name", "option_id"],
+                                include: [
+                                    {
+                                        model: OptionsModel,
+                                        as: "options",
+                                        attributes: ["id", "name"],
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        model: UserModel,
+                        as: "createdByUser", // Include createdByUser
+                    },
+                    {
+                        model: UserModel,
+                        as: "updatedByUser", // Include createdByUser
+                    },
+                    {
+                        model: UserModel,
+                        as: "deletedByUser", // Include createdByUser
+                    },
+                    {
+                        model: ProductsCategoryModel,
+                        as: "productCategory", // Include createdByUser
+                    },
+                ],
+            }).then((res) => {
+                return {
+                    rows: res.rows.map((product) => parseProduct(product.toJSON())),
+                    count: res.count,
+                };
+            });
+            const totalPages = Math.ceil(products.length / limit);
+            return { data: products, total: products.length, totalPages };
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
 }

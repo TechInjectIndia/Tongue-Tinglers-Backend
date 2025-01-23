@@ -5,7 +5,7 @@ import {auth} from "../../../middlewares";
 
 const router = express.Router();
 
-const {createProduct, getAllProducts, getProductById, updateProduct, deleteProduct, updateStatus, getAllProductBySampleKit}  = ProductController;
+const {createProduct, getAllProducts, getProductById, updateProduct, deleteProduct, updateStatus, getAllProductBySampleKit, getAllProductIncludeSampleKit}  = ProductController;
 
 /**
  * @swagger
@@ -217,6 +217,7 @@ router.get('/:id', validateProductById, getProductById);
 router.put('/update/:id',auth,validateProductById, validateUpdateProduct, updateProduct);
 router.put('/delete/:id',auth,validateDeleteProduct, deleteProduct);
 router.put('/update-status/:id',auth,validateChangeProductStatus ,updateStatus);
-router.get('/getAllProductBySamplekit/sample-kit', getAllProductBySampleKit)
+router.get('/getAllProductBySamplekit/sample-kit', getAllProductBySampleKit);
+router.get('/getAllProductIncludeSampleKit', getAllProductIncludeSampleKit);
 
 export default router;

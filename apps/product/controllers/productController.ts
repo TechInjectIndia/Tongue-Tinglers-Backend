@@ -245,4 +245,37 @@ export default class ProductController {
                 );
         }
     }
+
+    static async getAllProductIncludeSampleKit(req: Request, res: Response) {
+        try {
+            let page = parseInt(<string>get(req.query, "page", "1"));
+            if (isNaN(page)) page = 1;
+            let limit = parseInt(<string>get(req.query, "limit", "10"));
+            if (isNaN(limit)) limit = 10;
+            const products: Pagination<ParsedProduct> =
+                await RepoProvider.ProductRepo.getAllProductIncludeSampleKit(
+                    page,
+                    limit,
+                );
+            return res
+                .status(200)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.SUCCESS,
+                        SUCCESS_MESSAGE.FETCHED,
+                        { ...products, currentPage: page },
+                    ),
+                );
+        } catch (error) {
+            console.error(error);
+            return res
+                .status(500)
+                .send(
+                    sendResponse(
+                        RESPONSE_TYPE.ERROR,
+                        "An error occurred while fetching products.",
+                    ),
+                );
+        }
+    }
 }

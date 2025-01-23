@@ -21,4 +21,6 @@ export interface IProductRepo {
     changeStatus(payload: CHANGE_STATUS): Promise<IProductTable>;
 
     getAllProductBySamplekit(page: number,limit: number): Promise<Pagination<ParsedProduct>>
+
+    getAllProductIncludeSampleKit(page: number, limit: number): Promise<Pagination<ParsedProduct>>
 }

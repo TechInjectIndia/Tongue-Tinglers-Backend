@@ -1,20 +1,20 @@
-import {APIResponse} from "../models/Base";
+import { APIResponse, SuccessDTO, FailedDTO } from "../models/Base";
 
 class HelperMethods {
-
-    static getSuccessResponse<T>(data: T, message?: string): APIResponse<T> {
+    static getSuccessResponse<T>(data: T, message?: string): SuccessDTO<T> {
         return {
+            code: 200,
             success: true,
             message: message ?? "Done",
-            data: data
+            data: data,
         };
     }
 
-    static getErrorResponse<T>(message?: string): APIResponse<T> {
+    static getErrorResponse<T>(message?: string): FailedDTO<T> {
         return {
             success: false,
             message: message ?? "Something went wrong",
-            data: null
+            data: null,
         };
     }
 }
@@ -28,4 +28,4 @@ function handleError(error: unknown, ...params: any[]) {
     }
 }
 
-export {HelperMethods, handleError};
+export { HelperMethods, handleError };

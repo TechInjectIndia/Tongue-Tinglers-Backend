@@ -4,7 +4,8 @@ import {OrganizationModel} from "apps/organization/models/OrganizationTable";
 
 import {FranchiseModel} from "apps/franchise/models/FranchiseTable";
 import {CommissionTable} from "./CommmisionTable";
-import {ICommissionEntityMapping} from "../interface/CommissionEntityMapping";
+import type {ICommissionEntityMapping} from "apps/commission/interface/CommissionEntityMapping";
+
 
 const {DATE, INTEGER, NOW} = DataTypes;
 
@@ -133,9 +134,3 @@ class CommissionEntityMappingModel
 
 
 /* associations */
-
-
-export {
-    CommissionEntityMappingModel,
-    CommissionVoucherCreationAttributes,
-};

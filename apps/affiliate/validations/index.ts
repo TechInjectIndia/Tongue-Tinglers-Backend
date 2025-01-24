@@ -98,7 +98,7 @@ const listAffiliateQuery = Joi.object({
 
 // Validation schema for deleting multiple Affiliates
 const editMultipleIdsBody = Joi.object({
-    ids: Joi.array().items(Joi.string().uuid()).min(1).required().messages({
+    ids: Joi.array().items(Joi.string()).min(1).required().messages({
         "array.base": "IDs must be an array of UUIDs.",
         "array.min": "At least one ID is required.",
         "string.guid": "Each ID must be a valid UUID.",

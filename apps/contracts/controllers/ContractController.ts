@@ -24,7 +24,7 @@ import {
     FranchiseDetails,
 } from "apps/franchise/interface/Franchise";
 import RepoProvider from "apps/RepoProvider";
-import { COMMISSION_PAID_STATUS } from "apps/commission/model/CommissionEntityMapTable";
+import { COMMISSION_PAID_STATUS } from "../../commission/model/CommissionEntityMappingTable";
 import { PaymentReceivedMail } from "static/views/email/get-templates/PaymentReceivedMail";
 import { getHandledErrorDTO, getSuccessDTO } from "apps/common/models/DTO";
 import {adminUserRouter} from "../../user/api/user";
@@ -309,7 +309,7 @@ export default class ContractController {
                 status: FRANCHISE_STATUS.Active,
                 establishedDate: new Date(),
                 organizationId: existingContract.organizationId?.id || null,
-                affiliateId: 0,
+                // affiliateId: 0,
                 assignedUser: null,
             };
 

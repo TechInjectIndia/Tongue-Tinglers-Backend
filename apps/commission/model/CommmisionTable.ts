@@ -2,7 +2,7 @@
 import { Model, Optional, DataTypes } from "sequelize";
 import { sequelize } from "../../../config";
 import { CommissionEventType, CommissionType, ICommission } from "../interface/Commission";
-import { CommissionEntityMapTable } from "./CommissionEntityMapTable";
+import { CommissionEntityMappingModel } from "./CommissionEntityMappingTable";
 
 const { STRING, DATE, INTEGER, NOW, } = DataTypes;
 
@@ -11,10 +11,12 @@ interface CommissionCreationAttributes extends Optional<ICommission, 'id' | 'cre
 
 class CommissionTable extends Model<ICommission, CommissionCreationAttributes> implements ICommission {
     public id: number;
+
     public title: string;
     public type: CommissionType;
     public value: number;
     public eventType: CommissionEventType;
+
     public createdBy: number;
     public updatedBy: number | null;
     public deletedBy: number | null;
@@ -23,13 +25,13 @@ class CommissionTable extends Model<ICommission, CommissionCreationAttributes> i
     public readonly deletedAt: Date | null;
 
     public static associate() {
-        CommissionTable.hasMany(CommissionEntityMapTable, {
+        CommissionTable.hasMany(CommissionEntityMappingModel, {
             foreignKey: {
                 allowNull: false,
                 name: 'commissionId',
             },
         });
-        CommissionEntityMapTable.belongsTo(CommissionTable, {
+        CommissionEntityMappingModel.belongsTo(CommissionTable, {
             foreignKey: {
                 allowNull: false,
                 name: 'commissionId',

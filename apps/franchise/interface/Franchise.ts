@@ -7,6 +7,10 @@ import { ParsedOrganization } from "../../organization/interface/organization";
 
 import { ParsedRegion } from "apps/region/models/Region";
 import {MetaUser, ParsedUser} from "apps/user/interface/user";
+import {ICommission} from "../../commission/interface/Commission";
+import {
+    ICommissionEntityMapping
+} from "../../commission/model/CommissionEntityMappingTable";
 
 
 interface BaseFranchise {
@@ -21,7 +25,7 @@ interface BaseFranchise {
     status: FRANCHISE_STATUS;
     establishedDate: Date;
     organizationId: number;
-    affiliateId: number | null;
+    // affiliateId: number | null;
     assignedUser: number | null;
 }
 

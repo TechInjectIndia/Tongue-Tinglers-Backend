@@ -45,9 +45,8 @@ interface ParsedUser extends ParsedMeta {
 
 enum USER_TYPE {
     ADMIN = "admin",
-    FRANSHISE = "franchise",
-    SUPER_FRANSHISE = "super_franchise",
-    GUEST = "guest",
+    FRANCHISE = "franchise",
+    SUPER_FRANCHISE = "super_franchise",
     AFFILIATE = "affiliate",
     PROSPECT = "prospect",
     GUEST_USER = "guest_user",

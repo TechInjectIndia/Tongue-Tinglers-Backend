@@ -42,7 +42,7 @@ export interface CampaignPayload {
     regionId: number;
     start: Date;
     to: Date;
-    proposalIds: number[];
+    proposalIds?: number[];
     affiliateId?: number | null;
 }
 

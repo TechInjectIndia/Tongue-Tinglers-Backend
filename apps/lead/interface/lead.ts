@@ -66,7 +66,7 @@ enum LeadStatus {
 
 
 enum socialMediaEnumsPlatform {
-    FB = "fb",
+    FACEBOOK = "facebook",
     INSTAGRAM = "instagram",
     YOUTUBE = "youtube",
     TWITTER = "twitter",

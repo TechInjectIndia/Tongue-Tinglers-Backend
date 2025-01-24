@@ -1,7 +1,8 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import { DataTypes, DATE, Model, NOW, Optional } from "sequelize";
 import { Affiliate } from "../interface/affiliate";
 import { UserModel } from "apps/user/models/UserTable";
 import { SocialMediaDetailsModel } from "apps/lead/models/smDetailsTable";
+import {CampaignAdModel} from "apps/campaign/models/CampaignModel"
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
 
@@ -13,8 +14,14 @@ interface AffiliateCreationAttributes extends Optional<Affiliate, "id"> {}
 // Define the model class for AffiliateModel
 class AffiliateModel
     extends Model<Affiliate, AffiliateCreationAttributes>
-    implements Affiliate
-{
+    implements Affiliate {
+    createdAt: Date;
+    updatedAt: Date | null;
+    deletedAt: Date | null;
+    createdBy: number;
+    updatedBy: number | null;
+    deletedBy: number | null;
+
     public id!: number;
     public type!: string;
     public codes!: Record<string, string>;
@@ -27,6 +34,11 @@ class AffiliateModel
         });
         AffiliateModel.hasMany(SocialMediaDetailsModel, {
             as: "sm",
+            foreignKey: "affiliateId",
+        });
+
+        AffiliateModel.hasMany(CampaignAdModel, {
+            as: "cm",
             foreignKey: "affiliateId",
         });
     }
@@ -53,6 +65,39 @@ class AffiliateModel
                     type: INTEGER,
                     allowNull: false,
                 },
+                createdBy: {
+                    type: INTEGER,
+                    allowNull: false,
+                    comment: "User who created the campaign",
+                },
+                updatedBy: {
+                    type: INTEGER,
+                    allowNull: true,
+                    comment: "User who last updated the campaign",
+                },
+                deletedBy: {
+                    type: INTEGER,
+                    allowNull: true,
+                    comment: "User who deleted the campaign (if soft deleted)",
+                },
+                createdAt: {
+                    type: DATE,
+                    allowNull: false,
+                    defaultValue: NOW,
+                    comment: "Timestamp when the campaign was created",
+                },
+                updatedAt: {
+                    type: DATE,
+                    allowNull: false,
+                    defaultValue: NOW,
+                    comment: "Timestamp when the campaign was last updated",
+                },
+                deletedAt: {
+                    type: DATE,
+                    allowNull: true,
+                    comment:
+                        "Timestamp when the campaign was deleted (if soft deleted)",
+                }
             },
             {
                 sequelize,

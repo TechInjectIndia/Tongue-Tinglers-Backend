@@ -1,25 +1,34 @@
+import { Op, UniqueConstraintError } from "sequelize";
 import { FranchiseModel } from "apps/franchise/models/FranchiseTable";
-import {APIResponse} from "../../common/models/Base";
-import { COMMISSION_PAID_STATUS, CommissionEntityMapTable, ICommissionEntityMapping, ICommissionEntityMappingResponse } from "../model/CommissionEntityMapTable";
+import { APIResponse } from "../../common/models/Base";
+import {
+    COMMISSION_PAID_STATUS,
+    CommissionEntityMappingModel,
+    ICommissionEntityMapping,
+    ICommissionEntityMappingResponse, CommissionVoucherCreationAttributes,
+    COMMISSION_VOUCHER_ENTITIES,
+} from "../model/CommissionEntityMappingTable";
 import { CommissionTable } from "../model/CommmisionTable";
-import {ICommissionRepo} from "./ICommissionRepo";
+import { ICommissionRepo } from "./ICommissionRepo";
 import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 import { handleError, HelperMethods } from "apps/common/utils/HelperMethods";
-import { ICommission } from "../interface/Commission";
-import { Op, UniqueConstraintError } from "sequelize";
-
+import {
+    CommissionType,
+    ICommission,
+} from "../interface/Commission";
+import { CommissionVoucherModel, ICommissionVoucher } from "../model/CommissionVoucherTable";
+import { OrderModel } from "apps/order/models/OrderTable";
+import CommissionPayoutModel from "../model/CommissionPayoutTable";
 
 export class PostgresCommissionRepo implements ICommissionRepo {
 
     async getMappingsData(): Promise<APIResponse<ICommissionEntityMappingResponse[]>> {
         try {
-            const result = await CommissionEntityMapTable.findAll(
+            const result = await CommissionEntityMappingModel.findAll(
                 {
                     include: [
                         {
                             model: CommissionTable,
-                            attributes: ["id", "title"],
-
                         },
                         {
                             model: FranchiseModel,
@@ -27,14 +36,16 @@ export class PostgresCommissionRepo implements ICommissionRepo {
                             include: [{
                                 model: OrganizationModel,
                                 as: "organization",
-                                attributes: ["id", "name"],
                             }]
-
                         },
                         {
                             model: OrganizationModel,
-                            attributes: ["id", "name"],
-
+                        },
+                        {
+                            model: CommissionVoucherModel,
+                            include: [{
+                                model: CommissionPayoutModel,
+                            }]
                         },
                     ]
                 }
@@ -42,42 +53,42 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
             const response: ICommissionEntityMappingResponse[] = [];
 
-            /* TODO: Mandeep Singh(self), change this after the dependency is done */
-            let franchiseAmount = 2000;
-            let commissionAmount = 0;
-            let appliedCommission = 10;
-            for (const mapping of result) {
+            /* TODO: @dhruv Mandeep Singh(self), change this after the dependency is done */
+
+
+            for (const commissionMapping of result) {
                 response.push({
-                    id: mapping.id,
-                    franchiseId: mapping.franchiseId,
+                    id: commissionMapping.id,
+                    franchiseId: commissionMapping.franchiseId,
                     franchiseOrganization: {
-                        id: mapping["FranchiseModel"]["organization"].id,
-                        name: mapping["FranchiseModel"]["organization"].name,
+                        id: commissionMapping["FranchiseModel"]["organization"].id,
+                        name: commissionMapping["FranchiseModel"]["organization"].name,
                     },
                     commission: {
-                        id: mapping.commissionId,
-                        title: mapping["CommissionTable"].title,
-                        type: mapping["CommissionTable"].type,
-                        eventType: mapping["CommissionTable"].eventType,
-                        value: mapping["CommissionTable"].value,
-                    },
-                    appliedCommission: {
-                        franchiseAmount: franchiseAmount,
-                        commissionAmount: appliedCommission,
+                        id: commissionMapping.commissionId,
+                        title: commissionMapping["CommissionTable"].title,
+                        type: commissionMapping["CommissionTable"].type,
+                        eventType: commissionMapping["CommissionTable"].eventType,
+                        value: commissionMapping["CommissionTable"].value,
+                    }, appliedCommission: {
+                        franchiseAmount: commissionMapping["CommissionTable"].franchiseAmount,
+                        commissionAmount: commissionMapping["CommissionTable"].commissionAmount
                     },
                     organization: {
-                        id: mapping.organizationId,
-                        name: mapping["OrganizationModel"].name,
+                        id: commissionMapping.organizationId,
+                        name: commissionMapping["OrganizationModel"].name,
                     },
-                    status: mapping.status,
-                    createdBy: mapping.createdBy,
-                    updatedBy: mapping.updatedBy,
-                    deletedBy: mapping.deletedBy,
-                    createdAt: mapping.createdAt,
-                    updatedAt: mapping.updatedAt,
-                    deletedAt: mapping.deletedAt,
+                    // status: commissionMapping.status,
+                    createdBy: commissionMapping.createdBy,
+                    updatedBy: commissionMapping.updatedBy,
+                    deletedBy: commissionMapping.deletedBy,
+                    createdAt: commissionMapping.createdAt,
+                    updatedAt: commissionMapping.updatedAt,
+                    deletedAt: commissionMapping.deletedAt,
                 });
             }
+
+            // todo using hooks
 
             return HelperMethods.getSuccessResponse(response);
 
@@ -118,10 +129,33 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         }
     }
 
-    async createMapEntities(mapEntities: ICommissionEntityMapping[], options?: { transaction?: any }): Promise<APIResponse<boolean>> {
+    async createMapEntities(mapEntities: CommissionVoucherCreationAttributes[],
+        options?: { transaction?: any }): Promise<APIResponse<boolean>> {
         try {
             const { transaction } = options || {};
-            await CommissionEntityMapTable.bulkCreate(mapEntities, {transaction});
+            const CommissionEntityMappingData = await CommissionEntityMappingModel.bulkCreate(mapEntities,
+                { transaction });
+
+
+            CommissionEntityMappingData.forEach(async (data) => {
+                //Get percentage is stored somewhere
+                const percentage = 10;
+                let finalAmount = 0;
+                const commission: CommissionTable = await CommissionTable.findByPk(data.commissionId);
+
+                if (commission.type === CommissionType.PERCENTAGE) {
+                    finalAmount = (commission.value * percentage) / 100;
+                }
+                await CommissionVoucherModel.create({
+                    relationId: data.id,
+                    entityId: data.franchiseId,
+                    entityType: COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION,
+                    status: COMMISSION_PAID_STATUS.PENDING,
+                    value: finalAmount,
+                    createdBy: data.createdBy,
+                }, { transaction });
+            })
+
             return HelperMethods.getSuccessResponse<boolean>(true);
         }
         catch (error) {
@@ -133,15 +167,12 @@ export class PostgresCommissionRepo implements ICommissionRepo {
     async updateMapEntity(id: number,
         mapEntity: ICommissionEntityMapping): Promise<APIResponse<boolean>> {
         try {
-
-            await CommissionEntityMapTable.update(mapEntity, {
+            await CommissionEntityMappingModel.update(mapEntity, {
                 where: {
                     id: id
                 }
             });
-
             return HelperMethods.getSuccessResponse<boolean>(true);
-
         }
         catch (error) {
             handleError(error, id, mapEntity);
@@ -152,36 +183,29 @@ export class PostgresCommissionRepo implements ICommissionRepo {
     async delete(ids: number[],
         deletedById: number): Promise<APIResponse<boolean>> {
         try {
-
             await CommissionTable.update(
                 {
                     deletedBy: deletedById,
                     deletedAt: new Date(),
                 }, {
-                    where: {
-                        id: ids
-                    }
-                });
-
+                where: {
+                    id: ids
+                }
+            });
             return HelperMethods.getSuccessResponse<boolean>(true);
-
         }
         catch (error) {
             handleError(error, ids, deletedById);
             return HelperMethods.getErrorResponse(error.toString());
         }
-
     }
 
     async getAll(): Promise<APIResponse<ICommission[]>> {
         try {
-
             const result = await CommissionTable.findAll({
                 order: [["updated_at", "DESC"]]
             });
-
             return HelperMethods.getSuccessResponse(result);
-
         }
         catch (error) {
             handleError(error);
@@ -191,11 +215,8 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
     async getById(id: number): Promise<APIResponse<CommissionTable>> {
         try {
-
             const result = await CommissionTable.findByPk(id);
-
             return HelperMethods.getSuccessResponse(result);
-
         }
         catch (error) {
             handleError(error, id);
@@ -205,10 +226,8 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
     async create(commission: CommissionTable): Promise<APIResponse<CommissionTable>> {
         try {
-
             const saved = await CommissionTable.create(commission);
             return HelperMethods.getSuccessResponse<CommissionTable>(saved);
-
         }
         catch (error) {
             handleError(error, commission);
@@ -222,15 +241,12 @@ export class PostgresCommissionRepo implements ICommissionRepo {
     async update(id: number,
         commission: CommissionTable): Promise<APIResponse<boolean>> {
         try {
-
             await CommissionTable.update(commission, {
                 where: {
                     id: id
                 }
             });
-
             return HelperMethods.getSuccessResponse<boolean>(true);
-
         }
         catch (error) {
             handleError(error, id, commission);
@@ -243,17 +259,14 @@ export class PostgresCommissionRepo implements ICommissionRepo {
 
     async isTitleAlreadyExists(title: string): Promise<APIResponse<boolean>> {
         try {
-
             const result = await CommissionTable.count({
                 where: {
                     title: {
-
                         [Op.iLike]: title.toLowerCase()
                     }
                 }
             });
             if (result === 0) {
-
                 return HelperMethods.getSuccessResponse<boolean>(false);
             }
             return HelperMethods.getSuccessResponse<boolean>(true,
@@ -265,12 +278,12 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         }
     }
 
-    async updateCommisionEntityStatus(id: number,
+    async updateCommissionEntityStatus(id: number,
         status: COMMISSION_PAID_STATUS): Promise<APIResponse<boolean>> {
         try {
 
-            await CommissionEntityMapTable.update({
-                status: status
+            await CommissionEntityMappingModel.update({
+                // status: status
             }, {
                 where: {
                     id: id
@@ -282,7 +295,23 @@ export class PostgresCommissionRepo implements ICommissionRepo {
         }
         catch (error) {
             handleError(error, id, status);
+
             return HelperMethods.getErrorResponse();
         }
     }
+
+    async addVoucherToEntity(entityId: number, entityType: COMMISSION_VOUCHER_ENTITIES, voucherData: Partial<ICommissionVoucher>) {
+        if (entityType === COMMISSION_VOUCHER_ENTITIES.ORDER_COMMISSION) {
+            const order = await OrderModel.findByPk(entityId);
+            if (!order) throw new Error("Order not found");
+
+            await order.createAddVoucher({ ...voucherData });
+        } else if (entityType === COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION) {
+            const franchise = await FranchiseModel.findByPk(entityId);
+            if (!franchise) throw new Error("Franchise not found");
+
+            await franchise.createAddVoucher({ ...voucherData });
+        }
+    }
+
 }

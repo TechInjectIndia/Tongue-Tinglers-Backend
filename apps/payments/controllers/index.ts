@@ -3,41 +3,36 @@ import {
     CONTRACT_STATUS,
     ContractPaymentDetails,
 } from "apps/contracts/interface/Contract";
-import { ContractRepo } from "apps/contracts/models/ContractRepo";
-import { LeadRepo } from "apps/lead/models/lead";
-import { PaymentLinkPayload } from "apps/razorpay/models/Razorpay";
+import {ContractRepo} from "apps/contracts/models/ContractRepo";
+import {LeadRepo} from "apps/lead/models/lead";
+import {PaymentLinkPayload} from "apps/razorpay/models/Razorpay";
 import RepoProvider from "apps/RepoProvider";
-import { CONFIG } from "config";
+import {CONFIG} from "config";
 import {
     ERROR_MESSAGE,
     RESPONSE_TYPE,
     SUCCESS_MESSAGE,
 } from "constants/response-messages";
-import { Request, Response, NextFunction } from "express";
+import {NextFunction, Request, Response} from "express";
+import {sendMail, sendResponse,} from "libraries";
 import {
-    EMAIL_HEADING,
-    EMAIL_TEMPLATE,
-    getEmailTemplate,
-    sendEmail,
-    sendMail,
-    sendResponse,
-} from "libraries";
-import { PaymentReceivedMail } from "static/views/email/get-templates/PaymentReceivedMail";
+    PaymentReceivedMail
+} from "static/views/email/get-templates/PaymentReceivedMail";
 
 import Razorpay from "razorpay";
 import {
     MakePaymentMail
 } from "../../../static/views/email/get-templates/MakePaymentMail";
 import {RPOrderTable} from "../../rp-order/models/RPOrderTable";
-import {PendingOrderRepo} from "../../pending-orders/repos/PendingOrderRepo";
 import {PendingOrderModel} from "../../pending-orders/models/PendingOrderTable";
-import {where} from "sequelize";
-import {OrderModel} from "../../order/models/OrderTable";
 import {parseAndSavePendingOrderToOrder} from "../../order/parser/parseOrder";
+import {
+    COMMISSION_PAID_STATUS, CommissionVoucherCreationAttributes,
+    ICommissionEntityMapping
+} from "../../commission/model/CommissionEntityMappingTable";
 
-const {
-    validateWebhookSignature,
-} = require("razorpay/dist/utils/razorpay-utils");
+import {validateWebhookSignature} from "razorpay/dist/utils/razorpay-utils";
+
 
 const razorpayInstance = new Razorpay({
     key_id: CONFIG.RP_ID_PROD,
@@ -47,8 +42,12 @@ const razorpayInstance = new Razorpay({
 export default class PaymentsController {
     static async callback(req: Request, res: Response, next: NextFunction) {
         const webhookSignature = req.headers["x-razorpay-signature"];
+        if (!webhookSignature || typeof webhookSignature != 'string') {
+            console.log("Webhook signature not found");
+            return res.status(400)
+                .send({message: "Webhook signature not found"});
+        }
         const body = req.body;
-
 
         try {
             // Validate the webhook signature
@@ -59,24 +58,28 @@ export default class PaymentsController {
             );
             if (!isVerified) {
                 console.log("Webhook not verified");
-                return res.status(400).send({ message: "Webhook not verified" });
+                return res.status(400).send({message: "Webhook not verified"});
             }
 
-            if (body.payload && body.payload.payment_link && body.payload.payment_link.entity) {
+            if (body.payload && body.payload.payment_link &&
+                body.payload.payment_link.entity) {
                 const paymentId = body.payload.payment_link.entity.id;
                 const status = body.payload.payment_link.entity.status;
 
                 // Get contract details by paymentId
-                const contractDetails = await new ContractRepo().getContractByPaymentId(paymentId as string);
+                const contractDetails = await new ContractRepo().getContractByPaymentId(
+                    paymentId as string);
                 if (!contractDetails) {
                     console.log("Contract not found for paymentId:", paymentId);
-                    return res.status(404).send({ message: "Contract not found" });
+                    return res.status(404)
+                        .send({message: "Contract not found"});
                 }
 
                 // Update contract payment details
                 const paymentDetails: ContractPaymentDetails = {
                     paymentId: paymentId,
-                    amount: 0,  // Assuming amount is not present in the payload, you can modify if needed
+                    amount: 0,  // Assuming amount is not present in the
+                                // payload, you can modify if needed
                     date: new Date(),
                     status: status,
                     additionalInfo: "",
@@ -98,6 +101,8 @@ export default class PaymentsController {
                 const mailDto = await  new PaymentReceivedMail().getPayload({}, contractDetails.leadId.email);
                 await sendMail(mailDto);
                 }
+                return res.status(200)
+                    .send({message: "Webhook processed successfully"});
 
                 return res.status(200).send({ message: "Webhook processed successfully" });
             }
@@ -112,29 +117,56 @@ export default class PaymentsController {
                         const pendingOrderRes = await  RepoProvider.pendingOrderRepo.getPendingOrderByAttributes({ payment_id: rpResponse.id})
 
                         if (pendingOrderRes) {
-                            const response = await parseAndSavePendingOrderToOrder(pendingOrderRes);
+                            const order = await parseAndSavePendingOrderToOrder(
+                                pendingOrderRes);
+                            if (order) {
+                                //todo  @sumeet sir
+
+                                const franchiseModel = await RepoProvider.franchise.getById(
+                                    order.franchise_id)
+
+                                // Prepare commission mapping entries
+                                const commissionEntries = franchiseModel.commissionMap.map(
+                                    (commission: ICommissionEntityMapping) => {
+                                        const voucherCreationDto: CommissionVoucherCreationAttributes = {
+                                            createdBy: 1, // system user - TT
+                                            franchiseId: order.franchise_id,
+                                            commissionId: commission.commissionId,
+                                            organizationId: commission.organizationId,
+                                            // status: COMMISSION_PAID_STATUS.PENDING
+                                        }
+                                        return voucherCreationDto;
+                                    });
+
+                                // Create commission mappings
+                                await RepoProvider.commissionRepo.createMapEntities(
+                                    commissionEntries);
+                            }
                         } else {
-                            console.log('No pending order found for the provided paymentId');
+                            console.log(
+                                'No pending order found for the provided paymentId');
                         }
-                    } catch (error) {
+                    }
+                    catch (error) {
                         console.error('Error retrieving pending order:', error);
                     }
 
                 }
+            } else {
+                return res.status(200)
+                    .send({message: "Invalid payload structure"});
             }
-            else {
-                return res.status(200).send({ message: "Invalid payload structure" });
-            }
-        } catch (error) {
+        }
+        catch (error) {
             console.error("Error processing webhook:", error);
             // In case of any error, send a generic error message
-            return res.status(200).send({ message: "Internal Server Error" });
+            return res.status(200).send({message: "Internal Server Error"});
         }
     }
 
     static async fetchPayment(req: Request, res: Response, next: NextFunction) {
         try {
-            const { paymentId } = req.params;
+            const {paymentId} = req.params;
 
             if (!paymentId) {
                 return res
@@ -191,15 +223,16 @@ export default class PaymentsController {
                     },
                 ),
             );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error fetching payment details:", err);
-            return res.status(500).send({ message: err });
+            return res.status(500).send({message: err});
         }
     }
 
     static async generatePaymentLink(req: Request, res: Response) {
         try {
-            const { contract_id } = req.body;
+            const {contract_id} = req.body;
 
             if (!contract_id) {
                 return res
@@ -248,12 +281,10 @@ export default class PaymentsController {
                     name: leadDetails.firstName + " " + leadDetails.lastName,
                 },
                 description: `${contractDetails.leadId}`,
-                notify: { email: false, sms: false },
+                notify: {email: false, sms: false},
             };
 
             console.log("####", paymentLinkPayload);
-
-
 
 
             const link =
@@ -339,11 +370,12 @@ export default class PaymentsController {
                         link,
                     ),
                 );
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Error generating payment link:", err);
             return res
                 .status(500)
-                .send({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+                .send({message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR});
         }
     }
 }

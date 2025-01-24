@@ -18,6 +18,7 @@ import {
     FranchiseLeadModel
 } from "../../franchise_model/models/FranchiseModelTable";
 import {handleError} from "../../common/utils/HelperMethods";
+import { AffiliateModel } from "apps/affiliate/models/affiliateModel";
 
 export class CampaignAdRepo
     implements IBaseRepo<ParsedCampaign, TListFiltersCampaigns> {
@@ -63,6 +64,10 @@ export class CampaignAdRepo
 
                         },
                     ],
+                },
+                {
+                    model: AffiliateModel,
+                    as: "affiliate",
                 },
                 {
                     model: QuestionModel,
@@ -132,6 +137,10 @@ export class CampaignAdRepo
                 {
                     model: OrganizationModel,
                     as: "organization",
+                },
+                {
+                    model: AffiliateModel,
+                    as: "affiliate",
                 },
                 {
                     model: ProposalModel,
@@ -210,6 +219,10 @@ export class CampaignAdRepo
                                 as: "franchiseModelObj",
                             },
                         ],
+                    },
+                    {
+                        model: AffiliateModel,
+                        as: "affiliate",
                     },
                     {
                         model: QuestionModel,

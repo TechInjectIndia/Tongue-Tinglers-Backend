@@ -16,10 +16,10 @@ import { LogModel } from "apps/logs/models/LogsTable";
 import { ProposalModel } from "apps/proposal_model/models/ProposalModelTable";
 import { FranchiseLeadModel } from "apps/franchise_model/models/FranchiseModelTable";
 
+// todo write ILeadRepo interface to and expose interface Instead of the repo
+// todo rename
 export class LeadRepo {
     constructor() { }
-
-
 
     // Get lead by attribute
     public async getLeadByAttr(

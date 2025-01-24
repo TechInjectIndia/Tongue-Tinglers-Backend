@@ -1,5 +1,4 @@
-
-import { parseUserToMetaUser } from "apps/user/parser/user-parser";
+import {parseUserToMetaUser} from "apps/user/parser/user-parser";
 import {ParsedFranchise} from "../interface/Franchise";
 import { sortingLogs } from "apps/lead/parser/leadParser";
 import { parseDocument } from "apps/documents/parser/parseDocument";
@@ -38,4 +37,4 @@ const parseFranchise = (franchise: any) => {
   return data;
 };
 
-export { parseFranchise };
+export {parseFranchise};

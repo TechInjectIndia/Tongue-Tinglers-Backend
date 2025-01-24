@@ -26,9 +26,9 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
     public organizationId!: number;
     public regionId: number;
     public description?: string;
-    public questionList!: number[];
+    // public questionList!: number[];
     public affiliateId?: number;
-    public proposalIds!: number[];
+    // public proposalIds!: number[];
     public start!: Date;
     public to!: Date;
 
@@ -83,21 +83,21 @@ class CampaignAdModel extends Model<ICampaign, CampaignCreationAttributes>
                     allowNull: true,
                     comment: "Description of the campaign",
                 },
-                questionList: {
-                    type: DataTypes.ARRAY(DataTypes.INTEGER), // Array of// integers
-                    allowNull: false,
-                    comment: "List of questions associated with the campaign",
-                },
+                // questionList: {
+                //     type: DataTypes.ARRAY(DataTypes.INTEGER), // Array of// integers
+                //     allowNull: false,
+                //     comment: "List of questions associated with the campaign",
+                // },
                 affiliateId: {
                     type: INTEGER,
                     allowNull: true,
                 },
-                proposalIds: {
-                    type: JSONB,
-                    allowNull: true,
-                    comment:
-                        "List of proposal model associated with the campaign",
-                }, // New field added
+                // proposalIds: {
+                //     type: JSONB,
+                //     allowNull: true,
+                //     comment:
+                //         "List of proposal model associated with the campaign",
+                // }, // New field added
                 start: {
                     type: DATE,
                     allowNull: true,

@@ -1,5 +1,6 @@
-import AdminController from "../../user/controllers/user";
-import {Auth} from "../../auth/models";
+import { Sequelize } from "sequelize";
+import AdminController from "apps/user/controllers/user";
+import {Auth} from "apps/auth/models";
 import {
     checkFirebaseUser,
     createFirebaseUser,
@@ -30,18 +31,17 @@ import {OptionsValueModel} from "apps/optionsValue/models/OptionValueTable";
 import {ProductModel} from "apps/product/model/productTable";
 import {
     ProductVariationsModel
-} from "../../product-options/models/ProductVariationTable";
+} from "apps/product-options/models/ProductVariationTable";
 import express, {Request, Response} from "express";
 import {validateCreateAdminBody} from "../validations/user";
 import config from "src/config/config";
-import { exec } from "child_process";
+
 import { sequelize } from "config";
 import {
     BUSINESS_TYPE,
     IOrganizationPayloadData, ORGANIZATION_TYPE
-} from "../../organization/interface/organization";
-import { Sequelize } from "sequelize";
-import { extraFieldTypes, LeadAddress, LeadPayload, LeadSource, LeadStatus } from "apps/lead/interface/lead";
+} from "apps/organization/interface/organization";
+
 import { LeadRepo } from "apps/lead/models/lead";
 const router = express.Router();
 
@@ -120,7 +120,7 @@ const {
         const firebaseUser = await createFirebaseUser({
             email: payload.email,
             emailVerified: true,
-            phoneNumber: null,
+            phoneNumber: payload.phoneNumber,
             password: payload.password,
             disabled: false,
         });
@@ -634,10 +634,10 @@ async function createSuperOrgHandler(req, res){
             const hashedPassword = await createPassword(password);
 
             const data:TUser={
-                "firstName": "Root",
-                "lastName": "User",
-                "phoneNumber": "+918220735528",
-                nameForSearch: "",
+                "firstName": "Tongue Tingler",
+                "lastName": "Bot",
+                "phoneNumber": "+910000000000",
+                nameForSearch: "system",
                 referBy: undefined,
                 "type": USER_TYPE.ADMIN,
                 email,
@@ -718,7 +718,7 @@ async function createSuperOrgHandler(req, res){
         if (createSampleData) {campaignCreated = await createDummyMaster(admin.id);}
 
         if(campaignCreated){
-            console.log("campaignCreated: ",campaignCreated)
+            console.log("campaignCreated: ", campaignCreated)
             // await createDummyLead(admin.id)
         }
 

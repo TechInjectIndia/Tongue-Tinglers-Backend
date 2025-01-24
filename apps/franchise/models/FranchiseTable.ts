@@ -49,28 +49,33 @@ class FranchiseModel
     public createdAt: Date;
     public deletedAt: Date | null;
     public updatedAt: Date | null;
-    public affiliateId: number;
+    // public affiliateId: number;
 
     // Mixin for Documents
     public getFranchiseDocuments!: () => Promise<DocumentModel[]>;
     public addFranchiseDocument!: (
         document: DocumentModel | number
     ) => Promise<void>;
+
     public addFranchiseDocuments!: (
         documents: Array<DocumentModel | number>
     ) => Promise<void>;
+
     public setFranchiseDocuments!: (
         documents: Array<DocumentModel | number>
     ) => Promise<void>;
+
     public removeFranchiseDocument!: (
         document: DocumentModel | number
     ) => Promise<void>;
+
     public removeFranchiseDocuments!: (
         documents: Array<DocumentModel | number>
     ) => Promise<void>;
 
     // Associations
     public static associate() {
+
         FranchiseModel.hasMany(DocumentModel, {
             foreignKey: "entity_id",
             as: "franchiseDocuments",
@@ -136,10 +141,10 @@ class FranchiseModel
                     autoIncrement: true,
                     primaryKey: true,
                 },
-                affiliateId: {
-                    type: INTEGER,
-                    allowNull: true,
-                },
+                // affiliateId: {
+                    // type: INTEGER,
+                    // allowNull: true,
+                // },
                 createdAt: {
                     type: DATE,
                     allowNull: false,
@@ -228,7 +233,7 @@ class FranchiseModel
             },
             {
                 sequelize,
-                tableName: "franchisees", // Use a table name that makes sense
+                tableName: "franchises", // Use a table name that makes sense
                 timestamps: true, // Enable automatic timestamps
                 paranoid: true, // Enable soft deletes
                 comment: "Table to store franchisee organizations", // Comment for the
@@ -268,6 +273,10 @@ class FranchiseModel
                 options
             );
         });
+    }
+
+    public async createAddVoucher(voucherData: Partial<ICommissionVoucher>) {
+        return await this.createAddVoucher({ ...voucherData, entityType: COMMISSION_VOUCHER_ENTITIES.FRANCHISE_COMMISSION });
     }
 }
 

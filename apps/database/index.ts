@@ -29,8 +29,8 @@ import {
 } from "../product-options/models/ProductVariationTable";
 import { FollowDetailsModel } from "apps/follow-details/model/followDetailModel";
 import {
-    CommissionEntityMapTable
-} from "apps/commission/model/CommissionEntityMapTable";
+    CommissionEntityMappingModel
+} from "../commission/model/CommissionEntityMappingTable";
 import { CartDetailsModel } from "apps/cart-details/models/CartDetailTable";
 import {
     ProductsCategoryModel
@@ -82,45 +82,64 @@ import {DebitNoteTable} from "../inventory/debit_note/database/DebitNoteTable";
 import {
     PurchaseInvoiceTable
 } from "../inventory/purchase_invoice/database/PurchaseInvoiceTable";
+import { CommissionVoucherModel } from "apps/commission/model/CommissionVoucherTable";
 import { TaxRateModel } from "apps/tax-rate/models/TaxRateTable";
+import CommissionPayoutModel from "../commission/model/CommissionPayoutTable";
 
 const m = [
-    RegionModel,
-    AddressModel,
-    UserModel,
-    DocumentModel,
-    OrganizationModel,
-    FranchiseModel,
-    CampaignAdModel,
-    AgreementDocModel,
-    LeadsModel,
-    ContractModel,
-    AssignModel,
-    AreaModel,
-    OptionsModel,
-    FranchiseLeadModel,
-    IChecklistModel,
-    CampaignQuestionModel,
-    QuestionModel,
-    ProposalModel,
-    CampaignProposalsModel,
-    PdiCheckpointModel,
-    ProductVariationsModel,
-    AffiliateModel,
-    FollowDetailsModel,
-    CommissionEntityMapTable,
-    CommissionTable,
-    CartDetailsModel,
-    ProductsCategoryModel,
-    ProductModel,
-    OrderModel,
-    NotesModel,
-    OrderItemsModel,
-    CartProductModel,
-    ItemStockModel,
-    RPOrderTable
-    
-
+     ProposalModel,
+     AreaModel,
+     RegionModel,
+     AddressModel,
+     UserModel,
+     DocumentModel,
+     OrganizationModel,
+     FranchiseModel,
+     CampaignAdModel,
+     AgreementDocModel,
+     LeadsModel,
+     ContractModel,
+     AssignModel,
+     OptionsModel,
+     FranchiseLeadModel,
+     PdiCheckpointModel,
+     IChecklistModel,
+     ProductVariationsModel,
+     AffiliateModel,
+     QuestionModel,
+     CampaignQuestionModel,
+     FollowDetailsModel,
+     CommissionEntityMappingModel,
+     CommissionTable,
+     CartDetailsModel,
+     ProductsCategoryModel,
+     ProductModel,
+     OrderModel,
+     NotesModel,
+     OrderItemsModel,
+     CartProductModel,
+     ItemStockModel,
+     CampaignProposalsModel,
+    CommissionVoucherModel,
+     FactoryGateTable,
+     StorageLocationTable,
+     ItemUnitTable,
+     ItemCategoryTable,
+     SupplierTable,
+     RawMaterialPriceTable,
+     RawMaterialHoldTable,
+     RawMaterialRejectionTable,
+     RawMaterialStockInTable,
+     RawMaterialStockTable,
+     RawMaterialTable,
+     DebitNoteTable,
+     PurchaseInvoiceTable,
+     PdiModel,
+     FileModel,
+     PendingOrderModel,
+     RPOrderTable,
+     B2CUserAddressModel,
+     TaxRateModel
 ];
 
 console.log(m)
@@ -148,7 +167,7 @@ const models = {
     QuestionModel: QuestionModel.initModel(),
     CampaignQuestionModel: CampaignQuestionModel.initModel(),
     FollowDetailModel: FollowDetailsModel.initModel(),
-    CommissionEntityMap: CommissionEntityMapTable.initModel(),
+    CommissionEntityMap: CommissionEntityMappingModel.initModel(),
     Commission: CommissionTable.initModel(),
     CartDetails: CartDetailsModel.initModel(),
     ProductCategory: ProductsCategoryModel.initModel(),
@@ -159,6 +178,7 @@ const models = {
     Cart: CartProductModel.initModel(),
     ItemStockModel: ItemStockModel.initModel(),
     CampaignProposalsModel: CampaignProposalsModel.initModel(),
+    CommissionVoucherModel:CommissionVoucherModel.initModel(),
 
     /* inventory */
 
@@ -183,7 +203,8 @@ const models = {
     PendingOrder: PendingOrderModel.initModel(),
     RPOrderTable:RPOrderTable.initModel(),
     B2CUserAddress: B2CUserAddressModel.initModel(),
-    TaxRate: TaxRateModel.initModel()
+    TaxRate: TaxRateModel.initModel(),
+    CommissionPayoutModel: CommissionPayoutModel.initModel()
 };
 
 let currentModel: string = null;

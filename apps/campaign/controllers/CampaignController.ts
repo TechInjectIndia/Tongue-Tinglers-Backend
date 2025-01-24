@@ -11,7 +11,7 @@ import {
 import RepoProvider from "../../RepoProvider";
 import { OrganizationRepo } from "../../organization/models";
 import { CampaignAdRepo } from "../models";
-import {RegionRepo} from "../../region/models/RegionRepo";
+import { RegionRepo } from "../../region/models/RegionRepo";
 
 
 export default class CampaignController {
@@ -34,9 +34,10 @@ export default class CampaignController {
                         )
                     );
             }
+            console.log(orgExist, "orgExist");
 
             const regionExist = await new RegionRepo().get(payload.regionId);
-            if(!regionExist){
+            if (!regionExist) {
                 return res
                     .status(200)
                     .send(
@@ -46,7 +47,7 @@ export default class CampaignController {
                         )
                     );
             }
-
+            console.log(regionExist,"regionExist");
             const campaignExist = await new CampaignAdRepo().getByName(
                 payload.name
             );
@@ -61,8 +62,9 @@ export default class CampaignController {
                     );
             }
 
-
+            console.log(campaignExist,"campaignExist");
             const campaign = await new CampaignAdRepo().create(payload, user_id);
+            console.log(campaign,"campaign");
             return res
                 .status(201)
                 .send(
@@ -72,6 +74,7 @@ export default class CampaignController {
                         campaign
                     )
                 );
+                
         } catch (err) {
             console.error("Error:", err);
             return res.status(500).send({
@@ -93,6 +96,7 @@ export default class CampaignController {
             const organizationId = get(req.query, "organizationId");
             const regionId = get(req.query, "regionId");
             const franchiseId = get(req.query, "franchiseId")
+            const affiliateId = get(req.query, "affiliateId")
             const fromDate = get(req.query, "fromDate");
             const toDate = get(req.query, "toDate");
 
@@ -101,8 +105,8 @@ export default class CampaignController {
             if (regionId) filters["regionId"] = regionId;
             if (franchiseId) filters["franchiseId"] = franchiseId;
             if (fromDate) filters["fromDate"] = fromDate;
-            if(toDate) filters["toDate"] = toDate
-
+            if (toDate) filters["toDate"] = toDate
+            if (affiliateId) filters["affiliateId"] = affiliateId
             const campaigns = await new CampaignAdRepo().list({
                 offset: skip as number,
                 limit: size as number,

@@ -1,6 +1,7 @@
 import { BaseMeta, ParsedMeta } from "apps/common/models/Base";
 import { BaseProductOptions, ParsedProductOptions } from "./ProductOptions";
 import { ParsedCategory } from "apps/products-category/interface/Category";
+import { ParsedVariations } from "apps/cart-products/interface/Cart";
 
 // received from frontend
 interface BaseProduct {
@@ -15,7 +16,7 @@ interface BaseProduct {
     // variationIds: Array<number>,
     tax_rate_id: number;
     vendorId: number;
-    variations: Array<BaseProductOptions> | null;
+    // variations: Array<BaseProductOptions> | null;
 }
 
 interface IProductTable extends Omit<BaseProduct,'variations'>, BaseMeta {
@@ -70,7 +71,8 @@ interface ParsedProduct extends ParsedMeta {
     images: Array<string>;
     tax_rate_id: number;
     vendorId: number;
-    variations?: Array<ParsedProductOptions>;
+    variations: ParsedVariations[];
+    // variations?: Array<ParsedProductOptions>;
 }
 
 

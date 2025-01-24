@@ -12,6 +12,7 @@ import {
 } from "../../product-options/models/ProductVariationTable";
 import {UserModel} from "apps/user/models/UserTable";
 import {CartProductModel} from "../../cart-products/model/CartProductTable";
+import { VariationTableModel } from "./variationTable";
 
 
 interface ProductCreationAttributes
@@ -92,6 +93,10 @@ class ProductModel extends Model<IProductTable, ProductCreationAttributes>
             as: 'cartProducts'  // Alias to use if you want to reference
                                 // CartProduct from Product
         });
+        ProductModel.hasMany(VariationTableModel,{
+            foreignKey: 'productId',
+            as: 'variationTables'
+        })
     }
 
     public static initModel() {
@@ -218,6 +223,8 @@ class ProductModel extends Model<IProductTable, ProductCreationAttributes>
             );
         });
     }
+
+    
 
 }
 

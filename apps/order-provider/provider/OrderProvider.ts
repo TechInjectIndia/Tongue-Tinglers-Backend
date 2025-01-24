@@ -48,6 +48,8 @@ import { RPOrderTable } from "../../rp-order/models/RPOrderTable";
 import user from "../../test-user/api/user";
 import { FRANCHISE_STATUS } from "../../franchise/interface/Franchise";
 import TaxRateRepo from "apps/tax-rate/repos/TaxRateRepo";
+import {Iins} from "razorpay/dist/types/iins";
+import subType = Iins.subType;
 
 export class OrderProvider implements IOrderProvider {
     async processOrder(
@@ -317,8 +319,8 @@ export class OrderProvider implements IOrderProvider {
             type: currUser.type as USER_TYPE,
             status: currUser.status as USER_STATUS,
             role: currUser.role,
-            updatedBy: currUser.updatedBy,
-            deletedBy: currUser.deletedBy,
+            updatedBy: currUser.updatedBy  as unknown as MetaUser,
+            deletedBy: currUser.deletedBy as unknown as MetaUser,
             createdAt: currUser.createdAt,
             updatedAt: currUser.updatedAt,
             deletedAt: currUser.deletedAt,
@@ -347,8 +349,8 @@ export class OrderProvider implements IOrderProvider {
                 sm: [],
                 assignedUser: undefined,
                 createdBy: 0 as unknown as MetaUser,
-                updatedBy: 0,
-                deletedBy: 0,
+                updatedBy: 0 as unknown as MetaUser,
+                deletedBy: 0 as unknown as MetaUser,
                 createdAt: undefined,
                 updatedAt: undefined,
                 deletedAt: undefined,

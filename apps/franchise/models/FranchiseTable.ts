@@ -8,12 +8,7 @@ import { AddressModel } from "apps/address/models/AddressTable";
 import { UserModel } from "apps/user/models/UserTable";
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
-import {
-    COMMISSION_VOUCHER_ENTITIES,
-    CommissionEntityMappingModel,
-    ICommissionEntityMapping
-} from "../../commission/model/CommissionEntityMappingTable";
-import { CommissionVoucherModel, ICommissionVoucher } from "apps/commission/model/CommissionVoucherTable";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 
 
@@ -129,6 +124,13 @@ class FranchiseModel
             as: "franchise",
             scope: { entity_type: "franchise" },
         });
+
+        FranchiseModel.hasMany(LogModel, {
+            foreignKey: "recordId", // The column in LogModel that references LeadsModel
+            sourceKey: "id",        // The primary key in LeadsModel
+            constraints: false,     // Disable constraints as `model` is dynamic
+            as: "logs",
+        })
     }
 
     static initModel() {

@@ -1,8 +1,29 @@
-import { DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO } from "../../../../apps/common/models/DTO";
+import {
+    DTO,
+    getHandledErrorDTO,
+    getSuccessDTO,
+    getUnhandledErrorDTO,
+} from "../../../../apps/common/models/DTO";
 import LeadToProspect from "../react-templates/LeadToProspect";
 import { IMail } from "../mail-class/IMailClass";
 import { Mail } from "../mail-class/MailClass";
 import { AllMailOptions, MailBodyOptions } from "../models/MailOptions";
+import {
+    ORDER_ITEM_TYPE,
+    PRICE_COMP_TYPE_CART,
+    VALUE_TYPE,
+} from "apps/order/interface/OrderItem";
+import {
+    ParsedOrder,
+    OrderStatus,
+    PAYMENT_TYPE,
+    ORDER_TYPE,
+} from "apps/order/interface/Order";
+import { PRODUCT_STATUS, PRODUCTS_TYPE } from "apps/product/interface/Product";
+import { PRODUCT_OPTIONS_STATUS } from "apps/product/interface/ProductOptions";
+import { CATEGORY_TYPE } from "apps/products-category/interface/Category";
+import { USER_TYPE } from "apps/user/interface/user";
+import { invoice } from "apps/invoice/functions/create-invoice";
 
 interface IEmail extends IMail<null> {}
 
@@ -23,8 +44,19 @@ export class LeadToProspectMail extends Mail<null> implements IEmail {
             text: null,
         };
     }
+    arrayBufferToBase64(buffer: ArrayBuffer){
+        let binary = "";
+        const bytes = new Uint8Array(buffer);
+        const len = bytes.byteLength;
+    
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+    
+        return btoa(binary);
+    };
 
-    getPayload(data: any, to: string | Array<string>): DTO<AllMailOptions> {
+    async getPayload(data: any, to: string | Array<string>): Promise<DTO<AllMailOptions>> {
         try {
             if (
                 (typeof to === "string" && to.trim() !== "") ||

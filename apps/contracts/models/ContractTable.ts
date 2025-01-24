@@ -7,6 +7,7 @@ import { LeadsModel } from "apps/lead/models/LeadTable";
 import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 
 interface ContractCreationAttributes
@@ -77,6 +78,12 @@ class ContractModel
             as: "organization",
             constraints: false,
         });
+        ContractModel.hasMany(LogModel, {
+            foreignKey: "recordId",
+            sourceKey: "id",
+            constraints: false,
+            as: "logs",
+        })
     }
     public static initModel() {
         ContractModel.init(

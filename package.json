@@ -50,6 +50,7 @@
     "html-pdf": "^3.0.1",
     "jsdom": "^25.0.0",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^2.5.2",
     "lodash": "^4.17.21",
     "module-alias": "^2.2.3",
     "moment": "^2.30.1",

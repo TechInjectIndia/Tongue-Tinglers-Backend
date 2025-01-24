@@ -128,7 +128,7 @@ export class RazorpayRepo implements IRazorpayRepo {
   ): Promise<PaymentLinks.RazorpayPaymentLink> {
     try {
       const paymentLink = await this.razorpay.paymentLink.create({
-        amount: 100 * 100, // Amount in paisa
+        amount: paymentLinkRequest.amount * 100, // Amount in paisa
         currency: "INR",
         description: paymentLinkRequest.description,
         customer: {

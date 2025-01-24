@@ -33,7 +33,6 @@ export class ResendController implements IResendController {
                 attachments: mailOptions.attachments ? mailOptions.attachments : undefined,
             });
             //
-            console.log(response);
 
             if (response.error !== null) {
                 return getUnhandledErrorDTO(response.error.message, response.error.message);

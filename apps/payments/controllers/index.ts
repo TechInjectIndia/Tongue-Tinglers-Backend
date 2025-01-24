@@ -95,18 +95,19 @@ export default class PaymentsController {
 
                 // Send payment received email after success
 
-                if (status === 'paid' || status === "order.paid" || status ===
-                    "Paid") {
-                    const mailDto = new PaymentReceivedMail().getPayload({},
-                        contractDetails.leadId.email);
-                    await sendMail(mailDto);
+                console.log("status");
+                console.log(status);
+                if(status === 'paid' || status==="order.paid" ||status ==="Paid"){
+                const mailDto = await  new PaymentReceivedMail().getPayload({}, contractDetails.leadId.email);
+                await sendMail(mailDto);
                 }
                 return res.status(200)
                     .send({message: "Webhook processed successfully"});
 
-            } else if (body.payload && body.payload.order &&
-                body.payload.order.entity &&
-                body.payload.order.entity.status === "paid") {
+                return res.status(200).send({ message: "Webhook processed successfully" });
+            }
+            else if(body.payload && body.payload.order  && body.payload.order.entity &&
+                body.payload.order.entity.status === "paid"){
 
                 const rpResponse = await RPOrderTable.findOne({where:{id:body.payload.order.entity.id}});
                 if(rpResponse){
@@ -244,7 +245,6 @@ export default class PaymentsController {
                     );
             }
 
-            console.log("#23223###", contract_id);
 
             const contractDetails = await new ContractRepo().get(contract_id);
             if (!contractDetails) {
@@ -353,7 +353,7 @@ export default class PaymentsController {
 
 
             // @Harsh After sign agreement mail
-            const mailDto = new MakePaymentMail().getPayload(
+            const mailDto =  await  new MakePaymentMail().getPayload(
                 {
                     btnLink: link.short_url
                 },

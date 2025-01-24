@@ -27,6 +27,10 @@ import RepoProvider from "apps/RepoProvider";
 import { COMMISSION_PAID_STATUS } from "../../commission/model/CommissionEntityMappingTable";
 import { PaymentReceivedMail } from "static/views/email/get-templates/PaymentReceivedMail";
 import { getHandledErrorDTO, getSuccessDTO } from "apps/common/models/DTO";
+import {adminUserRouter} from "../../user/api/user";
+import {AdminRepo} from "../../user/models/user";
+import {UserModel} from "../../user/models/UserTable";
+import {USER_TYPE} from "../../user/interface/user";
 
 export default class ContractController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -313,6 +317,10 @@ export default class ContractController {
 
             // Create franchise
             const franchise = await RepoProvider.franchise.create(franchiseDetailsData, user_id);
+            await UserModel.update(
+                { type: USER_TYPE.ADMIN }, // Fields to update
+                { where: { email:existingLead.email} } // Condition
+            );
 
             // Prepare commission mapping entries
             const commissionEntries = mappings.map((commission: any) => ({
@@ -330,14 +338,14 @@ export default class ContractController {
             const passwordCreateLink = `${CONFIG.FRONTEND_URL}/create-password`;
 
             try {
-                const emailContent = await getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
+                const emailContent = getEmailTemplate(EMAIL_TEMPLATE.NEW_FRANCHISE_CREATED, {
                     leadName: `${existingLead.firstName} ${existingLead.lastName}`,
                     leadEmail: existingLead.email,
                     leadPhone: existingLead.phoneNumber,
                     passwordCreateLink,
                 });
 
-                const mailDto = new PaymentReceivedMail().getPayload({}, existingLead.email);
+                const mailDto = await new PaymentReceivedMail().getPayload({}, existingLead.email);
                 await sendMail(mailDto);
             } catch (emailError) {
                 console.error("Email Error:", emailError);

@@ -36,13 +36,13 @@ export class ContractRepo {
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
-            },{
+            }, {
                 model: UserModel,
                 as: "assignuser"
             }],
         });
 
-        return contracts.map((c)=> parseContract(c));
+        return contracts.map((c) => parseContract(c));
     }
 
     public async getAssociatedContractsByLeadId(
@@ -72,7 +72,7 @@ export class ContractRepo {
                         model: CampaignAdModel,
                         as: 'campaign_ad'
                     }]
-                },{
+                }, {
                     model: UserModel,
                     as: "assignuser"
                 }],
@@ -123,7 +123,7 @@ export class ContractRepo {
                         model: CampaignAdModel,
                         as: 'campaign_ad'
                     }]
-                },{
+                }, {
                     model: UserModel,
                     as: "assignuser"
                 }],
@@ -186,14 +186,14 @@ export class ContractRepo {
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
-            },{
+            }, {
                 model: UserModel,
                 as: "assignuser"
             },
-                {
-                    model: OrganizationModel,
-                    as: 'organization',
-                }],
+            {
+                model: OrganizationModel,
+                as: 'organization',
+            }],
         });
         return data ? parseContract(data) : null;
     }
@@ -212,15 +212,15 @@ export class ContractRepo {
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
-            },{
+            }, {
                 model: UserModel,
                 as: "assignuser"
             },
-                {
-                    model: OrganizationModel,
-                    as: 'organization',
-                }
-                ],
+            {
+                model: OrganizationModel,
+                as: 'organization',
+            }
+            ],
             transaction,
         });
 
@@ -254,17 +254,19 @@ export class ContractRepo {
 
             if (filters?.filters.minPrice) {
                 console.log('filters?.filters.minPrice: ', filters?.filters.minPrice);
-                where.amount[Op.gte] = parseInt(filters?.filters.minPrice); // Minimum amount
+                where.amount[Op.gte] = filters?.filters.minPrice; // Minimum amount
             }
 
             if (filters?.filters.maxPrice) {
-                where.amount[Op.lte] = parseInt(filters?.filters.maxPrice); // Maximum amount
+                where.amount[Op.lte] = filters?.filters.maxPrice; // Maximum amount
             }
         }
 
         // Filter for due_date
         if (filters?.filters.dueDate) {
-            const date = moment(filters.filters.dueDate); // Parse the given date
+            const date = moment(filters.filters.dueDate);
+            // Parse the given date
+            console.log(date)
             where.dueDate = {
                 [Op.between]: [
                     date.startOf("day").toDate(), // Start of the day (00:00)
@@ -280,7 +282,7 @@ export class ContractRepo {
 
         // Filter for assignee
         if (filters?.filters.assignee) {
-            where.createdBy = filters.filters.assignee; // Assuming assignee is identified by an ID
+            where.assignedUser = filters.filters.assignee; // Assuming assignee is identified by an ID
         }
 
         if (filters?.filters.zohoTemplate) {
@@ -308,7 +310,7 @@ export class ContractRepo {
             }, {
                 model: OrganizationModel,
                 as: 'organization',
-            },{
+            }, {
                 model: UserModel,
                 as: "assignuser"
             }],
@@ -357,13 +359,13 @@ export class ContractRepo {
 
     public async updatePartialContract(contractId: number, payload: PartialContractsUpdate): Promise<[affectedCount: number]> {
         const contract = await ContractModel.findOne({
-            where:{
+            where: {
                 id: contractId
             }
         });
         if (!contract) {
             throw new Error("Contract not found");
-            }
+        }
         contract.set(payload);
         await contract.save();
         return [1];

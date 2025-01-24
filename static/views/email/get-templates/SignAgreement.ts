@@ -1,5 +1,5 @@
 
-import { DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO } from "apps/common/models/DTO";
+import { DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO } from "../../../../apps/common/models/DTO";
 import { type IMail } from "../mail-class/IMailClass";
 import { Mail } from "../mail-class/MailClass";
 import { AllMailOptions, MailBodyOptions } from "../models/MailOptions";
@@ -25,7 +25,7 @@ export class SignAgreementMail extends Mail<null> implements IWelcomeMail {
         };
     }
 
-    getPayload(data: any, to: string | Array<string>): DTO<AllMailOptions> {
+    async getPayload(data: any, to: string | Array<string>): Promise<DTO<AllMailOptions>> {
         try {
             if (
                 (typeof to === "string" && to.trim() !== "") ||

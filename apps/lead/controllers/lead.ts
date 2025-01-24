@@ -123,7 +123,7 @@ export default class LeadController {
                 await new AssignRepo().create(assignPayload);
             }
 
-            const mailDto = new CreateLeadMail().getPayload({}, newLead.email);
+            const mailDto = await new CreateLeadMail().getPayload({}, newLead.email);
             await sendMail(mailDto);
 
             return res
@@ -264,7 +264,7 @@ export default class LeadController {
             await transaction.commit();
 
             // Send email notification
-            const mailDto = new LeadToProspectMail().getPayload(
+            const mailDto = await  new LeadToProspectMail().getPayload(
                 {
                     btnLink: `https://tonguetingler.com/organization-setup?prospectId=${prospect.id}`,
                 },
@@ -412,7 +412,7 @@ export default class LeadController {
             }
 
             const newLead = await new LeadRepo().create(payload, user_id);
-            const mailDto = new CreateLeadMail().getPayload({}, newLead.email);
+            const mailDto =  await  new CreateLeadMail().getPayload({}, newLead.email);
             await sendMail(mailDto);
 
             // Check and create assignment if 'assign' object is provided in the request body
@@ -477,10 +477,11 @@ export default class LeadController {
             if (region) filters.region = region;
             if (campaign) filters.campaign = campaign;
             if (date) filters.date = date;
-            if (assignee) filters.assignee = assignee;
+            if (assignee) filters.assignee = parseInt(assignee.toString());
             if (affiliate) filters.affiliate = affiliate;
             if (minAmount) filters.minAmount = minAmount;
             if (maxAmount) filters.maxAmount = maxAmount;
+
 
             const leadsList = await new LeadRepo().list({
                 offset: skip as number,
@@ -489,6 +490,8 @@ export default class LeadController {
                 sorting: sorting,
                 filters: filters,
             });
+
+            console.log(leadsList)
 
             return res
                 .status(200)

@@ -75,7 +75,7 @@ const getEmptyParsedOrder = () => {
             createdAt: new Date(),
             updatedAt: new Date(),
             deletedAt: new Date(),
-            commissionMap: []
+            logs: []
         },
         orderType: ORDER_TYPE.RM_ORDER,
         id: 0,

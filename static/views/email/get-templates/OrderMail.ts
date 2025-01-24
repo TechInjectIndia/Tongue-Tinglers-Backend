@@ -1,8 +1,14 @@
-import { DTO, getHandledErrorDTO, getSuccessDTO, getUnhandledErrorDTO } from "../../../../apps/common/models/DTO";
+import {
+    DTO,
+    getHandledErrorDTO,
+    getSuccessDTO,
+    getUnhandledErrorDTO,
+} from "../../../../apps/common/models/DTO";
 import { type IMail } from "../mail-class/IMailClass";
 import { Mail } from "../mail-class/MailClass";
 import { AllMailOptions, MailBodyOptions } from "../models/MailOptions";
 import Order from "../react-templates/Order";
+import { invoice } from "../../../../apps/invoice/functions/create-invoice";
 
 interface IWelcomeMail extends IMail<null> {}
 
@@ -24,19 +30,29 @@ export class OrderMail extends Mail<null> implements IWelcomeMail {
         };
     }
 
-    getPayload(data: any, to: string | Array<string>): DTO<AllMailOptions> {
+    async getPayload(
+        data: any,
+        to: string | Array<string>,
+    ): Promise<DTO<AllMailOptions>> {
         try {
             if (
                 (typeof to === "string" && to.trim() !== "") ||
                 (Array.isArray(to) && to.length > 0)
             ) {
-                const body = this.getBody(data);
+                const body = this.getBody(data.order);
+
+                const content = await invoice(data.order!);
 
                 const returnData: AllMailOptions = {
                     to: to,
                     subject: this.getSubject(),
                     html: null,
-                    attachments: [],
+                    attachments: [
+                        {
+                            filename: "Invoice.pdf",
+                            content: content.toString("base64"),
+                        },
+                    ],
                 };
 
                 if (body.html) {

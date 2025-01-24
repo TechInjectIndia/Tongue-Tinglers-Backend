@@ -24,7 +24,7 @@ export class SampleKitOrderMail extends Mail<null> implements IEmail {
         };
     }
 
-    getPayload(data: any, to: string | Array<string>): DTO<AllMailOptions> {
+    async getPayload(data: any, to: string | Array<string>): Promise<DTO<AllMailOptions>> {
         try {
             if (
                 (typeof to === "string" && to.trim() !== "") ||

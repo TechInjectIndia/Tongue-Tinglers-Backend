@@ -56,7 +56,8 @@ interface ParsedFranchise extends ParsedMeta {
     location: Address;
     sm: Array<SocialMediaDetails>;
     assignedUser: MetaUser | null
-    commissionMap: Array<ICommissionEntityMapping>
+    logs: any[];
+    documents?: any[];
 }
 
 enum FRANCHISE_STATUS {

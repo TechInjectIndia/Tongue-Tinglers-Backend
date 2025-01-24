@@ -22,7 +22,7 @@ export class AffiliateRepo {
         return data;
     }
 
-    public async list(filters: TListFilters): Promise<any> {
+    public async list(filters: TListFilters): Promise<ParsedAffiliate[]> {
         const whereCondition: any = {}; // Initialize where condition
 
         // Apply search filter

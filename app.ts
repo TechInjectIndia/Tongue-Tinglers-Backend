@@ -161,7 +161,7 @@ server.get("/", async (_, res) => {
 
 server.use("/api", router);
 
-commissionCron.startCron("11 15 * * *");
+// commissionCron.startCron("11 15 * * *");
 const PORT = CONFIG.PORT;
 try {
     server.listen(PORT, () =>

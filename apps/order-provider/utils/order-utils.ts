@@ -72,6 +72,7 @@ const getEmptyParsedOrder = () => {
             createdAt: new Date(),
             updatedAt: new Date(),
             deletedAt: new Date(),
+            logs: []
         },
         orderType: ORDER_TYPE.RM_ORDER,
         id: 0,

@@ -352,6 +352,7 @@ export class OrderProvider implements IOrderProvider {
                 createdAt: undefined,
                 updatedAt: undefined,
                 deletedAt: undefined,
+                logs: []
             },
             orderType: orderType,
             id: 0,

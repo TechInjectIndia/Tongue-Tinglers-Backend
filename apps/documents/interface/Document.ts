@@ -1,4 +1,5 @@
 import { BaseMeta, BaseMetaUsers } from "apps/common/models/Base";
+import { MetaUser } from "apps/user/interface/user";
 
 
 interface BaseDocument extends BaseMetaUsers {
@@ -18,10 +19,25 @@ interface DocumentData {
     createdBy: number;
 }
 
+interface ParsedDocument {
+    id: number;
+    doc_name: string;
+    link: string;
+    entity_type: string;
+    entity_id: number;
+    createdBy: MetaUser;
+    updatedBy: MetaUser | null;
+    deletedBy: MetaUser | null;
+    createdAt: Date;
+    updatedAt: Date | null;
+    deletedAt: Date | null;
+}
+
 export {
     BaseDocument,
     SaveDocument,
-    DocumentData
+    DocumentData,
+    ParsedDocument
 }
 
 

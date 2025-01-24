@@ -36,13 +36,13 @@ export class ContractRepo {
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
-            },{
+            }, {
                 model: UserModel,
                 as: "assignuser"
             }],
         });
 
-        return contracts.map((c)=> parseContract(c));
+        return contracts.map((c) => parseContract(c));
     }
 
     public async getAssociatedContractsByLeadId(
@@ -72,7 +72,7 @@ export class ContractRepo {
                         model: CampaignAdModel,
                         as: 'campaign_ad'
                     }]
-                },{
+                }, {
                     model: UserModel,
                     as: "assignuser"
                 }],
@@ -123,7 +123,7 @@ export class ContractRepo {
                         model: CampaignAdModel,
                         as: 'campaign_ad'
                     }]
-                },{
+                }, {
                     model: UserModel,
                     as: "assignuser"
                 }],
@@ -186,14 +186,14 @@ export class ContractRepo {
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
-            },{
+            }, {
                 model: UserModel,
                 as: "assignuser"
             },
-                {
-                    model: OrganizationModel,
-                    as: 'organization',
-                }],
+            {
+                model: OrganizationModel,
+                as: 'organization',
+            }],
         });
         return data ? parseContract(data) : null;
     }
@@ -212,15 +212,15 @@ export class ContractRepo {
                     model: CampaignAdModel,
                     as: 'campaign_ad'
                 }]
-            },{
+            }, {
                 model: UserModel,
                 as: "assignuser"
             },
-                {
-                    model: OrganizationModel,
-                    as: 'organization',
-                }
-                ],
+            {
+                model: OrganizationModel,
+                as: 'organization',
+            }
+            ],
             transaction,
         });
 
@@ -282,7 +282,7 @@ export class ContractRepo {
 
         // Filter for assignee
         if (filters?.filters.assignee) {
-            where.createdBy = filters.filters.assignee; // Assuming assignee is identified by an ID
+            where.assignedUser = filters.filters.assignee; // Assuming assignee is identified by an ID
         }
 
         if (filters?.filters.zohoTemplate) {
@@ -310,7 +310,7 @@ export class ContractRepo {
             }, {
                 model: OrganizationModel,
                 as: 'organization',
-            },{
+            }, {
                 model: UserModel,
                 as: "assignuser"
             }],
@@ -359,13 +359,13 @@ export class ContractRepo {
 
     public async updatePartialContract(contractId: number, payload: PartialContractsUpdate): Promise<[affectedCount: number]> {
         const contract = await ContractModel.findOne({
-            where:{
+            where: {
                 id: contractId
             }
         });
         if (!contract) {
             throw new Error("Contract not found");
-            }
+        }
         contract.set(payload);
         await contract.save();
         return [1];

@@ -23,6 +23,8 @@ import { FranchiseModel } from "../models/FranchiseTable";
 import { RegionModel } from "apps/region/models/RegionTable";
 import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 import { AddressModel } from "apps/address/models/AddressTable";
+import { LogModel } from "apps/logs/models/LogsTable";
+import { DocumentModel } from "apps/documents/models/DocumentTable";
 
 export class FranchiseRepo implements IFranchiseRepo {
   async create(franchise: FranchiseDetails, userId: number, options?: { transaction?: any }): Promise<Franchise | null> {
@@ -287,6 +289,34 @@ export class FranchiseRepo implements IFranchiseRepo {
             model: UserModel,
             as: "deletedByUser", // For the 'deletedBy' user
           },
+          {
+            model: DocumentModel,
+            as: 'franchiseDocuments',
+            include: [
+              {
+                model: UserModel,
+                as: "createdByUser", // For the 'createdBy' user
+              },
+              {
+                model: UserModel,
+                as: "updatedByUser", // For the 'updatedBy' user
+              },
+              {
+                model: UserModel,
+                as: "deletedByUser", // For the 'deletedBy' user
+              },
+              {
+                model: LogModel,
+                as: "logs",
+                where:{model: 'Document'}
+              }
+            ],
+          },
+          {
+            model: LogModel,
+            as: "logs",
+            where:{model: 'FranchiseModel'}
+          }
         ],
       });
 

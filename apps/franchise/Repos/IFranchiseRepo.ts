@@ -1,8 +1,10 @@
+import { Transaction } from "sequelize";
 import {
     Franchise,
     FranchiseDetails,
     ParsedFranchise
 } from "../interface/Franchise";
+import { DTO } from "apps/common/models/DTO";
 
 
 export interface IFranchiseRepo {
@@ -21,5 +23,7 @@ export interface IFranchiseRepo {
     getByRegionId(regionId: number): Promise<Franchise[]>;
 
     exists(email: string): Promise<boolean>;
+
+    addUserToFranchise(id: number, payload: any, transaction?: Transaction): Promise<DTO<ParsedFranchise | null>>
 
 }

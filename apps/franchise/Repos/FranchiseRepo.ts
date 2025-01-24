@@ -16,7 +16,7 @@ import RepoProvider from "../../RepoProvider";
 import { Franchise, FranchiseDetails, ParsedFranchise } from "../interface/Franchise";
 import { Pagination, TListFilters } from "apps/common/models/common";
 import { getUserName } from "apps/common/utils/commonUtils";
-import { Op } from "sequelize";
+import { Op, Transaction } from "sequelize";
 import { parseFranchise } from "../parser/franchiseParser";
 import { UserModel } from "apps/user/models/UserTable";
 import { FranchiseModel } from "../models/FranchiseTable";
@@ -25,6 +25,8 @@ import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 import { AddressModel } from "apps/address/models/AddressTable";
 import { LogModel } from "apps/logs/models/LogsTable";
 import { DocumentModel } from "apps/documents/models/DocumentTable";
+import { DTO, getHandledErrorDTO, getSuccessDTO } from "apps/common/models/DTO";
+import { parseUser } from "apps/user/parser/user-parser";
 
 export class FranchiseRepo implements IFranchiseRepo {
   async create(franchise: FranchiseDetails, userId: number, options?: { transaction?: any }): Promise<Franchise | null> {
@@ -375,5 +377,97 @@ export class FranchiseRepo implements IFranchiseRepo {
 
   getByRegionId(regionId: number): Promise<Franchise[]> {
     return Promise.resolve([]);
+  }
+
+  async addUserToFranchise(id: number, payload:any, transaction?: Transaction): Promise<DTO<ParsedFranchise | null>> {
+    try{
+      let franchiseData = await FranchiseModel.findByPk(id, {transaction});
+      if(!franchiseData){
+        return getHandledErrorDTO("Franchise not found");
+      }
+      const setUsers = new Set([...franchiseData.users, ...payload.users]);
+      franchiseData.users = Array.from(setUsers);
+      franchiseData.updatedBy = payload.updatedBy;
+      await franchiseData.save({transaction});
+
+      const getFranchiseData = await FranchiseModel.findByPk(id, {include: [
+        {
+          model: RegionModel,
+          as: "region", // Matches the alias defined in the association
+        },
+        {
+          model: AddressModel,
+          as: "address", // Matches the alias defined in the association
+        },
+        {
+          model: OrganizationModel,
+          as: "organization",
+          include: [
+            {
+              model: AddressModel,
+              as: "billingAddress", // Include billing address
+            },
+            {
+              model: UserModel,
+              as: "user", // Include root user
+            },
+            {
+              model: AddressModel,
+              as: "shippingAddresses", // Include shipping addresses
+              through: { attributes: [] }, // For many-to-many relationships
+            },
+            {
+              model: OrganizationModel,
+              as: "masterFranchise",
+              attributes: ["id", "name"], // Include master franchise (if applicable)
+            },
+            {
+              model: UserModel,
+              as: "createdByUser", // Include createdByUser
+            },
+            {
+              model: UserModel,
+              as: "updatedByUser", // Include updatedByUser
+            },
+            {
+              model: UserModel,
+              as: "deletedByUser", // Include deletedByUser
+            },
+          ],
+        },
+        {
+          model: UserModel,
+          as: "createdByUser", // For the 'createdBy' user
+        },
+        {
+          model: UserModel,
+          as: "assignuser"
+        },
+        {
+          model: UserModel,
+          as: "updatedByUser", // For the 'updatedBy' user
+        },
+        {
+          model: UserModel,
+          as: "deletedByUser", // For the 'deletedBy' user
+        },
+      ]})
+
+      const parsedFranchiseData = parseFranchise(getFranchiseData);
+
+      const usersData = await UserModel.findAll({
+        where:{
+          id: {
+            [Op.in]: getFranchiseData.users
+          }
+        }
+      }).then((data)=> {
+        parsedFranchiseData.users = data.map((e)=> parseUser(e.toJSON()))
+      })
+      return getSuccessDTO(parsedFranchiseData, "Users added to franchise successfully")
+    }catch(error){
+      console.log(error);
+      return getHandledErrorDTO(error.message, error);
+    }
   }
 }

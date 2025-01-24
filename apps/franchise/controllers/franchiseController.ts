@@ -115,7 +115,26 @@ console.log("****");
             console.error(error);
             return res.status(500).send(
                 sendResponse(RESPONSE_TYPE.ERROR,
-                    'An error occurred while fetching products.'),
+                    'An error occurred while fetching franchise.'),
+            );
+        }
+    }
+
+    static async addUserToFranchise(req: Request, res: Response){
+        try{
+            const id = parseInt(get(req.params, "id"));
+            if (isNaN(id)) throw Error('Missing id or isNaN');
+            const userId = get(req, "user_id");
+            const payload = req.body;
+            payload.updatedBy = userId
+
+            const updatedFranchise = await RepoProvider.franchise.addUserToFranchise(id, payload);
+            return res.send(updatedFranchise)
+        }catch(error){
+            console.error(error);
+            return res.status(500).send(
+                sendResponse(RESPONSE_TYPE.ERROR,
+                    'An error occurred while fetching franchise.'),
             );
         }
     }

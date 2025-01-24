@@ -54,7 +54,8 @@ export default class CheckoutController {
                 deletedBy: 0,
                 createdAt: undefined,
                 updatedAt: undefined,
-                deletedAt: undefined
+                deletedAt: undefined,
+                logs:[]
             },
             orderType: ORDER_TYPE.RM_ORDER,
             couponCodes: [], discount: undefined, price: undefined,

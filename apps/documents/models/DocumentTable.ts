@@ -5,6 +5,7 @@ import { BaseDocument, SaveDocument } from "../interface/Document";
 import { UserModel } from "apps/user/models/UserTable";
 import { sequelize } from "config/database";
 import RepoProvider from "apps/RepoProvider";
+import { LogModel } from "apps/logs/models/LogsTable";
 
 interface DocumentCreationAttributes extends Optional<SaveDocument, "id"> { }
 
@@ -22,7 +23,15 @@ class DocumentModel
     static associate() {
         // UserModel.hasMany(DocumentModel, {as: 'documents',
         // foreignKey:'createdBy'})
-        this.belongsTo(UserModel, { as: "created", foreignKey: "createdBy" });
+        this.belongsTo(UserModel, { as: "createdByUser", foreignKey: "createdBy" });
+        this.belongsTo(UserModel, { as: "updatedByUser", foreignKey: "updatedBy" });
+        this.belongsTo(UserModel, { as: "deletedByUser", foreignKey: "deletedBy" });
+        DocumentModel.hasMany(LogModel,{
+            foreignKey: "recordId",
+            sourceKey: "id",
+            constraints: false,
+            as: "logs",
+        })
     }
 
     public static initModel() {

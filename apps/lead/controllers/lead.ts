@@ -477,7 +477,7 @@ export default class LeadController {
             if (region) filters.region = region;
             if (campaign) filters.campaign = campaign;
             if (date) filters.date = date;
-            if (assignee) filters.assignee = assignee;
+            if (assignee) filters.assignee = parseInt(assignee.toString());
             if (affiliate) filters.affiliate = affiliate;
             if (minAmount) filters.minAmount = minAmount;
             if (maxAmount) filters.maxAmount = maxAmount;

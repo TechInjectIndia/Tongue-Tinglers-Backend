@@ -98,7 +98,7 @@ export class DocumentRepo implements IDocumentRepo {
                 include: [
                     {
                         model: UserModel,
-                        as: 'created',
+                        as: 'createdByUser',
                         attributes: ['id', 'firstName', 'lastName', 'email']
                     }
                 ]
@@ -119,7 +119,7 @@ export class DocumentRepo implements IDocumentRepo {
                 include: [
                     {
                         model: UserModel,
-                        as: 'created',
+                        as: 'createdByUser',
                         attributes: ['id', 'firstName', 'lastName', 'email']
                     }
                 ]

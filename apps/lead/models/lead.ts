@@ -241,9 +241,7 @@ export class LeadRepo {
             });
         }
         if (filters?.filters.assignee) {
-            where.assignee = {
-                [Op.iLike]: `%${filters.filters.assignee}%`,
-            };
+            where.assignedUser = filters.filters.assignee
         }
         if (filters?.filters.date) {
             const date = moment(filters.filters.date); // Parse the given date

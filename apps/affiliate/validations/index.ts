@@ -30,12 +30,12 @@ const createAffiliateBody = Joi.object({
         .pattern(Joi.string(), SMDetailsSchema)
         .required()
         .messages({ "any.required": "SM details are required." }),
-    userId: Joi.number()
-        .required()
-        .messages({
-            "any.required": "User ID is required.",
-            "number.base": "User ID must be a number.",
-        }),
+    // userId: Joi.number()
+    //     .required()
+    //     .messages({
+    //         "any.required": "User ID is required.",
+    //         "number.base": "User ID must be a number.",
+    //     }),
 });
 
 // Validation schema for editing an Affiliate
@@ -56,12 +56,12 @@ const editAffiliateBody = Joi.object({
         .messages({
             "object.base": "SM details must be an object with valid SMDetails.",
         }),
-    userId: Joi.number()
-    .required()
-    .messages({
-        "any.required": "User ID is required.",
-        "number.base": "User ID must be a number.",
-    }),
+    // userId: Joi.number()
+    // .required()
+    // .messages({
+    //     "any.required": "User ID is required.",
+    //     "number.base": "User ID must be a number.",
+    // }),
 })
     .or("type", "codes", "sm")
     .messages({
@@ -98,7 +98,7 @@ const listAffiliateQuery = Joi.object({
 
 // Validation schema for deleting multiple Affiliates
 const editMultipleIdsBody = Joi.object({
-    ids: Joi.array().items(Joi.string().uuid()).min(1).required().messages({
+    ids: Joi.array().items(Joi.string()).min(1).required().messages({
         "array.base": "IDs must be an array of UUIDs.",
         "array.min": "At least one ID is required.",
         "string.guid": "Each ID must be a valid UUID.",

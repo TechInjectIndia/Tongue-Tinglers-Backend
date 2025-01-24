@@ -120,7 +120,7 @@ const {
         const firebaseUser = await createFirebaseUser({
             email: payload.email,
             emailVerified: true,
-            phoneNumber: null,
+            phoneNumber: payload.phoneNumber,
             password: payload.password,
             disabled: false,
         });

@@ -1,14 +1,15 @@
+import { BaseMeta, ParsedMeta } from "apps/common/models/Base"
 import { MetaUser } from "apps/user/interface/user"
 
 
-interface Affiliate {
+interface Affiliate extends BaseMeta{
     id: number,
     type: string,
     codes: Record<string, string>,
     userId: number
 }
 
-interface ParsedAffiliate {
+interface ParsedAffiliate extends ParsedMeta {
     id: number,
     type: string,
     codes: string,

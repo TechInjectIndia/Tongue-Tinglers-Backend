@@ -9,6 +9,10 @@ const ParseAffiliate = (affiliate: ParsedAffiliate): ParsedAffiliate => {
         user: affiliate.user,
         createdAt: affiliate.createdAt,
         updatedAt: affiliate.updatedAt,
+        deletedAt:affiliate.deletedAt,
+        createdBy: affiliate.createdBy,
+        updatedBy: affiliate.updatedBy,
+        deletedBy:affiliate.deletedBy,
     }
     return data;
 }

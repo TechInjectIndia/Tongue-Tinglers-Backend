@@ -5,13 +5,23 @@ import { RESPONSE_TYPE, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../../../constant
 import { AffiliateRepo } from '../models';
 import { SocialMediaDetailsRepo } from '../models/smDetailsRepo';
 import { constructNow } from "date-fns";
+import { AdminRepo } from "apps/user/models/user";
 
 export default class AffiliateController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = get(req, 'user_id', '');
-            const affiliateData = { ...req.body, userId: userId };
+            const userData = await new AdminRepo().get(req.body.userId)
 
+            if (!userData?.id)
+                return res.status(500).send({
+                    message: "Invalid userId send",
+                });
+            const userId = get(req, 'user_id', '');
+            // console.log(userId,"userId");
+
+            // if (!userId)
+            //     throw "Invalid User"
+            const affiliateData = { ...req.body, createdBy: userId };
             // Extract the social media details
             const { sm, type, codes } = affiliateData; // Destructure type and codes from affiliateData
 
@@ -22,14 +32,16 @@ export default class AffiliateController {
                 });
             }
 
+
             // Create payload for the affiliate
             const payload = { ...affiliateData };
-
-            // Remove social media details from the payload for affiliate creation
             delete payload.sm;
-            delete payload.user_id
-            // Create the affiliate record
             const Affiliate = await new AffiliateRepo().create(payload);
+            // Remove social media details from the payload for affiliate creation
+            delete payload.user_id
+            delete payload.createdBy
+            // Create the affiliate record
+
 
             const affiliateId = Affiliate.id
             if (!affiliateId) {
@@ -120,6 +132,11 @@ export default class AffiliateController {
         try {
             const id = parseInt(get(req.params, "id"));
             // const user_id = parseInt(get(req, 'user_id'));
+            const userData = await new AdminRepo().get(req.body.userId)
+            if (!userData?.id)
+                return res.status(500).send({
+                    message: "Invalid userId send",
+                });
             const updateAffiliate = req.body;
 
             // Check for social media details in the request
@@ -184,7 +201,7 @@ export default class AffiliateController {
     static async get(req: Request, res: Response, next: NextFunction) {
         try {
             const id = get(req?.params, "id", 0);
-            const user_id = get(req, 'user_id', );
+            const user_id = get(req, 'user_id',);
 
             const existingAffiliate = await new AffiliateRepo().get(id as number);
 

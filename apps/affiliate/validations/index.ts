@@ -30,12 +30,12 @@ const createAffiliateBody = Joi.object({
         .pattern(Joi.string(), SMDetailsSchema)
         .required()
         .messages({ "any.required": "SM details are required." }),
-    // userId: Joi.number()
-    //     .required()
-    //     .messages({
-    //         "any.required": "User ID is required.",
-    //         "number.base": "User ID must be a number.",
-    //     }),
+    userId: Joi.number()
+        .required()
+        .messages({
+            "any.required": "User ID is required.",
+            "number.base": "User ID must be a number.",
+        }),
 });
 
 // Validation schema for editing an Affiliate
@@ -56,12 +56,12 @@ const editAffiliateBody = Joi.object({
         .messages({
             "object.base": "SM details must be an object with valid SMDetails.",
         }),
-    // userId: Joi.number()
-    // .required()
-    // .messages({
-    //     "any.required": "User ID is required.",
-    //     "number.base": "User ID must be a number.",
-    // }),
+    userId: Joi.number()
+    .required()
+    .messages({
+        "any.required": "User ID is required.",
+        "number.base": "User ID must be a number.",
+    }),
 })
     .or("type", "codes", "sm")
     .messages({

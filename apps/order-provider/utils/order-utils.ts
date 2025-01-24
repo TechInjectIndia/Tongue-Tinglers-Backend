@@ -60,7 +60,11 @@ const getEmptyParsedOrder = () => {
                     email: ""
                 },
                 createdAt: new Date(),
-                updatedAt: new Date()
+                updatedAt: new Date(),
+                createdBy: null,
+                updatedBy: null,
+                deletedBy: null,
+                deletedAt: null
             },
             location: undefined,
             sm: [],

@@ -3,6 +3,8 @@ import { parseAddress } from "../parser/addressParser"
 import { Address, BaseAddress } from "../interface/Address";
 import { TListFilters } from "types";
 import { AddressModel } from "../models/AddressTable";
+import { UserModel } from "apps/user/models/UserTable";
+import { getUserName } from "apps/common/utils/commonUtils";
 
 export class AddressRepo implements IUserAddressController<BaseAddress, Address, TListFilters> {
     public async list(filters: TListFilters = {
@@ -35,10 +37,18 @@ export class AddressRepo implements IUserAddressController<BaseAddress, Address,
      * @param payload - Data to create the address
      * @returns The newly created user address
      */
-    public async create(payload: BaseAddress, options?: { transaction?: any }): Promise<Address> {
+    public async create(payload: BaseAddress, userId: number, options?: { transaction?: any }): Promise<Address> {
         try {
             const { transaction } = options || {};
-            const newUserAddress = await AddressModel.create(payload, { transaction });
+            const user = await UserModel.findByPk(userId);
+            if(!user){
+                throw new Error(`User not found with id ${userId}`)
+            }
+            const newUserAddress = await AddressModel.create(payload, { 
+                userId: userId,
+                userName: getUserName(user),
+                transaction 
+            });
             return newUserAddress.toJSON();
         } catch (error) {
             throw new Error(`Error creating user address: ${(error as Error).message}`);
@@ -67,12 +77,19 @@ export class AddressRepo implements IUserAddressController<BaseAddress, Address,
      * @param payload - The data to update the address with
      * @returns The updated user address or null if not found
      */
-    public async updateById(id: number, payload: Partial<BaseAddress>): Promise<Address | null> {
+    public async updateById(id: number, payload: Partial<BaseAddress>, userId: number): Promise<Address | null> {
         try {
+            const user = await UserModel.findByPk(userId);
+            if(!user){
+                throw new Error(`User not found with id ${userId}`)
+            }
             const userAddress = await AddressModel.findByPk(id);
             if (!userAddress) return null; // Address not found
 
-            const updatedUserAddress = await userAddress.update(payload);
+            const updatedUserAddress = await userAddress.update(payload, {
+                userId: userId,
+                userName: getUserName(user)
+            });
             return updatedUserAddress.get() as Address;
         } catch (error) {
             throw new Error(`Error updating user address: ${(error as Error).message}`);

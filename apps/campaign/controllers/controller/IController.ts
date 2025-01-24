@@ -36,7 +36,7 @@ interface IDynamicFormController<T, F extends TQueryFilters> {
      * @param payload - The data to update the dynamic form question.
      * @returns Promise resolving to the affected count.
      */
-    update(id: number, payload: CampaignPayload): Promise<[affectedCount: number]>;
+    update(id: number, payload: CampaignPayload, userId: number): Promise<[affectedCount: number]>;
 
     /**
      * Delete dynamic form questions by IDs for a user.

@@ -4,6 +4,8 @@ import IBaseRepo from '../controllers/IAreaController';
 import { IArea, TAreaList, TPayloadArea } from "../interface/Area";
 import { TListFiltersAreas } from "apps/common/models/common";
 import { AreaModel } from "./AreaTable";
+import { UserModel } from "apps/user/models/UserTable";
+import { getUserName } from "apps/common/utils/commonUtils";
 
 export class AreaRepo implements IBaseRepo<IArea, TListFiltersAreas> {
     constructor() { }
@@ -57,19 +59,30 @@ export class AreaRepo implements IBaseRepo<IArea, TListFiltersAreas> {
         return { total, data };
     }
 
-    public async create(data: TPayloadArea): Promise<IArea> {
+    public async create(data: TPayloadArea, userId: number): Promise<IArea> {
         //todo validate using auth and use hooks
-        const response = await AreaModel.create(data);
+        const user = await UserModel.findByPk(userId)
+        if (!user) {
+            throw new Error("User not found");
+        }
+        const response = await AreaModel.create(data, {
+            userId: user.id,
+            userName: getUserName(user)
+        });
         return response;
     }
 
-    public async update(id: number, data: TPayloadArea): Promise<[affectedCount: number]> {
+    public async update(id: number, data: TPayloadArea, userId: number): Promise<[affectedCount: number]> {
+        const user = await UserModel.findByPk(userId)
+        if (!user) {
+            throw new Error("User not found");
+        }
         const area = await AreaModel.findByPk(id);
         if (!area) {
         throw new Error("Area not found");
         }
         area.set(data);
-        await area.save();
+        await area.save({userId: userId, userName: getUserName(user)});
         return [1];
     }
 

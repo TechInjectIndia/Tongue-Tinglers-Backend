@@ -9,7 +9,7 @@ export default interface IAddress<T, P, F> {
      * @param payload - The data for creating the entry
      * @returns A promise resolving to the created entry
      */
-    create(payload: Partial<T>, options?: { transaction?: any }): Promise<P>;
+    create(payload: Partial<T>, userId: number, options?: { transaction?: any }): Promise<P>;
 
     /**
      * Find an entry by ID
@@ -24,7 +24,7 @@ export default interface IAddress<T, P, F> {
      * @param payload - The data for updating the entry
      * @returns A promise resolving to the updated entry or null if not found
      */
-    updateById(id: number, payload: Partial<T>): Promise<P | null>;
+    updateById(id: number, payload: Partial<T>, userId: number): Promise<P | null>;
 
     /**
      * Delete an entry by ID

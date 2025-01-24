@@ -5,6 +5,7 @@ import { TListFilters } from "apps/common/models/common";
 import { AffiliateModel } from "./affiliateModel";
 import { UserModel } from "apps/user/models/UserTable";
 import { SocialMediaDetailsModel } from "apps/lead/models/smDetailsTable";
+import { getUserName } from "apps/common/utils/commonUtils";
 
 export class AffiliateRepo {
     constructor() { }
@@ -47,16 +48,29 @@ export class AffiliateRepo {
         return { total, data };
     }
 
-    public async create(data: Affiliate): Promise<Affiliate> {
-        const response = await AffiliateModel.create(data);
+    public async create(data: Affiliate, userId: number): Promise<Affiliate> {
+        const user = await UserModel.findByPk(userId);
+        if (!user) {
+            throw new Error("User not found");
+        }
+        const response = await AffiliateModel.create(data, {
+            userId: userId,
+            userName: getUserName(user)
+        });
         return response.dataValues;
     }
 
-    public async update(id: number, data: Affiliate): Promise<[affectedCount: number]> {
+    public async update(id: number, data: Affiliate, userId: number): Promise<[affectedCount: number]> {
+        const user = await UserModel.findByPk(userId);
+        if (!user) {
+            throw new Error("User not found");
+        }
         return await AffiliateModel.update(data, {
             where: {
                 id: id,
             },
+            userId: userId,
+            userName: getUserName(user)
         });
     }
 

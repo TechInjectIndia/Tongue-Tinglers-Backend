@@ -133,11 +133,16 @@ const listCampaignQuery = Joi.object().keys({
                 "Sorting must be one of id ASC, id DESC, name ASC, name DESC, createdAt ASC, createdAt DESC.",
         }),
     organizationId: Joi.number()
-        .messages({ "number.base": "Organization ID must be a number." }),
-    region: Joi.string()
         .optional()
-        .allow("")
-        .messages({ "string.base": "Region must be a string." }),
+        .messages({ "number.base": "Organization ID must be a number." }),
+    regionId: Joi.number()
+        .optional()
+        .messages({ "number.base": "Region ID must be a number." }),
+    proposalId: Joi.number()
+        .optional()
+        .messages({ "number.base": "Proposal ID must be a number." }),
+    validDate: Joi.date()
+        .optional(),
     trashOnly: Joi.string()
         .optional()
         .allow("")

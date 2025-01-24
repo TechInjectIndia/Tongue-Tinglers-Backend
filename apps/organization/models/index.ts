@@ -22,7 +22,7 @@ export class OrganizationRepo{
         // todo @Nitesh this is not correct it should happen using sequelize
         // mixins
         const billingAddress = (
-            await RepoProvider.address.create(payload.billingAddress)
+            await RepoProvider.address.create(payload.billingAddress, userId)
         ).id;
 
         const shippingAddresses = (

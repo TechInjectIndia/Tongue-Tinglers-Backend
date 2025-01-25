@@ -11,7 +11,7 @@ import {
     PresaleParsedOrder
 } from "apps/order/interface/Order";
 import {CartDetailRepo} from "apps/cart-details/repos/cartDetailRepo";
-import {USER_STATUS, USER_TYPE} from "../../user/interface/user";
+import {MetaUser, USER_STATUS, USER_TYPE} from "../../user/interface/user";
 import {FRANCHISE_STATUS} from "../../franchise/interface/Franchise";
 
 
@@ -49,9 +49,9 @@ export default class CheckoutController {
                 location: undefined,
                 sm: [],
                 assignedUser: undefined,
-                // createdBy: 0,
-                // updatedBy: 0,
-                // deletedBy: 0,
+                createdBy: 0 as unknown as MetaUser,
+                updatedBy: 0 as unknown as MetaUser,
+                deletedBy: 0 as unknown as MetaUser,
                 createdAt: undefined,
                 updatedAt: undefined,
                 deletedAt: undefined,
@@ -63,7 +63,7 @@ export default class CheckoutController {
             cancelledItems: [],
             coupon: "code1",
             createdAt: new Date(),
-            createdBy: 1,
+            createdBy: 1 as unknown as MetaUser,
             customerDetails: {
                 id: 0,
                 firstName: "",
@@ -74,9 +74,9 @@ export default class CheckoutController {
                 status: USER_STATUS.ACTIVE,
                 role: 0,
                 profilePhoto: "",
-                createdBy: 0,
-                updatedBy: 0,
-                deletedBy: 0,
+                createdBy: 0 as unknown as MetaUser,
+                updatedBy: 0 as unknown as MetaUser,
+                deletedBy: 0 as unknown as MetaUser,
                 createdAt: undefined,
                 updatedAt: undefined,
                 deletedAt: undefined
@@ -99,7 +99,7 @@ export default class CheckoutController {
             totalShipping: 100,
             totalTax: 500,
             updatedAt: new Date(),
-            updatedBy: 1
+            updatedBy: 1 as unknown as MetaUser
 
         };
         res.status(200).json(order);

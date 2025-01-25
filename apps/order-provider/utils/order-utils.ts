@@ -50,29 +50,17 @@ const getEmptyParsedOrder = () => {
             organization: undefined,
             status: FRANCHISE_STATUS.Active,
             establishedDate: undefined,
-            affiliate: {
-                id: 0,
-                type: "",
-                codes: "",
-                user: {
-                    id: 0,
-                    firstName: "",
-                    lastName: "",
-                    email: ""
-                },
-                createdAt: new Date(),
-                updatedAt: new Date()
-            },
             location: undefined,
             sm: [],
             assignedUser: undefined,
-            createdBy: { } as MetaUser,
+            createdBy: {} as MetaUser,
             updatedBy: 0 as unknown as MetaUser,
             deletedBy: 0 as unknown as MetaUser,
             createdAt: new Date(),
             updatedAt: new Date(),
             deletedAt: new Date(),
-            logs: []
+            logs: [],
+            affiliate: undefined
         },
         orderType: ORDER_TYPE.RM_ORDER,
         id: 0,

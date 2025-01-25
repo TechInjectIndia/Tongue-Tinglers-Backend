@@ -48,7 +48,7 @@ interface ParsedFranchise extends ParsedMeta {
     organization: ParsedOrganization;
     status: FRANCHISE_STATUS;
     establishedDate: Date;
-    affiliate: ParsedAffiliate;
+    affiliate: ParsedAffiliate|null;
     location: Address;
     sm: Array<SocialMediaDetails>;
     assignedUser: MetaUser | null

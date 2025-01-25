@@ -38,7 +38,6 @@ class AffiliateModel
         });
 
         AffiliateModel.hasOne(OrganizationModel, {
-            foreignKey: "organizationId",
         });
     }
 

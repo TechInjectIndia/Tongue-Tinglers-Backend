@@ -1,20 +1,29 @@
+import { BaseMeta, ParsedMeta } from "apps/common/models/Base"
+import { SocialMediaDetails } from "apps/lead/interface/lead";
 import { MetaUser } from "apps/user/interface/user"
 
 
-interface Affiliate {
+interface AffiliatePayload {
     id: number,
     type: string,
     codes: Record<string, string>,
-    userId: number
+    userId: number;
+    organizationId:number;
 }
 
-interface ParsedAffiliate {
+
+interface AffiliateTable extends AffiliatePayload , BaseMeta{
+
+}
+
+
+interface ParsedAffiliate extends ParsedMeta {
     id: number,
     type: string,
     codes: string,
     user: MetaUser
-    createdAt: Date,
-    updatedAt: Date,
+    organisationId:number,
+    sm:SocialMediaDetails
 }
 
-export {Affiliate, ParsedAffiliate}
+export {AffiliatePayload,AffiliateTable, ParsedAffiliate}

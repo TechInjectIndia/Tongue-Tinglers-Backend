@@ -1,20 +1,27 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { Affiliate } from "../interface/affiliate";
 import { UserModel } from "apps/user/models/UserTable";
 import { SocialMediaDetailsModel } from "apps/lead/models/smDetailsTable";
 import { sequelize } from "config";
 import RepoProvider from "apps/RepoProvider";
+import { AffiliateTable } from "../interface/Affiliate";
+import { OrganizationModel } from "apps/organization/models/OrganizationTable";
 
-const { UUID, STRING, JSONB, UUIDV4, INTEGER } = DataTypes;
+const { UUID, STRING, JSONB, UUIDV4, INTEGER,DATE } = DataTypes;
 
 // Define the attributes for lead creation
-interface AffiliateCreationAttributes extends Optional<Affiliate, "id"> {}
+interface AffiliateCreationAttributes extends Optional<AffiliateTable, "id"> { }
 
 // Define the model class for AffiliateModel
 class AffiliateModel
-    extends Model<Affiliate, AffiliateCreationAttributes>
-    implements Affiliate
-{
+    extends Model<AffiliateTable, AffiliateCreationAttributes>
+    implements AffiliateTable {
+    organizationId: number;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date;
+    createdBy: number;
+    updatedBy: number;
+    deletedBy: number;
     public id!: number;
     public type!: string;
     public codes!: Record<string, string>;
@@ -28,6 +35,10 @@ class AffiliateModel
         AffiliateModel.hasMany(SocialMediaDetailsModel, {
             as: "sm",
             foreignKey: "affiliateId",
+        });
+
+        AffiliateModel.hasOne(OrganizationModel, {
+            foreignKey: "organizationId",
         });
     }
 
@@ -53,6 +64,33 @@ class AffiliateModel
                     type: INTEGER,
                     allowNull: false,
                 },
+                organizationId: {
+                    type: INTEGER,
+                    allowNull: false,
+                },
+                createdAt: {
+                    type: DATE,
+                    allowNull: false,
+                },
+                updatedAt: {
+                    type: DATE,
+                    allowNull: false,
+                },
+                deletedAt: {
+                    type: DATE,
+                    allowNull: false,
+                },
+                createdBy: {
+                    type: INTEGER,
+                    allowNull: false,
+                },
+                updatedBy: {
+                    type: INTEGER,
+                },
+                deletedBy: {
+                    type: INTEGER,
+                    allowNull: false,
+                }
             },
             {
                 sequelize,

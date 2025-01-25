@@ -1,7 +1,7 @@
 import { ParsedFollowDetails } from "apps/follow-details/interface/followDetails";
 import { ParsedLead } from "../interface/lead";
 import { parseFollowDetails } from "apps/follow-details/parser/followDetailsParser";
-import { ParsedAffiliate } from "apps/affiliate/interface/affiliate";
+import { ParsedAffiliate } from "apps/affiliate/interface/Affiliate";
 import { ParseAffiliate } from "apps/affiliate/parser/affilateParser";
 import { ParseProposal } from "apps/proposal_model/parser/proposalParser";
 import { parseUserToMetaUser } from "apps/user/parser/user-parser";

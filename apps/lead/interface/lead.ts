@@ -1,4 +1,4 @@
-import { ParsedAffiliate } from "apps/affiliate/interface/affiliate";
+import { ParsedAffiliate } from "apps/affiliate/interface/Affiliate";
 import { BaseMeta } from "apps/common/models/Base";
 import { FollowDetails, ParsedFollowDetails } from "apps/follow-details/interface/followDetails";
 import { ParsedFranchiseModels } from "apps/franchise_model/interface/franchiseModel";

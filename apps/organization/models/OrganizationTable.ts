@@ -11,6 +11,7 @@ import {
 import { AddressModel } from "apps/address/models/AddressTable";
 import { DocumentModel } from "apps/documents/models/DocumentTable";
 import { UserModel } from "apps/user/models/UserTable";
+import { AffiliateModel } from "apps/affiliate/models/affiliateModel";
 // Ensure this path is correct
 
 const { STRING, INTEGER, DATE, NOW, ENUM } = DataTypes;
@@ -66,6 +67,10 @@ class OrganizationModel extends Model<IOrganization, OrganizationCreationAttribu
         this.belongsTo(AddressModel, {
             foreignKey: "billingAddressId",
             as: "billingAddress", // Alias for billing address
+        });
+        this.belongsTo(AffiliateModel, {
+            as: "organization",
+            foreignKey: "organizationId",
         });
 
         // Many-to-many association for shipping addresses

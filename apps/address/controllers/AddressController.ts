@@ -12,9 +12,9 @@ export default class UserAddressController {
      */
     static async createUserAddress(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = get(req, 'user_id', '');
+            const userId = get(req, 'user_id');
             const payload = { ...req?.body, userId: userId };
-            const newUserAddress = await new AddressRepo().create(payload);
+            const newUserAddress = await new AddressRepo().create(payload,userId);
             return res.status(200)
                 .send(
                     sendResponse(
@@ -101,7 +101,7 @@ export default class UserAddressController {
      */
     static async updateUserAddress(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = get(req, 'user_id', '');
+            const userId = get(req, 'user_id');
 
             const payload = { ...req?.body, userId: userId };
             const { id } = req.params;
@@ -115,7 +115,7 @@ export default class UserAddressController {
                     );
             }
 
-            const updatedUserAddress = await new AddressRepo().updateById(parseInt(id), payload);
+            const updatedUserAddress = await new AddressRepo().updateById(parseInt(id), payload, userId);
             if (!updatedUserAddress) {
                 return res.status(404)
                     .send(

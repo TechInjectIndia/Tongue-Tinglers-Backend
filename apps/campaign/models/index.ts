@@ -18,6 +18,8 @@ import {
     FranchiseLeadModel
 } from "../../franchise_model/models/FranchiseModelTable";
 import {handleError} from "../../common/utils/HelperMethods";
+import { UserModel } from "apps/user/models/UserTable";
+import { getUserName } from "apps/common/utils/commonUtils";
 
 export class CampaignAdRepo
     implements IBaseRepo<ParsedCampaign, TListFiltersCampaigns> {
@@ -88,25 +90,32 @@ export class CampaignAdRepo
             ],
         };
 
-        // Apply franchiseId and regionId filters only if valid values are
-        // provided
-        if (filters.filters?.franchiseId) {
-            whereCondition.franchiseId = {
-                [Op.eq]: filters.filters.franchiseId,
-            }; // Assuming franchiseId is a string or UUID
-        }
         if (filters.filters?.regionId) {
-            whereCondition.regionId = {[Op.eq]: filters.filters.regionId};
+            whereCondition.regionId = filters.filters.regionId;
         }
 
-        // Add a specific condition for regionId if it needs to support `search`
-        if (filters.search && !isNaN(Number(filters.search))) {
-            whereCondition[Op.or].push({
-                regionId: {[Op.eq]: Number(filters.search)},
-            });
+        if(filters.filters?.organizationId){
+            whereCondition.organizationId = filters.filters?.organizationId
+        }
+
+        if(filters.filters.proposalId){
+            whereCondition.proposalIds = {
+                [Op.contains]: parseInt(filters.filters.proposalId)
+            };
+        }
+
+        if(filters.filters.validDate){
+            const inputDate = new Date(filters.filters.validDate); // Ensure date is properly formatted
+            if (!isNaN(inputDate.getTime())) {
+                whereCondition[Op.and] = [
+                    { start: { [Op.lte]: inputDate } }, // Start date is less than or equal to inputDate
+                    { to: { [Op.gte]: inputDate } },   // End date is greater than or equal to inputDate
+                ];
+            }
         }
 
         // Count total campaigns matching the search criteria
+        console.log('whereCondition: ', whereCondition);
         const total = await CampaignAdModel.count({
             where: whereCondition,
         });
@@ -162,12 +171,19 @@ export class CampaignAdRepo
         const transaction: Transaction = await CampaignAdModel.sequelize.transaction();
 
         try {
+            const user = await UserModel.findByPk(createdBy);
+            if (!user) {
+                throw new Error("User not found");
+            }
             const {proposalIds, questionList, ...campaignData} = data;
-
             // Step 1: Create the campaign within the transaction
             const createdCampaign = await CampaignAdModel.create(
                 {createdBy, ...data},
-                {transaction});
+                {
+                    userId: createdBy,
+                    userName: getUserName(user),
+                    transaction
+                });
 
 
             // Step 2: Associate questions if provided
@@ -241,8 +257,12 @@ export class CampaignAdRepo
 
 
     public async update(id: number,
-        data: CampaignPayload): Promise<[affectedCount: number]> {
+        data: CampaignPayload, userId: number): Promise<[affectedCount: number]> {
         const transaction: Transaction = await CampaignAdModel.sequelize.transaction();
+        const user = await UserModel.findByPk(userId);
+        if (!user) {
+            throw new Error("User not found");
+        }
         const campaign = await CampaignAdModel.findByPk(id,{transaction});
         await  campaign.removeProposals(campaign.toJSON().proposalIds,{transaction});
         await campaign.removeQuestions(campaign.toJSON().questionList,{transaction});
@@ -253,6 +273,8 @@ export class CampaignAdRepo
             where: {
                 id,
             },
+            userId: userId,
+            userName: getUserName(user)
         });
     }
 

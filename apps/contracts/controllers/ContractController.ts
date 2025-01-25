@@ -153,6 +153,7 @@ export default class ContractController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
+            const userId = get(req, "user_id")
             const id = parseInt(get(req.params, "id"));
             if (isNaN(id)) throw Error("Missing id or isNaN");
 
@@ -168,6 +169,7 @@ export default class ContractController {
             const updatedContract = await new ContractRepo().update(
                 id,
                 req.body,
+                userId
             );
             return res
                 .status(200)
@@ -227,6 +229,7 @@ export default class ContractController {
 
     static async updateOrganization(req: Request, res: Response) {
         try {
+            const userId = get(req, "user_id")
             const id = parseInt(get(req.params, "id"));
             if (isNaN(id)) throw Error("Missing id or isNaN");
 
@@ -245,7 +248,7 @@ export default class ContractController {
                     );
             } else {
                 existingContract.organizationId = organizationId;
-                await new ContractRepo().update(id, organizationId);
+                await new ContractRepo().update(id, organizationId, userId);
             }
         } catch (err) {
             return res
@@ -379,7 +382,7 @@ export default class ContractController {
                 await new ContractRepo().updatePartialContract(id, {
                     ...payload,
                     updatedBy: user_id,
-                });
+                }, user_id);
             return res
                 .status(200)
                 .send(

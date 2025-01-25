@@ -88,7 +88,7 @@ export class ContractRepo {
     public async updatePaymentStatus(
         contractId: number,
         payment: ContractPaymentDetails[],
-        status: CONTRACT_STATUS
+        status: CONTRACT_STATUS,
     ): Promise<any> {
         try {
             const contract = await ContractModel.findByPk(contractId);
@@ -324,10 +324,17 @@ export class ContractRepo {
 
     public async update(
         id: number,
-        data: Partial<ContractsPayload>
+        data: Partial<ContractsPayload>,
+        userId: number
     ): Promise<[affectedCount: number]> {
+        const user = await UserModel.findByPk(userId)
+        if (!user) {
+            throw new Error(`User with ID ${userId} not found.`);
+        }
         const response = await ContractModel.update(data, {
             where: { id },
+            userId: userId,
+            userName: getUserName(user),
         });
 
         console.log("******")
@@ -357,7 +364,8 @@ export class ContractRepo {
         return response;
     }
 
-    public async updatePartialContract(contractId: number, payload: PartialContractsUpdate): Promise<[affectedCount: number]> {
+    public async updatePartialContract(contractId: number, payload: PartialContractsUpdate, user_id: number): Promise<[affectedCount: number]> {
+        const user = await UserModel.findByPk(user_id);
         const contract = await ContractModel.findOne({
             where: {
                 id: contractId
@@ -367,7 +375,7 @@ export class ContractRepo {
             throw new Error("Contract not found");
         }
         contract.set(payload);
-        await contract.save();
+        await contract.save({userId: user_id, userName: getUserName(user)});
         return [1];
     }
 }

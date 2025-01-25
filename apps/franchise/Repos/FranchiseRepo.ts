@@ -39,7 +39,7 @@ export class FranchiseRepo implements IFranchiseRepo {
       const existFranchise = await this.exists(franchise.pocEmail);
       if (!existFranchise) {
         const addressId = (
-          await RepoProvider.address.create(franchise.location, { transaction })
+          await RepoProvider.address.create(franchise.location, userId, { transaction })
         ).id;
         let smIds: number[] = [];
 

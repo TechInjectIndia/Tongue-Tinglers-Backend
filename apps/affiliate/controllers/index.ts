@@ -9,6 +9,7 @@ import { constructNow } from "date-fns";
 export default class AffiliateController {
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
+            const userId = get(req, 'user_id');
             const affiliateData = req.body;
 
             // Extract the social media details
@@ -28,7 +29,7 @@ export default class AffiliateController {
             delete payload.sm;
 
             // Create the affiliate record
-            const Affiliate = await new AffiliateRepo().create(payload);
+            const Affiliate = await new AffiliateRepo().create(payload, userId);
 
             const affiliateId = Affiliate.id
             if (!affiliateId) {
@@ -118,6 +119,7 @@ export default class AffiliateController {
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
             const id = parseInt(get(req.params, "id"));
+            const userId = get(req, 'user_id');
             // const user_id = parseInt(get(req, 'user_id'));
             const updateAffiliate = req.body;
 
@@ -126,7 +128,7 @@ export default class AffiliateController {
             delete updateAffiliate.sm; // Remove social media details from the update payload
 
             // Update the affiliate record
-            const affiliate = await new AffiliateRepo().update(id, updateAffiliate);
+            const affiliate = await new AffiliateRepo().update(id, updateAffiliate, userId);
 
             // Check if social media details are provided
             if (sm && typeof sm === 'object') {

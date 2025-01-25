@@ -10,7 +10,7 @@ export default class AreaController {
             const user_id = get(req, 'user_id', 0);
             const payload = { ...req.body, createdBy: user_id };
 
-            const Area = await new AreaRepo().create(payload);
+            const Area = await new AreaRepo().create(payload, user_id);
             return res
                 .status(200)
                 .send(
@@ -77,8 +77,8 @@ export default class AreaController {
             const id = get(req.params, "id", 0);
             const updateData = req.body;
             delete updateData.id;
-            const user_id = get(req, "user_id", "");
-            const updatedArea = await new AreaRepo().update(id as number, { ...updateData, updatedBy: user_id });
+            const user_id = get(req, "user_id");
+            const updatedArea = await new AreaRepo().update(id as number, { ...updateData, updatedBy: user_id }, user_id);
 
             return res
                 .status(200)

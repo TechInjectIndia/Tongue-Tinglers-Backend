@@ -353,11 +353,11 @@ export class LeadRepo {
         userId: number
     ): Promise<[affectedCount: number]> {
         let followDetailsIds: number[] = [];
+        const user = await UserModel.findByPk(userId);
+        if(!user){
+            throw new Error("User not found");
+        }
         const lead = await LeadsModel.findByPk(id);
-
-
-
-
         if (!lead) {
             throw new Error("Lead not found");
         }
@@ -370,7 +370,10 @@ export class LeadRepo {
                     );
                     if (existingDetail) {
                         detail.updatedBy = userId
-                        await existingDetail.update(detail);
+                        await existingDetail.update(detail, {
+                            userId: userId,
+                            userName: getUserName(user),
+                        });
                     } else {
                         console.warn(
                             `FollowDetail with ID ${detail.id} not found. Skipping update.`
@@ -379,14 +382,20 @@ export class LeadRepo {
                 } else {
                     detail.createdBy = userId
                     // If no ID, create a new record
-                    const newDetail = await FollowDetailsModel.create(detail);
+                    const newDetail = await FollowDetailsModel.create(detail, {
+                        userId: userId,
+                        userName: getUserName(user),
+                    });
                     followDetailsIds.push(newDetail.id);
                     await lead.addFollowDetails(followDetailsIds);
                 }
             }
         }
         lead.set(data);
-        await lead.save();
+        await lead.save({
+            userId: userId,
+            userName: getUserName(user),
+        });
         return [1];
     }
 

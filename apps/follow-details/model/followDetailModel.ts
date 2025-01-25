@@ -89,7 +89,7 @@ class FollowDetailsModel extends Model<FollowDetails> implements FollowDetailsCr
     public static hook() {
         FollowDetailsModel.addHook("afterCreate", async (instance, options) => {
             await RepoProvider.LogRepo.logModelAction(
-                "create",
+                "update",
                 "Follow Details",
                 instance,
                 options

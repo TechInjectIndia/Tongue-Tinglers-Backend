@@ -3,12 +3,19 @@ import { BaseAgreementDocs, IBaseAgreementDocs } from "../interface/AgreementDoc
 import { AgreementDocModel } from "../model/agreementDocModel";
 import { IAgreementDocRepo } from "./IAgreementDocRepo";
 import { Pagination } from "apps/common/models/common";
+import { UserModel } from "apps/user/models/UserTable";
+import { getUserName } from "apps/common/utils/commonUtils";
 
 
 export class AgreementDocRepo implements IAgreementDocRepo{
 
     async createAgreementDoc(payload: BaseAgreementDocs): Promise<IBaseAgreementDocs> {
         try{
+            const user = await UserModel.findByPk(payload.createdBy);
+            if(!user){
+                handleError("User not found", payload);
+                throw new Error("User not found");
+            }
             const data={
                 agreement_id: payload.agreement_id,
                 doc_link: payload.doc_link,
@@ -22,7 +29,10 @@ export class AgreementDocRepo implements IAgreementDocRepo{
                 createdAt: new Date(),
                 updatedAt: new Date()
             }
-            const createdDoc = await AgreementDocModel.create(data)
+            const createdDoc = await AgreementDocModel.create(data, {
+                userId: payload.createdBy,
+                userName: getUserName(user)
+            })
 
             if(!createdDoc){
                 handleError("Failed to create agreement doc", payload);
@@ -106,6 +116,11 @@ export class AgreementDocRepo implements IAgreementDocRepo{
 
     async updateAgreementDoc(payload: IBaseAgreementDocs): Promise<IBaseAgreementDocs> {
         try{
+            const user = await UserModel.findByPk(payload.updatedBy);
+            if(!user){
+                handleError("User not found", payload);
+                throw new Error("User not found");
+            }
             const agreementDoc = await AgreementDocModel.findOne({
                 where: {
                     id: payload.id
@@ -115,7 +130,10 @@ export class AgreementDocRepo implements IAgreementDocRepo{
                 handleError(`Failed to retrieve the agreement document for the provided id: ${payload.id}`);
                 throw new Error(`Failed to retrieve the agreement document for the provided id: ${payload.id}`);
             }
-            const updatedAgreementDoc = await agreementDoc.update(payload)
+            const updatedAgreementDoc = await agreementDoc.update(payload,{
+                userId: payload.updatedBy,
+                userName: getUserName(user)
+            })
             return updatedAgreementDoc.toJSON();
         }catch(error){
             handleError(error, payload)

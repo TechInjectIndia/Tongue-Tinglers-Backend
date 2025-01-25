@@ -22,7 +22,7 @@ interface IAreaController<T, F extends TQueryFilters> {
      * @param payload - The data to create the Area.
      * @returns Promise resolving to the created Area.
      */
-    create(payload: TPayloadArea): Promise<T>;
+    create(payload: TPayloadArea, user_id: number): Promise<T>;
 
     /**
      * Update an existing Area.
@@ -30,7 +30,7 @@ interface IAreaController<T, F extends TQueryFilters> {
      * @param payload - The data to update the Area.
      * @returns Promise resolving to the affected count.
      */
-    update(id: number, payload: TPayloadArea): Promise<[affectedCount: number]>;
+    update(id: number, payload: TPayloadArea, userId: number): Promise<[affectedCount: number]>;
 
     /**
      * Delete Areas by IDs.

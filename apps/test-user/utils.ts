@@ -207,7 +207,7 @@ async function createDummyMaster(user_id: number) {
 
     const aRepo = new AreaRepo();
     const areasProm = await Promise.all(areas.map(
-        a => aRepo.create({createdBy: user_id, ...a}))).then(_ => {
+        a => aRepo.create({createdBy: user_id, ...a}, user_id))).then(_ => {
         const rRepo = new RegionRepo();
         return Promise.all(regions.map(
             r => rRepo.create({createdBy: user_id, ...r})));

@@ -39,7 +39,7 @@ export default class OrganizationController {
 
             if (prospectId) {
                 await new ContractRepo().update(prospectId,
-                    {organizationId: data.id} as Partial<ContractsPayload>);
+                    {organizationId: data.id} as Partial<ContractsPayload>, user_id);
             }
             return res
                 .status(201)

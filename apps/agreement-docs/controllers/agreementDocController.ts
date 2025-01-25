@@ -9,7 +9,7 @@ import RepoProvider from "../../RepoProvider"
 export default class AgreementDocController {
     static async createAgreementDoc(req: Request, res: Response) {
         try {
-            const id = get(req, "user_id", "1");
+            const id = get(req, "user_id");
             if (!id) {
                 throw Error("Missing user_id or isNaN");
             }
